@@ -1,6 +1,6 @@
 package com.tokopedia.shop.info.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -13,9 +13,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class ShopInfoViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
@@ -29,11 +27,11 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteViewModel>>>()
     val shopStatisticsResp = MutableLiveData<ShopStatisticsResp>()
 
-    private suspend fun getShopNotesAsync(shopId: String, isRefresh: Boolean) = async(Dispatchers.IO) {
+    private suspend fun getShopNotes(shopId: String, isRefresh: Boolean): Result<List<ShopNoteViewModel>>{
         getShopNoteUseCase.params = GetShopNotesByShopIdUseCase.createParams(shopId)
         getShopNoteUseCase.isFromCacheFirst = !isRefresh
         try {
-            Success(getShopNoteUseCase.executeOnBackground().map {
+           return Success(getShopNoteUseCase.executeOnBackground().map {
                 ShopNoteViewModel().apply {
                     shopNoteId = it.id?.toLongOrNull() ?: 0
                     title = it.title
@@ -43,21 +41,33 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
                 }
             })
         } catch (t: Throwable){
-            Fail(t)
+            return Fail(t)
         }
     }
 
-    private suspend fun getShopStatisticsAsync(shopId: String, isRefresh: Boolean) = async(Dispatchers.IO) {
+    private suspend fun getShopStatistics(shopId: String, isRefresh: Boolean) : ShopStatisticsResp {
         getShopStatisticUseCase.params = GetShopStatisticUseCase.createParams(shopId.toInt())
         getShopStatisticUseCase.isFromCacheFirst = !isRefresh
-        getShopStatisticUseCase.executeOnBackground()
+        return getShopStatisticUseCase.executeOnBackground()
     }
 
     fun getShopInfo(shopId: String, isRefresh: Boolean = false){
         launchCatchError(block = {
-            shopNotesResp.value = getShopNotesAsync(shopId, isRefresh).await()
-            shopStatisticsResp.value = concatResp(getShopStatisticsAsync(shopId, isRefresh).await(),
-                    getShopReputationAsync(shopId).await())
+            coroutineScope{
+                launch(Dispatchers.IO) {
+                    shopNotesResp.postValue(getShopNotes(shopId, isRefresh))
+                }
+                val getShopStatisticRespAsync = async(Dispatchers.IO) {
+                    getShopStatistics(shopId, isRefresh)
+                }
+                val getShopReputationRespAsync = async(Dispatchers.IO) {
+                    getShopReputation(shopId)
+                }
+                shopStatisticsResp.postValue(concatResp(
+                        getShopStatisticRespAsync.await(),
+                        getShopReputationRespAsync.await())
+                )
+            }
         }){}
     }
 
@@ -65,9 +75,9 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
         return shopStatisticsResp.copy(shopReputation = shopBadge)
     }
 
-    private fun getShopReputationAsync(shopId: String) = async (Dispatchers.IO){
+    private suspend fun getShopReputation(shopId: String) : ShopBadge?{
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
-        try {
+        return try {
             getShopReputationUseCase.executeOnBackground()
         } catch (t: Throwable){
             null

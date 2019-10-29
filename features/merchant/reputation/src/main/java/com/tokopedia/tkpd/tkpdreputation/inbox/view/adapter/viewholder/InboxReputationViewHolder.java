@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true" />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/channel_title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,9 +75,9 @@
             app:layout_constraintBottom_toBottomOf="@+id/channel_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/channel_title" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

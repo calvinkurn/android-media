@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -36,12 +36,12 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
@@ -74,7 +74,6 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
-import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -847,12 +846,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickInvoiceThumbnail(url: String, id: String) {
-        val encodedUrl = URLEncoder.encode(url, "UTF-8")
-        onGoToWebView(encodedUrl, id)
+        onGoToWebView(url, id)
     }
 
     override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
         return getParamString(key, arguments, savedInstanceState)
+    }
+
+    override fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean {
+        return getParamBoolean(key, arguments, savedInstanceState, false)
     }
 
     override fun focusOnReply() {

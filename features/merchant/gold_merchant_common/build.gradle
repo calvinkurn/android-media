@@ -33,6 +33,8 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    testImplementation rootProject.ext.testDependencies.mockk
 }
 
 project.ext {

@@ -1,6 +1,6 @@
 package com.tokopedia.core.base.data.executor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 

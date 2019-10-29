@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/main_view">
@@ -58,15 +58,15 @@
                 android:textSize="14sp"
                 android:layout_marginBottom="16dp"
                 android:id="@+id/tv_delivery_status"/>
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 context:listitem="@layout/item_detail_track_shipping"
                 android:id="@+id/rv_tracking_detail">
 
-            </android.support.v7.widget.RecyclerView>
+            </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

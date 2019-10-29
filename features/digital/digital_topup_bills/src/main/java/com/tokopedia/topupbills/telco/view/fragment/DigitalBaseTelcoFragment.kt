@@ -1,14 +1,14 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
-import android.support.design.widget.Snackbar
-import android.support.v4.widget.NestedScrollView
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.widget.NestedScrollView
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast

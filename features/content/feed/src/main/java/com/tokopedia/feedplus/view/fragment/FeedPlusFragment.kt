@@ -1,29 +1,28 @@
 package com.tokopedia.feedplus.view.fragment
 
+
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.support.annotation.RestrictTo
-import android.support.design.widget.Snackbar
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RestrictTo
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.tagmanager.DataLayer
-
-
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -41,11 +40,14 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -56,6 +58,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.Recomm
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
@@ -67,10 +70,17 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.feedplus.KEY_FEED
+import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_CURSOR
+import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
+import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.adapter.EntryPointAdapter
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
+import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
+import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
@@ -78,23 +88,33 @@ import com.tokopedia.feedplus.view.analytics.ProductEcommerce
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.listener.FeedPlus
+import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.common.util.PostMenuListener
+import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
+import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.*
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
+import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
+import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -102,40 +122,15 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
-
-import java.util.ArrayList
-
-import javax.inject.Inject
-
-import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
-import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
-import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
-import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
-import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
-import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
-import com.tokopedia.feedplus.KEY_FEED
-import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_CURSOR
-import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
-import com.tokopedia.kol.common.util.createBottomMenu
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES
 import com.tokopedia.track.TrackApp
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
+import java.util.*
+import javax.inject.Inject
 
 /**
  * @author by nisie on 5/15/17.
@@ -1445,7 +1440,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
+        val shop = postTagItem.shop.firstOrNull()
+        feedAnalytics.eventFeedAddToCart(
+                postTagItem.id,
+                postTagItem.text,
+                postTagItem.price,
+                1,
+                shop?.shopId?.toIntOrZero() ?: -1,
+                "",
+                authorType
+        )
         presenter.addPostTagItemToCart(postTagItem)
     }
 

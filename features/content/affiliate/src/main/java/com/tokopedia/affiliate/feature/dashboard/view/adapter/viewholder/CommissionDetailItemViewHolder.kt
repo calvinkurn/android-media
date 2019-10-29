@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.view.animation.AnimationUtils
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

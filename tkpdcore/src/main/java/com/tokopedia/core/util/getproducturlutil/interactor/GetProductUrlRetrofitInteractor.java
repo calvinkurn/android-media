@@ -1,7 +1,7 @@
 package com.tokopedia.core.util.getproducturlutil.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.shopinfo.models.productmodel.ShopProduct;
 

@@ -1,6 +1,5 @@
 package com.tokopedia.core.network.di.module;
 
-import com.readystatesoftware.chuck.Chuck;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
@@ -10,7 +9,6 @@ import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
-import com.tokopedia.core.network.di.qualifier.KeyDefaultQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
@@ -19,9 +17,6 @@ import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
 import com.tokopedia.core.network.di.qualifier.TomeBearerAuth;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
-import com.tokopedia.core.network.di.qualifier.WsV4Auth;
-import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
@@ -196,25 +191,6 @@ public class OkHttpClientModule {
                 debugInterceptor,
                 cacheApiInterceptor
         );
-    }
-
-    @WsV4Auth
-    @ApplicationScope
-    @Provides
-    public OkHttpClient provideOkHttpClientWsV4Auth(FingerprintInterceptor fingerprintInterceptor,
-                                                      @KeyDefaultQualifier GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
-                                                      OkHttpRetryPolicy okHttpRetryPolicy,
-                                                      ChuckInterceptor chuckInterceptor,
-                                                      DebugInterceptor debugInterceptor,
-                                                    CacheApiInterceptor cacheApiInterceptor) {
-
-        cacheApiInterceptor.setResponseValidator(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
-        return OkHttpFactory.create().buildDaggerClientAuth(fingerprintInterceptor,
-                globalTkpdAuthInterceptor,
-                okHttpRetryPolicy,
-                chuckInterceptor,
-                debugInterceptor,
-                cacheApiInterceptor);
     }
 
     @ApplicationScope

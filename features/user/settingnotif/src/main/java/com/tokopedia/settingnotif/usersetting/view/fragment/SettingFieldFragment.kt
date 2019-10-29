@@ -2,10 +2,10 @@ package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.annotation.RawRes
-import android.support.annotation.StringRes
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.RawRes
+import androidx.annotation.StringRes
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
@@ -94,10 +92,6 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
         presenter.requestUpdateUserSetting(notificationType, updatedSettingIds)
         presenter.requestUpdateMoengageUserSetting(updatedSettingIds)
-    }
-
-    override fun goToPushNotificationCheckerPage() {
-        RouteManager.route(context, ApplinkConst.PUSHNOTIFCHECKER)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {

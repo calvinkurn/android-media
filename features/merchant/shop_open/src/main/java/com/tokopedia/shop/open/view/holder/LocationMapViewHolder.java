@@ -1,7 +1,7 @@
 package com.tokopedia.shop.open.view.holder;
 
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;

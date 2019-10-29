@@ -2,8 +2,8 @@ package com.tokopedia.challenges.view.utils;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;

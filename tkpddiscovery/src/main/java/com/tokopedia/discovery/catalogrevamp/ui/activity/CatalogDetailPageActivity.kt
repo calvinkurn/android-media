@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tkpd.library.utils.legacy.MethodChecker
@@ -17,6 +17,7 @@ import com.tokopedia.core.share.DefaultShare
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity
 import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
+import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
 import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailProductListingFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
@@ -33,10 +34,15 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.synthetic.main.activity_catalog_detail_page.*
 
-class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.Listener, CategoryNavigationListener, BottomSheetListener {
+class CatalogDetailPageActivity : BaseActivity(),
+        CatalogDetailPageFragment.Listener,
+        CategoryNavigationListener,
+        BottomSheetListener,
+        SearchNavigationView.SearchNavClickListener,
+        BaseCategorySectionFragment.SortAppliedListener{
     private var catalogId: String = ""
     private var shareData: LinkerData? = null
-    private var searchNavContainer: View? = null
+    private var searchNavContainer: SearchNavigationView? = null
     private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
     private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
     private lateinit var catalogDetailFragment : Fragment
@@ -62,6 +68,7 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
         private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+        private const val ORDER_BY = "ob"
         @JvmStatic
         fun createIntent(context: Context, catalogId: String?): Intent {
             val intent = Intent(context, CatalogDetailPageActivity::class.java)
@@ -88,7 +95,9 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
 
     private fun getNewCatalogDetailListingFragment(catalogName: String, departmentId: String): Fragment {
         val departmentName: String? = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_NAME)
-        return CatalogDetailProductListingFragment.newInstance(catalogId, catalogName, departmentId, departmentName)
+        val fragment : BaseCategorySectionFragment = CatalogDetailProductListingFragment.newInstance(catalogId, catalogName, departmentId, departmentName)
+        fragment.setSortListener(this)
+        return fragment
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,6 +159,11 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
     private fun applyFilter(filterParameter: Map<String, String>) {
         val fragment = catalogDetailListingFragment as BaseCategorySectionFragment
 
+        if(filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))){
+            searchNavContainer?.onFilterSelected(true)
+        } else {
+            searchNavContainer?.onFilterSelected(false)
+        }
         val presentFilterList = fragment.getSelectedFilter()
         if (presentFilterList.size < filterParameter.size) {
             for (i in filterParameter.entries) {
@@ -212,27 +226,7 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
     }
 
     private fun initSwitchButton() {
-        icon_sort.setOnClickListener {
-            CatalogDetailPageAnalytics.trackEventClickSort()
-            visibleFragmentListener?.onSortClick()
-
-        }
-        button_sort.setOnClickListener {
-            CatalogDetailPageAnalytics.trackEventClickSort()
-            visibleFragmentListener?.onSortClick()
-        }
-
-        icon_filter.setOnClickListener {
-            CatalogDetailPageAnalytics.trackEventClickFilter()
-            visibleFragmentListener?.onFilterClick()
-        }
-
-        button_filter.setOnClickListener {
-            CatalogDetailPageAnalytics.trackEventClickFilter()
-            visibleFragmentListener?.onFilterClick()
-        }
-
-
+        searchNavContainer?.setSearchNavListener(this)
         img_display_button.tag = STATE_GRID
         img_display_button.setOnClickListener {
 
@@ -315,5 +309,19 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
 
     private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         bottomSheetFilterView?.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onSortButtonClicked() {
+        CatalogDetailPageAnalytics.trackEventClickSort()
+        visibleFragmentListener?.onSortClick()
+    }
+
+    override fun onFilterButtonClicked() {
+        CatalogDetailPageAnalytics.trackEventClickFilter()
+        visibleFragmentListener?.onFilterClick()
+    }
+
+    override fun onSortApplied(showTick: Boolean) {
+        searchNavContainer?.onSortSelected(showTick)
     }
 }

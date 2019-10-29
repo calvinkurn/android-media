@@ -20,6 +20,15 @@ public class CmInAppBundleConvertor {
                 return null;
             cmInApp.setId(getLongFromStr(map.get("notificationId")));
 
+            if (map.containsKey("campaignId"))
+                cmInApp.setCampaignId(map.get("campaignId"));
+
+            if (map.containsKey("campaignUserToken"))
+                cmInApp.setCampaignUserToken(map.get("campaignUserToken"));
+
+            if (map.containsKey("parentId"))
+                cmInApp.setParentId(map.get("parentId"));
+
             if (map.containsKey("st"))
                 cmInApp.setStartTime(getLongFromStr(map.get("st")));
 
