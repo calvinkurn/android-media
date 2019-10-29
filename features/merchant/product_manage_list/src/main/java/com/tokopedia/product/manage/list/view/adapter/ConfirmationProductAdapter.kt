@@ -1,11 +1,11 @@
 package com.tokopedia.product.manage.list.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.data.ConfirmationProductData
@@ -45,9 +45,9 @@ class ConfirmationProductAdapter(private var data: List<ConfirmationProductData>
             if (data.statusStock != STOCK_DEFAULT) {
                 txtProductStock.visibility = View.VISIBLE
                 txtProductStock.text = if (data.statusStock == STOCK_UNLIMITED)
-                    view.resources.getString(R.string.product_available)
+                    view.resources.getString(R.string.label_always_active)
                 else
-                    view.resources.getString(R.string.product_label_stock_empty)
+                    view.resources.getString(R.string.label_always_nonactive)
             } else {
                 txtProductStock.visibility = View.GONE
             }

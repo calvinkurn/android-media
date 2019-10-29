@@ -14,6 +14,8 @@
     <string name="label_choose">Pilih</string>
     <string name="label_next">Selanjutnya</string>
     <string name="label_always_available">Selalu Tersedia</string>
+    <string name="label_always_active">Aktif</string>
+    <string name="label_always_nonactive">Nonaktif</string>
     <string name="courier_option">Atur Layanan Kurir</string>
     <string name="product_option">Lihat Produk</string>
     <string name="popup_label_static">Produk pertamamu siap</string>
