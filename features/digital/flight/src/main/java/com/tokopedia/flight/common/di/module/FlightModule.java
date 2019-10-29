@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
@@ -44,6 +45,9 @@ import com.tokopedia.flight.search.data.db.FlightComboDao;
 import com.tokopedia.flight.search.data.db.FlightJourneyDao;
 import com.tokopedia.flight.search.data.db.FlightRouteDao;
 import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -82,7 +86,7 @@ public class FlightModule {
     @FlightScope
     @Provides
     public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
-        return (NetworkRouter)context;
+        return (NetworkRouter) context;
     }
 
     @FlightScope
@@ -240,5 +244,24 @@ public class FlightModule {
     public FlightGetOrderUseCase provideFlightGetOrderUseCase(FlightRepository flightRepository) {
         return new FlightGetOrderUseCase(flightRepository);
     }
+
+    @FlightScope
+    @Provides
+    public GraphqlRepository provideGraphqlRepository() {
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @FlightScope
+    @Provides
+    public MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(GraphqlRepository graphqlRepository) {
+        return new MultiRequestGraphqlUseCase(graphqlRepository);
+    }
+
+    @FlightScope
+    @Provides
+    public TrackingCrossSellUtil provideTrackingCrossSellUtil() {
+        return new TrackingCrossSellUtil();
+    }
+
 
 }
