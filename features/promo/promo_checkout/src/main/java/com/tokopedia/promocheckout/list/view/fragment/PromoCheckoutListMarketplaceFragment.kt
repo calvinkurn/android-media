@@ -7,18 +7,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.data.IS_COUPON_ACTIVE
+import com.tokopedia.promocheckout.common.data.PROMO_CODE
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
+import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
-import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
-import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
@@ -35,6 +35,8 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     private var isOneClickShipment: Boolean = false
     private var promo: Promo? = null
+    private var pageNo = 0
+    private var mIsRestoredfromBackStack: Boolean = false
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
@@ -48,8 +50,9 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
-        promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
+        mIsRestoredfromBackStack = false
+        isCouponActive = arguments?.getBoolean(IS_COUPON_ACTIVE) ?: true
+        promoCode = arguments?.getString(PROMO_CODE) ?: ""
         isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT) ?: false
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         promo = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
@@ -126,17 +129,13 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun initInjector() {
         super.initInjector()
-        DaggerPromoCheckoutListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .promoCheckoutListModule(PromoCheckoutListModule())
-                .build()
-                .inject(this)
+        getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
 
     companion object {
         val REQUEST_CODE_DETAIL_PROMO = 231
-        val IS_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
-        val PROMO_CODE = "PROMO_CODE"
+        val EXTRA_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
+        val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
@@ -145,8 +144,8 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
                            promo: Promo): PromoCheckoutListMarketplaceFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListMarketplaceFragment()
             val bundle = Bundle()
-            bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive ?: true)
-            bundle.putString(PROMO_CODE, promoCode ?: "")
+            bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive ?: true)
+            bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
             bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment ?: false)
             bundle.putInt(PAGE_TRACKING, pageTracking)
             bundle.putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)
@@ -155,12 +154,27 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         }
     }
 
+    override fun onResume() {
+        if (mIsRestoredfromBackStack) {
+            isLoadingInitialData = true
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
+            promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
+        }
+        super.onResume()
+    }
+
     override fun loadData(page: Int) {
         if (isCouponActive) {
+            pageNo = page
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
             promoCheckoutListPresenter.getListLastSeen(serviceId, resources)
             promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
         }
+    }
+
+    override fun onStop() {
+        mIsRestoredfromBackStack = true
+        super.onStop()
     }
 
     override fun onDestroyView() {

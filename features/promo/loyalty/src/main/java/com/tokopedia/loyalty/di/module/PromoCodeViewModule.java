@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
-import com.tokopedia.loyalty.domain.repository.TokoPointRepository;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
@@ -14,7 +13,6 @@ import com.tokopedia.loyalty.view.interactor.PromoCodeInteractor;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.presenter.PromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
-import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;

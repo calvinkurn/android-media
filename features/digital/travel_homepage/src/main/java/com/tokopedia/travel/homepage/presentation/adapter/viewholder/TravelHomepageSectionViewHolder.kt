@@ -51,6 +51,8 @@ class TravelHomepageSectionViewHolder(itemView: View,
                         val layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                         list_recycler_view.layoutManager = layoutManager
                         list_recycler_view.adapter = orderAdapter
+                    } else {
+                        orderAdapter.updateList(element.list)
                     }
                 }
             } else {

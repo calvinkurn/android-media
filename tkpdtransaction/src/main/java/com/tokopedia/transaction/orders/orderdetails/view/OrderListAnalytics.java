@@ -303,17 +303,16 @@ public class OrderListAnalytics {
                 "eventAction", "click - product recommendation",
                 "eventLabel", recomTitle,
                 "ecommerce", DataLayer.mapOf(
-                        "click", DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
-                                        "products", DataLayer.listOf(DataLayer.mapOf(
-                                                "name", item.getName(),
-                                                "id", item.getProductId(),
-                                                "price", item.getPrice().replaceAll("[^0-9]", ""),
-                                                "brand", "none/other",
-                                                "category", item.getCategoryBreadcrumbs(),
-                                                "variant", "none/other",
-                                                "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
-                                                "position", String.valueOf(position)))))
+                        "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : "")),
+                                "products", DataLayer.listOf(DataLayer.mapOf(
+                                        "name", item.getName(),
+                                        "id", item.getProductId(),
+                                        "price", item.getPrice().replaceAll("[^0-9]", ""),
+                                        "brand", "none/other",
+                                        "category", item.getCategoryBreadcrumbs(),
+                                        "variant", "none/other",
+                                        "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                                        "position", String.valueOf(position))))
                 )));
     }
 
@@ -360,23 +359,23 @@ public class OrderListAnalytics {
                 "eventLabel", orderListRecomViewModel.getRecomTitle(),
                 "ecommerce", DataLayer.mapOf(
                         "currencyCode", "IDR",
-                        "add", DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
-                                        "products", DataLayer.listOf(DataLayer.mapOf(
-                                                "name", orderListRecomViewModel.getRecommendationItem().getName(),
-                                                "id", orderListRecomViewModel.getRecommendationItem().getProductId(),
-                                                "price", orderListRecomViewModel.getRecommendationItem().getPrice().replaceAll("[^0-9]", ""),
-                                                "brand", "none/other",
-                                                "category", orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs(),
-                                                "variant", "none/other",
-                                                "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
-                                                "dimension45", addToCartDataModel.getData().getCartId(),
-                                                "quantity",orderListRecomViewModel.getRecommendationItem().getMinOrder(),
-                                                "shop_id",String.valueOf(orderListRecomViewModel.getRecommendationItem().getShopId()),
-                                                "shop_type",orderListRecomViewModel.getRecommendationItem().getShopType(),
-                                                "shop_name",orderListRecomViewModel.getRecommendationItem().getShopName(),
-                                                "category_id",NONE
-                                                ))))
+                        "add", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : "")),
+                                "products", DataLayer.listOf(DataLayer.mapOf(
+                                        "name", orderListRecomViewModel.getRecommendationItem().getName(),
+                                        "id", orderListRecomViewModel.getRecommendationItem().getProductId(),
+                                        "price", orderListRecomViewModel.getRecommendationItem().getPrice().replaceAll("[^0-9]", ""),
+                                        "brand", "none/other",
+                                        "category", orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs(),
+                                        "variant", "none/other",
+                                        "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
+                                        "dimension45", addToCartDataModel.getData().getCartId(),
+                                        "quantity", orderListRecomViewModel.getRecommendationItem().getMinOrder(),
+                                        "shop_id", String.valueOf(orderListRecomViewModel.getRecommendationItem().getShopId()),
+                                        "shop_type", orderListRecomViewModel.getRecommendationItem().getShopType(),
+                                        "shop_name", orderListRecomViewModel.getRecommendationItem().getShopName(),
+                                        "category_id", NONE
+                                )))
                 )));
     }
 

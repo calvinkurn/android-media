@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DynamicFilterModel
 
 data class GqlDynamicFilterResponse(
-    @SerializedName("search_filter_product")
+    @SerializedName("filter_sort_product")
     @Expose
     val dynamicFilterModel : DynamicFilterModel = DynamicFilterModel()
 )
