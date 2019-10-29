@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledCartItemHolderData
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.holder_item_cart_error.view.*
 
 class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
@@ -47,7 +48,15 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     private fun renderTickerMessage(data: DisabledCartItemHolderData) {
         itemView.ticker_message.apply {
             if (data.tickerMessage != null) {
-                setTextDescription(data.tickerMessage!!)
+                setHtmlDescription(data.tickerMessage!!)
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        actionListener.onTickerDescriptionUrlClicked(linkUrl.toString())
+                    }
+
+                    override fun onDismiss() {
+                    }
+                })
                 visibility = View.VISIBLE
                 post {
                     measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
