@@ -98,7 +98,7 @@ public class GTMAnalytics extends ContextAnalytics {
         // prevent sending null keyevent
         if (keyEvent == null)
             return;
-        pushEECommerce(keyEvent, factoryBundle(keyEvent, clone(value)));
+        pushEECommerce(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
     }
 
     @SuppressWarnings("unchecked")
