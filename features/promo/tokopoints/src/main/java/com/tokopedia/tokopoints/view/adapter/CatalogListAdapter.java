@@ -331,7 +331,7 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
         promoClick.put("promoClick", promotions);
 
         AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
                 data.getTitle(), promoClick);
