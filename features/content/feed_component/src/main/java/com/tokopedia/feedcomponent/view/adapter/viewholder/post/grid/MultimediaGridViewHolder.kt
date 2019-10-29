@@ -84,12 +84,8 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
             itemView.layout_dummy.visibility = View.GONE
             itemView.frame_video.visibility = View.INVISIBLE
             itemView.layout_video.setVideoURI(Uri.parse(url))
-            itemView.layout_video.setZOrderOnTop(true);
             itemView.layout_video.setOnPreparedListener(object: MediaPlayer.OnPreparedListener{
                 override fun onPrepared(mp: MediaPlayer) {
-
-                    itemView.layout_video.setSize(mp.videoWidth, mp.videoHeight)
-                    itemView.layout_video.holder.setFixedSize(mp.videoWidth, mp.videoHeight)
                     mp.isLooping = true
                     mp.setOnInfoListener(object: MediaPlayer.OnInfoListener {
                         override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
