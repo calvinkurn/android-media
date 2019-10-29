@@ -233,12 +233,12 @@ class NotificationUpdateAnalytics @Inject constructor() {
 
     private fun trackNotificationImpression(notification: NotificationUpdateItemViewModel) {
         val label = notification.getImpressionTrackLabel(LABEL_LOCATION)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        EVENT_NAME, NAME_EVENT_VIEW_NOTIF,
-                        EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
-                        EVENT_ACTION, ACTION_VIEW_NOTIF_LIST,
-                        EVENT_LABEL, label
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        NAME_EVENT_VIEW_NOTIF,
+                        CATEGORY_NOTIF_CENTER,
+                        ACTION_VIEW_NOTIF_LIST,
+                        label
                 )
         )
     }
