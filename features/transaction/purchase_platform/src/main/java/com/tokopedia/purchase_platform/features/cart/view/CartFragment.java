@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.view;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -903,7 +904,18 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onTickerDescriptionUrlClicked(@NotNull String url) {
-        RouteManager.route(getContext(), url);
+        String finalUrl = url;
+        if (!url.startsWith("https://")) {
+            if (url.startsWith("http://")) {
+                finalUrl = url.replace("http", "https");
+            } else {
+                finalUrl = "https://" + url;
+            }
+        }
+        Intent view = new Intent();
+        view.setAction(Intent.ACTION_VIEW);
+        view.setData(Uri.parse(finalUrl));
+        startActivity(view);
     }
 
     @Override
