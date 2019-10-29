@@ -54,7 +54,7 @@ public class TkpdWebView extends WebView {
         }
     }
 
-    /**
+    /**TkpdWebView
      * use loadAuthUrl(String url, String userId, String accessToken) instead.
      */
     @Deprecated

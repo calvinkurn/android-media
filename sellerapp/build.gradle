@@ -278,6 +278,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsManagement)
     implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.topAdsAutoAds)
+    implementation project(rootProject.ext.features.topAdsCreate)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.tkpdinbox)
