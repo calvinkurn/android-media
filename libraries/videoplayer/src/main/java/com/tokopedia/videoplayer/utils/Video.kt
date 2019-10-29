@@ -31,24 +31,4 @@ object Video {
 
         return VideoSize(videoWidth, videoHeight)
     }
-
-    fun resize(context: Context, mVideoWidth: Int, mVideoHeight: Int): VideoSize {
-        var videoWidth = mVideoWidth
-        var videoHeight = mVideoHeight
-        val displaymetrics = DisplayMetrics()
-        (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay?.getMetrics(displaymetrics)
-
-        val heightRatio = videoHeight.toFloat() / displaymetrics.widthPixels.toFloat()
-        val widthRatio = videoWidth.toFloat() / displaymetrics.heightPixels.toFloat()
-
-        if (videoWidth > videoHeight) {
-            videoWidth = Math.ceil((videoWidth.toFloat() * widthRatio).toDouble()).toInt()
-            videoHeight = Math.ceil((videoHeight.toFloat() * widthRatio).toDouble()).toInt()
-        } else {
-            videoWidth = Math.ceil((videoWidth.toFloat() * heightRatio).toDouble()).toInt()
-            videoHeight = Math.ceil((videoHeight.toFloat() * heightRatio).toDouble()).toInt()
-        }
-
-        return VideoSize(videoWidth, videoHeight)
-    }
 }
