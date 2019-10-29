@@ -190,7 +190,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val PARAM_TAB_NAME = "{tab_name}"
         private const val PARAM_CATEGORY_ID = "{category_id}"
         private const val YOUTUBE_URL = "{youtube_url}"
-        private const val TAB_INSPIRASI = "inspirasi"
+        private const val TAB_INSPIRASI = "inspirasi
         private const val CATEGORY_0 = "0"
         private const val TEXT_PLAIN = "text/plain"
         private const val KOL_COMMENT_CODE = 13
@@ -1181,7 +1181,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         this.profileHeader = element
         app_bar_layout.visibility = View.VISIBLE
         app_bar_layout.setExpanded(true)
-        iv_image_collapse.loadImageRounded(element.avatar)
+        iv_image_collapse.loadImageWithoutPlaceholder(element.avatar)
         iv_profile.loadImageCircle(element.avatar)
         tv_name.text = element.name
         val affName = if (element.affiliateName.isNotBlank()) {
