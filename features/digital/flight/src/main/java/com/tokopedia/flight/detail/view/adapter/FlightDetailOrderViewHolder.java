@@ -1,17 +1,19 @@
 package com.tokopedia.flight.detail.view.adapter;
 
-import androidx.annotation.LayoutRes;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModelMapper;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteViewModel;
 
@@ -34,6 +36,7 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetail
     private View separatorLine;
     private FlightDetailAdapter flightDetailAdapter;
     private FlightDetailOrderJourney flightOrderJourney;
+    private FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper;
 
     private ExpandableOnClickListener expandableOnClickListener;
 
@@ -42,6 +45,7 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetail
     public FlightDetailOrderViewHolder(final View layoutView, ExpandableOnClickListener expandableOnClickListener, float titleFontSize) {
         super(layoutView);
         this.expandableOnClickListener = expandableOnClickListener;
+        flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
 
         flightCounter = layoutView.findViewById(com.tokopedia.flight.R.id.counter_flight);
         journeyView = layoutView.findViewById(com.tokopedia.flight.R.id.layout_expendable_flight);
@@ -136,8 +140,8 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetail
             viewModel.setArrivalTerminal(item.getArrivalTerminal());
             viewModel.setLayover(item.getLayover());
             viewModel.setStopOver(item.getStopOver());
-            viewModel.setInfos(item.getInfos());
-            viewModel.setAmenities(item.getAmenities());
+            viewModel.setInfos(flightDetailRouteInfoViewModelMapper.transformOrderInfo(item.getInfos()));
+            viewModel.setAmenities(flightDetailRouteInfoViewModelMapper.transformOrderAmenities(item.getAmenities()));
             viewModel.setStopOverDetail(item.getStopOverDetail());
 
             routeViewModelList.add(viewModel);

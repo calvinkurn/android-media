@@ -1,21 +1,22 @@
 package com.tokopedia.flight.common.util;
 
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteViewModel;
+import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.data.api.single.response.Route;
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
-import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -494,7 +495,7 @@ public class FlightAnalytics {
     @NonNull
     private String transformAirlines(FlightDetailViewModel viewModel) {
         List<String> airlines = new ArrayList<>();
-        for (FlightOrderDetailRouteViewModel airlineDB : viewModel.getRouteList()) {
+        for (FlightDetailRouteViewModel airlineDB : viewModel.getRouteList()) {
             if (!airlines.contains(airlineDB.getAirlineName())) {
                 airlines.add(airlineDB.getAirlineName());
             }
