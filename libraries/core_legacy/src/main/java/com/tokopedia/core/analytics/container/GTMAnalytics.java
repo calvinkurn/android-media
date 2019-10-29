@@ -219,9 +219,6 @@ public class GTMAnalytics extends ContextAnalytics {
     private void productBundle(String keyEvent, Bundle bundle, Map<String, Object> ecommerce) {
         Map<String, Object> viewProduct = null;
         switch (keyEvent.toLowerCase()) {
-            case PRODUCTVIEW:
-                viewProduct = (Map<String, Object>) ecommerce.remove("impressions");
-                break;
             case PRODUCTCLICK:
                 viewProduct = (Map<String, Object>) ecommerce.remove("click");
                 break;
