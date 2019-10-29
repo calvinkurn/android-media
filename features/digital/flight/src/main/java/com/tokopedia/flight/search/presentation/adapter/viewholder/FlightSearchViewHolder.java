@@ -1,12 +1,13 @@
 package com.tokopedia.flight.search.presentation.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.view.FlightMultiAirlineView;
 import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.presentation.model.Duration;

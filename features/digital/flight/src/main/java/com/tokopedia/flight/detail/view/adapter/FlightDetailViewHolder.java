@@ -3,8 +3,6 @@ package com.tokopedia.flight.detail.view.adapter;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,8 +10,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.unifyprinciples.Typography;
@@ -136,7 +138,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
             arrivalTerminal.setVisibility(View.GONE);
         }
 
-        if (route.getOperatingAirline() !=  null && route.getOperatingAirline().length() > 0) {
+        if (route.getOperatingAirline() != null && route.getOperatingAirline().length() > 0) {
             airlineOperatingBy.setText(getString(R.string.flight_detail_operating_by, route.getOperatingAirline()));
             airlineOperatingBy.setVisibility(View.VISIBLE);
         } else {

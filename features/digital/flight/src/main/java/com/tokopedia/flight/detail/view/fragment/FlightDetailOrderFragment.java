@@ -7,15 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.core.app.TaskStackBuilder;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -30,18 +21,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.app.TaskStackBuilder;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
-import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
@@ -64,7 +64,6 @@ import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
-import com.tokopedia.flight.review.domain.verifybooking.model.response.Route;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
@@ -73,8 +72,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -236,7 +233,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         super.onViewCreated(view, savedInstanceState);
         flightDetailOrderPresenter.attachView(this);
         flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
-        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), R.raw.query_travel_cross_selling));
+        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
+            flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), com.tokopedia.common.travel.R.raw.query_travel_cross_selling));
         flightDetailOrderPresenter.onGetProfileData();
     }
 
@@ -338,7 +336,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             @Override
             public void onRetryClicked() {
                 flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
-                if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), R.raw.query_travel_cross_selling));
+                if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
+                    flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), com.tokopedia.common.travel.R.raw.query_travel_cross_selling));
 
             }
         }).showRetrySnackbar();

@@ -1,6 +1,7 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
 

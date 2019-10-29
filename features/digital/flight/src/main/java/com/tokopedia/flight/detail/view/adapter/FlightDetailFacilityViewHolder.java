@@ -1,21 +1,22 @@
 package com.tokopedia.flight.detail.view.adapter;
 
-import androidx.annotation.LayoutRes;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.flight.R;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
-import com.tokopedia.flight.orderlist.data.cloud.entity.Amenity;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteInfoViewModel;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteViewModel;
+import com.tokopedia.flight.search.data.api.single.response.Amenity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         listInfo.setAdapter(adapterInfo);
         adapterAmenity = new AmenityAdapter();
         gridAmenity.setAdapter(adapterAmenity);
-        gridAmenity.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false));
+        gridAmenity.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.VERTICAL, false));
     }
 
     @Override
@@ -69,7 +70,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         );
     }
 
-    public void setDefaultAmenities(FlightOrderDetailRouteViewModel flightDetailRouteViewModel) {
+    public void setDefaultAmenities(FlightDetailRouteViewModel flightDetailRouteViewModel) {
         if (flightDetailRouteViewModel.getAmenities() != null && flightDetailRouteViewModel.getAmenities().size() > 0) {
             gridAmenity.setVisibility(View.VISIBLE);
             separatorInfoView.setVisibility(View.VISIBLE);
@@ -85,7 +86,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
     }
 
     private class ListInfoAdapter extends RecyclerView.Adapter<FlightDetailFacilityInfoViewHolder> {
-        List<FlightOrderDetailRouteInfoViewModel> infoList;
+        List<FlightDetailRouteInfoViewModel> infoList;
 
         public ListInfoAdapter() {
             infoList = new ArrayList<>();
@@ -107,7 +108,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
             return infoList.size();
         }
 
-        public void addData(List<FlightOrderDetailRouteInfoViewModel> infos) {
+        public void addData(List<FlightDetailRouteInfoViewModel> infos) {
             infoList.clear();
             infoList.addAll(infos);
             notifyDataSetChanged();
