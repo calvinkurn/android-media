@@ -2587,10 +2587,14 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         DialogUnify dialog = getDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size());
 
+        sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
+                allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
+        ));
+
         dialog.setPrimaryCTAClickListener(() -> {
             if (allDisabledCartItemDataList.size() > 0) {
                 dPresenter.processDeleteCartItem(allDisabledCartItemDataList, allDisabledCartItemDataList, null, false, false);
-                sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
+                sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
                         )
