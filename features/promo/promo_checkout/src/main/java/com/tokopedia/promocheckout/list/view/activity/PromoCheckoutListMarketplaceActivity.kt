@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.list.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +13,10 @@ import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.promocheckout.common.data.PROMO_CODE
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
+import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
+import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
 import com.tokopedia.promocheckout.list.PromoCheckoutListComponentInstance
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.view.fragment.BasePromoCheckoutListFragment
@@ -60,6 +65,36 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
             super.onBackPressed()
 
         }
+    }
+
+    override fun onResume() {
+        val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
+        if (promocheckoutlistfragment != null) {
+            if (promocheckoutlistfragment.childFragmentManager.backStackEntryCount > 0) {
+                promocheckoutlistfragment.childFragmentManager.findFragmentByTag("kamal")?.let { promocheckoutlistfragment.childFragmentManager.beginTransaction().remove(it).commit() }
+                promocheckoutlistfragment.childFragmentManager.popBackStack()
+            }
+        }
+        super.onResume()
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == PromoCheckoutListMarketplaceFragment.REQUEST_CODE_DETAIL_PROMO) {
+            if (resultCode == Activity.RESULT_OK) {
+                setResult(Activity.RESULT_OK, data)
+                finish()
+            } else {
+                val intent = Intent()
+                val bundle = data?.getExtras()
+                val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
+                intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
+                setResult(RESULT_CLASHING, intent)
+
+                if (clashingInfoDetailUiModel != null) {
+                    finish()
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }
 

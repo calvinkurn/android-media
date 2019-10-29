@@ -41,7 +41,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
     override fun onClickRedeemCoupon(catalog_id: Int, slug: String?) {
-        childFragmentManager.beginTransaction().add(R.id.list_parent_container, CheckoutCatalogDetailFragment.newInstance(slug = slug!!, catalog_id = catalog_id, promoCode = promoCode, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo!!)).addToBackStack(null).commit()
+        childFragmentManager.beginTransaction().add(R.id.list_parent_container, CheckoutCatalogDetailFragment.newInstance(slug = slug!!, catalog_id = catalog_id, promoCode = promoCode, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo!!)).addToBackStack("kamal").commit()
     }
 
     override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
@@ -57,6 +57,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         promo = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
         promoCheckoutListMarketplacePresenter.attachView(this)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -107,26 +108,6 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         activity?.finish()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_DETAIL_PROMO) {
-            if (resultCode == Activity.RESULT_OK) {
-                activity?.setResult(Activity.RESULT_OK, data)
-                activity?.finish()
-            } else {
-                val intent = Intent()
-                val bundle = data?.getExtras()
-                val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
-                intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
-                activity?.setResult(RESULT_CLASHING, intent)
-
-                if (clashingInfoDetailUiModel != null) {
-                    activity?.finish()
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     override fun initInjector() {
         super.initInjector()
         getComponent(PromoCheckoutListComponent::class.java).inject(this)
@@ -155,6 +136,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onResume() {
+
         if (mIsRestoredfromBackStack) {
             isLoadingInitialData = true
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)

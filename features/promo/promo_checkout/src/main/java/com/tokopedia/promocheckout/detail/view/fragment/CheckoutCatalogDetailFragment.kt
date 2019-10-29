@@ -46,6 +46,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     private val couponRedemptionCode_QUOTA_LIMIT_REACHED = 42022
     private val couponRedemptionCode_PROFILE_INCOMPLETE = 42021
     private val couponRedemptionCode_SUCCESS = 200
+    lateinit var tukarSuccessListener:promoTukarSuccessListener
 
     @Inject
     lateinit var mPresenter: CheckoutCatalogDetailPresenter
@@ -116,6 +117,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         super.onAttach(context)
     }
 
+    fun setter(variable:promoTukarSuccessListener){
+        tukarSuccessListener=variable
+    }
+
     override fun initInjector() {
         DaggerPromoCheckoutDetailComponent.builder()
                 .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
@@ -128,8 +133,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     }
 
     override fun showCouponDetail(cta: String?, code: String?, title: String?) {
-        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
+       activity?.startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
                 activity, code, oneClickShipment = false, pageTracking = 0, promo = promo), REQUEST_CODE_DETAIL_PROMO)
+
+       tukarSuccessListener.removeCheckOutFragment()
     }
 
     override fun showValidationMessageDialog(item: HachikoCatalogDetail, title: String, message: String, resCode: Int) {
@@ -322,7 +329,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+/*    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_DETAIL_PROMO) {
             if (resultCode == Activity.RESULT_OK) {
                 activity?.setResult(Activity.RESULT_OK, data)
@@ -342,5 +349,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }*/
+
+    interface promoTukarSuccessListener{
+
+        fun removeCheckOutFragment()
     }
 }

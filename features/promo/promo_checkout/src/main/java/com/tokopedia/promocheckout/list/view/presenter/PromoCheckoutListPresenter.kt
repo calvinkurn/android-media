@@ -18,7 +18,7 @@ import kotlin.collections.ArrayList
 
 class PromoCheckoutListPresenter(val graphqlUseCase: GraphqlUseCase) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {
 
-    override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources, hasLastSeen: Boolean) {
+    override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources) {
         val variables = HashMap<String, Any>()
         variables.put(INPUT_GQL, generateInputList(page, serviceId, categoryId))
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
@@ -27,14 +27,12 @@ class PromoCheckoutListPresenter(val graphqlUseCase: GraphqlUseCase) : BaseDagge
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
-             //   if (hasLastSeen) getListLastSeen(listOf(categoryId), resources)
             }
 
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
                     view.showGetListError(e)
                 }
-               // if (hasLastSeen) getListLastSeen(listOf(categoryId), resources)
             }
 
             override fun onNext(objects: GraphqlResponse) {

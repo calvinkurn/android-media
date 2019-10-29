@@ -1,62 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView android:id="@+id/layoutPromoLastSeen"
-    android:layout_width="252dp"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_50"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_4"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tool="http://schemas.android.com/tools">
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvTitleLastCard"
-            app:typographyType="body_2"
-            android:layout_width="@dimen/dp_128"
-            android:layout_height="wrap_content"
-            tool:text="Jangan Sampai Gaji Habis Di Awal Bula..."
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_12" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvPromoCode"
-            app:typographyType="heading_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#fa591d"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_14"
-            app:layout_constraintStart_toStartOf="@+id/tvTitleLastCard"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitleLastCard"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tool:text="PAYLATER"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/btnGunakanLast"
-            app:typographyType="heading_5"
-            android:text="Gunakan"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_12"
-            android:gravity="center"
-            android:layout_width="@dimen/dp_76"
-            android:layout_height="@dimen/dp_32"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginRight="@dimen/dp_12"
-            android:background="@drawable/btn_gunakan_lastseen_card"
-            android:layout_marginEnd="@dimen/dp_12" />
+    android:layout_width="wrap_content"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/ticketPromoHistory"
+    android:layout_height="wrap_content">
 
 
-    </android.support.constraint.ConstraintLayout>
+    <com.tokopedia.promocheckout.customview.PromoTicketView
+        android:layout_width="260dp"
+        android:layout_height="@dimen/dp_100"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/dp_16" />
 
-    </android.support.v7.widget.CardView>
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="182dp" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitleLastCard"
+        android:layout_width="@dimen/dp_128"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_28"
+        android:layout_marginLeft="@dimen/dp_28"
+        android:layout_marginTop="@dimen/dp_22"
+        app:layout_constraintRight_toLeftOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/black"
+        app:typographyType="body_3"
+        tool:text="Jangan Sampai Gaji Habis Di Awal Bula" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPromoCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_14"
+        android:textColor="@color/promo_color_promocode"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/tvTitleLastCard"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitleLastCard"
+        app:typographyType="heading_6"
+        tool:text="PAYLATER" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btnGunakanLast"
+        android:layout_width="@dimen/dp_76"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/btn_gunakan_lastseen_card"
+        android:gravity="center"
+        android:text="Gunakan"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5" />
+
+
+</android.support.constraint.ConstraintLayout>
+
 

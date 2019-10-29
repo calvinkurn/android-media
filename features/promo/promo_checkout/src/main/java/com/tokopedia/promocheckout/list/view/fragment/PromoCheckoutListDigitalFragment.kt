@@ -71,7 +71,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
     override fun loadData(page: Int) {
         if(isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources, true)
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }
     }
 

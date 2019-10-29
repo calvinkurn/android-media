@@ -13,9 +13,9 @@ class PromoLastSeenViewHolder(val view: View, val listenerLastSeen: ListenerLast
         view.tvTitleLastCard.text = data.promoContent?.description
         view.btnGunakanLast.setOnClickListener { listenerLastSeen.onClickItemLastSeen(data) }
         if (data.promoCode?.isEmpty()!!) {
-            view.layoutPromoLastSeen.visibility = View.GONE
+            view.ticketPromoHistory.visibility = View.GONE
         } else {
-            view.layoutPromoLastSeen.visibility = View.VISIBLE
+            view.ticketPromoHistory.visibility = View.VISIBLE
         }
     }
 
