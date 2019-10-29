@@ -56,8 +56,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Inject
     GroupChatAnalytics analytics;
-
     SwipeRefreshLayout swipeRefreshLayout;
+    RecyclerView recyclerView;
     private String lastCursor;
 
     public static Fragment createInstance() {
@@ -90,16 +90,14 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_channel_list, container, false);
-        swipeRefreshLayout = view.findViewById(com.tokopedia.abstraction.R.id.swipe_refresh_layout);
-        return view;
+        return inflater.inflate(R.layout.fragment_channel_list, container, false);
     }
 
 
     @Override
     public RecyclerView getRecyclerView(View view) {
-        //recyclerView.addItemDecoration(new ItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med)));
-        return super.getRecyclerView(view);
+        recyclerView.addItemDecoration(new ItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med)));
+        return recyclerView;
     }
 
     @Override
@@ -110,6 +108,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        recyclerView = view.findViewById(R.id.recycler_view);
     }
 
     @Override
