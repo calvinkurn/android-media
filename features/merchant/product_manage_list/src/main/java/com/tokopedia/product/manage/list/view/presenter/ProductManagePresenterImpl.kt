@@ -53,7 +53,7 @@ class ProductManagePresenterImpl @Inject constructor(
             val shopId: List<Int> = listOf(userSessionInterface.shopId.toInt())
             gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
             val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
-            view.onSuccessGetShopInfo(shopInfo.goldOS.isGold == 1, shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.domain)
+            view.onSuccessGetShopInfo(shopInfo.goldOS.isGold == 1 ?: false, shopInfo.goldOS.isOfficial == 1 ?: false, shopInfo.shopCore.domain)
         }
     }
 
