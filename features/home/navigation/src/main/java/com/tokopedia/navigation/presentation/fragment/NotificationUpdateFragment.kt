@@ -361,6 +361,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
     }
 
+    override fun trackNotificationImpression(element: NotificationUpdateItemViewModel) {
+        analytics.saveNotificationImpression(element)
+    }
+
     companion object {
         val PARAM_CONTENT_TITLE = "content title"
         val PARAM_CONTENT_TEXT = "content text"

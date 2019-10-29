@@ -2,6 +2,7 @@ package com.tokopedia.navigation.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.navigation.domain.pojo.ProductData
+import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
@@ -10,6 +11,8 @@ import javax.inject.Inject
  * @author : Steven 03/05/19
  */
 class NotificationUpdateAnalytics @Inject constructor() {
+
+    val seenNotifications = HashSet<String>()
 
     companion object {
         val SCREEN_NAME: String = "notif center"
@@ -32,6 +35,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         val NAME_EVENT_PRODUCT_VIEW = "productView"
         val NAME_EVENT_PRODUCT_CLICK = "productClick"
         val NAME_EVENT_ATC = "addToCart"
+        val NAME_EVENT_VIEW_NOTIF = "viewNotifCenterIris"
 
         // Category
         val CATEGORY_NOTIF_CENTER = "notif center"
@@ -40,9 +44,11 @@ class NotificationUpdateAnalytics @Inject constructor() {
         val ACTION_VIEW_PRODUCT_THUMBNAIL = "view on product thumbnail"
         val ACTION_CLICK_PRODUCT_THUMBNAIL = "click on product thumbnail"
         val ACTION_CLICK_ATC_BUTTON = "click on atc button"
+        val ACTION_VIEW_NOTIF_LIST = "view on notif list"
 
         // Label
         val LABEL_UPDATE_NOTIF_CENTER = "tab update / recomm page from notif center"
+        val LABEL_LOCATION = "lonceng"
     }
 
     // #NC1
@@ -214,6 +220,26 @@ class NotificationUpdateAnalytics @Inject constructor() {
                     )
                 )
             )
+        )
+    }
+
+    fun saveNotificationImpression(notification: NotificationUpdateItemViewModel) {
+        val notificationId = notification.notificationId
+        val isNotAlreadyTracked = seenNotifications.add(notificationId)
+        if (isNotAlreadyTracked) {
+            trackNotificationImpression(notification)
+        }
+    }
+
+    private fun trackNotificationImpression(notification: NotificationUpdateItemViewModel) {
+        val label = notification.getImpressionTrackLabel(LABEL_LOCATION)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, NAME_EVENT_VIEW_NOTIF,
+                        EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                        EVENT_ACTION, ACTION_VIEW_NOTIF_LIST,
+                        EVENT_LABEL, label
+                )
         )
     }
 }

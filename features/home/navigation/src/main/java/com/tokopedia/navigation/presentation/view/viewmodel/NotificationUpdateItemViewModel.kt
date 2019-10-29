@@ -73,6 +73,21 @@ class NotificationUpdateItemViewModel(
         return product
     }
 
+    fun getProductIdImpression(): String {
+        if (products.isEmpty()) return ""
+        var productId = ""
+        val product = products[0]
+        if (product.isWishlist) {
+            productId = product.productId
+        }
+        return productId
+    }
+
+    fun getImpressionTrackLabel(location: String): String {
+        val productId = getProductIdImpression()
+        return "$location - $templateKey - $productId"
+    }
+
     companion object {
 
         var BUYER_TYPE = 1
