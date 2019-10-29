@@ -9,8 +9,9 @@ import android.graphics.RectF;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.promotionstarget.R;
+
+import static com.tokopedia.promotionstarget.ExtensionsKt.getColor;
 
 public class RoundTextView extends AppCompatTextView {
 
@@ -46,14 +47,14 @@ public class RoundTextView extends AppCompatTextView {
             TypedArray array = getContext().getTheme()
                     .obtainStyledAttributes(attrs, R.styleable.RoundTextView, 0, 0);
             cornerRadius = array.getDimension(R.styleable.RoundTextView_rtv_cornerRadius, 0);
-            bgColor = array.getColor(R.styleable.RoundTextView_rtv_buttonColor, MethodChecker.getColor(getContext(), R.color.white));
+            bgColor = array.getColor(R.styleable.RoundTextView_rtv_buttonColor, getColor(getContext(), R.color.white));
             array.recycle();
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        setBackgroundColor(MethodChecker.getColor(getContext(), R.color.transparent));
+        setBackgroundColor(getColor(getContext(), R.color.transparent));
         drawRoundBackground(canvas);
         super.onDraw(canvas);
     }

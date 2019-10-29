@@ -1,5 +1,5 @@
 mutation AutoApply($code:String!, $serviceId:String!){
-  tokopointsSetAutoApply(code: $code, serviceId: $serviceId) {
+  tokopointsSetAutoApply(code: $code, serviceID: $serviceId) {
    resultStatus{
          code
          status

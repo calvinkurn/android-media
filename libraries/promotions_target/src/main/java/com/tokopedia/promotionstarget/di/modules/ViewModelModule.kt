@@ -2,10 +2,10 @@ package com.tokopedia.promotionstarget.di.modules
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.promotionstarget.ViewModelFactory
 import com.tokopedia.promotionstarget.di.scopes.PromoTargetScope
 import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM
+import com.tokopedia.promotionstarget.ui.viewmodel.ViewModelKey
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

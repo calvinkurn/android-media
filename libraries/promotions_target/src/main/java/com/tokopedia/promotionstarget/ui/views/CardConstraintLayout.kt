@@ -1,5 +1,4 @@
-package com.tokopedia.targetpromotions
-
+package com.tokopedia.promotionstarget.ui.views
 
 import android.content.Context
 import android.graphics.*

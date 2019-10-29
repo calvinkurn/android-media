@@ -24,12 +24,14 @@ class DialogManagerPresenter @Inject constructor(val getPopGratificationUseCase:
         return getCatalogDetail(ids)
     }
 
-    //todo Rahul avoid !!
     private fun mapperGratificationResponseToCouponIds(response: GetPopGratificationResponse): List<String> {
-        val ids = response.popGratification?.popGratificationBenefits?.map {
+        var ids = response.popGratification?.popGratificationBenefits?.map {
             it?.referenceID.toString()
         }
-        return ids!!
+        if (ids == null) {
+            ids = emptyList()
+        }
+        return ids
     }
 
     private suspend fun getCatalogDetail(ids: List<String>): GetCouponDetailResponse {

@@ -432,7 +432,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         activity.run {
             val viewModelProvider = ViewModelProviders.of(activityContext, viewModelFactory)
             viewModel = viewModelProvider[TargetPromotionsDialogVM::class.java]
-
         }
     }
 

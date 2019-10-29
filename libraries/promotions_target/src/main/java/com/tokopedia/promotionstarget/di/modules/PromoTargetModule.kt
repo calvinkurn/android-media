@@ -1,7 +1,7 @@
 package com.tokopedia.promotionstarget.di.modules
 
 import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.promotionstarget.GraphqlHelper
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.di.AUTO_APPLY
 import com.tokopedia.promotionstarget.di.CLAIM_POP_GRATIFICATION

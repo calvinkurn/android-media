@@ -5,7 +5,6 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.promotionstarget.R
-import com.tokopedia.targetpromotions.CardConstraintLayout
 
 class CouponView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -18,7 +17,7 @@ class CouponView @JvmOverloads constructor(
         super.readAttrs(attrs)
         if (attrs != null) {
             val typedArray =
-                    context.theme.obtainStyledAttributes(attrs, R.styleable.CountDownView, 0, 0)
+                    context.theme.obtainStyledAttributes(attrs, R.styleable.CouponView, 0, 0)
             circleColor = typedArray.getColor(R.styleable.CouponView_cvCircleColor, Color.WHITE)
             circleRadius = typedArray.getDimension(R.styleable.CouponView_cvCircleRadius, dpToPx(context, 24))
             typedArray.recycle()

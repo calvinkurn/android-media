@@ -1,17 +1,13 @@
 package com.tokopedia.promotionstarget.ui.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
-import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
+import com.tokopedia.promotionstarget.launchCatchError
 import com.tokopedia.promotionstarget.usecase.AutoApplyUseCase
-import com.tokopedia.promotionstarget.usecase.ClaimPopGratificationUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Named
 

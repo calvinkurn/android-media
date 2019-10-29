@@ -9,14 +9,13 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
 import java.util.concurrent.Semaphore
 
-//todo Rahul use proper throwable
 class ClaimCouponApi(val scope: CoroutineScope,
-                     val claimPopGratificationUseCase: ClaimPopGratificationUseCase) {
+                     private val claimPopGratificationUseCase: ClaimPopGratificationUseCase) {
 
     private val HTTP_CODE_OK = "200"
-    var oldClaimPayload: ClaimPayload? = null
-    val semaphore = Semaphore(1)
-    var oldApiJob: Deferred<ClaimPopGratificationResponse>? = null
+    private var oldClaimPayload: ClaimPayload? = null
+    private val semaphore = Semaphore(1)
+    private var oldApiJob: Deferred<ClaimPopGratificationResponse>? = null
 
     fun claimGratification(claimPayload: ClaimPayload, responseCallback: ClaimCouponApiResponseCallback) {
 
@@ -26,10 +25,10 @@ class ClaimCouponApi(val scope: CoroutineScope,
                     if (response.popGratificationClaim?.resultStatus?.code == HTTP_CODE_OK) {
                         responseCallback.onNext(Success(response))
                     } else {
-                        responseCallback.onNext(Fail(Throwable("UnknownError")))
+                        responseCallback.onNext(Fail(Throwable(HttpErrorException())))
                     }
                 } else {
-                    responseCallback.onError(Throwable("UnknownError"))
+                    responseCallback.onError(Throwable(UnknownErrorException()))
                 }
             }
         }

@@ -2,10 +2,25 @@ package com.tokopedia.promotionstarget
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import javax.inject.Inject
+import javax.inject.Provider
 
-//todo Rahul check exsistence of this class
-class ViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return creator() as T
+
+@Suppress("UNCHECKED_CAST")
+class ViewModelFactory @Inject constructor(
+        private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
+): ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val creator = creators[modelClass] ?: creators.asIterable().firstOrNull { modelClass.isAssignableFrom(it.key) }?.value
+        ?: throw IllegalArgumentException("unknown model class " + modelClass)
+        creators[modelClass]
+
+        return try {
+            creator.get() as T
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+
     }
 }

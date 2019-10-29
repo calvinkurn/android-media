@@ -42,6 +42,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
+
+    implementation project(rootProject.ext.libraries.promotionsTarget)
+
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
