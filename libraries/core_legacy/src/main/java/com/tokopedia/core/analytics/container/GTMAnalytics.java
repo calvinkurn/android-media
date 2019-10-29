@@ -976,6 +976,9 @@ public class GTMAnalytics extends ContextAnalytics {
             case CHECKOUT_PROGRESS:
                 keyEvent = FirebaseAnalytics.Event.CHECKOUT_PROGRESS;
                 break;
+            case TRANSACTION:
+                keyEvent = FirebaseAnalytics.Event.ECOMMERCE_PURCHASE;
+                break;
         }
         logEvent(keyEvent, bundle, context);
     }
