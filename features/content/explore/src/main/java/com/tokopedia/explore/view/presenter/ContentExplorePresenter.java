@@ -1,8 +1,10 @@
 package com.tokopedia.explore.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.explore.domain.interactor.GetExploreDataUseCase;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
+import com.tokopedia.explore.view.subscriber.EmptySubscriber;
 import com.tokopedia.explore.view.subscriber.GetExploreDataSubscriber;
 
 import javax.inject.Inject;
@@ -16,13 +18,15 @@ public class ContentExplorePresenter
         implements ContentExploreContract.Presenter {
 
     private final GetExploreDataUseCase getExploreDataUseCase;
+    private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
     private String cursor = "";
     private int categoryId = 0;
     private String search = "";
 
     @Inject
-    public ContentExplorePresenter(GetExploreDataUseCase getExploreDataUseCase) {
+    public ContentExplorePresenter(GetExploreDataUseCase getExploreDataUseCase, TrackAffiliateClickUseCase trackAffiliateClickUseCase) {
         this.getExploreDataUseCase = getExploreDataUseCase;
+        this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
     }
 
     @Override
@@ -57,5 +61,13 @@ public class ContentExplorePresenter
     @Override
     public void updateSearch(String search) {
         this.search = search;
+    }
+
+    @Override
+    public void trackAffiliate(String url) {
+        trackAffiliateClickUseCase.execute(
+                TrackAffiliateClickUseCase.createRequestParams(url),
+                new EmptySubscriber()
+        );
     }
 }

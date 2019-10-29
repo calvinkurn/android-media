@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
@@ -426,6 +427,13 @@ public class ContentExploreFragment extends BaseDaggerFragment
         if (performanceMonitoring != null && !isTraceStopped) {
             performanceMonitoring.stopTrace();
             isTraceStopped = true;
+        }
+    }
+
+    @Override
+    public void onAffiliateTrack(List<TrackingViewModel> trackingList, boolean isClick) {
+        for (TrackingViewModel tracking: trackingList) {
+            presenter.trackAffiliate(isClick ? tracking.getClickURL() : tracking.getViewURL());
         }
     }
 

@@ -209,11 +209,10 @@ class DynamicFeedFragment:
 
     override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
         for (track in trackList) {
-            if (isClick) {
-                presenter.trackAffiliate(track.clickURL)
-            } else {
-                presenter.trackAffiliate(track.viewURL)
-            }
+            presenter.trackAffiliate(
+                    if (isClick) track.clickURL
+                    else track.viewURL
+            )
         }
     }
 
