@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -21,7 +22,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.UnifyButton
@@ -35,7 +35,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mNoPermissionsView: View
     lateinit var mButtonActivate: UnifyButton
     lateinit var mPermissionChecker: PermissionCheckerHelper
-    lateinit var mLocationHelper: LocationDetectorHelper
+    lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
 
@@ -65,16 +65,16 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         mPermissionChecker = PermissionCheckerHelper()
-        mLocationHelper = LocationDetectorHelper(mPermissionChecker,
-                LocationServices.getFusedLocationProviderClient(this), this)
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         mMapFragment = supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
         mMapFragment?.getMapAsync(this)
+
+        checkForPermission()
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         mMap = googleMap
-        mLocationHelper.getLocation(onLocationReceived(), this, LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -133,6 +133,44 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         }
         mDisabledLocationView.visibility = View.GONE
         mNoPermissionsView.visibility = View.GONE
+    }
+
+    private fun checkForPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mPermissionChecker.checkPermissions(this, getPermissions(),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            mPermissionChecker.onPermissionDenied(this@DropoffPickerActivity, permissionText)
+                            setNoPermissionsView()
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            mPermissionChecker.onNeverAskAgain(this@DropoffPickerActivity, permissionText)
+                            setNoPermissionsView()
+                        }
+
+                        override fun onPermissionGranted() {
+                            mFusedLocationClient.lastLocation
+                                    .addOnSuccessListener {
+                                        if (it != null) {
+                                            val newLoc = LatLng(it.latitude, it.longitude)
+                                            moveCamera(newLoc)
+                                        } else {
+                                            setLocationEmptyView()
+                                        }
+                                    }
+                                    .addOnFailureListener { _ -> setLocationEmptyView() }
+                        }
+
+                    },
+                    "")
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
     }
 
 }
