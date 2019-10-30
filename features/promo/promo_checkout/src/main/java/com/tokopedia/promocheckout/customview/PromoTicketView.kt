@@ -17,8 +17,7 @@ import android.renderscript.Allocation
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import com.tokopedia.promocheckout.R
 import android.graphics.PorterDuffColorFilter
-
-
+import android.support.constraint.ConstraintLayout
 
 
 class PromoTicketView : View {
@@ -78,7 +77,7 @@ class PromoTicketView : View {
 
         with(mPaint) {
             style = Paint.Style.FILL
-            color = Color.WHITE
+            color = Color.rgb(255, 235, 238)
             alpha = 0
             isAntiAlias = true
         }
@@ -91,9 +90,16 @@ class PromoTicketView : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         drawTicket()
-      //  canvas?.drawBitmap(mShadow, 0f, shadowBlur / 2f, null);
+        mPaint.style = Paint.Style.FILL_AND_STROKE
+        mPaint.color = Color.WHITE
+        mPaint.isAntiAlias = true
+        mPaint.setShadowLayer(shadowBlur.toFloat() / 2F, 0F, 0F, resources.getColor(R.color.promo_ticket_colorshadow));
+        mDividerPaint.color=resources.getColor(R.color.promo_ticket_colorshadow)
+        mDividerPaint.strokeWidth=resources.getDimension(R.dimen.dp_2)
+        mDividerPaint.pathEffect=DashPathEffect(floatArrayOf(10f, 5f), 1.0.toFloat())
+        setLayerType(LAYER_TYPE_SOFTWARE, mPaint);
         canvas?.drawPath(mPath, mPaint)
-    //    canvas?.drawLine(mDividerStartX, mDividerStartY, mDividerStopX, mDividerStopY, mDividerPaint)
+        canvas?.drawLine(mDividerStartX, mDividerStartY, mDividerStopX, mDividerStopY, mDividerPaint)
 
     }
 
@@ -148,12 +154,12 @@ class PromoTicketView : View {
 
         mPath.close()
 
-        mDividerStartX = (scallopRadius + left + offset).toFloat();
+        mDividerStartX = (cornerRadius + left + offset).toFloat();
         mDividerStartY = (top + scallopRadius).toFloat();
-        mDividerStopX = (scallopRadius + left + offset).toFloat();
-        mDividerStopY = (bottom - scallopRadius).toFloat()
+        mDividerStopX = (cornerRadius + left + offset).toFloat();
+        mDividerStopY = (top+cardheight - scallopRadius).toFloat()
 
-       // generateShadow()
+        // generateShadow()
 
     }
 

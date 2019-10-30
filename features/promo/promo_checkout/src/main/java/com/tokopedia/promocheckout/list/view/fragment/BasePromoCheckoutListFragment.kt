@@ -23,6 +23,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.customview.PromoTicketItemDecoration
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
@@ -107,13 +108,15 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     fun initView(view: View) {
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_horizontal_custom_quick_filter)!!)
-        view.recyclerViewLastSeenPromo.addItemDecoration(dividerItemDecoration)
+    //    view.recyclerViewLastSeenPromo.addItemDecoration(dividerItemDecoration)
+        view.recyclerViewLastSeenPromo.addItemDecoration(PromoTicketItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
         view.recyclerViewLastSeenPromo.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         view.recyclerViewLastSeenPromo.adapter = promoLastSeenAdapter
 
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
         getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
+
 
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(R.string.title_loading))
