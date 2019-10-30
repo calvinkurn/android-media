@@ -273,7 +273,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         var contentHeight = 0
         recyclerView?.let {
             var layoutViewHolder = ProductItemViewHolder.LAYOUT_ITEM
-            if (channelType == DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL){
+            if (channelType == TYPE_BANNER_CAROUSEL){
                 layoutViewHolder = ProductItemViewHolder.LAYOUT_ITEM_CAROUSEL
             }
             /**
@@ -301,7 +301,6 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             productVisitable.forEach {
                 val sampleProductCard = productCardViewHolder.findViewById<ThematicCardView>(R.id.banner_item)
                 sampleProductCard?.run {
-                    setLinesProductTitle(2)
                     val gridItem = it.grid
                     initFreeOngkir(gridItem.freeOngkir.isActive, gridItem.freeOngkir.imageUrl)
                     initSlashedPrice(gridItem.slashedPrice)

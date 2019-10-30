@@ -23,7 +23,6 @@ class ProductItemViewHolder(view: View,
 
     override fun bind(productBannerMixDataModel: ProductBannerMixDataModel) {
         productCardView?.run {
-            setLinesProductTitle(2)
             val gridItem = productBannerMixDataModel.grid
             initFreeOngkir(gridItem.freeOngkir.isActive, gridItem.freeOngkir.imageUrl)
             initSlashedPrice(gridItem.slashedPrice)
