@@ -1,6 +1,6 @@
 package com.tokopedia.officialstore.presentation.viewmodel
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
 import com.tokopedia.officialstore.category.domain.GetOfficialStoreCategoriesUseCase
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
