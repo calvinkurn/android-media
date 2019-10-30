@@ -6,11 +6,13 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.logger.utils.DataLogConfig;
 import com.tokopedia.logger.utils.TimberReportingTree;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.BuildConfig;
+import com.tokopedia.user.session.UserSession;
 
 import timber.log.Timber;
 
@@ -29,10 +31,10 @@ public class TimberWrapper {
     private static final String REMOTE_CONFIG_KEY_LOG = "android_seller_app_log_config";
     
     public static void init(@NonNull Application application){
-        initByConfig(new FirebaseRemoteConfigImpl(application));
+        initByConfig(application, new FirebaseRemoteConfigImpl(application));
     }
 
-    public static void initByConfig(@NonNull RemoteConfig remoteConfig){
+    private static void initByConfig(@NonNull Application application, @NonNull RemoteConfig remoteConfig){
         Timber.uprootAll();
         boolean isDebug = BuildConfig.DEBUG;
         if (isDebug) {
@@ -40,13 +42,14 @@ public class TimberWrapper {
         } else {
             String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
             if (!TextUtils.isEmpty(logConfigString)) {
-                DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString,
-                        DataLogConfig.class);
-                if(dataLogConfig != null) {
-                    if (dataLogConfig.isEnabled()) {
-                        Long appVersionMin = dataLogConfig.getAppVersionMin();
-                        Timber.plant(new TimberReportingTree(dataLogConfig.getTags(), appVersionMin));
-                    }
+                DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
+                if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()) {
+                    UserSession userSession = new UserSession(application);
+                    TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
+                    timberReportingTree.setUserId(userSession.getUserId());
+                    timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
+                    timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
+                    Timber.plant(timberReportingTree);
                 }
             }
         }

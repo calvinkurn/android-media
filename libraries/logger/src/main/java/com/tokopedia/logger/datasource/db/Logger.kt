@@ -6,7 +6,13 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "log_table")
 data class Logger (
-    @PrimaryKey @ColumnInfo(name = "TimeStamp") var timeStamp: Long,
-    @ColumnInfo(name = "Priority") var priority: Int,
-    @ColumnInfo(name = "Message", typeAffinity = ColumnInfo.TEXT) var message: String
+    @PrimaryKey
+    @ColumnInfo(name = "timeStamp")
+    var timeStamp: Long,
+
+    @ColumnInfo(name = "priority")
+    var priority: Int,
+
+    @ColumnInfo(name = "message", typeAffinity = ColumnInfo.TEXT)
+    var message: String
 )

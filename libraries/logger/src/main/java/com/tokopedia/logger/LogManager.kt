@@ -46,15 +46,15 @@ class LogManager(val application: Application) : CoroutineScope {
     }
 
     private suspend fun sendLogToDB(message: String, timeStamp: Long, priority: Int) {
-        Log.e("toDB","Sending Log to DB")
+        Log.e("toDB", "Sending Log to DB")
         // Handle Message
         val truncatedMessage: String = if (message.length > Constants.MAX_BUFFER) {
-            message.substring(0,Constants.MAX_BUFFER)
+            message.substring(0, Constants.MAX_BUFFER)
         } else {
             message
         }
         val encryptedMessage = encrypt(truncatedMessage, secretKey)
-        val log = Logger(timeStamp,priority,encryptedMessage)
+        val log = Logger(timeStamp, priority, encryptedMessage)
         loggerRepository.insert(log)
     }
 
@@ -76,20 +76,19 @@ class LogManager(val application: Application) : CoroutineScope {
             instance = LogManager(application)
             val logsDao = LoggerRoomDatabase.getDatabase(application).logDao()
             val server = LoggerCloudDatasource()
-            loggerRepository = LoggerRepository(logsDao,server)
+            loggerRepository = LoggerRepository(logsDao, server)
             secretKey = generateKey(Constants.KEY)
             // Because JobService requires a minimum SDK version of 21, this if else block will allow devices with
             // SDK version lower than 21 to run a Service instead
-            if (android.os.Build.VERSION.SDK_INT > 21){
+            if (android.os.Build.VERSION.SDK_INT > 21) {
                 val serviceComponent = ComponentName(application, ServerJobService::class.java)
                 jobScheduler = application.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-                jobInfo = JobInfo.Builder(1000,serviceComponent)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .build()
-            }
-            else{
-                intent = Intent(application,ServerService::class.java)
-                pi = PendingIntent.getService(application, 0, intent , PendingIntent.FLAG_CANCEL_CURRENT)
+                jobInfo = JobInfo.Builder(1000, serviceComponent)
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .build()
+            } else {
+                intent = Intent(application, ServerService::class.java)
+                pi = PendingIntent.getService(application, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
             }
         }
 
@@ -99,7 +98,7 @@ class LogManager(val application: Application) : CoroutineScope {
          */
 
         @JvmStatic
-        fun log(message: String, timeStamp: Long, priority:Int) {
+        fun log(message: String, timeStamp: Long, priority: Int) {
             instance?.run {
                 runBlocking {
                     sendLogToDB(message, timeStamp, priority)
@@ -115,11 +114,11 @@ class LogManager(val application: Application) : CoroutineScope {
         // Functions Used in Service
 
         suspend fun sendLogToServer() {
-            val nHighPrioLogs = 3
-            val nLowPrioLogs = 2
+            val highPrioLogs = 3
+            val lowPrioLogs = 2
 
-            val highPrioLoggers: List<Logger> = loggerRepository.getFirstHighPrio(nHighPrioLogs)
-            val lowPrioLoggers: List<Logger> = loggerRepository.getFirstLowPrio(nLowPrioLogs)
+            val highPrioLoggers: List<Logger> = loggerRepository.getFirstHighPrio(highPrioLogs)
+            val lowPrioLoggers: List<Logger> = loggerRepository.getFirstLowPrio(lowPrioLogs)
             var logs = highPrioLoggers.toMutableList()
 
             for (lowPrioLog in lowPrioLoggers) {
@@ -129,14 +128,13 @@ class LogManager(val application: Application) : CoroutineScope {
             for (log in logs) {
                 val message = decrypt(log.message, secretKey)
                 val ts = log.timeStamp
-                val severity = setSeverity(message)
+                val severity = getSeverity(message)
                 if (severity != TimberReportingTree.NO_SEVERITY) {
                     val errorCode = loggerRepository.sendLogToServer(severity, TOKEN, log, secretKey)
-                    if(errorCode == 204) {
+                    if (errorCode == 204) {
                         loggerRepository.deleteEntry(ts)
                     }
                 }
-
             }
         }
 
@@ -147,14 +145,14 @@ class LogManager(val application: Application) : CoroutineScope {
             loggerRepository.deleteLowPrioBeforeTs(currentTs - Constants.ONLINE_TAG_THRESHOLD)
         }
 
-        suspend fun getCount(): Int{
+        suspend fun getCount(): Int {
             return loggerRepository.getCount()
         }
 
-        private fun setSeverity(message: String): Int {
+        private fun getSeverity(message: String): Int {
             return when {
-                message.contains(TimberReportingTree.P1) -> TimberReportingTree.SEVERITY_HIGH
-                message.contains(TimberReportingTree.P2) -> TimberReportingTree.SEVERITY_MEDIUM
+                message.startsWith(TimberReportingTree.P1) -> TimberReportingTree.SEVERITY_HIGH
+                message.startsWith(TimberReportingTree.P2) -> TimberReportingTree.SEVERITY_MEDIUM
                 else -> TimberReportingTree.NO_SEVERITY
             }
         }

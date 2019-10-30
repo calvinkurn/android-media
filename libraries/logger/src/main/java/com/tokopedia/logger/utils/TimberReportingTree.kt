@@ -1,65 +1,45 @@
 package com.tokopedia.logger.utils
 
+import android.os.Build
 import android.util.Log
-
 import com.tokopedia.logger.LogManager
-
-import java.text.SimpleDateFormat
-import java.util.Arrays
-import java.util.Date
-import java.util.LinkedList
-
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Tree that used for Timber in release Version
  * If there is log, it might be sent to logging server
  */
-class TimberReportingTree(private val tags: List<String>?, private val appVersionCode: Long?) : Timber.DebugTree() {
+class TimberReportingTree(private val tags: List<String>?) : Timber.DebugTree() {
 
-    private var serverSeverity: Int = 0
-
-    private val timeStamp: Long
-        get() = System.currentTimeMillis()
+    var userId: String = ""
+    var versionName: String = ""
+    var versionCode: Int = 0
 
     override fun log(logPriority: Int, tag: String?, message: String, t: Throwable?) {
-        var message = message
-        // Get time stamp the moment log is called
-        val timeStamp = timeStamp
-        val priority = getPriority(message)
-
         if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
             return
         }
-        // only log the message starts with P
-
-        // Checking based on config
-        if (message.startsWith(PREFIX) && tags != null) {
-            for (tagString in tags) {
-                val tagSplit = LinkedList(Arrays.asList(*tagString.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()))
-                if (tagSplit.size == 2) {
-                    tagSplit.add(2, "online")
-                }
-                if (message.contains(tagSplit[0])) {
-                    if (message.contains(tagSplit[1])) {
-                        serverSeverity = setSeverity(message)
-                        message = getMessage(message)
-                        LogManager.log(logToString(logPriority) + "#" + message + "#" + tag, timeStamp, priority)
-                    } else if (!message.contains("offline")) {
-                        serverSeverity = setSeverity(message)
-                        message = getMessage(message)
-                        LogManager.log(logToString(logPriority) + "#" + message + "#" + tag, timeStamp, priority)
-                    }// Catches if user forgets to enter the "online" or "offline" in the message
-                }
-            }
+        // Only log the message starts with P
+        if (!message.startsWith(PREFIX) || tags == null || tags.isEmpty()) {
+            return
         }
-    }
-
-    private fun logToString(logPriority: Int): String {
-        when (logPriority) {
-            Log.ERROR -> return "E"
-            Log.WARN -> return "W"
-            else -> return "I"
+        val messageSplit = LinkedList(listOf(*message.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()))
+        if (messageSplit.size < MIN_ARRAY_SIZE_MESSAGE) {
+            return
+        }
+        // Checking based on config
+        for (tagString in tags) {
+            val tagSplit = LinkedList(listOf(*tagString.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()))
+            if (tagSplit[0] == messageSplit[0] &&
+                    tagSplit[1] == messageSplit[1]) {
+                // Get time stamp the moment log is called
+                val timeStamp = System.currentTimeMillis()
+                val priority = getPriority(tagString)
+                val classLine = tag ?: ""
+                LogManager.log(getMessage(messageSplit[0], messageSplit[1], timeStamp, classLine, messageSplit[2]), timeStamp, priority)
+            }
         }
     }
 
@@ -74,48 +54,69 @@ class TimberReportingTree(private val tags: List<String>?, private val appVersio
         return SimpleDateFormat(Constants.TIMESTAMP_FORMAT).format(Date(timeStamp!!))
     }
 
-    private fun getAppVersionName(appVersionCode: Long): String {
-        val appVersionCodeStr = appVersionCode.toString()
-        return appVersionCodeStr.substring(3, 5) +
-                "." + appVersionCodeStr.substring(5, 7) +
-                "." + appVersionCodeStr.substring(7)
+    private fun getMessage(priority:String, tag: String, timeStamp:Long, classLine: String, message:String): String {
+        val stringBuilder = StringBuilder()
+        stringBuilder.append(priority)
+        stringBuilder.append("tag=")
+                .append(tag)
+                .append("#")
+        stringBuilder.append("timestamp=")
+                .append(timeStamp)
+                .append("#")
+        stringBuilder.append("time=")
+                .append(getReadableTimeStamp(timeStamp))
+                .append("#")
+        stringBuilder.append("uid=")
+                .append(userId)
+                .append("#")
+        stringBuilder.append("vernm=")
+                .append(versionName)
+                .append("#")
+        stringBuilder.append("vercd=")
+                .append(versionCode)
+                .append("#")
+        stringBuilder.append("os=")
+                .append(Build.VERSION.RELEASE)
+                .append("#")
+        stringBuilder.append("device=")
+                .append(Build.MODEL)
+                .append("#")
+        stringBuilder.append("cls=")
+                .append(classLine)
+                .append("#")
+        stringBuilder.append("msg=")
+                .append(message)
+        return stringBuilder.toString()
     }
 
-    private fun getMessage(message: String): String {
-        return getReadableTimeStamp(timeStamp) + "#" + appVersionCode + "#" + getAppVersionName(appVersionCode!!) + "#UserID=1#" + message
-    }
-
-    private fun setSeverity(message: String): Int {
-        if (message.startsWith(P1)) {
-            serverSeverity = SEVERITY_HIGH
-        } else if (message.startsWith(P2)) {
-            serverSeverity = SEVERITY_MEDIUM
-        } else {
-            serverSeverity = NO_SEVERITY
+    private fun getPriority(tag: String): Int {
+        val tagSplit = tag.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        if (tagSplit.size < 3) {
+            return PRIORITY_ONLINE
         }
-        return serverSeverity
-    }
-
-    private fun getPriority(message: String): Int {
-        val messageSplit = message.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        var priority = 0
-        if (messageSplit[2] == "offline") {
-            priority = 1
-            return priority
-        } else {
-            return priority
+        if (tagSplit[2] == TAG_OFFLINE) {
+            return PRIORITY_OFFLINE
         }
+        return PRIORITY_ONLINE
     }
 
     companion object {
+        const val MIN_ARRAY_SIZE_MESSAGE = 3
+        const val MIN_ARRAY_SIZE_REMOTE_CONFIG_TAG = 3
 
-        val PREFIX = "P"
-        val P1 = "P1"
-        val P2 = "P2"
+        const val PREFIX = "P"
+        const val P1 = "P1"
+        const val P2 = "P2"
 
-        val SEVERITY_HIGH = 1
-        val SEVERITY_MEDIUM = 2
-        val NO_SEVERITY = 0
+        const val SEVERITY_HIGH = 1
+        const val SEVERITY_MEDIUM = 2
+        const val NO_SEVERITY = 0
+
+        const val TAG_OFFLINE = "offline"
+        const val TAG_ONLINE = "online"
+
+        const val PRIORITY_ONLINE = 0
+        const val PRIORITY_OFFLINE = 1
     }
 
 }

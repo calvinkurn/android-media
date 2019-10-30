@@ -1,28 +1,28 @@
 package com.tokopedia.logger.service
 
+import android.annotation.TargetApi
 import android.app.job.JobParameters
 import android.app.job.JobService
 import android.content.Context
 import android.net.ConnectivityManager
+import android.os.Build
 import com.tokopedia.logger.LogManager
-import com.tokopedia.logger.utils.launchCatchError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import timber.log.Timber
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class ServerJobService : JobService() {
 
-    private val TAG = "JobService"
-
     override fun onStartJob(params: JobParameters?): Boolean {
-        android.util.Log.e(TAG, "in JobService")
+        Timber.d("in JobService")
         runBlocking {
             launch(Dispatchers.IO) {
                 when {
                     // When there is network connection and there is data in DB then we send logs to server
                     isNetworkAvailable(application) and (LogManager.getCount() > 0) -> {
-                        android.util.Log.e(TAG, "Sending Logs")
+                        Timber.d("Sending Logs")
                         LogManager.inspectLogs()
                         LogManager.sendLogToServer()
                         jobFinished(params,false)
@@ -30,11 +30,11 @@ class ServerJobService : JobService() {
                     // When there is data in DB but no network connection, we check this data, if its old we delete it
                     LogManager.loggerRepository.getCount() > 0 -> {
                         LogManager.inspectLogs()
-                        android.util.Log.e(TAG, "Delete old Data if exists")
+                        Timber.d("Delete old Data if exists")
                         jobFinished(params,false)
                     }
                     else -> {
-                        android.util.Log.e(TAG, "Do Nothing")
+                        Timber.d("Do Nothing")
                         jobFinished(params,false)
                     }
                 }
@@ -47,8 +47,7 @@ class ServerJobService : JobService() {
     }
 
     private fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.allNetworks
         return activeNetwork.isNotEmpty()
     }
