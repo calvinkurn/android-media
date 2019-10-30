@@ -39,7 +39,7 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
 
         if (data == null) {
             throw RuntimeException()
-        } else if(error.isNotEmpty() && error.first().message.isNotEmpty()) {
+        } else if (error.isNotEmpty() && error.first().message.isNotEmpty()) {
             throw MessageErrorException(error.first().message)
         }
 

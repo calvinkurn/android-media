@@ -40,6 +40,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
                 ImageHandler.loadImageRounded(view.context, image_review, item.imageUrlThumbnail, 16F)
                 if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
                     overlay_see_all.visible()
+                    txt_see_all.text = item.imageCount
                     txt_see_all.visible()
                     setOnClickListener {
                         onOnSeeAllReviewClick?.invoke()

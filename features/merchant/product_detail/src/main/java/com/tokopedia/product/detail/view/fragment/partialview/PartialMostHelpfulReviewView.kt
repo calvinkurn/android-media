@@ -34,7 +34,7 @@ class PartialMostHelpfulReviewView private constructor(private val view: View) {
             } else {
                 val reviewData = reviews.first()
                 val imageData = if (reviewData.imageAttachments.size > 3) reviewData.imageAttachments.take(3) else reviewData.imageAttachments
-                if (reviewData.likeDislike.totalLike < LIKE_VISIBILITY_LIMIT) {
+                if (!reviewData.likeDislike.isShowable) {
                     txt_thumb_like.hide()
                     txt_like_static.hide()
                 } else {
@@ -43,6 +43,12 @@ class PartialMostHelpfulReviewView private constructor(private val view: View) {
                     txt_like_static.show()
                 }
 
+                if (reviews.first().productVariantReview.variantTitle.isNotEmpty()) {
+                    txt_variant_review.show()
+                    txt_variant_review.text = reviews.first().productVariantReview.variantTitle
+                } else {
+                    txt_variant_review.hide()
+                }
 
                 rating_review.setImageDrawable(ContextCompat.getDrawable(view.context,
                         RatingView.getRatingDrawable(reviewData.productRating)))

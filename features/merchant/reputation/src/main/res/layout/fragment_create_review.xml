@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
+    android:paddingBottom="@dimen/dp_15"
     android:orientation="vertical"
     android:clickable="true"
     android:focusable="true">
@@ -100,7 +101,9 @@
             style="@style/TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_15"
+            android:paddingLeft="@dimen/dp_15"
+            android:paddingRight="@dimen/dp_15"
+            app:counterEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Review"
-                android:inputType="textMultiLine"
+                android:inputType="textMultiLine|textCapSentences"
                 android:maxLines="3"
                 android:scrollbars="vertical" />
 
@@ -121,10 +124,10 @@
             android:id="@+id/rv_img_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:padding="@dimen/dp_15"
+            android:paddingLeft="@dimen/dp_15"
+            android:paddingRight="@dimen/dp_15"
             app:layout_constraintTop_toBottomOf="@+id/txt_input_review" />
     </android.support.constraint.ConstraintLayout>
     </ScrollView>

@@ -19,11 +19,29 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
         }
     }
 
-    override fun getNewFragment(): Fragment = CreateReviewFragment.createInstance()
+    override fun getNewFragment(): Fragment {
+        var productId = ""
+        var reputationId = ""
+        var reviewClickAt = 0
+        val bundle = intent.extras
+        val uri = intent.data
+
+        bundle?.let {
+            reviewClickAt = it.getInt("REVIEW_CLICK_AT", 0)
+        }
+
+        uri?.let {
+            val uriSegment = it.pathSegments
+            productId = it.lastPathSegment ?: ""
+            reputationId = uriSegment[uriSegment.size - 1]
+        }
+
+        return CreateReviewFragment.createInstance(productId, reputationId, reviewClickAt)
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val bundle = intent.extras
         supportActionBar?.let {
             it.elevation = 0f
         }

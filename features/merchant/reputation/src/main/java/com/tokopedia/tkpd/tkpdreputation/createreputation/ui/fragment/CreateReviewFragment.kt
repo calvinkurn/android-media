@@ -37,6 +37,7 @@ import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_create_review.*
+import kotlinx.android.synthetic.main.review_layout.*
 import java.util.*
 import javax.inject.Inject
 
@@ -44,7 +45,23 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_CODE_IMAGE = 111
-        fun createInstance() = CreateReviewFragment()
+        private const val WRITE_REVIEW_MIN_LENGTH = 30
+        private const val PRODUCT_ID_REVIEW = "PRODUCT_ID"
+        private const val REVIEW_ID = "REVIEW_ID"
+        private const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
+
+        private const val IMAGE_REVIEW_GREY_BG = "https://ecs7.tokopedia.net/android/others/1_2reviewbg.png"
+        private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
+        private const val IMAGE_REVIEW_YELLOW_BG = "https://ecs7.tokopedia.net/android/others/4_5reviewbg.png"
+        private const val IMAGE_BG_TRANSITION = 250
+
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0) = CreateReviewFragment().also {
+            it.arguments = Bundle().apply {
+                putString(PRODUCT_ID_REVIEW, productId)
+                putString(REVIEW_ID, reviewId)
+                putInt(REVIEW_CLICK_AT, reviewClickAt)
+            }
+        }
     }
 
     @Inject
@@ -58,8 +75,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private var selectedImage: ArrayList<String> = arrayListOf()
     private var isImageAdded: Boolean = false
     private var shouldPlayAnimation: Boolean = true
-    private var alreadyIncreaseProgressBar = true
-    var currentBackground: Drawable? = null
+    private var shouldIncreaseProgressBar = true
+    private var reviewClickAt: Int = 0
+    private var reviewId: Int = 0
+    private var productId: Int = 0
+    private var currentBackground: Drawable? = null
 
     lateinit var imgAnimationView: LottieAnimationView
 
@@ -82,6 +102,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        arguments?.let {
+            productId = it.getString(PRODUCT_ID_REVIEW, "").toIntOrNull() ?: 0
+            reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
+            reviewId = it.getString(REVIEW_ID, "").toIntOrNull() ?: 0
+        }
         createReviewViewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateReviewViewModel::class.java)
     }
 
@@ -97,9 +123,10 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        createReviewViewModel.getProductReputation(productId, reviewId)
+
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
-        stepper_review.progress = 1
         animatedReviewPicker.setListener(object : AnimatedReviewPicker.AnimatedReviewPickerListener {
             override fun onStarsClick(position: Int) {
                 shouldPlayAnimation = true
@@ -107,9 +134,16 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 generateReviewBackground(position)
             }
         })
-        createReviewViewModel.getProductReputation()
-        animatedReviewPicker.renderInitialReviewWithData(0)
-        generateReviewBackground(1)
+        if (reviewClickAt != 0) {
+            stepper_review.progress = 1
+            animatedReviewPicker.renderInitialReviewWithData(reviewClickAt - 1)
+            generateReviewBackground(reviewClickAt)
+        } else {
+            // Render background grey which is position 1 & 2
+            generateReviewBackground(1)
+            stepper_review.progress = 0
+        }
+
         imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
 
@@ -129,19 +163,26 @@ class CreateReviewFragment : BaseDaggerFragment() {
         edit_text_review.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
 
+                if (s.toString().length < WRITE_REVIEW_MIN_LENGTH) {
+                    txt_input_review.isErrorEnabled = true
+                    txt_input_review.error = getString(R.string.review_min_character)
+                    if (!shouldIncreaseProgressBar) {
+                        shouldIncreaseProgressBar = true
+                        stepper_review.progress = stepper_review.progress - 1
+                    }
+                } else {
+                    if (shouldIncreaseProgressBar) {
+                        stepper_review.progress = stepper_review.progress + 1
+                        shouldIncreaseProgressBar = false
+                    }
+                    txt_input_review.isErrorEnabled = false
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (count > 0 && alreadyIncreaseProgressBar) {
-                    stepper_review.progress = stepper_review.progress + 1
-                    alreadyIncreaseProgressBar = false
-                } else if (count == 0) {
-                    alreadyIncreaseProgressBar = true
-                    stepper_review.progress = stepper_review.progress - 1
-                }
             }
 
         })
@@ -151,12 +192,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
+
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
         ImageHandler.loadImage(context, img_review, data.productrevGetForm.productData.productImageURL, R.drawable.ic_loading_image)
         txt_create.text = data.productrevGetForm.productData.productName
-
     }
 
     private fun onErrorGetReviewForm(t: Throwable) {
@@ -164,11 +205,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     private fun generateReviewBackground(position: Int) {
         when (position) {
-            1 -> renderBackgroundTransition("https://ecs7.tokopedia.net/android/others/1_2reviewbg.png")
-            2 -> renderBackgroundTransition("https://ecs7.tokopedia.net/android/others/1_2reviewbg.png")
-            3 -> renderBackgroundTransition("https://ecs7.tokopedia.net/android/others/3reviewbg.png")
-            4 -> renderBackgroundTransition("https://ecs7.tokopedia.net/android/others/4_5reviewbg.png")
-            5 -> renderBackgroundTransition("https://ecs7.tokopedia.net/android/others/4_5reviewbg.png")
+            1 -> renderBackgroundTransition(IMAGE_REVIEW_GREY_BG)
+            2 -> renderBackgroundTransition(IMAGE_REVIEW_GREY_BG)
+            3 -> renderBackgroundTransition(IMAGE_REVIEW_GREEN_BG)
+            4 -> renderBackgroundTransition(IMAGE_REVIEW_YELLOW_BG)
+            5 -> renderBackgroundTransition(IMAGE_REVIEW_YELLOW_BG)
         }
     }
 
@@ -199,6 +240,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
     }
 
+    // For transition background drawable *grey,green,yellow
     private fun transitionDrawable(drawable: Drawable) {
         if (currentBackground == null) {
             currentBackground = drawable
@@ -207,7 +249,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             val transitionDrawable = TransitionDrawable(arrayOf(currentBackground, drawable))
             transitionDrawable.isCrossFadeEnabled = true
             review_bg.setImageDrawable(transitionDrawable)
-            transitionDrawable.startTransition(250)
+            transitionDrawable.startTransition(IMAGE_BG_TRANSITION)
             currentBackground = drawable
         }
     }
@@ -237,7 +279,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderBackgroundTransition(url:String){
+    private fun renderBackgroundTransition(url: String) {
         Glide.with(context)
                 .load(url)
                 .asBitmap()
@@ -245,7 +287,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 .into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(bitmap: Bitmap,
                                                  glideAnimation: GlideAnimation<in Bitmap>?) {
-                        val drawable = BitmapDrawable(context?.resources,bitmap)
+                        val drawable = BitmapDrawable(context?.resources, bitmap)
                         transitionDrawable(drawable)
                     }
                 })

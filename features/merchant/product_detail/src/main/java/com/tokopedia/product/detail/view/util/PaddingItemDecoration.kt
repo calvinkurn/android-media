@@ -10,7 +10,7 @@ class PaddingItemDecoration : RecyclerView.ItemDecoration() {
         val position = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
         if (parent.adapter?.itemCount == 3 && position != 0) {
             parent.adapter?.also {
-                outRect.set(0, 0, 0, 10)
+                outRect.set(0, 0, 0, 8)
             }
         } else {
             parent.adapter?.also {

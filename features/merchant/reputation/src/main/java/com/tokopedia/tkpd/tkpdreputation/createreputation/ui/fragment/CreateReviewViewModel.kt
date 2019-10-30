@@ -24,7 +24,7 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
 
     private var imageData: MutableList<BaseImageReviewViewModel> = mutableListOf()
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
-    val getReputationDataForm  = reputationDataForm
+    val getReputationDataForm = reputationDataForm
 
     fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageReviewViewModel> {
         when (selectedImage.size) {
@@ -54,10 +54,10 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
         return imageData
     }
 
-    fun getProductReputation() {
+    fun getProductReputation(productId: Int, reptutationId: Int) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
-                getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(55368, 15267029))
+                getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(reptutationId, productId))
             }
             reputationDataForm.value = Success(data)
 

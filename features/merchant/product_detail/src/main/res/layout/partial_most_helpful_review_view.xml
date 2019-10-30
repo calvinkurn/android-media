@@ -94,6 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rating_review"
         app:typographyType="small"

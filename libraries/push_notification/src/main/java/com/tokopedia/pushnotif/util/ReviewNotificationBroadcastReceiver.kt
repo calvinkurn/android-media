@@ -22,7 +22,7 @@ class ReviewNotificationBroadcastReceiver : BroadcastReceiver() {
         }
 
         context?.let {
-            val pmSubscribeRoute = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CREATE_REVIEW)
+            val pmSubscribeRoute = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CREATE_REVIEW,"123","123")
             pmSubscribeRoute.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
 
             val pmSubscribeIntent = PendingIntent.getActivity(

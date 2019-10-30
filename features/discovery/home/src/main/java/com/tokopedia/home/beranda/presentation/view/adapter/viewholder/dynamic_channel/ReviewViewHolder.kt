@@ -20,7 +20,6 @@ class ReviewViewHolder(itemView: View, private val listener: HomeReviewListener)
     override fun bind(element: ReviewViewModel) {
         if (element.suggestedProductReview.suggestedProductReview.linkURL.isEmpty()) {
             itemView.loading_review.visibility = View.VISIBLE
-            listener.getReviewData(adapterPosition)
         } else {
             itemView.loading_review.visibility = View.GONE
             itemView.review_title.text = element.suggestedProductReview.suggestedProductReview.title + " " + element.suggestedProductReview.suggestedProductReview.description
@@ -30,7 +29,7 @@ class ReviewViewHolder(itemView: View, private val listener: HomeReviewListener)
 
         itemView.animated_review.setListener(object : AnimatedReviewPicker.AnimatedReviewPickerListener {
             override fun onStarsClick(position: Int) {
-                listener.onReviewClick(adapterPosition, position)
+                listener.onReviewClick(adapterPosition, position, element.suggestedProductReview.suggestedProductReview.linkURL)
             }
         })
     }

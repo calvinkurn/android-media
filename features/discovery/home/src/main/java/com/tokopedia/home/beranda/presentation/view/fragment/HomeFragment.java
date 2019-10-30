@@ -24,7 +24,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1582,9 +1581,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onReviewClick(int position, int clickReviewAt) {
+    public void onReviewClick(int position, int clickReviewAt, @NotNull String applink) {
         new Handler().postDelayed(() -> {
-            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.CREATE_REVIEW);
+            Intent intent = RouteManager.getIntent(getContext(), applink);
+            intent.putExtra("REVIEW_CLICK_AT", clickReviewAt);
+            startActivity(intent);
         }, 500);
     }
 
@@ -1594,18 +1595,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void getReviewData(int adapterPosition) {
-//        reviewAdapterPosition = adapterPosition;
-//        if (previewListenerCount == 0) {
-//            presenter.getSuggestedReview();
-//        }
-//        previewListenerCount++;
-    }
-
-    @Override
     public void onSuccessGetReviewData(SuggestedProductReview suggestedProductReview) {
         previewListenerCount = 0;
-        Log.e("datanya","sucess " + suggestedProductReview);
         adapter.updateReviewItem(suggestedProductReview,reviewAdapterPosition);
     }
 

@@ -77,9 +77,8 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
 import rx.Observer
-import rx.Subscription
-import java.lang.RuntimeException
 import rx.Subscriber
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
@@ -307,13 +306,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 val hasNext = productReviewImageListQuery?.isHasNext ?: false
                 productReviewImageListQuery?.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
                 productReviewImageListQuery?.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
-
                 return productReviewImageListQuery?.list?.map {
                     val image = images[it.imageID]
                     val review = reviews[it.reviewID]
                     ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
                             review.reviewer?.fullName, image.uriThumbnail,
-                            image.uriLarge, review.rating, hasNext)
+                            image.uriLarge, review.rating, hasNext, productReviewImageListQuery?.detail?.imageCount)
                 } ?: listOf()
 
             }
