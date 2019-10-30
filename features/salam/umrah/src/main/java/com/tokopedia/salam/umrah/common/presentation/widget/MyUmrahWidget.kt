@@ -35,8 +35,8 @@ class MyUmrahWidget @JvmOverloads constructor(context: Context, attrs: Attribute
         if (::myUmrahModel.isInitialized) {
             hideLoadingState()
 
-            tg_umrah_package.text = myUmrahModel.header
-            tg_umrah_departure.text = myUmrahModel.subHeader
+            tg_umrah_package.text = myUmrahModel.subHeader
+            tg_umrah_departure.text = myUmrahModel.header
             tg_umrah_next.text = myUmrahModel.nextActionText
             btn_my_umrah_detail.text = myUmrahModel.mainButtonText
             btn_my_umrah_detail.setOnClickListener { RouteManager.route(context, myUmrahModel.mainButtonLink) }

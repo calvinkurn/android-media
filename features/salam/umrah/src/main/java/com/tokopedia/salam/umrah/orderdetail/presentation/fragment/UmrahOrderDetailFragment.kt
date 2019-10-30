@@ -91,7 +91,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
                     renderMyUmrahWidget(it.data)
                 }
                 is Fail -> {
-
+                    my_umrah_widget.visibility = View.GONE
                 }
             }
         })
