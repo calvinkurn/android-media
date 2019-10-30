@@ -13,7 +13,7 @@ class FtPDPInstallmentCalculationAdapter(var data: ArrayList<FtCalculationPartne
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): RecyclerView.ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.ft_installment_view_holder, parent, false)
+                .inflate(R.layout.pdp_installment_layout, parent, false)
         return InstallmentItemViewHolder(itemView)
     }
 

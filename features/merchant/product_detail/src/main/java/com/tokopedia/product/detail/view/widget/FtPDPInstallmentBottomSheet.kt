@@ -66,12 +66,12 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private fun loadData() {
         populateTwoTabItem()
-        val instantLoanPagerAdapter = InstallmentDataPagerAdapter(fragmentManager!!)
+        val instantLoanPagerAdapter = InstallmentDataPagerAdapter(childFragmentManager)
         instantLoanPagerAdapter.setData(ftInstallmentItemList)
-        heightWrappingViewPager!!.adapter = instantLoanPagerAdapter
-        tabLayout!!.setupWithViewPager(heightWrappingViewPager)
-        heightWrappingViewPager!!.currentItem = 0
-        tabLayout!!.getTabAt(0)?.select()
+        heightWrappingViewPager?.adapter = instantLoanPagerAdapter
+        tabLayout?.setupWithViewPager(heightWrappingViewPager)
+        heightWrappingViewPager?.currentItem = 0
+        tabLayout?.getTabAt(0)?.select()
     }
 
     private fun configBottomSheetHeight() {
