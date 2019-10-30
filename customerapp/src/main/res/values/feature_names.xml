@@ -110,4 +110,5 @@
 
     <!-- Digital Emoney -->
     <string name="title_digital_emoney">Electronic Money</string>
+    <string name="emoney_toolbar_title_etoll_check_balance">Cek Saldo</string>
 </resources>
