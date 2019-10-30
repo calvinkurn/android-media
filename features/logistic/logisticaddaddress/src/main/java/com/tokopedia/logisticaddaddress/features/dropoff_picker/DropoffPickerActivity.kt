@@ -94,6 +94,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun moveCamera(latLng: LatLng) {
+        setMapView()
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
                 .zoom(16f)
