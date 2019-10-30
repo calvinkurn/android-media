@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.Toast
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
@@ -14,9 +16,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.unifycomponents.UnifyButton
 
 
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
@@ -24,6 +28,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mMapView: MapView
     lateinit var mSearchInput: SearchInputView
     lateinit var mSearchText: EditText
+    lateinit var mEmptyView: View
+    lateinit var mButtonActivate: UnifyButton
     lateinit var mPermissionChecker: PermissionCheckerHelper
     var mMap: GoogleMap? = null
 
@@ -34,6 +40,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         val toolbar = findViewById<Toolbar>(R.id.toolbar_search)
         setSupportActionBar(toolbar)
         mSearchInput = findViewById(R.id.search_input_dropoff)
+        mEmptyView = findViewById(R.id.view_gps_empty)
+        mButtonActivate = findViewById(R.id.button_activate_gps)
+        mButtonActivate.setOnClickListener {
+            Toast.makeText(this, "Should start resolution", Toast.LENGTH_SHORT).show()
+        }
         mSearchText = mSearchInput.searchTextView
         mSearchText.isCursorVisible = false
         mSearchText.isFocusable = false
@@ -56,10 +67,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         val locationHelper = LocationDetectorHelper(mPermissionChecker, LocationServices.getFusedLocationProviderClient(this), this)
-        locationHelper.getLocation({ location ->
-            val newLoc = LatLng(location.latitude, location.longitude)
-            moveCamera(newLoc)
-        }, this, LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD)
+        locationHelper.getLocation(onLocationReceived(), this, LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -87,5 +95,23 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 .build()
         mMap?.addMarker(MarkerOptions().position(latLng))
         mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+    }
+
+    private fun onLocationReceived(): (DeviceLocation) -> Unit = {
+        if (it.hasLocation()) {
+            val newLoc = LatLng(it.latitude, it.longitude)
+            moveCamera(newLoc)
+        } else {
+            setEmptyState(true)
+        }
+    }
+
+    private fun setEmptyState(active: Boolean) {
+        if (active) {
+            val mapFragment: SupportMapFragment =
+                    supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
+            supportFragmentManager.beginTransaction().hide(mapFragment).commit()
+            mEmptyView.visibility = View.VISIBLE
+        }
     }
 }
