@@ -512,7 +512,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private Bundle atcMap(Map<String, Object> value) {
         String id = bruteForceCastToString(value.remove(ATCKey.KEY_ID));
         String name = (String) value.remove(ATCKey.KEY_NAME);
-        String price = bruteForceCastToString(value.remove(ATCKey.KEY_PRICE));
+        String price = PriceUtil.from(bruteForceCastToString(value.remove(ATCKey.KEY_PRICE)));
         String brand = (String) value.remove(ATCKey.KEY_BRAND);
         String category = (String) value.remove(ATCKey.KEY_CAT);
         String variant = (String) value.remove(ATCKey.KEY_VARIANT);
