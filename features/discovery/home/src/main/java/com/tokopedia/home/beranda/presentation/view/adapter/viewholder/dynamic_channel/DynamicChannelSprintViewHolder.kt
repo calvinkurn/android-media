@@ -75,7 +75,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             }
             Glide.with(context)
                     .load(channel.header.backImage)
-                    .into(backgroundThematic);
+                    .into(backgroundThematic)
         }else {
             seeAllButton.hide()
             seeAllButtonText.show()
@@ -187,7 +187,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             grids.forEach {
                 val sampleProductCard = productCardViewHolder.findViewById<ThematicCardView>(R.id.banner_item)
                 try {
-                    val grid = grids[position]
+                    val grid = it
                     sampleProductCard.run {
                         initProductImage(grid.imageUrl)
                         initProductName(grid.name)
