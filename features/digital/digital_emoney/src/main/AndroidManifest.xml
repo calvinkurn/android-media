@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.emoney">
 
     <uses-permission android:name="android.permission.NFC" />
+    <!-- add library brizzi and force it to use minSdkVersion same as Tokopedia -->
+    <uses-sdk tools:overrideLibrary="id.co.bri.sdk.brizzi"/>
 
     <application
         android:allowBackup="true"
