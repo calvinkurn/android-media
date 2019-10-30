@@ -6,7 +6,7 @@ import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
-import android.support.annotation.ColorRes
+import androidx.annotation.ColorRes
 import com.tokopedia.topupbills.telco.view.model.DigitalContactData
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException

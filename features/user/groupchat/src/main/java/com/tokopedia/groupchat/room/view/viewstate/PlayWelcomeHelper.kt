@@ -1,8 +1,8 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
 import android.content.Context
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -44,7 +44,7 @@ class PlayWelcomeHelper constructor(
         welcomeInfoDialog.setOnShowListener() { dialog ->
             val d = dialog as BottomSheetDialog
 
-            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) {
                 BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
             }

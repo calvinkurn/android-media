@@ -1,6 +1,6 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.FragmentManager
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint

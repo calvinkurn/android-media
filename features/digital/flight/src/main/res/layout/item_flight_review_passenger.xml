@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/dp_20"
     android:paddingTop="@dimen/dp_8">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_passenger_cancellation_status"
         style="@style/CardSuccessStatusStyle"
         android:layout_width="wrap_content"
@@ -17,7 +17,7 @@
         android:visibility="gone"
         tools:visibility="visible"/>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_second_passenger_cancellation_status"
         style="@style/CardSuccessStatusStyle"
         android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
     </LinearLayout>
 
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_passenger_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

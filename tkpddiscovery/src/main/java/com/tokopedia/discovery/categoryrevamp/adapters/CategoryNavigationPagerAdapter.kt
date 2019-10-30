@@ -1,8 +1,8 @@
 package com.tokopedia.discovery.categoryrevamp.adapters
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
 import java.util.*
 

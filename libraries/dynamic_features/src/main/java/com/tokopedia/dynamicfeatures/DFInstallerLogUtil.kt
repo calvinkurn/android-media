@@ -1,7 +1,7 @@
 package com.tokopedia.dynamicfeatures
 
 import android.content.Context
-import android.support.v4.content.pm.PackageInfoCompat
+import androidx.core.content.pm.PackageInfoCompat
 import com.google.android.gms.common.GoogleApiAvailability
 import timber.log.Timber
 import java.io.File

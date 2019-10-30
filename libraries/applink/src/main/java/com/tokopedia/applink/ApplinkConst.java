@@ -262,6 +262,11 @@ public interface ApplinkConst {
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
     String OVO_WALLET = "tokopedia://ovo";
+    String DEALS_HOME = "tokopedia://deals";
+    String DEALS_DETAIL = "tokopedia://deals/{slug}";
+    String DEALS_BRAND_DETAIL = "tokopedia://deals/brand/{slug}";
+    String DEALS_ALL_BRANDS = "tokopedia://deals/allbrands/{isVoucher}";
+    String DEALS_CATEGORY = "tokopedia://deals/category/page";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
@@ -285,6 +290,7 @@ public interface ApplinkConst {
         String BROWSER = "sellerapp://browser";
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
         String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
+        String WEBVIEW = "sellerapp://webview";
     }
 
     interface Query {

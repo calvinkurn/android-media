@@ -2,7 +2,7 @@ package com.tokopedia.chat_common.view.adapter.viewholder;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -231,7 +231,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     @Override
     public void onViewRecycled() {
         super.onViewRecycled();
-        if (thumbnailsImage != null) {
+        if (thumbnailsImage != null && thumbnailsImage.getContext() != null) {
             ImageHandler.clearImage(thumbnailsImage);
         }
     }

@@ -2,16 +2,20 @@ package com.tokopedia.groupchat.vote.view.adapter.viewholder;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -82,11 +86,10 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
 
         option.setText(element.getOption());
         percent.setText(element.getPercentage());
-        ImageHandler.loadImageWithTarget(imageView.getContext(), element.getUrl(), new SimpleTarget<Bitmap>() {
-
+        ImageHandler.loadImageWithTarget(imageView.getContext(), element.getUrl(), new CustomTarget<Bitmap>() {
             @Override
-            public void onResourceReady(Bitmap arg0, GlideAnimation<? super Bitmap> arg1) {
-                imageView.setImageBitmap(arg0);
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                imageView.setImageBitmap(resource);
                 imageView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -100,10 +103,13 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
                         }
                     }
                 });
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
 
             }
         });
-
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
