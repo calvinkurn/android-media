@@ -252,7 +252,7 @@ open class PlayViewStateImpl(
 
         backgroundHelper = PlayBackgroundHelper(viewModel, activity)
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
-        val videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(R.id.player_view)
+        val videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
         val rootView = (activity as PlayActivity).findViewById<View>(R.id.root_view)
         overflowMenuHelper = OverflowMenuHelper(
                 viewModel,
