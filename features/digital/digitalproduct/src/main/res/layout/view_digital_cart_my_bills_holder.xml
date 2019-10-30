@@ -16,27 +16,39 @@
         android:padding="@dimen/dp_16"
         tools:ignore="MissingDefaultResource">
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/rl_title_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/tv_header_title"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
                 app:fontSize="title"
                 app:textViewTheme="lightPrimary"
                 app:weight="regular"
                 tools:text="Bayar Otomatis" />
 
+            <ImageView
+                android:id="@+id/ic_more_info"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/tv_header_title"
+                app:srcCompat="@drawable/ic_coupon_info" />
+
             <CheckBox
                 android:id="@+id/cb_subscription"
                 android:layout_width="@dimen/dp_30"
                 android:layout_height="@dimen/dp_30"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
                 app:theme="@style/DigitalCheckboxAndRadioButton" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_description"

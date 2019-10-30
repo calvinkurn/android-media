@@ -1,7 +1,6 @@
 package com.tokopedia.digital.newcart.presentation.presenter
 
-import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field
-import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
@@ -11,6 +10,7 @@ import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
 import com.tokopedia.digital.common.router.DigitalModuleRouter
 import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType
+import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.FintechProductCheckout
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
@@ -50,8 +50,11 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
             view.updateToolbarTitle(headerTitle)
 
             val description = if (isChecked) bodyContentAfter else bodyContentBefore
-
-            view.renderMyBillsView(bodyTitle, description, isChecked)
+            val isSubscribed = view.digitalSubscriptionParams.isSubscribed
+            view.renderMyBillsSusbcriptionView(bodyTitle, description, isChecked, isSubscribed)
+        }
+        view.cartInfoData.attributes?.fintechProduct?.get(0)?.run {
+            view.renderMyBillsEgoldView(info?.title, info?.subtitle, checkBoxDisabled)
         }
     }
 
@@ -59,6 +62,19 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         val bodyCheckout = super.getRequestBodyCheckout(parameter)
         if (view.cartInfoData.crossSellingType == DigitalCartCrossSellingType.MYBILLS) {
             bodyCheckout.attributes!!.subscribe = view.isSubscriptionChecked()
+            if (view.isEgoldChecked()) {
+                view.cartInfoData.attributes?.fintechProduct?.get(0)?.run {
+                    bodyCheckout.attributes?.apply {
+                        fintechProduct = listOf(FintechProductCheckout(
+                                transactionType = transactionType,
+                                tierId = tierId,
+                                userId = identifier?.userId,
+                                fintechAmount = fintechAmount,
+                                fintechPartnerAmount = fintechPartnerAmount
+                        ))
+                    }
+                }
+            }
         }
         return bodyCheckout
     }
@@ -69,6 +85,12 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
             view.showMyBillsSubscriptionView()
         } else {
             view.hideMyBillsSubscriptionView()
+        }
+    }
+
+    override fun onEgoldMoreInfoClicked() {
+        view.cartInfoData.attributes?.fintechProduct?.get(0)?.info?.run {
+            view.renderEgoldMoreInfo(title, tooltipText, urlLink)
         }
     }
 }
