@@ -15,7 +15,8 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/dc_sprintsale_item_main_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp">
 
         <com.tokopedia.design.image.SquareImageView
             android:id="@+id/dc_sprintsale_item_image"
@@ -30,8 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             app:labelType="general_light_red"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintHorizontal_bias="0"
@@ -44,10 +45,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:textColor="@color/Neutral_N700_44"
             android:maxLines="1"
+            android:ellipsize="end"
             app:typographyType="heading_6"
+            app:layout_constrainedWidth="true"
             app:layout_constraintStart_toEndOf="@id/dc_sprintsale_item_disc_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dc_sprintsale_item_image" />
@@ -61,6 +67,7 @@
             android:layout_marginEnd="8dp"
             android:textColor="@color/Yellow_Y500"
             android:maxLines="1"
+            android:ellipsize="end"
             app:typographyType="heading_5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -71,10 +78,8 @@
             android:id="@+id/dc_sprintsale_item_freeongkir"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintHorizontal_bias="0"
