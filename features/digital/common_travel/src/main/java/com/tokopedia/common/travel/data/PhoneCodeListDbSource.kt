@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.travel.data.entity.FlightCountryEntity
 import com.tokopedia.common.travel.database.CountryPhoneCodeDao
-import com.tokopedia.flight.country.database.CountryPhoneCodeTable
+import com.tokopedia.common.travel.database.CountryPhoneCodeTable
 import rx.Observable
 import java.io.IOException
 import java.nio.charset.Charset
