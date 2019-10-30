@@ -1,14 +1,15 @@
 package com.tokopedia.logisticaddaddress.features.dropoff_picker
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
-import android.widget.Toast
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -45,7 +46,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mEmptyView = findViewById(R.id.view_gps_empty)
         mButtonActivate = findViewById(R.id.button_activate_gps)
         mButtonActivate.setOnClickListener {
-            Toast.makeText(this, "Should start resolution", Toast.LENGTH_SHORT).show()
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
         }
         mSearchText = mSearchInput.searchTextView
         mSearchText.isCursorVisible = false
