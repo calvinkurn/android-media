@@ -21,7 +21,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.UnifyButton
@@ -101,15 +100,6 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 .build()
         mMap?.addMarker(MarkerOptions().position(latLng))
         mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-    }
-
-    private fun onLocationReceived(): (DeviceLocation) -> Unit = {
-        if (it.hasLocation()) {
-            val newLoc = LatLng(it.latitude, it.longitude)
-            moveCamera(newLoc)
-        } else {
-            setLocationEmptyView()
-        }
     }
 
     private fun setLocationEmptyView() {
