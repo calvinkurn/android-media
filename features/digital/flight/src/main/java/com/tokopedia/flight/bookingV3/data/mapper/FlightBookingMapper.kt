@@ -1,5 +1,6 @@
 package com.tokopedia.flight.bookingV3.data.mapper
 
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 
@@ -37,7 +38,6 @@ class FlightBookingMapper {
                 for (includedItem in flightCart.included) {
                     if (item.departureAirportId.equals(includedItem.id, true)) {
                         departureCityName = includedItem.attributes.city
-                        break
                     } else if (item.arrivalAirportId.equals(includedItem.id, true)) {
                         arrivalCityName = includedItem.attributes.city
                     }

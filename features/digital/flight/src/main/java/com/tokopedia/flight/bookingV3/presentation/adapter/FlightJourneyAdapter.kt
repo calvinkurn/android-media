@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
+import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_flight_booking_route_summary.view.*
 
 /**
@@ -35,6 +36,9 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
 
         fun bind(journey: FlightCartViewEntity.JourneySummary) {
             view.tv_flight_airline_name.text = journey.airline
+            view.tv_flight_route_name.text = journey.routeName
+            view.iv_flight_airlines_logo.loadImage(journey.airlineLogo)
+
         }
 
         companion object {
