@@ -32,6 +32,10 @@ class GetShopFeaturedProductUseCase (private val gqlQuery: String,
         }
     }
 
+    fun clearCache(){
+        gqlUseCase.clearCache()
+    }
+
     companion object{
         private const val PARAM_SHOP_ID = "shopId"
         private const val PARAM_USER_ID = "userID"

@@ -1,11 +1,11 @@
 package com.tokopedia.hotel.roomlist.presentation.fragment
 
 import android.app.ProgressDialog
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.graphics.Rect
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -106,7 +106,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomListViewModel.roomListResult.observe(this, android.arch.lifecycle.Observer {
+        roomListViewModel.roomListResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     if (firstTime) trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId)
@@ -126,7 +126,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             }
         })
 
-        roomListViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
+        roomListViewModel.addCartResponseResult.observe(this, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {

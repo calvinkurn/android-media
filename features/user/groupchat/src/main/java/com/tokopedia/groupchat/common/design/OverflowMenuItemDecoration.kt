@@ -2,7 +2,7 @@ package com.tokopedia.groupchat.common.design
 
 import android.content.Context
 import android.graphics.drawable.InsetDrawable
-import android.support.v7.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.groupchat.R
 import com.tokopedia.kotlin.extensions.view.dpToPx

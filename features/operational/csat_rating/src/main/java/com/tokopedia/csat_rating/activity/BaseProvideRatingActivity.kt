@@ -1,6 +1,6 @@
 package com.tokopedia.csat_rating.activity
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.os.Bundle
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity

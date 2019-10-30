@@ -9,4 +9,7 @@
     <string name="error_message_url_invalid">Url tidak valid</string>
     <string name="error_message_url_invalid_crashlytics">Invalid webview url - </string>
 
+    <string name="webview_toolbar_menu_text">Toolbar Menu</string>
+    <string name="webview_home_navigation_text">Home</string>
+    <string name="webview_help_menu_text">Bantuan</string>
 </resources>

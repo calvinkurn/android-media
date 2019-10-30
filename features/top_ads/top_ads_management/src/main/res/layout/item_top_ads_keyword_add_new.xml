@@ -17,14 +17,14 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/title"
             style="@style/TextView.Small"
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="@string/app_android" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/type"
             style="@style/TextView.Micro.BlackDisabled"
             android:maxLines="1"

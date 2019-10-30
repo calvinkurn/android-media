@@ -1,6 +1,6 @@
 package com.tokopedia.groupchat.channel.view.fragment;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * @author : Steven 13/11/18

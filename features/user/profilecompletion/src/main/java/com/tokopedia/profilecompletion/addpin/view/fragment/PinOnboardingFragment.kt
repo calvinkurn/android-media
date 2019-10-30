@@ -1,12 +1,12 @@
 package com.tokopedia.profilecompletion.addpin.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +15,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.addpin.data.StatusPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
-import com.tokopedia.profilecompletion.customview.UnifyDialog
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
@@ -50,8 +48,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_onboard_pin, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_onboard_pin, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,7 +60,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
         btnNext.setOnClickListener {
             trackingPinUtil.trackClickCreateButton()
-            addChangePinViewModel.getStatusPin()
+            goToAddPin()
         }
 
         btnIgnore.setOnClickListener {
@@ -72,6 +69,12 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         }
 
         initObserver()
+
+        if(!userSession.isMsisdnVerified){
+            goToAddPhone()
+        }else{
+            addChangePinViewModel.getStatusPin()
+        }
     }
 
     override fun onStart() {
@@ -101,11 +104,16 @@ class PinOnboardingFragment: BaseDaggerFragment(){
     }
 
     private fun onSuccessGetStatusPin(statusPinData: StatusPinData){
-        if(statusPinData.isPhoneNumberExist && statusPinData.isPhoneNumberVerified){
-            goToAddPin()
+        if(statusPinData.isRegistered){
+            goToChangePin()
         }else{
-            showAddPhoneDialog()
+            dismissLoading()
         }
+    }
+
+    private fun goToChangePin(){
+        RouteManager.route(activity, ApplinkConstInternalGlobal.CHANGE_PIN)
+        activity?.finish()
     }
 
     private fun onErrorGetStatusPin(throwable: Throwable){
@@ -113,20 +121,6 @@ class PinOnboardingFragment: BaseDaggerFragment(){
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
         }
-    }
-
-    private fun showAddPhoneDialog() {
-        val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
-        dialog.setTitle(getString(R.string.title_dialog_add_phone))
-        dialog.setDescription(getString(R.string.subtitle_dialog_add_phone))
-        dialog.setOk(getString(R.string.title_dialog_add_phone))
-        dialog.setOkOnClickListner(View.OnClickListener {
-            goToAddPhone()
-            dialog.dismiss()
-        })
-        dialog.setSecondary(getString(R.string.cancel_dialog_add_phone))
-        dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
-        dialog.show()
     }
 
     private fun goToAddPhone(){
@@ -142,20 +136,19 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         activity?.finish()
     }
 
-    private fun onSuccessAddPhoneNumber(data: Intent?){
-        data?.extras?.run {
-            val phone = getString(AddPhoneFragment.EXTRA_PHONE, "")
-            if(!phone.isNullOrEmpty())
-                userSession.phoneNumber = phone
-        }
+    private fun onSuccessAddPhoneNumber(){
+        dismissLoading()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                when (requestCode) {
-                    REQUEST_CODE_ADD_PHONE -> {
-                        onSuccessAddPhoneNumber(data)
+        when(requestCode){
+            REQUEST_CODE_ADD_PHONE -> {
+                when(resultCode) {
+                    Activity.RESULT_OK -> {
+                        onSuccessAddPhoneNumber()
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        activity?.finish()
                     }
                 }
             }

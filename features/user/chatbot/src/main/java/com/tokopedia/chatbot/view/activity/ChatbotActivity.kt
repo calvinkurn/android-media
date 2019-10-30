@@ -3,8 +3,8 @@ package com.tokopedia.chatbot.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.NotificationManagerCompat
+import androidx.fragment.app.Fragment
+import androidx.core.app.NotificationManagerCompat
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler

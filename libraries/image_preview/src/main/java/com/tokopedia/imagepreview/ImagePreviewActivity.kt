@@ -1,7 +1,6 @@
 package com.tokopedia.imagepreview
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -13,17 +12,17 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
-import android.support.v4.app.NotificationCompat
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.fragment.app.Fragment
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
@@ -147,12 +146,8 @@ class ImagePreviewActivity : BaseSimpleActivity() {
                 .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(notificationId, notificationBuilder.build())
-        val targetListener: SimpleTarget<Bitmap> = object : SimpleTarget<Bitmap>() {
-            @SuppressLint("Range")
-            override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                if (resource == null) {
-                    return;
-                }
+        val targetListener: CustomTarget<Bitmap> = object : CustomTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 var path: String?
                 try {
                     path = saveImageFromBitmap(
@@ -205,11 +200,15 @@ class ImagePreviewActivity : BaseSimpleActivity() {
                 }
             }
 
-            override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
-                super.onLoadFailed(e, errorDrawable)
+            override fun onLoadFailed(errorDrawable: Drawable?) {
+                super.onLoadFailed(errorDrawable)
                 showFailedDownload(notificationId, notificationBuilder)
             }
-        };
+
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
+        }
         fileLocations?.getOrNull(viewPager.currentItem)?.let {
             ImageHandler.loadImageBitmap2(
                     this@ImagePreviewActivity,
