@@ -1,12 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix
 
-import android.app.Activity
-import android.graphics.Point
-import android.support.v7.widget.CardView
-import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -18,7 +14,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder.ProductItemViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder.SeeMoreBannerMixViewHolder
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
-import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import kotlinx.android.synthetic.main.thematic_card_view.view.*
 
 class BannerItemAdapter(val bannerMixTypeFactoryImpl: BannerMixTypeFactoryImpl,
