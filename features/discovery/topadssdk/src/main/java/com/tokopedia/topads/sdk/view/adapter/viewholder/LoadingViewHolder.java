@@ -1,6 +1,6 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.topads.sdk.R;

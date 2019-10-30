@@ -1,7 +1,7 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan

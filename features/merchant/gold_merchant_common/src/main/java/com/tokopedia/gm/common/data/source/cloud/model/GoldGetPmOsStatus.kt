@@ -45,7 +45,7 @@ data class ShopStatusModel(
         @SerializedName("power_merchant")
         @Expose
         val powerMerchant: PowerMerchant = PowerMerchant(),
-        @SerializedName("shop_id")
+        @SerializedName("shopID")
         @Expose
         val shopId: Int = 0
 ) {

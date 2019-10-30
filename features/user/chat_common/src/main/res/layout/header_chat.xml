@@ -40,7 +40,7 @@
         app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black"
         />
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/user_avatar"
@@ -101,5 +101,5 @@
             app:layout_constraintTop_toBottomOf="@id/title"
             app:layout_constraintStart_toStartOf="@id/title"
             tools:text="Terakhir online 3 menit yang lalu"/>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

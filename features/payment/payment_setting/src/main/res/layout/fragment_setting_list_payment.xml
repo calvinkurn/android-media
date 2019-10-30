@@ -13,7 +13,7 @@
         tools:text="@string/payment_label_saved_card"
         style="@style/TextView.Small"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:padding="@dimen/dp_16"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

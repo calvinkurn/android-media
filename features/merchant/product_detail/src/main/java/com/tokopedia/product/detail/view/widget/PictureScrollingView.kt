@@ -3,8 +3,8 @@ package com.tokopedia.product.detail.view.widget
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.support.v4.app.FragmentManager
-import android.support.v4.view.ViewPager
+import androidx.fragment.app.FragmentManager
+import androidx.viewpager.widget.ViewPager
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout

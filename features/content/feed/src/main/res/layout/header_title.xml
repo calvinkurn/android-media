@@ -13,7 +13,7 @@
         android:textColor="@color/label_color"
         android:layout_gravity="center" />
 
-    <android.support.v4.widget.Space
+    <androidx.legacy.widget.Space
         android:layout_width="@dimen/feed_margin_s"
         android:layout_height="match_parent" />
 

@@ -1,8 +1,8 @@
 package com.tokopedia.product.detail.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.Intent
-import android.support.v4.util.ArrayMap
+import androidx.collection.ArrayMap
 import android.text.TextUtils
 import android.util.SparseArray
 import com.google.gson.JsonObject

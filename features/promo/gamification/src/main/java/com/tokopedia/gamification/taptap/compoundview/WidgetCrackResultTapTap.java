@@ -7,8 +7,8 @@ import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -25,15 +25,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
-import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
-import com.tokopedia.gamification.util.HexValidator;
 import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
+import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
 
 import java.util.List;
 
@@ -131,14 +133,19 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
         } else {
             if (!TextUtils.isEmpty(crackResult.getImageUrl())) {
                 Glide.with(getContext())
-                        .load(crackResult.getImageUrl())
                         .asBitmap()
-                        .into(new SimpleTarget<Bitmap>() {
+                        .load(crackResult.getImageUrl())
+                        .into(new CustomTarget<Bitmap>() {
                             @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                 imageViewCrackResult.setImageBitmap(resource);
                                 rewardTranslateAnimatorSet.start();
                                 imageViewCrackResult.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+
                             }
                         });
             }

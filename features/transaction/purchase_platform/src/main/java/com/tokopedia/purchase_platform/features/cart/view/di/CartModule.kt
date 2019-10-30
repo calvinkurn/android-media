@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.di
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
