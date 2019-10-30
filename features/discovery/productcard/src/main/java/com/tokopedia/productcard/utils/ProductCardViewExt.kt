@@ -1,8 +1,8 @@
 package com.tokopedia.productcard.utils
 
-import android.support.annotation.DimenRes
-import android.support.constraint.ConstraintLayout
-import android.support.constraint.ConstraintSet
+import androidx.annotation.DimenRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker

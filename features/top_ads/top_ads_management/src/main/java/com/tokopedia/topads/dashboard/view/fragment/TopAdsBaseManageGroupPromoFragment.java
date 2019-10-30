@@ -2,8 +2,8 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.design.widget.TextInputLayout;
+import androidx.annotation.IdRes;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;

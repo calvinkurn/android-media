@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.Productshimmer
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView

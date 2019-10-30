@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.listener;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;

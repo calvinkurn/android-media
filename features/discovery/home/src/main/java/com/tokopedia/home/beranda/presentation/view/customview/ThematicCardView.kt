@@ -19,6 +19,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
+import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
@@ -190,14 +197,17 @@ class ThematicCardView : BaseCustomView {
     private fun loadShopBadgesIcon(url: String) {
         if(!TextUtils.isEmpty(url)) {
             val view = LayoutInflater.from(context).inflate(com.tokopedia.productcard.R.layout.product_card_badge_layout, null)
+            ImageHandler.loadImageBitmap2(context, url, object : CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {
 
-            ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
-                override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {
-                    loadShopBadgeSuccess(view, bitmap)
                 }
 
-                override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
-                    super.onLoadFailed(e, errorDrawable)
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    loadShopBadgeSuccess(view, resource)
+                }
+
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
                     loadShopBadgeFailed(view)
                 }
             })

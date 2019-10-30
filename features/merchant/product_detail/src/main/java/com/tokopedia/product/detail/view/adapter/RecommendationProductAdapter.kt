@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.view.adapter
 
+import androidx.recyclerview.widget.RecyclerView
 import android.app.Activity
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager

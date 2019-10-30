@@ -49,7 +49,6 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivi
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
-import com.tokopedia.referral.view.activity.ReferralActivity;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -248,10 +247,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
                     sendCampaignGTM(activity, uriData.toString(), screenName);
                     openPeluangPage(uriData.getPathSegments(), uriData);
-                    break;
-                case DeepLinkChecker.REFERRAL:
-                    screenName = AppScreen.SCREEN_REFERRAL;
-                    openReferralScreen(uriData);
                     break;
                 case DeepLinkChecker.GROUPCHAT:
                     openGroupChat(linkSegment);
@@ -736,10 +731,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 ApplinkConstInternalDiscovery.SEARCH_RESULT;
 
         return applink + "?" + uriData.getQuery();
-    }
-
-    private void openReferralScreen(Uri uriData) {
-        context.startActivity(ReferralActivity.getCallingIntent(context));
     }
 
     private boolean isHotBrowse(List<String> linkSegment, Uri uriData) {

@@ -40,6 +40,8 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
 
     var freeShipping: FreeShipping = FreeShipping()
 
+    var categoryId: Int = 0
+
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
                 replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean,
@@ -76,7 +78,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
             productImage: String, isSender: Boolean, message: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variant: String, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping
+            freeShipping: FreeShipping, categoryId: Int
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             "", isRead, false, isSender, message
@@ -96,6 +98,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.priceBefore = priceBefore
         this.shopId = shopId
         this.freeShipping = freeShipping
+        this.categoryId = categoryId
     }
 
     /**

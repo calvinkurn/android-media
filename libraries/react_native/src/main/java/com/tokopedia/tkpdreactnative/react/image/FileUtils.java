@@ -3,7 +3,7 @@ package com.tokopedia.tkpdreactnative.react.image;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.config.GlobalConfig;
 

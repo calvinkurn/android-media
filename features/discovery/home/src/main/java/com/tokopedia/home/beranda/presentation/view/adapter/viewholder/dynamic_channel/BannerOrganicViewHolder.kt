@@ -20,8 +20,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
@@ -35,9 +43,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactoryImpl
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder.ProductItemViewHolder
-import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
-import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -144,13 +149,13 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
         bannerTitle.text = bannerItem.title
         bannerDescription.text = bannerItem.description
-
-        bannerTitle.setTextColor(Color.parseColor(bannerItem.textColor))
-        bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
+        val textColor = if(bannerItem.textColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
+        bannerTitle.setTextColor(textColor)
+        bannerDescription.setTextColor(textColor)
 
         Glide.with(itemView.context)
-                .load(bannerItem.imageUrl)
                 .asBitmap()
+                .load(bannerItem.imageUrl)
                 .centerCrop()
                 .dontAnimate()
                 .into(getRoundedImageViewTarget(bannerImage, 24f))
@@ -255,7 +260,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
     private fun getRoundedImageViewTarget(imageView: ImageView, radius: Float): BitmapImageViewTarget {
         return object : BitmapImageViewTarget(imageView) {
-            override fun setResource(resource: Bitmap) {
+            override fun setResource(resource: Bitmap?) {
                 val circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
                 circularBitmapDrawable.cornerRadius = radius
                 imageView.setImageDrawable(circularBitmapDrawable)

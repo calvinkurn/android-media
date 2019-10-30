@@ -1,7 +1,5 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
-import android.app.Activity
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.carouselproductcard.CarouselProductCardView
