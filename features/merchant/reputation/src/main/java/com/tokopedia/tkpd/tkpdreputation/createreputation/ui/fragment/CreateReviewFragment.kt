@@ -6,6 +6,8 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
@@ -15,8 +17,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.airbnb.lottie.LottieAnimationView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.SimpleTarget
 import com.tkpd.library.ui.view.LinearLayoutManager
-import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.core.base.di.component.AppComponent
@@ -159,11 +164,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     private fun generateReviewBackground(position: Int) {
         when (position) {
-            1 -> transitionDrawable(MethodChecker.getDrawable(context, R.drawable.grey_rating_bg))
-            2 -> transitionDrawable(MethodChecker.getDrawable(context, R.drawable.grey_rating_bg))
-            3 -> transitionDrawable(MethodChecker.getDrawable(context, R.drawable.green_rating_bg))
-            4 -> transitionDrawable(MethodChecker.getDrawable(context, R.drawable.yellow_rating_bg))
-            5 -> transitionDrawable(MethodChecker.getDrawable(context, R.drawable.yellow_rating_bg))
+            1 -> renderBackgroundTransition("https://ecs7.tokopedia.net/android/others/1_2reviewbg.png")
+            2 -> renderBackgroundTransition("https://ecs7.tokopedia.net/android/others/1_2reviewbg.png")
+            3 -> renderBackgroundTransition("https://ecs7.tokopedia.net/android/others/3reviewbg.png")
+            4 -> renderBackgroundTransition("https://ecs7.tokopedia.net/android/others/4_5reviewbg.png")
+            5 -> renderBackgroundTransition("https://ecs7.tokopedia.net/android/others/4_5reviewbg.png")
         }
     }
 
@@ -230,6 +235,20 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 imgAnimationView.playAnimation()
             }
         }
+    }
+
+    private fun renderBackgroundTransition(url:String){
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(bitmap: Bitmap,
+                                                 glideAnimation: GlideAnimation<in Bitmap>?) {
+                        val drawable = BitmapDrawable(context?.resources,bitmap)
+                        transitionDrawable(drawable)
+                    }
+                })
     }
 
     private fun addImageClick() {
