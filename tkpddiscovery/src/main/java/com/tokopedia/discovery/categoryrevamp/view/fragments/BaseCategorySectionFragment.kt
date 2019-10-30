@@ -97,6 +97,9 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         if (context is CategoryNavigationListener) {
             categoryNavigationListener = context
         }
+        if (context != null) {
+            setSortListener(context)
+        }
         if (context is BottomSheetListener) {
             this.bottomSheetListener = context
         }
@@ -214,7 +217,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
         if (activity == null) return
 
-        if(!FilterSortManager.openSortActivity(this, sort, selectedSort)) {
+        if (!FilterSortManager.openSortActivity(this, sort, selectedSort)) {
             NetworkErrorHelper.showSnackbar(activity, activity!!.getString(R.string.error_sort_data_not_ready))
         }
     }
@@ -229,6 +232,18 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         val initializedFilterList = FilterHelper.initializeFilterList(getFilters())
         filterController?.initFilterController(searchParameter?.getSearchParameterHashMap(), initializedFilterList)
         initSelectedSort()
+    }
+
+    private fun showSortTickIfSelected(): Boolean {
+        var toShow = false
+        if (selectedSort.size == 1 && DEFAULT_SORT != selectedSort["ob"]?.toInt())
+            for (items in sort) {
+                if (items.key == selectedSort.keys.elementAt(0) && items.value == selectedSort.getValue(items.key)) {
+                    toShow = true
+                    break
+                }
+            }
+        return toShow
     }
 
     private fun setSortData(sorts: List<Sort>) {
@@ -342,7 +357,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, object:FilterSortManager.Callback {
+        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, object : FilterSortManager.Callback {
             override fun onFilterResult(queryParams: MutableMap<String, String>?, selectedFilters: MutableMap<String, String>?, selectedOptions: MutableList<Option>?) {
 
             }
@@ -362,7 +377,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         })
     }
 
-    abstract fun onSortAppliedEvent(selectedSortName:String, sortValue:Int)
+    abstract fun onSortAppliedEvent(selectedSortName: String, sortValue: Int)
 
     fun clearDataFilterSort() {
         if (filters != null) {
@@ -409,11 +424,15 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
 
-    fun setSortListener(sortAppliedListener:SortAppliedListener){
-        this.sortAppliedListener = sortAppliedListener
+    fun setSortListener(context: Context?) {
+        this.sortAppliedListener = context as SortAppliedListener
     }
 
     interface SortAppliedListener {
         fun onSortApplied(showTick: Boolean)
+    }
+
+    fun resetSortTick() {
+        sortAppliedListener?.onSortApplied(showSortTickIfSelected())
     }
 }

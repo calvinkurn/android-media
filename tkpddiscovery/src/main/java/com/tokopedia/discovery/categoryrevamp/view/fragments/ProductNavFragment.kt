@@ -550,13 +550,13 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         if (!item.isTopAds) {
             ImpresionTask().execute(item.productClickTrackingUrl)
         }
-            catAnalyticsInstance.eventClickProductList(item.id.toString(),
-                    mDepartmentId,
-                    item.name,
-                    CurrencyFormatHelper.convertRupiahToInt(item.price),
-                    adapterPosition,
-                    item.categoryBreadcrumb ?: "",
-                    getProductItemPath(item.categoryBreadcrumb ?: "", mDepartmentId))
+        catAnalyticsInstance.eventClickProductList(item.id.toString(),
+                mDepartmentId,
+                item.name,
+                CurrencyFormatHelper.convertRupiahToInt(item.price),
+                adapterPosition,
+                item.categoryBreadcrumb ?: "",
+                getProductItemPath(item.categoryBreadcrumb ?: "", mDepartmentId))
 
     }
 

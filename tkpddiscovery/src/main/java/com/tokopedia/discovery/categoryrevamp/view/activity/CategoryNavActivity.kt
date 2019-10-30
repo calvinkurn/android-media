@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
+import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
@@ -46,7 +47,14 @@ import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
 import javax.inject.Inject
 
 
-class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSheetListener {
+class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
+        SearchNavigationView.SearchNavClickListener,
+        BaseCategorySectionFragment.SortAppliedListener,
+        BottomSheetListener {
+
+    override fun onSortApplied(showTick: Boolean) {
+        searchNavContainer?.onSortSelected(showTick)
+    }
 
     override fun hideBottomNavigation() {
         searchNavContainer?.visibility = View.GONE
@@ -82,7 +90,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     private val STATE_LIST = 2
     private val STATE_BIG = 3
     private var bottomSheetFilterView: BottomSheetFilterView? = null
-    private var searchNavContainer: View? = null
+    private var searchNavContainer: SearchNavigationView? = null
 
 
     private var searchParameter: SearchParameter? = null
@@ -114,6 +122,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     companion object {
+        private const val ORDER_BY = "ob"
 
         @JvmStatic
         fun isCategoryRevampEnabled(context: Context): Boolean {
@@ -147,27 +156,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     private fun initSwitchButton() {
-
-        icon_sort.setOnClickListener {
-            visibleFragmentListener?.onSortClick()
-            catAnalyticsInstance.eventSortClicked(departmentId)
-
-        }
-        button_sort.setOnClickListener {
-            visibleFragmentListener?.onSortClick()
-            catAnalyticsInstance.eventSortClicked(departmentId)
-        }
-
-        icon_filter.setOnClickListener {
-            visibleFragmentListener?.onFilterClick()
-            catAnalyticsInstance.eventFilterClicked(departmentId)
-        }
-
-        button_filter.setOnClickListener {
-            visibleFragmentListener?.onFilterClick()
-            catAnalyticsInstance.eventFilterClicked(departmentId)
-        }
-
+        searchNavContainer?.setSearchNavListener(this)
 
         img_display_button.tag = STATE_GRID
         img_display_button.setOnClickListener {
@@ -292,6 +281,11 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     private fun applyFilter(filterParameter: Map<String, String>) {
         val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
 
+        if(filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))){
+            searchNavContainer?.onFilterSelected(true)
+        } else {
+            searchNavContainer?.onFilterSelected(false)
+        }
         val presentFilterList = selectedFragment.getSelectedFilter()
         if (presentFilterList.size < filterParameter.size) {
             for (i in filterParameter.entries) {
@@ -375,6 +369,14 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     private fun onPageSelectedCalled(position: Int) {
         this.isForceSwipeToShop = false
         this.activeTabPosition = position
+        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+        selectedFragment.resetSortTick()
+        val  filterParameter = selectedFragment.getSelectedFilter()
+        if(filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))){
+            searchNavContainer?.onFilterSelected(true)
+        } else {
+            searchNavContainer?.onFilterSelected(false)
+        }
     }
 
     private fun initToolbar() {
@@ -436,6 +438,16 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     fun getCategoryId(): String {
         return departmentId
+    }
+
+    override fun onSortButtonClicked() {
+        visibleFragmentListener?.onSortClick()
+        catAnalyticsInstance.eventSortClicked(departmentId)
+    }
+
+    override fun onFilterButtonClicked() {
+        visibleFragmentListener?.onFilterClick()
+        catAnalyticsInstance.eventFilterClicked(departmentId)
     }
 
 }
