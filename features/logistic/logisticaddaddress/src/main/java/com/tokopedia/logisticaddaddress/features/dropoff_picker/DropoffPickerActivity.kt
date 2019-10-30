@@ -38,6 +38,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mDisabledLocationView: View
     lateinit var mNoPermissionsView: View
     lateinit var mButtonActivate: UnifyButton
+    lateinit var mButtonGrant: UnifyButton
     lateinit var mPermissionChecker: PermissionCheckerHelper
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     lateinit var mLocationCallback: LocationCallback
@@ -56,6 +57,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mButtonActivate = findViewById(R.id.button_activate_gps)
         mButtonActivate.setOnClickListener {
             createLocationRequest()
+        }
+        mButtonGrant = findViewById(R.id.button_grant_permission)
+        mButtonGrant.setOnClickListener {
+            checkForPermission()
         }
         mSearchText = mSearchInput.searchTextView
         mSearchText.isCursorVisible = false
