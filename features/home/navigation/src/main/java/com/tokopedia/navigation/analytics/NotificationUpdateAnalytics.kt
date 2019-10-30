@@ -12,7 +12,8 @@ import javax.inject.Inject
  */
 class NotificationUpdateAnalytics @Inject constructor() {
 
-    val seenNotifications = HashSet<String>()
+    private val seenNotifications = HashSet<String>()
+    private val seenProductCards = HashSet<String>()
 
     companion object {
         val SCREEN_NAME: String = "notif center"
@@ -46,9 +47,11 @@ class NotificationUpdateAnalytics @Inject constructor() {
         val ACTION_CLICK_ATC_BUTTON = "click on atc button"
         val ACTION_VIEW_NOTIF_LIST = "view on notif list"
         val ACTION_CLICK_LONGER_CONTENT_BUTTON = "click on text (longer content)"
+        val ACTION_VIEW_PRODUCT_CARD = "view on product card impression"
 
         // Label
         val LABEL_UPDATE_NOTIF_CENTER = "tab update / recomm page from notif center"
+        val LABEL_LOCATION_UPDATE = "tab notif center page"
         val LABEL_LOCATION = "lonceng"
     }
 
@@ -253,6 +256,42 @@ class NotificationUpdateAnalytics @Inject constructor() {
                         ACTION_CLICK_LONGER_CONTENT_BUTTON,
                         templateKey
                 )
+        )
+    }
+
+    fun saveProductCardImpression(notification: NotificationUpdateItemViewModel, position: Int) {
+        val notificationId = notification.notificationId
+        val isNotAlreadyTracked = seenProductCards.add(notificationId)
+        if (isNotAlreadyTracked) {
+            trackProductCardImpression(notification, position)
+        }
+    }
+
+    private fun trackProductCardImpression(notification: NotificationUpdateItemViewModel, position: Int) {
+        val product = notification.getAtcProduct()
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT_NAME, NAME_EVENT_PRODUCT_VIEW,
+                EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION, ACTION_VIEW_PRODUCT_CARD,
+                EVENT_LABEL, LABEL_LOCATION_UPDATE,
+                ECOMMERCE, DataLayer.mapOf(
+                    "currencyCode", "IDR",
+                    "impressions", arrayListOf(
+                        DataLayer.mapOf(
+                            "name", product?.name,
+                            "id", product?.productId,
+                            "price", product?.price,
+                            "brand", "",
+                            "category", "",
+                            "variant", "",
+                            "list", "",
+                            "position", position,
+                            "attribution", ""
+                        )
+                    )
+                )
+            )
         )
     }
 }

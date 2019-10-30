@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.navigation.R
+import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel.Companion.BUYER_TYPE
@@ -153,6 +154,10 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
 
     private fun getColorResource(colorId: Int): Int {
         return MethodChecker.getColor(itemView.context, colorId)
+    }
+
+    protected fun getAnalytic(): NotificationUpdateAnalytics {
+        return listener.getAnalytic()
     }
 
     companion object {
