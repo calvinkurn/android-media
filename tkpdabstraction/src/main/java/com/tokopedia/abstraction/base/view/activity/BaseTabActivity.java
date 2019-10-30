@@ -23,8 +23,8 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        tabLayout = (TabLayout) findViewById(R.id.indicator);
+        viewPager = (ViewPager) findViewById(com.tokopedia.abstraction.R.id.pager);
+        tabLayout = (TabLayout) findViewById(com.tokopedia.abstraction.R.id.indicator);
         viewPager.setOffscreenPageLimit(getPageLimit());
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
     }
@@ -36,6 +36,6 @@ public abstract class BaseTabActivity extends BaseToolbarActivity {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_base_tab;
+        return com.tokopedia.abstraction.R.layout.activity_base_tab;
     }
 }
