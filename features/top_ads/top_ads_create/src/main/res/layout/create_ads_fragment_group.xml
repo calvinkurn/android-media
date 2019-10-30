@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_16"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btn_submit"
+        android:orientation="vertical">
+
+
+        <TextView
+            style="@style/TextView.TitleBig.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:gravity="left"
+            android:text="Group Iklan" />
+
+        <TextView
+            style="@style/TextView.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_35"
+            android:gravity="left"
+            android:text="Atur beberapa iklan sekaligus ke dalam satu group sesuai kategori produk." />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ketik nama group iklan" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            style="@style/TextView.Micro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contoh: Spatu Lari, Bando Wanita, Gaun Pesta" />
+
+    </LinearLayout>
+
+    <com.tokopedia.design.component.RoundFloatingButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apa itu group iklan?"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/btn_submit"
+        style="@style/TextView.Micro.Green"
+        android:gravity="center"
+        android:backgroundTint="#FFFCF5"
+        app:buttonDrawableLeftCompat="@drawable/create_ads_ic_help"
+        app:buttonCompatSize="big"/>
+    <Button
+        android:id="@+id/btn_submit"
+        style="@style/Button.Submit.Green"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Buat Group Iklan" />
+</RelativeLayout>
