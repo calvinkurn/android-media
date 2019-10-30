@@ -7,6 +7,8 @@ interface WishlistListener : SmartListener{
     fun onProductImpression(dataModel: WishlistDataModel)
     fun onProductClick(dataModel: WishlistDataModel, position: Int)
     fun onDeleteClick(dataModel: WishlistDataModel, adapterPosition: Int)
-    fun onAddToCartClick(dataModel: WishlistDataModel, callback: (Boolean) -> Unit)
-    fun onWishlistClick(dataModel: WishlistDataModel)
+    fun onAddToCartClick(dataModel: WishlistDataModel, adapterPosition: Int)
+    fun onWishlistClick(parentPosition: Int, childPosition: Int)
+    fun onClickCheckboxDeleteWishlist(position: Int, isChecked: Boolean)
+    fun onTryAgainClick()
 }

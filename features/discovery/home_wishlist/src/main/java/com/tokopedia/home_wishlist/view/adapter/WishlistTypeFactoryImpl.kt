@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
+import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.view.viewholder.*
 
@@ -12,7 +13,7 @@ import com.tokopedia.home_wishlist.view.viewholder.*
  *
  * This class extends from [BaseAdapterTypeFactory] and implement from [HomeRecommendationTypeFactory]
  */
-class WishlistTypeFactoryImpl : WishlistTypeFactory {
+class WishlistTypeFactoryImpl(private val appExecutors: SmartExecutors) : WishlistTypeFactory {
     override fun type(wishlistItemDataModel: WishlistItemDataModel): Int {
         return WishlistItemDataModel.LAYOUT
     }
@@ -63,9 +64,8 @@ class WishlistTypeFactoryImpl : WishlistTypeFactory {
             EmptyWishlistViewHolder.LAYOUT -> EmptyWishlistViewHolder(view)
             ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view)
             RecommendationItemViewHolder.LAYOUT -> RecommendationItemViewHolder(view)
-            RecommendationCarouselItemViewHolder.LAYOUT -> RecommendationCarouselItemViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
-            RecommendationCarouselViewHolder.LAYOUT -> RecommendationCarouselViewHolder(view)
+            RecommendationCarouselViewHolder.LAYOUT -> RecommendationCarouselViewHolder(view, appExecutors)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         }
     }

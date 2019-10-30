@@ -12,9 +12,8 @@ data class RecommendationCarouselDataModel (
         var isBulkMode: Boolean = false
 ): WishlistDataModel {
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
-        if(dataModel.javaClass == this.javaClass){
-            return this.getUniqueIdentity() == (dataModel as RecommendationCarouselDataModel).getUniqueIdentity() &&
-                    dataModel.isBulkMode == isBulkMode
+        if(dataModel is RecommendationCarouselDataModel){
+            return dataModel.isBulkMode == isBulkMode && dataModel.list == list && title == dataModel.title
         }
         return false
     }

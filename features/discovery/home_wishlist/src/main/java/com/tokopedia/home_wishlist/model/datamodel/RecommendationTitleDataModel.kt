@@ -8,8 +8,8 @@ class RecommendationTitleDataModel(
         val seeMoreAppLink: String
 ) : WishlistDataModel {
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
-        if(dataModel.javaClass == this.javaClass){
-            return this.getUniqueIdentity() == (dataModel as RecommendationTitleDataModel).getUniqueIdentity()
+        if(dataModel is RecommendationTitleDataModel){
+            return title == dataModel.title
         }
         return false
     }

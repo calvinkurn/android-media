@@ -47,6 +47,7 @@ class WishlistCardView : ProductCardView{
 
     fun disableAddToCartButton(){
         addToCardActionButton?.isEnabled = false
+        addToCardActionButton?.text = "Tambah ke Keranjang"
     }
 
     fun setOutOfStock(){
@@ -56,6 +57,7 @@ class WishlistCardView : ProductCardView{
 
     fun enableAddToCartButton(){
         addToCardActionButton?.isEnabled = true
+        addToCardActionButton?.text = "Tambah ke Keranjang"
     }
 
     override fun setOnClickListener(clickListener: OnClickListener){

@@ -16,9 +16,10 @@ data class WishlistItemDataModel(
     override fun getUniqueIdentity(): Any = productItem.id
 
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
-        if(dataModel.javaClass == this.javaClass){
-            return this.getUniqueIdentity() == (dataModel as WishlistDataModel).getUniqueIdentity() &&
-                    (dataModel as WishlistItemDataModel).isBulkMode == isBulkMode
+        if(dataModel is WishlistItemDataModel){
+            return dataModel.isBulkMode == isBulkMode &&
+                    dataModel.isChecked == isChecked &&
+                    dataModel.isOnAddToCart == isOnAddToCart
         }
         return false
     }
@@ -26,6 +27,7 @@ data class WishlistItemDataModel(
     override fun type(typeFactory: WishlistTypeFactory): Int {
         return typeFactory.type(this)
     }
+
     companion object{
         val LAYOUT = R.layout.layout_wishlist_item
     }
