@@ -25,7 +25,6 @@ class ProductRecommendationViewHolder(
     private val productCardView: ProductCardView by lazy { view.findViewById<ProductCardView>(R.id.product_item) }
 
     override fun bind(element: ProductRecommendationViewModel) {
-        System.out.println(element)
         productCardView.run {
             setProductModel(
                     ProductCardModel(
@@ -53,10 +52,8 @@ class ProductRecommendationViewHolder(
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
                     if (element.productItem.isTopAds) {
-                        // Implement Tracking
                         ImpresionTask().execute(element.productItem.trackerImageUrl)
                     }
-                    // listener
                     element.listener.onProductImpression(element.productItem)
                 }
             })
@@ -96,6 +93,10 @@ class ProductRecommendationViewHolder(
 
     private fun showError(view: View, throwable: Throwable?) {
         Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
+    }
+
+    companion object {
+        val LAYOUT = R.layout.viewmodel_product_recommendation_item
     }
 
 }

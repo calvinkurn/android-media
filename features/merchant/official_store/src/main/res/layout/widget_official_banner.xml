@@ -35,6 +35,7 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/banner_see_all"
+        android:textStyle="bold"
         android:textColor="@color/Purple_P600"
         android:textSize="@dimen/fontSize_lvl2" />
 
