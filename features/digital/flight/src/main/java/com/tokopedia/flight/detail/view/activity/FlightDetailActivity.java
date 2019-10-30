@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.flight.FlightComponentInstance;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailFacilityFragment;
@@ -222,5 +223,15 @@ public class FlightDetailActivity extends BaseTabActivity {
     @Override
     protected int getPageLimit() {
         return 3;
+    }
+
+    @Override
+    protected int getViewPagerResourceId() {
+        return R.id.pager;
+    }
+
+    @Override
+    protected int getTabLayoutResourceId() {
+        return R.id.indicator;
     }
 }

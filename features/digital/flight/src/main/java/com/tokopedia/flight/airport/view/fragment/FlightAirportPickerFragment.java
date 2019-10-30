@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
 import com.tokopedia.flight.airport.di.FlightAirportModule;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory;
@@ -96,6 +97,11 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     @Override
     public void onSearchSubmitted(String text) {
         flightAirportPickerPresenter.getSuggestionAirport(searchInputView.getSearchText());
+    }
+
+    @Override
+    public int getSearchInputViewResourceId() {
+        return R.id.search_input_view;
     }
 
     @Override

@@ -42,7 +42,7 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(com.tokopedia.abstraction.R.layout.fragment_base_search_list, container, false);
+        return inflater.inflate(R.layout.fragment_base_search_list, container, false);
     }
 
     @NonNull
@@ -51,7 +51,7 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     }
 
     public int getSearchInputViewResourceId(){
-        return com.tokopedia.abstraction.R.id.search_input_view;
+        return R.id.search_input_view;
     }
 
     @Nullable
