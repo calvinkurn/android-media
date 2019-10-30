@@ -615,9 +615,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun goToApplyLeasing() {
+        val selectedProductId =  if (selectedVariantId.toIntOrZero() > 0) {
+            selectedVariantId
+        } else {
+            productId
+        }
         val urlApplyLeasingWithProductId = String.format(
                 URL_APPLY_LEASING,
-                productId
+                selectedProductId
         )
         val webViewUrl = String.format(
                 "%s?url=%s",
