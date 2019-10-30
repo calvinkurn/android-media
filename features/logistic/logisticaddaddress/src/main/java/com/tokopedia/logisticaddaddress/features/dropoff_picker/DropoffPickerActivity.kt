@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.features.dropoff_picker
 
 import android.app.Activity
 import android.content.Intent
+import android.content.IntentSender
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -11,8 +12,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -20,6 +22,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
@@ -37,6 +40,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mButtonActivate: UnifyButton
     lateinit var mPermissionChecker: PermissionCheckerHelper
     lateinit var mFusedLocationClient: FusedLocationProviderClient
+    lateinit var mLocationCallback: LocationCallback
     private var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
 
@@ -51,8 +55,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mNoPermissionsView = findViewById(R.id.view_no_permissions)
         mButtonActivate = findViewById(R.id.button_activate_gps)
         mButtonActivate.setOnClickListener {
-            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivityForResult(intent, REQUEST_CODE_LOCATION)
+            createLocationRequest()
         }
         mSearchText = mSearchInput.searchTextView
         mSearchText.isCursorVisible = false
@@ -67,6 +70,16 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
         mPermissionChecker = PermissionCheckerHelper()
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mLocationCallback = object: LocationCallback() {
+            override fun onLocationResult(result: LocationResult?) {
+                stopLocationRequest()
+                if (result != null && result.locations.isNotEmpty()) {
+                    val location = result.locations[0]
+                    val newLoc = LatLng(location.latitude, location.longitude)
+                    moveCamera(newLoc)
+                }
+            }
+        }
 
         mMapFragment = supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
         mMapFragment?.getMapAsync(this)
@@ -96,8 +109,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
-            REQUEST_CODE_LOCATION -> checkForPermission()
+        when (requestCode) {
+            REQUEST_CODE_LOCATION -> {
+                if(resultCode == Activity.RESULT_CANCELED) setLocationEmptyView()
+                else checkForPermission()
+            }
         }
     }
 
@@ -156,7 +172,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                                             val newLoc = LatLng(it.latitude, it.longitude)
                                             moveCamera(newLoc)
                                         } else {
-                                            setLocationEmptyView()
+                                            createLocationRequest()
                                         }
                                     }
                                     .addOnFailureListener { _ -> setLocationEmptyView() }
@@ -171,6 +187,40 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         return arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
+    }
+
+    private fun createLocationRequest() {
+        val locationRequest = LocationRequest.create()?.apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest!!)
+        val client: SettingsClient = LocationServices.getSettingsClient(this)
+        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+        task.addOnSuccessListener {
+            mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, null)
+        }
+        task.addOnFailureListener {
+            if (it is ResolvableApiException){
+                // Location settings are not satisfied, but this can be fixed
+                // by showing the user a dialog.
+                try {
+                    // Show the dialog by calling startResolutionForResult(),
+                    // and check the result in onActivityResult().
+                    it.startResolutionForResult(this@DropoffPickerActivity, REQUEST_CODE_LOCATION)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
+                }
+            }
+        }
+
+    }
+
+    private fun stopLocationRequest() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback)
     }
 
 }
