@@ -81,6 +81,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         val TYPE_NON_CAROUSEL = "non carousel"
         @LayoutRes
         val LAYOUT = R.layout.home_dc_banner_recyclerview
+        val DEFAULT_BANNER_MIX_SPAN_COUNT = 3
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
@@ -95,7 +96,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> {
                 recyclerView.layoutManager = GridLayoutManager(
                         itemView.context,
-                        3
+                        DEFAULT_BANNER_MIX_SPAN_COUNT
                 )
                 /**
                  * Add margin for recyclerview on for non-carousel banner
@@ -284,7 +285,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                     .inflate(layoutViewHolder, it.parent as ViewGroup, false)
             val targetLayoutManager = it.layoutManager
             val eachSpanSize = if(channelType == TYPE_BANNER)
-                getSizeForEachSpan(recyclerView.measuredWidth, (targetLayoutManager as GridLayoutManager).spanCount) else
+                getSizeForEachSpan(recyclerView.measuredWidth, DEFAULT_BANNER_MIX_SPAN_COUNT) else
                 it.context.resources.getDimensionPixelOffset(R.dimen.home_banner_mix_carousel_width)
 
             /**
