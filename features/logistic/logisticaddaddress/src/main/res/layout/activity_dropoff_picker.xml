@@ -14,8 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance"
-        tools:layout_height="wrap_content">
-    </android.support.v7.widget.Toolbar>
+        tools:layout_height="wrap_content" />
 
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/search_input_dropoff"
@@ -24,21 +23,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_search"
-        app:siv_search_hint="@string/searchbar_dropoff_hint"/>
+        app:siv_search_hint="@string/searchbar_dropoff_hint" />
 
     <fragment
         android:id="@+id/map_dropoff"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:uiScrollGestures="false"
-        app:uiZoomGestures="false"
-        app:uiRotateGestures="false"
-        app:uiTiltGestures="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_input_dropoff" />
+        app:layout_constraintTop_toBottomOf="@+id/search_input_dropoff"
+        app:uiRotateGestures="false"
+        app:uiScrollGestures="false"
+        app:uiTiltGestures="false"
+        app:uiZoomGestures="false" />
+
+    <include
+        android:id="@+id/view_gps_empty"
+        layout="@layout/partial_gps_empty"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_input_dropoff"
+        tools:layout_editor_absoluteX="75dp"
+        tools:layout_editor_absoluteY="597dp"
+        tools:visibility="visible" />
 
 
 </android.support.constraint.ConstraintLayout>
