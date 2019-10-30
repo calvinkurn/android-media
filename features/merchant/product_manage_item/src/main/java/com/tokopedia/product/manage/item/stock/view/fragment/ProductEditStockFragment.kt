@@ -50,9 +50,11 @@ class ProductEditStockFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setDataStock(productStock)
         if (hasVariant) {
-            decimalInputViewStock.text = MIN_STOCK
+            decimalInputViewStock.text = MIN_STOCK_VARIANT
+            decimalInputViewStock.visibility = View.GONE
             textViewHelperStock.visibility = View.VISIBLE
         } else {
+            decimalInputViewStock.visibility = View.VISIBLE
             textViewHelperStock.visibility = View.GONE
         }
 
@@ -120,6 +122,7 @@ class ProductEditStockFragment : Fragment() {
 
     companion object {
         const val SAVED_PRODUCT_STOCK = "SAVED_PRODUCT_STOCK"
+        const val MIN_STOCK_VARIANT = "1"
         const val MIN_STOCK = "1"
         const val MAX_STOCK = "999,999"
         fun createInstance() = ProductEditStockFragment()

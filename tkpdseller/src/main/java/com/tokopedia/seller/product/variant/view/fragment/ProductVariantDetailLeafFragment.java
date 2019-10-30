@@ -42,7 +42,7 @@ import java.util.List;
 
 public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
-    public static final int MAX_STOCK = 10000;
+    public static final int MAX_STOCK = 999999;
     public static final int MIN_STOCK = 1;
     private OnProductVariantDetailLeafFragmentListener listener;
     private LabelSwitch labelSwitchStatus;
