@@ -46,7 +46,26 @@ class ContentExploreFragment :
         ContentExploreContract.View,
         SearchInputView.Listener,
         SearchInputView.ResetListener,
-        SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener {
+
+    companion object {
+
+        var PARAM_CATEGORY_ID = "category_id"
+        var DEFAULT_CATEGORY = "0"
+        var PEFORMANCE_EXPLORE = "mp_explore"
+        var CATEGORY_POSITION_NONE = -1
+
+        private val IMAGE_SPAN_COUNT = 3
+        private val IMAGE_SPAN_SINGLE = 1
+        private val LOAD_MORE_THRESHOLD = 2
+
+        @JvmStatic
+        fun newInstance(bundle: Bundle?): ContentExploreFragment {
+            val fragment = ContentExploreFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 
     private val isLoading: Boolean
         get() = imageAdapter.isLoading || swipeToRefresh.isRefreshing
@@ -70,8 +89,6 @@ class ContentExploreFragment :
     private var canLoadMore: Boolean = false
     private var hasLoadedOnce: Boolean = false
     private var isTraceStopped: Boolean = false
-
-
 
     override fun getScreenName(): String {
         return ContentExloreEventTracking.Screen.SCREEN_CONTENT_STREAM
@@ -433,23 +450,5 @@ class ContentExploreFragment :
             }
         }
         return scrollListener
-    }
-
-    companion object {
-
-        var PARAM_CATEGORY_ID = "category_id"
-        var DEFAULT_CATEGORY = "0"
-        var PEFORMANCE_EXPLORE = "mp_explore"
-        var CATEGORY_POSITION_NONE = -1
-
-        private val IMAGE_SPAN_COUNT = 3
-        private val IMAGE_SPAN_SINGLE = 1
-        private val LOAD_MORE_THRESHOLD = 2
-
-        fun newInstance(bundle: Bundle): ContentExploreFragment {
-            val fragment = ContentExploreFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
     }
 }

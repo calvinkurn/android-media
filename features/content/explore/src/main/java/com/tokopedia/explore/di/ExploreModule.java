@@ -23,8 +23,6 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import kotlinx.coroutines.CoroutineDispatcher;
-import kotlinx.coroutines.Dispatchers;
 import retrofit2.Retrofit;
 
 /**

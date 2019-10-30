@@ -652,13 +652,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     fun scrollToTop() {
-        if (recyclerView != null) {
+        if (::recyclerView.isInitialized) {
             recyclerView.scrollToPosition(0)
         }
     }
 
     private fun triggerClearNewFeedNotification() {
-        if (context != null && context!!.applicationContext != null) {
+        if (context?.applicationContext != null) {
             val intent = Intent(BROADCAST_FEED)
             intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true)
             LocalBroadcastManager.getInstance(context!!.applicationContext).sendBroadcast(intent)
@@ -668,7 +668,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
         registerNewFeedReceiver()
-        if (userVisibleHint && presenter != null) {
+        if (userVisibleHint && ::presenter.isInitialized) {
             loadData(userVisibleHint)
         }
     }
@@ -699,7 +699,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun loadData(isVisibleToUser: Boolean) {
-        if (isVisibleToUser && isAdded && activity != null && presenter != null) {
+        if (isVisibleToUser && isAdded && activity != null && ::presenter.isInitialized) {
             if (!isLoadedOnce) {
                 feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
                 isLoadedOnce = !isLoadedOnce
