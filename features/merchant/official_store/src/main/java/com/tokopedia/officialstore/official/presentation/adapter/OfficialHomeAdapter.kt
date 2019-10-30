@@ -1,11 +1,10 @@
 package com.tokopedia.officialstore.official.presentation.adapter
 
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.ProductRecommendationViewHolder
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 
 class OfficialHomeAdapter(adapterTypeFactory: OfficialHomeAdapterTypeFactory):
         BaseAdapter<OfficialHomeAdapterTypeFactory>(adapterTypeFactory) {

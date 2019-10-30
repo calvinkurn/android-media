@@ -1,12 +1,11 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
-import android.support.annotation.LayoutRes
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.BannerView
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 import com.tokopedia.officialstore.official.presentation.widget.BannerOfficialStore
 

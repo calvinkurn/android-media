@@ -1,12 +1,12 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import android.graphics.Color
-import android.support.annotation.LayoutRes
-import android.support.constraint.ConstraintLayout
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -76,8 +76,8 @@ class DynamicChannelThematicViewHolder(
             }
 
             Glide.with(itemView.context)
-                    .load(banner.imageUrl)
                     .asBitmap()
+                    .load(banner.imageUrl)
                     .centerCrop()
                     .dontAnimate()
                     .into(OfficialStoreImageHelper.getRoundedImageViewTarget(bannerImage, bannerImageCornerRadius))

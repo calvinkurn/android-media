@@ -1,11 +1,11 @@
 package com.tokopedia.officialstore.official.presentation.widget
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.Shop

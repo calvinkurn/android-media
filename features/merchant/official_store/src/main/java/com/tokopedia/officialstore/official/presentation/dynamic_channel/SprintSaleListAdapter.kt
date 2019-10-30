@@ -2,11 +2,11 @@ package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import android.content.Context
 import android.graphics.Paint
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -41,12 +41,14 @@ class SprintSaleListAdapter(
                 oldPrice.text = item.slashedPrice
                 oldPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                 newPrice.text = item.price
-                Glide.with(ctx)
-                        .load(item.freeOngkir?.imageUrl)
-                        .asBitmap()
-                        .fitCenter()
-                        .dontAnimate()
-                        .into(freeOngkirView)
+                ctx?.let {
+                    Glide.with(it)
+                            .asBitmap()
+                            .load(item.freeOngkir?.imageUrl)
+                            .fitCenter()
+                            .dontAnimate()
+                            .into(freeOngkirView)
+                }
             }
         }
     }
