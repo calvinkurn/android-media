@@ -12,7 +12,6 @@ import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.videoplayer.utils.Video
 import kotlinx.android.synthetic.main.item_post_multimedia.view.*
 
 /**
