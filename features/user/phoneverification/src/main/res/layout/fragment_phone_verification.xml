@@ -59,7 +59,7 @@
                 android:gravity="center"
                 android:lineSpacingExtra="@dimen/dp_5"
                 android:padding="@dimen/dp_10"
-                android:text="@string/send_otp_sms"
+                android:text="@string/phone_verification_next"
                 android:textColor="@drawable/verify_button_textcolor"
                 tools:visibility="visible" />
 

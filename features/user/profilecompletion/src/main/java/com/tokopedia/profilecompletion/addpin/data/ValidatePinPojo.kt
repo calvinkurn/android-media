@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class ValidatePinPojo(
-        @SerializedName("check_pin")
+        @SerializedName("validate_pin")
         @Expose
         var data: ValidatePinData = ValidatePinData()
 )

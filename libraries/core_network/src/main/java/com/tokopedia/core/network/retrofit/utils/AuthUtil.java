@@ -1,7 +1,7 @@
 package com.tokopedia.core.network.retrofit.utils;
 
 import android.content.Context;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 import android.util.Base64;
 
 import com.tokopedia.authentication.AuthConstant;

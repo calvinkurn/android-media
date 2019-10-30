@@ -13,7 +13,7 @@
         android:textColor="@color/font_black_primary_70"
         android:textSize="20sp" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/string_picker_dialog_input_layout"
         style="@style/TextInputLayout"
         android:layout_marginTop="20dp"
@@ -24,7 +24,7 @@
             style="@style/EditText.GreenHighlight"
             android:inputType="textCapWords" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

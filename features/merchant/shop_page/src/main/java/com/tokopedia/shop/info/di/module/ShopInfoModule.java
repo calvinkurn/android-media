@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase;
@@ -30,6 +31,11 @@ import dagger.multibindings.StringKey;
 @ShopInfoScope
 @Module(includes = ShopInfoViewModelModule.class)
 public class ShopInfoModule {
+
+    @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter)context;
+    }
 
     @ShopInfoScope
     @Provides

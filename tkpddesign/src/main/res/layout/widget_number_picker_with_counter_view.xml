@@ -6,7 +6,7 @@
     android:gravity="top"
     android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/image_button_minus"
         style="@style/ImageButton.Counter"
         android:src="@drawable/bg_button_counter_minus" />
@@ -19,7 +19,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginRight="@dimen/dp_5">
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/decimal_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/image_button_plus"
         style="@style/ImageButton.Counter"
         android:src="@drawable/bg_button_counter_plus" />

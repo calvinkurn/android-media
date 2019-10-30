@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -59,7 +59,7 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/text_sub_title">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -144,9 +144,9 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_title_bottom_1"
                 tools:text="Subtitle in banner Subtitle in banner Subtitle in banner Subtitle in banner   banner Subtitle in banner Subtitle in banner Subtitle in banner  banner Subtitle in banner Subtitle in banner Subtitle in banner"
                 tools:visibility="visible" />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_12"
@@ -232,7 +232,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_title_bottom_2"
                 tools:text="Subtitle in banner Subtitle in banner Subtitle in banner Subtitle in banner   banner Subtitle in banner Subtitle in banner Subtitle in banner  banner Subtitle in banner Subtitle in banner Subtitle in banner"
                 tools:visibility="visible" />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,12 +4,12 @@ package com.tokopedia.topchat.chattemplate.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,10 +128,10 @@ public class TemplateChatFragment extends BaseDaggerFragment
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        TextView textView = snackbarError.getView().findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = snackbarError.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
-        TextView textView2 = snackbarInfo.getView().findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView2 = snackbarInfo.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);

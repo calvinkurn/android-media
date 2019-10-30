@@ -21,8 +21,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.support.annotation.ColorInt;
-import android.support.annotation.FloatRange;
+import androidx.annotation.ColorInt;
+import androidx.annotation.FloatRange;
 import android.util.AttributeSet;
 
 import com.db.williamchart.R;

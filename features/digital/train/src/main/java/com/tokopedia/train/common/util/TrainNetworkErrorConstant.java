@@ -1,6 +1,6 @@
 package com.tokopedia.train.common.util;
 
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 
 @StringDef({TrainNetworkErrorConstant.SOLD_OUT, TrainNetworkErrorConstant.RUTE_NOT_FOUND,
         TrainNetworkErrorConstant.LESS_THAN_3_HOURS, TrainNetworkErrorConstant.TOO_MANY_SOFTBOOK})

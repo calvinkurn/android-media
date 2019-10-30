@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.catalogrevamp.ui.customview
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.hide

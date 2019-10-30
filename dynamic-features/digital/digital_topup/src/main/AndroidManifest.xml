@@ -1,9 +1,10 @@
-<manifest xmlns:dist="http://schemas.android.com/apk/distribution"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.digital.topup">
 
     <dist:module
         dist:instant="false"
-        dist:onDemand="true"
+        dist:onDemand="false"
         dist:title="@string/title_digital_topup">
         <dist:fusing dist:include="true" />
     </dist:module>
