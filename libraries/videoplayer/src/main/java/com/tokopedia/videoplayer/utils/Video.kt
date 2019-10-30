@@ -29,4 +29,5 @@ object Video {
 
         return VideoSize(videoWidth, videoHeight)
     }
+
 }
