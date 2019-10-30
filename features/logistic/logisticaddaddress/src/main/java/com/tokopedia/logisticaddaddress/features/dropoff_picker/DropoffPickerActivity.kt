@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.dropoff_picker
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -28,6 +29,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
+    private val REQUEST_CODE_LOCATION: Int = 1
     lateinit var mSearchInput: SearchInputView
     lateinit var mSearchText: EditText
     lateinit var mDisabledLocationView: View
@@ -50,7 +52,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mButtonActivate = findViewById(R.id.button_activate_gps)
         mButtonActivate.setOnClickListener {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE_LOCATION)
         }
         mSearchText = mSearchInput.searchTextView
         mSearchText.isCursorVisible = false
@@ -90,6 +92,13 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         mPermissionChecker.onRequestPermissionsResult(this,
                 requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode) {
+            REQUEST_CODE_LOCATION -> checkForPermission()
+        }
     }
 
     private fun moveCamera(latLng: LatLng) {
