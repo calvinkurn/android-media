@@ -3,12 +3,14 @@ package com.example.core_legacy;
 
 import com.tokopedia.analytic_constant.DataLayer;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.util.PriceUtil;
 
 import org.junit.Test;
 
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class UtilTest {
     @Test
@@ -35,6 +37,15 @@ public class UtilTest {
         Map<String, Object> clone1 = GTMAnalytics.clone(clickDataLayer);
 
         assertEquals(4, 2 + 2);
+    }
+
+    @Test
+    public void price_util_test() {
+        String price = "Rp 100.000";
+        assertEquals("this has to be good", "100000", PriceUtil.from(price));
+
+        price = "Rp 100.000,589";
+        assertFalse("this has to be good", "100000".equals(PriceUtil.from(price)));
     }
 
     public Map<String, Object> getClickDataLayer(Map<String, Object> holdThis) {
