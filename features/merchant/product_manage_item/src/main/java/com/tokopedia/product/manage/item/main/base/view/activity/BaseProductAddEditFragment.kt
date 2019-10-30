@@ -140,13 +140,21 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         labelViewVariantProduct.setOnClickListener { startProductVariantActivity() }
         containerImageProduct.setOnClickListener { onAddImagePickerClicked() }
         button_save.setOnClickListener {
-            val listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(
-                    currentProductAddViewModel?.convertToProductViewModel(),
-                    false
-            )
-            eventClickSave(listLabelAnalytics,userSessionInterface.shopId)
+            if (addEditPageType == AddEditPageType.ADD) {
+                val listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(
+                        currentProductAddViewModel?.convertToProductViewModel(),
+                        false
+                )
+                eventClickSave(listLabelAnalytics, userSessionInterface.shopId)
+            }
             if (currentProductAddViewModel?.isDataValid(this) == true) {
                 saveDraft(true)
+            }else{
+                if (addEditPageType == AddEditPageType.ADD) {
+                    val productViewModel = currentProductAddViewModel?.convertToProductViewModel()
+                    val listInvalidField = AnalyticsMapper.getAllInvalidateDataFieldFromViewModel(productViewModel)
+                    eventSendAllInvalidField(listInvalidField, userSessionInterface.shopId)
+                }
             }
         }
     }
@@ -591,12 +599,12 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    private fun eventFieldValidationAddProduct(shopId: String, errorName: String){
+    private fun eventSendAllInvalidField(listInvalidField: List<String>, shopId: String){
         val mapEvent = TrackAppUtils.gtmData(
                 AddProductTrackingConstant.Event.CLICK_ADD_PRODUCT,
                 AddProductTrackingConstant.Category.ADD_PRODUCT_PAGE,
                 AddProductTrackingConstant.Action.CLICK_ADD_ERROR_FIELD_VALIDATION,
-                errorName
+                listInvalidField.joinToString()
         )
         mapEvent[AddProductTrackingConstant.Key.SHOP_ID] = shopId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -624,8 +632,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         showWarning(errorName, View.OnClickListener {
             startNameActivity()
         })
-        if (addEditPageType == AddEditPageType.ADD)
-            eventFieldValidationAddProduct(userSessionInterface.shopId, errorName)
     }
 
     override fun onErrorCategoryEmpty() {
@@ -634,8 +640,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             startCatalogActivity()
         })
         UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY)
-        if (addEditPageType == AddEditPageType.ADD)
-            eventFieldValidationAddProduct(userSessionInterface.shopId, errorName)
     }
 
     override fun onErrorPrice() {
@@ -644,8 +648,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             startPriceActivity()
         })
         UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE)
-        if (addEditPageType == AddEditPageType.ADD)
-            eventFieldValidationAddProduct(userSessionInterface.shopId, errorName)
     }
 
     override fun onErrorWeight() {
@@ -659,8 +661,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         val errorName = getString(R.string.product_error_product_picture_empty)
         NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.product_error_product_picture_empty))
         UnifyTracking.eventAddProductError(activity, AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE)
-        if (addEditPageType == AddEditPageType.ADD)
-            eventFieldValidationAddProduct(userSessionInterface.shopId, errorName)
     }
 
     @SuppressLint("Range")
