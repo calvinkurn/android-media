@@ -613,7 +613,7 @@ open class PlayViewStateImpl(
             overlayDialog.setOnShowListener { dialog ->
                 val d = dialog as BottomSheetDialog
 
-                val bottomSheet = d.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+                val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
@@ -1145,7 +1145,7 @@ open class PlayViewStateImpl(
         pinnedMessageDialog.setOnShowListener() { dialog ->
             val d = dialog as BottomSheetDialog
 
-            val bottomSheet = d.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
             if (bottomSheet != null) {
                 BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
                 pinnedMessageView.findViewById<ImageView>(R.id.thumbnail).visibility = View.VISIBLE
