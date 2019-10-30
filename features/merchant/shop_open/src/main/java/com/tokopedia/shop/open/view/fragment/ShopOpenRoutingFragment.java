@@ -57,11 +57,11 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
             @Override
             public void onClick(View view) {
                 showLoading(true);
-                shopCheckIsReservePresenter.isReservingDomain();
+                goToShopOpenDomain();
             }
         });
         showLoading(true);
-        shopCheckIsReservePresenter.isReservingDomain();
+        goToShopOpenDomain();
         return view;
     }
 
