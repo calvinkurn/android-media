@@ -143,6 +143,10 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
         this.showTopShadow = showTopShadow;
     }
 
+    public List<TrackingViewModel> getTrackingViewModel() {
+        return trackingViewModel;
+    }
+
     @Override
     public int type(KolPostTypeFactory typeFactory) {
         return typeFactory.type(this);

@@ -8,6 +8,8 @@ import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -68,5 +70,7 @@ public interface ContentExploreContract {
         void updateSearch(String search);
 
         void trackAffiliate(String url);
+
+        void appendImpressionTracking(@NotNull String url);
     }
 }
