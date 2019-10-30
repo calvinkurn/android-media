@@ -1,9 +1,7 @@
 package com.tokopedia.videoplayer.utils
 
 import android.app.Activity
-import android.content.Context
 import android.util.DisplayMetrics
-import android.view.WindowManager
 import com.tokopedia.videoplayer.data.VideoSize
 
 /**
