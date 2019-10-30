@@ -528,7 +528,7 @@ public class GTMAnalytics extends ContextAnalytics {
         product1.putString(FirebaseAnalytics.Param.ITEM_BRAND, brand);        // if not applicable pass “none / other”, in the future, need brand name and also ID, optional
         product1.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, category);      // Product category {{level1_name}} / {{level2_name}} / {{level3_name}} / {{childCatID}}
         product1.putString(FirebaseAnalytics.Param.ITEM_VARIANT, variant);              // If not applicable pass “none / other”, optional
-        product1.putDouble(FirebaseAnalytics.Param.PRICE, TextUtils.isEmpty(quantity) ? 0: Long.valueOf(price)) ;                      // In double format, mandatory
+        product1.putDouble(FirebaseAnalytics.Param.PRICE, TextUtils.isEmpty(quantity) ? 0: Double.valueOf(price)) ;                      // In double format, mandatory
         product1.putLong(FirebaseAnalytics.Param.QUANTITY, TextUtils.isEmpty(quantity) ? 0: Long.valueOf(quantity));
 
         for (Map.Entry<String, Object> entry : value.entrySet()) {
