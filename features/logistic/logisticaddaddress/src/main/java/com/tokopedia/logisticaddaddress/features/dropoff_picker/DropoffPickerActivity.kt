@@ -34,6 +34,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mEmptyView: View
     lateinit var mButtonActivate: UnifyButton
     lateinit var mPermissionChecker: PermissionCheckerHelper
+    lateinit var mLocationHelper: LocationDetectorHelper
     var mMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +62,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         mPermissionChecker = PermissionCheckerHelper()
+        mLocationHelper = LocationDetectorHelper(mPermissionChecker,
+                LocationServices.getFusedLocationProviderClient(this), this)
 
         val mapFragment: SupportMapFragment =
                 supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
@@ -69,9 +72,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap?) {
         mMap = googleMap
-
-        val locationHelper = LocationDetectorHelper(mPermissionChecker, LocationServices.getFusedLocationProviderClient(this), this)
-        locationHelper.getLocation(onLocationReceived(), this, LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD)
+        mLocationHelper.getLocation(onLocationReceived(), this, LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
