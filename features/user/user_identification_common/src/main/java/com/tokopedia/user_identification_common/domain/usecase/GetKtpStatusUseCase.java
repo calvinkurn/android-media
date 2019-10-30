@@ -52,7 +52,7 @@ public class GetKtpStatusUseCase {
         RequestParams param = RequestParams.create();
         param.putString(IMAGE, base64Image);
         param.putString(IDENTIFIER, "");
-        param.putString(SOURCE, "");
+        param.putString(SOURCE, "kyc");
         return param;
     }
 
