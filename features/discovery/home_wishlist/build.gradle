@@ -1,25 +1,38 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'de.mannodermaus.android-junit5'
 
 android{
     testOptions {
         unitTests {
             includeAndroidResources = true
         }
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
     }
 }
 
 repositories {
+    maven { url 'https://hansel.io/maven' }
 }
 
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
+        jcenter()
         maven { url 'https://hansel.io/maven' }
+        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -61,6 +74,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.kotlinMockito2
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     kapt rootProject.ext.miscDependencies.daggerCompiler

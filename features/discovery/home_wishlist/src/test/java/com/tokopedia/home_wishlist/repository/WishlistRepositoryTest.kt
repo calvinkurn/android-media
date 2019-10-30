@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.repository
+package com.tokopedia.home_wishlist.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -43,8 +43,8 @@ class RepoRepositoryTest {
     fun loadRepoFromNetwork() = runBlocking{
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(), null, false)
         val observer = mockk<Observer<List<Visitable<*>>>>()
-        val data = repository.get("foo", 0)
-        data.observeForever(observer)
+//        val data = repository.get("foo", 0)
+//        data.observeForever(observer)
 
         coVerify { graphqlRepository wasNot Called }
         com.nhaarman.mockitokotlin2.verify(observer).onChanged(listOf(any()))
@@ -76,9 +76,9 @@ class RepoRepositoryTest {
 //        val callLiveData = MutableLiveData<ApiResponse<RepoSearchResponse>>()
 //        `when`(service.searchRepos("foo")).thenReturn(callLiveData)
 //
-//        `when`(dao.search("foo")).thenReturn(dbSearchResult)
+//        `when`(dao.getWishlistData("foo")).thenReturn(dbSearchResult)
 //
-//        repository.search("foo").observeForever(observer)
+//        repository.getWishlistData("foo").observeForever(observer)
 //
 //        verify(observer).onChanged(Resource.loading(null))
 //        verifyNoMoreInteractions(service)
@@ -90,7 +90,7 @@ class RepoRepositoryTest {
 //
 //        verify(service).searchRepos("foo")
 //        val updatedResult = MutableLiveData<RepoSearchResult>()
-//        `when`(dao.search("foo")).thenReturn(updatedResult)
+//        `when`(dao.getWishlistData("foo")).thenReturn(updatedResult)
 //        updatedResult.postValue(RepoSearchResult("foo", ids, 2, null))
 //
 //        callLiveData.postValue(ApiResponse.create(Response.success(apiResponse)))
@@ -102,12 +102,12 @@ class RepoRepositoryTest {
 
     @Test
     fun search_fromServer_error() {
-//        `when`(dao.search("foo")).thenReturn(AbsentLiveData.create())
+//        `when`(dao.getWishlistData("foo")).thenReturn(AbsentLiveData.create())
 //        val apiResponse = MutableLiveData<ApiResponse<RepoSearchResponse>>()
 //        `when`(service.searchRepos("foo")).thenReturn(apiResponse)
 //
 //        val observer = mock<Observer<Resource<List<Repo>>>>()
-//        repository.search("foo").observeForever(observer)
+//        repository.getWishlistData("foo").observeForever(observer)
 //        verify(observer).onChanged(Resource.loading(null))
 //
 //        apiResponse.postValue(ApiResponse.create(Exception("idk")))

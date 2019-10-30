@@ -174,7 +174,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             }
 
             override fun onSearchTextChanged(text: String?) {
-                viewModel.search(text ?: "")
+                viewModel.getWishlistData(text ?: "")
             }
         })
         deleteButton?.setOnClickListener {
@@ -209,6 +209,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             renderList(response)
         })
         viewModel.loadInitialPage()
+        viewModel.getWishlistData()
     }
 
     private fun renderList(list: List<Visitable<*>>?){
