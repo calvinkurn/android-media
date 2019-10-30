@@ -1532,7 +1532,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
         this.tickerDetail = tickerDetail;
-        updateStickyState(); }
+        updateStickyState(); 
+    }
 
     @Override
     public void hideStickyLogin() {
