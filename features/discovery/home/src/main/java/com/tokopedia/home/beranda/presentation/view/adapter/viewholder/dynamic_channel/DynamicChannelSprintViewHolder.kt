@@ -185,7 +185,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
              * Map first to product visitables
              */
             grids.forEach {
-                val sampleProductCard = productCardViewHolder.findViewById<ThematicCardView>(R.id.banner_item)
+                val sampleProductCard = productCardViewHolder.findViewById<ThematicCardView>(R.id.thematic_card)
                 try {
                     val grid = it
                     sampleProductCard.run {
