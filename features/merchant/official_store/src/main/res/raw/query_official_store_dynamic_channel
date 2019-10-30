@@ -38,6 +38,10 @@ query dynamicHomeChannel($type: String) {
                 productClickUrl
                 impression
                 cashback
+                freeOngkir {
+                    isActive
+                    imageUrl
+                }
             }
             banner {
                 id

@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Grid(
+        val freeOngkir: FreeOngkir?,
         val id: Long,
         val name: String,
         val applink: String,
@@ -20,6 +21,7 @@ data class Grid(
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
+            freeOngkir = parcel.readParcelable(FreeOngkir::class.java.classLoader),
             id = parcel.readLong(),
             name = parcel.readString() ?: "",
             applink = parcel.readString() ?: "",
@@ -37,6 +39,7 @@ data class Grid(
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.run {
+            writeParcelable(freeOngkir, flags)
             writeLong(id)
             writeString(name)
             writeString(applink)

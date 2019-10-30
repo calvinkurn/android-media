@@ -12,7 +12,7 @@ data class Banner(
         val url: String,
         val applink: String,
         @SerializedName("text_color") val textColor: String,
-        @SerializedName("imageUrl") val imageUrl: String,
+        @SerializedName("image_url") val imageUrl: String,
         val attribution: String
 ) : Parcelable {
 

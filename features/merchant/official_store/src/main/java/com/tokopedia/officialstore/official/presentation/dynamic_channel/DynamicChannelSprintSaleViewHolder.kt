@@ -14,8 +14,9 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.unifyprinciples.Typography
 
 class DynamicChannelSprintSaleViewHolder(
-        private val view: View?
-) : AbstractViewHolder<DynamicChannelViewModel>(view), CountDownView.CountDownListener {
+        private val view: View?,
+        private val countDownListener: CountDownView.CountDownListener
+) : AbstractViewHolder<DynamicChannelViewModel>(view) {
 
     private val columnNum = 3
     private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_sprintsale_main_container)
@@ -32,10 +33,6 @@ class DynamicChannelSprintSaleViewHolder(
         }
     }
 
-    override fun onCountDownFinished() {
-
-    }
-
     private fun setupHeader(header: Header?) {
         if (header != null && header.name.isNotEmpty()) {
             headerContainer.visibility = View.VISIBLE
@@ -43,10 +40,13 @@ class DynamicChannelSprintSaleViewHolder(
 
             if (header.expiredTime.isNotEmpty()) {
                 val expiredTime = OfficialStoreDateHelper.getExpiredTime(header.expiredTime)
-                if (OfficialStoreDateHelper.isTimeExpired(header.serverTime, expiredTime)) {
-                    headerCountDown.setup(header.serverTime, expiredTime, this)
-                    headerCountDown.visibility = View.VISIBLE
-                }
+
+                headerCountDown.setup(
+                        OfficialStoreDateHelper.getServerTimeOffset(header.serverTime),
+                        expiredTime,
+                        countDownListener
+                )
+                headerCountDown.visibility = View.VISIBLE
             } else {
                 headerCountDown.visibility = View.GONE
             }

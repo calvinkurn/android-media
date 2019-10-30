@@ -1,17 +1,19 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 
-// TODO: Update data mapping when back-end finished
 class ThematicListAdapter(
+        private val ctx: Context?,
         private val listData: MutableList<Grid?>
 ) : RecyclerView.Adapter<ThematicListAdapter.ThematicItemViewHolder>() {
 
@@ -31,7 +33,6 @@ class ThematicListAdapter(
                 setLinesProductTitle(2)
                 setProductModel(
                         ProductCardModel(
-                                isWishlistVisible = true,
                                 productImageUrl = item.imageUrl,
                                 productName = item.name,
                                 formattedPrice = item.price
@@ -40,6 +41,9 @@ class ThematicListAdapter(
                                 price = true,
                                 productName = true
                         ))
+                setOnClickListener {
+                    RouteManager.route(ctx, item.applink)
+                }
             }
         }
     }
