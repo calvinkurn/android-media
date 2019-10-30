@@ -72,6 +72,12 @@ data class WishlistItem(
     @SerializedName("price")
     @Expose
     val price: String  = "",
+    @SerializedName("rating")
+    @Expose
+    val rating: Int  = -1,
+    @SerializedName("review_count")
+    @Expose
+    val reviewCount: Int  = -1,
     @SerializedName("minimum_order")
     @Expose
     val minimumOrder: Int = -1,

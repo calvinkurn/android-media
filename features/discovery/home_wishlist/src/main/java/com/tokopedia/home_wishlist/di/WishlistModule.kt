@@ -13,6 +13,8 @@ import com.tokopedia.recommendation_widget_common.domain.RecommendationDataSourc
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -49,6 +51,14 @@ class WishlistModule {
     fun provideGetSingleRecommendationUseCase(@Named("singleProductRecommendation") recomQuery: String,
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
+
+    @Provides
+    @WishlistScope
+    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddWishListUseCase = AddWishListUseCase(context)
+
+    @Provides
+    @WishlistScope
+    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
 
     @Provides
     @WishlistScope

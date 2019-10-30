@@ -24,5 +24,6 @@
     <string name="wishlist_coach_mark_title">Pengaturan Wishlist</string>
     <string name="wishlist_coach_mark_description">Gunakan pilihan ‘Atur’ untuk lebih cepat menghapus produk dari Wishlist kamu</string>
     <string name="wishlist_success_atc">Yay! Barang berhasil ditambahkan ke keranjang.</string>
+    <string name="wishlist_success_remove">Barang berhasil dihapus dari Wishlist.</string>
     <string name="wishlist_default_error_message">Terjadi kesalahan koneksi, silahkan coba lagi.</string>
 </resources>

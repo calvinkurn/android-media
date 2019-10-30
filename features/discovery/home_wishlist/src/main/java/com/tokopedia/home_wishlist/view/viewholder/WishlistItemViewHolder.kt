@@ -33,6 +33,8 @@ class WishlistItemViewHolder(
                             shopBadgeList = element.productItem.badges.map {
                                 ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
                             },
+                            ratingCount = element.productItem.rating,
+                            reviewCount = element.productItem.reviewCount,
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.productItem.freeOngkir.isActive,
                                     imageUrl = element.productItem.freeOngkir.imageUrl
@@ -41,6 +43,10 @@ class WishlistItemViewHolder(
             )
             if(element.isOnAddToCart) disableAddToCartButton()
             else enableAddToCartButton()
+
+            if(!element.productItem.available){
+                setOutOfStock()
+            }
 
             productCardView.setAddToCartButtonVisible(true)
             productCardView.setDeleteButtonVisible(true)
@@ -75,7 +81,7 @@ class WishlistItemViewHolder(
             })
 
             setDeleteButtonOnClickListener(View.OnClickListener {
-                (listener as WishlistListener).onDeleteClick(element)
+                (listener as WishlistListener).onDeleteClick(element, adapterPosition)
             })
         }
     }

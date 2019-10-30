@@ -49,6 +49,11 @@ class WishlistCardView : ProductCardView{
         addToCardActionButton?.isEnabled = false
     }
 
+    fun setOutOfStock(){
+        addToCardActionButton?.isEnabled = false
+        addToCardActionButton?.text = "Stok Habis"
+    }
+
     fun enableAddToCartButton(){
         addToCardActionButton?.isEnabled = true
     }

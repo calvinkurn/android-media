@@ -2,6 +2,7 @@ package com.tokopedia.home_wishlist.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
@@ -146,6 +147,11 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         this.menu = menu
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
+        showOnBoarding()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.manage -> manageDeleteWishlist()
@@ -192,7 +198,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             }
         }
         recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
-        showOnBoarding()
     }
 
     /**
@@ -221,12 +226,19 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         }
     }
 
-    override fun onDeleteClick(dataModel: WishlistDataModel) {
-        context?.let {
-            AlertDialog.Builder(it)
+    override fun onDeleteClick(dataModel: WishlistDataModel, adapterPosition: Int) {
+        context?.let { context ->
+            AlertDialog.Builder(context)
                     .setTitle("Hapus Wishlist")
                     .setMessage("Yakin kamu mau menghapus produk ini dari Wishlist?")
-                    .setPositiveButton("Hapus") { dialog, which -> viewModel.onDeleteClick(getProductId(dataModel))}
+                    .setPositiveButton("Hapus") { dialog, which ->
+                        viewModel.onDeleteClick(getProductId(dataModel), adapterPosition){isSuccess, throwable ->
+                            view?.let {
+                                if(isSuccess) Toaster.make(it, getString(R.string.wishlist_success_remove))
+                                else Toaster.make(it, throwable?.message ?: getString(R.string.wishlist_default_error_message))
+                            }
+                        }
+                    }
                     .setNegativeButton("Batal") { dialog, which -> }
                     .show()
         }
@@ -268,16 +280,23 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun showOnBoarding(){
-        val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
-        coachMarkItems.add(
-                CoachMarkItem(
-                        recyclerView,
-                        getString(R.string.wishlist_coach_mark_title),
-                        getString(R.string.wishlist_coach_mark_description)
+
+        Handler().postDelayed({
+            val manageMenu = view?.rootView?.findViewById<View>(R.id.manage)
+
+            manageMenu?.post {
+                val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
+                coachMarkItems.add(
+                        CoachMarkItem(
+                                manageMenu,
+                                getString(R.string.wishlist_coach_mark_title),
+                                getString(R.string.wishlist_coach_mark_description)
+                        )
                 )
-        )
-        val coachMark = CoachMarkBuilder().build()
-        coachMark.show(activity, tag, coachMarkItems)
+                val coachMark = CoachMarkBuilder().allowPreviousButton(false).build()
+                coachMark.show(activity, tag, coachMarkItems)
+            }
+        }, 100)
     }
 
     /**

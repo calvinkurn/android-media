@@ -1,6 +1,7 @@
 package com.tokopedia.home_wishlist.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -13,7 +14,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -31,13 +36,15 @@ open class WishlistViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val wishlistRepository: WishlistRepository,
         private val addToCartUseCase: AddToCartUseCase,
+        private val addWishListUseCase: AddWishListUseCase,
+        private val removeWishListUseCase: RemoveWishListUseCase,
         @Named("Main") val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher){
     private val CART_ID = "cartId"
     private val MESSAGE = "message"
     private val STATUS = "status"
 
-    private val listVisitable = mutableListOf<Visitable<*>>()
+    internal val listVisitable = mutableListOf<Visitable<*>>()
     private var keywordSearch = ""
     val wishlistData = MediatorLiveData<List<Visitable<*>>>()
 
@@ -85,13 +92,41 @@ open class WishlistViewModel @Inject constructor(
         }
     }
 
-    fun onDeleteClick(productId: Int){
+    fun onDeleteClick(productId: Int, position: Int, callback: (Boolean, Throwable?) -> Unit){
+        removeWishListUseCase.createObservable(productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                // do nothing
+            }
 
+            override fun onSuccessAddWishlist(productId: String?) {
+                // do nothing
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                callback.invoke(false, Throwable(errorMessage))
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                val newList = ArrayList(listVisitable)
+                newList.removeAt(position)
+                wishlistData.postValue(newList)
+                callback.invoke(true, null)
+                listVisitable.removeAt(position)
+            }
+        })
     }
 
-    fun onAddToCart(productId: Int){
-
+    fun onBulkDeleteClick(callback: (Boolean, Throwable) -> Unit){
+        val listBulkExecutionDelete = ArrayList<Observable<*>>()
+        for (visitable in listVisitable){
+            if(visitable is WishlistItemDataModel && visitable.isBulkMode && visitable.isChecked){
+//                listBulkExecutionDelete.add(
+//                        removeWishListUseCase.createObservable(visitable.productItem.id.toString(), userSessionInterface.userId)
+//                )
+            }
+        }
     }
+
     /**
      * [addToCart] is the void for handling adding add to cart
      * @param addTocartRequestParams the default pojo request to add cart
