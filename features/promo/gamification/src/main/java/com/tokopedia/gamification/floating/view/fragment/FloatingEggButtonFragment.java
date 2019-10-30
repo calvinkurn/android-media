@@ -460,19 +460,19 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if (!TextUtils.isEmpty(imageUrl)) {
             if (imageUrl.endsWith(".gif")) {
-//                Glide.with(getContext())
-//                        .asGif()
-//                        .load(imageUrl)
-//                        .diskCacheStrategy(DiskCacheStrategy.DATA)
-//                        .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
-//                            @Override
-//                            protected void setResource(GifDrawable resource) {
-//                                ivFloatingEgg.setImageDrawable(resource);
-//                                resource.start();
-//                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
-//
-//                            }
-//                        });
+                Glide.with(getContext())
+                        .asGif()
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
+                            @Override
+                            protected void setResource(GifDrawable resource) {
+                                ivFloatingEgg.setImageDrawable(resource);
+                                resource.start();
+                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
+
+                            }
+                        });
             } else {
                 Glide.with(getContext())
                         .asBitmap()
