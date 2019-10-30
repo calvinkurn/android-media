@@ -114,7 +114,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             // TODO remove this, for testing purpose
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop("0").await())
             // TODO: Remove this hardcoded type later
-            getOfficialStoreDynamicChannel("os-all")
+            getOfficialStoreDynamicChannel(slug)
             /**
              * I just realize, that we have load product recomm when user scroll (if user doesn't scroll product recom doesnt have to load data)
               */
