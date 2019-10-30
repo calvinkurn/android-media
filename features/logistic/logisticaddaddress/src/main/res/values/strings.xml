@@ -145,6 +145,9 @@
     <string name="gps_empty_title">GPS tidak terdeteksi!</string>
     <string name="gps_empty_desc">Cari otomatis dengan aktifkan GPS atau masukkan kata kunci lokasi</string>
     <string name="gps_empty_action">Aktifkan GPS</string>
+    <string name="no_permission_title">Lokasi tidak diizinkan</string>
+    <string name="no_permission_desc">Cari otomatis dengan izinkan lokasi atau masukkan kata kunci lokasi</string>
+    <string name="no_permission_action">Izinkan Lokasi</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
