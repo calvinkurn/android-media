@@ -87,8 +87,8 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         clearItemRecyclerViewDecoration(recyclerView)
         mappingBackgroundContainerUnify(channel)
-        mappingView(channel)
         valuateRecyclerViewDecoration(channel)
+        mappingView(channel)
     }
 
     private fun valuateRecyclerViewDecoration(channel: DynamicHomeChannel.Channels) {
@@ -285,7 +285,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                     .inflate(layoutViewHolder, it.parent as ViewGroup, false)
             val targetLayoutManager = it.layoutManager
             val eachSpanSize = if(channelType == TYPE_BANNER)
-                getSizeForEachSpan(recyclerView.measuredWidth, DEFAULT_BANNER_MIX_SPAN_COUNT) else
+                getSizeForEachSpan(recyclerView.measuredWidth, (targetLayoutManager as GridLayoutManager).spanCount) else
                 it.context.resources.getDimensionPixelOffset(R.dimen.home_banner_mix_carousel_width)
 
             /**

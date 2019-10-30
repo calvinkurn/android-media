@@ -80,9 +80,9 @@ class CarouselProductCardView: BaseCustomView {
             }
         }
 
+        carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
         carouselAdapter = CarouselProductCardAdapter(
                 productCardModelList, isScrollable, carouselProductCardListenerInfo, getMaxProductCardContentHeight(productCardModelList))
-        carouselLayoutManager = createProductcardCarouselLayoutManager(isScrollable, productCardModelList.size)
 
         carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
         carouselProductCardRecyclerView?.adapter = carouselAdapter

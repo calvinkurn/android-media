@@ -33,7 +33,7 @@ class BannerItemAdapter(val bannerMixTypeFactoryImpl: BannerMixTypeFactoryImpl,
             layoutParams.height = maxHeight
             cardSeeMoreBanner.layoutParams = layoutParams
         } else if(viewType == ProductItemViewHolder.LAYOUT_ITEM_CAROUSEL ||
-                getItemViewType(viewType) == ProductItemViewHolder.LAYOUT_ITEM) {
+                viewType == ProductItemViewHolder.LAYOUT_ITEM) {
             val cardThematic = view.findViewById<ThematicCardView>(R.id.banner_item)
             val cardProduct = cardThematic.cardViewProductCard
             val layoutParams = cardProduct.layoutParams
