@@ -35,7 +35,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mButtonActivate: UnifyButton
     lateinit var mPermissionChecker: PermissionCheckerHelper
     lateinit var mLocationHelper: LocationDetectorHelper
-    var mMap: GoogleMap? = null
+    private var mMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,10 +87,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         mPermissionChecker.onRequestPermissionsResult(this,
-                requestCode, permissions,
-                grantResults)
+                requestCode, permissions, grantResults)
     }
 
     private fun moveCamera(latLng: LatLng) {
