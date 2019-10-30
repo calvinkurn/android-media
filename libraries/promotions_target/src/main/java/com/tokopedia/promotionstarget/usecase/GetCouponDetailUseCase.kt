@@ -9,9 +9,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-class GetCouponDetailUseCase @Inject constructor(@Named(GET_COUPON_DETAIL) val catalogDetailQuery: String) {
+class GetCouponDetailUseCase @Inject constructor(@Named(GET_COUPON_DETAIL) val catalogDetailQuery: String,val gqlWrapper:GqlUseCaseWrapper) {
 
-    private val gqlWrapper = GqlUseCaseWrapper()
     private val queryBuilder = StringBuilder()
 
     companion object {

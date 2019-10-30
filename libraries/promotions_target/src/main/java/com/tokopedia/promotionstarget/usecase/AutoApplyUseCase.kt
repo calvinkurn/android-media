@@ -8,10 +8,9 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-class AutoApplyUseCase @Inject constructor(@Named(AUTO_APPLY) val queryString: String) {
+class AutoApplyUseCase @Inject constructor(@Named(AUTO_APPLY) val queryString: String, val gqlWrapper: GqlUseCaseWrapper) {
     private val PARAMS = AutoApplyParams
 
-    private val gqlWrapper = GqlUseCaseWrapper()
 
     suspend fun getResponse(map: HashMap<String, Any>): AutoApplyResponse {
         return gqlWrapper.getResponse(AutoApplyResponse::class.java, queryString, map)

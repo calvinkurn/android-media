@@ -9,6 +9,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.CoordinatorLayout
@@ -16,13 +17,13 @@ import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.*
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.FrameLayout
 import android.widget.ProgressBar
-import android.widget.Toast
 import android.widget.ViewFlipper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -33,6 +34,7 @@ import com.tokopedia.promotionstarget.CouponGratificationParams.CAMPAIGN_SLUG
 import com.tokopedia.promotionstarget.CouponGratificationParams.POP_SLUG
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.GratificationDataContract
+import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
@@ -46,7 +48,6 @@ import com.tokopedia.promotionstarget.subscriber.GratificationSubscriber
 import com.tokopedia.promotionstarget.ui.adapter.CouponListAdapter
 import com.tokopedia.promotionstarget.ui.recycleViewHelper.CouponItemDecoration
 import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -89,6 +90,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    var autoApplyObserver: Observer<Result<AutoApplyResponse>>? = null
 
     private var originallyLoggedIn = false
     private val REQUEST_CODE = 29
@@ -97,7 +99,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private var skipBtnAction = false
     private var screenWidth = 0f
     private var IS_DISMISSED = false
-
 
     companion object {
         const val PARAM_WAITING_FOR_LOGIN = "PARAM_WAITING_FOR_LOGIN"
@@ -144,7 +145,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
              couponDetailResponse: GetCouponDetailResponse,
              gratificationData: GratificationData,
              claimCouponApi: ClaimCouponApi,
-             autoHitActionButton: Boolean): Dialog {
+             autoHitActionButton: Boolean): Dialog? {
+        Log.wtf("NOOB", "Hashcode = ${activityContext.hashCode()}")
+        if (activityContext is Activity && activityContext.isFinishing) {
+            return null
+        }
         val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activityContext)
         val view = LayoutInflater.from(activityContext).inflate(getLayout(couponUiType), null, false)
         bottomSheet.setCustomContentView(view, "", true)
@@ -156,6 +161,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             IS_DISMISSED = true
             if (activityContext is Activity) {
                 subscriber.clearMaps(activityContext)
+            }
+            if (autoApplyObserver != null) {
+                viewModel.autoApplyLiveData.removeObserver(autoApplyObserver!!)
             }
         }
         bottomSheetDialog = bottomSheet
@@ -208,9 +216,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         this.data = data
         this.gratificationData = gratificationData
+
         initInjections(activityContext)
         setUiData(couponDetailResponse)
         setListeners(activityContext)
+
     }
 
     private fun initialAnimation() {
@@ -264,8 +274,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
     }
 
-    fun onActivityResumeIfWaitingForLogin() {
-        if (!originallyLoggedIn && !IS_DISMISSED) {
+    fun onActivityResumeIfWaitingForLogin(isLoggedIn: Boolean) {
+        if (!originallyLoggedIn && !IS_DISMISSED && isLoggedIn) {
             skipBtnAction = false
             btnAction.performClick()
         }
@@ -304,15 +314,22 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     private fun setListeners(activityContext: Context) {
 
-        viewModel.autoApplyLiveData.observe(activityContext as AppCompatActivity, Observer { it ->
+        if (autoApplyObserver != null) {
+            viewModel.autoApplyLiveData.removeObserver((autoApplyObserver!!))
+        }
+
+        autoApplyObserver = Observer { it ->
             when (it) {
                 is Success -> {
                     val messageList = it.data.tokopointsSetAutoApply?.resultStatus?.message
                     if (messageList != null && messageList.isNotEmpty())
-                        Toaster.showNormal(nestedScrollView, messageList[0].toString(), Toast.LENGTH_SHORT)
+                        CustomToast.show(activityContext, messageList[0].toString())
                 }
             }
-        })
+            viewModel.autoApplyLiveData.removeObserver((autoApplyObserver!!))
+        }
+
+        viewModel.autoApplyLiveData.observe((activityContext as AppCompatActivity), autoApplyObserver!!)
 
         btnAction.setOnClickListener {
             if (!skipBtnAction) {
@@ -414,11 +431,16 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 }
             }
         } else {
-            dropKeysFromBundle(ApplinkConst.LOGIN, activityContext.intent)
             val loginIntent = RouteManager.getIntent(activityContext, ApplinkConst.LOGIN)
             activityContext.startActivityForResult(loginIntent, REQUEST_CODE)
             activityContext.intent?.putExtra(PARAM_WAITING_FOR_LOGIN, true)
             shouldCallAutoApply = false
+
+            val handler = Handler()
+            handler.postDelayed({
+                toggleProgressBar(false)
+                toggleBtnText(true)
+            }, 300L)
         }
     }
 

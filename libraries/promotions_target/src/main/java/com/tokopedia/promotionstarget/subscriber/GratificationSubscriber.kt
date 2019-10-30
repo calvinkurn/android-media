@@ -16,6 +16,7 @@ import com.tokopedia.promotionstarget.di.components.DaggerPromoTargetComponent
 import com.tokopedia.promotionstarget.presenter.DialogManagerPresenter
 import com.tokopedia.promotionstarget.ui.TargetPromotionsDialog
 import com.tokopedia.promotionstarget.usecase.ClaimPopGratificationUseCase
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
@@ -87,7 +88,8 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         if (activity != null && intent != null) {
             val waitingForLogin = intent.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
             if (waitingForLogin) {
-                mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin()
+                val isLoggedIn = UserSession(activity).isLoggedIn
+                mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin(isLoggedIn)
             }
         }
     }
@@ -173,7 +175,9 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                     gratificationData,
                     claimApi,
                     autoHitActionButton)
-            mapOfDialogs[activity] = Pair(dialog, bottomSheetDialog)
+            if(bottomSheetDialog!=null) {
+                mapOfDialogs[activity] = Pair(dialog, bottomSheetDialog)
+            }
         }
     }
 

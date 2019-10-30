@@ -10,10 +10,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-class ClaimPopGratificationUseCase @Inject constructor(@Named(CLAIM_POP_GRATIFICATION) val queryString: String) {
+class ClaimPopGratificationUseCase @Inject constructor(@Named(CLAIM_POP_GRATIFICATION) val queryString: String, val gqlWrapper: GqlUseCaseWrapper) {
     val PARAMS = CouponGratificationParams
-
-    private val gqlWrapper = GqlUseCaseWrapper()
 
     suspend fun getResponse(map: HashMap<String, Any>): ClaimPopGratificationResponse {
         return gqlWrapper.getResponse(ClaimPopGratificationResponse::class.java, queryString, map)
