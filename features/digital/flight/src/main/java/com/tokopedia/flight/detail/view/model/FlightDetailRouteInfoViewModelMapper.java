@@ -108,8 +108,10 @@ public class FlightDetailRouteInfoViewModelMapper {
     public List<Amenity> transformOrderAmenities(List<com.tokopedia.flight.orderlist.data.cloud.entity.Amenity> amenities) {
         List<Amenity> dataList = new ArrayList<>();
 
-        for (com.tokopedia.flight.orderlist.data.cloud.entity.Amenity item : amenities) {
-            dataList.add(transform(item));
+        if (amenities != null) {
+            for (com.tokopedia.flight.orderlist.data.cloud.entity.Amenity item : amenities) {
+                dataList.add(transform(item));
+            }
         }
 
         return dataList;
