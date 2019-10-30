@@ -11,40 +11,40 @@ interface LoggerDao {
     @Query("DELETE FROM log_table")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM log_table ORDER BY TimeStamp LIMIT :entries")
+    @Query("SELECT * FROM log_table ORDER BY timestamp LIMIT :entries")
     suspend fun getFirst(entries: Int): List<Logger>
 
-    @Query("DELETE FROM log_table WHERE TimeStamp <= :ts")
+    @Query("DELETE FROM log_table WHERE timestamp <= :ts")
     suspend fun deleteBeforeTs(ts: Long)
 
     @Query("SELECT count(*) FROM log_table")
     suspend fun getCountAll(): Int
 
-    @Query("SELECT * FROM log_table ORDER BY TimeStamp")
+    @Query("SELECT * FROM log_table ORDER BY timestamp")
     suspend fun getAll(): List<Logger>
 
-    @Query("SELECT * FROM log_table WHERE Priority ==  1 ORDER BY TimeStamp LIMIT :entries")
+    @Query("SELECT * FROM log_table WHERE priority ==  1 ORDER BY timestamp LIMIT :entries")
     suspend fun getFirstHighPrio(entries: Int): List<Logger>
 
-    @Query("SELECT count(*) FROM log_table WHERE Priority ==  1")
+    @Query("SELECT count(*) FROM log_table WHERE priority ==  1")
     suspend fun getCountHighPrio(): Int
 
-    @Query("SELECT count(*) FROM log_table WHERE Priority == 0")
+    @Query("SELECT count(*) FROM log_table WHERE priority == 0")
     suspend fun getCountLowPrio(): Int
 
-    @Query("DELETE FROM log_table WHERE TimeStamp NOT IN(SELECT TimeStamp FROM log_table WHERE Priority == 1 ORDER BY TimeStamp LIMIT 100)")
+    @Query("DELETE FROM log_table WHERE timestamp NOT IN(SELECT timestamp FROM log_table WHERE priority == 1 ORDER BY timestamp LIMIT 100)")
     suspend fun deleteFirst()
 
-    @Query("SELECT * FROM log_table WHERE Priority == 0 ORDER BY TimeStamp LIMIT :entries")
+    @Query("SELECT * FROM log_table WHERE priority == 0 ORDER BY timestamp LIMIT :entries")
     suspend fun getFirstLowPrio(entries: Int): List<Logger>
 
-    @Query("DELETE FROM log_table WHERE TimeStamp == :ts")
+    @Query("DELETE FROM log_table WHERE timestamp == :ts")
     suspend fun deleteEntry(ts: Long)
 
-    @Query("DELETE FROM log_table WHERE TimeStamp <= :ts and Priority == 1")
+    @Query("DELETE FROM log_table WHERE timestamp <= :ts and priority == 1")
     suspend fun deleteHighPrioBeforeTs(ts: Long)
 
-    @Query("DELETE FROM log_table WHERE TimeStamp <= :ts and Priority == 0")
+    @Query("DELETE FROM log_table WHERE timestamp <= :ts and priority == 0")
     suspend fun deleteLowPrioBeforeTs(ts: Long)
 
 }

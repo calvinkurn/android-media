@@ -7,18 +7,21 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.ServerJobService
 import com.tokopedia.logger.service.ServerService
-import com.tokopedia.logger.utils.*
+import com.tokopedia.logger.utils.Constants
+import com.tokopedia.logger.utils.TimberReportingTree
+import com.tokopedia.logger.utils.encrypt
+import com.tokopedia.logger.utils.generateKey
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
 
@@ -45,8 +48,8 @@ class LogManager(val application: Application) : CoroutineScope {
         TOKEN = tokenList
     }
 
-    private suspend fun sendLogToDB(message: String, timeStamp: Long, priority: Int) {
-        Log.e("toDB", "Sending Log to DB")
+    private suspend fun sendLogToDB(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
+        Timber.d("Sending Log to DB")
         // Handle Message
         val truncatedMessage: String = if (message.length > Constants.MAX_BUFFER) {
             message.substring(0, Constants.MAX_BUFFER)
@@ -54,7 +57,7 @@ class LogManager(val application: Application) : CoroutineScope {
             message
         }
         val encryptedMessage = encrypt(truncatedMessage, secretKey)
-        val log = Logger(timeStamp, priority, encryptedMessage)
+        val log = Logger(timeStamp, serverChannel, priority, encryptedMessage)
         loggerRepository.insert(log)
     }
 
@@ -98,10 +101,10 @@ class LogManager(val application: Application) : CoroutineScope {
          */
 
         @JvmStatic
-        fun log(message: String, timeStamp: Long, priority: Int) {
+        fun log(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
             instance?.run {
                 runBlocking {
-                    sendLogToDB(message, timeStamp, priority)
+                    sendLogToDB(message, timeStamp, priority, serverChannel)
                     if (android.os.Build.VERSION.SDK_INT > 21) {
                         jobScheduler.schedule(jobInfo)
                     } else {
@@ -114,21 +117,20 @@ class LogManager(val application: Application) : CoroutineScope {
         // Functions Used in Service
 
         suspend fun sendLogToServer() {
-            val highPrioLogs = 3
-            val lowPrioLogs = 2
+            val highPriorityLogs = 3
+            val lowPriorityLogs = 2
 
-            val highPrioLoggers: List<Logger> = loggerRepository.getFirstHighPrio(highPrioLogs)
-            val lowPrioLoggers: List<Logger> = loggerRepository.getFirstLowPrio(lowPrioLogs)
-            var logs = highPrioLoggers.toMutableList()
+            val highPriorityLoggers: List<Logger> = loggerRepository.getFirstHighPrio(highPriorityLogs)
+            val lowPriorityLoggers: List<Logger> = loggerRepository.getFirstLowPrio(lowPriorityLogs)
+            val logs = highPriorityLoggers.toMutableList()
 
-            for (lowPrioLog in lowPrioLoggers) {
-                logs.add(lowPrioLog)
+            for (lowPriorityLog in lowPriorityLoggers) {
+                logs.add(lowPriorityLog)
             }
 
             for (log in logs) {
-                val message = decrypt(log.message, secretKey)
                 val ts = log.timeStamp
-                val severity = getSeverity(message)
+                val severity = getSeverity(log.serverChannel)
                 if (severity != TimberReportingTree.NO_SEVERITY) {
                     val errorCode = loggerRepository.sendLogToServer(severity, TOKEN, log, secretKey)
                     if (errorCode == 204) {
@@ -149,10 +151,10 @@ class LogManager(val application: Application) : CoroutineScope {
             return loggerRepository.getCount()
         }
 
-        private fun getSeverity(message: String): Int {
-            return when {
-                message.startsWith(TimberReportingTree.P1) -> TimberReportingTree.SEVERITY_HIGH
-                message.startsWith(TimberReportingTree.P2) -> TimberReportingTree.SEVERITY_MEDIUM
+        private fun getSeverity(serverChannel: String): Int {
+            return when (serverChannel) {
+                TimberReportingTree.P1 -> TimberReportingTree.SEVERITY_HIGH
+                TimberReportingTree.P2 -> TimberReportingTree.SEVERITY_MEDIUM
                 else -> TimberReportingTree.NO_SEVERITY
             }
         }

@@ -38,7 +38,7 @@ class TimberReportingTree(private val tags: List<String>?) : Timber.DebugTree() 
                 val timeStamp = System.currentTimeMillis()
                 val priority = getPriority(tagString)
                 val classLine = tag ?: ""
-                LogManager.log(getMessage(messageSplit[0], messageSplit[1], timeStamp, classLine, messageSplit[2]), timeStamp, priority)
+                LogManager.log(getMessage(messageSplit[1], timeStamp, classLine, messageSplit[2]), timeStamp, priority, tagSplit[0])
             }
         }
     }
@@ -54,9 +54,8 @@ class TimberReportingTree(private val tags: List<String>?) : Timber.DebugTree() 
         return SimpleDateFormat(Constants.TIMESTAMP_FORMAT).format(Date(timeStamp!!))
     }
 
-    private fun getMessage(priority:String, tag: String, timeStamp:Long, classLine: String, message:String): String {
+    private fun getMessage(tag: String, timeStamp:Long, classLine: String, message:String): String {
         val stringBuilder = StringBuilder()
-        stringBuilder.append(priority)
         stringBuilder.append("tag=")
                 .append(tag)
                 .append("#")

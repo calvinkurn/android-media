@@ -7,8 +7,11 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "log_table")
 data class Logger (
     @PrimaryKey
-    @ColumnInfo(name = "timeStamp")
+    @ColumnInfo(name = "timestamp")
     var timeStamp: Long,
+
+    @ColumnInfo(name = "server_channel")
+    var serverChannel: String,
 
     @ColumnInfo(name = "priority")
     var priority: Int,

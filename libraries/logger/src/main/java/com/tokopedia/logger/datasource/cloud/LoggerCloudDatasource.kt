@@ -1,21 +1,19 @@
 package com.tokopedia.logger.datasource.cloud
 
-import android.util.Log
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.decrypt
 import com.tokopedia.logger.utils.launchCatchError
 import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.crypto.SecretKey
-import javax.net.ssl.SSLContext
 
 class LoggerCloudDatasource {
     fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>, logger: Logger, key:SecretKey): Int{
-         val decryptedMessage = decrypt(logger.message , key)
-         val message = logger.timeStamp.toString() + decryptedMessage
+         val message = decrypt(logger.message , key)
          val truncatedMessage: String
          var errCode = 404
          truncatedMessage = if (message.length > Constants.MAX_BUFFER) {
@@ -26,7 +24,7 @@ class LoggerCloudDatasource {
          val token = TOKEN[serverSeverity - 1]
          runBlocking {
             launchCatchError(block = {errCode = openURL(token,truncatedMessage)}){
-                Log.e("openURL","Error here")
+                Timber.d("Error here")
             }
          }
          return errCode
@@ -37,7 +35,7 @@ class LoggerCloudDatasource {
         val url: URL
 
         try {
-            Log.e("openURL","SENDING")
+            Timber.d("SENDING")
             url = URL(Constants.URL_LOGENTRIES + token)
             urlConnection = url.openConnection() as HttpURLConnection
             urlConnection.requestMethod = "POST"
@@ -48,8 +46,8 @@ class LoggerCloudDatasource {
             wr.close()
 
             urlConnection.responseCode
-            Log.e("ErrCode",urlConnection.responseCode.toString())
-            Log.e("SENT","SUCCESS")
+            Timber.d(urlConnection.responseCode.toString())
+            Timber.d("SUCCESS")
 
         } catch (e: Throwable) {
             e.printStackTrace()
