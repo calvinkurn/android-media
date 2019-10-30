@@ -37,6 +37,10 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         return R.layout.vg_activity
     }
 
+    override fun getScreenName(): String {
+        return VOUCHER_GAME_SCREEN_NAME
+    }
+
     override fun getToolbarResourceID(): Int {
         return R.id.toolbar
     }
@@ -53,6 +57,7 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         const val PARAM_MENU_ID = "menu_id"
         const val PARAM_OPERATOR_ID = "operator_id"
         const val PARAM_PRODUCT_ID = "product_id"
+        const val VOUCHER_GAME_SCREEN_NAME = "/digital/voucher game"
 
         fun newInstance(context: Context, categoryId: String, menuId: String, operatorId: String = "", productId: String = ""): Intent {
             val intent = Intent(context, VoucherGameListActivity::class.java)
