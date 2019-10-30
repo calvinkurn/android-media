@@ -2,14 +2,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Point
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 
@@ -18,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
+import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CarouselDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
@@ -34,6 +32,7 @@ class DynamicIconSectionViewHolder(val view: View,
                                    val listener: HomeCategoryListener) : AbstractViewHolder<DynamicIconSectionViewModel>(view) {
 
     private var adapter: DynamicIconAdapter? = null
+    private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START, true) }
 
     init {
         val recyclerView = itemView.findViewById<RecyclerView>(R.id.list)
@@ -63,6 +62,8 @@ class DynamicIconSectionViewHolder(val view: View,
         val linearLayoutManager = LinearLayoutManager(itemView.context,
                 LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = linearLayoutManager
+        recyclerView.setHasFixedSize(true)
+        startSnapHelper.attachToRecyclerView(recyclerView)
         recyclerView.clearOnScrollListeners()
     }
     override fun bind(element: DynamicIconSectionViewModel) {

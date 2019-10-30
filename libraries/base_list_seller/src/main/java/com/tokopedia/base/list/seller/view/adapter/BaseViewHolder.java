@@ -1,7 +1,7 @@
 package com.tokopedia.base.list.seller.view.adapter;
 
-import android.support.annotation.StringRes;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.StringRes;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 /**

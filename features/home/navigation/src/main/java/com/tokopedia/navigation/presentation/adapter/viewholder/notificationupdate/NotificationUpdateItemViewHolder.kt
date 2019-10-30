@@ -3,8 +3,8 @@ package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupd
 import android.graphics.Color
 import android.graphics.Typeface.BOLD
 import android.graphics.drawable.GradientDrawable
-import android.support.constraint.ConstraintLayout
-import android.support.v4.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan

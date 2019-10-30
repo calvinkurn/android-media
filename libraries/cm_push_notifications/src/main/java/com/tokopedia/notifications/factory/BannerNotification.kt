@@ -4,7 +4,7 @@ import android.app.Notification
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import android.text.format.DateUtils
 import android.widget.RemoteViews
 import com.tokopedia.notifications.R

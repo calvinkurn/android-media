@@ -2,10 +2,10 @@ package com.tokopedia.discovery.catalogrevamp.ui.fragment
 
 import android.app.Dialog
 import android.os.Bundle
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +58,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
         val bottomSheetDialog = super.onCreateDialog(savedInstanceState)
 
         bottomSheetDialog.setOnShowListener {
-            val bottomSheet: FrameLayout = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet: FrameLayout = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
 
             val behavior = BottomSheetBehavior.from(bottomSheet)
             behavior.skipCollapsed = true

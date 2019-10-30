@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -47,7 +47,7 @@
             android:lineSpacingExtra="2sp"
             tools:text="Dalam menyambut ulang tahun Tokopedia yang ke 9, Toko Modo Store akan ada kejutan mena… Selengkapnya"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/message_product"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_56"
@@ -69,4 +69,4 @@
             android:layout_gravity="end"/>
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

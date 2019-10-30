@@ -1,6 +1,6 @@
 package com.tokopedia.chat_common.view.adapter.viewholder.chatmenu
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView

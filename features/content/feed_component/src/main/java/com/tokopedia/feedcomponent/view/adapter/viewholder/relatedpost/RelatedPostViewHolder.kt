@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

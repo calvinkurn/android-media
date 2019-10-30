@@ -11,8 +11,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.KeyEvent;
@@ -396,7 +396,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY)
                     || url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING
                     + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY))) {
-                String deepLinkUrl = Constant.TempRedirectPayment.APP_LINK_SCHEME_WEB_VIEW
+                String deepLinkUrl = ApplinkConst.WEBVIEW_PARENT_HOME
                         + "?url=" + URLEncoder.encode(url);
                 RouteManager.route(TopPayActivity.this, deepLinkUrl);
                 return true;
