@@ -140,6 +140,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         labelViewVariantProduct.setOnClickListener { startProductVariantActivity() }
         containerImageProduct.setOnClickListener { onAddImagePickerClicked() }
         button_save.setOnClickListener {
+            val listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(
+                    currentProductAddViewModel?.convertToProductViewModel(),
+                    false
+            )
+            eventClickSave(listLabelAnalytics,userSessionInterface.shopId)
             if (currentProductAddViewModel?.isDataValid(this) == true) {
                 saveDraft(true)
             }
@@ -545,17 +550,32 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         val listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
                 false
         )
-
-        if (addEditPageType == AddEditPageType.ADD) {
-            eventAddProduct(listLabelAnalytics, userSessionInterface.shopId)
-        } else if (isEditStatus()) {
-            for (labelAnalytics in listLabelAnalytics) {
+        for (labelAnalytics in listLabelAnalytics) {
+            if (isAddStatus()) {
+                eventAddProductAdd(labelAnalytics)
+            } else if (isEditStatus()) {
                 eventAddProductEdit(labelAnalytics)
             }
         }
     }
 
-    private fun eventAddProduct(labels: MutableList<String>, shopId: String) {
+    private fun eventAddProductAdd(label: String) {
+        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ADD,
+                label)
+    }
+
+    private fun eventAddProductEdit(label: String) {
+        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_EDIT_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_EDIT,
+                label)
+    }
+
+    private fun eventClickSave(labels: MutableList<String>, shopId: String) {
         val action = if(labels.isEmpty()){
             AddProductTrackingConstant.Action.CLICK_ADD_NO_OPTIONAL_FIELD
         }else{
@@ -569,14 +589,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         )
         mapEvent[AddProductTrackingConstant.Key.SHOP_ID] = shopId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-    }
-
-    private fun eventAddProductEdit(label: String) {
-        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
-                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
-                AppEventTracking.AddProduct.CATEGORY_EDIT_PRODUCT,
-                AppEventTracking.AddProduct.EVENT_ACTION_EDIT,
-                label)
     }
 
     private fun eventFieldValidationAddProduct(shopId: String, errorName: String){
