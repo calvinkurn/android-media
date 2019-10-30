@@ -51,7 +51,7 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     }
 
     public int getSearchInputViewResourceId(){
-        return R.id.search_input_view;
+        return com.tokopedia.abstraction.R.id.search_input_view;
     }
 
     @Nullable
