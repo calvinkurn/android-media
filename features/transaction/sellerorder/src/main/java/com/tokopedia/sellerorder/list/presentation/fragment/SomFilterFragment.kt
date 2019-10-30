@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
@@ -31,6 +32,7 @@ import com.tokopedia.sellerorder.list.presentation.activity.SomSubFilterActivity
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_som_filter.*
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -114,6 +116,14 @@ class SomFilterFragment : BaseDaggerFragment() {
                 putExtra(PARAM_LIST_ORDER, listOrderParam)
             })
             activity?.finish()
+        }
+
+        et_start_date?.setOnClickListener {
+            // show bottomsheet with datepicker
+            context?.let {
+                val datePickerStart = DatePickerUnify(it, Calendar.getInstance(), Calendar.getInstance(), Calendar.getInstance())
+                datePickerStart.show(fragmentManager, "")
+            }
         }
     }
 

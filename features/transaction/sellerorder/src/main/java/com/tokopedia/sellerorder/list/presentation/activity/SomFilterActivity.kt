@@ -21,7 +21,11 @@ import kotlinx.android.synthetic.main.partial_toolbar_reset_button.*
  * Created by fwidjaja on 2019-09-10.
  */
 class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
-    override fun getLayoutRes(): Int = R.layout.activity_filter
+    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
+
+    // override fun getLayoutRes(): Int = R.layout.activity_filter
 
     companion object {
         @JvmStatic
@@ -30,7 +34,7 @@ class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
                         .putExtra(PARAM_LIST_ORDER, currentFilterParams)
     }
 
-    override fun setupLayout(savedInstanceState: Bundle?) {
+    /*override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
         toolbar = findViewById<View>(R.id.toolbar_filter) as Toolbar
         setSupportActionBar(toolbar)
@@ -43,7 +47,7 @@ class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
         label_reset.setOnClickListener {
             (fragment as SomFilterFragment).onResetClicked()
         }
-    }
+    }*/
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun getNewFragment(): Fragment? {
