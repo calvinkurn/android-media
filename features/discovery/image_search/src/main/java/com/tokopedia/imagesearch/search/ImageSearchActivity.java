@@ -166,8 +166,8 @@ public class ImageSearchActivity extends BaseActivity
         searchTextView.setCompoundDrawablesWithIntrinsicBounds(iconSearch, null, null, null);
     }
 
-    private void loadThumbnailImage(File file) {
-        ImageHandler.loadImageCircle2(this, thumbnailImage, file);
+    private void loadThumbnailImage(String imagePath) {
+        ImageHandler.loadImageCircle2(this, thumbnailImage, imagePath);
     }
 
     private void configureToolbarOnClickListener() {
@@ -456,7 +456,7 @@ public class ImageSearchActivity extends BaseActivity
         setImagePath(imagePath);
         showLoadingView(true);
         showContainer(false);
-        loadThumbnailImage(new File(imagePath));
+        loadThumbnailImage(imagePath);
         searchPresenter.requestImageSearch(imagePath);
     }
 
