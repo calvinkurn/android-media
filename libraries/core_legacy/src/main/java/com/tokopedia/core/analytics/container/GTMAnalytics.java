@@ -312,14 +312,18 @@ public class GTMAnalytics extends ContextAnalytics {
                 Object[] promotions = (Object[]) purchase.get("products");
                 for (int i = 0; i < promotions.length; i++) {
                     Map<String, Object> promotion = (Map<String, Object>) promotions[i];
-                    promotionBundles.add(checkoutProductMap(promotion));
+                    Bundle transactionBundle = checkoutProductMap(promotion);
+                    transactionBundle.putString(FirebaseAnalytics.Param.CURRENCY, "IDR");
+                    promotionBundles.add(transactionBundle);
                 }
             } else if (promotionObj instanceof List) {
                 List promotions = (List) purchase.get("products");
 
                 for (int i = 0; i < promotions.size(); i++) {
                     Map<String, Object> promotion = (Map<String, Object>) promotions.get(i);
-                    promotionBundles.add(checkoutProductMap(promotion));
+                    Bundle transactionBundle = checkoutProductMap(promotion);
+                    transactionBundle.putString(FirebaseAnalytics.Param.CURRENCY, "IDR");
+                    promotionBundles.add(transactionBundle);
                 }
             }
             bundle.putParcelableArrayList("items", promotionBundles);
