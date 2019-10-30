@@ -170,4 +170,9 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     public String getFilterText() {
         return searchInputView.getSearchText();
     }
+
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
+    }
 }

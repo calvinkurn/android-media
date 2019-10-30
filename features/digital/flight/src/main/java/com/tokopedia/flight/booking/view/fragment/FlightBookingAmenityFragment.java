@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightAmenityAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingAmenityViewHolder;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
@@ -102,5 +103,10 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
     public void resetItemCheck() {
         selectedAmenity.setAmenities(new ArrayList<FlightBookingAmenityViewModel>());
         getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
     }
 }

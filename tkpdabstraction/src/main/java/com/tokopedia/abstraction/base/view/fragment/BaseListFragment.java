@@ -114,9 +114,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (hasInitialSwipeRefresh()) {
-            return inflater.inflate(com.tokopedia.abstraction.R.layout.fragment_base_list_swipe, container, false);
+            return inflater.inflate(R.layout.fragment_base_list_swipe, container, false);
         } else {
-            return inflater.inflate(com.tokopedia.abstraction.R.layout.fragment_base_list, container, false);
+            return inflater.inflate(R.layout.fragment_base_list, container, false);
         }
     }
 
@@ -137,11 +137,11 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     public int getSwipeRefreshLayoutResourceId(){
-        return com.tokopedia.abstraction.R.id.swipe_refresh_layout;
+        return R.id.swipe_refresh_layout;
     }
 
     public int getRecyclerViewResourceId(){
-        return com.tokopedia.abstraction.R.id.recycler_view;
+        return R.id.recycler_view;
     }
 
     @Override
@@ -249,7 +249,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
         return new LinearLayoutManager(getActivity(),
-                RecyclerView.VERTICAL, false);
+                LinearLayoutManager.VERTICAL, false);
     }
 
     protected abstract F getAdapterTypeFactory();
