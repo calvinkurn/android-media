@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
@@ -70,5 +71,10 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
     @Override
     public void onItemClicked(FlightDetailRouteViewModel flightDetailRouteViewModel) {
 
+    }
+
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
     }
 }
