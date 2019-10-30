@@ -81,8 +81,8 @@ open class PlayActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         channelId = when {
             intent.data != null -> Uri.parse(intent?.data?.toString()).lastPathSegment
-            intent.extras != null -> intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
-            else -> intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+            intent.extras != null -> intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+            else -> intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
         }
         initInjector()
         initView()
