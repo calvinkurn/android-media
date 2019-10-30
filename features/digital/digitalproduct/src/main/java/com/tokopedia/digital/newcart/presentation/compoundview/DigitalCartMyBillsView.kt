@@ -23,6 +23,8 @@ class DigitalCartMyBillsView : BaseCustomView {
     private lateinit var descriptionTextView: TextViewCompat
     private lateinit var moreInfoIcon: ImageView
 
+    private lateinit var moreInfoClickListener: OnMoreInfoClickListener
+
     constructor(context: Context) : super(context) {
         init(context)
     }
@@ -55,6 +57,7 @@ class DigitalCartMyBillsView : BaseCustomView {
 
             titleContainer.apply { touchDelegate = TouchDelegate(delegateArea, moreInfoIcon) }
         }
+        if (::moreInfoClickListener.isInitialized) moreInfoIcon.setOnClickListener { moreInfoClickListener.onMoreInfoClicked() }
     }
 
     fun getSubscriptionCheckbox(): CheckBox = subscriptionCheckbox
@@ -83,6 +86,14 @@ class DigitalCartMyBillsView : BaseCustomView {
 
     fun setOnCheckedChangeListener(listener : CompoundButton.OnCheckedChangeListener){
         subscriptionCheckbox.setOnCheckedChangeListener(listener)
+    }
+
+    fun setOnMoreInfoClickedListener(listener : OnMoreInfoClickListener){
+        moreInfoClickListener = listener
+    }
+
+    interface OnMoreInfoClickListener {
+        fun onMoreInfoClicked()
     }
 
     companion object {

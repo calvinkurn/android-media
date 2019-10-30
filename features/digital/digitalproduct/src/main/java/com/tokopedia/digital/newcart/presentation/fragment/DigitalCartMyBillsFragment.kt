@@ -33,7 +33,9 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsContract.Presenter>(), DigitalCartMyBillsContract.View {
+class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsContract.Presenter>(),
+        DigitalCartMyBillsContract.View,
+        DigitalCartMyBillsView.OnMoreInfoClickListener {
 
     private lateinit var progressBar: ProgressBar
     private lateinit var containerLayout: RelativeLayout
@@ -155,8 +157,13 @@ class DigitalCartMyBillsFragment : DigitalBaseCartFragment<DigitalCartMyBillsCon
     override fun renderMyBillsEgoldView(headerTitle: String?, description: String?, isCheckboxDisabled: Boolean) {
         mybillEgold.getSubscriptionCheckbox().visibility = if (isCheckboxDisabled) View.GONE else View.VISIBLE
         mybillEgold.hasMoreInfo(true)
+        mybillEgold.setOnMoreInfoClickedListener(this)
         headerTitle?.let { title -> mybillEgold.setHeaderTitle(title) }
         description?.let { desc -> mybillEgold.setDescription(desc) }
+    }
+
+    override fun onMoreInfoClicked() {
+        presenter.onEgoldMoreInfoClicked()
     }
 
     override fun renderEgoldMoreInfo(title: String?, tooltip: String?, linkUrl: String?) {
