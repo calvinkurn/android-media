@@ -89,7 +89,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                 return true;
             }
         });
-        optionVibrate = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_VIBRATE);
+        optionVibrate = (CustomCheckBoxPreference) findPreference(SETTING_NOTIFICATION_VIBRATE);
         optionVibrate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences
