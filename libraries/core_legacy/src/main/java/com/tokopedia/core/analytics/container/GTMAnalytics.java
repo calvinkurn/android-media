@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
@@ -86,19 +87,33 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneralGtmV5(map);
     }
 
+
+
     @Override
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // V4
         clearEnhanceEcommerce();
         pushGeneral(clone(value));
 
-        // V5
-        String keyEvent = keyEvent(clone(value));
+        StringBuilder stacktrace = new StringBuilder();
 
-        // prevent sending null keyevent
-        if (keyEvent == null)
-            return;
-        pushEECommerce(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
+        // V5
+        try {
+            for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+               stacktrace.append(String.format("%s\n", ste.toString()));
+            }
+
+            String keyEvent = keyEvent(clone(value));
+
+            // prevent sending null keyevent
+            if (keyEvent == null)
+                return;
+            pushEECommerce(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
+        }catch (Exception e){
+            if(e != null && !TextUtils.isEmpty(e.getMessage())) {
+                Timber.e("P2[GTMAnalytic Error]%s %s", e.getMessage(), stacktrace.toString());
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
