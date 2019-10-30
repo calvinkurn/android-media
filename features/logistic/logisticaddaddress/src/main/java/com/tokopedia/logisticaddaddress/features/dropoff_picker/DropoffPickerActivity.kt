@@ -31,7 +31,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     lateinit var mSearchInput: SearchInputView
     lateinit var mSearchText: EditText
-    lateinit var mEmptyView: View
+    lateinit var mDisabledLocationView: View
     lateinit var mButtonActivate: UnifyButton
     lateinit var mPermissionChecker: PermissionCheckerHelper
     lateinit var mLocationHelper: LocationDetectorHelper
@@ -44,7 +44,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         val toolbar = findViewById<Toolbar>(R.id.toolbar_search)
         setSupportActionBar(toolbar)
         mSearchInput = findViewById(R.id.search_input_dropoff)
-        mEmptyView = findViewById(R.id.view_gps_empty)
+        mDisabledLocationView = findViewById(R.id.view_gps_empty)
         mButtonActivate = findViewById(R.id.button_activate_gps)
         mButtonActivate.setOnClickListener {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
@@ -114,7 +114,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             val mapFragment: SupportMapFragment =
                     supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
             supportFragmentManager.beginTransaction().hide(mapFragment).commit()
-            mEmptyView.visibility = View.VISIBLE
+            mDisabledLocationView.visibility = View.VISIBLE
         }
     }
 }
