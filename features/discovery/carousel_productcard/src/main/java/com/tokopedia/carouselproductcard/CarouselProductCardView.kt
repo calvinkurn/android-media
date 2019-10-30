@@ -1,8 +1,8 @@
 package com.tokopedia.carouselproductcard
 
+import android.app.Activity
 import android.content.Context
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.graphics.Point
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +11,10 @@ import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 import android.view.ViewGroup
-import android.app.Activity
-import android.graphics.Point
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
 class CarouselProductCardView: BaseCustomView {
 
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
