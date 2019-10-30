@@ -293,6 +293,8 @@ public class GTMAnalytics extends ContextAnalytics {
         Object promotionObj;
         Map<String, Object> purchase = (Map<String, Object>) ecommerce.remove("purchase");
 
+        bundle.putString(FirebaseAnalytics.Param.CURRENCY, "IDR");
+
         if (purchase.get("actionField") != null) {
             Map<String, Object> actionField = (Map<String, Object>) purchase.remove("actionField");
 
@@ -304,6 +306,7 @@ public class GTMAnalytics extends ContextAnalytics {
             bundle.putString(FirebaseAnalytics.Param.COUPON, (String) actionField.remove(PurchaseKey.KEY_AFFILIATION));
         }
 
+
         // get products
         promotionObj = purchase.get("products");
         if (promotionObj != null) {
@@ -312,18 +315,14 @@ public class GTMAnalytics extends ContextAnalytics {
                 Object[] promotions = (Object[]) purchase.get("products");
                 for (int i = 0; i < promotions.length; i++) {
                     Map<String, Object> promotion = (Map<String, Object>) promotions[i];
-                    Bundle transactionBundle = checkoutProductMap(promotion);
-                    transactionBundle.putString(FirebaseAnalytics.Param.CURRENCY, "IDR");
-                    promotionBundles.add(transactionBundle);
+                    promotionBundles.add(checkoutProductMap(promotion));
                 }
             } else if (promotionObj instanceof List) {
                 List promotions = (List) purchase.get("products");
 
                 for (int i = 0; i < promotions.size(); i++) {
                     Map<String, Object> promotion = (Map<String, Object>) promotions.get(i);
-                    Bundle transactionBundle = checkoutProductMap(promotion);
-                    transactionBundle.putString(FirebaseAnalytics.Param.CURRENCY, "IDR");
-                    promotionBundles.add(transactionBundle);
+                    promotionBundles.add(checkoutProductMap(promotion));
                 }
             }
             bundle.putParcelableArrayList("items", promotionBundles);
