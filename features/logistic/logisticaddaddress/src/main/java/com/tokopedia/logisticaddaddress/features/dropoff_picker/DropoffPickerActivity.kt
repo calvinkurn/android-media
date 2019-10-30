@@ -10,7 +10,10 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -25,7 +28,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
-    lateinit var mMapView: MapView
     lateinit var mSearchInput: SearchInputView
     lateinit var mSearchText: EditText
     lateinit var mEmptyView: View
