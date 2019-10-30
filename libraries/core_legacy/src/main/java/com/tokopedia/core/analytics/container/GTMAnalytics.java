@@ -693,7 +693,7 @@ public class GTMAnalytics extends ContextAnalytics {
                     if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
                         if (isAllowRefreshDefault(containerHolder)) {
                             Log.d("GTM TKPD", "Refreshed Container ");
-                            containerHolder.refresh();
+                            refreshContainerInBackground(containerHolder);
                         }
                     }
                 });
