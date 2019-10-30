@@ -49,7 +49,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showLoading() {
         textTitle.text = resources.getString(R.string.emoney_reading_card_label_title)
-        textTitle.setTextColor(resources.getColor(R.color.black))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.design.R.color.black))
         textLabel.text = resources.getString(R.string.emoney_reading_card_label_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
@@ -61,7 +61,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showInitialState() {
         textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(R.color.black))
+        textTitle.setTextColor(resources.getColor(com.tokopedia.design.R.color.black))
         textLabel.text = resources.getString(R.string.emoney_tap_card_instruction_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()

@@ -60,7 +60,7 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         textLabelCardNumber.text = resources.getString(R.string.emoney_card_info_label_card_number)
         //TODO should be formatted numRber here
         textCardNumber.text = attributesEmoneyInquiry.formattedCardNumber
-        textCardNumber.setTextColor(resources.getColor(R.color.black))
+        textCardNumber.setTextColor(resources.getColor(com.tokopedia.design.R.color.black))
         textCardNumber.setTypeface(textCardNumber.typeface, Typeface.BOLD)
 
         textLabelBalance.text = resources.getString(R.string.emoney_card_info_label_card_balance)

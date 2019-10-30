@@ -78,7 +78,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
 
     fun showLoading() {
         textLabelProgressTitle.visibility = View.VISIBLE
-        textLabelProgressTitle.setTextColor(resources.getColor(R.color.black))
+        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.design.R.color.black))
         textLabelProgressTitle.text = resources.getString(R.string.emoney_update_card_balance_progress_label_title)
         textLabelProgressMessage.visibility = View.VISIBLE
         textLabelProgressMessage.setTextColor(resources.getColor(R.color.emoney_grey))
