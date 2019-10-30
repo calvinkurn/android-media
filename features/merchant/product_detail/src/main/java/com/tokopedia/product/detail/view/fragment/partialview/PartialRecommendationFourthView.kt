@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
+import android.app.Activity
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.carouselproductcard.CarouselProductCardView

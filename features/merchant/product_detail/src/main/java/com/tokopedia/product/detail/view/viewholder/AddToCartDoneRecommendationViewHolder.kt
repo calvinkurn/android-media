@@ -3,13 +3,18 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
 import com.tokopedia.product.detail.view.adapter.AddToCartRecommendationProductAdapter
 import com.tokopedia.product.detail.view.adapter.RecommendationProductTypeFactory
+import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.add_to_cart_done_recommendation_layout.view.*
 
 class AddToCartDoneRecommendationViewHolder(
