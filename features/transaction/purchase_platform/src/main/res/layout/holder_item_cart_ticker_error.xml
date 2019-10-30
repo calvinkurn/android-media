@@ -42,13 +42,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:text="Terdapat 2 produk yang bermasalah"
+                android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ticker_action"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3"
-                android:textColor="@color/Neutral_N700_96"/>
+                tools:text="Ada 200 barang yang tidak dapat dibeli" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/ticker_action"

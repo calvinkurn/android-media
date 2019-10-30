@@ -506,7 +506,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         List<CartItemData> toBeDeletedCartItemDataList = cartAdapter.getSelectedCartItemData();
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
         if (toBeDeletedCartItemDataList.size() > 0) {
-            final DialogUnify dialog = getDialogDeleteConfirmation(toBeDeletedCartItemDataList.size());
+            final DialogUnify dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size());
             dialog.setPrimaryCTAClickListener(() -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false, true);
@@ -661,7 +661,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             });
 
         } else {
-            dialog = getDialogDeleteConfirmation(1);
+            dialog = getDialogDeleteConfirmation();
             dialog.setPrimaryCTAClickListener(() -> {
                 if (cartItemDatas.size() > 0) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false, removeMacroInsurance);
@@ -1099,7 +1099,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
         ));
-        final DialogUnify dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
+        final DialogUnify dialog = getMultipleDisabledItemsDialogDeleteConfirmation(toBeDeletedCartItem.size());
         dialog.setPrimaryCTAClickListener(() -> {
             if (toBeDeletedCartItem.size() > 0) {
                 dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, false, false);
@@ -1764,20 +1764,40 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @NonNull
-    private DialogUnify getDialogDeleteConfirmation(int count) {
+    private DialogUnify getDialogDeleteConfirmation() {
         DialogUnify dialogUnify = new DialogUnify(getActivity(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
-        dialogUnify.setTitle(getString(R.string.label_dialog_title_delete_item, count));
-        dialogUnify.setDescription(getString(R.string.label_dialog_message_remove_cart_item, count));
+        dialogUnify.setTitle(getString(R.string.label_dialog_title_delete_item));
+        dialogUnify.setDescription(getString(R.string.label_dialog_message_remove_cart_item));
         dialogUnify.setPrimaryCTAText(getString(R.string.label_dialog_action_delete));
         dialogUnify.setSecondaryCTAText(getString(R.string.label_dialog_action_cancel));
-        return dialogUnify ;
+        return dialogUnify;
     }
 
     @NonNull
-    private DialogUnify getDisabledItemsDialogDeleteConfirmation(int count) {
+    private DialogUnify getMultipleItemsDialogDeleteConfirmation(int count) {
         DialogUnify dialogUnify = new DialogUnify(getActivity(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
-        dialogUnify.setTitle(getString(R.string.label_dialog_title_delete_item, count));
-        dialogUnify.setDescription(getString(R.string.label_dialog_message_remove_cart_disabled_item, count));
+        dialogUnify.setTitle(getString(R.string.label_dialog_title_delete_multiple_item, count));
+        dialogUnify.setDescription(getString(R.string.label_dialog_message_remove_cart_multiple_item));
+        dialogUnify.setPrimaryCTAText(getString(R.string.label_dialog_action_delete));
+        dialogUnify.setSecondaryCTAText(getString(R.string.label_dialog_action_cancel));
+        return dialogUnify;
+    }
+
+    @NonNull
+    private DialogUnify getDisabledItemDialogDeleteConfirmation() {
+        DialogUnify dialogUnify = new DialogUnify(getActivity(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
+        dialogUnify.setTitle(getString(R.string.label_dialog_title_delete_disabled_item));
+        dialogUnify.setDescription(getString(R.string.label_dialog_message_remove_cart_item));
+        dialogUnify.setPrimaryCTAText(getString(R.string.label_dialog_action_delete));
+        dialogUnify.setSecondaryCTAText(getString(R.string.label_dialog_action_cancel));
+        return dialogUnify;
+    }
+
+    @NonNull
+    private DialogUnify getMultipleDisabledItemsDialogDeleteConfirmation(int count) {
+        DialogUnify dialogUnify = new DialogUnify(getActivity(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
+        dialogUnify.setTitle(getString(R.string.label_dialog_title_delete_disabled_multiple_item, count));
+        dialogUnify.setDescription(getString(R.string.label_dialog_message_remove_cart_multiple_disabled_item));
         dialogUnify.setPrimaryCTAText(getString(R.string.label_dialog_action_delete));
         dialogUnify.setSecondaryCTAText(getString(R.string.label_dialog_action_cancel));
         return dialogUnify;
@@ -2597,7 +2617,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void onDeleteAllDisabledProduct() {
         List<CartItemData> allDisabledCartItemDataList = cartAdapter.getAllDisabledCartItemData();
 
-        DialogUnify dialog = getDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size());
+        DialogUnify dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size());
 
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -2628,7 +2648,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         List<CartItemData> cartItemDatas = Collections.singletonList(cartItemData);
         List<CartItemData> allCartItemDataList = cartAdapter.getAllDisabledCartItemData();
 
-        DialogUnify dialog = getDisabledItemsDialogDeleteConfirmation(1);
+        DialogUnify dialog = getDisabledItemDialogDeleteConfirmation();
 
         dialog.setPrimaryCTAClickListener(() -> {
             dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, null, false, false);
