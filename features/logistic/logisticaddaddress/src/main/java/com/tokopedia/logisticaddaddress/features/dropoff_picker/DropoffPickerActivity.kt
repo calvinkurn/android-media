@@ -32,10 +32,12 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mSearchInput: SearchInputView
     lateinit var mSearchText: EditText
     lateinit var mDisabledLocationView: View
+    lateinit var mNoPermissionsView: View
     lateinit var mButtonActivate: UnifyButton
     lateinit var mPermissionChecker: PermissionCheckerHelper
     lateinit var mLocationHelper: LocationDetectorHelper
     private var mMap: GoogleMap? = null
+    private var mMapFragment: SupportMapFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +47,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         setSupportActionBar(toolbar)
         mSearchInput = findViewById(R.id.search_input_dropoff)
         mDisabledLocationView = findViewById(R.id.view_gps_empty)
+        mNoPermissionsView = findViewById(R.id.view_no_permissions)
         mButtonActivate = findViewById(R.id.button_activate_gps)
         mButtonActivate.setOnClickListener {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
@@ -65,9 +68,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mLocationHelper = LocationDetectorHelper(mPermissionChecker,
                 LocationServices.getFusedLocationProviderClient(this), this)
 
-        val mapFragment: SupportMapFragment =
-                supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        mMapFragment = supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
+        mMapFragment?.getMapAsync(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -105,16 +107,32 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             val newLoc = LatLng(it.latitude, it.longitude)
             moveCamera(newLoc)
         } else {
-            setEmptyState(true)
+            setLocationEmptyView()
         }
     }
 
-    private fun setEmptyState(active: Boolean) {
-        if (active) {
-            val mapFragment: SupportMapFragment =
-                    supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
-            supportFragmentManager.beginTransaction().hide(mapFragment).commit()
-            mDisabledLocationView.visibility = View.VISIBLE
+    private fun setLocationEmptyView() {
+        if (mMapFragment?.isVisible == true) {
+            supportFragmentManager.beginTransaction().hide(mMapFragment!!).commit()
         }
+        mDisabledLocationView.visibility = View.VISIBLE
+        mNoPermissionsView.visibility = View.GONE
     }
+
+    private fun setNoPermissionsView() {
+        if (mMapFragment?.isVisible == true) {
+            supportFragmentManager.beginTransaction().hide(mMapFragment!!).commit()
+        }
+        mDisabledLocationView.visibility = View.GONE
+        mNoPermissionsView.visibility = View.VISIBLE
+    }
+
+    private fun setMapView() {
+        if (mMapFragment?.isHidden == true) {
+            supportFragmentManager.beginTransaction().show(mMapFragment!!).commit()
+        }
+        mDisabledLocationView.visibility = View.GONE
+        mNoPermissionsView.visibility = View.GONE
+    }
+
 }
