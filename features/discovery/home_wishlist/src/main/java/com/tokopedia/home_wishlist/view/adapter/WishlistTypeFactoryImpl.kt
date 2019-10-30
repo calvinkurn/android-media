@@ -1,8 +1,10 @@
 package com.tokopedia.home_wishlist.view.adapter
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
+import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.view.viewholder.*
 
@@ -11,7 +13,7 @@ import com.tokopedia.home_wishlist.view.viewholder.*
  *
  * This class extends from [BaseAdapterTypeFactory] and implement from [HomeRecommendationTypeFactory]
  */
-class WishlistTypeFactoryImpl : BaseAdapterTypeFactory(), WishlistTypeFactory {
+class WishlistTypeFactoryImpl(private val appExecutors: SmartExecutors) : WishlistTypeFactory {
     override fun type(wishlistItemDataModel: WishlistItemDataModel): Int {
         return WishlistItemDataModel.LAYOUT
     }
@@ -54,7 +56,7 @@ class WishlistTypeFactoryImpl : BaseAdapterTypeFactory(), WishlistTypeFactory {
      * @param view the parent of the view
      * @param type the type of view
      */
-    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
+    override fun createViewHolder(view: View, type: Int): SmartAbstractViewHolder<*> {
         return when(type){
             WishlistItemDataModel.LAYOUT -> WishlistItemViewHolder(view)
             LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(view)
@@ -62,10 +64,9 @@ class WishlistTypeFactoryImpl : BaseAdapterTypeFactory(), WishlistTypeFactory {
             EmptyWishlistViewHolder.LAYOUT -> EmptyWishlistViewHolder(view)
             ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view)
             RecommendationItemViewHolder.LAYOUT -> RecommendationItemViewHolder(view)
-            RecommendationCarouselItemViewHolder.LAYOUT -> RecommendationCarouselItemViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
-            RecommendationCarouselViewHolder.LAYOUT -> RecommendationCarouselViewHolder(view)
-            else -> super.createViewHolder(view, type)
+            RecommendationCarouselViewHolder.LAYOUT -> RecommendationCarouselViewHolder(view, appExecutors)
+            else -> throw TypeNotSupportedException.create("Layout not supported")
         }
     }
 }

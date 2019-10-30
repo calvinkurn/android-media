@@ -3,17 +3,19 @@ package com.tokopedia.home_wishlist.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_wishlist.R
+import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
+import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
-class RecommendationItemViewHolder(view: View) : AbstractViewHolder<RecommendationItemDataModel>(view){
+class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<RecommendationItemDataModel>(view){
 
     private val productCardView: ProductCardViewSmallGrid by lazy { view.findViewById<ProductCardViewSmallGrid>(R.id.product_item) }
 
-    override fun bind(element: RecommendationItemDataModel) {
+    override fun bind(element: RecommendationItemDataModel, listener: SmartListener) {
         productCardView.run {
             setProductModel(
                     ProductCardModel(

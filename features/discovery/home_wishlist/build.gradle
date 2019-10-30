@@ -54,6 +54,10 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.emptyStates
+    implementation rootProject.ext.unifyDependencies.globalError
+    implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -66,7 +70,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     implementation rootProject.ext.playServicesDependencies.analytics
     testImplementation rootProject.ext.testDependencies.archCoreTesting

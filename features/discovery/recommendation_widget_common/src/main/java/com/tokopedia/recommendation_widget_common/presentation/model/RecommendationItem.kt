@@ -3,7 +3,7 @@ package com.tokopedia.recommendation_widget_common.presentation.model
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.kotlin.model.ImpressHolder
 
-class RecommendationItem(val productId: Int,
+data class RecommendationItem(val productId: Int,
                          val name: String,
                          val categoryBreadcrumbs: String,
                          val url: String,

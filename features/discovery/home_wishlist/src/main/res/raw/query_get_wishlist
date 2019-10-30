@@ -12,6 +12,8 @@ query wishlist($query: String!, $page: Int, $count: Int){
         available
         status
         price
+        rating
+        review_count
         minimum_order
         wholesale_price {
           minimum

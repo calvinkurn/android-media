@@ -84,6 +84,8 @@ ext {
     unifyCalendarVersion = '1.0.0'
     unifyBannerVersion = '1.0.0'
     unifyDialogVersion = '1.0.0'
+    unifyEmptyStateVersion = '0.0.1'
+    unifyGlobalErrorVersion = '1.0.0'
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -304,6 +306,8 @@ ext {
        coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
        calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
        banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
-       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar"
+       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
+       emptyStates  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
+       globalError : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
     ]
 }

@@ -148,7 +148,7 @@ class WishlistViewModelTest {
         )
 
         //given recommendation repository return no data
-        coEvery { wishlistRepository.getRecommendationData(any(), any(), any()) }.returns(listOf())
+        coEvery { wishlistRepository.getRecommendationData(any(), any()) }.returns(listOf())
 
         //when viewmodel remove wishlist product
         viewModel.getWishlistData()

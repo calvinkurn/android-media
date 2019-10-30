@@ -5,7 +5,7 @@ import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactory
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-class RecommendationCarouselItemDataModel (
+data class RecommendationCarouselItemDataModel (
         val recommendationItem: RecommendationItem
 ) : WishlistDataModel {
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {

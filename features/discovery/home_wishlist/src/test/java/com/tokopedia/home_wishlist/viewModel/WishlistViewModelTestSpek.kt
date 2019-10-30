@@ -7,7 +7,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
-import com.tokopedia.home_wishlist.util.AddToCartAction
+import com.tokopedia.home_wishlist.util.WishlistAction
 import com.tokopedia.home_wishlist.util.Event
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.home_wishlist.InstantTaskExecutorRuleSpek
@@ -114,15 +114,15 @@ class WishlistViewModelTestSpek : Spek({
             }
 
             Then("Add to cart event is triggered with selected product Id") {
-                val addToCartEventData: LiveData<Event<AddToCartAction>> = wishlistViewmodel.addToCartEventData
-                assertEquals(mockProductCardPositionCandidate, addToCartEventData.value!!.peekContent()!!.position)
-                assertEquals(mockId2, addToCartEventData.value!!.peekContent()!!.productId.toString())
+                val wishlistEventData: LiveData<Event<WishlistAction>> = wishlistViewmodel.action
+                assertEquals(mockProductCardPositionCandidate, wishlistEventData.value!!.peekContent()!!.position)
+                assertEquals(mockId2, wishlistEventData.value!!.peekContent()!!.productId.toString())
             }
 
             Then("Add to cart event can only retrieved once") {
-                val addToCartEventData: LiveData<Event<AddToCartAction>> = wishlistViewmodel.addToCartEventData
-                val eventItem = addToCartEventData.value!!.getContentIfNotHandled()
-                val eventItemSecond = addToCartEventData.value!!.getContentIfNotHandled()
+                val wishlistEventData: LiveData<Event<WishlistAction>> = wishlistViewmodel.action
+                val eventItem = wishlistEventData.value!!.getContentIfNotHandled()
+                val eventItemSecond = wishlistEventData.value!!.getContentIfNotHandled()
                 assertEquals( null, eventItemSecond)
             }
         }
@@ -165,15 +165,15 @@ class WishlistViewModelTestSpek : Spek({
             }
 
             Then("Add to cart event is triggered with selected product Id and error message") {
-                val addToCartEventData: LiveData<Event<AddToCartAction>> = wishlistViewmodel.addToCartEventData
-                Assert.assertEquals(mockProductCardPositionCandidate, addToCartEventData.value!!.peekContent()!!.position)
-                Assert.assertEquals(mockId2, addToCartEventData.value!!.peekContent()!!.productId.toString())
+                val wishlistEventData: LiveData<Event<WishlistAction>> = wishlistViewmodel.action
+                Assert.assertEquals(mockProductCardPositionCandidate, wishlistEventData.value!!.peekContent()!!.position)
+                Assert.assertEquals(mockId2, wishlistEventData.value!!.peekContent()!!.productId.toString())
             }
 
             Then("Add to cart event can only retrieved once") {
-                val addToCartEventData: LiveData<Event<AddToCartAction>> = wishlistViewmodel.addToCartEventData
-                val eventItem = addToCartEventData.value!!.getContentIfNotHandled()
-                val eventItemSecond = addToCartEventData.value!!.getContentIfNotHandled()
+                val wishlistEventData: LiveData<Event<WishlistAction>> = wishlistViewmodel.action
+                val eventItem = wishlistEventData.value!!.getContentIfNotHandled()
+                val eventItemSecond = wishlistEventData.value!!.getContentIfNotHandled()
                 assertEquals(eventItemSecond, null)
             }
         }

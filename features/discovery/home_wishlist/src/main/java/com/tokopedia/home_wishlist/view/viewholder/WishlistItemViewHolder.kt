@@ -1,26 +1,23 @@
 package com.tokopedia.home_wishlist.view.viewholder
 
 import android.view.View
-import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_wishlist.R
+import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
+import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.view.custom.WishlistCardView
-import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v2.ProductCardViewList
-import com.tokopedia.topads.sdk.view.ImpressedImageView
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 class WishlistItemViewHolder(
         private val view: View
-) : AbstractViewHolder<WishlistItemDataModel>(view){
+) : SmartAbstractViewHolder<WishlistItemDataModel>(view){
 
     private val productCardView: WishlistCardView by lazy { view.findViewById<WishlistCardView>(R.id.wishlist_item) }
+    private val checkBox: CheckboxUnify by lazy { view.findViewById<CheckboxUnify>(R.id.wishlist_checkbox) }
 
-    override fun bind(element: WishlistItemDataModel) {
+    override fun bind(element: WishlistItemDataModel, listener: SmartListener) {
         productCardView.run {
             setProductModel(
                     ProductCardModel(
@@ -31,54 +28,49 @@ class WishlistItemViewHolder(
                             shopBadgeList = element.productItem.badges.map {
                                 ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
                             },
+                            ratingCount = element.productItem.rating,
+                            reviewCount = element.productItem.reviewCount,
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.productItem.freeOngkir.isActive,
                                     imageUrl = element.productItem.freeOngkir.imageUrl
                             )
                     )
             )
-
-            productCardView.setAddToCardButtonVisible(true)
+            productCardView.setAddToCartButtonVisible(true)
             productCardView.setDeleteButtonVisible(true)
 
+            if(!element.productItem.available){
+                setOutOfStock()
+            } else {
+                if(element.isOnAddToCart) disableAddToCartButton()
+                else enableAddToCartButton()
+            }
 
-//            setOnClickListener {
-//                element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
-//                if (element.productItem.isTopAds) ImpresionTask().execute(element.productItem.clickUrl)
-//            }
-//
-//            setButtonWishlistOnClickListener {
-//                element.listener.onWishlistClick(element.productItem, !element.productItem.isWishlist){ success, throwable ->
-//                    if(success){
-//                        element.productItem.isWishlist = !element.productItem.isWishlist
-//                        setButtonWishlistImage(element.productItem.isWishlist)
-//                        if(element.productItem.isWishlist){
-//                            showSuccessAddWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist))
-//                        } else {
-//                            showSuccessRemoveWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist))
-//                        }
-//                    }else {
-//                        showError(rootView, throwable)
-//                    }
-//                }
-//            }
+            checkBox.setOnClickListener {
+                (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
+            }
+            checkBox.visibility = if(element.isBulkMode) View.VISIBLE else View.GONE
+
+            view.setOnClickListener {
+                if(element.isBulkMode) {
+                    (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
+                }
+            }
+
+            setOnClickListener {
+                if(element.isBulkMode) {
+                    (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
+                }
+                else (listener as WishlistListener).onProductClick(element, adapterPosition)
+            }
+
+            setAddToCartButtonOnClickListener(View.OnClickListener {
+                (listener as WishlistListener).onAddToCartClick(element, adapterPosition)
+            })
+
+            setDeleteButtonOnClickListener(View.OnClickListener {
+                (listener as WishlistListener).onDeleteClick(element, adapterPosition)
+            })
         }
     }
-
-    private fun showSuccessAddWishlist(view: View, message: String){
-        Toaster.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
-                view.context.getString(R.string.recom_go_to_wishlist), View.OnClickListener {
-            RouteManager.route(view.context, ApplinkConst.WISHLIST)
-        })
-    }
-
-    private fun showSuccessRemoveWishlist(view: View, message: String){
-        Toaster.showNormal(view, message, Snackbar.LENGTH_LONG)
-    }
-
-    private fun showError(view: View, throwable: Throwable?){
-        Toaster.showError(view,
-                ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
-    }
-
 }
