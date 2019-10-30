@@ -381,6 +381,9 @@
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
 
+
+-dontwarn androidx.appcompat.widget.RebindReportingHolder
+
 # -- laku6
 -keep class com.scottyab.rootbeer.** { *; }
 -dontwarn com.scottyab.rootbeer.**
@@ -396,3 +399,5 @@
 -dontwarn android.test.**
 -dontwarn org.mockito.**
 -dontwarn org.junit.**
+
+-keep public class com.google.android.material.bottomnavigation.** { *; }

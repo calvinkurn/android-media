@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdreactnative.react;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;

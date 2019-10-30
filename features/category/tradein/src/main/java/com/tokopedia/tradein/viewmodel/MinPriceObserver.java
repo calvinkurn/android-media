@@ -1,7 +1,7 @@
 package com.tokopedia.tradein.viewmodel;
 
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.annotation.Nullable;
 
 public class MinPriceObserver implements Observer<String> {
     @Override

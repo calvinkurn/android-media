@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shopsettings.shipping.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.network.apiservices.shipment.EditShippingService;
 import com.tokopedia.core.network.apiservices.shipment.EditShippingWebViewService;

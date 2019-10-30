@@ -2,11 +2,11 @@ package com.tokopedia.report.view.customview
 
 import android.app.Activity
 import android.os.Build
-import android.support.annotation.IntDef
-import android.support.constraint.ConstraintLayout
-import android.support.v7.app.AlertDialog
-import android.support.v7.content.res.AppCompatResources
-import android.support.v7.widget.CardView
+import androidx.annotation.IntDef
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.cardview.widget.CardView
 import android.view.View
 import android.view.Window
 import android.widget.Button

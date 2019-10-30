@@ -1,10 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
 import android.content.Context
-import android.support.annotation.LayoutRes
 import android.view.View
 import android.widget.ImageView
-
+import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -30,8 +29,8 @@ class HomeBannerFeedViewHolder(itemView: View, private val homeFeedview: HomeFee
         }
 
         Glide.with(context)
-                .load(element.imageUrl)
                 .asBitmap()
+                .load(element.imageUrl)
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)

@@ -220,7 +220,7 @@ android {
     }
 
     configurations.all {
-        resolutionStrategy.force 'com.android.support:multidex:1.0.3'
+        resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
         resolutionStrategy.force 'com.facebook.soloader:soloader:0.6.0'
@@ -266,7 +266,6 @@ dependencies {
     implementation project(rootProject.ext.features.interestPick)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
@@ -361,9 +360,6 @@ dependencies {
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.digitalHomepage)
-    implementation project(rootProject.ext.features.saldodetails)
-    implementation project(rootProject.ext.features.report)
-    implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
@@ -375,13 +371,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.features.imageSearch)
-    implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.features.autocomplete)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.videoRecorder)
-    implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
@@ -397,7 +391,6 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.paymentSetting)
-    implementation project(rootProject.ext.features.profileCompletion)
     implementation project(rootProject.ext.libraries.cpm)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
@@ -406,7 +399,6 @@ dependencies {
     implementation project(rootProject.ext.features.challenges)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.features.kyc)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.logger)
@@ -478,7 +470,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.expandableTextview
-    implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation project(rootProject.ext.libraries.cameraview)
     implementation (rootProject.ext.miscDependencies.flexBoxLayout){
         exclude group: 'com.android.support'

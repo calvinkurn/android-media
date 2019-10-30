@@ -7,7 +7,7 @@
     tools:paddingStart="@dimen/dp_16"
     tools:paddingEnd="@dimen/dp_16">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageShare"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"

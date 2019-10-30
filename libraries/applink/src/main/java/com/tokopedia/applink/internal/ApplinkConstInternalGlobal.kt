@@ -252,6 +252,9 @@ object ApplinkConstInternalGlobal {
         "dfauto={isAutoDownload}&" +
         "dfimage={imageUrl}"
 
+    @JvmField
+    val LOGOUT = "$INTERNAL_GLOBAL/logout"
+
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
@@ -261,4 +264,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/push-notification-troubleshooter
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
+
+    // Phone Number Verification Activity
+    // tokopedia-android-internal://global/setting-referral-phone-verification
+    @JvmField
+    val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
+    @JvmField
+    val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.view.viewholder;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;

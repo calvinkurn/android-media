@@ -1,6 +1,6 @@
 package com.tokopedia.topupbills.telco.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection

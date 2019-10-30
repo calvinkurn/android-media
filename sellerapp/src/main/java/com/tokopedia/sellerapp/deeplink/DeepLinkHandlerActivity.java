@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -106,7 +106,8 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         ChatbotApplinkModule.class,
         PowerMerchantSubscribeDeeplinkModule.class,
         AutoAdsLinkModule.class,
-        FlashsaleDeeplinkModule.class
+        FlashsaleDeeplinkModule.class,
+        RNDevOptionsApplinkModule.class
 })
 /* **
  * Navigation will via RouteManager -> manifest instead.
@@ -143,7 +144,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ChatbotApplinkModuleLoader(),
                 new PowerMerchantSubscribeDeeplinkModuleLoader(),
                 new AutoAdsLinkModuleLoader(),
-                new FlashsaleDeeplinkModuleLoader()
+                new FlashsaleDeeplinkModuleLoader(),
+                new RNDevOptionsApplinkModuleLoader()
         );
     }
 
