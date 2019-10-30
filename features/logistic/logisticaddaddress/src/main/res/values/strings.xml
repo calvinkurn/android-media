@@ -142,6 +142,9 @@
     <string name="something_wrong_happened">Terjadi Kesalahan</string>
     <string name="title_dropoff_picker">Pilih lokasi Drop Off</string>
     <string name="searchbar_dropoff_hint">Cari Tempat Drop Off...</string>
+    <string name="gps_empty_title">GPS tidak terdeteksi!</string>
+    <string name="gps_empty_desc">Cari otomatis dengan aktifkan GPS atau masukkan kata kunci lokasi</string>
+    <string name="gps_empty_action">Aktifkan GPS</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
