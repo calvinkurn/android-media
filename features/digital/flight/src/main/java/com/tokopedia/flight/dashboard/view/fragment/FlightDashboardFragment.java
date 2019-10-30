@@ -468,14 +468,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             minDate = selectedDate;
             selectedDate = FlightDateUtil.stringToDate(getCurrentDashboardViewModel().getReturnDate());
             setCalendarDatePicker(selectedDate, minDate, maxDate,
-                    getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date),
+                    getActivity().getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_departure_trip_date),
                     TAG_DEPARTURE_CALENDAR);
         }
     }
 
     @Override
     public void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date), TAG_RETURN_CALENDAR);
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_return_trip_date), TAG_RETURN_CALENDAR);
     }
 
     private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,
