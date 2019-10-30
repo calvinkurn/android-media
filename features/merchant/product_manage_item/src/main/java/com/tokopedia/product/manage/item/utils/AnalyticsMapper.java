@@ -108,7 +108,7 @@ public class AnalyticsMapper {
         if (viewModel.getProductWeight() <= 0) {
             listInvalidDataField.add(FIELDS_MANDATORY_WEIGHT);
         }
-        if (viewModel.isProductStatusActive()){
+        if (!viewModel.isProductStatusActive()){
             listInvalidDataField.add(FIELDS_MANDATORY_STOCK_STATUS);
         }
         return listInvalidDataField;
