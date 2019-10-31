@@ -148,6 +148,7 @@
     <string name="no_permission_title">Lokasi tidak diizinkan</string>
     <string name="no_permission_desc">Cari otomatis dengan izinkan lokasi atau masukkan kata kunci lokasi</string>
     <string name="no_permission_action">Izinkan Lokasi</string>
+    <string name="title_bottom_sheet_dropoff">Titik Ambil Terdekat</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
