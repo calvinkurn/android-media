@@ -78,9 +78,11 @@ class OfficialHomeFragment :
         context?.let { tracking = OfficialStoreTracking(it) }
     }
 
-    override fun onStart() {
-        super.onStart()
-        tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -117,6 +119,11 @@ class OfficialHomeFragment :
         observeProductRecommendation()
         refreshData()
         setListener()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        tracking?.sendAll()
     }
 
     private fun refreshData() {

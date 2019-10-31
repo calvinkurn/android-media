@@ -367,4 +367,8 @@ class OfficialStoreTracking(context: Context) {
         val stringIsLogin = if (isLogin) "" else " - non login"
         return "/official-store$stringIsLogin - rekomendasi untuk anda - $recommendationType$stringTopAds"
     }
+
+    fun sendAll() {
+        trackingQueue.sendAll()
+    }
 }

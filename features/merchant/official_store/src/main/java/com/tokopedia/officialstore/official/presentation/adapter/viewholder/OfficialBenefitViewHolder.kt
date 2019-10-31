@@ -25,7 +25,7 @@ class OfficialBenefitViewHolder(view: View?): AbstractViewHolder<OfficialBenefit
         view?.context?.let {
             adapter = BenefitAdapter(it)
             recyclerView?.layoutManager = GridLayoutManager(it, 3)
-            recyclerView?.addItemDecoration(GridSpacingItemDecoration(3, 0, false))
+            recyclerView?.addItemDecoration(GridSpacingItemDecoration(3, 0))
             recyclerView?.adapter = adapter
         }
     }

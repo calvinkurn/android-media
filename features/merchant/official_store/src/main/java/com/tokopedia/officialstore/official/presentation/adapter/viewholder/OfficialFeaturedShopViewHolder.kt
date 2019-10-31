@@ -27,7 +27,7 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
         view?.context?.let {
             adapter = FeaturedShopAdapter(it)
             recyclerView?.layoutManager = GridLayoutManager(it, 2)
-            recyclerView?.addItemDecoration(GridSpacingItemDecoration(2, 8, false))
+            recyclerView?.addItemDecoration(GridSpacingItemDecoration(2, 8))
             recyclerView?.adapter = adapter
         }
     }
