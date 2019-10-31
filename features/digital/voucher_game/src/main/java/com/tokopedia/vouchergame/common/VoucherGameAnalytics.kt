@@ -17,6 +17,10 @@ class VoucherGameAnalytics {
 
     var categoryName = ""
 
+    fun eventPDPLanding() {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(Screen.VOUCHER_GAME)
+    }
+
     fun eventClickViewAllBanner() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,

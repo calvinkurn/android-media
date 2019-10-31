@@ -134,6 +134,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_menu_detail),
                     voucherGameViewModel.createMenuDetailParams(it))
         }
+        voucherGameAnalytics.eventPDPLanding()
         initView()
     }
 

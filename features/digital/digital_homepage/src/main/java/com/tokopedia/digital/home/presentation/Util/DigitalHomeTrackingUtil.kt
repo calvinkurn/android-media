@@ -130,4 +130,5 @@ class DigitalHomeTrackingUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, FAVOURITE_NUMBER)
     }
 
+
 }
