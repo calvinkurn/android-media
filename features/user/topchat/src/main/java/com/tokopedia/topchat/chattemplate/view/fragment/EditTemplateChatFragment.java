@@ -115,6 +115,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         int i = item.getItemId();
         if (i == R.id.action_organize) {
             if (allowDelete == ENABLE_DELETE) {
+                analytics.trackDeleteTemplateChat();
                 showDialogDelete();
             } else {
                 showError(new MessageErrorException(getActivity().getString(R.string
