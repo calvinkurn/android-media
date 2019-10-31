@@ -42,6 +42,8 @@ public class TemplateChatContract {
         void finishLoading();
 
         void revertArrange(int from, int to);
+
+        void trackAddTemplateChat();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

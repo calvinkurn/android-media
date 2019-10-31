@@ -244,6 +244,11 @@ public class TemplateChatFragment extends BaseDaggerFragment
         adapter.revertArrange(to, from);
     }
 
+    @Override
+    public void trackAddTemplateChat() {
+        analytic.trackAddTemplateChat();
+    }
+
     public ArrayList<Integer> arrangeList(int from, int to) {
         ArrayList<Integer> arrayList = new ArrayList<>();
         for (int i = 0; i < adapter.getList().size() - 1; i++) {

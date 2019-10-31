@@ -46,6 +46,7 @@ public class ItemAddTemplateChatViewHolder extends AbstractViewHolder<TemplateCh
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                viewListener.trackAddTemplateChat();
                 viewListener.onEnter(null, getAdapterPosition());
             }
         });
