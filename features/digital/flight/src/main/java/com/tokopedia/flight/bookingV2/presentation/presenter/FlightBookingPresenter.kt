@@ -142,6 +142,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                             )
                             view.setContactGender(profileInfo.gender)
                         }
+                        view.hideContactDataProgressBar()
                     }
 
                     override fun onCompleted() {
