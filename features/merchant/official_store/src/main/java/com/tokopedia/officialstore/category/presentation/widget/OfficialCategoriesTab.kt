@@ -46,7 +46,15 @@ class OfficialCategoriesTab(context: Context,
         setupWithViewPager(viewPager)
 
         addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabReselected(tab: Tab) {}
+            override fun onTabReselected(tab: Tab) {
+                text_view_category_title?.apply {
+                    setTextColor(MethodChecker.getColor(
+                            context,
+                            R.color.Purple_P600
+                    ))
+                    setWeight(Typography.BOLD)
+                }
+            }
 
             override fun onTabUnselected(tab: Tab) {
                 tab.customView?.apply {
