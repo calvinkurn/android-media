@@ -110,16 +110,16 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
     private fun toggleEmptyView(isVisible: Boolean) {
         statistic_container.visibility = View.GONE
         if (isVisible) {
-            empty_state_container.visibility = View.VISIBLE
+            txt_empty_wording.visibility = View.VISIBLE
             btn_expander.setImageResource(R.drawable.topads_widget_ic_up)
         } else {
-            empty_state_container.visibility = View.GONE
+            txt_empty_wording.visibility = View.GONE
             btn_expander.setImageResource(R.drawable.topads_widget_ic_down)
         }
     }
 
     private fun toggleStatisticView(isVisible: Boolean) {
-        empty_state_container.visibility = View.GONE
+        txt_empty_wording.visibility = View.GONE
         if (isVisible) {
             statistic_container.visibility = View.VISIBLE
             btn_expander.setImageResource(R.drawable.topads_widget_ic_up)
