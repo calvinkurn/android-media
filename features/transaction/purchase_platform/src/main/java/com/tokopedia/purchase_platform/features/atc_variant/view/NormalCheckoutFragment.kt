@@ -156,6 +156,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            isLeasing: Boolean,
                            reference: String?,
                            customEventLabel: String?,
+                           customEventAction: String?,
                            tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
@@ -183,6 +184,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putBoolean(EXTRA_IS_LEASING, isLeasing)
                     putString(ApplinkConst.Transaction.EXTRA_REFERENCE, reference)
                     putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, customEventLabel)
+                    putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, customEventAction)
                 }
             }
             return fragment
@@ -874,7 +876,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false,
                         getPageReference(),
                         freeOngkir.isFreeOngkirActive,
-                        getCustomEventLabel()
+                        getCustomEventLabel(),
+                        getCustomEventAction()
                 )
             }
             onFinishAddToCart(message)
@@ -1002,6 +1005,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun getCustomEventLabel(): String {
         return arguments?.getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, "") ?: ""
+    }
+
+
+    private fun getCustomEventAction(): String {
+        return arguments?.getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, "") ?: ""
     }
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),

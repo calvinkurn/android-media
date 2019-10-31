@@ -93,6 +93,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                     getBoolean(ApplinkConst.Transaction.EXTRA_IS_LEASING),
                     getString(ApplinkConst.Transaction.EXTRA_REFERENCE),
                     getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL),
+                    getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION),
                     tradeInParams
             )
             return normalCheckoutFragment!!

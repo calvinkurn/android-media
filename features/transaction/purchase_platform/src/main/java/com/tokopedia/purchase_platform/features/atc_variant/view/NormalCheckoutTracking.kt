@@ -61,14 +61,15 @@ class NormalCheckoutTracking {
                                      multiOrigin: Boolean,
                                      reference: String,
                                      isFreeOngkir: Boolean,
-                                     customEventLabel: String
+                                     customEventLabel: String,
+                                     customEventAction: String
     ) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
             "click - tambah ke keranjang on variants page",
             selectedVariantId, selectedProductInfo,
             qty, shopId, shopType, shopName, cartId,
             trackerAttribution, trackerListName, multiOrigin, reference, isFreeOngkir,
-            customEventLabel)
+            customEventLabel, customEventAction)
     }
 
     fun eventClickBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -121,7 +122,8 @@ class NormalCheckoutTracking {
                                                   multiOrigin: Boolean,
                                                   reference: String = "",
                                                   isFreeOngkir: Boolean = false,
-                                                  customEventLabel: String = ""
+                                                  customEventLabel: String = "",
+                                                  customEventAction: String = ""
                                                   ) {
         val dimension83 = if (isFreeOngkir) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
         if (originalProductInfoAndVariant == null) {
@@ -147,11 +149,16 @@ class NormalCheckoutTracking {
             else -> productVariantString
         }
 
+        val eventAction = when {
+            reference == ApplinkConst.TOPCHAT && customEventAction.isNotEmpty() -> customEventAction
+            else -> actionLabel
+        }
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             mutableMapOf<String, Any>(
                 "event" to "addToCart",
                 "eventCategory" to category,
-                "eventAction" to actionLabel,
+                "eventAction" to eventAction,
                 "eventLabel" to eventLabel,
                 KEY_PRODUCT_ID to selectedProductInfo.basic.id,
                 "ecommerce" to mutableMapOf(

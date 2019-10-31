@@ -202,4 +202,8 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         return "$atcEventLabel - $blastId"
     }
 
+    fun getAtcEventAction(): String {
+        return "click atc on bottom sheet"
+    }
+
 }
