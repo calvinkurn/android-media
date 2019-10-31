@@ -9,16 +9,16 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.unifyprinciples.Typography
 
 class DynamicChannelThematicViewHolder(
-        private val view: View?
+        view: View?,
+        private val dcEventHandler: DynamicChannelEventHandler
 ) : AbstractViewHolder<DynamicChannelViewModel>(view) {
 
     private val bannerImageCornerRadius: Float = 16f
@@ -37,7 +37,7 @@ class DynamicChannelThematicViewHolder(
         element?.run {
             setupHeader(dynamicChannelData.header)
             setupBanner(dynamicChannelData.banner)
-            setupContent(dynamicChannelData.grids)
+            setupContent(dynamicChannelData)
         }
     }
 
@@ -49,9 +49,7 @@ class DynamicChannelThematicViewHolder(
 
             if (header.applink.isNotEmpty()) {
                 headerActionText.visibility = View.VISIBLE
-                headerActionText.setOnClickListener {
-                    RouteManager.route(view?.context, header.applink)
-                }
+                headerActionText.setOnClickListener(dcEventHandler.onClickMixActionText(header.applink))
             } else {
                 headerActionText.visibility = View.GONE
             }
@@ -86,13 +84,13 @@ class DynamicChannelThematicViewHolder(
         }
     }
 
-    private fun setupContent(grids: MutableList<Grid?>?) {
-        if (!grids.isNullOrEmpty()) {
+    private fun setupContent(channelData: Channel) {
+        if (!channelData.grids.isNullOrEmpty()) {
             mainContainer.visibility = View.VISIBLE
 
             contentList.apply {
                 layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-                adapter = ThematicListAdapter(view?.context, grids)
+                adapter = ThematicListAdapter(channelData, dcEventHandler)
             }
         } else {
             mainContainer.visibility = View.GONE

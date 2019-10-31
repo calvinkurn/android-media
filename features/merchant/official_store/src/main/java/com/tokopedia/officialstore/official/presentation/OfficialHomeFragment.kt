@@ -18,7 +18,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.analytics.DynamicChannelTrackers
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.RecyclerViewScrollListener
@@ -59,7 +58,7 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-    private val dcTrackers: DynamicChannelTrackers by lazy { DynamicChannelTrackers() }
+    private lateinit var tracking: OfficialStoreTracking
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -72,16 +71,10 @@ class OfficialHomeFragment :
     private var counterTitleShouldBeRendered = 1
     private var totalScroll = 0
 
-    private lateinit var tracking: OfficialStoreTracking
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            category = it.getParcelable(BUNDLE_CATEGORY)
-        }
-        context?.let {
-            tracking = OfficialStoreTracking(it)
-        }
+        arguments?.let { category = it.getParcelable(BUNDLE_CATEGORY) }
+        context?.let { tracking = OfficialStoreTracking(it) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -369,7 +362,7 @@ class OfficialHomeFragment :
             val applink = gridData?.applink ?: ""
 
             gridData?.let {
-                dcTrackers.dynamicChannelImageClick(
+                tracking.dynamicChannelImageClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
@@ -379,5 +372,58 @@ class OfficialHomeFragment :
 
             RouteManager.route(context, applink)
         }
+    }
+
+    override fun onClickFlashSaleActionText(applink: String): View.OnClickListener {
+        return View.OnClickListener {
+            tracking.flashSaleActionTextClick(viewModel.currentSlug)
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onClickFlashSaleImage(channelData: Channel, position: Int): View.OnClickListener {
+        return View.OnClickListener {
+            val gridData = channelData.grids?.get(position)
+            val applink = gridData?.applink ?: ""
+
+            gridData?.let {
+                tracking.flashSalePDPClick(
+                        viewModel.currentSlug,
+                        channelData.header?.name ?: "",
+                        (position + 1).toString(10),
+                        it
+                )
+            }
+
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onClickMixActionText(applink: String): View.OnClickListener {
+        return View.OnClickListener {
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onClickMixImage(channelData: Channel, position: Int): View.OnClickListener {
+        return View.OnClickListener {
+            val gridData = channelData.grids?.get(position)
+            val applink = gridData?.applink ?: ""
+
+            gridData?.let {
+                tracking.dynamicChannelMixCardClick(
+                        viewModel.currentSlug,
+                        channelData.header?.name ?: "",
+                        (position + 1).toString(10),
+                        it
+                )
+            }
+
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onClickMixBanner(): View.OnClickListener {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

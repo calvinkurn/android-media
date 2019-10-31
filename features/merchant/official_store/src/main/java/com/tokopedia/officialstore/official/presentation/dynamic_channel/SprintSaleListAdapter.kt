@@ -9,16 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class SprintSaleListAdapter(
         private val ctx: Context?,
-        private val listData: MutableList<Grid?>
+        private val channelData: Channel,
+        private val dcEventHandler: DynamicChannelEventHandler
 ) : RecyclerView.Adapter<SprintSaleListAdapter.SprintSaleItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = SprintSaleItemViewHolder(
@@ -28,15 +28,13 @@ class SprintSaleListAdapter(
     )
 
     override fun onBindViewHolder(holder: SprintSaleItemViewHolder, position: Int) {
-        val itemData = listData[position]
+        val itemData = channelData.grids?.get(position)
 
         itemData?.let { item ->
             ImageHandler.loadImageFitCenter(ctx, holder.imageView, item.imageUrl)
 
             holder.apply {
-                imageView.setOnClickListener {
-                    RouteManager.route(ctx, item.applink)
-                }
+                imageView.setOnClickListener(dcEventHandler.onClickFlashSaleImage(channelData, position))
                 discountView.text = item.discount
                 oldPrice.text = item.slashedPrice
                 oldPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
@@ -51,7 +49,7 @@ class SprintSaleListAdapter(
         }
     }
 
-    override fun getItemCount() = listData.size
+    override fun getItemCount() = channelData.grids?.size ?: 0
 
     class SprintSaleItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: SquareImageView by lazy {

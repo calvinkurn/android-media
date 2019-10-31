@@ -6,10 +6,9 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.unifyprinciples.Typography
 
@@ -29,7 +28,7 @@ class DynamicChannelSprintSaleViewHolder(
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
             setupHeader(dynamicChannelData.header)
-            setupContent(dynamicChannelData.grids)
+            setupContent(dynamicChannelData)
         }
     }
 
@@ -54,9 +53,7 @@ class DynamicChannelSprintSaleViewHolder(
             if (header.applink.isNotEmpty()) {
                 headerActionText.apply {
                     visibility = View.VISIBLE
-                    setOnClickListener {
-                        RouteManager.route(view?.context, header.applink)
-                    }
+                    setOnClickListener(dcEventHandler.onClickFlashSaleActionText(header.applink))
                 }
             } else {
                 headerActionText.visibility = View.GONE
@@ -66,8 +63,8 @@ class DynamicChannelSprintSaleViewHolder(
         }
     }
 
-    private fun setupContent(grids: MutableList<Grid?>?) {
-        if (!grids.isNullOrEmpty()) {
+    private fun setupContent(channelData: Channel) {
+        if (!channelData.grids.isNullOrEmpty()) {
             mainContainer.visibility = View.VISIBLE
 
             contentList.apply {
@@ -77,7 +74,7 @@ class DynamicChannelSprintSaleViewHolder(
                         GridLayoutManager.VERTICAL,
                         false
                 )
-                adapter = SprintSaleListAdapter(view?.context, grids)
+                adapter = SprintSaleListAdapter(view?.context, channelData, dcEventHandler)
             }
         } else {
             mainContainer.visibility = View.GONE
