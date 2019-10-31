@@ -5,6 +5,7 @@ import com.tokopedia.imagesearch.domain.model.BadgeModel;
 import com.tokopedia.imagesearch.domain.model.LabelModel;
 import com.tokopedia.imagesearch.domain.model.ProductModel;
 import com.tokopedia.imagesearch.domain.model.SearchResultModel;
+import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
 import com.tokopedia.imagesearch.network.response.ImageSearchProductResponse;
 import com.tokopedia.imagesearch.network.response.SearchProductResponse;
 
@@ -33,8 +34,19 @@ public class ImageProductMapper implements Func1<GraphqlResponse, SearchResultMo
         model.setProductList(mappingProduct(searchProductResponse.getData().getProducts()));
         model.setQuery(searchProductResponse.getData().getQuery());
         model.setShareUrl(searchProductResponse.getData().getShareUrl());
+        model.setCategoryFilterModel(mappingCategoryFilterModel(searchProductResponse.getData().getCategories()));
 
         return model;
+    }
+
+    private CategoryFilterModel mappingCategoryFilterModel(List<SearchProductResponse.Data.Categories> categories) {
+        List<CategoryFilterModel.Item> filterItemList = new ArrayList<>();
+
+        for(SearchProductResponse.Data.Categories category : categories) {
+            filterItemList.add(new CategoryFilterModel.Item(category.getName(), category.getId()));
+        }
+
+        return new CategoryFilterModel(filterItemList);
     }
 
     private List<ProductModel> mappingProduct(List<SearchProductResponse.Data.Products> products) {

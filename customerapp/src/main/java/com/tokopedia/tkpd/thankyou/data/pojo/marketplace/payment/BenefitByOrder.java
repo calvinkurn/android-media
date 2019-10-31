@@ -21,14 +21,6 @@ public class BenefitByOrder {
     @Expose
     private List<OrderLevel> listGlobalLevel;
 
-    @SerializedName("total_discount")
-    @Expose
-    private int totalDiscount;
-
-    @SerializedName("total_benefit")
-    @Expose
-    private int totalBenefit;
-
     public int getOrderId() {
         return orderId;
     }
@@ -51,21 +43,5 @@ public class BenefitByOrder {
 
     public void setListGlobalLevel(List<OrderLevel> listGlobalLevel) {
         this.listGlobalLevel = listGlobalLevel;
-    }
-
-    public int getTotalDiscount() {
-        return totalDiscount;
-    }
-
-    public void setTotalDiscount(int totalDiscount) {
-        this.totalDiscount = totalDiscount;
-    }
-
-    public int getTotalBenefit() {
-        return totalBenefit;
-    }
-
-    public void setTotalBenefit(int totalBenefit) {
-        this.totalBenefit = totalBenefit;
     }
 }

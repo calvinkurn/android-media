@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         app:srcCompat="@drawable/ic_plus_green" />
 
-    <android.support.v4.widget.Space
+    <androidx.legacy.widget.Space
         android:layout_width="10dp"
         android:layout_height="10dp" />
 

@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.item.main.draft.view.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.product.manage.item.common.util.ProductStatus
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
 

@@ -22,31 +22,23 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
-import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.data.repository.ActionProductManageRepositoryImpl;
 import com.tokopedia.product.manage.list.data.source.ActionProductManageDataSource;
 import com.tokopedia.product.manage.list.data.source.ProductActionApi;
 import com.tokopedia.product.manage.list.domain.ActionProductManageRepository;
-import com.tokopedia.product.manage.list.domain.DeleteProductUseCase;
+import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
-import com.tokopedia.product.manage.list.domain.MultipleDeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase;
-import com.tokopedia.product.manage.list.view.mapper.GetProductListManageMapperView;
+import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
-import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
-import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
-import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
-import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
+import com.tokopedia.shop.common.domain.interactor.GetProductListUseCase;
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -59,7 +51,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
-import static com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl.GQL_POPUP_NAME;
+import static com.tokopedia.product.manage.list.constant.GqlRawConstantKt.GQL_UPDATE_PRODUCT;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.GQL_POPUP_NAME;
+import static com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
@@ -71,37 +65,33 @@ public class ProductManageModule {
     @Provides
     @ProductManageScope
     public ProductManagePresenter provideManageProductPresenter(GetShopInfoUseCase getShopInfoUseCase,
-                                                                GetProductListSellingUseCase getProductListSellingUseCase,
                                                                 EditPriceProductUseCase editPriceProductUseCase,
-                                                                DeleteProductUseCase deleteProductUseCase,
-                                                                GetProductListManageMapperView getProductListManageMapperView,
-                                                                MultipleDeleteProductUseCase multipleDeleteProductUseCase,
                                                                 UserSessionInterface userSession,
-                                                                TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                                                 TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
-                                                                GetFeatureProductListUseCase getFeatureProductListUseCase,
                                                                 SetCashbackUseCase setCashbackUseCase,
-                                                                PopupManagerAddProductUseCase popupManagerAddProductUseCase){
-        return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase,
-                deleteProductUseCase, getProductListManageMapperView, multipleDeleteProductUseCase, userSession,
-                topAdsAddSourceTaggingUseCase, topAdsGetShopDepositGraphQLUseCase, getFeatureProductListUseCase, setCashbackUseCase, popupManagerAddProductUseCase);
+                                                                PopupManagerAddProductUseCase popupManagerAddProductUseCase,
+                                                                GetProductListUseCase getProductListUseCase,
+                                                                ProductListMapperView productListMapperView,
+                                                                BulkUpdateProductUseCase bulkUpdateProductUseCase) {
+        return new ProductManagePresenterImpl(getShopInfoUseCase, editPriceProductUseCase, userSession, topAdsGetShopDepositGraphQLUseCase,
+                setCashbackUseCase, popupManagerAddProductUseCase, getProductListUseCase, productListMapperView, bulkUpdateProductUseCase);
     }
 
     @Provides
     @ProductManageScope
-    public GetFeatureProductListUseCase provideGetFeatureProductListUseCase(GMCommonRepository gmCommonRepository){
+    public GetFeatureProductListUseCase provideGetFeatureProductListUseCase(GMCommonRepository gmCommonRepository) {
         return new GetFeatureProductListUseCase(gmCommonRepository);
     }
 
     @Provides
     @ProductManageScope
-    public GMCommonRepository provideGmCommonRepository(GMCommonDataSource gmCommonDataSource){
+    public GMCommonRepository provideGmCommonRepository(GMCommonDataSource gmCommonDataSource) {
         return new GMCommonRepositoryImpl(gmCommonDataSource);
     }
 
     @Provides
     @ProductManageScope
-    public GMCommonApi provideGmCommonApi(@GMProductManageQualifier Retrofit retrofit){
+    public GMCommonApi provideGmCommonApi(@GMProductManageQualifier Retrofit retrofit) {
         return retrofit.create(GMCommonApi.class);
     }
 
@@ -129,7 +119,7 @@ public class ProductManageModule {
 
     @ProductManageScope
     @Provides
-    HeaderErrorResponseInterceptor provideHeaderErrorResponseInterceptor(){
+    HeaderErrorResponseInterceptor provideHeaderErrorResponseInterceptor() {
         return new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class);
     }
 
@@ -153,10 +143,10 @@ public class ProductManageModule {
 
     @Provides
     @ProductManageScope
-    public SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
-        if(context instanceof SellerModuleRouter){
-            return ((SellerModuleRouter)context);
-        }else{
+    public SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context) {
+        if (context instanceof SellerModuleRouter) {
+            return ((SellerModuleRouter) context);
+        } else {
             return null;
         }
     }
@@ -176,76 +166,83 @@ public class ProductManageModule {
 
     @Provides
     @ProductManageScope
-    AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
-        if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context);
-        }else{
+    AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context) {
+        if (context instanceof AbstractionRouter) {
+            return ((AbstractionRouter) context);
+        } else {
             return null;
         }
     }
 
     @Provides
     @ProductManageScope
-    public GetProductListSellingRepository provideGetProductListSellingRepository(GetProductListSellingDataSource getProductListSellingDataSource){
-        return new GetProductListSellingRepositoryImpl(getProductListSellingDataSource);
-    }
-
-    @Provides
-    @ProductManageScope
-    public GetProductListSellerApi provideGetProductListSellerApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
-        return retrofit.create(GetProductListSellerApi.class);
-    }
-
-
-    @Provides
-    @ProductManageScope
-    public ActionProductManageRepository provideActionManageProductRepository(ActionProductManageDataSource actionProductManageDataSource){
+    public ActionProductManageRepository provideActionManageProductRepository(ActionProductManageDataSource actionProductManageDataSource) {
         return new ActionProductManageRepositoryImpl(actionProductManageDataSource);
     }
 
     @Provides
     @ProductManageScope
-    public ProductActionApi provideProductActionApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
+    public ProductActionApi provideProductActionApi(@WsV4QualifierWithErrorHander Retrofit retrofit) {
         return retrofit.create(ProductActionApi.class);
     }
 
     @Provides
     @ProductManageScope
-    public TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+    public TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit) {
         return retrofit.create(TomeProductApi.class);
     }
 
     @Provides
     @ProductManageScope
-    public TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context){
+    public TopAdsSourceTaggingLocal provideTopAdsSourceTracking(@ApplicationContext Context context) {
         return new TopAdsSourceTaggingLocal(context);
     }
 
     @Provides
     @ProductManageScope
-    public TopAdsSourceTaggingDataSource provideTopAdsSourceTaggingDataSource(TopAdsSourceTaggingLocal topAdsSourceTaggingLocal){
+    public TopAdsSourceTaggingDataSource provideTopAdsSourceTaggingDataSource(TopAdsSourceTaggingLocal topAdsSourceTaggingLocal) {
         return new TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal);
     }
 
     @Provides
     @ProductManageScope
-    public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
+    public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource) {
         return new TopAdsSourceTaggingRepositoryImpl(dataSource);
     }
 
     @Provides
     @ProductManageScope
-    public GraphqlUseCase provideGraphqlUseCase(){
+    public GraphqlUseCase provideGraphqlUseCase() {
         return new GraphqlUseCase();
     }
 
     @ProductManageScope
     @Provides
     @Named(GQL_POPUP_NAME)
-    public String requestQuery(@ApplicationContext Context context){
+    public String requestQuery(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.gql_popup_manager
+        );
+    }
+
+    @ProductManageScope
+    @Provides
+    @Named(GQL_UPDATE_PRODUCT)
+    public String provideUpdateProduct(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.gql_mutation_edit_product
+        );
+    }
+
+    @ProductManageScope
+    @Provides
+    @Named(GQL_PRODUCT_LIST)
+    public String provideProductListQuery(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                com.tokopedia.shop.common.R.raw.gql_get_product_list
         );
     }
 }

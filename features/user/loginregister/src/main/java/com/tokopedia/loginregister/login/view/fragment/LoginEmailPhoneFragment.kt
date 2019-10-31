@@ -7,9 +7,9 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.design.widget.TextInputEditText
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import androidx.fragment.app.Fragment
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
@@ -317,7 +317,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         bottomSheet.setChild(viewBottomSheetDialog)
         bottomSheet.setCloseClickListener{
             analytics.eventClickCloseSocmedButton()
-            bottomSheet.dismiss()
+            dismissBottomSheet()
         }
 
         socmed_btn.setOnClickListener {
@@ -462,7 +462,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun onLoginGoogleClick() {
         if (activity != null) {
-            bottomSheet.dismiss()
+            dismissBottomSheet()
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
             val intent = mGoogleSignInClient.signInIntent
@@ -474,10 +474,16 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onLoginFacebookClick() {
 
         if (activity != null) {
-            bottomSheet.dismiss()
+            dismissBottomSheet()
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
         }
+    }
+
+    private fun dismissBottomSheet(){
+        try {
+            bottomSheet.dismiss()
+        }catch (ignored:Exception) { }
     }
 
     override fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener {

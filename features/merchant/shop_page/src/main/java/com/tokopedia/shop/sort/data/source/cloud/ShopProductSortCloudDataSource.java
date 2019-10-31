@@ -1,6 +1,6 @@
 package com.tokopedia.shop.sort.data.source.cloud;
 
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.shop.sort.data.source.cloud.api.ShopAceApi;

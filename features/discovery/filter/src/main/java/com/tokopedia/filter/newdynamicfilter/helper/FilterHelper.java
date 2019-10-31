@@ -1,6 +1,6 @@
 package com.tokopedia.filter.newdynamicfilter.helper;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.discovery.common.constants.SearchApiConst;
@@ -189,6 +189,8 @@ public class FilterHelper {
     private static void removeValueFromOptionWithInputTypeTextBox(List<Filter> filterList) {
         for (Filter filter : filterList) {
             for(Option option : filter.getOptions()) {
+                if(option.getInputType() == null) continue;
+
                 if(option.getInputType().equals(Option.INPUT_TYPE_TEXTBOX)) {
                     option.setValue("");
                 }

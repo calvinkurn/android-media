@@ -57,7 +57,7 @@
         tools:text="Deskripsi"
         tools:textColor="@color/colorPrimaryDark" />
 
-    <android.support.v4.widget.Space
+    <androidx.legacy.widget.Space
         android:layout_width="match_parent"
         android:layout_height="@dimen/space_nob_s"/>
 

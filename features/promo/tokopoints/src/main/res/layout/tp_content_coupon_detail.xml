@@ -19,14 +19,14 @@
             android:background="@color/white"
             android:orientation="vertical">
 
-            <android.support.design.widget.AppBarLayout
+            <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:orientation="vertical"
                 app:elevation="@dimen/dp_0">
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -39,31 +39,30 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-                </android.support.constraint.ConstraintLayout>
-
-                <TextView
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_12"
                     android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_12"
-                    android:fontFamily="sans-serif-medium"
-                    android:textColor="@color/black_70"
-                    android:textSize="@dimen/text_size_14"
-                    tool:text="Top Up E-Money Lebih Cepat dan Dapat Cashback hingga Rp10.000" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    tool:text="Top Up E-Money Lebih Cepat dan Dapat Cashback hingga Rp10.000"
+                    android:textColor="@color/clr_f531353b"
+                    app:typographyType="heading_4"
+                    app:typographyWeight="bold" />
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:background="@color/white_three"
                     android:paddingStart="@dimen/dp_16"
                     android:paddingLeft="@dimen/dp_16"
                     android:paddingTop="@dimen/dp_8"
@@ -71,151 +70,97 @@
                     android:paddingRight="@dimen/dp_16"
                     android:paddingBottom="@dimen/dp_8">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/img_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:visibility="visible"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/bg_tp_time_greeen" />
 
-                    <android.support.constraint.ConstraintLayout
-                        android:id="@+id/cl_date_container"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/text_time_label"
                         android:layout_marginStart="@dimen/tp_margin_small"
                         android:layout_marginLeft="@dimen/tp_margin_small"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/points_saya"
+                        android:textColor="@color/clr_ae31353b"
                         app:layout_constraintLeft_toRightOf="@+id/img_time"
-                        app:layout_constraintStart_toEndOf="@+id/img_time"
-                        app:layout_constraintTop_toTopOf="parent">
+                        app:layout_constraintTop_toTopOf="@+id/img_time"
+                        app:layout_constraintBottom_toBottomOf="@+id/img_time"
+                        app:typographyType="body_3" />
+                    <ProgressBar
+                        android:id="@+id/progress_timer"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:indeterminate="false"
+                        android:progressDrawable="@drawable/bg_tp_timer_bg"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
+                        app:layout_constraintLeft_toLeftOf="@+id/text_time_value"
+                        app:layout_constraintRight_toRightOf="@+id/text_time_value"
+                        app:layout_constraintTop_toTopOf="@+id/text_time_value" />
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/text_time_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/tp_margin_xsmall"
+                        android:layout_marginLeft="@dimen/tp_margin_xsmall"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/img_time"
+                        app:layout_constraintBottom_toBottomOf="@id/img_time"
+                        tool:text="16 Aug 2019"
+                        android:background="@color/transparent"
+                        android:textColor="@color/clr_ae31353b"
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold" />
 
-                        <TextView
-                            android:id="@+id/text_time_label"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/black_38"
-                            android:textSize="@dimen/tp_text_size_xxsmall"
-                            android:visibility="visible"
-                            tool:text="Berlaku hingga:" />
 
-                        <ProgressBar
-                            android:id="@+id/progress_timer"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:indeterminate="false"
-                            android:progressDrawable="@drawable/bg_tp_timer_bg"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
-                            app:layout_constraintLeft_toLeftOf="@+id/text_time_value"
-                            app:layout_constraintRight_toRightOf="@+id/text_time_value"
-                            app:layout_constraintTop_toTopOf="@+id/text_time_value" />
-
-                        <TextView
-                            android:id="@+id/text_time_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@color/transparent"
-                            android:fontFamily="sans-serif-medium"
-                            android:textColor="@color/black_70"
-                            android:textSize="@dimen/tp_text_size_small"
-                            app:layout_constraintTop_toBottomOf="@+id/text_time_label"
-                            tool:text="16 Aug 2019" />
-
-                    </android.support.constraint.ConstraintLayout>
-
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_rp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/dp_8"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/img_time"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/ll_min_txn_container"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_tp_rp" />
-
-                    <LinearLayout
-                        android:id="@+id/ll_min_txn_container"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_min_txn_label"
                         android:layout_marginStart="@dimen/tp_margin_small"
                         android:layout_marginLeft="@dimen/tp_margin_small"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tool:text="Minimum Transaksi"
+                        android:textColor="@color/clr_ae31353b"
+                        app:layout_constraintLeft_toRightOf="@+id/iv_rp"
+                        app:layout_constraintTop_toTopOf="@+id/iv_rp"
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_rp"
+                        app:typographyType="body_3" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_min_txn_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/tp_margin_xsmall"
+                        android:layout_marginLeft="@dimen/tp_margin_xsmall"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        app:layout_constraintTop_toTopOf="@+id/iv_rp"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_rp"
+                        tool:text="Rp 3000000"
+                        android:background="@color/transparent"
+                        android:textColor="@color/clr_ae31353b"
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold" />
 
-                        <TextView
-                            android:id="@+id/tv_min_txn_label"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/dp_6"
-                            android:layout_marginRight="@dimen/dp_6"
-                            android:textColor="@color/black_38"
-                            android:textSize="@dimen/tp_text_size_xxsmall"
-                            tool:text="Minimum Transaksi" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.appbar.AppBarLayout>
 
-                        <TextView
-                            android:id="@+id/tv_min_txn_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:textColor="@color/black_70"
-                            android:textSize="@dimen/tp_text_size_small"
-                            android:visibility="visible"
-                            tool:text="Rp 3000000" />
-                    </LinearLayout>
 
-                </android.support.constraint.ConstraintLayout>
-            </android.support.design.widget.AppBarLayout>
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:orientation="vertical">-->
-
-<!--                <android.support.design.widget.AppBarLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:background="@color/white">-->
-
-<!--                    <com.tokopedia.design.component.Tabs-->
-<!--                        android:id="@+id/tab_layout_info"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toTopOf="parent"-->
-<!--                        app:tabIndicatorColor="@color/tkpd_main_green"-->
-<!--                        app:tabMode="scrollable"-->
-<!--                        app:tabSelectedTextColor="@color/tkpd_main_green"-->
-<!--                        app:tabTextAppearance="@style/TokoPointsTabs"-->
-<!--                        app:tabTextColor="@color/black_38">-->
-
-<!--                        <android.support.design.widget.TabItem-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="@string/tp_label_tnc" />-->
-
-<!--                        <android.support.design.widget.TabItem-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="@string/tp_label_how_to_use" />-->
-
-<!--                    </com.tokopedia.design.component.Tabs>-->
-<!--                </android.support.design.widget.AppBarLayout>-->
-
-<!--                <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager-->
-<!--                    android:id="@+id/view_pager_info"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
-<!--            </LinearLayout>-->
-
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -327,16 +272,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/how_to_use_see_more"
                     app:layout_goneMarginBottom="@dimen/dp_8" />
 
-               <android.support.v7.widget.RecyclerView
-                   android:id="@+id/recomendation_list"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_margin="@dimen/dp_16"
-                   app:layout_constraintTop_toBottomOf="@id/bottom_separator"
-                   app:layout_constraintStart_toStartOf="parent"
-                   app:layout_constraintEnd_toEndOf="parent"/>
-
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </LinearLayout>

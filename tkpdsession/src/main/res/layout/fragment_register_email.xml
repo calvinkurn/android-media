@@ -134,7 +134,7 @@
                     android:layout_marginBottom="@dimen/dp_20"
                     app:passwordToggleEnabled="true">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/register_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

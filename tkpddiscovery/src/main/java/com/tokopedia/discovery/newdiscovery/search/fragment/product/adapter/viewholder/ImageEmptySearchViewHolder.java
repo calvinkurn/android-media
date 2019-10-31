@@ -3,7 +3,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.vie
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
