@@ -9,6 +9,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
@@ -28,11 +29,9 @@ import android.widget.ViewFlipper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.promotionstarget.ClaimCouponApi
-import com.tokopedia.promotionstarget.ClaimCouponApiResponseCallback
+import com.tokopedia.promotionstarget.*
 import com.tokopedia.promotionstarget.CouponGratificationParams.CAMPAIGN_SLUG
 import com.tokopedia.promotionstarget.CouponGratificationParams.POP_SLUG
-import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.GratificationDataContract
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.data.claim.ClaimPayload
@@ -42,7 +41,6 @@ import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.di.components.AppModule
 import com.tokopedia.promotionstarget.di.components.DaggerPromoTargetComponent
-import com.tokopedia.promotionstarget.loadImageGlide
 import com.tokopedia.promotionstarget.subscriber.GratificationData
 import com.tokopedia.promotionstarget.subscriber.GratificationSubscriber
 import com.tokopedia.promotionstarget.ui.adapter.CouponListAdapter
@@ -433,6 +431,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         } else {
             val loginIntent = RouteManager.getIntent(activityContext, ApplinkConst.LOGIN)
             activityContext.startActivityForResult(loginIntent, REQUEST_CODE)
+            val bundle = addGratificationDataInBundleIfNotLoggedIn(activityContext, gratificationData)
+            activityContext.intent.putExtras(bundle)
             activityContext.intent?.putExtra(PARAM_WAITING_FOR_LOGIN, true)
             shouldCallAutoApply = false
 
@@ -455,6 +455,17 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             val viewModelProvider = ViewModelProviders.of(activityContext, viewModelFactory)
             viewModel = viewModelProvider[TargetPromotionsDialogVM::class.java]
         }
+    }
+
+    private fun addGratificationDataInBundleIfNotLoggedIn(activityContext: Context, gratificationData: GratificationData): Bundle {
+        val outerBundle = Bundle()
+        if (activityContext is Activity && !UserSession(activityContext).isLoggedIn) {
+            val innerBundle = Bundle()
+            innerBundle.putString(CouponGratificationParams.POP_SLUG, gratificationData.popSlug)
+            innerBundle.putString(CouponGratificationParams.PAGE, gratificationData.page)
+            outerBundle.putBundle(RouteManager.QUERY_PARAM, innerBundle)
+        }
+        return outerBundle
     }
 
 
