@@ -2,7 +2,7 @@ package com.tokopedia.iris.worker
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.BaseJobIntentService
+import androidx.core.app.BaseJobIntentService
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.util.Cache
 import com.tokopedia.iris.util.DEFAULT_MAX_ROW

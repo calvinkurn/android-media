@@ -44,7 +44,7 @@
         android:layout_height="@dimen/dp_4"
         android:layout_below="@id/title"/>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/content_image_container"
         android:layout_width="@dimen/dp_44"
         android:layout_height="@dimen/dp_44"
@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/red_400"/>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <android.widget.Space
         android:id="@+id/space2"

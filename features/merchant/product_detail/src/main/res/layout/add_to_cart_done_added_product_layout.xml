@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -40,10 +40,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_12"
-                android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -63,11 +63,22 @@
                     app:typographyType="body_2"
                     android:textColor="@color/Neutral_N700"
                     tools:text="Blus Lengan pendek Wanita gaya" />
+
+                <ImageView
+                    android:id="@+id/img_free_ongkir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:adjustViewBounds="true"
+                    tools:visibility="visible"
+                    android:scaleType="fitXY" />
+
             </LinearLayout>
 
         </LinearLayout>
 
         <com.tokopedia.design.component.ButtonCompat
+            android:layout_marginTop="@dimen/dp_5"
             android:id="@+id/button_go_to_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,4 +90,4 @@
             />
 
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

@@ -12,14 +12,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
-import android.support.design.widget.CheckableImageButton;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.TextViewCompat;
-import android.support.v7.widget.AppCompatDrawableManager;
-import android.support.v7.widget.TintTypedArray;
+import androidx.annotation.Nullable;
+import androidx.annotation.StyleRes;
+import com.google.android.material.internal.CheckableImageButton;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.widget.TextViewCompat;
+import androidx.appcompat.widget.AppCompatDrawableManager;
+import androidx.appcompat.widget.TintTypedArray;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
@@ -124,7 +124,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     @SuppressWarnings("ResourceType")
     private void apply(AttributeSet attrs, int defStyleAttr) {
         final TintTypedArray a = TintTypedArray.obtainStyledAttributes(getContext(), attrs,
-                R.styleable.TkpdHintTextInputLayout, defStyleAttr, android.support.design.R.style.Widget_Design_TextInputLayout);
+                R.styleable.TkpdHintTextInputLayout, defStyleAttr, com.google.android.material.R.style.Widget_Design_TextInputLayout);
         mHintEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_hintEnabled, true);
         mHint = a.getText(R.styleable.TkpdHintTextInputLayout_android_hint);
         mHintAnimationEnabled = a.getBoolean(
@@ -139,14 +139,14 @@ public class TkpdHintTextInputLayout extends LinearLayout {
                 R.styleable.TkpdHintTextInputLayout_hintTextAppearance, -1);
         if (mHintAppearance != -1) {
             TintTypedArray hintArr = TintTypedArray.obtainStyledAttributes(getContext(), mHintAppearance,
-                    android.support.v7.appcompat.R.styleable.TextAppearance);
-            if (hintArr.hasValue(android.support.v7.appcompat.R.styleable.TextAppearance_android_textColor)) {
+                    androidx.appcompat.R.styleable.TextAppearance);
+            if (hintArr.hasValue(androidx.appcompat.R.styleable.TextAppearance_android_textColor)) {
                 mFocusedHintTextColor = hintArr.getColorStateList(
-                        android.support.v7.appcompat.R.styleable.TextAppearance_android_textColor);
+                        androidx.appcompat.R.styleable.TextAppearance_android_textColor);
             }
-            if (hintArr.hasValue(android.support.v7.appcompat.R.styleable.TextAppearance_android_textSize)) {
+            if (hintArr.hasValue(androidx.appcompat.R.styleable.TextAppearance_android_textSize)) {
                 mHintTextSize = hintArr.getDimensionPixelSize(
-                        android.support.v7.appcompat.R.styleable.TextAppearance_android_textSize,
+                        androidx.appcompat.R.styleable.TextAppearance_android_textSize,
                         (int) mHintTextSize);
             }
             if (Build.VERSION.SDK_INT >= 16) {
@@ -195,9 +195,9 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         Resources.Theme theme = getContext().getTheme();
         if (theme != null) {
             int[] appcompatCheckAttrs = {
-                    android.support.v7.appcompat.R.attr.colorControlNormal,
-                    android.support.v7.appcompat.R.attr.colorControlActivated,
-                    android.support.v7.appcompat.R.attr.colorControlHighlight
+                    androidx.appcompat.R.attr.colorControlNormal,
+                    androidx.appcompat.R.attr.colorControlActivated,
+                    androidx.appcompat.R.attr.colorControlHighlight
             };
             TypedArray arr2 = theme.obtainStyledAttributes(appcompatCheckAttrs);
             mColorNormal = arr2.getColorStateList(0);
@@ -568,7 +568,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         if (shouldShowPasswordIcon()) {
             if (mPasswordToggleView == null) {
                 mPasswordToggleView = (CheckableImageButton) LayoutInflater.from(getContext())
-                        .inflate(android.support.design.R.layout.design_text_input_password_icon,
+                        .inflate(com.google.android.material.R.layout.design_text_input_password_icon,
                                 mFrameLayout, false);
                 mPasswordToggleView.setImageDrawable(mPasswordToggleDrawable);
                 mPasswordToggleView.setContentDescription(mPasswordToggleContentDesc);
@@ -869,7 +869,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
             return;
         }
 
-        if (android.support.v7.widget.DrawableUtils.canSafelyMutateDrawable(editTextBackground)) {
+        if (androidx.appcompat.widget.DrawableUtils.canSafelyMutateDrawable(editTextBackground)) {
             editTextBackground = editTextBackground.mutate();
         }
 

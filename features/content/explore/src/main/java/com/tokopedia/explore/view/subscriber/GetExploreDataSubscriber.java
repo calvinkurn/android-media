@@ -87,7 +87,9 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
     private List<ExploreImageViewModel> convertToKolPostViewModelList(List<PostKol> postKolList) {
         List<ExploreImageViewModel> kolPostViewModelList = new ArrayList<>();
         for (PostKol postKol : postKolList) {
-            kolPostViewModelList.add(convertToKolPostViewModel(postKol));
+            if (!postKol.getContent().isEmpty()) {
+                kolPostViewModelList.add(convertToKolPostViewModel(postKol));
+            }
         }
         return kolPostViewModelList;
     }

@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -41,7 +41,6 @@ import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.SellerRouter;
@@ -554,7 +553,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 break;
             case ShopStatusDef.NOT_ACTIVE:
                 shopWarningTickerView.setVisibility(View.GONE);
-                sellerDashboardPresenter.getProductList();
                 break;
             default:
                 shopWarningTickerView.setVisibility(View.GONE);
@@ -606,9 +604,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
             @Override
             public void onClick(View view, String messageClick) {
-                Intent intent = new Intent(getActivity(), BannerWebView.class);
-                intent.putExtra("url", messageClick);
-                startActivity(intent);
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, messageClick);
             }
         });
         tickerView.setOnPageChangeListener(new TickerView.OnPageChangeListener() {

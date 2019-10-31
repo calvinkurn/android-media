@@ -1,8 +1,10 @@
 package com.tokopedia.tracking.mapper;
 
 import com.tokopedia.logisticdata.data.entity.trackingshipment.Detail;
+import com.tokopedia.logisticdata.data.entity.trackingshipment.Page;
 import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackOrder;
 import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackingResponse;
+import com.tokopedia.tracking.viewmodel.AdditionalInfoUiModel;
 import com.tokopedia.tracking.viewmodel.TrackingHistoryViewModel;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 
@@ -68,6 +70,25 @@ public class TrackingPageMapper implements ITrackingPageMapper {
             }
         }
         model.setHistoryList(trackingHistoryViewModels);
+
+        if (trackingResponse.getPage() != null) {
+            Page trackPage = trackingResponse.getPage();
+            List<AdditionalInfoUiModel> listAdditionalInfo = new ArrayList<>();
+            if (trackPage.getListAdditionalInfo() != null) {
+                if (!trackPage.getListAdditionalInfo().isEmpty()) {
+                    for (int i = 0; i < trackPage.getListAdditionalInfo().size(); i++) {
+                        AdditionalInfoUiModel additionalInfoUiModel = new AdditionalInfoUiModel(
+                                trackPage.getListAdditionalInfo().get(i).getTitle(),
+                                trackPage.getListAdditionalInfo().get(i).getNotes(),
+                                trackPage.getListAdditionalInfo().get(i).getUrlDetail(),
+                                trackPage.getListAdditionalInfo().get(i).getUrlText());
+                        listAdditionalInfo.add(additionalInfoUiModel);
+                    }
+                }
+                model.setAdditionalInfoList(listAdditionalInfo);
+            }
+        }
+
         return model;
     }
 

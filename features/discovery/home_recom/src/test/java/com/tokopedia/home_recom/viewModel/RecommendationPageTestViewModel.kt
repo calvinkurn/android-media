@@ -1,7 +1,7 @@
 package com.tokopedia.home_recom.viewModel
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.MutableLiveData
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.any
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -160,7 +160,7 @@ class RecommendationPageTestViewModel {
     @Test
     fun testSuccessGetRecommendationList(){
         every{ getRecommendationUseCase.createObservable(any()) } returns Observable.just(mockk())
-        every{ getRecommendationUseCase.getRecomParams(any(),any(), any()) } returns mockk()
+        every{ getRecommendationUseCase.getRecomParams(any(), any(), any(), any()) } returns mockk()
         every { getRecommendationUseCase.execute(any(), any()) }.answers {
             val subscriber = secondArg<Subscriber<List<RecommendationWidget>>>()
             subscriber.onNext(listOf())
@@ -174,7 +174,7 @@ class RecommendationPageTestViewModel {
     fun testErrorGetRecommendationList(){
         val errorMessage = "ERROR"
         every{ getRecommendationUseCase.createObservable(any()) } returns Observable.just(mockk())
-        every{ getRecommendationUseCase.getRecomParams(any(),any(),any()) } returns mockk()
+        every{ getRecommendationUseCase.getRecomParams(any(),any(),any(),any()) } returns mockk()
         every { getRecommendationUseCase.execute(any(), any()) }.answers {
             val subscriber = secondArg<Subscriber<List<RecommendationWidget>>>()
             subscriber.onError(Throwable(errorMessage))

@@ -7,7 +7,31 @@
             android:name=".dashboard.view.activity.FlightDashboardActivity"
             android:label="@string/flight_dashboard_toolbar_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.White.Flight">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_flight"
+                    android:path="@string/path_flight_dashboard"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_flight"
+                    android:path="@string/path_flight_search"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".dashboard.view.activity.FlightSelectPassengerActivity"
             android:label="@string/select_passenger_toolbar_title"
@@ -29,16 +53,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".searchV3.presentation.activity.FlightSearchActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".search.presentation.activity.FlightSearchReturnActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity android:name=".searchV3.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -62,7 +77,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
 
-        <activity android:name=".bookingV2.presentation.activity.FlightBookingActivity"
+        <activity
+            android:name=".bookingV2.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -104,20 +120,39 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".orderlist.view.FlightOrderListActivity"
-            android:label="@string/activity_label_flight_order_list"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".detail.view.activity.FlightDetailOrderActivity"
-            android:label="@string/activity_label_flight_order_list"
+            android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.White.Flight">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_flight"
+                    android:pathPattern="@string/path_flight_order_detail"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".cancellation.view.activity.FlightCancellationActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.White.Flight">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_flight"
+                    android:path="@string/path_flight_cancel"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".cancellation.view.activity.FlightCancellationReasonAndProofActivity"
             android:label="@string/activity_label_flight_cancellation"

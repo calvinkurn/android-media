@@ -2,11 +2,11 @@ package com.tokopedia.explore.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -283,6 +283,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void onCategoryClicked(int position, int categoryId, String categoryName) {
+        NetworkErrorHelper.removeEmptyState(getView());
         clearSearch();
         resetDataParam();
         imageAdapter.clearData();

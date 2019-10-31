@@ -19,4 +19,6 @@ public class OrderDetailConstant {
     public static final String VALUE_SHOP_ORDER_PAGE = "shoporder page";
     public static final String VALUE_CLICK_BUTTON_ASK_BUYER = "click chat pembeli on list of transaction";
 
+    public static final String PARAM_CONFIRM_PICKUP_ORDER_ID = "orderId";
+    public static final String PARAM_CONFIRM_PICKUP_ORIGIN_ADDRESS = "originAddress";
 }

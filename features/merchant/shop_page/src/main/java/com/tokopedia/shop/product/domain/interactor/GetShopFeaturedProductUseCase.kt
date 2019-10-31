@@ -32,10 +32,15 @@ class GetShopFeaturedProductUseCase (private val gqlQuery: String,
         }
     }
 
+    fun clearCache(){
+        gqlUseCase.clearCache()
+    }
+
     companion object{
         private const val PARAM_SHOP_ID = "shopId"
+        private const val PARAM_USER_ID = "userID"
 
         @JvmStatic
-        fun createParams(shopId: Int): Map<String, Int> = mapOf(PARAM_SHOP_ID to shopId)
+        fun createParams(shopId: Int, userId: Int): Map<String, Int> = mapOf(PARAM_SHOP_ID to shopId,PARAM_USER_ID to userId)
     }
 }

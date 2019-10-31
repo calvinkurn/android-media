@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.flight;
 
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo;
 import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
 
 import javax.inject.Inject;
@@ -43,11 +43,11 @@ public class FlightGetProfileInfoData {
             @Override
             public ProfileInfo call(GetUserInfoDomainModel getUserInfoDomainModel) {
                 ProfileInfo profileInfo = new ProfileInfo();
-                profileInfo.setFullname(getUserInfoDomainModel.getGetUserInfoDomainData().getFullName());
-                profileInfo.setPhoneNumber(getUserInfoDomainModel.getGetUserInfoDomainData().getPhone());
+                profileInfo.setFullName(getUserInfoDomainModel.getGetUserInfoDomainData().getFullName());
+                profileInfo.setPhone(getUserInfoDomainModel.getGetUserInfoDomainData().getPhone());
                 profileInfo.setEmail(getUserInfoDomainModel.getGetUserInfoDomainData().getEmail());
-                profileInfo.setBday(getUserInfoDomainModel.getGetUserInfoDomainData().getBday());
-                profileInfo.setGender(getUserInfoDomainModel.getGetUserInfoDomainData().getGender());
+                profileInfo.setBirthday(getUserInfoDomainModel.getGetUserInfoDomainData().getBday());
+                profileInfo.setGender(Integer.toString(getUserInfoDomainModel.getGetUserInfoDomainData().getGender()));
                 return profileInfo;
             }
         });

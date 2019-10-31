@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
@@ -341,18 +342,18 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PAYMENT_REQUEST_CODE) {
             switch (resultCode) {
-                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
+                case PaymentConstant.PAYMENT_SUCCESS:
                     getActivity().setResult(PAYMENT_SUCCESS);
                     eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                     finish();
                     break;
-                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
+                case PaymentConstant.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
                     eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
                     break;
-                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
+                case PaymentConstant.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
                     eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
                     break;

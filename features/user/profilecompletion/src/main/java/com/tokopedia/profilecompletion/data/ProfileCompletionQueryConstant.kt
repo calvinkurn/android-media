@@ -16,6 +16,7 @@ object ProfileCompletionQueryConstant {
     const val QUERY_CHECK_PIN = "check_pin"
     const val QUERY_GET_STATUS_PIN = "get_status_pin"
     const val QUERY_VALIDATE_PIN = "validate_pin"
+    const val QUERY_SKIP_OTP_PIN = "skip_otp_pin"
 
     const val PARAM_GENDER = "gender"
     const val PARAM_EMAIL = "email"
@@ -26,6 +27,7 @@ object ProfileCompletionQueryConstant {
     const val PARAM_PIC_OBJ = "pic_obj"
     const val PARAM_TOKEN = "token"
     const val PARAM_PIN = "pin"
-    const val PARAM_PIN_CONFIRM = "pin_confirm"
-    const val PARAM_PIN_OLD = "pin_old"
+    const val PARAM_PIN_CONFIRM = "pinConfirm"
+    const val PARAM_PIN_OLD = "pinOld"
+    const val PARAM_OTP_TYPE = "otpType"
 }

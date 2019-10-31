@@ -6,6 +6,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
+import android.webkit.WebSettings;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.R;
@@ -14,6 +15,9 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -29,6 +33,7 @@ public class TkpdWebView extends WebView {
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String GET = "GET";
+    private RemoteConfig remoteConfig;
 
     private WebviewScrollListener scrollListener = null;
 
@@ -43,14 +48,28 @@ public class TkpdWebView extends WebView {
 
     public TkpdWebView(Context context) {
         super(context);
+        init(context);
     }
 
     public TkpdWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
     }
 
     public TkpdWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    private void init(Context context) {
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
+
+        //set custom tracking, helpful for GA
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW, true)) {
+            WebSettings webSettings = getSettings();
+            String userAgent = String.format("%s - Android %s", "Tokopedia Webview", GlobalConfig.VERSION_NAME);
+            webSettings.setUserAgentString(userAgent);
+        }
     }
 
     public void loadUrlWithFlags(String url) {
@@ -164,12 +183,12 @@ public class TkpdWebView extends WebView {
 
     @Override
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
-        if(WebViewHelper.isUrlValid(url)){
+        if (WebViewHelper.isUrlValid(url)) {
             super.loadUrl(url, additionalHttpHeaders);
-        }else {
-            if(!GlobalConfig.DEBUG)
+        } else {
+            if (!GlobalConfig.DEBUG)
                 Crashlytics.log(
-                    getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+                        getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
             super.loadUrl(url);
         }

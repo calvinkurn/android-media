@@ -1,9 +1,9 @@
 package com.tokopedia.topchat.chatlist.adapter
 
-import android.support.annotation.DrawableRes
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
+import androidx.annotation.DrawableRes
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import java.util.*
 
@@ -14,7 +14,10 @@ class ChatListPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) 
 
     private var itemList: MutableList<ChatListTab> = ArrayList()
 
-    override fun getItem(position: Int): Fragment {
+    override fun getItem(position: Int): Fragment? {
+        if(position >= itemList.size) {
+            return null
+        }
         return itemList[position].fragment
     }
 

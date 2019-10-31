@@ -19,14 +19,14 @@
             android:background="@color/white"
             android:orientation="vertical">
 
-            <android.support.design.widget.AppBarLayout
+            <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:orientation="vertical"
                 app:elevation="@dimen/dp_0">
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -39,7 +39,7 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -56,7 +56,7 @@
                     android:textSize="@dimen/text_size_14"
                     tool:text="Top Up E-Money Lebih Cepat dan Dapat Cashback hingga Rp10.000" />
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_marginStart="@dimen/dp_16"
@@ -71,7 +71,7 @@
                     android:paddingRight="@dimen/dp_16"
                     android:paddingBottom="@dimen/dp_8">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/img_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/bg_tp_time_greeen" />
 
-                    <android.support.constraint.ConstraintLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/cl_date_container"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -125,9 +125,9 @@
                             app:layout_constraintTop_toBottomOf="@+id/text_time_label"
                             tool:text="16 Aug 2019" />
 
-                    </android.support.constraint.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_rp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -170,15 +170,15 @@
                             tool:text="Rp 3000000" />
                     </LinearLayout>
 
-                </android.support.constraint.ConstraintLayout>
-            </android.support.design.widget.AppBarLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.appbar.AppBarLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <android.support.design.widget.AppBarLayout
+                <com.google.android.material.appbar.AppBarLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white">
@@ -195,18 +195,18 @@
                         app:tabTextAppearance="@style/TokoPointsTabs"
                         app:tabTextColor="@color/black_38">
 
-                        <android.support.design.widget.TabItem
+                        <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/tp_label_tnc" />
 
-                        <android.support.design.widget.TabItem
+                        <com.google.android.material.tabs.TabItem
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/tp_label_how_to_use" />
 
                     </com.tokopedia.design.component.Tabs>
-                </android.support.design.widget.AppBarLayout>
+                </com.google.android.material.appbar.AppBarLayout>
 
                 <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager
                     android:id="@+id/view_pager_info"

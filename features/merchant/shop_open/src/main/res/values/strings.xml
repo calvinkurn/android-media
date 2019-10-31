@@ -12,4 +12,9 @@
     <string name="message_no_result_address">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
     <string name="open_shop_choose_city">Pilih Kota Terlebih Dahulu</string>
     <string name="open_shop_null_zip_code">Kota/Kecamatan tidak didukung oleh kurir pengiriman</string>
+
+    <string name="open_shop_logout_title">Keluar dari Tokopedia</string>
+    <string name="open_shop_logout_confirm">Apakah Anda ingin keluar?</string>
+    <string name="open_shop_logout_button">Keluar</string>
+    <string name="open_shop_cancel">Batal</string>
 </resources>

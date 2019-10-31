@@ -6,10 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.v7.widget.RecyclerView;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -18,15 +18,15 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.TestAppModule;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.mapper.CartMapper;
-import com.tokopedia.checkout.domain.mapper.MapperUtil;
-import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.checkout.view.di.component.DaggerTestCartListComponent;
-import com.tokopedia.checkout.view.di.component.TestCartListComponent;
-import com.tokopedia.checkout.view.di.module.TestCartListModule;
-import com.tokopedia.checkout.view.di.module.TestTrackingAnalyticsModule;
-import com.tokopedia.checkout.view.view.cartlist.CartFragment;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapper;
+import com.tokopedia.purchase_platform.common.base.MapperUtil;
+import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
+import com.tokopedia.purchase_platform.common.di.component.DaggerTestCartListComponent;
+import com.tokopedia.purchase_platform.common.di.component.TestCartListComponent;
+import com.tokopedia.purchase_platform.common.di.module.TestCartListModule;
+import com.tokopedia.purchase_platform.common.di.module.TestTrackingAnalyticsModule;
+import com.tokopedia.purchase_platform.features.checkout.view.view.cartlist.CartFragment;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
 import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
@@ -60,7 +60,7 @@ import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.rule.GuessTokopediaTestRule;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDataListResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import org.junit.After;
@@ -76,20 +76,20 @@ import javax.inject.Inject;
 import retrofit2.Response;
 import rx.Observable;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.swipeDown;
-import static android.support.test.espresso.action.ViewActions.swipeLeft;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.intent.Intents.intending;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeDown;
+import static androidx.test.espresso.action.ViewActions.swipeLeft;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intending;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.tokopedia.tkpd.Utils.withCustomConstraints;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.AllOf.allOf;
@@ -262,7 +262,7 @@ public class MainParentActivityTest {
 
         // reset all inbox state
         TestCartListComponent navComponent = DaggerTestCartListComponent.builder()
-                .cartComponent(CartComponentInjector.newInstance(mIntentsRule.getActivity().getApplication()).getCartApiServiceComponent())
+//                .cartComponent(CartComponentInjector.newInstance(mIntentsRule.getActivity().getApplication()).getCartApiServiceComponent())
                 .testCartListModule(new TestCartListModule(fragment))
                 .testTrackingAnalyticsModule(new TestTrackingAnalyticsModule())
                 .build();

@@ -15,6 +15,8 @@ import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 
 class VoucherGameAnalytics {
 
+    var categoryName = ""
+
     fun eventClickViewAllBanner() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_HOMEPAGE,
@@ -94,7 +96,7 @@ class VoucherGameAnalytics {
         )
     }
 
-    fun eventClickBanner(banner:TopupBillsBanner, position: Int) {
+    fun eventClickBanner(banner: TopupBillsBanner, position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", Event.PROMO_CLICK,
@@ -102,7 +104,7 @@ class VoucherGameAnalytics {
                         "eventAction", Action.CLICK_BANNER,
                         "eventLabel", "${banner.title} - $position",
                         "ecommerce", DataLayer.mapOf(
-                        Event.PROMO_VIEW, DataLayer.mapOf(
+                        Event.PROMO_CLICK, DataLayer.mapOf(
                         EnhanceEccomerce.PROMOTIONS, createBannerEcommerceItem(listOf(banner)).toArray()
                 )
                 )
@@ -117,7 +119,7 @@ class VoucherGameAnalytics {
                 val mappedData = DataLayer.mapOf(
                         EnhanceEccomerce.ID, id,
                         EnhanceEccomerce.NAME, "promo slot name",
-                        EnhanceEccomerce.CREATIVE, imageUrl,
+                        EnhanceEccomerce.CREATIVE, title,
                         EnhanceEccomerce.CREATIVE_URL, linkUrl,
                         EnhanceEccomerce.POSITION, position
                 )
@@ -152,7 +154,7 @@ class VoucherGameAnalytics {
                         "eventAction", Action.CLICK_PRODUCT_CART_RESULT,
                         "eventLabel", "${operator.attributes.name} - ${operator.position}",
                         "ecommerce", DataLayer.mapOf(
-                        Event.PROMO_VIEW, DataLayer.mapOf(
+                        Event.PROMO_CLICK, DataLayer.mapOf(
                         EnhanceEccomerce.PROMOTIONS, createOperatorEcommerceItem(listOf(operator)).toArray()
                 )
                 )
@@ -184,7 +186,7 @@ class VoucherGameAnalytics {
                         "eventAction", Action.CLICK_OPERATOR_CARD,
                         "eventLabel", "${operator.attributes.name} - ${operator.position}",
                         "ecommerce", DataLayer.mapOf(
-                        Event.PROMO_VIEW, DataLayer.mapOf(
+                        Event.PROMO_CLICK, DataLayer.mapOf(
                         EnhanceEccomerce.PROMOTIONS, createOperatorEcommerceItem(listOf(operator)).toArray()
                 )
                 )
@@ -196,30 +198,20 @@ class VoucherGameAnalytics {
         val operatorList = ArrayList<Any>()
         for (operator in data) {
             with(operator) {
-                operatorList.add(DataLayer.mapOf(
+                val mappedData = DataLayer.mapOf(
                         EnhanceEccomerce.ID, id,
                         EnhanceEccomerce.NAME, attributes.name,
                         EnhanceEccomerce.CREATIVE, attributes.name,
                         EnhanceEccomerce.POSITION, position
-                ))
+                )
+                if (categoryName.isNotEmpty()) mappedData[EnhanceEccomerce.CATEGORY] = categoryName
+                operatorList.add(mappedData)
             }
         }
         return operatorList
     }
 
-    fun impressionProductCard(products: List<VoucherGameProduct>) {
-        val productList = ArrayList<Any>()
-        for (product in products) {
-            with(product) {
-                productList.add(DataLayer.mapOf(
-                        EnhanceEccomerce.NAME, attributes.desc,
-                        EnhanceEccomerce.ID, id,
-                        EnhanceEccomerce.PRICE, attributes.price,
-                        EnhanceEccomerce.POSITION, position
-                ))
-            }
-        }
-
+    fun impressionProductCard(products: List<VoucherGameProduct>, operatorName: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", Event.PRODUCT_VIEW,
@@ -227,25 +219,14 @@ class VoucherGameAnalytics {
                         "eventAction", Action.PRODUCT_CARD_IMPRESSION,
                         "eventLabel", "",
                         "ecommerce", DataLayer.mapOf(
-                        "currency", "IDR",
-                        "impressions", productList.toArray()
+                        "currencyCode", "IDR",
+                        "impressions", createProductEcommerceItem(products, operatorName).toArray()
                 )
                 )
         )
     }
 
-    fun eventClickProductCard(operatorName: String, product: VoucherGameProduct) {
-        val productList = ArrayList<Any>()
-        with(product) {
-            productList.add(DataLayer.mapOf(
-                    EnhanceEccomerce.NAME, attributes.desc,
-                    EnhanceEccomerce.ID, id,
-                    EnhanceEccomerce.PRICE, attributes.price,
-                    "list", operatorName,
-                    EnhanceEccomerce.POSITION, position
-            ))
-        }
-
+    fun eventClickProductCard(product: VoucherGameProduct, operatorName: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", Event.PRODUCT_CLICK,
@@ -255,11 +236,29 @@ class VoucherGameAnalytics {
                         "ecommerce", DataLayer.mapOf(
                         "click", DataLayer.mapOf(
                         "actionField", DataLayer.mapOf("list", operatorName),
-                        "products", productList.toArray()
+                        "products", createProductEcommerceItem(listOf(product), operatorName).toArray()
                 )
                 )
                 )
         )
+    }
+
+    private fun createProductEcommerceItem(data: List<VoucherGameProduct>, operatorName: String): ArrayList<Any> {
+        val productList = ArrayList<Any>()
+        for (product in data) {
+            with(product) {
+                val mappedData = DataLayer.mapOf(
+                        EnhanceEccomerce.NAME, attributes.desc,
+                        EnhanceEccomerce.ID, id,
+                        EnhanceEccomerce.PRICE, attributes.pricePlain,
+                        "list", operatorName,
+                        EnhanceEccomerce.POSITION, position
+                )
+                if (categoryName.isNotEmpty()) mappedData[EnhanceEccomerce.CATEGORY] = categoryName
+                productList.add(mappedData)
+            }
+        }
+        return productList
     }
 
     fun eventClickBuy(categoryName: String,

@@ -3,7 +3,7 @@ package com.tokopedia.tokopoints.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -34,13 +34,7 @@ public class CouponDetailActivity extends BaseSimpleActivity implements HasCompo
 
     @Override
     protected Fragment getNewFragment() {
-        UserSessionInterface userSession = new UserSession(this);
-        if (userSession.isLoggedIn()) {
             return CouponDetailFragment.newInstance(getIntent().getExtras());
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            return null;
-        }
     }
 
     @Override

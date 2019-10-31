@@ -30,6 +30,7 @@ public interface ApplinkConst {
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
+    String SHOP_HOME = "tokopedia://shop/{shop_id}/home";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
@@ -136,6 +137,7 @@ public interface ApplinkConst {
     String HOTEL = "tokopedia://hotel";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
     String DIGITAL_SUBHOMEPAGE = "tokopedia://recharge";
+    String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
@@ -144,7 +146,6 @@ public interface ApplinkConst {
     String MARKETPLACE_SENT = "tokopedia://order/marketplace/filter/13";
     String MARKETPLACE_ORDER_PROCESSED = "tokopedia://order/marketplace/filter/12";
     String MARKETPLACE_DELIVERED = "tokopedia://order/marketplace/filter/14";
-
 
     String BUYER_INFO = "tokopedia://notif-center";
     String BUYER_INFO_WITH_ID = "tokopedia://notif-center/{notif_id}";
@@ -160,6 +161,7 @@ public interface ApplinkConst {
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
     String FLIGHT = "tokopedia://pesawat";
+    String FLIGHT_PHONE_VERIFICATION = "tokopedia-android-internal://pesawat/phone-verification";
 
     String PRODUCT_MANAGE = "tokopedia://seller/product/manage";
     String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
@@ -200,7 +202,8 @@ public interface ApplinkConst {
     String SALDO = "tokopedia://saldo";
     String SALDO_INTRO = "tokopedia://saldo-intro";
     String INSTANT_LOAN = "tokopedia://loan";
-    String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
+    String INSTANT_LOAN_TAB = "tokopedia://loan/category/instan";
+    String PINJAMAN_ONLINE_TAB = "tokopedia://loan/category/pinjamanonline";
 
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
@@ -230,7 +233,12 @@ public interface ApplinkConst {
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
-    String KYC = "tokopedia://kyc";
+    String KYC_NO_PARAM = "tokopedia://kyc";
+    String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
+    String KYC = "tokopedia://kyc?projectId={projectId}";
+
+    String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
+    String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
@@ -252,7 +260,14 @@ public interface ApplinkConst {
     String CATEGORY = "tokopedia://category";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
+    String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
     String OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}";
+    String OVO_WALLET = "tokopedia://ovo";
+    String DEALS_HOME = "tokopedia://deals";
+    String DEALS_DETAIL = "tokopedia://deals/{slug}";
+    String DEALS_BRAND_DETAIL = "tokopedia://deals/brand/{slug}";
+    String DEALS_ALL_BRANDS = "tokopedia://deals/allbrands/{isVoucher}";
+    String DEALS_CATEGORY = "tokopedia://deals/category/page";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
@@ -276,11 +291,13 @@ public interface ApplinkConst {
         String BROWSER = "sellerapp://browser";
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
         String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
+        String WEBVIEW = "sellerapp://webview";
     }
 
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
+        String ORDER_TRACKING_CALLER = "caller";
 
         String IMAGE_PREVIEW_FILELOC = "fileloc";
         String IMAGE_PREVIEW_IMG_POSITION = "img_pos";
@@ -318,6 +335,8 @@ public interface ApplinkConst {
         String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
         String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
         String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
+        String PRODUCT_PREVIEW_FS_IS_ACTIVE = "product_preview_fs_is_active";
+        String PRODUCT_PREVIEW_FS_IMAGE_URL = "product_preview_fs_is_image_url";
 
         String INVOICE_ID = "invoice_id";
         String INVOICE_CODE = "invoice_code";
@@ -356,6 +375,7 @@ public interface ApplinkConst {
         String TRACKER_ATTRIBUTION = "tracker_attribution";
         String TRACKER_LIST_NAME = "tracker_list_name";
         String EXTRA_REFERENCE = "reference";
+        String EXTRA_IS_LEASING = "is_leasing";
 
         String EXTRA_CATEGORY_ID = "category_id";
         String EXTRA_CATEGORY_NAME = "category_name";
