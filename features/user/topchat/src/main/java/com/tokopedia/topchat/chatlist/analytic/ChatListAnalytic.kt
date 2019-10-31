@@ -32,6 +32,7 @@ class ChatListAnalytic @Inject constructor(){
             val ACTION_CLICK_TAB_CHAT_ON_INBOX_CHAT = "click tab chat on inbox chat"
             val ACTION_CLICK_ON_CHATLIST = "click on chatlist"
             val ACTION_CLICK_ON_MARK_AS_UNREAD = "click on mark as unread"
+            val ACTION_CLICK_BROADCAST_WIZARD = "click on broadcast wizard"
         }
     }
 
@@ -73,5 +74,16 @@ class ChatListAnalytic @Inject constructor(){
                 Action.ACTION_CLICK_ON_CHATLIST,
                 label
         ))
+    }
+
+    fun eventClickBroadcastButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                    Event.CLICK_INBOX_CHAT,
+                    Category.CATEGORY_INBOX_CHAT,
+                    Action.ACTION_CLICK_BROADCAST_WIZARD,
+                    ""
+                )
+        )
     }
 }

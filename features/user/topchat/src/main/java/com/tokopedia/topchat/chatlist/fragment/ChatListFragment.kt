@@ -164,6 +164,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
             if (url.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
+                chatListAnalytics.eventClickBroadcastButton()
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
             }
         })
