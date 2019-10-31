@@ -17,28 +17,20 @@ class OfficialHomeMapper {
 
     companion object {
 
+        val BANNER_POSITION = 0
+        val BENEFIT_POSITION = 1
+        val FEATURE_SHOP_POSITION = 2
+
         fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?) {
-            adapter?.addElement(0, OfficialBannerViewModel(banner.banners))
-            adapter?.notifyItemInserted(0)
+            notifyElement(BANNER_POSITION, OfficialBannerViewModel(banner.banners), adapter)
         }
 
         fun mappingBenefit(benefits: OfficialStoreBenefits, adapter: OfficialHomeAdapter?) {
-            if (benefits.benefits.size > 0) {
-                /**
-                 * This component are not contains in Figma & Zeplin, so I just commented this code in case it needed you can uncomment :)
-                 */
-                val position = if (adapter?.itemCount?:0 >= 1 ) 1 else 0
-                adapter?.addElement(position, OfficialBenefitViewModel(benefits.benefits))
-                adapter?.notifyItemInserted(position)
-            }
+            notifyElement(BENEFIT_POSITION, OfficialBenefitViewModel(benefits.benefits), adapter)
         }
 
         fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?) {
-            if (featuredShop.featuredShops.size > 0) {
-                val position = if (adapter?.itemCount?:0 >= 2 ) 2 else 1
-                adapter?.addElement(position, OfficialFeaturedShopViewModel(featuredShop.featuredShops, featuredShop.header))
-                adapter?.notifyItemInserted(position)
-            }
+            notifyElement(FEATURE_SHOP_POSITION, OfficialFeaturedShopViewModel(featuredShop.featuredShops, featuredShop.header), adapter)
         }
 
         fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {
@@ -56,21 +48,26 @@ class OfficialHomeMapper {
                         views.add(DynamicChannelViewModel(channel))
                     }
                 }
-
-                adapter?.addElement(views)
+                adapter?.getVisitables()?.addAll(views)
+                adapter?.notifyItemInserted(adapter.lastIndex)
             }
         }
 
         fun mappingProductrecommendationTitle(title: String, adapter: OfficialHomeAdapter?) {
-            adapter?.addElement(ProductRecommendationTitleViewModel(title))
+            adapter?.getVisitables()?.add(ProductRecommendationTitleViewModel(title))
             adapter?.notifyItemInserted(adapter.lastIndex)
         }
 
         fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
             productRecommendation.recommendationItemList.forEach {
-                adapter?.addElement(ProductRecommendationViewModel(it, listener))
+                adapter?.getVisitables()?.add(ProductRecommendationViewModel(it, listener))
             }
             adapter?.notifyItemInserted(adapter.lastIndex)
+        }
+
+        fun notifyElement(position: Int, element: Visitable<*>, adapter: OfficialHomeAdapter?) {
+            adapter?.getVisitables()?.set(position, element)
+            adapter?.notifyItemChanged(position)
         }
     }
 }
