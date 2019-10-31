@@ -196,6 +196,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                analytics.trackSaveTemplateChat();
                 presenter.submitText(editText.getText().toString(), message, list);
             }
         });
