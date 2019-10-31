@@ -149,6 +149,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun showOnBoarding(coachMarkItems: ArrayList<CoachMarkItem>, tag: String) {
+        if (!::filterRecyclerView.isInitialized) return
         coachMarkItems.add(
                 1 ,
                 CoachMarkItem(

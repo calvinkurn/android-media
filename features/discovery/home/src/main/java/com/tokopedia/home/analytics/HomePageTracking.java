@@ -1085,11 +1085,12 @@ public class HomePageTracking {
 
     public static void eventClickProductChannelMix(Context context,
                                                    DynamicHomeChannel.Channels bannerChannel,
+                                                   boolean isFreeOngkir,
                                                    int gridPosition) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition)
+                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition, isFreeOngkir)
             );
         }
     }
@@ -1445,7 +1446,7 @@ public class HomePageTracking {
     }
 
     public static HashMap<String,Object> getBannerImpressionDataLayer(List<BannerSlidesModel> bannerOverlaySlides) {
-        List<Object> listBanner = convertSliderBannerImpressionDataLayer(bannerOverlaySlides);
+        List<Map<String, Object>> listBanner = convertSliderBannerImpressionDataLayer(bannerOverlaySlides);
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
@@ -1519,8 +1520,8 @@ public class HomePageTracking {
         return list;
     }
 
-    private static List<Object> convertSliderBannerImpressionDataLayer(List<BannerSlidesModel> bannerSlidesModels) {
-        List<Object> list = new ArrayList<>();
+    private static List<Map<String, Object>> convertSliderBannerImpressionDataLayer(List<BannerSlidesModel> bannerSlidesModels) {
+        List<Map<String, Object>> list = new ArrayList<>();
         if (bannerSlidesModels != null) {
             for (int i = 0; i < bannerSlidesModels.size(); i++) {
                 BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);

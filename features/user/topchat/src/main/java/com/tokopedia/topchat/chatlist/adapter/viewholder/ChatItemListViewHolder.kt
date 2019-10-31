@@ -247,7 +247,7 @@ class ChatItemListViewHolder(
 
         val now = Calendar.getInstance()
 
-        val timeFormatString = "hh:mm"
+        val timeFormatString = "HH:mm"
         val dateTimeFormatString = "dd MMM"
         val dateTimeYearFormatString = "dd MMM yy"
         val HOURS = (60 * 60 * 60).toLong()
