@@ -470,6 +470,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                                 ivFloatingEgg.setImageDrawable(resource);
                                 resource.start();
                                 onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
+
                             }
                         });
             } else {
