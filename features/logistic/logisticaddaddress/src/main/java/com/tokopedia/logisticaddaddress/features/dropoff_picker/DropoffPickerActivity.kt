@@ -8,7 +8,10 @@ import android.content.Intent
 import android.content.IntentSender
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
@@ -31,8 +34,10 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.DaggerDropoffPickerComponent
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 
@@ -51,6 +56,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mNoPermissionsView: View
     lateinit var mButtonActivate: UnifyButton
     lateinit var mButtonGrant: UnifyButton
+    lateinit var mBottomSheet: View
+    lateinit var mBehavior: BottomSheetBehavior<View>
+    val mNearbyAdapter: NearbyStoreAdapter = NearbyStoreAdapter()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -72,6 +80,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mSearchInput = findViewById(R.id.search_input_dropoff)
         mDisabledLocationView = findViewById(R.id.view_gps_empty)
         mNoPermissionsView = findViewById(R.id.view_no_permissions)
+        mBottomSheet = findViewById(R.id.bottom_sheet)
         mButtonActivate = findViewById(R.id.button_activate_gps)
         mButtonActivate.setOnClickListener {
             checkAndRequestLocation()
@@ -83,6 +92,12 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mSearchText = mSearchInput.searchTextView
         mSearchText.isCursorVisible = false
         mSearchText.isFocusable = false
+        val rv = findViewById<RecyclerView>(R.id.rv_dropoff)
+        rv.layoutManager = LinearLayoutManager(this)
+        rv.adapter = mNearbyAdapter
+
+        mBehavior = BottomSheetBehavior.from(mBottomSheet)
+        mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -145,6 +160,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         viewModel.stores.observe(this, Observer { result ->
             when (result) {
                 is Fail -> Toast.makeText(this@DropoffPickerActivity, result.toString(), Toast.LENGTH_SHORT).show()
+                is Success -> {
+                    mNearbyAdapter.setData(result.data)
+                    mBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                }
             }
         })
     }
