@@ -75,6 +75,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
         mapOfJobs[activity]?.cancel()
         mapOfJobs.remove(activity)
+        mapOfDialogs[activity]?.first?.removeAutoApplyLiveDataObserver()
         mapOfDialogs.remove(activity)
     }
 
@@ -195,6 +196,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
         mapOfDialogs.forEach {
             val dialogPair = it.value
+            dialogPair.first.removeAutoApplyLiveDataObserver()
             dialogPair.second.dismiss()
         }
         mapOfDialogs.clear()

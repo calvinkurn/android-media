@@ -317,9 +317,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     private fun setListeners(activityContext: Context) {
 
-        if (autoApplyObserver != null) {
-            viewModel.autoApplyLiveData.removeObserver((autoApplyObserver!!))
-        }
+        removeAutoApplyLiveDataObserver()
 
         autoApplyObserver = Observer { it ->
             when (it) {
@@ -329,7 +327,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                         CustomToast.show(activityContext, messageList[0].toString())
                 }
             }
-            viewModel.autoApplyLiveData.removeObserver((autoApplyObserver!!))
+            removeAutoApplyLiveDataObserver()
         }
 
         viewModel.autoApplyLiveData.observe((activityContext as AppCompatActivity), autoApplyObserver!!)
@@ -514,6 +512,12 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
         if (bottomSheetCoordinatorLayout != null && bottomSheetFmContainer is FrameLayout) {
             BottomSheetBehavior.from(bottomSheetFmContainer).state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
+    fun removeAutoApplyLiveDataObserver() {
+        if (autoApplyObserver != null) {
+            viewModel.autoApplyLiveData.removeObserver((autoApplyObserver!!))
         }
     }
 }

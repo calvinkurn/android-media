@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.promotionstarget.R
 
 class CouponView @JvmOverloads constructor(
@@ -26,18 +27,35 @@ class CouponView @JvmOverloads constructor(
 
     override fun drawChild(canvas: Canvas?, child: View?, drawingTime: Long): Boolean {
         val shouldDrawChild = super.drawChild(canvas, child, drawingTime)
-        cutTwoCircles(canvas!!)
+        val imageHeight = getImageViewHeight()
+        if (imageHeight <= 0) {
+            cutTwoCircles(canvas!!)
+        } else {
+            cutTwoCircles(canvas!!, imageHeight.toFloat() / 2)
+        }
+
         return shouldDrawChild
     }
 
-    private fun cutTwoCircles(canvas: Canvas) {
+    private fun getImageViewHeight(): Int {
+        val imageView = findViewById<ImageView>(R.id.appCompatImageView)
+        if(imageView == null) return 0
+        else return imageView.height
+    }
+
+    private fun cutTwoCircles(canvas: Canvas, heightFromTop: Float = -1f) {
         canvas.save()
         clipPath.reset()
 
         clipRectF.top = 0f
         clipRectF.left = 0f
         val x = 0f
-        val y = canvas.height.toFloat() / 3f
+        val y: Float
+        if (heightFromTop == -1f) {
+            y = (canvas.height / 3f)
+        } else {
+            y = heightFromTop
+        }
         val circleRadius = circleRadius
         val p = Paint()
         p.style = Paint.Style.FILL

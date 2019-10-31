@@ -32,7 +32,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/t_promo_image_height"
+                android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:clipToPadding="false" />
 
