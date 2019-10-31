@@ -15,20 +15,22 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.analytics.DynamicChannelTrackers
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -38,9 +40,9 @@ import javax.inject.Inject
 
 class OfficialHomeFragment :
         BaseDaggerFragment(),
-        CountDownView.CountDownListener,
         HasComponent<OfficialStoreHomeComponent>,
-        RecommendationListener
+        RecommendationListener,
+        DynamicChannelEventHandler
 {
 
     companion object {
@@ -57,15 +59,13 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
+    private val dcTrackers: DynamicChannelTrackers by lazy { DynamicChannelTrackers() }
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
-
     private var recyclerView: RecyclerView? = null
-
     private var layoutManager: StaggeredGridLayoutManager? = null
     private var endlesScrollListener: EndlessRecyclerViewScrollListener? = null
     private var category: Category? = null
-
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
@@ -355,5 +355,29 @@ class OfficialHomeFragment :
 
     override fun onCountDownFinished() {
         refreshData()
+    }
+
+    override fun onClickLegoHeaderActionText(applink: String): View.OnClickListener {
+        return View.OnClickListener {
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onClickLegoImage(channelData: Channel, position: Int): View.OnClickListener {
+        return View.OnClickListener {
+            val gridData = channelData.grids?.get(position)
+            val applink = gridData?.applink ?: ""
+
+            gridData?.let {
+                dcTrackers.dynamicChannelImageClick(
+                        viewModel.currentSlug,
+                        channelData.header?.name ?: "",
+                        (position + 1).toString(10),
+                        it
+                )
+            }
+
+            RouteManager.route(context, applink)
+        }
     }
 }
