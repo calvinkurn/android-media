@@ -46,6 +46,18 @@ public class UtilTest {
 
         price = "Rp 100.000,589";
         assertFalse("this has to be good", "100000".equals(PriceUtil.from(price)));
+
+
+
+    }
+
+    @Test
+    public void bruteForceCastToString_test() {
+        double mahal = 6_990_000.0;
+        long mahalNich = 6_990_000;
+        int iyaNich = 6_990_000;
+        String value = "10000000";
+        System.out.println(Double.valueOf(mahal).toString()+" " + Long.valueOf(mahalNich).toString()+ " " + Integer.valueOf(iyaNich).toString() +" "+ Double.valueOf(value));
     }
 
     public Map<String, Object> getClickDataLayer(Map<String, Object> holdThis) {

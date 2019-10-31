@@ -442,27 +442,24 @@ public class GTMAnalytics extends ContextAnalytics {
         private static final String KEY_QTY = "quantity";
     }
 
-
     private Bundle checkoutProductMap(Map<String, Object> value) {
-        Map<String, Object> newValue = clone(value);
-
-        String id = bruteForceCastToString(newValue.remove(CheckoutKey.KEY_ID));
-        String name = (String) newValue.remove(CheckoutKey.KEY_NAME);
-        String brand = (String) newValue.remove(CheckoutKey.KEY_BRAND);
-        String category = (String) newValue.remove(CheckoutKey.KEY_CAT);
-        String variant = (String) newValue.remove(CheckoutKey.KEY_VARIANT);
-        String priceString = bruteForceCastToString(newValue.remove(CheckoutKey.KEY_PRICE));
+        String id = bruteForceCastToString(value.remove(CheckoutKey.KEY_ID));
+        String name = (String) value.remove(CheckoutKey.KEY_NAME);
+        String brand = (String) value.remove(CheckoutKey.KEY_BRAND);
+        String category = (String) value.remove(CheckoutKey.KEY_CAT);
+        String variant = (String) value.remove(CheckoutKey.KEY_VARIANT);
+        String priceString = bruteForceCastToString(value.remove(CheckoutKey.KEY_PRICE));
         double price = TextUtils.isEmpty(priceString) ? 0.0 :
                 Double.valueOf(PriceUtil.from(priceString));
-        String qtyString = bruteForceCastToString(newValue.remove(CheckoutKey.KEY_QTY));
+        String qtyString = bruteForceCastToString(value.remove(CheckoutKey.KEY_QTY));
         int quantity = TextUtils.isEmpty(qtyString) ? 0 : Integer.valueOf(qtyString);
 
         Bundle checkoutBundle = new Bundle();
         checkoutBundle.putString(FirebaseAnalytics.Param.ITEM_ID, id);
         checkoutBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
-        checkoutBundle.putString(FirebaseAnalytics.Param.ITEM_BRAND, brand);
+        checkoutBundle.putString(FirebaseAnalytics.Param.ITEM_BRAND, !TextUtils.isEmpty(brand)? brand : "");
         checkoutBundle.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, category);
-        checkoutBundle.putString(FirebaseAnalytics.Param.ITEM_VARIANT, variant);
+        checkoutBundle.putString(FirebaseAnalytics.Param.ITEM_VARIANT, !TextUtils.isEmpty(variant)? variant : "");
         checkoutBundle.putDouble(FirebaseAnalytics.Param.PRICE, price);
         checkoutBundle.putLong(FirebaseAnalytics.Param.QUANTITY, quantity);
 
@@ -585,7 +582,7 @@ public class GTMAnalytics extends ContextAnalytics {
         private static final String KEY_NAME = "name";
         private static final String KEY_ID = "id";
         private static final String KEY_CREATIVE = "creative";
-        private static final String KEY_POSITION = "quantity";
+        private static final String KEY_POSITION = "position";
     }
 
     private Bundle promotionMap(Map<String, Object> value) {
