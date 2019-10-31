@@ -1,14 +1,16 @@
 package com.tokopedia.logisticaddaddress.domain.model.dropoff
 import com.google.gson.annotations.SerializedName
 
-
 data class GetStoreResponse(
+    @SerializedName("keroAddressStoreLocation")
+    var keroAddressStoreLocation: KeroAddressStoreLocation = KeroAddressStoreLocation()
+)
+
+data class KeroAddressStoreLocation(
     @SerializedName("config")
-    var config: Any = Any(),
+    var config: String = "",
     @SerializedName("data")
     var `data`: List<Data> = listOf(),
-    @SerializedName("global_radius")
-    var globalRadius: Int = 0,
     @SerializedName("server_process_time")
     var serverProcessTime: String = "",
     @SerializedName("status")
@@ -38,8 +40,6 @@ data class Data(
     var latitude: String = "",
     @SerializedName("longitude")
     var longitude: String = "",
-    @SerializedName("opening_hours")
-    var openingHours: String = "",
     @SerializedName("phone")
     var phone: String = "",
     @SerializedName("postal_code")
@@ -51,11 +51,5 @@ data class Data(
     @SerializedName("receiver_name")
     var receiverName: String = "",
     @SerializedName("status")
-    var status: Int = 0,
-    @SerializedName("store_code")
-    var storeCode: String = "",
-    @SerializedName("store_distance")
-    var storeDistance: String = "",
-    @SerializedName("type")
-    var type: Int = 0
+    var status: Int = 0
 )
