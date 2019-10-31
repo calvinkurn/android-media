@@ -139,7 +139,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
             loadData()
         }
         layout_ads_saldo.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT)
         }
         btn_start_active_topads.setOnClickListener {
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
