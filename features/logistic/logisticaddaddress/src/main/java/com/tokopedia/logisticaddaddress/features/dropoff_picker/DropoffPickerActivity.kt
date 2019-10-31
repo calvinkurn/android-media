@@ -92,9 +92,15 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mSearchText = mSearchInput.searchTextView
         mSearchText.isCursorVisible = false
         mSearchText.isFocusable = false
+
         val rv = findViewById<RecyclerView>(R.id.rv_dropoff)
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = mNearbyAdapter
+        mNearbyAdapter.setActionListener(object: NearbyStoreAdapter.ActionListener {
+            override fun onItemClicked(view: View) {
+                Toast.makeText(this@DropoffPickerActivity, "Item clicked!", Toast.LENGTH_SHORT).show()
+            }
+        })
 
         mBehavior = BottomSheetBehavior.from(mBottomSheet)
         mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
