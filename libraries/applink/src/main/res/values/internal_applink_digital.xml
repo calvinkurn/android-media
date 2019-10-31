@@ -16,6 +16,7 @@
     <string name="path_voucher_game" translatable="false">/vouchergame</string>
 
     <string name="path_emoney" translatable="false">/smartcard</string>
+    <string name="title_digital_emoney">Uang Elektronik</string>
 
     <string name="title_voucher_game">Cari Voucher</string>
     <string name="path_deals_home" translatable="false">/deals</string>
