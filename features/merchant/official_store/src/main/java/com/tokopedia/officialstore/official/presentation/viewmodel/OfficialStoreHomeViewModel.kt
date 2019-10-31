@@ -45,6 +45,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
         dispatchers: CoroutineDispatcher
 ) : BaseViewModel(dispatchers) {
 
+    var currentSlug: String = ""
+        private set
+
     val userId: String
         get() = userSessionInterface.userId
 
@@ -104,11 +107,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     fun loadFirstData(category: Category?) {
         launchCatchError(block = {
-            val slug = "${category?.prefixUrl}${category?.slug}"
-            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(slug).await())
+            currentSlug = "${category?.prefixUrl}${category?.slug}"
+            _officialStoreBannersResult.value = Success(getOfficialStoreBanners(currentSlug).await())
             _officialStoreBenefitResult.value = Success(getOfficialStoreBenefit().await())
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
-            getOfficialStoreDynamicChannel(slug)
+            getOfficialStoreDynamicChannel(currentSlug)
         }) {
             // TODO just ignore or handle?
         }
