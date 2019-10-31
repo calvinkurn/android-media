@@ -278,6 +278,7 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
+    implementation project(rootProject.ext.features.flightOrderList)
     implementation project(rootProject.ext.features.hotel)
     implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.umrah)

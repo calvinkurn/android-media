@@ -12,8 +12,6 @@ import rx.Observable;
 
 public interface LoyaltyModuleRouter {
 
-    Observable<VoucherViewModel> checkFlightVoucher(String voucherCode, String cartId, String isCoupon);
-
     Observable<VoucherViewModel> checkTrainVoucher(String reservationId, String reservationCode, String galaCode);
 
     Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams);
