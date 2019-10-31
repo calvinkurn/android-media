@@ -6,6 +6,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.home_wishlist.model.entity.Wishlist
+import com.tokopedia.home_wishlist.model.entity.WishlistData
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.model.entity.WishlistResponse
 import com.tokopedia.recommendation_widget_common.domain.RecommendationDataSource
@@ -29,7 +31,7 @@ class WishlistRepository @Inject constructor(
         const val DEFAULT_START_PAGE = 1
     }
 
-    suspend fun getData(filter: String, page: Int) : List<WishlistItem>{
+    suspend fun getData(filter: String, page: Int) : WishlistData{
         val data = withContext(Dispatchers.IO){
             val cacheStrategy =
                     GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
@@ -51,13 +53,21 @@ class WishlistRepository @Inject constructor(
         data.getError(WishlistResponse::class.java)?.let {
             if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it[0].message)){
-                    throw Throwable(it[0].message)
+                    return WishlistData(isSuccess = false, errorMessage = it[0].message)
                 }
             }
         }
-        data.getSuccessData<WishlistResponse>().wishlist.items.let {
-            return it
-        }
+
+        return mappingWishlistRepositoryItem(data.getSuccessData<WishlistResponse>().wishlist)
+    }
+
+    fun mappingWishlistRepositoryItem(data: Wishlist): WishlistData {
+        return WishlistData(
+                isSuccess = true,
+                hasNextPage = data.hasNextPage,
+                items = data.items,
+                totalData = data.totalData
+        )
     }
 
     suspend fun getRecommendationData(page: Int, productIds: List<String>): List<RecommendationWidget>{

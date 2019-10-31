@@ -42,23 +42,23 @@ class WishlistItemViewHolder(
             if(!element.productItem.available){
                 setOutOfStock()
             } else {
-                if(element.isOnAddToCart) disableAddToCartButton()
+                if(element.isOnAddToCartProgress) disableAddToCartButton()
                 else enableAddToCartButton()
             }
 
             checkBox.setOnClickListener {
                 (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
             }
-            checkBox.visibility = if(element.isBulkMode) View.VISIBLE else View.GONE
+            checkBox.visibility = if(element.isOnBulkRemoveProgress) View.VISIBLE else View.GONE
 
             view.setOnClickListener {
-                if(element.isBulkMode) {
+                if(element.isOnBulkRemoveProgress) {
                     (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
                 }
             }
 
             setOnClickListener {
-                if(element.isBulkMode) {
+                if(element.isOnBulkRemoveProgress) {
                     (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
                 }
                 else (listener as WishlistListener).onProductClick(element, adapterPosition)

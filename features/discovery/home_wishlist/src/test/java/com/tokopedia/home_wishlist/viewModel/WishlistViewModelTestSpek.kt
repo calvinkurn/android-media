@@ -1,26 +1,27 @@
 package com.tokopedia.home_wishlist.viewModel
 
-import androidx.lifecycle.LiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
-import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
-import com.tokopedia.home_wishlist.util.WishlistAction
-import com.tokopedia.home_wishlist.util.Event
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.home_wishlist.InstantTaskExecutorRuleSpek
 import com.tokopedia.home_wishlist.TestDispatcherProvider
+import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.Shop
+import com.tokopedia.home_wishlist.model.entity.WishlistData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.data.datamodel.WishlistData
+import com.tokopedia.wishlist.common.data.datamodel.WishlistActionData
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.BulkRemoveWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.spekframework.spek2.Spek
@@ -38,6 +39,7 @@ class WishlistViewModelTestSpek : Spek({
         val removeWishlistUseCase by memoized<RemoveWishListUseCase>()
         val addToCartUseCase by memoized<AddToCartUseCase>()
         val bulkRemoveWishlistUseCase by memoized<BulkRemoveWishlistUseCase>()
+        val addWishListUseCase by memoized<AddWishListUseCase>()
 
         return WishlistViewModel(
                 userSessionInterface = userSessionInterface,
@@ -45,7 +47,8 @@ class WishlistViewModelTestSpek : Spek({
                 wishlistCoroutineDispatcherProvider = TestDispatcherProvider(),
                 removeWishListUseCase = removeWishlistUseCase,
                 addToCartUseCase = addToCartUseCase,
-                bulkRemoveWishlistUseCase = bulkRemoveWishlistUseCase
+                bulkRemoveWishlistUseCase = bulkRemoveWishlistUseCase,
+                addWishListUseCase = addWishListUseCase
         )
     }
 
@@ -70,6 +73,10 @@ class WishlistViewModelTestSpek : Spek({
         val bulkRemoveWishlistUseCase by memoized {
             mockk<BulkRemoveWishlistUseCase>(relaxed = true)
         }
+
+        val addWishListUseCase by memoized {
+            mockk<AddWishListUseCase>(relaxed = true)
+        }
     }
 
     Feature("Add to cart in wishlist") {
@@ -77,7 +84,7 @@ class WishlistViewModelTestSpek : Spek({
         lateinit var wishlistViewmodel: WishlistViewModel
         val addToCartUseCase by memoized<AddToCartUseCase>()
 
-        Scenario("Successfully add to cart product") {
+        Scenario("Add to cart product success will trigger AddToCartActionData and add to cart progress flag is set to false") {
             var mockProductCardPositionCandidate = 0
             val mockId1 = "11"
             val mockId2 = "22"
@@ -113,21 +120,29 @@ class WishlistViewModelTestSpek : Spek({
                 wishlistViewmodel.addToCartProduct(mockProductCardPositionCandidate)
             }
 
-            Then("Add to cart event is triggered with selected product Id") {
-                val wishlistEventData: LiveData<Event<WishlistAction>> = wishlistViewmodel.action
-                assertEquals(mockProductCardPositionCandidate, wishlistEventData.value!!.peekContent()!!.position)
-                assertEquals(mockId2, wishlistEventData.value!!.peekContent()!!.productId.toString())
+            Then("Expect add to cart event is triggered with selected product Id") {
+                val wishlistAddToCartActionData = wishlistViewmodel.addToCartActionData.value!!
+                assertEquals(mockProductCardPositionCandidate, wishlistAddToCartActionData.peekContent().position)
+                assertEquals(mockId2, wishlistAddToCartActionData.peekContent().productId.toString())
+                assertEquals(true, wishlistAddToCartActionData.peekContent().isSuccess)
             }
 
-            Then("Add to cart event can only retrieved once") {
-                val wishlistEventData: LiveData<Event<WishlistAction>> = wishlistViewmodel.action
-                val eventItem = wishlistEventData.value!!.getContentIfNotHandled()
-                val eventItemSecond = wishlistEventData.value!!.getContentIfNotHandled()
-                assertEquals( null, eventItemSecond)
+            Then("Expect add to cart event can only retrieved once") {
+                val wishlistEventData = wishlistViewmodel.addToCartActionData.value!!
+                val eventAddToCartFirst = wishlistEventData.getContentIfNotHandled()
+                val eventAddToCartSecond = wishlistEventData.getContentIfNotHandled()
+                assertEquals( null, eventAddToCartSecond)
+            }
+
+            Then("Expect visitable item candidate add to cart progress is false") {
+                val wishlistAddToCartActionData = wishlistViewmodel.wishlistData.value!!
+                val wishlistVisitableItem = wishlistAddToCartActionData[mockProductCardPositionCandidate]
+                assertEquals(WishlistItemDataModel::class.java, wishlistVisitableItem.javaClass)
+                assertEquals(false, (wishlistVisitableItem as WishlistItemDataModel).isOnAddToCartProgress)
             }
         }
 
-        Scenario("Failed add to cart product") {
+        Scenario("Add to cart product failed will trigger AddToCartActionData and add to cart progress flag is set to false") {
             var mockProductCardPositionCandidate = 0
             val mockId1 = "11"
             val mockId2 = "22"
@@ -135,6 +150,8 @@ class WishlistViewModelTestSpek : Spek({
             val shopId1 = "99"
             val shopId2 = "88"
             val minimumOrder = 1
+
+            val mockErrorMessage = "NOT YA"
 
             Given("Create wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
@@ -148,13 +165,13 @@ class WishlistViewModelTestSpek : Spek({
             Given("Product candidate for add to cart position") {
                 mockProductCardPositionCandidate = 1
             }
-            Given("Add to cart failed and return AddToCartDataModel with error") {
+            Given("Add to cart failed and return AddToCartDataModel with error and add to cart progress flag is set to false") {
                 every { addToCartUseCase.execute(any(), any()) }.answers {
                     (secondArg() as Subscriber<AddToCartDataModel>).onNext(
                             AddToCartDataModel(
                                     status = "NOT OK",
-                                    data = DataModel(success = 0, productId = mockId2.toInt(), message = arrayListOf("")),
-                                    errorMessage = arrayListOf("")
+                                    data = DataModel(success = 0, productId = mockId2.toInt(), message = arrayListOf(mockErrorMessage)),
+                                    errorMessage = arrayListOf(mockErrorMessage)
                             )
                     )
                 }
@@ -164,17 +181,81 @@ class WishlistViewModelTestSpek : Spek({
                 wishlistViewmodel.addToCartProduct(mockProductCardPositionCandidate)
             }
 
-            Then("Add to cart event is triggered with selected product Id and error message") {
-                val wishlistEventData: LiveData<Event<WishlistAction>> = wishlistViewmodel.action
-                Assert.assertEquals(mockProductCardPositionCandidate, wishlistEventData.value!!.peekContent()!!.position)
-                Assert.assertEquals(mockId2, wishlistEventData.value!!.peekContent()!!.productId.toString())
+            Then("Expect add to cart event is triggered with selected product Id and error message") {
+                val wishlistAddToCartActionData = wishlistViewmodel.addToCartActionData
+                assertEquals(mockProductCardPositionCandidate, wishlistAddToCartActionData.value!!.peekContent().position)
+                assertEquals(mockId2, wishlistAddToCartActionData.value!!.peekContent().productId.toString())
+                assertEquals(mockErrorMessage, wishlistAddToCartActionData.value!!.peekContent().message)
+                assertEquals(false, wishlistAddToCartActionData.value!!.peekContent().isSuccess)
             }
 
-            Then("Add to cart event can only retrieved once") {
-                val wishlistEventData: LiveData<Event<WishlistAction>> = wishlistViewmodel.action
-                val eventItem = wishlistEventData.value!!.getContentIfNotHandled()
-                val eventItemSecond = wishlistEventData.value!!.getContentIfNotHandled()
-                assertEquals(eventItemSecond, null)
+            Then("Expect add to cart event can only retrieved once") {
+                val wishlistAddToCartActionData = wishlistViewmodel.addToCartActionData
+                val eventAddToCartFirst = wishlistAddToCartActionData.value!!.getContentIfNotHandled()
+                val eventAddToCartSecond = wishlistAddToCartActionData.value!!.getContentIfNotHandled()
+                assertEquals(eventAddToCartSecond, null)
+            }
+
+            Then("Expect visitable item candidate add to cart progress is false") {
+                val wishlistAddToCartActionData = wishlistViewmodel.wishlistData.value!!
+                val wishlistVisitableItem = wishlistAddToCartActionData[mockProductCardPositionCandidate]
+                assertEquals(WishlistItemDataModel::class.java, wishlistVisitableItem.javaClass)
+                assertEquals(false, (wishlistVisitableItem as WishlistItemDataModel).isOnAddToCartProgress)
+            }
+        }
+
+        Scenario("Add to cart throws error will trigger AddToCartActionData and add to cart progress flag is set to false") {
+            var mockProductCardPositionCandidate = 0
+            val mockId1 = "11"
+            val mockId2 = "22"
+
+            val shopId1 = "99"
+            val shopId2 = "88"
+            val minimumOrder = 1
+
+            val mockErrorMessage = "NOT YA"
+
+            Given("Create wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data") {
+                wishlistViewmodel.wishlistData.value = listOf(
+                        WishlistItemDataModel(WishlistItem(id=mockId1, shop = Shop(id = shopId1), minimumOrder = minimumOrder)),
+                        WishlistItemDataModel(WishlistItem(id=mockId2, shop = Shop(id = shopId2), minimumOrder = minimumOrder))
+                )
+            }
+            Given("Product candidate for add to cart position") {
+                mockProductCardPositionCandidate = 1
+            }
+            Given("Add to cart failed and return AddToCartDataModel with error and add to cart progress flag is set to false") {
+                every { addToCartUseCase.execute(any(), any()) }.answers {
+                    (secondArg() as Subscriber<AddToCartDataModel>).onError(Throwable(mockErrorMessage))
+                }
+            }
+
+            When("Add to cart from wishlist") {
+                wishlistViewmodel.addToCartProduct(mockProductCardPositionCandidate)
+            }
+
+            Then("Expect add to cart event is triggered with error message") {
+                val wishlistAddToCartActionData = wishlistViewmodel.addToCartActionData
+                assertEquals(mockProductCardPositionCandidate, wishlistAddToCartActionData.value!!.peekContent().position)
+                assertEquals(mockErrorMessage, wishlistAddToCartActionData.value!!.peekContent().message)
+                assertEquals(false, wishlistAddToCartActionData.value!!.peekContent().isSuccess)
+            }
+
+            Then("Expect add to cart event can only retrieved once") {
+                val wishlistAddToCartActionData = wishlistViewmodel.addToCartActionData
+                val eventAddToCartFirst = wishlistAddToCartActionData.value!!.getContentIfNotHandled()
+                val eventAddToCartSecond = wishlistAddToCartActionData.value!!.getContentIfNotHandled()
+                assertEquals(eventAddToCartSecond, null)
+            }
+
+            Then("Expect visitable item candidate add to cart progress is false") {
+                val wishlistAddToCartActionData = wishlistViewmodel.wishlistData.value!!
+                val wishlistVisitableItem = wishlistAddToCartActionData[mockProductCardPositionCandidate]
+                assertEquals(WishlistItemDataModel::class.java, wishlistVisitableItem.javaClass)
+                assertEquals(false, (wishlistVisitableItem as WishlistItemDataModel).isOnAddToCartProgress)
             }
         }
     }
@@ -184,7 +265,8 @@ class WishlistViewModelTestSpek : Spek({
         lateinit var wishlistViewmodel: WishlistViewModel
         val removeWishlistUseCase by memoized<RemoveWishListUseCase>()
         val userSessionInterface by memoized<UserSessionInterface>()
-        Scenario("Remove wishlist success") {
+        Scenario("Remove wishlist success should remove data from wishlistdata") {
+            val mockSelectedPosition = 2
             val mockProductId = "3"
             val mockUserId = "54321"
 
@@ -222,7 +304,43 @@ class WishlistViewModelTestSpek : Spek({
                     }
                 }
             }
+            Then("Expect that remove wishlist action triggered") {
+                val removeWishlistActionData = wishlistViewmodel.removeWishlistActionData
+                assertEquals(true, removeWishlistActionData.value!!.peekContent().isSuccess)
+            }
+            Then("Expect remove wishlist action event can only retrieved once") {
+                val wishlistEventRemoveWishlistActionData = wishlistViewmodel.removeWishlistActionData
+                val eventRemoveWishlistActionData = wishlistEventRemoveWishlistActionData.value!!.getContentIfNotHandled()
+                val eventRemoveWishlistActionDataSecond = wishlistEventRemoveWishlistActionData.value!!.getContentIfNotHandled()
+                assertEquals(eventRemoveWishlistActionDataSecond, null)
+            }
         }
+
+        Scenario("Remove wishlist failed should not remove data from wishlistdata") {
+            val mockSelectedPosition = 2
+            val mockProductId = "3"
+            val mockUserId = "54321"
+            val mockErrorMessage = "NOT YA"
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("List of wishlist data") {
+                wishlistViewmodel.wishlistData.value = listOf(
+                        WishlistItemDataModel(WishlistItem(id="1")),
+                        WishlistItemDataModel(WishlistItem(id="2")),
+                        WishlistItemDataModel(WishlistItem(id="3")),
+                        WishlistItemDataModel(WishlistItem(id="4")))
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Remove wishlist usecase failed to remove wishlist") {
+                every { removeWishlistUseCase.createObservable(any(), mockUserId, any()) }
+                        .answers {
+                            (thirdArg() as WishListActionListener).onErrorRemoveWishlist(mockErrorMessage, mockProductId)
+                        }
+            }
 
             When("View model remove a wishlist product") {
                 wishlistViewmodel.removeWishlistedProduct(mockSelectedPosition)
@@ -707,7 +825,7 @@ class WishlistViewModelTestSpek : Spek({
         val userSessionInterface by memoized<UserSessionInterface>()
         val bulkRemoveWishlistUseCase by memoized<BulkRemoveWishlistUseCase>()
 
-        Scenario("Successfully bulk remove wishlist") {
+        Scenario("Successfully bulk remove all selected wishlist") {
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
@@ -722,12 +840,12 @@ class WishlistViewModelTestSpek : Spek({
             Given("Bulk remove usecase returns that all data successfully removed from wishlist") {
                 every { bulkRemoveWishlistUseCase.execute(any(), any()) }
                         .answers {
-                            (secondArg() as Subscriber<List<WishlistData>>).onNext(
+                            (secondArg() as Subscriber<List<WishlistActionData>>).onNext(
                                     listOf(
-                                            WishlistData(true, 0),
-                                            WishlistData(true, 1),
-                                            WishlistData(true, 2),
-                                            WishlistData(true, 3)
+                                            WishlistActionData(true, 0),
+                                            WishlistActionData(true, 1),
+                                            WishlistActionData(true, 2),
+                                            WishlistActionData(true, 3)
                                     )
                             )
                         }
@@ -751,9 +869,14 @@ class WishlistViewModelTestSpek : Spek({
             Then("Expect that wishlist data position 1,2,3,4 is removed") {
                 assertEquals(0, wishlistViewmodel.wishlistData.value!!.size)
             }
+            Then("Expect that wishlist action for bulk remove is success and not partially failed") {
+                val bulkRemoveWishlistActionData = wishlistViewmodel.bulkRemovewishlistActionData.value
+                assertEquals(true, bulkRemoveWishlistActionData!!.peekContent().isSuccess)
+                assertEquals(false, bulkRemoveWishlistActionData!!.peekContent().isPartiallyFailed)
+            }
         }
 
-        Scenario("Failed to remove some item") {
+        Scenario("Failed to remove some item of selected wishlist") {
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
@@ -768,12 +891,12 @@ class WishlistViewModelTestSpek : Spek({
             Given("Bulk remove usecase returns that have some failed data") {
                 every { bulkRemoveWishlistUseCase.execute(any(), any()) }
                         .answers {
-                            (secondArg() as Subscriber<List<WishlistData>>).onNext(
+                            (secondArg() as Subscriber<List<WishlistActionData>>).onNext(
                                     listOf(
-                                            WishlistData(true, 0),
-                                            WishlistData(false, 1),
-                                            WishlistData(false, 2),
-                                            WishlistData(true, 3)
+                                            WishlistActionData(true, 0),
+                                            WishlistActionData(false, 1),
+                                            WishlistActionData(false, 2),
+                                            WishlistActionData(true, 3)
                                     )
                             )
                         }
@@ -790,6 +913,787 @@ class WishlistViewModelTestSpek : Spek({
 
             Then("Expect that wishlist data position 1,2,3,4 is removed") {
                 assertEquals(2, wishlistViewmodel.wishlistData.value!!.size)
+            }
+            Then("Expect that wishlist action for bulk remove is success but partially failed") {
+                val bulkRemoveWishlistActionData = wishlistViewmodel.bulkRemovewishlistActionData.value
+                assertEquals(true, bulkRemoveWishlistActionData!!.peekContent().isSuccess)
+                assertEquals(true, bulkRemoveWishlistActionData!!.peekContent().isPartiallyFailed)
+            }
+        }
+
+        Scenario("Bulk remove wishlist throws error") {
+            val mockErrorMessage = "NOT OKAY"
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("List of wishlist data") {
+                wishlistViewmodel.wishlistData.value = listOf(
+                        WishlistItemDataModel(WishlistItem(id="1")),
+                        WishlistItemDataModel(WishlistItem(id="2")),
+                        WishlistItemDataModel(WishlistItem(id="3")),
+                        WishlistItemDataModel(WishlistItem(id="4"))
+                )
+            }
+            Given("Bulk remove usecase returns that have some failed data") {
+                every { bulkRemoveWishlistUseCase.execute(any(), any()) }
+                        .answers {
+                            (secondArg() as Subscriber<List<WishlistActionData>>).onError(
+                                    Throwable(mockErrorMessage)
+                            )
+                        }
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+
+            When("Bulk remove is called to remove wishlist position 1,2,3 and 4") {
+                wishlistViewmodel.bulkRemoveWishlist(
+                        listOf(0,1,2,3)
+                )
+            }
+
+            Then("Expect that wishlist data is still same as initial value") {
+                assertEquals(4, wishlistViewmodel.wishlistData.value!!.size)
+            }
+            Then("Expect that wishlist action for bulk remove is failed and not partially failed") {
+                val bulkRemoveWishlistActionData = wishlistViewmodel.bulkRemovewishlistActionData.value
+                assertEquals(false, bulkRemoveWishlistActionData!!.peekContent().isSuccess)
+                assertEquals(false, bulkRemoveWishlistActionData!!.peekContent().isPartiallyFailed)
+                assertEquals(mockErrorMessage, bulkRemoveWishlistActionData!!.peekContent().message)
+            }
+        }
+    }
+
+    Feature("Get wishlist data") {
+        lateinit var wishlistViewmodel: WishlistViewModel
+        createWishlistTestInstance()
+        val mockUserId = "12345"
+        val userSessionInterface by memoized<UserSessionInterface>()
+        val wishlistRepository by memoized<WishlistRepository>()
+
+        Scenario("Get wishlist data success with empty initial wishlist data will add new wishlist data") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Empty list of wishlist data") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository returns 3 wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(
+                                WishlistItem(id="1"),
+                                WishlistItem(id="2"),
+                                WishlistItem(id="3")
+                        ),
+                        hasNextPage = false
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData()
+            }
+
+            Then("Expect wishlistdata has only 3 wishlist data") {
+                assertEquals(3, wishlistViewmodel.wishlistData.value!!.size)
+            }
+        }
+
+        Scenario("Get wishlist data failed with empty initial wishlist data will set wishlist data with error model") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Empty list of wishlist data") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository returns 3 wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(isSuccess = false, errorMessage = "")
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData()
+            }
+
+            Then("Expect wishlistdata has only 1 error viewmodel") {
+                assertEquals(1, wishlistViewmodel.wishlistData.value!!.size)
+                assertEquals(ErrorWishlistDataModel::class.java,
+                        wishlistViewmodel.wishlistData.value!![0].javaClass)            }
+        }
+
+        Scenario("Get wishlist data with empty initial wishlist data success and received empty wishlist will set wishlist data with empty model") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with empty values") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository returns empty wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(),
+                        hasNextPage = false
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData()
+            }
+
+            Then("Expect wishlistdata has only 1 empty wishlist model") {
+                assertEquals(1, wishlistViewmodel.wishlistData.value!!.size)
+                assertEquals(EmptyWishlistDataModel::class.java,
+                        wishlistViewmodel.wishlistData.value!![0].javaClass)
+            }
+        }
+
+        Scenario("Get wishlist data with non-empty initial wishlist data and received empty wishlist will reset wishlistdata with empty model") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with values") {
+                wishlistViewmodel.wishlistData.value = listOf(
+                        WishlistItemDataModel(WishlistItem(id="1")),
+                        WishlistItemDataModel(WishlistItem(id="2")),
+                        WishlistItemDataModel(WishlistItem(id="3")),
+                        WishlistItemDataModel(WishlistItem(id="4"))
+                )
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository returns empty wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(),
+                        hasNextPage = false
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData()
+            }
+
+            Then("Expect wishlistdata is reset and has empty viewmodel") {
+                assertEquals(1, wishlistViewmodel.wishlistData.value!!.size)
+                assertEquals(EmptyWishlistDataModel::class.java,
+                        wishlistViewmodel.wishlistData.value!![0].javaClass)
+            }
+        }
+
+        Scenario("Get wishlist data success with non-empty wishlistdata will overrided by new data") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with 4 values") {
+                wishlistViewmodel.wishlistData.value = listOf(
+                        WishlistItemDataModel(WishlistItem(id="1")),
+                        WishlistItemDataModel(WishlistItem(id="2")),
+                        WishlistItemDataModel(WishlistItem(id="3")),
+                        WishlistItemDataModel(WishlistItem(id="4"))
+                )
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository returns 3 wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(
+                                WishlistItem(id="5"),
+                                WishlistItem(id="6"),
+                                WishlistItem(id="7")
+                        ),
+                        hasNextPage = false
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData()
+            }
+
+            Then("Expect wishlistdata has 3 new wishlist data") {
+                assertEquals(3, wishlistViewmodel.wishlistData.value!!.size)
+            }
+        }
+
+        Scenario("Get wishlist data failed with non-empty wishlistdata will reset wishlist data and add error model") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with 4 values") {
+                wishlistViewmodel.wishlistData.value = listOf(
+                        WishlistItemDataModel(WishlistItem(id="1")),
+                        WishlistItemDataModel(WishlistItem(id="2")),
+                        WishlistItemDataModel(WishlistItem(id="3")),
+                        WishlistItemDataModel(WishlistItem(id="4"))
+                )
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository throws error") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(isSuccess = false, errorMessage = "")
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData()
+            }
+
+            Then("Expect wishlistdata is reset and has error model") {
+                assertEquals(1, wishlistViewmodel.wishlistData.value!!.size)
+                assertEquals(ErrorWishlistDataModel::class.java,
+                        wishlistViewmodel.wishlistData.value!![0].javaClass)
+            }
+        }
+
+        Scenario("Recommendation widget is positioned in position 4 in every page request when fetch recom success") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with empty values") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository returns 9 wishlist item data in a request") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(
+                                WishlistItem(id="1"),
+                                WishlistItem(id="2"),
+                                WishlistItem(id="3"),
+                                WishlistItem(id="4"),
+                                WishlistItem(id="5"),
+                                WishlistItem(id="6"),
+                                WishlistItem(id="7"),
+                                WishlistItem(id="8"),
+                                WishlistItem(id="9")
+                        ),
+                        hasNextPage = false
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf(
+                        RecommendationWidget()
+                )
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData()
+            }
+
+            Then("Expect wishlistdata has 10 items (9 wishlist data + 1 recommendation widget)") {
+                assertEquals(10, wishlistViewmodel.wishlistData.value!!.size)
+            }
+            Then("Expect every 4 product recommendation widget is showed") {
+                assertEquals(RecommendationCarouselDataModel::class.java,
+                        wishlistViewmodel.wishlistData.value!![4].javaClass)
+            }
+        }
+
+        Scenario("Recommendation widget is not showed when fetch recom return empty") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with empty values") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository returns 9 wishlist item data in a request") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(
+                                WishlistItem(id="1"),
+                                WishlistItem(id="2"),
+                                WishlistItem(id="3"),
+                                WishlistItem(id="4"),
+                                WishlistItem(id="5"),
+                                WishlistItem(id="6"),
+                                WishlistItem(id="7"),
+                                WishlistItem(id="8"),
+                                WishlistItem(id="9")
+                        ),
+                        hasNextPage = false
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData()
+            }
+
+            Then("Expect wishlistdata has 9 items of wishlist data") {
+                assertEquals(9, wishlistViewmodel.wishlistData.value!!.size)
+            }
+            Then("Expect no recommendation widget is showing") {
+                wishlistViewmodel.wishlistData.value!!.forEach {
+                    if (it is RecommendationCarouselDataModel) {
+                        assertFalse("Recommendation widget should not existed", true)
+                    }
+                }
+            }
+        }
+
+        Scenario("Get wishlist data increase page number when success") {
+
+            val defaultGetWishlistPageNumber = 0
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist initial value empty data") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository successfully returns 3 wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(
+                                WishlistItem(id="1"),
+                                WishlistItem(id="2"),
+                                WishlistItem(id="3")
+                        ),
+                        hasNextPage = true
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData()
+            }
+
+            Then("Expect page number become 3") {
+                assertEquals(defaultGetWishlistPageNumber+1, wishlistViewmodel.currentPage)
+            }
+        }
+
+        Scenario("Get wishlist data doesn't increase page number when failed") {
+
+            val defaultGetWishlistPageNumber = 0
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with currentPage = 2") {
+                wishlistViewmodel.currentPage = 2
+            }
+            Given("Wishlist initial value empty data") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository failed to fetch data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        isSuccess = false,
+                        errorMessage = ""
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData()
+            }
+
+            Then("Expect page number still in default page number") {
+                assertEquals(defaultGetWishlistPageNumber, wishlistViewmodel.currentPage)
+            }
+        }
+    }
+
+    Feature("Get wishlist next page data") {
+        lateinit var wishlistViewmodel: WishlistViewModel
+        createWishlistTestInstance()
+        val mockUserId = "12345"
+        val userSessionInterface by memoized<UserSessionInterface>()
+        val wishlistRepository by memoized<WishlistRepository>()
+
+        Scenario("Get next page data and received empty wishlist would not change wishlist data value") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with values") {
+                wishlistViewmodel.wishlistData.value = listOf(
+                        WishlistItemDataModel(WishlistItem(id="1")),
+                        WishlistItemDataModel(WishlistItem(id="2")),
+                        WishlistItemDataModel(WishlistItem(id="3"))
+                )
+            }
+            Given("Current wishlist page request") {
+                wishlistViewmodel.currentPage = 99
+                wishlistViewmodel.keywordSearch = "contoh"
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository returns empty wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(),
+                        hasNextPage = false,
+                        isSuccess = true
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect wishlist data is still same as initial value") {
+                assertEquals(3, wishlistViewmodel.wishlistData.value!!.size)
+            }
+        }
+
+        Scenario("Get next page data success will add existing data with new data") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with 4 values") {
+                wishlistViewmodel.wishlistData.value = listOf(
+                        WishlistItemDataModel(WishlistItem(id="1")),
+                        WishlistItemDataModel(WishlistItem(id="2")),
+                        WishlistItemDataModel(WishlistItem(id="3")),
+                        WishlistItemDataModel(WishlistItem(id="4"))
+                )
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Current wishlist page request") {
+                wishlistViewmodel.currentPage = 99
+                wishlistViewmodel.keywordSearch = "contoh"
+            }
+            Given("Wishlist repository returns 3 wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(
+                                WishlistItem(id="5"),
+                                WishlistItem(id="6"),
+                                WishlistItem(id="7")
+                        ),
+                        hasNextPage = false,
+                        isSuccess = true
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect wishlistdata has 3 new wishlist data") {
+                assertEquals(7, wishlistViewmodel.wishlistData.value!!.size)
+            }
+        }
+
+        Scenario("Get next page data failed and would not change wishlist data value and trigger load more action data") {
+
+            val mockErrorMessage = "NOT OKAY"
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with 4 values") {
+                wishlistViewmodel.wishlistData.value = listOf(
+                        WishlistItemDataModel(WishlistItem(id="1")),
+                        WishlistItemDataModel(WishlistItem(id="2")),
+                        WishlistItemDataModel(WishlistItem(id="3")),
+                        WishlistItemDataModel(WishlistItem(id="4"))
+                )
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Current wishlist page request") {
+                wishlistViewmodel.currentPage = 99
+                wishlistViewmodel.keywordSearch = "contoh"
+            }
+            Given("Wishlist repository throws error") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(isSuccess = false, errorMessage = mockErrorMessage)
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect wishlist data is not changed") {
+                assertEquals(4, wishlistViewmodel.wishlistData.value!!.size)
+            }
+            Then("Expect load more action data is triggered with error message") {
+                assertEquals(false, wishlistViewmodel.loadMoreWishlistAction.value!!.peekContent().isSuccess)
+                assertEquals(mockErrorMessage, wishlistViewmodel.loadMoreWishlistAction.value!!.peekContent().message)
+            }
+            Then("Expect load more wishlist action data can only retrieved once") {
+                val wishlistEventData = wishlistViewmodel.loadMoreWishlistAction.value!!
+                val eventLoadMoreFirst = wishlistEventData.getContentIfNotHandled()
+                val eventLoadMoreSecond = wishlistEventData.getContentIfNotHandled()
+                assertEquals( null, eventLoadMoreSecond)
+            }
+        }
+
+        Scenario("Get next page data throws error and would not change wishlist data value and trigger load more action data") {
+
+            val mockErrorMessage = "NOT OKAY"
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with 4 values") {
+                wishlistViewmodel.wishlistData.value = listOf(
+                        WishlistItemDataModel(WishlistItem(id="1")),
+                        WishlistItemDataModel(WishlistItem(id="2")),
+                        WishlistItemDataModel(WishlistItem(id="3")),
+                        WishlistItemDataModel(WishlistItem(id="4"))
+                )
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Current wishlist page request") {
+                wishlistViewmodel.currentPage = 99
+                wishlistViewmodel.keywordSearch = "contoh"
+            }
+            Given("Wishlist repository throws error") {
+                coEvery { wishlistRepository.getData(any(), any()) } answers {
+                    throw Throwable(mockErrorMessage)
+                }
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect wishlist data is not changed") {
+                assertEquals(4, wishlistViewmodel.wishlistData.value!!.size)
+            }
+            Then("Expect load more action data is triggered with error message") {
+                assertEquals(false, wishlistViewmodel.loadMoreWishlistAction.value!!.peekContent().isSuccess)
+                assertEquals(mockErrorMessage, wishlistViewmodel.loadMoreWishlistAction.value!!.peekContent().message)
+            }
+            Then("Expect load more wishlist action data can only retrieved once") {
+                val wishlistEventData = wishlistViewmodel.loadMoreWishlistAction.value!!
+                val eventLoadMoreFirst = wishlistEventData.getContentIfNotHandled()
+                val eventLoadMoreSecond = wishlistEventData.getContentIfNotHandled()
+                assertEquals( null, eventLoadMoreSecond)
+            }
+        }
+
+        Scenario("Recommendation widget is positioned in position 4 in every load more page request when fetch recom success") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with empty values") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Current wishlist page request") {
+                wishlistViewmodel.currentPage = 99
+                wishlistViewmodel.keywordSearch = "contoh"
+            }
+            Given("Wishlist repository returns 9 wishlist item data in a request") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(
+                                WishlistItem(id="1"),
+                                WishlistItem(id="2"),
+                                WishlistItem(id="3"),
+                                WishlistItem(id="4"),
+                                WishlistItem(id="5"),
+                                WishlistItem(id="6"),
+                                WishlistItem(id="7"),
+                                WishlistItem(id="8"),
+                                WishlistItem(id="9")
+                        ),
+                        hasNextPage = false
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf(
+                        RecommendationWidget()
+                )
+            }
+
+            When("Viewmodel get next page wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect wishlistdata has 10 items (9 wishlist data + 1 recommendation widget)") {
+                assertEquals(10, wishlistViewmodel.wishlistData.value!!.size)
+            }
+            Then("Expect every 4 product recommendation widget is showed") {
+                assertEquals(RecommendationCarouselDataModel::class.java,
+                        wishlistViewmodel.wishlistData.value!![4].javaClass)
+            }
+        }
+
+        Scenario("Recommendation widget is not showed when fetch recom return empty") {
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist data with empty values") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Current wishlist page request") {
+                wishlistViewmodel.currentPage = 99
+                wishlistViewmodel.keywordSearch = "contoh"
+            }
+            Given("Wishlist repository returns 9 wishlist item data in a request") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(
+                                WishlistItem(id="1"),
+                                WishlistItem(id="2"),
+                                WishlistItem(id="3"),
+                                WishlistItem(id="4"),
+                                WishlistItem(id="5"),
+                                WishlistItem(id="6"),
+                                WishlistItem(id="7"),
+                                WishlistItem(id="8"),
+                                WishlistItem(id="9")
+                        ),
+                        hasNextPage = false
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect wishlistdata has 9 items of wishlist data") {
+                assertEquals(9, wishlistViewmodel.wishlistData.value!!.size)
+            }
+            Then("Expect no recommendation widget is showing") {
+                wishlistViewmodel.wishlistData.value!!.forEach {
+                    if (it is RecommendationCarouselDataModel) {
+                        assertFalse("Recommendation widget should not existed", true)
+                    }
+                }
+            }
+        }
+
+        Scenario("Get next page data increase page number when fetch data success") {
+
+            val mockCurrentPage = 88
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist initial value empty data") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("Current wishlist page request") {
+                wishlistViewmodel.currentPage = mockCurrentPage
+                wishlistViewmodel.keywordSearch = "contoh"
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository successfully returns 3 wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(
+                                WishlistItem(id="1"),
+                                WishlistItem(id="2"),
+                                WishlistItem(id="3")
+                        ),
+                        hasNextPage = true,
+                        isSuccess = true
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get next page wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect page number increased") {
+                assertEquals(mockCurrentPage+1, wishlistViewmodel.currentPage)
+            }
+        }
+
+        Scenario("Get next page data doesn't increase page number when fetch data failed") {
+
+            val mockCurrentPage = 88
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist initial value empty data") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("Current wishlist page request") {
+                wishlistViewmodel.currentPage = mockCurrentPage
+                wishlistViewmodel.keywordSearch = "contoh"
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository successfully returns 3 wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistData(
+                        items = listOf(),
+                        hasNextPage = true,
+                        isSuccess = false
+                )
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get next page wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect page number not increased") {
+                assertEquals(mockCurrentPage, wishlistViewmodel.currentPage)
+            }
+        }
+
+        Scenario("Get next page data doesn't increase page number when fetch data throws error") {
+
+            val mockCurrentPage = 88
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Wishlist initial value empty data") {
+                wishlistViewmodel.wishlistData.value = listOf()
+            }
+            Given("Current wishlist page request") {
+                wishlistViewmodel.currentPage = mockCurrentPage
+                wishlistViewmodel.keywordSearch = "contoh"
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Wishlist repository successfully returns 3 wishlist item data") {
+                coEvery { wishlistRepository.getData(any(), any()) } answers {
+                    throw Throwable("Error")
+                }
+                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+
+            When("Viewmodel get next page wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect page number not increased") {
+                assertEquals(mockCurrentPage, wishlistViewmodel.currentPage)
             }
         }
     }

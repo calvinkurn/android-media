@@ -196,7 +196,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             override fun getCurrentPage(): Int = 1
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if(menu?.findItem(R.id.cancel)?.isVisible == false) viewModel.loadNextPage(page + 1)
+                if(menu?.findItem(R.id.cancel)?.isVisible == false) viewModel.getNextPageWishlistData()
             }
         }
         recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
@@ -210,7 +210,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         viewModel.wishlistData.observe(viewLifecycleOwner, Observer { response ->
             renderList(response)
         })
-        viewModel.loadInitialPage()
         viewModel.getWishlistData()
     }
 
