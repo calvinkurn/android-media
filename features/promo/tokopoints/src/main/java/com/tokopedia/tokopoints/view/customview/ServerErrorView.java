@@ -40,7 +40,7 @@ public class ServerErrorView extends NestedScrollView {
     }
 
     private void init(AttributeSet attrs) {
-        readAttributes(attrs);//https://tokopedia.slack.com/archives/DPE47G7PH/p1571049265000900
+        readAttributes(attrs);
         inflateLayout();
         setDefaultValues();
     }
