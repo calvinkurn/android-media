@@ -5,14 +5,12 @@ import android.content.Intent
 import android.content.IntentSender
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
-import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -75,7 +73,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
         mPermissionChecker = PermissionCheckerHelper()
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        mLocationCallback = object: LocationCallback() {
+        mLocationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult?) {
                 stopLocationRequest()
                 if (result != null && result.locations.isNotEmpty()) {
@@ -116,7 +114,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_LOCATION -> {
-                if(resultCode == Activity.RESULT_CANCELED) setLocationEmptyView()
+                if (resultCode == Activity.RESULT_CANCELED) setLocationEmptyView()
                 else checkForPermission()
             }
         }
@@ -209,7 +207,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, null)
         }
         task.addOnFailureListener {
-            if (it is ResolvableApiException){
+            if (it is ResolvableApiException) {
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
                 try {
