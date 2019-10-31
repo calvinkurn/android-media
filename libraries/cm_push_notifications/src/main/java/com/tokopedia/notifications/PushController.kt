@@ -8,6 +8,7 @@ import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.factory.CMNotificationFactory
+import com.tokopedia.notifications.image.ImageDownloadManager
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationMode
 import com.tokopedia.notifications.model.NotificationStatus
@@ -62,7 +63,10 @@ class PushController(val context: Context) : CoroutineScope {
             }
         } else {
             baseNotificationModel.status = NotificationStatus.PENDING
-            PushRepository.getInstance(context).insertNotificationModel(baseNotificationModel)
+            val updatedBaseNotificationModel  = ImageDownloadManager.downloadImages(context, baseNotificationModel)
+            updatedBaseNotificationModel?.let {
+                PushRepository.getInstance(context).insertNotificationModel(updatedBaseNotificationModel)
+            }?: PushRepository.getInstance(context).insertNotificationModel(baseNotificationModel)
         }
     }
 
@@ -98,10 +102,6 @@ class PushController(val context: Context) : CoroutineScope {
             }
         } catch (e: Exception) {
         }
-    }
-
-    private fun downloadOfflineImages(dirName : String, imageUrl: String){
-
     }
 
 }
