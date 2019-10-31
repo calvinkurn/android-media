@@ -338,7 +338,7 @@ abstract class ProductCardView: BaseCustomView {
 
     private fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
-            ImageHandler.loadImageThumbs(context, it, productImageUrl)
+            ImageHandler.loadImageRounded2(context, it, productImageUrl)
         }
     }
 
