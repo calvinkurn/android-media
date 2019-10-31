@@ -33,6 +33,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateCh
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.TemplateChatSettingPresenter;
 import com.tokopedia.topchat.common.InboxMessageConstant;
+import com.tokopedia.topchat.common.analytics.TemplateChatAnalytic;
 import com.tokopedia.topchat.common.util.SimpleItemTouchHelperCallback;
 
 import java.util.ArrayList;
@@ -66,6 +67,10 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     @Inject
     TemplateChatSettingPresenter presenter;
+
+    @Inject
+    TemplateChatAnalytic analytic;
+
     private ItemTouchHelper mItemTouchHelper;
     private Snackbar snackbarError;
 
@@ -142,6 +147,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 boolean b = switchTemplate.isChecked();
+                analytic.trackOnCheckedChange(b);
                 presenter.switchTemplateAvailability(b);
                 if (b) {
                     templateContainer.setVisibility(View.VISIBLE);
