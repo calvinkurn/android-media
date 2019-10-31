@@ -7,7 +7,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.Data
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
 import com.tokopedia.logisticaddaddress.domain.query.LocationQuery
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,11 +29,15 @@ class DropoffPickerViewModel
 
         getStoreUseCase.execute(
                 { response ->
-                    if (response.data.isNotEmpty()) {
-                        mutableStoreResponse.value = Success(response.data)
+                    if (response.keroAddressStoreLocation.data.isNotEmpty()) {
+                        mutableStoreResponse.value = Success(response.keroAddressStoreLocation.data)
                     }
                 },
-                { throwable ->  mutableStoreResponse.value = Fail(throwable) }
+                { _ ->
+                    // todo: This is dummy implementation prior to live of production
+                    mutableStoreResponse.value = Success(
+                            LocationQuery.getStoreDummyObject.keroAddressStoreLocation.data)
+                }
         )
     }
 
