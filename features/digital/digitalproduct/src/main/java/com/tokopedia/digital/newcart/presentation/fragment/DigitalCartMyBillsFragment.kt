@@ -63,6 +63,8 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
         inputPriceHolderView = view.findViewById<InputPriceHolderView>(R.id.input_price_holder_view)
         mybillSubscription = view.findViewById(R.id.subscription_mybill)
         mybillEgold = view.findViewById(R.id.egold_mybill)
+
+        mybillEgold.setOnMoreInfoClickedListener(this)
     }
 
     override fun onAttachActivity(context: Context?) {
@@ -157,7 +159,6 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
     override fun renderMyBillsEgoldView(headerTitle: String?, description: String?, isCheckboxDisabled: Boolean) {
         mybillEgold.getSubscriptionCheckbox().visibility = if (isCheckboxDisabled) View.GONE else View.VISIBLE
         mybillEgold.hasMoreInfo(true)
-        mybillEgold.setOnMoreInfoClickedListener(this)
         headerTitle?.let { title -> mybillEgold.setHeaderTitle(title) }
         description?.let { desc -> mybillEgold.setDescription(desc) }
     }
