@@ -50,6 +50,10 @@ public class Wishlist implements Parcelable {
     @Expose
     public List<Label> labels;
 
+    @SerializedName("free_ongkir")
+    @Expose
+    private FreeOngkir freeOngkir;
+
     public List<Label> getLabels() {
         return labels;
     }
@@ -171,6 +175,14 @@ public class Wishlist implements Parcelable {
         this.isPreOrder = isPreOrder;
     }
 
+    public FreeOngkir getFreeOngkir() {
+        return freeOngkir;
+    }
+
+    public void setFreeOngkir(FreeOngkir freeOngkir) {
+        this.freeOngkir = freeOngkir;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -193,6 +205,7 @@ public class Wishlist implements Parcelable {
         dest.writeValue(this.isPreOrder);
         dest.writeTypedList(this.badges);
         dest.writeTypedList(this.labels);
+        dest.writeParcelable(this.freeOngkir, flags);
     }
 
     public Wishlist() {

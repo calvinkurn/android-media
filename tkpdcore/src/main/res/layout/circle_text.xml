@@ -17,7 +17,7 @@
         android:textStyle="bold"
         tools:text= "CHAT"/>
 
-    <android.support.v4.widget.Space
+    <androidx.legacy.widget.Space
         android:layout_width="5dp"
         android:layout_height="wrap_content" />
 

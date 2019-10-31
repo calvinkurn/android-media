@@ -5,13 +5,14 @@ import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.createpost.createpost.R
 import java.io.File
 
@@ -112,12 +113,15 @@ abstract class SubmitPostNotificationManager(
 
         Handler(Looper.getMainLooper()).post {
             Glide.with(context.applicationContext)
-                    .load(file)
                     .asBitmap()
+                    .load(file)
                     .error(R.drawable.ic_big_notif_customerapp)
-                    .into(object : SimpleTarget<Bitmap>(100, 100) {
-                        override fun onResourceReady(resource: Bitmap?,
-                                                     glideAnimation: GlideAnimation<in Bitmap>?) {
+                    .into(object: CustomTarget<Bitmap>(100, 100) {
+                        override fun onLoadCleared(placeholder: Drawable?) {
+
+                        }
+
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             builder.setLargeIcon(resource)
                             notificationManager.notify(TAG, id, builder.build())
                         }

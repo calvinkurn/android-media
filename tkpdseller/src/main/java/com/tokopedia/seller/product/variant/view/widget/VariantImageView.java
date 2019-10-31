@@ -8,17 +8,18 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.product.manage.item.main.base.data.model.BasePictureViewModel;
 import com.tokopedia.seller.R;
@@ -111,24 +112,30 @@ public class VariantImageView extends FrameLayout {
                     ImageHandler.loadImageFitCenter(getContext(), ivVariant,
                             basePictureViewModel.getUrlOriginal());
                 } else { // we want to load image, meanwhile also to know its width/height
-                    ImageHandler.loadImageWithTarget(getContext(), basePictureViewModel.getUrlOriginal(), new SimpleTarget<Bitmap>() {
+                    ImageHandler.loadImageWithTarget(getContext(), basePictureViewModel.getUrlOriginal(), new CustomTarget<Bitmap>() {
+
                         @Override
-                        public void onLoadStarted(Drawable placeholder) {
+                        public void onLoadStarted(@Nullable Drawable placeholder) {
                             super.onLoadStarted(placeholder);
                             ivVariant.setImageDrawable(placeholder);
                         }
 
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             ivVariant.setImageBitmap(resource);
                             VariantImageView.this.basePictureViewModel.setX(resource.getWidth());
                             VariantImageView.this.basePictureViewModel.setY(resource.getHeight());
                         }
 
                         @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            super.onLoadFailed(errorDrawable);
                             ivVariant.setImageDrawable(errorDrawable);
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
                         }
                     });
                 }

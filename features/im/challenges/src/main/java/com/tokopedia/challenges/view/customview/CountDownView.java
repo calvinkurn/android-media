@@ -3,7 +3,7 @@ package com.tokopedia.challenges.view.customview;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;

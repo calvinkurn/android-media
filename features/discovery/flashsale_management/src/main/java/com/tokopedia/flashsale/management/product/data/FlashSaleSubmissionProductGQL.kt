@@ -215,7 +215,10 @@ data class FlashSaleProductItemCampaignCriteria(
         @Expose val minOrderMin: Int = 0,
 
         @SerializedName("min_order_max")
-        @Expose val minOrderMax: Int = 0
+        @Expose val minOrderMax: Int = 0,
+
+        @SerializedName("max_custom_stock")
+        @Expose val maxCustomStock: Int = 0
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
@@ -230,6 +233,7 @@ data class FlashSaleProductItemCampaignCriteria(
             parcel.readInt(),
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
+            parcel.readInt(),
             parcel.readInt(),
             parcel.readInt()) {
     }
@@ -249,6 +253,7 @@ data class FlashSaleProductItemCampaignCriteria(
         parcel.writeByte(if (excludeWholesale) 1 else 0)
         parcel.writeInt(minOrderMin)
         parcel.writeInt(minOrderMax)
+        parcel.writeInt(maxCustomStock)
     }
 
     override fun describeContents(): Int {

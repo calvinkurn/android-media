@@ -10,7 +10,8 @@
             android:name=".list.view.activity.PromoCheckoutListDigitalActivity"
             android:label="@string/activity_promo_list_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" >
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -27,7 +28,8 @@
             android:name=".list.view.activity.PromoCheckoutListFlightActivity"
             android:label="@string/activity_promo_list_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" >
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

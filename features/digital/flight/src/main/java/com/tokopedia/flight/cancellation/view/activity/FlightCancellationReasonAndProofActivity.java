@@ -3,13 +3,11 @@ package com.tokopedia.flight.cancellation.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReasonAndProofFragment;
@@ -21,7 +19,7 @@ import com.tokopedia.imageuploader.di.ImageUploaderModule;
  * @author by alvarisi on 3/26/18.
  */
 public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
-        implements HasComponent<FlightCancellationComponent>, FlightCancellationReasonAndProofFragment.OnFragmentInteractionListener{
+        implements HasComponent<FlightCancellationComponent>, FlightCancellationReasonAndProofFragment.OnFragmentInteractionListener {
 
     private static final String EXTRA_CANCELLATION_VIEW_MODEL = "EXTRA_CANCELLATION_VIEW_MODEL";
     private static final int REQUEST_REVIEW_CODE = 1;
@@ -60,14 +58,10 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
     }
 
     private void initInjector() {
-        if (getApplication() instanceof FlightModuleRouter) {
-            cancellationComponent = DaggerFlightCancellationComponent.builder()
-                    .flightComponent(getFlightComponent())
-                    .imageUploaderModule(new ImageUploaderModule())
-                    .build();
-        } else {
-            throw new RuntimeException("Application must implement FlightModuleRouter");
-        }
+        cancellationComponent = DaggerFlightCancellationComponent.builder()
+                .flightComponent(getFlightComponent())
+                .imageUploaderModule(new ImageUploaderModule())
+                .build();
     }
 
     @Override
@@ -77,10 +71,10 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
 
     private void setupToolbar() {
         toolbar.setContentInsetStartWithNavigation(0);
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
-        String title = getString(R.string.activity_label_flight_cancellation);
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500));
+        String title = getString(com.tokopedia.flight.R.string.activity_label_flight_cancellation);
         String subtitle = String.format(
-                getString(R.string.flight_cancellation_subtitle_order_id),
+                getString(com.tokopedia.flight.R.string.flight_cancellation_subtitle_order_id),
                 cancellationWrapperViewModel.getInvoice()
         );
         updateTitle(title, subtitle);
@@ -97,12 +91,12 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case REQUEST_REVIEW_CODE:
-                if (resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     closeReasonAndProofPage();
-                }else {
-                    if (getFragment() instanceof FlightCancellationReasonAndProofFragment){
+                } else {
+                    if (getFragment() instanceof FlightCancellationReasonAndProofFragment) {
                         ((FlightCancellationReasonAndProofFragment) getFragment()).onEstimateRefundActivityResultCancelled();
                     }
                 }

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:background="@color/white">
@@ -56,7 +56,7 @@
             app:layout_constraintWidth_default="wrap"
             tools:text="Subtitle in banner" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/text_title_bottom"

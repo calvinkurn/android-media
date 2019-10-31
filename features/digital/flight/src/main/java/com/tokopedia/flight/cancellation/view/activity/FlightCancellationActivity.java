@@ -4,18 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationFragment;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +41,9 @@ public class FlightCancellationActivity extends BaseFlightActivity implements Ha
 
     @Override
     public FlightCancellationComponent getComponent() {
-        if (getApplication() instanceof FlightModuleRouter) {
-            return DaggerFlightCancellationComponent.builder()
-                    .flightComponent(getFlightComponent())
-                    .build();
-        }
-        throw new RuntimeException("Application must implement FlightModuleRouter");
+        return DaggerFlightCancellationComponent.builder()
+                .flightComponent(getFlightComponent())
+                .build();
     }
 
     @Override
@@ -62,10 +57,10 @@ public class FlightCancellationActivity extends BaseFlightActivity implements Ha
 
     private void setupToolbar() {
         toolbar.setContentInsetStartWithNavigation(0);
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
-        String title = getString(R.string.activity_label_flight_cancellation);
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500));
+        String title = getString(com.tokopedia.flight.R.string.activity_label_flight_cancellation);
         String subtitle = String.format(
-                getString(R.string.flight_cancellation_subtitle_order_id),
+                getString(com.tokopedia.flight.R.string.flight_cancellation_subtitle_order_id),
                 getIntent().getExtras().getString(EXTRA_INVOICE_ID)
         );
         updateTitle(title, subtitle);

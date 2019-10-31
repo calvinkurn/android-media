@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.catalog.presenter;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;

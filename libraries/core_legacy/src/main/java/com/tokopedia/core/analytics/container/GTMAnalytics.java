@@ -3,7 +3,7 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -116,12 +116,16 @@ public class GTMAnalytics extends ContextAnalytics {
             pResult.setResultCallback(cHolder -> {
                 cHolder.setContainerAvailableListener((containerHolder, s) -> {
                     if (!containerHolder.getStatus().isSuccess()) {
+                        Log.d("GTM TKPD", "Container Available Failed");
                         return;
                     }
+
+                    Log.d("GTM TKPD", "Container Available");
+
                     if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
                         if (isAllowRefreshDefault(containerHolder)) {
                             Log.d("GTM TKPD", "Refreshed Container ");
-                            containerHolder.refresh();
+                            refreshContainerInBackground(containerHolder);
                         }
                     }
                 });
@@ -130,6 +134,26 @@ public class GTMAnalytics extends ContextAnalytics {
             eventError(getContext().getClass().toString(), e.toString());
         }
     }
+
+
+    private void refreshContainerInBackground(ContainerHolder containerHolder) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.GTM_REFRESH_IN_BACKGROUND, false)) {
+            //Refresh the container on background thread
+            Observable.just(containerHolder)
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .map(it -> {
+                        containerHolder.refresh();
+                        Log.d("GTM TKPD", "Refreshed Container in Background");
+                        return true;
+                    })
+                    .subscribe(getDefaultSubscriber());
+        } else {
+            containerHolder.refresh();
+            Log.d("GTM TKPD", "Refreshed Container in Main Thread");
+        }
+    }
+
 
     private Boolean isAllowRefreshDefault(ContainerHolder containerHolder) {
         long lastRefresh = 0;

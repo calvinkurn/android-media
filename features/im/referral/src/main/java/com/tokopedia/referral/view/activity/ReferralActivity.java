@@ -2,18 +2,14 @@ package com.tokopedia.referral.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
-import com.tokopedia.referral.ReferralRouter;
+import com.tokopedia.referral.analytics.ReferralAnalytics;
 import com.tokopedia.referral.di.DaggerReferralComponent;
 import com.tokopedia.referral.di.ReferralComponent;
 import com.tokopedia.referral.view.fragment.FragmentReferral;
@@ -21,28 +17,18 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
+import javax.inject.Inject;
+
 /**
  * Created by ashwanityagi on 18/09/17.
  */
 
-public class ReferralActivity extends BaseSimpleActivity implements HasComponent<ReferralComponent> {
+public class ReferralActivity extends BaseSimpleActivity {
 
     private static final String REFERRAL_SCREEN = "/referral";
-    private ReferralComponent referralComponent = null;
 
-    @DeepLink(Constants.AppLinks.REFERRAL)
-    public static Intent getCallingReferral(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ReferralActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
-
-    public static Intent getCallingIntent(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, ReferralActivity.class);
-        intent.putExtras(bundle);
-        return intent;
-    }
+    @Inject
+    ReferralAnalytics referralAnalytics;
 
     public static Intent getCallingIntent(Context context) {
         Intent intent = new Intent(context, ReferralActivity.class);
@@ -58,23 +44,17 @@ public class ReferralActivity extends BaseSimpleActivity implements HasComponent
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String toolbarTitle = getToolbarTitle();
-        if(!TextUtils.isEmpty(toolbarTitle)) updateTitle(toolbarTitle);
-        ((ReferralRouter)getApplicationContext()).sendMoEngageReferralScreenOpen(this,
-                getString(R.string.referral_screen_name));
-    }
+        if (!TextUtils.isEmpty(toolbarTitle)) updateTitle(toolbarTitle);
 
-    @Override
-    public ReferralComponent getComponent() {
-        if (referralComponent == null) {
-            initInjector();
-        }
-        return referralComponent;
-    }
+        initInjector();
 
+        referralAnalytics.sendMoEngageReferralScreenOpen(getString(R.string.referral_screen_name));
+    }
 
     private void initInjector() {
-        referralComponent = DaggerReferralComponent.builder().baseAppComponent(
-                ((BaseMainApplication)getApplicationContext()).getBaseAppComponent()).build();
+        ReferralComponent referralComponent = DaggerReferralComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getApplicationContext()).getBaseAppComponent()).build();
+        referralComponent.inject(this);
     }
 
     @Override

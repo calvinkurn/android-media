@@ -11,8 +11,8 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +20,9 @@ import android.view.Window
 import android.widget.TextView
 import com.facebook.FacebookSdk
 import com.facebook.login.LoginManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -53,6 +56,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import java.util.*
@@ -71,6 +75,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     private lateinit var accountAnalytics: AccountAnalytics
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var notifPreference: NotifPreference
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +84,14 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         context?.let {
             notifPreference = NotifPreference(it)
         }
+
+        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(GOOGLE_API_KEY)
+                .requestEmail()
+                .requestProfile()
+                .build()
+
+        googleSignInClient = activity?.let { GoogleSignIn.getClient(it, googleSignInOptions) } as GoogleSignInClient
     }
 
     override fun onResume() {
@@ -409,6 +422,10 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
+        if (isGoogleAccount()) {
+            googleSignInClient.signOut()
+        }
+
         val stickyPref = activity!!.getSharedPreferences("sticky_login_widget.pref", Context.MODE_PRIVATE)
         stickyPref.edit().clear().apply()
     }
@@ -433,6 +450,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         val dialog = builder.create()
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.show()
+    }
+
+    private fun isGoogleAccount(): Boolean {
+        val acct = GoogleSignIn.getLastSignedInAccount(context!!)
+        return acct != null
     }
 
     companion object {

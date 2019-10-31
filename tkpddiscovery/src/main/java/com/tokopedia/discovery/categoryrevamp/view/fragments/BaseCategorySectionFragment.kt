@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.View
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -60,7 +60,11 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
 
     private var bottomSheetListener: BottomSheetListener? = null
+    private var sortAppliedListener: SortAppliedListener? = null
 
+    companion object {
+        const val DEFAULT_SORT = 23
+    }
 
     protected open fun onSwipeToRefresh() {
     }
@@ -351,6 +355,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
                 clearDataFilterSort()
                 reloadData()
+                sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort["ob"]?.toInt())
                 onSortAppliedEvent(selectedSortName ?: "",
                         selectedSort["ob"]?.toInt() ?: 0)
             }
@@ -403,4 +408,12 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         return filterTrackingData!!
     }
 
+
+    fun setSortListener(sortAppliedListener:SortAppliedListener){
+        this.sortAppliedListener = sortAppliedListener
+    }
+
+    interface SortAppliedListener {
+        fun onSortApplied(showTick: Boolean)
+    }
 }

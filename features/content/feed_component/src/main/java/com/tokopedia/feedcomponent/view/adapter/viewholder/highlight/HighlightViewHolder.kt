@@ -1,8 +1,8 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.highlight
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -52,6 +52,7 @@ class HighlightViewHolder(val v: View,
         adapter = HighlightAdapter(element.cards, highlightListener)
         highlightRv.adapter = adapter
         highlightRv.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        highlightRv.isNestedScrollingEnabled = false
         bindTitle(element.title, element.template.cardhighlight.title)
     }
 

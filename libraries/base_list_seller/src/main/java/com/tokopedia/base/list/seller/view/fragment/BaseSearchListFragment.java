@@ -1,9 +1,9 @@
 package com.tokopedia.base.list.seller.view.fragment;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Px;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Px;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.text.TextUtils;
 import android.view.View;
 
