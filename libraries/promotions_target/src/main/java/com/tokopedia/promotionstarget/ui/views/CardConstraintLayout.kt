@@ -2,10 +2,10 @@ package com.tokopedia.promotionstarget.ui.views
 
 import android.content.Context
 import android.graphics.*
-import android.support.constraint.ConstraintLayout
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.util.DisplayMetrics
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.promotionstarget.R
 
 open class CardConstraintLayout : ConstraintLayout {

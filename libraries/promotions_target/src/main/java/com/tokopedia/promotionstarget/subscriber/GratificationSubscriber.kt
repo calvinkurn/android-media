@@ -37,7 +37,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
 
     private val ceh = CoroutineExceptionHandler { _, exception ->
-        println("Caught $exception")
     }
 
     init {
@@ -122,11 +121,15 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
             if (page.isNullOrEmpty()) {
                 page = ""
+                val activityName = activity?.javaClass?.canonicalName
+                if (!TextUtils.isEmpty(activityName)) {
+                    page = activityName
+                }
             }
 
             showGratificationDialog = (!TextUtils.isEmpty(popSlug))
             if (showGratificationDialog) {
-                gratificationData = GratificationData(popSlug!!, page)
+                gratificationData = GratificationData(popSlug!!, page!!)
             }
         }
         return gratificationData
@@ -138,10 +141,13 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             supervisorScope {
                 val childJob = launch {
                     val response = presenter.getGratificationAndShowDialog(gratificationData)
-                    val couponDetail = presenter.composeApi(gratificationData)
-                    withContext(Dispatchers.Main) {
-                        if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
-                            show(weakActivity, response, couponDetail, gratificationData, intent)
+                    val canShowDialog = response.popGratification?.isShow
+                    if (canShowDialog != null && canShowDialog) {
+                        val couponDetail = presenter.composeApi(gratificationData)
+                        withContext(Dispatchers.Main) {
+                            if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
+                                show(weakActivity, response, couponDetail, gratificationData, intent)
+                            }
                         }
                     }
                 }
@@ -175,7 +181,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                     gratificationData,
                     claimApi,
                     autoHitActionButton)
-            if(bottomSheetDialog!=null) {
+            if (bottomSheetDialog != null) {
                 mapOfDialogs[activity] = Pair(dialog, bottomSheetDialog)
             }
         }

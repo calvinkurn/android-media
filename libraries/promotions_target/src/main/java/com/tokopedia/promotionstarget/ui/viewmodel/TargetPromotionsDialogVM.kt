@@ -1,6 +1,6 @@
 package com.tokopedia.promotionstarget.ui.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.launchCatchError
 import com.tokopedia.promotionstarget.usecase.AutoApplyUseCase

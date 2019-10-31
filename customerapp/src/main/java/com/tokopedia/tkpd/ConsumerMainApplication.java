@@ -168,10 +168,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(subscriber);
-
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            System.exit(2);
-        });
     }
 
     @Override

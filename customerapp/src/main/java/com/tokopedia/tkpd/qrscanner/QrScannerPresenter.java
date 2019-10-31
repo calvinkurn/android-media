@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -89,7 +88,6 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     public void onBarCodeScanComplete(String barcodeData) {
         Uri uri = Uri.parse(barcodeData);
         String host = uri.getHost();
-        Toast.makeText(context,barcodeData,Toast.LENGTH_LONG).show();
         boolean isOvoPayQrEnabled = getView().getRemoteConfigForOvoPay();
         if (host != null && uri.getPathSegments() != null) {
             if (host.equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {

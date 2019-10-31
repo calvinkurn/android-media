@@ -1,7 +1,7 @@
 package com.tokopedia.promotionstarget.di.modules
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.promotionstarget.ViewModelFactory
 import com.tokopedia.promotionstarget.di.scopes.PromoTargetScope
 import com.tokopedia.promotionstarget.ui.viewmodel.TargetPromotionsDialogVM

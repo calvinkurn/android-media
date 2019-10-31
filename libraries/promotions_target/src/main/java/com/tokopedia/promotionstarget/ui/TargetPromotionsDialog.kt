@@ -3,20 +3,11 @@ package com.tokopedia.promotionstarget.ui
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.*
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,6 +17,19 @@ import android.view.ViewParent
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.ViewFlipper
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -111,6 +115,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 is Error,
                 is Fail -> {
                     setErrorUiForPopGratification()
+                    expandBottomSheet()
                 }
             }
             toggleProgressBar(false)
@@ -121,6 +126,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             toggleProgressBar(false)
             toggleBtnText(true)
             setErrorUiForPopGratification()
+            expandBottomSheet()
         }
     }
 
@@ -159,9 +165,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             IS_DISMISSED = true
             if (activityContext is Activity) {
                 subscriber.clearMaps(activityContext)
-            }
-            if (autoApplyObserver != null) {
-                viewModel.autoApplyLiveData.removeObserver(autoApplyObserver!!)
             }
         }
         bottomSheetDialog = bottomSheet
@@ -303,7 +306,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         originalBtnText = data.popGratificationClaim?.popGratificationActionButton?.text
         btnAction.text = originalBtnText
-        imageViewRight.loadImageGlide(data.popGratificationClaim?.imageUrl)
+        imageViewRight.loadImageGlide(data.popGratificationClaim?.imageUrl) { success ->
+            expandBottomSheet()
+        }
 
         performAnimationToGotoClaimUI()
         couponCodeAfterClaim = data.popGratificationClaim?.dummyCouponCode

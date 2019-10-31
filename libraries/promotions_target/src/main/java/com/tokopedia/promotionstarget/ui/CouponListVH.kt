@@ -1,12 +1,11 @@
 package com.tokopedia.promotionstarget.ui
 
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
 import com.tokopedia.promotionstarget.loadImageGlide
-import com.tokopedia.promotionstarget.ui.views.CouponView
 
 class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
