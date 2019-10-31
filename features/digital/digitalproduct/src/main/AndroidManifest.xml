@@ -25,7 +25,20 @@
         <activity
             android:name=".product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_digital"
+                    android:path="@string/path_emoney"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".product.view.activity.DigitalUssdActivity"
             android:theme="@style/Theme.White"

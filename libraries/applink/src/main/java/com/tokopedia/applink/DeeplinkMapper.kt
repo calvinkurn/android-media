@@ -35,7 +35,7 @@ object DeeplinkMapper {
             deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> getRegisteredNavigationFromHttp(context, deeplink)
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
                 when {
-                    deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) ->
+                    deeplink.startsWith(ApplinkConst.DIGITAL, true) ->
                         getRegisteredNavigationDigital(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true) ->
                         getRegisteredNavigationSearch(deeplink)

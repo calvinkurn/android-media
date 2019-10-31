@@ -11,6 +11,7 @@ class EmoneyCheckBalanceActivity : BaseSimpleActivity() {
         return true
     }
 
+    //applink tokopedia-android-internal://digital/smartcard/emoneybrizzi?calling_type=calling_from_pdp
     override fun getNewFragment(): Fragment? {
         val uri = intent.data
         if (uri?.getQueryParameter(DIGITAL_NFC_FROM_PDP) != null) {
