@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.tokopedia.core.analytics.AppEventTracking
@@ -58,6 +59,10 @@ class ProductEditStockFragment : Fragment() {
             textViewHelperStock.visibility = View.GONE
         }
 
+        labelSwitchStock.setListenerValue(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+            setStockLabel(isChecked)
+        })
+
         texViewMenu?.run {
             text = getString(R.string.label_save)
             setOnClickListener {
@@ -77,6 +82,14 @@ class ProductEditStockFragment : Fragment() {
                 isTotalStockValid()
             }
         })
+    }
+
+    private fun setStockLabel(isChecked: Boolean) {
+        if (isChecked) {
+            labelSwitchStock.title = getString(R.string.label_always_active)
+        } else {
+            labelSwitchStock.title = getString(R.string.label_always_nonactive)
+        }
     }
 
     private fun String.removeCommaToInt() = toString().replace(",", "").toInt()
@@ -99,6 +112,7 @@ class ProductEditStockFragment : Fragment() {
             MIN_STOCK
 
         labelSwitchStock.isChecked = productStock.isActive
+        setStockLabel(productStock.isActive)
         editTextSku.setText(productStock.sku)
     }
 
@@ -123,7 +137,7 @@ class ProductEditStockFragment : Fragment() {
     companion object {
         const val SAVED_PRODUCT_STOCK = "SAVED_PRODUCT_STOCK"
         const val MIN_STOCK_VARIANT = "1"
-        const val MIN_STOCK = "1"
+        const val MIN_STOCK = "0"
         const val MAX_STOCK = "999,999"
         fun createInstance() = ProductEditStockFragment()
     }
