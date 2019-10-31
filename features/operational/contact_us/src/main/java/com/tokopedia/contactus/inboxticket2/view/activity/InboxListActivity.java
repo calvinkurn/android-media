@@ -119,6 +119,11 @@ public class InboxListActivity extends InboxBaseActivity
     }
 
     @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
+    }
+
+    @Override
     void initView() {
         findingViewsId();
         settingOnClickListener();
