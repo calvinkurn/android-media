@@ -1,10 +1,20 @@
 package com.tokopedia.topads.widget.dashboard
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -77,14 +87,23 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
     }
 
     private fun setupView() {
+        context?.let {
+            val txt = SpannableString(getString(R.string.wording_empty_ads))
+            txt.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.tkpd_main_green)), 74, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            txt.setSpan(StyleSpan(Typeface.BOLD), 74, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            txt.setSpan(object : ClickableSpan(){
+                override fun onClick(widget: View) {
+                    RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
+                }
+            }, 74, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            txt_empty_wording.setText(txt)
+            txt_empty_wording.movementMethod = LinkMovementMethod.getInstance()
+        }
         btn_expander.setOnClickListener {
             toggleStatisticView(statistic_container.visibility != View.VISIBLE)
         }
         btn_go_to_dashboard_topads.setOnClickListener {
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
-        }
-        btn_mulai_beriklan.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
         }
     }
 
@@ -92,10 +111,10 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         statistic_container.visibility = View.GONE
         if (isVisible) {
             empty_state_container.visibility = View.VISIBLE
-            btn_expander.setImageResource(R.drawable.ic_expand_less)
+            btn_expander.setImageResource(R.drawable.topads_widget_ic_up)
         } else {
             empty_state_container.visibility = View.GONE
-            btn_expander.setImageResource(R.drawable.ic_expand_more)
+            btn_expander.setImageResource(R.drawable.topads_widget_ic_down)
         }
     }
 
@@ -103,10 +122,10 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         empty_state_container.visibility = View.GONE
         if (isVisible) {
             statistic_container.visibility = View.VISIBLE
-            btn_expander.setImageResource(R.drawable.ic_expand_less)
+            btn_expander.setImageResource(R.drawable.topads_widget_ic_up)
         } else {
             statistic_container.visibility = View.GONE
-            btn_expander.setImageResource(R.drawable.ic_expand_more)
+            btn_expander.setImageResource(R.drawable.topads_widget_ic_down)
         }
     }
 }

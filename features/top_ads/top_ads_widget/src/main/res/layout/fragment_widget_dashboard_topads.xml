@@ -45,7 +45,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_15"
+                app:srcCompat="@drawable/topads_widget_ic_toa" />
 
             <TextView
                 style="@style/TextView.Small.Bold"
@@ -57,7 +64,8 @@
 
             <TextView
                 android:id="@+id/txt_saldo_topads"
-                style="@style/TextView.Title.Bold"
+                style="@style/TextView.Title.Green"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="right"
@@ -82,6 +90,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_15"
+                    app:srcCompat="@drawable/topads_widget_ic_stat" />
 
                 <TextView
                     style="@style/TextView.Small.Bold"
@@ -99,7 +112,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:gravity="right"
                     android:clickable="true"
-                    app:srcCompat="@drawable/ic_expand_less" />
+                    app:srcCompat="@drawable/topads_widget_ic_up" />
 
 
             </LinearLayout>
@@ -108,104 +121,159 @@
                 android:id="@+id/empty_state_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:animateLayoutChanges="true"
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/txt_empty_wording"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Produkmu belum diiklankan. Bikin produkmu tampil teratas dengan TopAds!" />
+                    android:text="@string/wording_empty_ads" />
 
-                <Button
-                    android:id="@+id/btn_mulai_beriklan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_40"
-                    android:text="Mulai Beriklan"
-                    android:paddingRight="@dimen/dp_10"
-                    android:paddingLeft="@dimen/dp_10"
-                    style="@style/Button.Submit.Green" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/statistic_container"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dp_10"
+                android:background="@drawable/topads_widget_bg_statistic">
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/tampil" />
+                        android:padding="@dimen/dp_5"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/tampil" />
 
-                    <TextView
-                        android:id="@+id/txt_impresion_count"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/txt_impresion_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            tools:text="0" />
+                    </LinearLayout>
+
+                    <com.tokopedia.topads.widget.dashboard.DividerView
+                        android:layout_width="1dp"
+                        android:layout_height="fill_parent"
+                        android:layerType="software"
+                        app:color="#DBDEE2"
+                        app:orientation="vertical"
+                        app:dashLength="5dp"
+                        app:dashGap="5dp"
+                        app:dashThickness="1dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="0" />
+                        android:layout_weight="1"
+                        android:padding="@dimen/dp_5"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/klik" />
+
+                        <TextView
+                            android:id="@+id/txt_click_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            tools:text="0" />
+                    </LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
+<!--                <ImageView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="2dp"-->
+<!--                    android:src="@drawable/topads_widget_h_line"-->
+<!--                    android:layerType="software" />-->
+                <com.tokopedia.topads.widget.dashboard.DividerView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/klik" />
-
-                    <TextView
-                        android:id="@+id/txt_click_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="0" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/pengeluaran" />
-
-                    <TextView
-                        android:id="@+id/txt_spend_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="0" />
-                </LinearLayout>
+                    android:layout_height="1dp"
+                    android:layerType="software"
+                    app:color="#DBDEE2"
+                    app:orientation="horizontal"
+                    app:dashLength="5dp"
+                    app:dashGap="5dp"
+                    app:dashThickness="1dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/pendapatan" />
+                        android:padding="@dimen/dp_5"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pengeluaran" />
 
-                    <TextView
-                        android:id="@+id/txt_profit_count"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/txt_spend_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            tools:text="0" />
+                    </LinearLayout>
+
+                    <com.tokopedia.topads.widget.dashboard.DividerView
+                        android:layout_width="1dp"
+                        android:layout_height="fill_parent"
+                        android:layerType="software"
+                        app:color="#DBDEE2"
+                        app:orientation="vertical"
+                        app:dashLength="5dp"
+                        app:dashGap="5dp"
+                        app:dashThickness="1dp" />
+
+<!--                    <View-->
+<!--                        android:layout_width="2dp"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_centerHorizontal="true"-->
+<!--                        android:background="@drawable/topads_widget_v_line" />-->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="0" />
+                        android:layout_weight="1"
+                        android:padding="@dimen/dp_5"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/pendapatan" />
+
+                        <TextView
+                            android:id="@+id/txt_profit_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            tools:text="0" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
