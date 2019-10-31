@@ -891,16 +891,14 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onSeeErrorProductsClicked() {
         if (cartRecyclerView.getLayoutManager() != null) {
-            ((GridLayoutManager) cartRecyclerView.getLayoutManager()).scrollToPositionWithOffset(cartAdapter.getDisabledItemHeaderPosition(), 0);
-//            cartRecyclerView.scrollToPosition(cartAdapter.getDisabledItemHeaderPosition());
-//            LinearSmoothScroller linearSmoothScroller = new LinearSmoothScroller(cartRecyclerView.getContext()) {
-//                @Override
-//                protected int getVerticalSnapPreference() {
-//                    return SNAP_TO_START;
-//                }
-//            };
-//            linearSmoothScroller.setTargetPosition(cartAdapter.getDisabledItemHeaderPosition());
-//            cartRecyclerView.getLayoutManager().startSmoothScroll(linearSmoothScroller);
+            LinearSmoothScroller linearSmoothScroller = new LinearSmoothScroller(cartRecyclerView.getContext()) {
+                @Override
+                protected int getVerticalSnapPreference() {
+                    return SNAP_TO_START;
+                }
+            };
+            linearSmoothScroller.setTargetPosition(cartAdapter.getDisabledItemHeaderPosition());
+            cartRecyclerView.getLayoutManager().startSmoothScroll(linearSmoothScroller);
         }
     }
 
