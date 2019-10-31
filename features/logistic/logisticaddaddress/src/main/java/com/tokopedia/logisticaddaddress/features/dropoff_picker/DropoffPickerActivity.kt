@@ -1,6 +1,9 @@
 package com.tokopedia.logisticaddaddress.features.dropoff_picker
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Build
@@ -21,11 +24,14 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.di.DaggerDropoffPickerComponent
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.UnifyButton
+import javax.inject.Inject
 
 
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
@@ -44,9 +50,20 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mButtonActivate: UnifyButton
     lateinit var mButtonGrant: UnifyButton
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+
+    private val viewModel by lazy { viewModelProvider.get(DropoffPickerViewModel::class.java) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dropoff_picker)
+
+        DaggerDropoffPickerComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar_search)
         setSupportActionBar(toolbar)
