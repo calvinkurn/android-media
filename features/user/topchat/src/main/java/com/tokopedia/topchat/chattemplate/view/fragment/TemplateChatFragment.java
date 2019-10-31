@@ -214,8 +214,10 @@ public class TemplateChatFragment extends BaseDaggerFragment
             bundle.putStringArrayList(InboxMessageConstant.PARAM_ALL, adapter.getListString());
             if (message == null) {
                 bundle.putInt(InboxMessageConstant.PARAM_MODE, CREATE);
+                analytic.trackAddTemplateChat();
             } else {
                 bundle.putInt(InboxMessageConstant.PARAM_MODE, EDIT);
+                analytic.trackEditTemplateChat();
             }
             bundle.putBoolean(PARAM_IS_SELLER, isSeller);
             intent.putExtras(bundle);
@@ -242,11 +244,6 @@ public class TemplateChatFragment extends BaseDaggerFragment
     @Override
     public void revertArrange(int from, int to) {
         adapter.revertArrange(to, from);
-    }
-
-    @Override
-    public void trackAddTemplateChat() {
-        analytic.trackAddTemplateChat();
     }
 
     public ArrayList<Integer> arrangeList(int from, int to) {

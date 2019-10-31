@@ -24,6 +24,15 @@ class TemplateChatAnalytic @Inject constructor() {
         )
     }
 
+    fun trackEditTemplateChat() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                NAME_TEMPLATE_CHAT,
+                CATEGORY_TEMPLATE_CHAT,
+                ACTION_CLICK_ADD_TEMPLATE_CHAT,
+                ""
+        )
+    }
+
     companion object {
         const val NAME_TEMPLATE_CHAT = "clickTemplateChat"
 
