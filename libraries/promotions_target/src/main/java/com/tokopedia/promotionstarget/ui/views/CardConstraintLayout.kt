@@ -30,9 +30,6 @@ open class CardConstraintLayout : ConstraintLayout {
 
     protected var blurRadius = 50f
     private var cornerRadius = 8f
-    private var shadowHeight = 0f
-    private var shadowDx = 0f
-    private var shadowDy = 0f
     private var shadowStartOffset = 0f
     private var shadowEndOffset = 0f
     private var shadowTopOffset = 0f
@@ -68,9 +65,6 @@ open class CardConstraintLayout : ConstraintLayout {
         if (attrs != null) {
             val typedArray =
                     context.theme.obtainStyledAttributes(attrs, R.styleable.CardConstraintLayout, 0, 0)
-            shadowHeight = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowHeight, 0f)
-            shadowDx = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowDx, dpToPx(context, 0))
-            shadowDy = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowDy, dpToPx(context, 0))
             shadowTopOffset = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowTopOffset, dpToPx(context, 0))
             shadowBottomOffset = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowBottomOffset, dpToPx(context, 0))
             shadowStartOffset = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowStartOffset, dpToPx(context, 0))
