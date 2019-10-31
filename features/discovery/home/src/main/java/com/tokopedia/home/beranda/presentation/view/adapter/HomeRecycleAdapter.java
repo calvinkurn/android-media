@@ -110,7 +110,7 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         return -1;
     }
 
-    public void updateReviewItem(SuggestedProductReview suggestedProductReview, int position) {
+    public void updateReviewItem(SuggestedProductReview suggestedProductReview) {
         if (visitables.get(hasReview()) instanceof ReviewViewModel) {
             ((ReviewViewModel) visitables.get(hasReview())).setSuggestedProductReview(suggestedProductReview);
             notifyItemChanged(hasReview());
@@ -131,6 +131,11 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     public void removeGeolocationViewModel() {
         int removedPosition = removeGeolocation();
         notifyItemRemoved(removedPosition);
+    }
+
+    public void removeReviewViewModel(){
+        int reviewPosition = removeReview();
+        notifyItemRemoved(reviewPosition);
     }
 
     public void setHomeHeaderViewModel(HeaderViewModel homeHeaderViewModel) {
@@ -189,6 +194,16 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     private int removeGeolocation() {
         for(int i=0; i<visitables.size(); i++){
             if(visitables.get(i) instanceof GeolocationPromptViewModel){
+                visitables.remove(i);
+                return i;
+            }
+        }
+        return POSITION_UNDEFINED;
+    }
+
+    private int removeReview() {
+        for(int i=0; i<visitables.size(); i++){
+            if(visitables.get(i) instanceof ReviewViewModel){
                 visitables.remove(i);
                 return i;
             }

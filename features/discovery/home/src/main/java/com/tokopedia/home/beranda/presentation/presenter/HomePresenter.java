@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
+import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase;
@@ -91,6 +92,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetPendingCasbackUseCase getPendingCasbackUseCase;
     @Inject
     GetHomeReviewSuggestedUseCase getHomeReviewSuggestedUseCase;
+    @Inject
+    DismissHomeReviewUseCase dismissHomeReviewUseCase;
 
     @Inject
     HomeMapper homeMapper;
@@ -165,6 +168,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getStickyContent();
     }
 
+
+
     public void sendGeolocationData() {
         sendGeolocationInfoUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
@@ -214,6 +219,26 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     }
                 });
         compositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void dismissReview() {
+        dismissHomeReviewUseCase.execute(RequestParams.EMPTY, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+                getView().onSuccessDismissReview();
+
+            }
+        });
     }
 
     @Override

@@ -33,6 +33,8 @@ public interface HomeContract {
 
     interface View extends CustomerView {
 
+        void onSuccessDismissReview();
+
         void onSuccessGetReviewData(SuggestedProductReview suggestedProductReview);
 
         void onErrorGetReviewData();
@@ -95,6 +97,9 @@ public interface HomeContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
+        void dismissReview();
+
         void getSuggestedReview();
 
         void getHomeData();

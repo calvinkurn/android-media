@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,9 +23,14 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
                                                 val dispatcher: CoroutineDispatcher,
                                                 private val getProductReputationForm: GetProductReputationForm) : BaseViewModel(dispatcher) {
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     private var imageData: MutableList<BaseImageReviewViewModel> = mutableListOf()
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm = reputationDataForm
+
+    fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
 
     fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageReviewViewModel> {
         when (selectedImage.size) {

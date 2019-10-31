@@ -24,6 +24,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
@@ -37,7 +38,6 @@ import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_create_review.*
-import kotlinx.android.synthetic.main.review_layout.*
 import java.util.*
 import javax.inject.Inject
 
@@ -81,6 +81,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private var productId: Int = 0
     private var currentBackground: Drawable? = null
 
+    private var reviewUserName: String = ""
     lateinit var imgAnimationView: LottieAnimationView
 
     override fun getScreenName(): String = ""
@@ -123,10 +124,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        createReviewViewModel.getProductReputation(productId, reviewId)
+        reviewUserName = createReviewViewModel.userSessionInterface.name
 
+        createReviewViewModel.getProductReputation(productId, reviewId)
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
+        anonymous_text.text = generateAnonymousText()
         animatedReviewPicker.setListener(object : AnimatedReviewPicker.AnimatedReviewPickerListener {
             override fun onStarsClick(position: Int) {
                 shouldPlayAnimation = true
@@ -136,7 +139,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         })
         if (reviewClickAt != 0) {
             stepper_review.progress = 1
-            animatedReviewPicker.renderInitialReviewWithData(reviewClickAt - 1)
+            animatedReviewPicker.renderInitialReviewWithData(reviewClickAt)
             generateReviewBackground(reviewClickAt)
         } else {
             // Render background grey which is position 1 & 2
@@ -164,8 +167,14 @@ class CreateReviewFragment : BaseDaggerFragment() {
             override fun afterTextChanged(s: Editable) {
 
                 if (s.toString().length < WRITE_REVIEW_MIN_LENGTH) {
+
+                    /**
+                     * https://stackoverflow.com/questions/53543063/error-message-text-for-textinputlayout-is-cut-off
+                     */
                     txt_input_review.isErrorEnabled = true
+                    txt_input_review.error = null
                     txt_input_review.error = getString(R.string.review_min_character)
+
                     if (!shouldIncreaseProgressBar) {
                         shouldIncreaseProgressBar = true
                         stepper_review.progress = stepper_review.progress - 1
@@ -205,11 +214,26 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     private fun generateReviewBackground(position: Int) {
         when (position) {
-            1 -> renderBackgroundTransition(IMAGE_REVIEW_GREY_BG)
-            2 -> renderBackgroundTransition(IMAGE_REVIEW_GREY_BG)
-            3 -> renderBackgroundTransition(IMAGE_REVIEW_GREEN_BG)
-            4 -> renderBackgroundTransition(IMAGE_REVIEW_YELLOW_BG)
-            5 -> renderBackgroundTransition(IMAGE_REVIEW_YELLOW_BG)
+            1 -> {
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_1, reviewUserName))
+                renderBackgroundTransition(IMAGE_REVIEW_GREY_BG)
+            }
+            2 -> {
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_2, reviewUserName))
+                renderBackgroundTransition(IMAGE_REVIEW_GREY_BG)
+            }
+            3 -> {
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_3, reviewUserName))
+                renderBackgroundTransition(IMAGE_REVIEW_GREEN_BG)
+            }
+            4 -> {
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_4, reviewUserName))
+                renderBackgroundTransition(IMAGE_REVIEW_YELLOW_BG)
+            }
+            5 -> {
+                txt_review_desc.text = MethodChecker.fromHtml(getString(R.string.review_text_5, reviewUserName))
+                renderBackgroundTransition(IMAGE_REVIEW_YELLOW_BG)
+            }
         }
     }
 
@@ -256,23 +280,23 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     private fun generateAnimationByIndex(index: Int) {
         when (index) {
-            0 -> {
+            1 -> {
                 imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_1)
                 imgAnimationView.playAnimation()
             }
-            1 -> {
+            2 -> {
                 imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_2)
                 imgAnimationView.playAnimation()
             }
-            2 -> {
+            3 -> {
                 imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_3)
                 imgAnimationView.playAnimation()
             }
-            3 -> {
+            4 -> {
                 imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_4)
                 imgAnimationView.playAnimation()
             }
-            4 -> {
+            5 -> {
                 imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_5)
                 imgAnimationView.playAnimation()
             }
@@ -291,6 +315,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
                         transitionDrawable(drawable)
                     }
                 })
+    }
+
+    private fun generateAnonymousText(): String {
+        val firstName = reviewUserName.substringBefore(" ")
+        return firstName.replaceRange(1, firstName.length - 1, "***")
     }
 
     private fun addImageClick() {

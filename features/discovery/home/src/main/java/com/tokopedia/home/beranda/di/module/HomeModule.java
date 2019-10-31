@@ -23,7 +23,6 @@ import com.tokopedia.home.beranda.di.HomeScope;
 import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.SendGeolocationInfoUseCase;

@@ -71,6 +71,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
@@ -149,7 +150,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     public static Boolean HIDE_TICKER = false;
     private static final String SOURCE_ACCOUNT = "account";
-    private int previewListenerCount = 0;
+    private boolean shouldDisplayReview = true;
     private int reviewAdapterPosition = -1;
 
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
@@ -814,15 +815,24 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setItems(List<Visitable> items, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
-            adapter.setItems( needToShowGeolocationComponent() ? items : removeGeolocationComponent(items));
+            List<Visitable> itemAfterGeoloc;
+
+            if (needToShowGeolocationComponent()) {
+                // Remove review component when Geolocation showing
+                itemAfterGeoloc = removeReviewComponent(items);
+            } else {
+                itemAfterGeoloc = removeGeolocationComponent(items);
+            }
+
+            adapter.setItems(itemAfterGeoloc);
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
             adapter.setItems(items);
         }
 
-        if (adapter.hasReview() != -1 && previewListenerCount == 0) {
-            previewListenerCount++;
+        if (adapter.hasReview() != -1 && shouldDisplayReview && !needToShowGeolocationComponent()) {
+            shouldDisplayReview = false;
             presenter.getSuggestedReview();
         }
     }
@@ -850,6 +860,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         }
         return needToShowGeolocationComponent;
+    }
+
+    private List<Visitable> removeReviewComponent(List<Visitable> items) {
+        List<Visitable> local = new ArrayList<>(items);
+        for (Visitable visitable : local){
+            if(visitable instanceof ReviewViewModel){
+                local.remove(visitable);
+                break;
+            }
+        }
+        return local;
     }
 
     private List<Visitable> removeGeolocationComponent(List<Visitable> items){
@@ -1590,14 +1611,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onCloseClick(int position) {
+    public void onCloseClick() {
+        presenter.dismissReview();
+    }
 
+    @Override
+    public void onSuccessDismissReview() {
+        adapter.removeReviewViewModel();
     }
 
     @Override
     public void onSuccessGetReviewData(SuggestedProductReview suggestedProductReview) {
-        previewListenerCount = 0;
-        adapter.updateReviewItem(suggestedProductReview,reviewAdapterPosition);
+        shouldDisplayReview = true;
+        adapter.updateReviewItem(suggestedProductReview);
     }
 
     @Override

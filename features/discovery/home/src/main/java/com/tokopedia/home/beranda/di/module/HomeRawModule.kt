@@ -15,4 +15,10 @@ class HomeRawModule {
     fun provideReviewForm(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_suggested_product_review)
     }
+
+    @Provides
+    @Named("dismiss_raw")
+    fun provideDismissReviewRaw(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_dismiss_review)
+    }
 }

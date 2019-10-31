@@ -130,4 +130,5 @@
     <color name="green_template">#f3fef3</color>
     <color name="clicked_green">#8ad4efd5</color>
     <color name="add_template_disabled">#26000000</color>
+    <color name="pale_grey">#F3F4F5</color>
 </resources>

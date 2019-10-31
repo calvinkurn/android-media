@@ -21,8 +21,8 @@ class AnimatedReviewPicker @JvmOverloads constructor(
         context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private var count = 0
-    private var countMinus = 4
+    private var count = 1
+    private var countMinus = 5
     private var lastReviewClickAt = 0
     private var reviewClickAt = 0
     private var listOfStarsView: MutableList<ReviewLottieModel> = mutableListOf()
@@ -59,16 +59,16 @@ class AnimatedReviewPicker @JvmOverloads constructor(
     private fun initReviewPicker() {
         listOfStarsView.forEachIndexed { index, it ->
             it.reviewView.setOnClickListener {
-                reviewClickAt = index
+                //Start from 1
+                reviewClickAt = index+1
                 if (reviewClickAt < lastReviewClickAt) {
                     handle.post(reverseAnimation)
                 } else {
                     handle.post(normalAnimation)
                 }
-                generateReviewText(index + 1)
+                generateReviewText(reviewClickAt)
                 if (lastReviewClickAt != reviewClickAt) {
-                    listener?.onStarsClick(index + 1)
-
+                    listener?.onStarsClick(reviewClickAt)
                 }
             }
         }
@@ -76,8 +76,8 @@ class AnimatedReviewPicker @JvmOverloads constructor(
 
     private val normalAnimation = object : Runnable {
         override fun run() {
-            if (count <= 4) {
-                val reviewData = listOfStarsView[count]
+            if (count <= 5) {
+                val reviewData = listOfStarsView[count-1]
                 if (isNormalAnim(reviewData)) { // Animating in normal way
                     if (isReservedAnim(reviewData)) { // Check if last view is animated then reverse it to make it to normal animation again *If you dont reverse back, the status is still reversed
                         reviewData.reviewView.reverseAnimationSpeed()
@@ -91,7 +91,7 @@ class AnimatedReviewPicker @JvmOverloads constructor(
                 handle.postDelayed(this, 50) // Delay each animation to reach sequential animation
             } else {
                 lastReviewClickAt = reviewClickAt
-                count = 0
+                count = 1
                 handle.removeCallbacks(this)
             }
         }
@@ -99,8 +99,8 @@ class AnimatedReviewPicker @JvmOverloads constructor(
 
     private val reverseAnimation = object : Runnable {
         override fun run() {
-            if (countMinus >= 0) {
-                val reviewData = listOfStarsView[countMinus]
+            if (countMinus >= 1) {
+                val reviewData = listOfStarsView[countMinus-1]
                 if (shouldReserveAnim(reviewData)) { // When review clicked is under last review click then reverse animation
                     reviewData.isAnimated = false
                     reviewData.reviewView.reverseAnimationSpeed()
@@ -110,7 +110,7 @@ class AnimatedReviewPicker @JvmOverloads constructor(
                 handle.postDelayed(this, 50) // Delay each animation to reach sequential animation
             } else {
                 lastReviewClickAt = reviewClickAt
-                countMinus = 4
+                countMinus = 5
                 handle.removeCallbacks(this)
             }
         }
