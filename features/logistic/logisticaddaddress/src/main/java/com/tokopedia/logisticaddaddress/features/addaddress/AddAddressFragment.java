@@ -6,9 +6,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -39,16 +39,16 @@ import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
+import com.tokopedia.purchase_platform.common.analytics.ITransactionAnalyticsAddAddress;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
-import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -118,7 +118,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private TextView subDistrictError;
     private ProgressBar mProgressBar;
 
-    private List<String> zipCodes;
+    private List<String> zipCodes = new ArrayList<>();
     private Token token;
     private Destination address;
 
@@ -248,7 +248,7 @@ public class AddAddressFragment extends BaseDaggerFragment
                         this.address.setCityName(address.getCityName());
                         this.address.setDistrictName(address.getDistrictName());
 
-                        zipCodes = new ArrayList<>(address.getZipCodes());
+                        if(address.getZipCodes() != null) zipCodes = new ArrayList<>(address.getZipCodes());
                         initializeZipCodes();
                     }
                 }
@@ -283,12 +283,12 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public boolean isEdit() {
-        return getArguments().getBoolean(IS_EDIT, false);
+        return address != null;
     }
 
     @Override
     public boolean isDistrictRecommendation() {
-        return getArguments().getBoolean(IS_DISTRICT_RECOMMENDATION, false);
+        return true;
     }
 
     @Override

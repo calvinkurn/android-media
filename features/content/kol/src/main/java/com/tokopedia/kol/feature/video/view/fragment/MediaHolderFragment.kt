@@ -3,7 +3,7 @@ package com.tokopedia.kol.feature.video.view.fragment
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -144,18 +144,24 @@ class MediaHolderFragment : BaseDaggerFragment() {
         }
         super.onStop()
     }
-
-    private fun playVideo(source: String){
-        if (isFromLocalFile(mediaSource)){
-            val file = Uri.fromFile(File(source))
-            initPlayer(file, VideoSourceProtocol.File)
-        } else {
-            val url = Uri.parse(source)
-            initPlayer(url, VideoSourceProtocol.protocol(context, source))
+    
+    private fun playVideo(source: String) {
+        try {
+            if (isFromLocalFile(mediaSource)){
+                val file = Uri.fromFile(File(source))
+                initPlayer(file, VideoSourceProtocol.File)
+            } else {
+                val url = Uri.parse(source)
+                initPlayer(url, VideoSourceProtocol.protocol(source))
+            }
+        } catch (t: Throwable) {
+            showErrorLayout(t !is UnrecognizedInputFormatException)
         }
+
+        //player listener
         initPlayerListener()
     }
-
+    
     private fun initPlayerListener() {
         mExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -219,19 +225,19 @@ class MediaHolderFragment : BaseDaggerFragment() {
     private fun buildMediaSource(source: Uri, protocol: VideoSourceProtocol): MediaSource {
         return when (protocol) {
             //protocol supported: http, https
-            VideoSourceProtocol.Http -> {
+            is VideoSourceProtocol.Http -> {
                 ExtractorMediaSource.Factory(
                         DefaultHttpDataSourceFactory(EXOPLAYER_AGENT))
                         .createMediaSource(source)
             }
             //live streaming approach
-            VideoSourceProtocol.Rtmp -> {
+            is VideoSourceProtocol.Rtmp -> {
                 ExtractorMediaSource.Factory(
                         RtmpDataSourceFactory())
                         .createMediaSource(source)
             }
             //file in local storage
-            VideoSourceProtocol.File -> {
+            is VideoSourceProtocol.File -> {
                 val dataSpec = DataSpec(source)
                 val fileDataSource = FileDataSource()
                 fileDataSource.open(dataSpec)
@@ -239,6 +245,9 @@ class MediaHolderFragment : BaseDaggerFragment() {
                 ExtractorMediaSource.Factory(dataFactory)
                         .setExtractorsFactory(DefaultExtractorsFactory())
                         .createMediaSource(source)
+            }
+            is VideoSourceProtocol.InvalidFormat -> {
+                throw Exception(getString(protocol.message))
             }
         }
     }

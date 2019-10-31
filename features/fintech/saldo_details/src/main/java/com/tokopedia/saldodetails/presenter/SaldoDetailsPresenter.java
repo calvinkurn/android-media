@@ -132,7 +132,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 } else if (e instanceof SocketTimeoutException) {
                     getView().setRetry();
                 } else {
-                    getView().setRetry(getView().getString(R.string.sp_empty_state_error));
+                    getView().setRetry(getView().getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error));
                 }
             }
 
@@ -256,7 +256,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
             long minSaldoLimit = 10000;
             if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {
-                getView().showErrorMessage(getView().getString(R.string.saldo_min_withdrawal_error));
+                getView().showErrorMessage(getView().getString(com.tokopedia.saldodetails.R.string.saldo_min_withdrawal_error));
             } else {
                 withdrawActivityBundle.putBoolean(FIREBASE_FLAG_STATUS,showMclBlockTickerFirebaseFlag);
                 withdrawActivityBundle.putInt(IS_WITHDRAW_LOCK, statusWithDrawLock);

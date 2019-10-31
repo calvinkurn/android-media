@@ -1,7 +1,7 @@
 package com.tokopedia.home_recom.viewModel
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.MutableLiveData
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.any
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -106,11 +106,11 @@ class RecommendationPageTestViewModel {
         //given
         every { mockLiveDataListRecommendationWidget.value } returns listOf()
         every { spy.recommendationListModel } returns mockLiveDataListRecommendationWidget
-        every { spy.getRecommendationList(mockList, null) } answers {}
-        spy.getRecommendationList(mockList, null)
+        every { spy.getRecommendationList(mockList, any(), null) } answers {}
+        spy.getRecommendationList(mockList, any(),null)
 
         //then
-        verify { spy.getRecommendationList(mockList, null) }
+        verify { spy.getRecommendationList(mockList, any(),null) }
         assertNotNull(spy.recommendationListModel.value)
     }
 
@@ -122,11 +122,11 @@ class RecommendationPageTestViewModel {
         //given
         every { mockLiveDataListRecommendationWidget.value } returns null
         every { spy.recommendationListModel } returns mockLiveDataListRecommendationWidget
-        every { spy.getRecommendationList(mockList, null) } answers {}
-        spy.getRecommendationList(mockList, null)
+        every { spy.getRecommendationList(mockList, any(),null) } answers {}
+        spy.getRecommendationList(mockList, any(),null)
 
         //then
-        verify { spy.getRecommendationList(mockList, null) }
+        verify { spy.getRecommendationList(mockList, any(),null) }
         assertNull(spy.recommendationListModel.value)
     }
 
@@ -160,13 +160,13 @@ class RecommendationPageTestViewModel {
     @Test
     fun testSuccessGetRecommendationList(){
         every{ getRecommendationUseCase.createObservable(any()) } returns Observable.just(mockk())
-        every{ getRecommendationUseCase.getRecomParams(any(),any(),any(),any()) } returns mockk()
+        every{ getRecommendationUseCase.getRecomParams(any(), any(), any(), any()) } returns mockk()
         every { getRecommendationUseCase.execute(any(), any()) }.answers {
             val subscriber = secondArg<Subscriber<List<RecommendationWidget>>>()
             subscriber.onNext(listOf())
         }
         val productIds = listOf("111")
-        viewModel.getRecommendationList(productIds, any())
+        viewModel.getRecommendationList(productIds, any(), any())
         assertNotNull(viewModel.recommendationListModel.value)
     }
 
@@ -180,7 +180,7 @@ class RecommendationPageTestViewModel {
             subscriber.onError(Throwable(errorMessage))
         }
         val productIds = listOf("111")
-        viewModel.getRecommendationList(productIds){
+        viewModel.getRecommendationList(productIds, ""){
             Assert.assertEquals(it, errorMessage)
         }
     }

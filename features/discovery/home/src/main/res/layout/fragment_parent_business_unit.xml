@@ -45,7 +45,7 @@
         tools:visibility="gone"
         android:visibility="gone">
 
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
             android:layout_height="@dimen/dp_1"
             android:background="@color/grey_100" />
 
-        <com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.HomeWidgetViewPager
+        <com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.HomeWidgetViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="144dp"
@@ -70,7 +70,7 @@
     </LinearLayout>
 
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/errorView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -157,6 +157,6 @@
 
         </RelativeLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

@@ -4,26 +4,15 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 import android.view.View;
 
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.NpsConstant;
 import com.tokopedia.nps.R;
 
-public class AppFeedbackThankYouBottomSheet extends BottomSheets {
+public class AppFeedbackThankYouBottomSheet extends AppFeedbackDialog {
 
     private float appRating;
-
-    public void showDialog(FragmentManager manager, float appRating, String tag) {
-        super.show(manager, tag);
-        this.appRating = appRating;
-    }
-
-    @Override
-    public int getBaseLayoutResourceId() {
-        return R.layout.dialog_feedback_base;
-    }
 
     @Override
     public int getLayoutResourceId() {
@@ -31,31 +20,27 @@ public class AppFeedbackThankYouBottomSheet extends BottomSheets {
     }
 
     @Override
-    protected BottomSheetsState state() {
-        return BottomSheetsState.FLEXIBLE;
-    }
-
-    @Override
-    protected String title() {
-        return "";
-    }
-
-    @Override
     public void initView(View view) {
+        super.initView(view);
         Context ctx = getContext();
 
         if (ctx != null && (int) appRating > NpsConstant.Feedback.GOOD_RATING_THRESHOLD) {
             try {
                 ctx.startActivity(new Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(NpsConstant.Feedback.APPLINK_PLAYSTORE + NpsConstant.Feedback.PACKAGE_CONSUMER_APP)
+                        Uri.parse(NpsConstant.Feedback.APPLINK_PLAYSTORE + getAppType())
                 ));
             } catch (ActivityNotFoundException exception) {
                 ctx.startActivity(new Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(NpsConstant.Feedback.URL_PLAYSTORE + NpsConstant.Feedback.PACKAGE_CONSUMER_APP)
+                        Uri.parse(NpsConstant.Feedback.URL_PLAYSTORE + getAppType())
                 ));
             }
         }
+    }
+
+    public void showDialog(FragmentManager manager, float appRating, String tag) {
+        super.show(manager, tag);
+        this.appRating = appRating;
     }
 }

@@ -6,10 +6,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.support.design.widget.Snackbar
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import com.airbnb.lottie.LottieAnimationView
@@ -17,14 +17,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
@@ -43,11 +41,14 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.sharedata.DefaultShareData
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -221,16 +222,21 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 userId = userSession.userId
             }
 
-            (it.applicationContext as GroupChatModuleRouter).shareGroupChat(
-                    it,
-                    channelInfoViewModel.channelId,
-                    channelInfoViewModel.title,
-                    description,
-                    channelInfoViewModel.bannerUrl,
-                    channelInfoViewModel.channelUrl,
-                    userId,
-                    "sharing"
-            )
+            val shareData = LinkerData.Builder.getLinkerBuilder()
+                    .setId(channelInfoViewModel.channelId)
+                    .setName(channelInfoViewModel.title)
+                    .setTextContent(description)
+                    .setDescription(description)
+                    .setImgUri(channelInfoViewModel.bannerUrl)
+                    .setOgImageUrl(channelInfoViewModel.bannerUrl)
+                    .setOgTitle(channelInfoViewModel.title)
+                    .setUri(channelInfoViewModel.channelUrl)
+                    .setSource(userId) // just using existing variable
+                    .setPrice("sharing") // here too
+                    .setType(LinkerData.GROUPCHAT_TYPE)
+                    .build()
+
+            DefaultShareData(activity, shareData).show()
         }
 
     }
@@ -247,7 +253,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onSuccessGetStickyComponent(): (StickyComponentViewModel) -> Unit {
+    private fun onSuccessGetStickyComponent(): (StickyComponentsViewModel) -> Unit {
         return {
             viewState.onStickyComponentUpdated(it)
         }
@@ -473,11 +479,15 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         if (generateLink.isBlank())
             return
 
-        (activity?.applicationContext as GroupChatModuleRouter).openRedirectUrl(activity, generateLink)
+        if(RouteManager.isSupportApplink(activity, generateLink)) {
+            RouteManager.route(activity, generateLink)
+        } else {
+            RouteManager.route(activity, ApplinkConst.WEBVIEW, generateLink)
+        }
     }
 
     private fun getInboxChannelsIntent(): Intent? {
-        return (activity?.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(activity)
+        return RouteManager.getIntent(activity, ApplinkConst.GROUPCHAT_LIST)
     }
 
     override fun onOpenWebSocket(needRefreshInfo: Boolean) {
@@ -578,7 +588,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.onQuickReplyUpdated(it)
     }
 
-    override fun onStickyComponentReceived(it: StickyComponentViewModel) {
+    override fun onStickyComponentReceived(it: StickyComponentsViewModel) {
         viewState.onStickyComponentUpdated(it)
     }
 
@@ -616,8 +626,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onLoginClicked(channelId: String?) {
         analytics.eventClickLogin(channelId)
-        startActivityForResult((activity!!.applicationContext as GroupChatModuleRouter)
-                .getLoginIntent(activity), REQUEST_LOGIN)
+        startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), REQUEST_LOGIN)
     }
 
     private fun loadFirstTime() {

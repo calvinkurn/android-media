@@ -3,26 +3,20 @@ package com.tokopedia.digital_deals.view.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.widget.TextView;
 
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
-import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
-
-import org.w3c.dom.Text;
-
-import java.util.List;
 
 public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapter.INavigateToActivityRequest {
 
@@ -66,10 +60,10 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
 
     private void initView() {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.curated_deals, this, true);
-        dealTitle = view.findViewById(R.id.tv_popular);
-        seeAllCuratedDeals = view.findViewById(R.id.tv_see_all_curated_deals);
-        curatedDealsRecyclerView = view.findViewById(R.id.rv_curated_deals);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.curated_deals, this, true);
+        dealTitle = view.findViewById(com.tokopedia.digital_deals.R.id.tv_popular);
+        seeAllCuratedDeals = view.findViewById(com.tokopedia.digital_deals.R.id.tv_see_all_curated_deals);
+        curatedDealsRecyclerView = view.findViewById(com.tokopedia.digital_deals.R.id.rv_curated_deals);
 
 
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
@@ -86,17 +80,17 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
-                            mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), dealTitle.getText().toString());
+                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), dealTitle.getText().toString(), homePosition);
                         }
                     }
                 });
+
             }
         }
-
     }
 
     @Override
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
-        ((Activity)context).startActivityForResult(intent, requestCode);
+        ((Activity) context).startActivityForResult(intent, requestCode);
     }
 }

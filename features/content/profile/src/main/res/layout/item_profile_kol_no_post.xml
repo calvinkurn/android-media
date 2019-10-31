@@ -1,4 +1,4 @@
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/attach_product_chat_image_layout"
@@ -10,7 +10,7 @@
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="false">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16"
@@ -56,5 +56,5 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Follow fewfewg fwef we wfefewf dqfewgfwehrb yuk fqfqw dwq dqw d dwq dqw dqwuntuk inspirasimu!" />
-    </android.support.constraint.ConstraintLayout>
-</android.support.v7.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

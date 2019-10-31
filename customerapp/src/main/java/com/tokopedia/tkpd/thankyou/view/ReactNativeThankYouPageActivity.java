@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.thankyou.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 import android.view.KeyEvent;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -12,7 +12,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.common_wallet.balance.data.CacheUtil;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
@@ -20,7 +20,6 @@ import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
-import com.tokopedia.tokocash.CacheUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -32,7 +31,8 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     private static final String PLATFORM = "platform";
     private static final String DIGITAL = "digital";
-    private static final String GL_THANK_YOU_PAGE =  "gl_thank_you_page";
+    private static final String GL_THANK_YOU_PAGE = "gl_thank_you_page";
+    private static final String PAGE_TITLE = "Thank You";
 
     private ReactInstanceManager reactInstanceManager;
 
@@ -40,17 +40,14 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
         ReactUtils.startTracing(GL_THANK_YOU_PAGE);
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
-                context, ReactConst.Screen.THANK_YOU_PAGE,
-                "Thank You"
+                context, PAGE_TITLE
         ).putExtras(bundle);
     }
 
-    public static Intent createReactNativeActivity(Context context,
-                                                   String reactScreenName,
-                                                   String pageTitle) {
+    public static Intent createReactNativeActivity(Context context, String pageTitle) {
         Intent intent = new Intent(context, ReactNativeThankYouPageActivity.class);
         Bundle extras = new Bundle();
-        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+        extras.putString(ReactConst.KEY_SCREEN, ReactConst.Screen.THANK_YOU_PAGE);
         extras.putString(EXTRA_TITLE, pageTitle);
         intent.putExtras(extras);
         return intent;
@@ -85,7 +82,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_OFFICIAL_STORE_REACT;
+        return null;
     }
 
     @Override
@@ -105,7 +102,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
         if (initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES) != null &&
-                !initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES).isEmpty()){
+                !initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES).isEmpty()) {
             try {
                 data.setShopTypes(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
             } catch (UnsupportedEncodingException e) {
@@ -122,8 +119,8 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
             if (manager != null) {
                 AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                rating.setDismissListener(() -> closeThankyouPage());
-                rating.show(manager, "AppFeedbackRatingBottomSheet");
+                rating.setDialogDismissListener(() -> closeThankyouPage());
+                rating.showDialog(manager, this);
             }
         } else {
             closeThankyouPage();

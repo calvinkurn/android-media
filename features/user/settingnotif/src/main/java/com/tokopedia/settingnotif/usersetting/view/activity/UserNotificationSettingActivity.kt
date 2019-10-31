@@ -1,8 +1,8 @@
 package com.tokopedia.settingnotif.usersetting.view.activity
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
@@ -36,19 +36,6 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     override fun openSettingField(settingType: SettingType) {
-        // Phase 1
-        if (settingType.isPushNotificationFieldFragment()) {
-            goToOldPushNotificationSettingPage()
-        } else {
-            goToNewSettingPage(settingType)
-        }
-    }
-
-    private fun goToOldPushNotificationSettingPage() {
-        RouteManager.route(this, ApplinkConstInternalMarketplace.USER_PUSH_NOTIFICATION_SETTING)
-    }
-
-    private fun goToNewSettingPage(settingType: SettingType) {
         val fragment = supportFragmentManager.findFragmentByTag(settingType.name)
                 ?: settingType.createNewFragmentInstance()
 

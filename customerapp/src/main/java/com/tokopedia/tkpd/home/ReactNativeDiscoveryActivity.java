@@ -5,13 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.crashlytics.android.Crashlytics;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
@@ -28,6 +29,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String PAGE_ID = "page_id";
     public static final String SHAKE_SHAKE = "shake-shake";
+    private static final String TAG = "ReactNativeDiscoveryActivity";
     private static final String MP_FLASHSALE = "mp_flashsale";
     private static boolean mAllowShake = true;
     private PermissionListener mPermissionListener;
@@ -35,16 +37,17 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getSupportActionBar() != null){
+        setCrashLog();
+        if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
     }
-    
-    @DeepLink({ ApplinkConst.DISCOVERY_PAGE })
+
+    @DeepLink({ApplinkConst.DISCOVERY_PAGE})
     public static Intent getDiscoveryPageIntent(Context context, Bundle bundle) {
         if (bundle != null) {
             String key = getKeyValueByCaseInsensitive(bundle);
-            if(key!= null && !key.isEmpty()){
+            if (key != null && !key.isEmpty()) {
                 mAllowShake = Boolean.parseBoolean(key);
             }
         }
@@ -57,7 +60,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
         );
     }
 
-    private static String getKeyValueByCaseInsensitive(Bundle bundle){
+    private static String getKeyValueByCaseInsensitive(Bundle bundle) {
         Set<String> keySet = bundle.keySet();
         for (String key : keySet) {
             if (key.toLowerCase().equals(SHAKE_SHAKE))
@@ -107,12 +110,14 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
         intent.putExtras(extras);
         return intent;
     }
+
     // For allowing native permission in react native
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void requestPermissions(String[] permissions, int requestCode, PermissionListener listener) {
         mPermissionListener = listener;
         requestPermissions(permissions, requestCode);
     }
+
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (mPermissionListener != null && mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             mPermissionListener = null;
@@ -127,8 +132,16 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
 
     @Override
     protected void registerShake() {
-        if(mAllowShake) {
+        if (mAllowShake) {
             super.registerShake();
         }
+    }
+
+    // Setting custom logs for Discovery Activity with Page ID
+    public void setCrashLog() {
+        if (!GlobalConfig.DEBUG && getIntent() != null && getIntent().hasExtra(PAGE_ID)) {
+            Crashlytics.log(TAG + " " + getIntent().getExtras().getString(PAGE_ID));
+        }
+
     }
 }

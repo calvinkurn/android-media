@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_last_seen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toStartOf="@+id/label_show_all"
+            android:layout_toLeftOf="@+id/label_show_all"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:text="@string/label_empty_cart_recent_view"
+            app:typographyType="body_1"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_show_all"
+            style="@style/TextSmallMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:text="@string/label_empty_cart_see_all"
+            android:textColor="@color/tkpd_main_green"
+            app:drawableRightCompat="@drawable/ic_keyboard_arrow_right_24dp" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

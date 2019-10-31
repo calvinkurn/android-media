@@ -6,8 +6,8 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.travel.data.entity.FlightCountryEntity
-import com.tokopedia.flight.country.database.CountryPhoneCodeDao
-import com.tokopedia.flight.country.database.CountryPhoneCodeTable
+import com.tokopedia.common.travel.database.CountryPhoneCodeDao
+import com.tokopedia.common.travel.database.CountryPhoneCodeTable
 import rx.Observable
 import java.io.IOException
 import java.nio.charset.Charset
@@ -80,7 +80,16 @@ constructor(private val countryPhoneCodeDao: CountryPhoneCodeDao,
                 .map { countryPhoneCodeDao.getCountryIdByKeyword(query) }
     }
 
+    fun getCountryById(id: String): List<CountryPhoneCodeTable> {
+        val param = "%$id%"
+        if (countryPhoneCodeDao.findAllPhoneCodes().isEmpty()) {
+            countryPhoneCodeDao.insertAll(phoneCodeListMapper.mapEntitiesToTables(data))
+        }
+        return countryPhoneCodeDao.getCountryById(param)
+    }
+
     companion object {
         val FLIGHT_SEARCH_AIRPORT_JSON = "travel_country_list.json"
+        const val INDONESIA_COUNTRY_ID = "ID"
     }
 }

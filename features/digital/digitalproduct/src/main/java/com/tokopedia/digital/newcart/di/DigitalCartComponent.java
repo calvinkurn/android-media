@@ -1,9 +1,9 @@
 package com.tokopedia.digital.newcart.di;
 
+import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.di.DigitalComponent;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartMyBillsFragment;
@@ -22,6 +22,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public interface DigitalCartComponent {
     DigitalAnalytics digitalAnalytics();
 
+    RechargeAnalytics rechargeAnalytics();
+
     HttpLoggingInterceptor httpLoggingInterceptor();
 
     DigitalModuleRouter digitalModuleRouter();
@@ -31,8 +33,6 @@ public interface DigitalCartComponent {
     void inject(DigitalCartDefaultFragment digitalCartDefaultFragment);
 
     void inject(DigitalDealCheckoutFragment digitalDealCheckoutFragment);
-
-    DigitalPostPaidLocalCache digitalPostPaidLocalCache();
 
     void inject(@NotNull DigitalCartMyBillsFragment digitalCartMyBillsFragment);
 }

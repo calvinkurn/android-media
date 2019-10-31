@@ -2,10 +2,10 @@ package com.tokopedia.abstraction.base.view.activity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,19 +54,19 @@ abstract class BaseToolbarActivity extends BaseActivity {
         return false;
     }
 
+    protected int getToolbarResourceID(){
+        return R.id.toolbar;
+    }
+
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
-        toolbar = (Toolbar) findViewById(getToolbarId());
+        toolbar = (Toolbar) findViewById(getToolbarResourceID());
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(this.getTitle());
         }
-    }
-
-    protected int getToolbarId() {
-        return R.id.toolbar;
     }
 
     public void updateOptionMenuColorWhite(Menu menu) {

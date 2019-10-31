@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.item.main.base.view.activity
 
 import android.content.DialogInterface
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.core.analytics.AppEventTracking

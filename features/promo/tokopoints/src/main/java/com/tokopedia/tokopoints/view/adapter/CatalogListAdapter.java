@@ -3,9 +3,9 @@ package com.tokopedia.tokopoints.view.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -331,7 +331,7 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
         promoClick.put("promoClick", promotions);
 
         AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
                 data.getTitle(), promoClick);

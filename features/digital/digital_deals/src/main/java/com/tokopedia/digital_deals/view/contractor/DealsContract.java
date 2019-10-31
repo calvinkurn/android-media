@@ -2,7 +2,7 @@ package com.tokopedia.digital_deals.view.contractor;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -36,8 +36,6 @@ public class DealsContract {
 
         void renderCuratedDealsList(List<CategoryItem> categoryItems);
 
-        void renderAllTrendingDeals(List<ProductItem> items, String title);
-
         void addDealsToCards(CategoryItem categoryItemsViewModels);
 
         RequestParams getParams();
@@ -68,11 +66,17 @@ public class DealsContract {
 
         int getRequestCode();
 
-        void startLocationFragment(List<Location> locationList, boolean isTopLocations);
+        void startLocationFragment();
 
         void startDealsCategoryFragment(List<CategoryItem> categoryItems, List<CategoriesModel> categoriesModels);
 
         String getSearchInputText();
+
+        void updateInitialLocation(List<Location> locations);
+
+        void setDefaultLocation();
+
+        void showErrorMessage();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

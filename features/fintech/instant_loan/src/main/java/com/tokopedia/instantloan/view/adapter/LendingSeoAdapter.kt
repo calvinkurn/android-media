@@ -1,7 +1,7 @@
 package com.tokopedia.instantloan.view.adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +17,7 @@ class LendingSeoAdapter(lendingSeoList: ArrayList<GqlLendingSeoData>) : Recycler
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         context = parent.context
         val inflater = LayoutInflater.from(parent.context)
-        val view: View = inflater.inflate(R.layout.il_lending_seo_item, null)
+        val view: View = inflater.inflate(com.tokopedia.instantloan.R.layout.il_lending_seo_item, null)
         return LendingSeoAdapter.LeSeoViewHolder(view)
     }
 
@@ -36,8 +36,8 @@ class LendingSeoAdapter(lendingSeoList: ArrayList<GqlLendingSeoData>) : Recycler
 
         init {
             context = view.context
-            heading = view.findViewById(R.id.il_seo_heading)
-            subHeading = view.findViewById(R.id.il_seo_subheading)
+            heading = view.findViewById(com.tokopedia.instantloan.R.id.il_seo_heading)
+            subHeading = view.findViewById(com.tokopedia.instantloan.R.id.il_seo_subheading)
         }
 
         fun bindData(seoItem: GqlLendingSeoData, position: Int) {

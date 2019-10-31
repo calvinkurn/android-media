@@ -44,6 +44,8 @@ interface TopChatContract {
 
         fun getStringArgument(key: String, savedInstanceState: Bundle?): String
 
+        fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean
+
         fun focusOnReply()
 
         fun showAttachmentPreview(attachmentPreview: ArrayList<PreviewViewModel>)
@@ -74,6 +76,8 @@ interface TopChatContract {
                 onError: (Throwable) -> Unit,
                 onSuccessGetMessageId: (String) -> Unit
         )
+
+        fun startCompressImages(it: ImageUploadViewModel)
 
         fun startUploadImages(it: ImageUploadViewModel)
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,12 +12,13 @@
 
     <TextView
         android:id="@+id/tv_title_access"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_16"
-        android:text="@string/text_request_access"
+        android:text="Title"
+        android:gravity="center"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_20"
         android:textStyle="bold"
@@ -30,11 +31,12 @@
         android:id="@+id/tv_description_permission"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constrainedWidth="true"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/dp_6"
-        android:text="@string/text_permission_description"
+        tools:text="Permission Permission Permission"
         android:textColor="@color/black_54"
         android:textSize="@dimen/sp_16"
         app:layout_constraintHorizontal_bias="0"
@@ -70,14 +72,15 @@
         android:gravity="center"
         android:paddingTop="@dimen/dp_12"
         android:paddingBottom="@dimen/dp_12"
-        android:text="@string/accept"
+        android:text="@string/tradein_accept"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
+        app:layout_goneMarginTop="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/button_deny"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button_deny"
         app:layout_constraintVertical_bias="0" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

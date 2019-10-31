@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -30,6 +30,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var shopDomain: String? = null
     private var productKey: String? = null
     private var productId: String? = null
+    private var warehouseId: String? = null
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
     private var affiliateString: String? = null
@@ -90,13 +91,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment =
-            ProductDetailFragment.newInstance(productId, shopDomain,
+  override fun getNewFragment(): Fragment =
+            ProductDetailFragment.newInstance(productId,warehouseId, shopDomain,
                     productKey, isFromDeeplink,
                     isFromAffiliate, trackerAttribution,
                     trackerListName, affiliateString)
 
-    override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
+  override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
         .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
@@ -105,6 +106,9 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         val bundle = intent.extras
+        bundle?.let {
+            warehouseId = it.getString("warehouse_id")
+        }
         if (uri != null) {
             if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL) {
                 val segmentUri = uri.pathSegments

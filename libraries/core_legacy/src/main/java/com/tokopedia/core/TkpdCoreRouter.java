@@ -9,14 +9,13 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.RouterUtils;
-import com.tokopedia.iris.Iris;
 
 public interface TkpdCoreRouter {
     String CART_ACTIVITY_OLD
             = "com.tokopedia.transaction.cart.activity.CartActivity";
 
     String CART_ACTIVITY_NEW
-            = "com.tokopedia.checkout.view.feature.cartlist.CartActivity";
+            = "com.tokopedia.purchase_platform.features.checkout.view.feature.cartlist.CartActivity";
 
     String INBOX_TICKET_ACTIVITY = "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity";
 
@@ -120,8 +119,6 @@ public interface TkpdCoreRouter {
 
     Intent getActivitySellingTransactionListReal(Context mContext);
 
-    String getDesktopLinkGroupChat();
-
     Intent getHomeIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
@@ -141,6 +138,4 @@ public interface TkpdCoreRouter {
     void refreshFCMFromInstantIdService(String token);
 
     void refreshFCMTokenFromForegroundToCM();
-
-    Iris getIris();
 }

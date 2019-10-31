@@ -1,9 +1,11 @@
 package com.tokopedia.travel.homepage.presentation.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travel.homepage.data.*
@@ -21,25 +23,28 @@ import javax.inject.Inject
 
 class TravelHomepageViewModel @Inject constructor(
         val graphqlRepository: GraphqlRepository,
-        val userSessionInterface: UserSessionInterface,
         private val getEmptyViewModelsUseCase: GetEmptyViewModelsUseCase,
         dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val travelItemList = MutableLiveData<List<TravelHomepageItemModel>>()
+    val isAllError = MutableLiveData<Boolean>()
     private val mapper = TravelHomepageMapper()
 
-    fun getIntialList() {
-        val list: List<TravelHomepageItemModel> = getEmptyViewModelsUseCase.requestEmptyViewModels()
+    fun getIntialList(isLoadFromCloud: Boolean) {
+        val list: List<TravelHomepageItemModel> = getEmptyViewModelsUseCase.requestEmptyViewModels(isLoadFromCloud)
 
         travelItemList.value = list
+        isAllError.value = false
     }
 
-    fun getBanner(rawQuery: String) {
+    fun getBanner(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageBannerModel.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageBannerModel.Response>()
 
             travelItemList.value?.let {
@@ -55,15 +60,18 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[BANNER_ORDER].isLoaded = true
                 updatedList[BANNER_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
         }
     }
 
-    fun getCategories(rawQuery: String) {
+    fun getCategories(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageCategoryListModel.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageCategoryListModel.Response>()
 
             travelItemList.value?.let {
@@ -79,16 +87,19 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[CATEGORIES_ORDER].isLoaded = true
                 updatedList[CATEGORIES_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
         }
     }
 
-    fun getOrderList(rawQuery: String) {
+    fun getOrderList(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success")
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageOrderListModel.Response::class.java, param)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageOrderListModel.Response>()
 
             travelItemList.value?.let {
@@ -104,15 +115,18 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[ORDER_LIST_ORDER].isLoaded = true
                 updatedList[ORDER_LIST_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
         }
     }
 
-    fun getRecentSearch(rawQuery: String) {
+    fun getRecentSearch(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageRecentSearchModel.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageRecentSearchModel.Response>()
 
             travelItemList.value?.let {
@@ -128,15 +142,18 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[RECENT_SEARCHES_ORDER].isLoaded = true
                 updatedList[RECENT_SEARCHES_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
         }
     }
 
-    fun getRecommendation(rawQuery: String) {
+    fun getRecommendation(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageRecommendationModel.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageRecommendationModel.Response>()
 
             travelItemList.value?.let {
@@ -152,15 +169,18 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[RECOMMENDATION_ORDER].isLoaded = true
                 updatedList[RECOMMENDATION_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
         }
     }
 
-    fun getDestination(rawQuery: String) {
+    fun getDestination(rawQuery: String, isFromCloud: Boolean) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageDestinationModel.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<TravelHomepageDestinationModel.Response>()
 
             travelItemList.value?.let {
@@ -176,7 +196,21 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[DESTINATION_ORDER].isLoaded = true
                 updatedList[DESTINATION_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
+        }
+    }
+
+    fun checkIfAllError() {
+        travelItemList.value?.let {
+            var isSuccess = false
+            for (item in it) {
+                if (item.isSuccess || !item.isLoaded) {
+                    isSuccess = true
+                    break
+                }
+            }
+            if (!isSuccess) isAllError.value = true
         }
     }
 

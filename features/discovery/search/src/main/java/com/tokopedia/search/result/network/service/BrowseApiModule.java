@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
@@ -51,7 +51,7 @@ public class BrowseApiModule {
     @Provides
     @AceQualifier
     Retrofit provideAceRetrofit(@AceQualifier OkHttpClient okHttpClient,
-                                       @SearchQualifier Retrofit.Builder retrofitBuilder) {
+                                @SearchQualifier Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(SearchConstant.BaseUrl.ACE_DOMAIN).client(okHttpClient).build();
     }
 

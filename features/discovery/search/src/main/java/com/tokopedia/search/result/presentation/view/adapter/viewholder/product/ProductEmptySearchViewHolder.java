@@ -1,18 +1,18 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
 
-import android.support.annotation.LayoutRes;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
-import com.tokopedia.discovery.autocomplete.adapter.decorater.SpacingItemDecoration;
-import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.SpacingItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.topads.sdk.base.Config;
@@ -36,7 +36,7 @@ public class ProductEmptySearchViewHolder extends EmptySearchViewHolder {
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build();
-        int staticDimen8dp = itemView.getContext().getResources().getDimensionPixelOffset(com.tokopedia.discovery.R.dimen.dp_8);
+        int staticDimen8dp = itemView.getContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8);
         selectedFilterRecyclerView.addItemDecoration(new SpacingItemDecoration(staticDimen8dp));
         selectedFilterRecyclerView.setLayoutManager(layoutManager);
         ViewCompat.setLayoutDirection(selectedFilterRecyclerView, ViewCompat.LAYOUT_DIRECTION_LTR);

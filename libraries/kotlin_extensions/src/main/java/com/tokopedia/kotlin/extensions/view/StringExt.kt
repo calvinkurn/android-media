@@ -1,5 +1,7 @@
 package com.tokopedia.kotlin.extensions.view
 
+import java.net.URLDecoder
+
 /**
  * @author by nisie on 12/02/19.
  */
@@ -22,6 +24,31 @@ fun String?.toDoubleOrZero(): Double {
     return this?.toDoubleOrNull() ?: 0f.toDouble()
 }
 
+fun String?.toEmptyStringIfNull(): String {
+    return this ?: ""
+}
+
 fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
+}
+
+fun String.decodeToUtf8(): String = URLDecoder.decode(this, "UTF-8")
+
+fun String.isEmail(): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+}
+
+fun String?.toBlankOrString(): String {
+    return this?:""
+}
+
+private const val NUMBER_ONLY_REGEX = "[^\\d]"
+
+fun String.getDigits(): Int? {
+    return try {
+        val rex = Regex(NUMBER_ONLY_REGEX)
+        rex.replace(this, "").toInt()
+    } catch (e: Exception) {
+        null
+    }
 }

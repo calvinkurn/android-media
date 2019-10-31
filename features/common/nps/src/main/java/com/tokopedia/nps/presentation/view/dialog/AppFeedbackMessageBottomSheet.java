@@ -3,9 +3,9 @@ package com.tokopedia.nps.presentation.view.dialog;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.ContentLoadingProgressBar;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.ContentLoadingProgressBar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -16,19 +16,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.nps.R;
-import com.tokopedia.nps.presentation.di.DaggerFeedbackComponent;
-import com.tokopedia.nps.presentation.di.FeedbackComponent;
-import com.tokopedia.nps.presentation.di.FeedbackModule;
-import com.tokopedia.nps.presentation.presenter.FeedbackPresenter;
 import com.tokopedia.nps.presentation.view.FeedbackView;
 import com.tokopedia.unifyprinciples.Typography;
 
-import javax.inject.Inject;
-
-public class AppFeedbackMessageBottomSheet extends BottomSheets implements FeedbackView {
+public class AppFeedbackMessageBottomSheet extends AppFeedbackDialog implements FeedbackView {
 
     private FrameLayout buttonView;
     private ContentLoadingProgressBar progressView;
@@ -39,101 +32,15 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
     private String messageCategory;
     private boolean isSendingEvent = false;
 
-    @Inject
-    FeedbackPresenter presenter;
-
-    public void showDialog(FragmentManager manager, float appRating, String tag) {
-        super.show(manager, tag);
-        this.appRating = appRating;
-    }
-
-    private void initInjector() {
-        FeedbackComponent component = DaggerFeedbackComponent.builder()
-                .feedbackModule(new FeedbackModule(getContext()))
-                .build();
-        component.inject(this);
-    }
-
-    private void setContainerHandlers(ViewGroup view) {
-        if (view != null) {
-            view.setOnClickListener(v -> {
-                Activity activity = getActivity();
-
-                if (activity != null) {
-                    InputMethodManager inputMethod = (InputMethodManager) activity
-                            .getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    inputMethod.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-            });
-        }
-    }
-
-    private void setButtonHandlers(FrameLayout button) {
-        if (button != null) {
-            button.setEnabled(false);
-
-            button.setOnClickListener(view -> {
-                if (!isSendingEvent) {
-                    presenter.post(String.valueOf((int) appRating), messageCategory, messageDesc);
-                    progressView.setVisibility(View.VISIBLE);
-                    buttonLabel.setVisibility(View.GONE);
-                }
-            });
-        }
-    }
-
-    private void setEditTextHandlers(EditTextCompat textField) {
-        if (textField != null) {
-            messageDesc = textField.getText() != null ? textField.getText().toString() : "";
-            textField.setImeOptions(EditorInfo.IME_ACTION_DONE);
-            textField.setRawInputType(InputType.TYPE_CLASS_TEXT);
-            textField.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (editable.length() > 0) {
-                        buttonView.setEnabled(true);
-                    } else {
-                        buttonView.setEnabled(false);
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
-    public int getBaseLayoutResourceId() {
-        return R.layout.dialog_feedback_base;
-    }
-
     @Override
     public int getLayoutResourceId() {
         return R.layout.dialog_feedback_message;
     }
 
     @Override
-    protected BottomSheetsState state() {
-        return BottomSheetsState.FLEXIBLE;
-    }
-
-    @Override
-    protected String title() {
-        return "";
-    }
-
-    @Override
     public void initView(View view) {
-        initInjector();
-        this.presenter.setView(this);
+        super.initView(view);
+        presenter.setView(this);
 
         messageCategory = getString(R.string.message_default_category);
         LinearLayout container = view.findViewById(R.id.dialog_container);
@@ -205,5 +112,66 @@ public class AppFeedbackMessageBottomSheet extends BottomSheets implements Feedb
     public void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
+    }
+
+    public void showDialog(FragmentManager manager, float appRating, String tag) {
+        super.show(manager, tag);
+        this.appRating = appRating;
+    }
+
+    private void setContainerHandlers(ViewGroup view) {
+        if (view != null) {
+            view.setOnClickListener(v -> {
+                Activity activity = getActivity();
+
+                if (activity != null) {
+                    InputMethodManager inputMethod = (InputMethodManager) activity
+                            .getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethod.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            });
+        }
+    }
+
+    private void setButtonHandlers(FrameLayout button) {
+        if (button != null) {
+            button.setEnabled(false);
+
+            button.setOnClickListener(view -> {
+                if (!isSendingEvent) {
+                    presenter.post(String.valueOf((int) appRating), messageCategory, messageDesc);
+                    progressView.setVisibility(View.VISIBLE);
+                    buttonLabel.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
+    private void setEditTextHandlers(EditTextCompat textField) {
+        if (textField != null) {
+            messageDesc = textField.getText() != null ? textField.getText().toString() : "";
+            textField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            textField.setRawInputType(InputType.TYPE_CLASS_TEXT);
+            textField.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (editable.length() > 0) {
+                        buttonView.setEnabled(true);
+                    } else {
+                        buttonView.setEnabled(false);
+                    }
+                }
+            });
+        }
     }
 }

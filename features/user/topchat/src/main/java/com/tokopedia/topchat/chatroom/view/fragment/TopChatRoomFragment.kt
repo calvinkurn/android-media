@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -33,7 +33,6 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -42,10 +41,14 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -53,7 +56,9 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatChatMenuFactory
-import com.tokopedia.topchat.chatroom.view.customview.*
+import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
+import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
+import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
@@ -69,8 +74,6 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
-import java.lang.IllegalStateException
-import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -112,6 +115,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     var seenAttachedProduct = HashSet<Int>()
 
+    protected var remoteConfig: RemoteConfig? = null
+
     companion object {
 
         private const val POST_ID = "{post_id}"
@@ -140,6 +145,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -203,17 +209,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             getViewState().onSetCustomMessage(customMessage)
             presenter.getTemplate(getUserSession().shopId == shopId.toString())
 
-            activity?.run {
-                val data = Intent()
-                data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
-
-                if (indexFromInbox != -1) {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
-                } else {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
-                }
-            }
-
             fpm.stopTrace()
         }
     }
@@ -250,7 +245,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun goToProfile(opponentId: String) {
         RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", opponentId))
     }
-
     override fun showErrorWebSocket(b: Boolean) {
         getViewState().showErrorWebSocket(b)
     }
@@ -524,7 +518,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     return
                 }
                 processImagePathToUpload(data)?.let {
-                    presenter.startUploadImages(it)
+                    model ->
+                    remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
+                        if(it == null || it == false) {
+                            presenter.startUploadImages(model)
+                        } else {
+                            presenter.startCompressImages(model)
+                        }
+                    }
                 }
             }
 
@@ -543,7 +544,21 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (data == null) return
         val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE) ?: return
         view?.let {
-            Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
+            Toaster.showNormalWithAction(
+                    it,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    getString(R.string.chat_check_cart),
+                    onClickSeeButtonOnAtcSuccessToaster()
+            )
+        }
+    }
+
+    private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
+        return View.OnClickListener {
+            val cartIntent = (activity!!.application as TopChatRouter).getCartIntent(activity)
+            analytics.eventClickSeeButtonOnAtcSuccessToaster()
+            activity?.startActivity(cartIntent)
         }
     }
 
@@ -654,27 +669,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
+        (viewState as TopChatViewState).sendAnalyticsClickATC(element)
         val atcPageIntent = presenter.getAtcPageIntent(context, element)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
-    }
-
-    private fun onSuccessAddToCart(): (addToCartResult: AddToCartDataModel) -> Unit {
-        return {
-            showSnackbarAddToCartWithAction(it)
-        }
-    }
-
-    private fun showSnackbarAddToCartWithAction(it: AddToCartDataModel) {
-        if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
-            ToasterNormal.make(view,
-                    it.data.message[0].replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.chat_check_cart)) {
-                analytics.eventClickSeeButtonOnAtcSuccessToaster()
-                activity?.startActivity((activity!!.application as TopChatRouter)
-                        .getCartIntent(activity))
-            }.show()
-        } else {
-            ToasterError.make(view, it.errorMessage[0], ToasterNormal.LENGTH_LONG).show()
-        }
     }
 
     private fun showSnackbarAddToCart(it: AddToCartDataModel) {
@@ -727,17 +724,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onSuccessDeleteConversation(): () -> Unit {
         return {
             hideLoading()
-            activity?.run {
-                val data = Intent()
-                data.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
-
-                if (indexFromInbox != -1) {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
-                } else {
-                    data.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MUST_REFRESH, true)
-                }
-                setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, data)
-                finish()
+            activity?.let {
+                val intent = Intent()
+                val bundle = Bundle()
+                bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
+                bundle.putInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
+                intent.putExtras(bundle)
+                it.setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, intent)
+                it.finish()
             }
         }
     }
@@ -817,7 +811,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             val intent = Intent()
             val bundle = Bundle()
             bundle.putBoolean(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP, isMoveItemInboxToTop)
-            bundle.putParcelable(PARCEL, getViewState().getLastItem())
+            bundle.putParcelable(TopChatInternalRouter.Companion.RESULT_LAST_ITEM, getViewState().getLastItem())
+            bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
+            bundle.putInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
             intent.putExtras(bundle)
             it.setResult(RESULT_OK, intent)
             it.finish()
@@ -850,12 +846,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickInvoiceThumbnail(url: String, id: String) {
-        val encodedUrl = URLEncoder.encode(url, "UTF-8")
-        onGoToWebView(encodedUrl, id)
+        onGoToWebView(url, id)
     }
 
     override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
         return getParamString(key, arguments, savedInstanceState)
+    }
+
+    override fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean {
+        return getParamBoolean(key, arguments, savedInstanceState, false)
     }
 
     override fun focusOnReply() {

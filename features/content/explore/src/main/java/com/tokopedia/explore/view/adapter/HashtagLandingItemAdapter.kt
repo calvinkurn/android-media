@@ -1,8 +1,8 @@
 package com.tokopedia.explore.view.adapter
 
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.View
@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.explore.R
 import com.tokopedia.explore.domain.entity.PostKol
+import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -95,7 +96,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                 val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                 params.isFullSpan = false
                 holder.itemView.layoutParams = params
-                (holder as HashtagLandingItemViewHolder).bind(item.data)
+                (holder as HashtagLandingItemViewHolder).bind(item.data, position)
             }
         }
     }
@@ -109,7 +110,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
         }
     }
 
-    fun updateList(data: List<PostKol>) {
+    fun updateList(data: List<PostKolUiModel>) {
         val dataNew = data.map { Data(it) }
         list.clear()
         list.addAll(dataNew)
@@ -129,7 +130,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
         }
     }
 
-    fun addData(data: List<PostKol>) {
+    fun addData(data: List<PostKolUiModel>) {
         val startInsert = itemCount
         list.addAll(data.map { Data(it) })
         notifyItemRangeInserted(startInsert, itemCount)
@@ -164,7 +165,8 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
 
     inner class HashtagLandingItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
-        fun bind(item: PostKol){
+        fun bind(uiModel: PostKolUiModel, position: Int){
+            val item = uiModel.postKol
             with(itemView){
                 if (item.content.isEmpty()){
                     post_thumbnail.gone()
@@ -173,6 +175,9 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                     val thumbnail = item.content.first()
                     post_thumbnail.loadImage(thumbnail.imageurl)
                     post_thumbnail.visible()
+                    post_thumbnail.addOnImpressionListener(uiModel.impressHolder) {
+                        listener?.onImageFirstTimeSeen(item, position)
+                    }
                     when {
                         item.content.size > 1 -> {
                             badge.loadImageDrawable(R.drawable.ic_affiliate_multi)
@@ -184,7 +189,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                         }
                         else -> badge.gone()
                     }
-                    post_thumbnail.setOnClickListener { listener?.onImageClick(item) }
+                    post_thumbnail.setOnClickListener { listener?.onImageClick(item, position) }
                 }
 
                 creator_img.shouldShowWithAction(!item.userPhoto.isNullOrBlank()){
@@ -205,7 +210,8 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
     }
 
     interface OnHashtagPostClick{
-        fun onImageClick(post: PostKol)
+        fun onImageFirstTimeSeen(post: PostKol, position: Int)
+        fun onImageClick(post: PostKol, position: Int)
         fun onUserImageClick(post: PostKol)
         fun onUserNameClick(post: PostKol)
     }
@@ -214,5 +220,5 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
 sealed class HashtagItemType
 object Loading: HashtagItemType()
 class Empty(val empty: EmptyModel): HashtagItemType()
-class Data(val data: PostKol): HashtagItemType()
+class Data(val data: PostKolUiModel): HashtagItemType()
 class Error(val error: ErrorNetworkModel): HashtagItemType()

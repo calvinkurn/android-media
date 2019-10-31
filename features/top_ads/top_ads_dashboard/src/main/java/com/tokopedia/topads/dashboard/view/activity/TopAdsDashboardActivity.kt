@@ -6,8 +6,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.appcompat.widget.Toolbar
 
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
@@ -22,7 +23,6 @@ import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.auto.view.widget.ToasterAutoAds
 import com.tokopedia.topads.common.data.util.ApplinkUtil
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.TopAdsDashboardRouter
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.utils.ShowCaseDialogFactory
@@ -44,9 +44,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (application is TopAdsDashboardRouter) {
-            tracker = TopAdsDashboardTracking(application as TopAdsDashboardRouter)
-        }
+        tracker = TopAdsDashboardTracking()
         actionSendAnalyticsIfFromPushNotif()
     }
 
@@ -67,23 +65,19 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     override fun onBackPressed() {
         if (isTaskRoot) {
+            val applinkConst = ApplinkConst.HOME
             if (intent.extras?.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false) == true) {
-                val homeIntent = (application as TopAdsDashboardRouter).getHomeIntent(this)
+                val homeIntent = RouteManager.getIntent(this, applinkConst)
                 startActivity(homeIntent)
                 finish()
             } else
             //coming from deeplink
-                if (application is TopAdsDashboardRouter) {
-                    val router = application as TopAdsDashboardRouter
-                    try {
-                        val intent = Intent(this, router.getHomeClass(this))
-                        this.startActivity(intent)
-                        this.finish()
-                        return
-                    } catch (e: ClassNotFoundException) {
-                        e.printStackTrace()
-                    }
-
+                try {
+                    this.startActivity(RouteManager.getIntent(this, applinkConst))
+                    this.finish()
+                    return
+                } catch (e: ClassNotFoundException) {
+                    e.printStackTrace()
                 }
         }
         super.onBackPressed()
@@ -99,11 +93,11 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         val fragment = supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment
                 ?: return
 
-        showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase()
+        showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase(this)
         showCaseDialog.setShowCaseStepListener { previousStep, nextStep, showCaseObject -> false }
 
         val showCaseList = ArrayList<ShowCaseObject>()
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val toolbar = findViewById<Toolbar>(com.tokopedia.product.manage.item.R.id.toolbar)
         if (toolbar.height > 0) {
             val height = toolbar.height
             val width = toolbar.width
@@ -113,7 +107,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                         getString(R.string.topads_showcase_home_title_3),
                         getString(R.string.topads_showcase_home_desc_3),
                         ShowCaseContentPosition.UNDEFINED,
-                        R.color.white, fragment.scrollView))
+                        com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
             }
             if (fragment.isContentVisible) {
                 if (fragment.contentStatisticsView != null) {
@@ -121,7 +115,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                             getString(R.string.topads_showcase_home_title_7),
                             getString(R.string.topads_showcase_home_desc_5),
                             ShowCaseContentPosition.UNDEFINED,
-                            R.color.white, fragment.scrollView))
+                            com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
                 }
 
                 if (fragment.groupSummaryLabelView != null && !isAutoAds) {
@@ -129,14 +123,14 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                             getString(R.string.topads_showcase_home_title_8),
                             getString(R.string.topads_showcase_home_desc_8),
                             ShowCaseContentPosition.UNDEFINED,
-                            R.color.white, fragment.scrollView))
+                            com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
                 }
                 if (fragment.viewGroupPromo != null && !isAutoAds) {
                     showCaseList.add(ShowCaseObject(fragment.viewGroupPromo,
                             getString(R.string.topads_showcase_home_title_1),
                             getString(R.string.topads_showcase_home_desc_1),
                             ShowCaseContentPosition.UNDEFINED,
-                            R.color.white, fragment.scrollView))
+                            com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
                 }
             }
 
@@ -145,7 +139,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                         getString(R.string.topads_showcase_home_title_6),
                         getString(R.string.topads_showcase_home_desc_6),
                         ShowCaseContentPosition.UNDEFINED,
-                        R.color.white))
+                        com.tokopedia.topads.auto.R.color.white))
             }
 
             showCaseList.add(
@@ -194,7 +188,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET && resultCode == Activity.RESULT_OK) {
-            ToasterAutoAds.showClose(this, getString(R.string.toaster_inactive_success), onClick = {
+            ToasterAutoAds.showClose(this, getString(com.tokopedia.topads.auto.R.string.toaster_inactive_success), onClick = {
                 val fragment = (supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment)
                 fragment.loadData()
                 fragment.loadAutoAds()

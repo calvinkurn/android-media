@@ -1,7 +1,0 @@
-apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-}

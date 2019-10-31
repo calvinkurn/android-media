@@ -2,8 +2,8 @@ package com.tokopedia.topupbills.common
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
-import com.tokopedia.topupbills.telco.data.TelcoPromo
-import com.tokopedia.topupbills.telco.data.TelcoRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsPromo
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
@@ -150,8 +150,8 @@ class DigitalTopupAnalytics {
                         "eventAction", DigitalTopupEventTracking.Action.PRODUCT_CARD_IMPRESSION,
                         "eventLabel", getCategoryName(digitalTrackProductTelcoList[0].itemProduct.product.attributes.categoryId),
                         "ecommerce", DataLayer.mapOf(
-                        "impressions", DataLayer.mapOf(
-                        "products", productTelcoList.toArray()
+                        "impressions", DataLayer.listOf(
+                        *productTelcoList.toTypedArray()
                 )
                 )
                 )
@@ -212,8 +212,8 @@ class DigitalTopupAnalytics {
                         "eventAction", DigitalTopupEventTracking.Action.RECENT_ICON_IMPRESSION,
                         "eventLabel", "none",
                         "ecommerce", DataLayer.mapOf(
-                        "impressions", DataLayer.mapOf(
-                        "products", recentList.toArray()
+                        "impressions", DataLayer.listOf(
+                        *recentList.toTypedArray()
                 )
                 )
                 )
@@ -221,7 +221,7 @@ class DigitalTopupAnalytics {
 
     }
 
-    fun clickEnhanceCommerceRecentTransaction(itemRecent: TelcoRecommendation,
+    fun clickEnhanceCommerceRecentTransaction(itemRecent: TopupBillsRecommendation,
                                               operatorName: String, position: Int) {
         val recentList = ArrayList<Any>()
         recentList.add(DataLayer.mapOf(
@@ -282,24 +282,24 @@ class DigitalTopupAnalytics {
 
     }
 
-    fun clickEnhanceCommercePromo(telcoPromo: TelcoPromo, position: Int) {
+    fun clickEnhanceCommercePromo(topupBillsPromo: TopupBillsPromo, position: Int) {
         val promoList = ArrayList<Any>()
         promoList.add(DataLayer.mapOf(
-                DigitalTopupEventTracking.EnhanceEccomerce.ID, telcoPromo.id,
+                DigitalTopupEventTracking.EnhanceEccomerce.ID, topupBillsPromo.id,
                 DigitalTopupEventTracking.EnhanceEccomerce.NAME, "/deals-popular suggestion",
                 DigitalTopupEventTracking.EnhanceEccomerce.POSITION, position,
-                DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE, telcoPromo.title,
+                DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE, topupBillsPromo.title,
                 DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE_URL, "none",
                 DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, "none",
-                DigitalTopupEventTracking.EnhanceEccomerce.PROMO_ID, telcoPromo.id,
-                DigitalTopupEventTracking.EnhanceEccomerce.PROMO_CODE, telcoPromo.promoCode))
+                DigitalTopupEventTracking.EnhanceEccomerce.PROMO_ID, topupBillsPromo.id,
+                DigitalTopupEventTracking.EnhanceEccomerce.PROMO_CODE, topupBillsPromo.promoCode))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         "event", DigitalTopupEventTracking.Event.PROMO_CLICK,
                         "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                         "eventAction", DigitalTopupEventTracking.Action.CLICK_PROMO_DIGITAL,
-                        "eventLabel", telcoPromo.promoCode,
+                        "eventLabel", topupBillsPromo.promoCode,
                         "ecommerce", DataLayer.mapOf(
                         "promoClick", DataLayer.mapOf(
                         "promotions", promoList.toArray()
@@ -313,7 +313,7 @@ class DigitalTopupAnalytics {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    private fun getCategoryName(categoryId: Int): String {
+    fun getCategoryName(categoryId: Int): String {
         return when (categoryId) {
             TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA.toLowerCase()
             TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA.toLowerCase()

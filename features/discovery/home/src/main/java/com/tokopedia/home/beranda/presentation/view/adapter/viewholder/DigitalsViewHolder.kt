@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
-import android.support.v4.app.FragmentManager
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.FragmentManager
 import android.view.View
 import android.widget.TextView
 
@@ -13,7 +13,7 @@ import com.tokopedia.digital.widget.view.fragment.DigitalWidgetFragment
 import com.tokopedia.digital.widget.view.listener.DigitalChannelFragmentInteraction
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DigitalsViewModel
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -82,7 +82,6 @@ class DigitalsViewHolder(private val listener: HomeCategoryListener, private val
     }
 
     companion object {
-
         @LayoutRes
         val LAYOUT = R.layout.layout_digitals
         private val APPLINK_DIGITAL_BROWSE_PAGE = "tokopedia://category-explore?type=2"

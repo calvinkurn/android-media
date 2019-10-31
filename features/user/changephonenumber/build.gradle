@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'changephonenumber'
-    groupId = 'com.tokopedia.changephonenumber'
-    versionName = "${tkpdChangePhoneNumberVersion}"
-    artifactName ="change_phone_number-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -20,26 +13,32 @@ buildscript {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
-
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.design)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.applink)
-
     implementation project(rootProject.ext.features.otp)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
-    implementation(rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
+    implementation rootProject.ext.debugToolsDependencies.chuck
 }
+
+project.ext {
+    artifactId = 'change-phone-number'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName ="changephonenumber-release"
+}
+
+apply from: '../../../publish_local.gradle'

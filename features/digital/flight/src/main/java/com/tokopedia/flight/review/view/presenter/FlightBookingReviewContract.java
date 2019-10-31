@@ -1,7 +1,7 @@
 package com.tokopedia.flight.review.view.presenter;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingContact;
@@ -11,6 +11,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 
 import java.util.List;
 
@@ -72,9 +73,7 @@ public interface FlightBookingReviewContract {
 
         void updateFinalTotal(AttributesVoucher attributesVoucher, FlightBookingReviewModel currentBookingReviewModel);
 
-        void renderCouponInfoData();
-
-        void renderVoucherInfoData();
+        void renderAutoApplyPromo(PromoData promoData);
 
         void renderTickerView(TravelTickerViewModel travelTickerViewModel);
 

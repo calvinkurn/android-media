@@ -1,7 +1,7 @@
 package com.tokopedia.common.travel.data;
 
+import com.tokopedia.common.travel.database.CountryPhoneCodeTable;
 import com.tokopedia.common.travel.domain.IPhoneCodeRepository;
-import com.tokopedia.flight.country.database.CountryPhoneCodeTable;
 
 import java.util.List;
 
@@ -24,5 +24,10 @@ public class PhoneCodeRepository implements IPhoneCodeRepository {
     @Override
     public Observable<List<CountryPhoneCodeTable>> getPhoneCodeList(String query) {
         return phoneCodeListDbSource.getPhoneCodeList(query);
+    }
+
+    @Override
+    public List<CountryPhoneCodeTable> getCountryById(String id) {
+        return phoneCodeListDbSource.getCountryById(id);
     }
 }

@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AlertDialog
 import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.model.StepperModel
@@ -60,8 +60,16 @@ class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<
 
     private fun createNewStepperModel(): StepperModel {
         return TopAdsKeywordNewStepperModel().apply {
-            this.groupId = intent?.extras?.getString(EXTRA_CHOOSEN_GROUP)
-            this.isPositive = intent?.extras?.getBoolean(EXTRA_IS_POSITIVE, true) ?: false
+
+            if (intent != null) {
+                if(intent.data != null){
+                    this.groupId = intent?.data?.getQueryParameter(EXTRA_CHOOSEN_GROUP)
+                    this.isPositive = intent?.data?.getBooleanQueryParameter(EXTRA_IS_POSITIVE, true) ?: false
+                } else if (intent.extras != null){
+                    this.groupId = intent?.extras?.getString(EXTRA_CHOOSEN_GROUP)
+                    this.isPositive = intent?.extras?.getBoolean(EXTRA_IS_POSITIVE, true) ?: false
+                }
+            }
         }
     }
 

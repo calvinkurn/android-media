@@ -1,14 +1,13 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeBannerFeedViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeBannerFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeFeedViewHolder
 
 class HomeFeedAdapter : BaseListAdapter<Visitable<HomeFeedTypeFactory>, HomeFeedTypeFactory> {
     val layoutList = listOf(

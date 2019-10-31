@@ -3,9 +3,9 @@ package com.tokopedia.inappupdate
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.LocalBroadcastManager
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.view.View
 import android.widget.Toast
 import com.google.android.play.core.appupdate.AppUpdateInfo
@@ -14,6 +14,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import java.lang.ref.WeakReference
 
 object AppUpdateManagerWrapper {
     @JvmField
@@ -28,11 +29,12 @@ object AppUpdateManagerWrapper {
     private var appUpdateManager: AppUpdateManager? = null
 
     private fun getInstance(context: Context): AppUpdateManager? {
+        val appContext = context.applicationContext
         if (appUpdateManager == null) {
-            appUpdateManager = AppUpdateManagerFactory.create(context.applicationContext)
+            appUpdateManager = AppUpdateManagerFactory.create(appContext)
             appUpdateManager!!.registerListener {
                 if (it.installStatus() == InstallStatus.DOWNLOADED) {
-                    LocalBroadcastManager.getInstance(context.applicationContext)
+                    LocalBroadcastManager.getInstance(appContext)
                         .sendBroadcast(Intent(INAPP_UPDATE))
                 }
             }
@@ -51,6 +53,8 @@ object AppUpdateManagerWrapper {
             onError()
             return
         }
+        val weakRefActivity: WeakReference<Activity> = WeakReference(activity)
+
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
                 it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
@@ -64,9 +68,12 @@ object AppUpdateManagerWrapper {
                     }
                 } else {
                     try {
-                        val successTriggerUpdate = AppUpdateManagerWrapper.doFlexibleUpdate(activity, it)
-                        if (!successTriggerUpdate) {
-                            onError()
+                        val activityObj = weakRefActivity.get()
+                        if (activityObj!= null && !activityObj.isFinishing) {
+                            val successTriggerUpdate = doFlexibleUpdate(activityObj, it)
+                            if (!successTriggerUpdate) {
+                                onError()
+                            }
                         }
                     } catch (e: Exception) {
                         onError()
@@ -99,19 +106,23 @@ object AppUpdateManagerWrapper {
     @JvmStatic
     fun checkAndDoImmediateUpdate(activity: Activity, onError: (() -> (Unit)), onFinished: () -> Unit) {
         val appContext = activity.applicationContext
-        val appUpdateManager = getInstance(activity)
+        val appUpdateManager = getInstance(appContext)
         if (appUpdateManager == null) {
             onError()
             return
         }
+        val weakRefActivity: WeakReference<Activity> = WeakReference(activity)
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             if (it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                 if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE ||
                     it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                     // If an in-app update is already running, launch the flow UI.
-                    val successTriggerUpdate = AppUpdateManagerWrapper.doImmediateUpdate(activity, it)
-                    if (!successTriggerUpdate) {
-                        onError()
+                    val activityObj = weakRefActivity.get()
+                    if (activityObj != null && !activityObj.isFinishing) {
+                        val successTriggerUpdate = doImmediateUpdate(activityObj, it)
+                        if (!successTriggerUpdate) {
+                            onError()
+                        }
                     }
                 } else {
                     onError()
@@ -129,11 +140,13 @@ object AppUpdateManagerWrapper {
 
     @JvmStatic
     fun doFlexibleUpdate(activity: Activity, appUpdateInfo: AppUpdateInfo): Boolean {
-        val appUpdateManager = getInstance(activity.applicationContext) ?: return false
+        val appContext = activity.applicationContext
+        val appUpdateManager = getInstance(appContext) ?: return false
         return try {
-            val success = appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.FLEXIBLE, activity, REQUEST_CODE_FLEXIBLE)
+            val success = appUpdateManager.startUpdateFlowForResult(
+                appUpdateInfo, AppUpdateType.FLEXIBLE, activity, REQUEST_CODE_FLEXIBLE)
             if (success) {
-                setPrefInAppType(activity, AppUpdateType.FLEXIBLE)
+                setPrefInAppType(appContext, AppUpdateType.FLEXIBLE)
             }
             return success
         } catch (e: Exception) {
@@ -143,11 +156,13 @@ object AppUpdateManagerWrapper {
 
     @JvmStatic
     fun doImmediateUpdate(activity: Activity, appUpdateInfo: AppUpdateInfo): Boolean {
-        val appUpdateManager = getInstance(activity.applicationContext) ?: return false
+        val appContext = activity.applicationContext
+        val appUpdateManager = getInstance(appContext) ?: return false
         return try {
-            val success = appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.IMMEDIATE, activity, REQUEST_CODE_IMMEDIATE)
+            val success = appUpdateManager.startUpdateFlowForResult(appUpdateInfo,
+                AppUpdateType.IMMEDIATE, activity, REQUEST_CODE_IMMEDIATE)
             if (success) {
-                setPrefInAppType(activity, AppUpdateType.IMMEDIATE)
+                setPrefInAppType(appContext, AppUpdateType.IMMEDIATE)
             }
             return success
         } catch (e: Exception) {
@@ -171,10 +186,11 @@ object AppUpdateManagerWrapper {
      */
     @JvmStatic
     fun checkUpdateInFlexibleProgressOrCompleted(activity: Activity, onSuccessGetInfo: ((isInProgress: Boolean) -> (Unit))) {
-        val appUpdateManager = getInstance(activity) ?: return
+        val appContext = activity.applicationContext
+        val appUpdateManager = getInstance(appContext) ?: return
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             if ((it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
-                    getPrefInAppType(activity) == AppUpdateType.FLEXIBLE) ||
+                    getPrefInAppType(appContext) == AppUpdateType.FLEXIBLE) ||
                 it.installStatus() == InstallStatus.DOWNLOADED) {
                 onSuccessGetInfo(true)
             } else {
@@ -187,14 +203,23 @@ object AppUpdateManagerWrapper {
 
     @JvmStatic
     fun checkUpdateInProgressOrCompleted(activity: Activity) {
-        val appUpdateManager = getInstance(activity) ?: return
+        val appContext = activity.applicationContext
+        val weakRefActivity: WeakReference<Activity> = WeakReference(activity)
+        val appUpdateManager = getInstance(appContext) ?: return
         appUpdateManager.appUpdateInfo.addOnSuccessListener {
             if (it.installStatus() == InstallStatus.DOWNLOADED) {
-                showSnackBarComplete(activity)
+                val activityObj = weakRefActivity.get()
+                if (activityObj != null && !activityObj.isFinishing) {
+                    showSnackBarComplete(activityObj)
+                }
             } else if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
-                getPrefInAppType(activity) == AppUpdateType.IMMEDIATE) {
+                getPrefInAppType(appContext) == AppUpdateType.IMMEDIATE) {
                 try {
-                    appUpdateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, /* activity= */ activity, REQUEST_CODE_IMMEDIATE)
+                    val activityObj = weakRefActivity.get()
+                    if (activityObj != null && !activityObj.isFinishing) {
+                        appUpdateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE,
+                            /* activity= */ activityObj, REQUEST_CODE_IMMEDIATE)
+                    }
                 } catch (e: Exception) {
 
                 }
@@ -206,14 +231,15 @@ object AppUpdateManagerWrapper {
 
     @JvmStatic
     fun showSnackBarComplete(activity: Activity) {
-        val appUpdateManager = getInstance(activity) ?: return
+        val appContext = activity.applicationContext
+        val appUpdateManager = getInstance(appContext) ?: return
         val snackbar = Snackbar.make(
             activity.findViewById<View>(android.R.id.content),
             activity.getString(R.string.completion_update_message),
             Snackbar.LENGTH_INDEFINITE)
         snackbar.setAction(activity.getString(R.string.restart_app)) {
             appUpdateManager.completeUpdate()
-            clearInAppPref(activity)
+            clearInAppPref(appContext)
         }
         snackbar.setActionTextColor(ContextCompat.getColor(activity, R.color.snackbar_action_green))
         snackbar.show()

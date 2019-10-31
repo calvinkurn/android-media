@@ -54,7 +54,7 @@
     <string name="more_items">+ %1$d barang lainnya</string>
     <string name="belum_ada_transaksi">Belum Ada Transaksi</string>
     <string name="segera_laporkan">Segera laporkan jika menemukan kendala seputar transaksi di Tokopedia</string>
-    <string name="type_here">Tulis pesan (minimum 15 karakter)</string>
+    <string name="contact_us_type_here">Tulis di sini (minimum 15 karakter)</string>
     <string name="on_going">Dalam Proses</string>
     <string name="closed">Ditutup</string>
     <string name="invoice_id">ID: #%1$s</string>
@@ -92,5 +92,18 @@
     <string name="tv_service_priorities_officialstore" >Layanan Prioritas Official Store</string>
     <string name="learn_more_link">https://www.tokopedia.com/help/article/a-0827?refid=st-1109</string>
     <string name="layanan_prioritas">Layanan Prioritas</string>
-
+    <string name="contact_us_minimum_length_error_text">Pesan terlalu pendek, minimum 15 karakter</string>
+    <string name="detail_kendala">Detail Kendala</string>
+    <string name="inbox">Inbox</string>
+    <string name="choose_image">Pilih Gambar</string>
+    <string name="contact_us_search_error">Ada Yang Salah</string>
+    <string name="title_activity_contact_us">Pusat Bantuan</string>
+    <string name="contact_us_error_upload_image">Gagal mengunggah gambar</string>
+    <string name="title_contact_finish">Pesan sudah berhasil terkirim. Customer Care Tokopedia akan membalas pesan tersebut ke email kamu. Silakan cek email secara berkala.</string>
+    <string name="error_detail_empty">Silakan mengisi keterangan masalah terlebih dahulu</string>
+    <string name="error_detail_too_short">Message terlalu pendek, minimal 30 karakter</string>
+    <string name="failed_create_ticket">Gagal membuat tiket</string>
+    <string name="error_attachment">Mohon tambahkan lampiran.</string>
+    <string name="contactus_error_field_required">Harus diisi</string>
+    <string name="contactus_error_invalid_email">Email ini tidak valid.</string>
 </resources>

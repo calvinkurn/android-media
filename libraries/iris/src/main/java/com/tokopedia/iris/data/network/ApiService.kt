@@ -3,9 +3,8 @@ package com.tokopedia.iris.data.network
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.iris.*
-
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iris.util.*
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.user.session.UserSession
@@ -22,7 +21,7 @@ import java.util.concurrent.TimeUnit
 class ApiService(private val context: Context) {
 
     private val session: Session = IrisSession(context)
-    private val usrSession: UserSessionInterface = UserSession(context)
+    private val userSession: UserSessionInterface = UserSession(context)
     private var apiInterface: ApiInterface? = null
 
     fun makeRetrofitService(): ApiInterface {
@@ -45,7 +44,7 @@ class ApiService(private val context: Context) {
                     if (!session.getUserId().isBlank()) {
                         request.header(HEADER_USER_ID, session.getUserId())
                     }
-                    request.header(HEADER_DEVICE, HEADER_ANDROID)
+                    request.header(HEADER_DEVICE, HEADER_ANDROID + GlobalConfig.VERSION_NAME)
                     request.method(original.method(), original.body())
                     val requestBuilder = request.build()
 
@@ -62,7 +61,7 @@ class ApiService(private val context: Context) {
     }
 
     private fun addFringerInterceptor(builder:OkHttpClient.Builder){
-        builder.addInterceptor(FingerprintInterceptor(context.applicationContext as NetworkRouter, usrSession))
+        builder.addInterceptor(FingerprintInterceptor(context.applicationContext as NetworkRouter, userSession))
     }
 
     companion object {

@@ -6,14 +6,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +30,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.groupchat.GroupChatModuleRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.ProgressBarWithTimer;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
@@ -135,7 +136,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
 
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet)
@@ -255,8 +256,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
-                    ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
-                            (getActivity(), voteInfoViewModel.getVoteInfoUrl());
+                    RouteManager.route(getContext(), ApplinkConst.WEBVIEW, voteInfoViewModel.getVoteInfoUrl());
+
                     if(getActivity() instanceof GroupChatActivity) {
                         analytics.eventActionClickVoteInfo
                                 (String.format("%s - %s"
@@ -409,8 +410,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void redirectToLogin() {
         canVote = true;
-        startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
-                .getLoginIntent(getActivity()), REQUEST_LOGIN);
+        startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN), REQUEST_LOGIN);
     }
 
     @Override

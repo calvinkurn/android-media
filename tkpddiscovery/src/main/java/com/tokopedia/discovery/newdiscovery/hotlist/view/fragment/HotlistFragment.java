@@ -5,14 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -22,11 +23,13 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HotlistPageTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -34,7 +37,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -45,12 +47,7 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.SortProductActivity;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.common.data.Filter;
-import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponent;
@@ -68,9 +65,11 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmen
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
-import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
-import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -591,29 +590,20 @@ public class HotlistFragment extends BrowseSectionFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == getSortRequestCode()) {
-                setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
-                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
-                HotlistPageTracking.eventHotlistSort(getActivity(),selectedSortName);
-                clearDataFilterSort();
-                showBottomBarNavigation(false);
-                reloadData();
-            } else if (requestCode == getFilterRequestCode()) {
-                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
-                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                if (getActivity() instanceof HotlistActivity) {
-                    HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
-                } else {
-                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
-                }
-                showBottomBarNavigation(false);
-                updateDepartmentId(getFlagFilterHelper().getCategoryId());
-                reloadData();
-                showSelectedFilters(getSelectedFilter());
-            }
-        }
+        super.onActivityResult(requestCode, resultCode, data);
         onHandlingDataFromPDP(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void sendSortTracking(String selectedSortName) {
+        HotlistPageTracking.eventHotlistSort(getActivity(),selectedSortName);
+    }
+
+    @Override
+    protected void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                      List<Option> selectedOptions) {
+        super.handleFilterResult(queryParams, selectedFilters, selectedOptions);
+        showSelectedFilters(getSelectedFilter());
     }
 
     private void showSelectedFilters(HashMap<String, String> selectedFilter) {
@@ -860,13 +850,10 @@ public class HotlistFragment extends BrowseSectionFragment
 
     @Override
     public void onBannerAdsClicked(String appLink) {
-        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
-        if (router.isSupportedDelegateDeepLink(appLink)) {
-            router.actionApplink(getActivity(), appLink);
-        } else if (appLink != "") {
-            Intent intent = new Intent(getContext(), BannerWebView.class);
-            intent.putExtra("url", appLink);
-            startActivity(intent);
+        if (URLUtil.isNetworkUrl(appLink)) {
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, appLink);
+        } else {
+            RouteManager.route(getActivity(), appLink);
         }
     }
 
@@ -1190,5 +1177,14 @@ public class HotlistFragment extends BrowseSectionFragment
                 eventLabel
         ).getEvent());
         reloadData();
+    }
+
+    @Override
+    protected String getCategoryId() {
+        if (getQueryModel() != null && getQueryModel().getCategoryID() != null) {
+            return getQueryModel().getCategoryID();
+        } else {
+            return "";
+        }
     }
 }

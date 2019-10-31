@@ -2,8 +2,8 @@ package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;

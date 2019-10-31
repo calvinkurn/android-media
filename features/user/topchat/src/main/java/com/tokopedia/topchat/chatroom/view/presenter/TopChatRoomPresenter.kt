@@ -31,6 +31,8 @@ import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
+import com.tokopedia.kotlin.extensions.view.debug
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -82,13 +84,15 @@ class TopChatRoomPresenter @Inject constructor(
         private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase,
         private var getShopFollowingUseCase: GetShopFollowingUseCase,
         private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
-        private var addToCartUseCase: AddToCartUseCase)
+        private var addToCartUseCase: AddToCartUseCase,
+        private var compressImageUseCase: CompressImageUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     override fun clearText() {
     }
 
     private var mSubscription: CompositeSubscription
+    private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
 
     private lateinit var webSocketUrl: String
@@ -102,6 +106,7 @@ class TopChatRoomPresenter @Inject constructor(
 
     init {
         mSubscription = CompositeSubscription()
+        compressImageSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         dummyList = arrayListOf()
     }
@@ -270,47 +275,71 @@ class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
 
-    override fun startUploadImages(it: ImageUploadViewModel) {
+
+
+    override fun startCompressImages(it: ImageUploadViewModel) {
         if (validateImageAttachment(it.imageUrl)) {
-            processDummyMessage(it)
-            isUploading = true
-            uploadImageUseCase.unsubscribe()
-            val reqParam = HashMap<String, RequestBody>()
-            RequestBody.create(MediaType.parse("text/plain"), "1")
-            reqParam["web_service"] = createRequestBody("1")
-            reqParam["id"] = createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
-            val params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
-            uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>() {
-                override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
-                    t.dataResultImageUpload.data?.run {
-                        when (networkMode) {
-                            MODE_API -> sendByApi(
-                                    ReplyChatUseCase.generateParamAttachImage(thisMessageId, this.picSrc),
-                                    it
-                            )
-                            MODE_WEBSOCKET -> sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
-                                    this.picSrc, it.startTime))
-                        }
-                    }
-                    isUploading = false
-                }
+            it.imageUrl?.let { it1 ->
+                val subscription = compressImageUseCase.compressImage(it1)
+                        .subscribe(object : Subscriber<String>() {
+                            override fun onNext(compressedImageUrl: String?) {
+                                it.imageUrl = compressedImageUrl
+                                startUploadImages(it)
+                            }
 
+                            override fun onCompleted() {
+                            }
 
-                override fun onCompleted() {
-
-                }
-
-                override fun onError(e: Throwable?) {
-                    isUploading = false
-                    view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, e), it)
-                }
-
-            })
+                            override fun onError(e: Throwable?) {
+                                view.showSnackbarError(view.getStringResource(R.string.error_compress_image))
+                            }
+                        })
+                compressImageSubscription?.clear()
+                compressImageSubscription?.add(subscription)
+            }
         }
     }
 
+    override fun startUploadImages(it: ImageUploadViewModel) {
+        processDummyMessage(it)
+        isUploading = true
+        uploadImageUseCase.unsubscribe()
+        val reqParam = HashMap<String, RequestBody>()
+        RequestBody.create(MediaType.parse("text/plain"), "1")
+        reqParam["web_service"] = createRequestBody("1")
+        reqParam["id"] = createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
+        val params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
+
+        uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>() {
+            override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
+                t.dataResultImageUpload.data?.run {
+                    when (networkMode) {
+                        MODE_API -> sendByApi(
+                                ReplyChatUseCase.generateParamAttachImage(thisMessageId, this.picSrc),
+                                it
+                        )
+                        MODE_WEBSOCKET -> sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
+                                this.picSrc, it.startTime))
+                    }
+                }
+                isUploading = false
+            }
+
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                isUploading = false
+                view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, e), it)
+            }
+
+        })
+    }
+
     private fun validateImageAttachment(uri: String?): Boolean {
-        var MAX_FILE_SIZE = 5120
+        var MAX_FILE_SIZE = 15360
         val MINIMUM_HEIGHT = 100
         val MINIMUM_WIDTH = 300
         val DEFAULT_ONE_MEGABYTE: Long = 1024
@@ -528,6 +557,7 @@ class TopChatRoomPresenter @Inject constructor(
         if (::addToCardSubscriber.isInitialized) {
             addToCardSubscriber.unsubscribe()
         }
+        compressImageSubscription.unsubscribe()
         super.detachView()
     }
 
@@ -569,6 +599,8 @@ class TopChatRoomPresenter @Inject constructor(
         val productColorVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, savedInstanceState)
         val productColorHexVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, savedInstanceState)
         val productSizeVariant = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, savedInstanceState)
+        val productFsIsActive = view.getBooleanArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, savedInstanceState)
+        val productFsImageUrl = view.getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, savedInstanceState)
 
         val productPreviewViewModel = ProductPreviewViewModel(
                 productId,
@@ -578,7 +610,9 @@ class TopChatRoomPresenter @Inject constructor(
                 productColorVariant,
                 productColorHexVariant,
                 productSizeVariant,
-                productUrl
+                productUrl,
+                productFsIsActive,
+                productFsImageUrl
         )
 
         attachmentsPreview.add(productPreviewViewModel)
@@ -642,6 +676,8 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName)
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
+            putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, element.categoryId.toString())
         }
     }
 }

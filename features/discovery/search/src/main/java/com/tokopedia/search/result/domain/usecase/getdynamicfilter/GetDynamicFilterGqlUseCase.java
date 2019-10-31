@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.domain.usecase.getdynamicfilter;
 
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -39,6 +39,7 @@ class GetDynamicFilterGqlUseCase extends UseCase<DynamicFilterModel> {
 
         graphqlRequest.setVariables(variables);
 
+        graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
 
         return graphqlUseCase
@@ -48,17 +49,7 @@ class GetDynamicFilterGqlUseCase extends UseCase<DynamicFilterModel> {
 
     private Map<String, Object> createParametersForQuery(Map<String, Object> parameters) {
         Map<String, Object> variables = new HashMap<>();
-
-        variables.put(KEY_QUERY, getQueryFromParameters(parameters));
         variables.put(KEY_PARAMS, UrlParamUtils.generateUrlParamString(parameters));
-        variables.put(KEY_SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT);
-
         return variables;
-    }
-
-    private Object getQueryFromParameters(Map<String, Object> parameters) {
-        Object query = parameters.get(SearchApiConst.Q);
-
-        return query == null ? "" : query;
     }
 }

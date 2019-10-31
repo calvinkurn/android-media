@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.common
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -11,7 +11,7 @@ class SearchLoadingMoreViewHolder(itemView: View) : AbstractViewHolder<LoadingMo
     companion object {
         @LayoutRes
         @JvmField
-        val LAYOUT = R.layout.loading_layout
+        val LAYOUT = com.tokopedia.abstraction.R.layout.loading_layout
     }
 
     override fun bind(element: LoadingMoreModel?) {

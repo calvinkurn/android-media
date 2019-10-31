@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 
@@ -14,9 +14,9 @@ import java.util.List;
 
 public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
 
+    private TickerViewModel tickerViewModel;
     private SuggestionViewModel suggestionViewModel;
     private List<Option> quickFilterList = new ArrayList<>();
-    private GuidedSearchViewModel guidedSearch;
     private CpmModel cpmModel;
 
     @Override
@@ -33,6 +33,14 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
 
     public void setCpmModel(CpmModel cpmModel) {
         this.cpmModel = cpmModel;
+    }
+
+    public TickerViewModel getTickerViewModel() {
+        return tickerViewModel;
+    }
+
+    public void setTickerViewModel(TickerViewModel tickerViewModel) {
+        this.tickerViewModel = tickerViewModel;
     }
 
     public void setSuggestionViewModel(SuggestionViewModel suggestionModel) {
@@ -54,13 +62,5 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
     public void setQuickFilterList(List<Option> quickFilterList) {
         this.quickFilterList.clear();
         this.quickFilterList.addAll(quickFilterList);
-    }
-
-    public GuidedSearchViewModel getGuidedSearch() {
-        return guidedSearch;
-    }
-
-    public void setGuidedSearch(GuidedSearchViewModel guidedSearch) {
-        this.guidedSearch = guidedSearch;
     }
 }

@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.phoneverification.PhoneVerificationAnalytics;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
@@ -27,7 +28,7 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity.getCallingIntent;
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
  * Created by nisie on 2/22/17.
@@ -193,8 +194,7 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
     }
 
     private void goToSellerShopCreateEdit() {
-        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getIntentCreateShop
-                (getApplicationContext());
+        Intent intent = RouteManager.getIntent(this, OPEN_SHOP);
         startActivity(intent);
         finish();
     }

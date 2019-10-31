@@ -1,16 +1,11 @@
 package com.tokopedia.useridentification.view.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.text.TextUtils;
+import androidx.fragment.app.Fragment;
 import android.view.MenuItem;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.view.fragment.UserIdentificationInfoFragment;
 
@@ -22,22 +17,9 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
     boolean isSourceSeller;
 
+    private static int projectId;
     public interface Listener {
         void onTrackBackPressed();
-    }
-
-    @DeepLink(ApplinkConst.KYC)
-    public static Intent getDeeplinkIntent(Context context, Bundle extras) {
-        Uri uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon().build();
-
-        String source = extras.getString(KYCConstant.PARAM_KYC_SRC);
-        Intent intent = new Intent(context, UserIdentificationInfoActivity.class);
-        intent.setData(uri);
-        boolean isSourceSeller = TextUtils.equals(source, KYCConstant.VALUE_KYC_SRC_SELLER);
-        intent.putExtra(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller);
-        intent.putExtras(extras);
-
-        return intent;
     }
 
     @Override
@@ -64,6 +46,11 @@ public class UserIdentificationInfoActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return UserIdentificationInfoFragment.createInstance(isSourceSeller);
+        try {
+            projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId);
     }
 }

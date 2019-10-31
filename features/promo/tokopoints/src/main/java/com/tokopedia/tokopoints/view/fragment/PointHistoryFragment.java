@@ -2,9 +2,9 @@ package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +25,11 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.PointHistoryListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.PointHistoryContract;
+import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
 import com.tokopedia.tokopoints.view.presenter.PointHistoryPresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
 import javax.inject.Inject;
 
@@ -39,6 +41,7 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
     private RecyclerView mRecyclerView;
     private PointHistoryListAdapter mAdapter;
     private String mStrPointExpInfo, mStrLoyaltyExpInfo;
+    private ServerErrorView serverErrorView;
 
     @Inject
     public PointHistoryPresenter mPresenter;
@@ -62,6 +65,7 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
         mPresenter.attachView(this);
         mContainerMain = view.findViewById(R.id.container_main);
         mRecyclerView = view.findViewById(R.id.rv_history_point);
+        serverErrorView = view.findViewById(R.id.server_error_view);
         mContainerMain.setDisplayedChild(1);
 
         if (mRecyclerView.getItemDecorationCount() == 0) {
@@ -125,6 +129,7 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
     @Override
     public void onError(String error) {
         mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        serverErrorView.showErrorUi(NetworkDetector.isConnectedToInternet(getActivityContext()));
     }
 
     @Override

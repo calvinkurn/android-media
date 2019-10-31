@@ -10,7 +10,7 @@ buildscript {
 project.ext {
     artifactId = 'shop-etalase-picker'
     groupId = 'com.tokopedia.shopetalasepicker'
-    versionName = "${tkpdShopVersion}"
+    versionName = "1.0.0"
     artifactName ="shop_etalase_picker"
 }
 

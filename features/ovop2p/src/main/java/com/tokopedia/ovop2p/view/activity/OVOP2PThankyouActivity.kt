@@ -2,7 +2,7 @@ package com.tokopedia.ovop2p.view.activity
 
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -43,6 +43,10 @@ class OVOP2PThankyouActivity : BaseSimpleActivity(), LoaderUiListener, ActivityL
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_ovop2p_transfer
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
     }
 
     override fun getNewFragment(): Fragment {

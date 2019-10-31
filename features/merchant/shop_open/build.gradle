@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'shop-open'
-    groupId = 'com.tokopedia.shop'
-    versionName = "${tkpdShopVersion}"
-    artifactName ="shop_open-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -20,44 +13,65 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.baseListSeller)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-
     implementation project(rootProject.ext.libraries.track)
-
-    implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.features.seller)
+    implementation project(rootProject.ext.features.tkpdcore)
+    implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.cameraview)
+    
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation rootProject.ext.miscDependencies.scannerZxing
+    implementation (rootProject.ext.miscDependencies.ucrop){
+        exclude group: 'com.android.support'
+    }
+    implementation (rootProject.ext.miscDependencies.imagecropper){
+        exclude group: "com.android.support"
+    }
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
     implementation rootProject.ext.miscDependencies.dagger
-    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt rootProject.ext.miscDependencies.daggerCompiler
-
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.networkDependencies.glide
-
     implementation rootProject.ext.miscDependencies.parcelerApi
     kapt  rootProject.ext.miscDependencies.parceler
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-    implementation project(rootProject.ext.libraries.core_legacy)
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+}
+
+project.ext {
+    artifactId = 'shop-open'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName ="shop_open-release"
 }
 
 apply from: '../../../publish_local.gradle'

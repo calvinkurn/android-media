@@ -1,7 +1,7 @@
 package com.tokopedia.loyalty.di.module;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -13,8 +13,8 @@ import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
 import com.tokopedia.loyalty.view.data.LoyaltyPagerItem;
 import com.tokopedia.loyalty.view.fragment.PromoCodeFragment;
 import com.tokopedia.loyalty.view.fragment.PromoCouponFragment;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -24,6 +24,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -39,6 +40,7 @@ import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl;
 
 import java.util.List;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl.DISCOVER_LOGIN;
 
 /**
@@ -388,7 +390,8 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
                         .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             } else {
-                intent = SellerRouter.getActivityShopCreateEdit(getActivity());
+                intent = RouteManager.getIntent(getContext(), OPEN_SHOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             }
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,

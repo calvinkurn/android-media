@@ -1,15 +1,15 @@
 package com.tokopedia.kol.feature.video.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +22,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -51,13 +53,26 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     var buttonTagAction: UnifyButton? = null
 
+    var postAuthor = ""
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var feedAnalyticTracker: FeedAnalyticTracker
+
     private lateinit var mediaPreviewViewModel: FeedMediaPreviewViewModel
     private val tagsAdapter by lazy { MediaTagAdapter(mutableListOf(), {
         mediaPreviewViewModel.isMyShop(it)
     }, this::toggleWishlist){
         postTagItem, isMyShop ->
+            feedAnalyticTracker.eventMediaDetailClickBuy(
+                    postAuthor,
+                    postTagItem.id,
+                    postTagItem.text,
+                    postTagItem.price,
+                    1,
+                    postTagItem.shop[0].shopId.toIntOrZero(),
+                    "")
             if (isMyShop) onGoToLink(postTagItem.applink)
             else checkAddToCart(postTagItem)
     } }
@@ -72,7 +87,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    override fun getScreenName(): String? = null
+    override fun getScreenName(): String? = FeedAnalyticTracker.Screen.MEDIA_PREVIEW
 
     override fun initInjector() {
         getComponent(KolComponent::class.java).inject(this)
@@ -117,6 +132,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
         action_back.setOnClickListener { activity?.onBackPressed() }
         mediaPreviewViewModel.getPostDetail()
+        feedAnalyticTracker.eventOpenMediaPreview()
     }
 
     override fun onDestroy() {
@@ -201,6 +217,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                 buttonTagAction?.buttonType = UnifyButton.Type.MAIN
                 tagsAdapter.updateTags(tags.items)
                 buttonTagAction?.setOnClickListener {
+                    feedAnalyticTracker.eventMediaDetailClickLihat(mediaPreviewViewModel.postId)
                     tagsBottomSheet?.show()
                 }
 
@@ -232,6 +249,14 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                         buttonTagAction?.text = getString(R.string.string_posttag_buy)
                     }
                     buttonTagAction?.setOnClickListener {
+                        feedAnalyticTracker.eventMediaDetailClickBuy(
+                                postAuthor,
+                                tagItem.id,
+                                tagItem.text,
+                                tagItem.price,
+                                1,
+                                tagItem.shop[0].shopId.toIntOrZero(),
+                                "")
                         checkAddToCart(tagItem)
                     }
                     action_favorite.visible()
@@ -289,18 +314,26 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
         val templateHeader = dynamicPost.template.cardpost.header
         val header = dynamicPost.header
+        postAuthor = header.followCta.authorType
         authorImage.shouldShowWithAction(templateHeader.avatar && header.avatar.isNotBlank()){
             authorImage.loadImageCircle(header.avatar)
+            authorImage.setOnClickListener{onHeaderClicked(header)}
         }
         authorBadge.shouldShowWithAction(templateHeader.avatarBadge && header.avatarBadgeImage.isNotBlank()){
             authorBadge.loadImage(header.avatarBadgeImage, R.drawable.error_drawable)
         }
         authorTitle.shouldShowWithAction(templateHeader.avatarTitle && header.avatarTitle.isNotBlank()){
             authorTitle.text = header.avatarTitle
+            authorTitle.setOnClickListener{onHeaderClicked(header)}
         }
         authorSubtitile.shouldShowWithAction(templateHeader.avatarDate && header.avatarDate.isNotBlank()){
             authorSubtitile.text = TimeConverter.generateTime(context, header.avatarDate)
         }
+    }
+
+    private fun onHeaderClicked(header: Header) {
+        feedAnalyticTracker.eventMediaDetailClickAvatar(mediaPreviewViewModel.postId)
+        RouteManager.route(activity, header.avatarApplink)
     }
 
     private fun bindFooter(footer: PostDetailFooterModel, template: TemplateFooter?) {

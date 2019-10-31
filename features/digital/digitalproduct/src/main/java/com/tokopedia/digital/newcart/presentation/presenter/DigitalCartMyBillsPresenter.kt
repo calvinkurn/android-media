@@ -1,15 +1,16 @@
 package com.tokopedia.digital.newcart.presentation.presenter
 
+import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field
+import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
-import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase
 import com.tokopedia.digital.common.router.DigitalModuleRouter
-import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache
+import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
@@ -18,51 +19,40 @@ import javax.inject.Inject
 
 class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: DigitalAddToCartUseCase?,
                                                       digitalAnalytics: DigitalAnalytics?,
+                                                      rechargeAnalytics: RechargeAnalytics?,
                                                       digitalModuleRouter: DigitalModuleRouter?,
                                                       cartDigitalInteractor: ICartDigitalInteractor?,
                                                       val userSession: UserSession?,
                                                       digitalCheckoutUseCase: DigitalCheckoutUseCase?,
-                                                      digitalInstantCheckoutUseCase: DigitalInstantCheckoutUseCase?,
-                                                      digitalPostPaidLocalCache: DigitalPostPaidLocalCache?,
-                                                      rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase?) :
+                                                      digitalInstantCheckoutUseCase: DigitalInstantCheckoutUseCase?) :
         DigitalBaseCartPresenter<DigitalCartMyBillsContract.View>(digitalAddToCartUseCase,
                 digitalAnalytics,
+                rechargeAnalytics,
                 digitalModuleRouter,
                 cartDigitalInteractor,
                 userSession,
                 digitalCheckoutUseCase,
-                digitalInstantCheckoutUseCase,
-                digitalPostPaidLocalCache,
-                rechargePushEventRecommendationUseCase), DigitalCartMyBillsContract.Presenter {
-    override fun onSubcriptionCheckedListener(checked: Boolean) {
+                digitalInstantCheckoutUseCase), DigitalCartMyBillsContract.Presenter {
 
-        if (checked) {
-            view.renderMyBillsDescriptionView(view.cartInfoData.crossSellingConfig!!.bodyContentAfter)
-        } else {
-            view.renderMyBillsDescriptionView(view.cartInfoData.crossSellingConfig!!.bodyContentBefore)
+    override fun onSubcriptionCheckedListener(checked: Boolean) {
+        view.cartInfoData.crossSellingConfig?.run {
+            view.renderMyBillsDescriptionView(if (checked) bodyContentAfter else bodyContentBefore)
         }
     }
 
     override fun onMyBillsViewCreated() {
         view.setCheckoutParameter(buildCheckoutData(view.cartInfoData, userSession?.accessToken))
         renderBaseCart(view.cartInfoData)
+        renderPostPaidPopUp(view.cartInfoData)
         view.renderCategoryInfo(view.cartInfoData.attributes!!.categoryName)
-        if (view.cartInfoData.crossSellingConfig != null) {
-            view.updateCheckoutButtonText(view.cartInfoData.crossSellingConfig!!.checkoutButtonText)
-            view.updateToolbarTitle(view.cartInfoData.crossSellingConfig!!.headerTitle)
-        }
+        view.cartInfoData.crossSellingConfig?.run {
+            view.updateCheckoutButtonText(checkoutButtonText)
+            view.updateToolbarTitle(headerTitle)
 
-        val description = if (view.cartInfoData.crossSellingConfig!!.isChecked) {
-            view.cartInfoData!!.crossSellingConfig!!.bodyContentAfter
-        } else {
-            view.cartInfoData!!.crossSellingConfig!!.bodyContentBefore
-        }
+            val description = if (isChecked) bodyContentAfter else bodyContentBefore
 
-        view.renderMyBillsView(
-                view.cartInfoData.crossSellingConfig!!.bodyTitle,
-                description,
-                view.cartInfoData.crossSellingConfig!!.isChecked
-        )
+            view.renderMyBillsView(bodyTitle, description, isChecked)
+        }
     }
 
     override fun getRequestBodyCheckout(parameter: CheckoutDataParameter): RequestBodyCheckout {

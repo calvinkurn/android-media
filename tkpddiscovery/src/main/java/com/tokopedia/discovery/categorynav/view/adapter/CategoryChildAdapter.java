@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.categorynav.view.adapter;
 
 import android.annotation.SuppressLint;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +22,7 @@ import java.util.List;
  * @author by alifa on 7/10/17.
  */
 
-public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
+public class CategoryChildAdapter extends MultiLevelExpIndListAdapter {
 
     private CategoryChildAdapter.OnItemClickListener clickListener;
     private int activePosition=0;

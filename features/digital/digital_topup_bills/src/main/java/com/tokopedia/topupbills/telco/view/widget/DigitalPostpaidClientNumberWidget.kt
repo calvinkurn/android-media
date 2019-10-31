@@ -1,17 +1,16 @@
 package com.tokopedia.topupbills.telco.view.widget
 
 import android.content.Context
-import android.support.annotation.AttrRes
+import androidx.annotation.AttrRes
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.getColorFromResources
-import com.tokopedia.topupbills.telco.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
 
 /**
@@ -57,14 +56,14 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         enquiryResult.removeAllViews()
         btnEnquiry.visibility = View.VISIBLE
         titleEnquiryResult.visibility = View.GONE
-        btnEnquiry.setBackgroundResource(R.drawable.grey_button_rounded)
+        btnEnquiry.setBackgroundResource(com.tokopedia.design.R.drawable.grey_button_rounded)
         btnEnquiry.setTextColor(context.resources.getColorFromResources(context, R.color.digital_text_enquiry_non_active))
     }
 
     fun setButtonEnquiryEnable() {
         btnEnquiry.isEnabled = true
-        btnEnquiry.setBackgroundResource(R.drawable.bg_button_orange)
-        btnEnquiry.setTextColor(context.resources.getColorFromResources(context, R.color.white))
+        btnEnquiry.setBackgroundResource(com.tokopedia.design.R.drawable.bg_button_orange)
+        btnEnquiry.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
     }
 
     fun showEnquiryResultPostpaid(telcoEnquiryData: TelcoEnquiryData) {

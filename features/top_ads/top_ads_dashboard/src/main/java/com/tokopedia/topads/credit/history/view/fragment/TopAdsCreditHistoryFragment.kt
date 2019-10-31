@@ -1,11 +1,11 @@
 package com.tokopedia.topads.credit.history.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,12 +69,12 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        datePickerViewModel.dateRange.observe(this, android.arch.lifecycle.Observer { onDateRangeChanged(it) })
-        viewModel.creditsHistory.observe(this, android.arch.lifecycle.Observer { when (it) {
+        datePickerViewModel.dateRange.observe(this, androidx.lifecycle.Observer { onDateRangeChanged(it) })
+        viewModel.creditsHistory.observe(this, androidx.lifecycle.Observer { when (it) {
             is Success -> onSuccessGetCredit(it.data)
             is Fail -> onErrorGetCredit(it.throwable)
         } })
-        viewModel.getAutoTopUpStatus.observe(this, android.arch.lifecycle.Observer { when(it) {
+        viewModel.getAutoTopUpStatus.observe(this, androidx.lifecycle.Observer { when(it) {
             is Success -> onSuccessGetAutoTopUpStatus(it.data)
             is Fail -> {}
         } })
@@ -83,6 +83,14 @@ class TopAdsCreditHistoryFragment: BaseListFragment<CreditHistory, TopAdsCreditH
     private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
         card_auto_topup_status.visibility = View.VISIBLE
         auto_topup_status.text = data.statusDesc
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

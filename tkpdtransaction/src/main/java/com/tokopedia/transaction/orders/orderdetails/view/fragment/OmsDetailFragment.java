@@ -9,12 +9,12 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -25,6 +25,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +43,7 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
@@ -56,6 +58,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListwebViewActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
@@ -239,7 +242,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if (invoice.invoiceUrl().equals("")) {
+        if(!presenter.isValidUrl(invoice.invoiceUrl())){
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(new View.OnClickListener() {
@@ -268,6 +271,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setAdditionalInfo(AdditionalInfo additionalInfo) {
+
+    }
+
+    @Override
+    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
 
     }
 
@@ -529,6 +537,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
+    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -558,10 +571,10 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 public void onClick(View v) {
                     if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                         if (!TextUtils.isEmpty(item.getCategory()) && "Deal".equalsIgnoreCase(item.getCategory())) {
-                            Toaster.Companion.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
+                            Toaster.INSTANCE.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
                             });
                         } else {
-                            Toaster.Companion.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
+                            Toaster.INSTANCE.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
                             });
                         }
                         presenter.setActionButton(item.getActionButtons(), null, 0, false);
@@ -601,20 +614,29 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         Dialog dialog = new Dialog(getContext());
         dialog.setCanceledOnTouchOutside(false);
         dialog.setContentView(view);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+
+        dialog.getWindow().setAttributes(lp);
         View v = dialog.getWindow().getDecorView();
         v.setBackgroundResource(android.R.color.transparent);
 
-
         ImageView qrCode = view.findViewById(R.id.qrCode);
-        LinearLayout voucherCodeLayout = view.findViewById(R.id.booking_code_layout);
+        LinearLayout voucherCodeLayout = view.findViewById(R.id.booking_code_view);
         TextView closeButton = view.findViewById(R.id.redeem_ticket);
 
         ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), R.color.grey_1100, R.color.grey_1100);
 
         if (!TextUtils.isEmpty(item.getTrackingNumber())) {
             String[] voucherCodes = item.getTrackingNumber().split(",");
-            for (int i = 0; i < voucherCodes.length; i++) {
+            int size = voucherCodes.length;
+            if (size > 0 ) {
                 voucherCodeLayout.setVisibility(View.VISIBLE);
+            }
+            for (int i = 0; i < size; i++) {
                 BookingCodeView bookingCodeView = new BookingCodeView(getContext(), voucherCodes[i], i, getContext().getResources().getString(R.string.voucher_code_title), voucherCodes.length);
                 bookingCodeView.setBackground(getContext().getResources().getDrawable(R.drawable.bg_search_input_text_area));
                 voucherCodeLayout.addView(bookingCodeView);

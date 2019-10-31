@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
-import com.tokopedia.track.TrackApp
 
 class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         private val notificationType: String,
@@ -62,9 +61,5 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
 
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
         settingFieldAdapterListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
-    }
-
-    override fun setMoengageEmailPreference(checked: Boolean) {
-        TrackApp.getInstance().moEngage.setNewsletterEmailPref(checked)
     }
 }

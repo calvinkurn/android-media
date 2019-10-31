@@ -1,9 +1,10 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel
@@ -25,6 +26,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     fun setShippingDurationViewModels(shippingDurationViewModels: List<ShippingDurationViewModel>, promoViewModel: LogisticPromoViewModel?) {
         this.mData = shippingDurationViewModels.toMutableList()
         promoViewModel?.let { this.mData.add(0, it) }
+        this.mData.add(0, NotifierModel())
         notifyDataSetChanged()
     }
 
@@ -59,14 +61,16 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     }
 
     override fun getItemViewType(position: Int): Int = when (mData.get(position)) {
-        is LogisticPromoViewModel -> LogisticPromoViewHolder.LAYOUT
+        is LogisticPromoViewModel -> ArmyViewHolder.LAYOUT
+        is NotifierModel -> NotifierViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            LogisticPromoViewHolder.LAYOUT -> LogisticPromoViewHolder(view)
+            ArmyViewHolder.LAYOUT -> ArmyViewHolder(view)
+            NotifierViewHolder.LAYOUT -> NotifierViewHolder(view)
             else -> ShippingDurationViewHolder(view, this, cartPosition)
         }
     }
@@ -74,7 +78,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ShippingDurationViewHolder -> holder.bindData(mData.get(position) as ShippingDurationViewModel, shippingDurationAdapterListener)
-            is LogisticPromoViewHolder -> holder.bindData(mData.get(position) as LogisticPromoViewModel, shippingDurationAdapterListener!!)
+            is ArmyViewHolder -> holder.bindData(mData.get(position) as LogisticPromoViewModel, shippingDurationAdapterListener!!)
         }
     }
 

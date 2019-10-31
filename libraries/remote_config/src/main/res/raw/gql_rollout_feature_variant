@@ -1,0 +1,10 @@
+query RolloutFeatureVariants($rev: Int!, $client_id: Int!){
+     RolloutFeatureVariants(rev:$rev, client_id:$client_id){
+         featureVariants {
+           feature
+           variant
+         }
+         globalRev
+         status
+      }
+ }

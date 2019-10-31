@@ -4,19 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +28,21 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
@@ -46,22 +54,24 @@ import com.tokopedia.gamification.cracktoken.compoundview.WidgetRewardCrackResul
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
-import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
+import com.tokopedia.gamification.data.entity.HomeActionButton;
+import com.tokopedia.gamification.data.entity.HomeSmallButton;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
+import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 
 /**
@@ -90,6 +100,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetTokenOnBoarding widgetTokenOnBoarding;
     private ProgressBar progressBar;
     private TextView infoTitlePage;
+    private FrameLayout crackLayoutTooltip;
 
     private ImageView imageRemainingToken;
     private TextView tvCounter;
@@ -100,12 +111,15 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private ActionListener listener;
     private Handler crackTokenErrorhandler;
     private Handler crackTokenSuccessHandler;
+    private Handler tooltipHandler;
     private WidgetRewardCrackResult widgetRewards;
     private Toolbar toolbar;
     private TextView toolbarTitle;
 
     private PerformanceMonitoring fpmRender;
     private PerformanceMonitoring fpmCrack;
+    private ImageView ivPrize;
+    private FrameLayout flPrize;
 
     public static Fragment newInstance() {
         return new CrackTokenFragment();
@@ -128,6 +142,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         rootView = inflater.inflate(R.layout.fragment_crack_token, container, false);
 
         ivContainer = rootView.findViewById(R.id.iv_container);
+        crackLayoutTooltip = rootView.findViewById(R.id.tooltip_crack_layout);
+        ivPrize = rootView.findViewById(R.id.daily_prize);
+        flPrize = rootView.findViewById(R.id.fl_prize);
         textCountdownTimer = rootView.findViewById(R.id.text_countdown_timer);
         widgetTokenView = rootView.findViewById(R.id.widget_token_view);
         widgetCrackResult = rootView.findViewById(R.id.widget_reward);
@@ -214,6 +231,27 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         return rootView;
     }
 
+    private void showToolTip() {
+        if (!widgetTokenOnBoarding.hasSeenOnBoardingFromPref()) {
+            tooltipHandler = new Handler();
+            tooltipHandler.postDelayed(() -> {
+                if (crackLayoutTooltip != null)
+                    crackLayoutTooltip.setVisibility(View.GONE);
+            }, 4000);
+            crackLayoutTooltip.setVisibility(View.VISIBLE);
+            crackLayoutTooltip.setOnClickListener(v -> crackLayoutTooltip.setVisibility(View.GONE));
+            Typography tooltipText = crackLayoutTooltip.findViewById(R.id.gf_tooltip_text);
+            SpannableString spannableString = new SpannableString(tooltipText.getText());
+            spannableString.setSpan(new StyleSpan(Typeface.BOLD), 4, 15,
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            tooltipText.setText(spannableString);
+        } else {
+            if (tooltipHandler != null)
+                tooltipHandler.removeCallbacksAndMessages(null);
+            crackLayoutTooltip.setVisibility(View.GONE);
+        }
+    }
+
     private void setUpToolBar() {
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
@@ -273,7 +311,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
                 prevTimeStamp = 0;
             }
-
+            showToolTip();
             widgetTokenOnBoarding.showHandOnboarding();
         }
     }
@@ -294,6 +332,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         if (crackTokenSuccessHandler != null) {
             crackTokenSuccessHandler.removeCallbacksAndMessages(null);
         }
+        if (tooltipHandler != null) {
+            tooltipHandler.removeCallbacksAndMessages(null);
+        }
         if (crackTokenErrorhandler != null) {
             crackTokenErrorhandler.removeCallbacksAndMessages(null);
         }
@@ -301,22 +342,33 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void renderViewCrackEgg() {
         TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
+        List<HomeActionButton> homeActionButtons = tokenData.getHome().getHomeActionButton();
+        HomeSmallButton homeSmallButton = tokenData.getHome().getHomeSmallButton();
 
         infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
 
-        ImageHandler.loadImageWithSignature(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl(),
-                new StringSignature(tokenUser.getBackgroundAsset().getVersion()));
+        String backgroundUrl = tokenUser.getBackgroundAsset().getBackgroundImgUrl();
+        ObjectKey signature = new ObjectKey(tokenUser.getBackgroundAsset().getVersion());
+        ImageHandler.loadImageWithSignature(ivContainer, backgroundUrl, signature);
 
+        if (TextUtils.isEmpty(homeSmallButton.getImageURL())) {
+            flPrize.setVisibility(View.GONE);
+        } else {
+            flPrize.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageAndCache(ivPrize, homeSmallButton.getImageURL());
+            ivPrize.setOnClickListener(v -> {
+                crackLayoutTooltip.setVisibility(View.GONE);
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
+                trackingDailyPrizeBtnClick();
+            });
+        }
         widgetTokenView.setToken(tokenUser.getTokenAsset());
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
             @Override
             public void onClick() {
-                if(getContext()==null)
+                if (getContext() == null)
                     return;
                 fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
-                stopTimer();
-                hideInfoTitle();
-                vibrate();
                 widgetTokenOnBoarding.hideHandOnBoarding(true);
                 TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
                 crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
@@ -325,8 +377,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
 
             @Override
-            public void showCrackResult(CrackResultEntity crackResult){
-                if(getActivity() == null || getActivity().isFinishing() || getContext() == null || !isAdded() || isRemoving()) {
+            public void showCrackResult(CrackResultEntity crackResult) {
+                if (getActivity() == null || getActivity().isFinishing() || getContext() == null || !isAdded() || isRemoving()) {
                     return;
                 }
                 setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
@@ -335,7 +387,18 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             }
         });
         showRemainingToken(tokenUser.getTokenAsset().getSmallImgv2Url(), tokenData.getSumTokenStr());
-        widgetEggSource.showEggSource(tokenUser.getTokenAsset().getTokenSourceUrl(), tokenData.getHome().getTokenSourceMessage());
+        if (homeActionButtons.size() > 0) {
+            HomeActionButton actionButton = homeActionButtons.get(0);
+            widgetEggSource.showEggSource(actionButton.getText());
+            widgetEggSource.setOnClickListener(v -> {
+                if (!TextUtils.isEmpty(actionButton.getAppLink()) || !TextUtils.isEmpty(actionButton.getUrl())) {
+                    ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getAppLink(), actionButton.getUrl(), CrackTokenActivity.class);
+                    trackingMainGameLainnyaClick(actionButton.getText());
+                }
+            });
+        } else {
+            widgetEggSource.hide();
+        }
         showRewards(tokenData);
         showInfoTitle();
     }
@@ -517,6 +580,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     @Override
     public void onSuccessDownloadAllAsset() {
         renderViewCrackEgg();
+        showToolTip();
         widgetTokenOnBoarding.showHandOnboarding();
         trackingLuckyEggView();
         if (fpmRender != null)
@@ -525,27 +589,43 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onErrorGetToken(CrackResultEntity crackResult) {
-        setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
-        widgetCrackResult.showCrackResult(crackResult);
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork == null || !activeNetwork.isConnected()) {
+            loadNetworkConnectionErrorBottomSheet();
+        } else {
+            setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
+            widgetCrackResult.showCrackResult(crackResult);
+        }
     }
 
     @Override
     public void onSuccessCrackToken(final CrackResultEntity crackResult) {
+        crackLayoutTooltip.setVisibility(View.GONE);
+        stopTimer();
+        hideInfoTitle();
+        vibrate();
+        fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
                 !TextUtils.isEmpty(crackResult.getImageUrl())) {
             Glide.with(getContext())
-                    .load(crackResult.getImageUrl())
                     .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
+                    .load(crackResult.getImageUrl())
+                    .into(new CustomTarget<Bitmap>() {
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             crackResult.setImageBitmap(resource);
                             showCrackWidgetSuccess(crackResult);
                         }
 
                         @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
+                        public void onLoadCleared(@Nullable Drawable placeholder) { }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            super.onLoadFailed(errorDrawable);
                             crackResult.setImageBitmap(null);
                             // image load is failed, but we need to show the text instead.
                             showCrackWidgetSuccess(crackResult);
@@ -562,12 +642,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             @Override
             public void run() {
                 // Do something after 1s = 1000ms
-                if (getContext()!=null) {
-                    if(widgetTokenView.isCrackPercentageFull()) {
+                if (getContext() != null) {
+                    if (widgetTokenView.isCrackPercentageFull()) {
                         widgetTokenView.clearTokenAnimation();
                         widgetTokenView.split(crackResult);
                         trackingRewardLuckyEggView(crackResult.getBenefitType());
-                    }else{
+                    } else {
                         crackTokenSuccessHandler.postDelayed(this, 50);
                     }
                 }
@@ -592,20 +672,42 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetCrackResult.dismissReward();
     }
 
+    private void loadNetworkConnectionErrorBottomSheet() {
+        CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+        View view = getLayoutInflater().inflate(R.layout.gf_network_connection_bottomsheet, null, true);
+        ImageView closeBtn = view.findViewById(R.id.gf_close_button);
+        Typography tryAgainButton = view.findViewById(R.id.gf_no_internet_try_again);
+        tryAgainButton.setOnClickListener(v -> {
+            widgetCrackResult.clearCrackResult();
+
+            crackTokenPresenter.getGetTokenTokopoints();
+            bottomSheet.dismiss();
+        });
+        closeBtn.setOnClickListener((v) -> {
+            bottomSheet.dismiss();
+            this.getActivity().finish();
+        });
+        bottomSheet.setCustomContentView(view, "", false);
+        bottomSheet.show();
+    }
+
     @Override
     public void onErrorCrackToken(final CrackResultEntity crackResult) {
-        initCrackTokenErrorHandler();
-        crackTokenErrorhandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Do something after 1s = 1000ms
-                if(getContext()!=null) {
-                    widgetTokenView.stopShaking();
-                    setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
-                    widgetCrackResult.showCrackResult(crackResult);
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (widgetTokenView.getTimesFullEggClicked() % 3 == 0) {
+            if (getContext() != null) {
+                if (crackResult.getResultStatus() != null && crackResult.getResultStatus().getMessage() != null
+                        && !TextUtils.isEmpty(crackResult.getResultStatus().getMessage().get(0))) {
+                    NetworkErrorHelper.showErrorSnackBar(crackResult.getResultStatus().getMessage().get(0), getContext(), rootView, true);
+
+                } else {
+                    NetworkErrorHelper.showErrorSnackBar(getString(R.string.gf_crack_token_response_error), getContext(), rootView, true);
                 }
+                trackingSnackbarError(getString(R.string.gf_crack_token_response_error));
             }
-        }, 1000);
+        }
     }
 
     @Override
@@ -632,78 +734,105 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void trackingLuckyEggView() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                            GamificationEventTracking.Event.VIEW_LUCKY_EGG,
-                            GamificationEventTracking.Category.CRACK_LUCKY_EGG,
-                            GamificationEventTracking.Action.IMPRESSION,
-                            String.valueOf(tokenData.getFloating().getTokenId())
-                    ));
+                GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                GamificationEventTracking.Category.CRACK_LUCKY_EGG,
+                GamificationEventTracking.Action.IMPRESSION,
+                String.valueOf(tokenData.getFloating().getTokenId())
+        ));
     }
 
     private void trackingLuckyEggClick() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Category.CRACK_LUCKY_EGG,
-                            GamificationEventTracking.Action.CRACK_LUCKY_EGG,
-                            String.valueOf(tokenData.getFloating().getTokenId())
-                    ));
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.CRACK_LUCKY_EGG,
+                GamificationEventTracking.Action.CRACK_LUCKY_EGG,
+                String.valueOf(tokenData.getFloating().getTokenId())
+        ));
     }
 
     private void trackingRewardLuckyEggView(String benefitType) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                            GamificationEventTracking.Event.VIEW_LUCKY_EGG,
-                            GamificationEventTracking.Category.VIEW_REWARD,
-                            GamificationEventTracking.Action.IMPRESSION,
-                            benefitType
-                    ));
+                GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                GamificationEventTracking.Category.VIEW_REWARD,
+                GamificationEventTracking.Action.IMPRESSION,
+                benefitType
+        ));
     }
 
     private void trackingButtonClick(String benefitType, String buttonTitle) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Category.REWARD_CLICK + benefitType,
-                            GamificationEventTracking.Action.CLICK,
-                            buttonTitle
-                    ));
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.REWARD_CLICK + benefitType,
+                GamificationEventTracking.Action.CLICK,
+                buttonTitle
+        ));
     }
 
     private void trackingTryAgainBtnClick() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Category.ERROR_PAGE,
-                            GamificationEventTracking.Action.CLICK_TRY_AGAIN,
-                            ""
-                    ));
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.ERROR_PAGE,
+                GamificationEventTracking.Action.CLICK_TRY_AGAIN,
+                ""
+        ));
     }
 
     private void trackingExpiredBtnClick() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                            GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                            GamificationEventTracking.Category.EXPIRED_TOKEN,
-                            GamificationEventTracking.Action.CLICK_OK,
-                            ""
-                    ));
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.EXPIRED_TOKEN,
+                GamificationEventTracking.Action.CLICK_OK,
+                ""
+        ));
+    }
+
+    private void trackingDailyPrizeBtnClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                GamificationEventTracking.Category.CRACK_LUCKY_EGG,
+                GamificationEventTracking.Action.CLICK_DAILY_PRIZE,
+                ""
+        ));
+    }
+
+    private void trackingMainGameLainnyaClick(String buttonText) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                GamificationEventTracking.Category.CRACK_LUCKY_EGG,
+                GamificationEventTracking.Action.CLICK,
+                buttonText
+        ));
+    }
+
+    private void trackingSnackbarError(String errorText) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                GamificationEventTracking.Category.CRACK_LUCKY_EGG,
+                GamificationEventTracking.Action.VIEW_ERROR,
+                errorText
+        ));
     }
 
     private void trackingCloseRewardButtonClick(CrackResultEntity crackResult) {
-            String category = "";
-            if (crackResult.isCrackTokenSuccess()) {
-                if (crackResult.isTokenUserInvalid()) {
-                    category = GamificationEventTracking.Category.ERROR_PAGE;
-                } else if (crackResult.isCrackTokenExpired()) {
-                    category = GamificationEventTracking.Category.EXPIRED_TOKEN;
-                }
-            } else {
+        String category = "";
+        if (crackResult.isCrackTokenSuccess()) {
+            if (crackResult.isTokenUserInvalid()) {
                 category = GamificationEventTracking.Category.ERROR_PAGE;
+            } else if (crackResult.isCrackTokenExpired()) {
+                category = GamificationEventTracking.Category.EXPIRED_TOKEN;
             }
+        } else {
+            category = GamificationEventTracking.Category.ERROR_PAGE;
+        }
 
-            if (!category.equals("")) {
-                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                                category,
-                                GamificationEventTracking.Action.CLICK_CLOSE_BUTTON,
-                                ""
-                        ));
-            }
+        if (!category.equals("")) {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                    category,
+                    GamificationEventTracking.Action.CLICK_CLOSE_BUTTON,
+                    ""
+            ));
+        }
 
     }
 

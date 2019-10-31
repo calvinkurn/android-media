@@ -8,8 +8,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,26 +19,34 @@ import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core2.R;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
 public class SimpleWebViewWithFilePickerFragment extends Fragment implements GeneralWebView {
     private static final String SEAMLESS = "seamless";
+    private static final String FINGERPRINT_HASH = "Fingerprint-Hash";
+    private static final String FINGERPRINT_DATA = "Fingerprint-Data";
     public static final int PROGRESS_COMPLETED = 100;
     private static WebViewClient webViewClient;
     private ProgressBar progressBar;
@@ -47,6 +55,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
     public ValueCallback<Uri[]> callbackAfterL;
     public final static int ATTACH_FILE_REQUEST = 1;
     private static final String EXTRA_URL = "url";
+    private static final String POST= "POST";
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -155,6 +164,34 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
             return onOverrideUrl(request.getUrl());
         }
 
+        // Operational Tribe requirement
+        // Here is the path to determine if it is contact-us, create step
+        // If this path is found, we add the fingerprint header
+        private static final String CONTACT_US_PATH = "/contact-us/";
+        private static final String CREATE_STEP_PATH = "/create/step/";
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            // When user create help ticket, it will put the fingerprint data to header
+            // to add the useful information of the android device.
+            if (getContext()!= null) {
+                String urlString = request.getUrl().toString();
+                if (POST.equals(request.getMethod()) &&
+                        urlString.contains(CONTACT_US_PATH) &&
+                        urlString.contains(CREATE_STEP_PATH) &&
+                        getContext().getApplicationContext() instanceof NetworkRouter) {
+                    NetworkRouter networkRouter = (NetworkRouter) getContext().getApplicationContext();
+                    FingerprintModel fingerprintModel = networkRouter.getFingerprintModel();
+                    String fingerprintHashData = fingerprintModel.getFingerprintHash();
+                    String fingerprintHash = AuthHelper.getMD5Hash(fingerprintHashData + "+" +
+                            new UserSession(getContext()).getUserId());
+                    Map<String, String> requestHeader = request.getRequestHeaders();
+                    requestHeader.put(FINGERPRINT_HASH, fingerprintHash);
+                    requestHeader.put(FINGERPRINT_DATA, fingerprintHashData);
+                }
+            }
+            return super.shouldInterceptRequest(view, request);
+        }
 
         protected boolean onOverrideUrl(Uri url) {
             String urlString = url.toString();

@@ -19,33 +19,33 @@ buildscript {
     }
 }
 
-
-project.ext {
-    artifactId = 'promo-checkout-common'
-    groupId = 'com.tokopedia.promocheckout'
-    versionName = "${promoCheckoutVersion}"
-    artifactName ="promo_checkout_common-release"
-}
-
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.purchase_platform_common)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.libraries.commonNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation project(rootProject.ext.libraries.track)
-    
 
-    implementation project(rootProject.ext.features.transactiondata)
-
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
+
+project.ext {
+    artifactId = 'checkout-common'
+    groupId = 'com.tokopedia.promo'
+    versionName = "1.0.0"
+    artifactName ="promo_checkout_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

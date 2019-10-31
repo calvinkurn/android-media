@@ -5,8 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
-import android.support.design.widget.TextInputLayout
-import android.support.v4.view.ViewCompat
+import com.google.android.material.textfield.TextInputLayout
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -14,6 +13,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.view.ViewCompat
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -33,6 +34,7 @@ import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
@@ -48,7 +50,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocompl
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
@@ -87,6 +89,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var staticDimen8dp: Int? = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private val FINISH_PINPOINT_FLAG = 8888
+    private val MINIMUM_CHARACTER = 8
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
     private var labelAlamatList: Array<String> = emptyArray()
@@ -127,7 +130,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)!!
             saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
             token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
-
             isLatitudeNotEmpty = saveAddressDataModel?.latitude?.isNotEmpty()
             isLatitudeNotEmpty?.let {
                 if (it) currentLat = saveAddressDataModel?.latitude?.toDouble()
@@ -543,6 +545,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (et_phone.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel))
+            if (field.isNotEmpty()) field += ", "
+            field += "no ponsel"
+        }
+
+        if (et_phone?.text?.length?: 0 < MINIMUM_CHARACTER) {
+            validated = false
+            setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char))
             if (field.isNotEmpty()) field += ", "
             field += "no ponsel"
         }
@@ -1077,6 +1086,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             override fun afterTextChanged(text: Editable) {
             }
         }
+    }
+
+    override fun showError(t: Throwable) {
+        Toast.makeText(context, getString(R.string.something_wrong_happened), Toast.LENGTH_SHORT).show()
     }
 
     override fun onDetach() {

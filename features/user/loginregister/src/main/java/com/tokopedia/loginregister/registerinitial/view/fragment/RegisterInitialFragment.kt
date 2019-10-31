@@ -9,7 +9,6 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.SpannableString
@@ -18,6 +17,8 @@ import android.text.style.ClickableSpan
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -36,6 +37,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.kotlin.util.getParamString
@@ -44,12 +46,12 @@ import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract
 import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter
@@ -64,6 +66,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -105,13 +108,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     lateinit var optionTitle: TextView
+    lateinit var separator: View
     lateinit var partialRegisterInputView: PartialRegisterInputView
-    lateinit var registerContainer: LinearLayout
     lateinit var registerButton: LoginTextView
     lateinit var loginButton: TextView
     lateinit var container: ScrollView
     lateinit var progressBar: RelativeLayout
     lateinit var tickerAnnouncement: Ticker
+    private lateinit var socmedButton: ButtonCompat
+    private lateinit var bottomSheet: BottomSheetUnify
+    private lateinit var socmedButtonsContainer: LinearLayout
 
     private var phoneNumber: String? = ""
     private var source : String = ""
@@ -170,6 +176,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
+            analytics.initCashShield(this)
+            analytics.sendCashShield(this)
         }
     }
 
@@ -198,7 +206,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     .build()
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         }
-        analytics.onCreate(context)
 
         phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
@@ -223,9 +230,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_initial_register, parent, false)
         optionTitle = view.findViewById(R.id.register_option_title)
+        separator = view.findViewById(R.id.separator)
         partialRegisterInputView = view.findViewById(R.id.register_input_view)
-        registerContainer = view.findViewById(R.id.register_container)
         registerButton = view.findViewById(R.id.register)
+        socmedButton = view.findViewById(R.id.socmed_btn)
         loginButton = view.findViewById(R.id.login_button)
         container = view.findViewById(R.id.container)
         progressBar = view.findViewById(R.id.progress_bar)
@@ -279,8 +287,25 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         presenter.getTickerInfo()
     }
 
+    @SuppressLint("RtlHardcoded")
     protected fun prepareView() {
         activity?.run {
+            val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
+            socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
+
+            bottomSheet = BottomSheetUnify()
+            bottomSheet.setTitle(getString(R.string.choose_social_media))
+            bottomSheet.setChild(viewBottomSheetDialog)
+            bottomSheet.setCloseClickListener {
+                registerAnalytics.trackClickCloseSocmedButton()
+                bottomSheet.dismiss()
+            }
+
+            socmedButton.setOnClickListener {
+                registerAnalytics.trackClickSocmedButton()
+                bottomSheet.show(supportFragmentManager, getString(R.string.bottom_sheet_show))
+            }
+
             registerButton.visibility = View.GONE
             partialRegisterInputView.visibility = View.GONE
             partialRegisterInputView.setButtonValidator(true)
@@ -288,8 +313,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
             if (!GlobalConfig.isSellerApp()) {
                 optionTitle.setText(R.string.register_option_title)
-                optionTitle.typeface = Typeface.DEFAULT
-                optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            }else{
+                separator.visibility = View.GONE
+                optionTitle.setText(R.string.register_now)
+                optionTitle.typeface = Typeface.DEFAULT_BOLD
+                optionTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                val layoutParams: RelativeLayout.LayoutParams = optionTitle.layoutParams as RelativeLayout.LayoutParams
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, 0)
+                layoutParams.setMargins(0, 32, 0, 0)
+                optionTitle.layoutParams = layoutParams
+                optionTitle.setPadding(0, 0, 0, 0)
+                optionTitle.setTextColor(ContextCompat.getColor(this, R.color.black_70))
             }
 
             registerButton.setColor(Color.WHITE)
@@ -405,6 +439,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 it.finish()
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
                             .RESULT_CANCELED) {
+                logoutGoogleAccountIfExist()
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE
@@ -418,7 +453,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                presenter.getUserInfo(false)
+                presenter.getUserInfo()
             } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -489,9 +524,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     override fun showLoadingDiscover() {
         val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
-        val lastPos = registerContainer.childCount - 1
-        if (registerContainer.getChildAt(lastPos) !is ProgressBar) {
-            registerContainer.addView(pb, registerContainer.childCount)
+        val lastPos = socmedButtonsContainer.childCount - 1
+        if (socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
+            socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
         }
     }
 
@@ -516,10 +551,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 resources.getDimensionPixelSize(R.dimen.dp_52))
-        val topMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10f,
-                resources.displayMetrics).toInt()
+        layoutParams.setMargins(0, 10, 0, 10)
 
-        layoutParams.setMargins(0, topMargin, 0, 0)
+        socmedButtonsContainer.removeAllViews()
 
         for (i in listProvider.indices) {
             val item = listProvider[i]
@@ -533,7 +567,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
                 setDiscoverOnClickListener(item, loginTextView)
 
-                registerContainer.addView(loginTextView, registerContainer.childCount,
+                socmedButtonsContainer.addView(loginTextView, socmedButtonsContainer.childCount,
                         layoutParams)
             }
         }
@@ -551,6 +585,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onRegisterFacebookClick() {
         activity?.let {
+            bottomSheet.dismiss()
             registerAnalytics.trackClickFacebookButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_FACEBOOK)
             presenter.getFacebookCredential(this, callbackManager)
@@ -560,6 +595,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onRegisterGoogleClick() {
         activity?.let {
+            bottomSheet.dismiss()
             registerAnalytics.trackClickGoogleButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL)
             val intent = mGoogleSignInClient.signInIntent
@@ -569,9 +605,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     override fun dismissLoadingDiscover() {
-        val lastPos = registerContainer.childCount - 1
-        if (registerContainer.getChildAt(lastPos) is ProgressBar) {
-            registerContainer.removeViewAt(registerContainer.childCount - 1)
+        val lastPos = socmedButtonsContainer.childCount - 1
+        if (socmedButtonsContainer.getChildAt(lastPos) is ProgressBar) {
+            socmedButtonsContainer.removeViewAt(socmedButtonsContainer.childCount - 1)
         }
     }
 
@@ -710,6 +746,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     override fun onErrorLoginGoogle(email: String): (e: Throwable) -> Unit {
+        logoutGoogleAccountIfExist()
         return {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
             onErrorRegister(errorMessage)
@@ -746,7 +783,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onSuccessRegister() {
         activity?.let{
-            registerAnalytics.trackSuccessRegister(context, userSession.loginMethod)
+            registerAnalytics.trackSuccessRegister(userSession.loginMethod)
 
             if(isFromAccount()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
@@ -805,9 +842,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 }
                 val adapter = TickerPagerAdapter(activity!!, mockData)
                 adapter.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        registerAnalytics.trackClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -823,9 +860,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     tickerAnnouncement.tickerShape = getTickerType(it.color)
                 }
                 tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        registerAnalytics.trackClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -911,6 +948,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        analytics.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -928,5 +966,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         context?.let {
             permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
         }
+    }
+
+    private fun logoutGoogleAccountIfExist() {
+        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
+        if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 }

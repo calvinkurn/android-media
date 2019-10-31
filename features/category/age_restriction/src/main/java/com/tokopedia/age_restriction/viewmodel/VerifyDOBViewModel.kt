@@ -1,6 +1,7 @@
 package com.tokopedia.age_restriction.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.age_restriction.data.UserDOBUpdateResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
@@ -9,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class VerifyDOBViewModel : BaseViewModel(), CoroutineScope {
+class VerifyDOBViewModel(application: Application) : BaseViewModel(application), CoroutineScope {
 
     val userIsAdult = MutableLiveData<Boolean>()
     val userNotAdult = MutableLiveData<Boolean>()

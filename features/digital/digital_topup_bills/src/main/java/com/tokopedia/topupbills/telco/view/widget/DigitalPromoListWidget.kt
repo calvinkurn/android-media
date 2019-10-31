@@ -1,14 +1,14 @@
 package com.tokopedia.topupbills.telco.view.widget
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.data.TelcoPromo
+import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.topupbills.telco.view.adapter.DigitalPromoListAdapter
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
 import org.jetbrains.annotations.NotNull
@@ -22,7 +22,7 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
 
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
-    private val promoList = mutableListOf<TelcoPromo>()
+    private val promoList = mutableListOf<TopupBillsPromo>()
     private lateinit var digitalPromoListAdapter: DigitalPromoListAdapter
     private lateinit var listener: ActionListener
     private val digitalTrackRecentPrev = mutableListOf<DigitalTrackPromoTelco>()
@@ -37,7 +37,7 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
         this.listener = listener
     }
 
-    fun setPromoList(promoList: List<TelcoPromo>) {
+    fun setPromoList(promoList: List<TopupBillsPromo>) {
         titleWidget.visibility = View.VISIBLE
         titleWidget.text = context.getString(R.string.title_promo)
 
@@ -50,8 +50,8 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
                 listener.onCopiedPromoCode(promoId, voucherCode)
             }
 
-            override fun onClickPromoItem(telcoPromo: TelcoPromo, position: Int) {
-                listener.onClickItemPromo(telcoPromo, position)
+            override fun onClickPromoItem(topupBillsPromo: TopupBillsPromo, position: Int) {
+                listener.onClickItemPromo(topupBillsPromo, position)
             }
         })
         this.promoList.addAll(promoList)
@@ -67,7 +67,7 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
         })
     }
 
-    fun getVisibleRecentItemsToUsersTracking(promoList: List<TelcoPromo>) {
+    fun getVisibleRecentItemsToUsersTracking(promoList: List<TopupBillsPromo>) {
         val firstPos = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
         val lastPos = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
 
@@ -99,7 +99,7 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
 
         fun onTrackImpressionPromoList(digitalTrackPromoList: List<DigitalTrackPromoTelco>)
 
-        fun onClickItemPromo(telcoPromo: TelcoPromo, position: Int)
+        fun onClickItemPromo(topupBillsPromo: TopupBillsPromo, position: Int)
     }
 
 }

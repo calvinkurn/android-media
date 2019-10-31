@@ -1,21 +1,21 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
 
 import android.net.Uri;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ListHelper;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
+import com.tokopedia.search.utils.ListHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +30,14 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchVie
 
     public RelatedSearchViewHolder(View itemView, RelatedSearchListener relatedSearchListener) {
         super(itemView);
-        recyclerView = itemView.findViewById(R.id.recyclerView);
+        recyclerView = itemView.findViewById(com.tokopedia.design.R.id.recyclerView);
         relatedSearchTitle = itemView.findViewById(R.id.relatedSearchTitle);
         adapter = new RelatedSearchAdapter(relatedSearchListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
-                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_8),
-                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)
+                itemView.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                itemView.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         ));
     }
 

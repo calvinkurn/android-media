@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +31,13 @@ import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
+import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CatalogListItemPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +56,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     private static final int CONTAINER_ERROR = 2;
     private static final int CONTAINER_EMPTY = 3;
     private ViewFlipper mContainer;
+    private ServerErrorView serverErrorView;
     private RecyclerView mRecyclerViewCatalog;
     private CatalogListAdapter mAdapter;
     private long mRefreshTime;
@@ -108,6 +111,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg));
         }
         mContainer = rootView.findViewById(R.id.container);
+        serverErrorView = rootView.findViewById(R.id.server_error_view);
         return rootView;
     }
 
@@ -154,6 +158,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     public void showError() {
         mContainer.setDisplayedChild(CONTAINER_ERROR);
         mSwipeToRefresh.setRefreshing(false);
+        serverErrorView.showErrorUi(NetworkDetector.isConnectedToInternet(getAppContext()));
     }
 
     @Override

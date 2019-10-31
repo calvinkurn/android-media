@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">filter</string>
+    <string name="title_search_recent">PENCARIAN TERAKHIR</string>
+    <string name="title_search_hotlist">HOTLIST</string>
+    <string name="title_search_popular">POPULAR SEARCH</string>
+    <string name="title_search_category">DALAM KATEGORI</string>
+    <string name="delete_all">Hapus Semua</string>
+    <string name="title_product">Produk</string>
+    <string name="title_catalog">Katalog</string>
+    <string name="title_shop">Toko</string>
+    <string name="title_profile">Profil</string>
+
+    <string name="dynamic_filter_apply_button_text">Simpan</string>
+    <string name="filter_button_reset_text">Reset</string>
+    <string name="dynamic_filter_finish_button_text">Terapkan</string>
+    <string name="choose_category">Pilih Kategori</string>
+    <string name="error_get_local_dynamic_filter">Gagal memproses data Filter</string>
+    <string name="bottom_sheet_filter_finish_button_template_text">Tampilkan %s produk</string>
+
+    <string name="title_category">Kategori</string>
+    <string name="title_sort_but">Urutkan</string>
+    <string name="title_close">Tutup</string>
+    <string name="see_all">Lihat Semua</string>
+    <string name="filter">Filter</string>
+</resources>

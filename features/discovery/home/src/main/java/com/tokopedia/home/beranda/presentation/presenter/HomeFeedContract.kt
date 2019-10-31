@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 

@@ -3,15 +3,16 @@ package com.tokopedia.settingbank.addeditaccount.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.settingbank.addeditaccount.view.fragment.AddEditBankFormFragment
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
 
 /**
  * @author by nisie on 6/21/18.
+ * * For navigating to this class
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal#ADD_BANK}
  */
-
 class AddEditBankActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {

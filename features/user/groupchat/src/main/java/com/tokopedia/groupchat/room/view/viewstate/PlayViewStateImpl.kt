@@ -1,18 +1,8 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import android.support.constraint.ConstraintLayout
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
@@ -23,7 +13,15 @@ import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -54,7 +52,6 @@ import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
-import com.tokopedia.groupchat.room.view.customview.StickyComponentHelper
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
@@ -62,6 +59,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -69,7 +67,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -121,7 +118,7 @@ open class PlayViewStateImpl(
     private var sendButton: View = view.findViewById(R.id.button_send)
     private var dynamicButtonRecyclerView: RecyclerView = view.findViewById(R.id.buttons)
     private var liveIndicator: View = toolbar.findViewById(R.id.toolbar_live)
-    private var stickyComponent: View = view.findViewById(R.id.sticky_component)
+    private var stickyComponent: RecyclerView = view.findViewById(R.id.sticky_component)
     private val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
     private var errorView: View = view.findViewById(R.id.card_retry)
     private var loadingView: View = view.findViewById(R.id.loading_view)
@@ -155,6 +152,7 @@ open class PlayViewStateImpl(
     private var sponsorHelper: SponsorHelper
     private var welcomeHelper: PlayWelcomeHelper
     private var backgroundHelper: PlayBackgroundHelper
+    private var stickyComponentHelper: StickyComponentHelper
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -288,10 +286,12 @@ open class PlayViewStateImpl(
                 youTubePlayer,
                 setChatListHasSpaceOnTop(),
                 liveIndicator,
-                analytics
+                analytics,
+                activity
         )
         sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
         welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
+        stickyComponentHelper = StickyComponentHelper(stickyComponent, userSession, analytics, viewModel, openLink(), activity)
         errorView.setOnClickListener {}
 
     }
@@ -338,65 +338,12 @@ open class PlayViewStateImpl(
         dynamicButtonAdapter.addList(ArrayList())
     }
 
-    override fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentViewModel) {
-        this.stickyComponentViewModel = stickyComponentViewModel
-        showStickComponent(stickyComponentViewModel)
+    override fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentsViewModel) {
+        stickyComponentHelper.assignModel(stickyComponentViewModel)
     }
 
     override fun onErrorGetStickyComponent() {
-        hideStickyComponent()
-    }
-
-    private fun hideStickyComponent() {
-        stickyComponent.visibility = View.GONE
-    }
-
-    private fun showStickComponent(item: StickyComponentViewModel?) {
-        stickyComponent.hide()
-        item?.run {
-            if (title.isNullOrEmpty() || !userSession.isLoggedIn) return
-            StickyComponentHelper.setView(stickyComponent, item)
-            stickyComponent.setOnClickListener {
-                viewModel?.let {
-                    analytics.eventClickStickyComponent(item, it)
-                    var applink = RouteManager.routeWithAttribution(activity, item.redirectUrl,
-                            GroupChatAnalytics.generateTrackerAttribution(
-                                    GroupChatAnalytics.ATTRIBUTE_PROMINENT_BUTTON,
-                                    it.channelUrl,
-                                    it.title
-                            ))
-                    listener.openRedirectUrl(applink)
-                }
-
-            }
-
-            stickyComponent.animate().setDuration(200)
-                    .alpha(1f)
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            viewModel?.let {
-                                analytics.eventShowStickyComponent(item, it)
-                            }
-                            stickyComponent.show()
-                        }
-                    })
-
-            val hideStickyComponent = Action1<Long> {
-                stickyComponent.animate().setDuration(200)
-                        .alpha(0f)
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator) {
-                                stickyComponent.hide()
-                                stickyComponentViewModel = null
-                            }
-                        })
-            }
-            if (item.stickyTime != 0) {
-                Observable.timer(item.stickyTime.toLong(), TimeUnit.SECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(hideStickyComponent, Action1{ it.printStackTrace()})
-            }
-        }
+        stickyComponentHelper.hide()
     }
 
     override fun onKeyboardHidden() {
@@ -483,6 +430,7 @@ open class PlayViewStateImpl(
         sponsorHelper.assignViewModel(it)
         sponsorHelper.setSponsor()
         overflowMenuHelper.assignViewModel(it)
+        stickyComponentHelper.assignViewModel(it)
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
@@ -510,10 +458,10 @@ open class PlayViewStateImpl(
             viewModel?.let {
                 setPinnedMessage(it)
                 setQuickReply(it.quickRepliesViewModel)
-                showStickComponent(stickyComponentViewModel)
+                stickyComponentHelper.show()
             }
         } else {
-            hideStickyComponent()
+            stickyComponentHelper.hide()
             hidePinnedMessage()
             setQuickReply(null)
         }
@@ -665,7 +613,7 @@ open class PlayViewStateImpl(
             overlayDialog.setOnShowListener { dialog ->
                 val d = dialog as BottomSheetDialog
 
-                val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+                val bottomSheet = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
@@ -1197,7 +1145,7 @@ open class PlayViewStateImpl(
         pinnedMessageDialog.setOnShowListener() { dialog ->
             val d = dialog as BottomSheetDialog
 
-            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) {
                 BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
                 pinnedMessageView.findViewById<ImageView>(R.id.thumbnail).visibility = View.VISIBLE
@@ -1241,6 +1189,12 @@ open class PlayViewStateImpl(
         buttonTxt.text = buttonText
         button.setOnClickListener {
             action()
+        }
+    }
+
+    private fun openLink(): (String) -> Unit {
+        return {
+            listener.openRedirectUrl(it)
         }
     }
 

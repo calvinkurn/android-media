@@ -2,7 +2,7 @@ package com.tokopedia.shop.open.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,12 +60,12 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_create_success, container, false);
-        loadingStateView = view.findViewById(R.id.loading_state_view);
-        shopIconImageView = view.findViewById(R.id.image_view_shop_icon);
-        tvShopName = view.findViewById(R.id.text_view_shop_title);
-        View buttonAddProduct = view.findViewById(R.id.button_add_product);
-        View buttonToShopPage = view.findViewById(R.id.button_shop_page);
+        View view = inflater.inflate(com.tokopedia.seller.R.layout.fragment_shop_create_success, container, false);
+        loadingStateView = view.findViewById(com.tokopedia.design.R.id.loading_state_view);
+        shopIconImageView = view.findViewById(com.tokopedia.seller.R.id.image_view_shop_icon);
+        tvShopName = view.findViewById(com.tokopedia.seller.R.id.text_view_shop_title);
+        View buttonAddProduct = view.findViewById(com.tokopedia.core2.R.id.button_add_product);
+        View buttonToShopPage = view.findViewById(com.tokopedia.seller.R.id.button_shop_page);
         buttonAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,16 +115,16 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
         } else {
-            shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
+            shopIconImageView.setImageResource(com.tokopedia.seller.R.drawable.ic_placeholder_shop_with_padding);
         }
         tvShopName.setText(MethodChecker.fromHtml(shopModel.info.getShopName()));
     }
 
     @Override
     public void onErrorGetShopInfo(Throwable t) {
-        loadingStateView.setErrorViewRes(R.layout.design_retry);
+        loadingStateView.setErrorViewRes(com.tokopedia.abstraction.R.layout.design_retry);
         View errorView = loadingStateView.getErrorView();
-        errorView.findViewById(R.id.retry_but).setOnClickListener(new View.OnClickListener() {
+        errorView.findViewById(com.tokopedia.abstraction.R.id.retry_but).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showLoading();

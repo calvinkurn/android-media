@@ -1,12 +1,12 @@
 package com.tokopedia.explore.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v7.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +20,9 @@ import com.tokopedia.explore.R
 import com.tokopedia.explore.di.ExploreComponent
 import com.tokopedia.explore.domain.entity.PostKol
 import com.tokopedia.explore.view.adapter.HashtagLandingItemAdapter
+import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.explore.view.viewmodel.HashtagLandingPageViewModel
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +37,9 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: HashtagLandingPageViewModel
+
+    @Inject
+    lateinit var feedAnalytics: FeedAnalyticTracker
 
     private val layoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -99,7 +104,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
         }
     }
 
-    private fun onSuccessGetData(data: List<PostKol>) {
+    private fun onSuccessGetData(data: List<PostKolUiModel>) {
         if (isInitialLoad)
             adapter.updateList(data)
         else
@@ -124,28 +129,40 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
             loadData(true)
         }
 
-
         recycler_view.layoutManager = layoutManager
         recycler_view.addOnScrollListener(endlessScrollListener)
         recycler_view.adapter = adapter
         loadData()
+
+        feedAnalytics.eventOpenHashtagScreen()
     }
 
-    override fun onImageClick(post: PostKol) {
+    override fun onImageClick(post: PostKol, position: Int) {
         activity?.let { RouteManager.route(it, ApplinkConst.CONTENT_DETAIL, post.id.toString()) }
+        feedAnalytics.eventHashtagPageClickThumbnail(post.id.toString(), searchTag, position)
     }
 
     override fun onUserImageClick(post: PostKol) {
         /** uncomment this when the result of explore post could differentiate whether the creator is shop **/
         //activity?.let { RouteManager.route(it,
         // if (isShopPost)ApplinkConst.SHOP else ApplinkConst.PROFILE, post.userId.toString()) }
-
+        feedAnalytics.eventHashtagPageClickNameAvatar(post.userId.toString())
     }
 
     override fun onUserNameClick(post: PostKol) {
         /** uncomment this when the result of explore post could differentiate whether the creator is shop **/
         //activity?.let { RouteManager.route(it,
         // if (isShopPost)ApplinkConst.SHOP else ApplinkConst.PROFILE, post.userId.toString()) }
+        feedAnalytics.eventHashtagPageClickNameAvatar(post.userId.toString())
+    }
+
+    override fun onImageFirstTimeSeen(post: PostKol, position: Int) {
+        feedAnalytics.eventHashtagPageViewPost(post.id.toString(), searchTag, position)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        feedAnalytics.sendPendingAnalytics()
     }
 
     override fun onDestroy() {

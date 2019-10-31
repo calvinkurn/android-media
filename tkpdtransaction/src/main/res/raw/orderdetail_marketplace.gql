@@ -59,6 +59,10 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       productUrl
       totalPrice
       weight
+      freeShipping {
+        isEligible
+        imageUrl
+      }
       actionButtons {
         label
         buttonType
@@ -196,9 +200,15 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
     additionalInfo {
       label
       value
-      label
+      imageUrl
       textColor
       backgroundColor
+    }
+    additionalTickerInfo {
+      title
+      notes
+      urlDetail
+      urlText
     }
   }
 }

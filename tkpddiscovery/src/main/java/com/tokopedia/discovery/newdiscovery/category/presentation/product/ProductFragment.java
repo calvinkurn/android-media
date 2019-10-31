@@ -3,33 +3,33 @@ package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -39,9 +39,8 @@ import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.common.data.Filter;
-import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.category.di.component.CategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.di.component.DaggerCategoryComponent;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
@@ -54,14 +53,13 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -552,16 +550,15 @@ public class ProductFragment extends BrowseSectionFragment
                 } else {
                     updateWishlistFromPDP(productId, position, isWishlist);
                 }
-            } else if (requestCode == getFilterRequestCode()) {
-                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
-                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                clearDataFilterSort();
-                showBottomBarNavigation(false);
-                updateDepartmentId(getFlagFilterHelper().getCategoryId());
-//                reloadData();
-                showSelectedFilters(getSelectedFilter());
             }
         }
+    }
+
+    @Override
+    protected void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                      List<Option> selectedOptions) {
+        super.handleFilterResult(queryParams, selectedFilters, selectedOptions);
+        showSelectedFilters(getSelectedFilter());
     }
 
     private void showSelectedFilters(HashMap<String, String> selectedFilter) {
@@ -862,13 +859,10 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void onBannerAdsClicked(String appLink) {
-        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
-        if (router.isSupportedDelegateDeepLink(appLink)) {
-            router.actionApplink(getActivity(), appLink);
-        } else if (appLink != "") {
-            Intent intent = new Intent(getContext(), BannerWebView.class);
-            intent.putExtra("url", appLink);
-            startActivity(intent);
+        if (URLUtil.isNetworkUrl(appLink)) {
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, appLink);
+        } else {
+            RouteManager.route(getActivity(), appLink);
         }
     }
 
@@ -955,6 +949,17 @@ public class ProductFragment extends BrowseSectionFragment
                 categoryHeaderModel.setQuickFilterList(this.quickFilterItems);
                 adapter.notifyDataSetChanged();
             }
+        }
+    }
+
+    @Override
+    protected String getCategoryId() {
+        if (productViewModel != null
+                && productViewModel.getCategoryHeaderModel() != null
+                && productViewModel.getCategoryHeaderModel().getDepartementId() != null) {
+            return productViewModel.getCategoryHeaderModel().getDepartementId();
+        } else {
+            return "";
         }
     }
 }

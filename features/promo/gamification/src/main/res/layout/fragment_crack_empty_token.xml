@@ -16,7 +16,7 @@
 
 
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/empty_lucky_egg"
         android:layout_width="@dimen/width_egg"
         android:layout_height="@dimen/height_egg"
@@ -65,7 +65,7 @@
             tools:visibility="visible" />
     </LinearLayout>
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -91,36 +91,25 @@
                 android:textStyle="normal" />
 
             <FrameLayout
-                android:id="@+id/fl_remaining_token"
+                android:id="@+id/fl_daily_prize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginRight="@dimen/dp_16"
                 android:visibility="gone">
 
+
                 <ImageView
-                    android:id="@+id/image_remaining_token"
+                    android:id="@+id/empty_daily_prize"
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_32"
-                    android:layout_margin="@dimen/dp_8"
                     tools:src="@drawable/ic_empty_egg" />
-
-                <TextView
-                    android:id="@+id/tv_floating_counter"
-                    style="@style/TextView.Micro10"
-                    android:layout_width="@dimen/dp_22"
-                    android:layout_height="@dimen/dp_22"
-                    android:layout_gravity="top|end"
-                    android:background="@drawable/circle_red_shadow"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    tools:text="99+" />
             </FrameLayout>
 
         </FrameLayout>
 
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
 
 </FrameLayout>

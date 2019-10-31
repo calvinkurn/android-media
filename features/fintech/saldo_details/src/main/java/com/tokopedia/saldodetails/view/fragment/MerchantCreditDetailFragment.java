@@ -5,10 +5,10 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.cardview.widget.CardView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -26,8 +26,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics;
@@ -36,6 +34,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
+import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity;
 
 import javax.inject.Inject;
 
@@ -65,7 +64,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_merchant_credit_details, container, false);
+        View view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_merchant_credit_details, container, false);
         Bundle bundle = getArguments();
         merchantCreditDetails = bundle != null ? bundle.getParcelable(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS) : null;
         initViews(view);
@@ -76,16 +75,16 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
     }
 
     private void initViews(View view) {
-        mclLogoIV = view.findViewById(R.id.mcl_logo);
-        mclTitleTV = view.findViewById(R.id.mcl_title);
-        mclActionItemTV = view.findViewById(R.id.mcl_action_item);
-        mclDescTV = view.findViewById(R.id.mcl_description);
-        mclInfoListLL = view.findViewById(R.id.mcl_info_list);
-        mclBoxLayout = view.findViewById(R.id.mcl_box_layout);
-        mclboxTitleTV = view.findViewById(R.id.mcl_box_title);
-        mclBoxDescTV = view.findViewById(R.id.mcl_box_Desc);
-        mclBlockedStatusTV = view.findViewById(R.id.mcl_blocked_status);
-        mclParentCardView = view.findViewById(R.id.mcl_card_view);
+        mclLogoIV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_logo);
+        mclTitleTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_title);
+        mclActionItemTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_action_item);
+        mclDescTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_description);
+        mclInfoListLL = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_info_list);
+        mclBoxLayout = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_box_layout);
+        mclboxTitleTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_box_title);
+        mclBoxDescTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_box_Desc);
+        mclBlockedStatusTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_blocked_status);
+        mclParentCardView = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_card_view);
     }
 
     @Override
@@ -99,15 +98,15 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
             if (!TextUtils.isEmpty(merchantCreditDetails.getLogoURL())) {
                 mclLogoIV.setVisibility(View.VISIBLE);
-                ImageHandler.loadImage(context, mclLogoIV, merchantCreditDetails.getLogoURL(), R.drawable.ic_modal_toko);
+                ImageHandler.loadImage(context, mclLogoIV, merchantCreditDetails.getLogoURL(), com.tokopedia.design.R.drawable.ic_modal_toko);
             } else {
-                mclLogoIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_modal_toko));
+                mclLogoIV.setImageDrawable(getResources().getDrawable(com.tokopedia.design.R.drawable.ic_modal_toko));
             }
 
             if (!TextUtils.isEmpty(merchantCreditDetails.getTitle())) {
                 mclTitleTV.setText(Html.fromHtml(merchantCreditDetails.getTitle()));
             } else {
-                mclTitleTV.setText(getString(R.string.modal_toko));
+                mclTitleTV.setText(getString(com.tokopedia.saldodetails.R.string.modal_toko));
             }
 
             if (merchantCreditDetails.getAnchorList() != null) {
@@ -142,8 +141,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
 
                 saldoDetailsAnalytics.eventMCLCardCLick(String.valueOf(merchantCreditDetails.getStatus()));
                 if (!TextUtils.isEmpty(merchantCreditDetails.getMainRedirectUrl())) {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                            merchantCreditDetails.getMainRedirectUrl()));
+                    startWebView(merchantCreditDetails.getMainRedirectUrl());
                 }
             });
         }
@@ -176,8 +174,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                         @Override
                         public void onClick(@NonNull View view) {
                             if (!TextUtils.isEmpty(merchantCreditDetails.getBoxInfo().getLinkUrl())) {
-                                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                                        merchantCreditDetails.getBoxInfo().getLinkUrl()));
+                                startWebView(merchantCreditDetails.getBoxInfo().getLinkUrl());
                             }
                         }
 
@@ -188,7 +185,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                             try {
                                 ds.setColor(Color.parseColor(merchantCreditDetails.getBoxInfo().getLinkTextColor()));
                             } catch (Exception e) {
-                                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                                ds.setColor(getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green));
                             }
 
                         }
@@ -208,15 +205,19 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
         }
     }
 
+    private void startWebView(String linkUrl) {
+        startActivity(SaldoWebViewActivity.getWebViewIntent(context, linkUrl));
+    }
+
     private void populateInfolistData() {
         LayoutInflater layoutInflater = getLayoutInflater();
         mclInfoListLL.removeAllViews();
 
         for (GqlInfoListResponse infoList1 : merchantCreditDetails.getInfoList()) {
 
-            View view = layoutInflater.inflate(R.layout.layout_info_list, null);
-            TextView infoLabel = view.findViewById(R.id.info_label_text_view);
-            TextView infoValue = view.findViewById(R.id.info_value_text_view);
+            View view = layoutInflater.inflate(com.tokopedia.saldodetails.R.layout.layout_info_list, null);
+            TextView infoLabel = view.findViewById(com.tokopedia.saldodetails.R.id.info_label_text_view);
+            TextView infoValue = view.findViewById(com.tokopedia.saldodetails.R.id.info_value_text_view);
 
             infoLabel.setText(infoList1.getLabel());
             infoValue.setText(infoList1.getValue());
@@ -232,7 +233,7 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
             try {
                 mclActionItemTV.setTextColor(Color.parseColor(gqlAnchorListResponse.getColor()));
             } catch (Exception e) {
-                mclActionItemTV.setTextColor(getResources().getColor(R.color.tkpd_main_green));
+                mclActionItemTV.setTextColor(getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green));
             }
             mclActionItemTV.setOnClickListener(v -> {
 
@@ -243,16 +244,17 @@ public class MerchantCreditDetailFragment extends BaseDaggerFragment {
                         gqlAnchorListResponse.getDialogInfo() != null) {
 
                     CloseableBottomSheetDialog closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context);
-                    View view = getLayoutInflater().inflate(R.layout.mcl_bottom_dialog, null);
-                    ((TextView) view.findViewById(R.id.mcl_bottom_sheet_title)).setText(gqlAnchorListResponse.getDialogInfo().getDialogTitle());
-                    ((TextView) view.findViewById(R.id.mcl_bottom_sheet_desc)).setText(gqlAnchorListResponse.getDialogInfo().getDialogBody());
+                    View view = getLayoutInflater().inflate(com.tokopedia.saldodetails.R.layout.mcl_bottom_dialog, null);
+                    ((TextView) view.findViewById(com.tokopedia.saldodetails.R.id.mcl_bottom_sheet_title)).setText(gqlAnchorListResponse.getDialogInfo().getDialogTitle());
+                    ((TextView) view.findViewById(com.tokopedia.saldodetails.R.id.mcl_bottom_sheet_desc)).setText(gqlAnchorListResponse.getDialogInfo().getDialogBody());
 
                     closeableBottomSheetDialog.setContentView(view);
                     closeableBottomSheetDialog.show();
                     closeableBottomSheetDialog.setCanceledOnTouchOutside(true);
                 } else {
-                    RouteManager.route(context, String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW, gqlAnchorListResponse.getLink()));
+                    if (!TextUtils.isEmpty(gqlAnchorListResponse.getLink())) {
+                        startWebView(gqlAnchorListResponse.getLink());
+                    }
                 }
             });
         }

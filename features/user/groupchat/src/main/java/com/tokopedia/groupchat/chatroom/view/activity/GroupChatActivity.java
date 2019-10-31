@@ -15,18 +15,18 @@ import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.Fragment.SavedState;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.util.ArrayMap;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.Fragment.SavedState;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.collection.ArrayMap;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -50,11 +50,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.card.ToolTipUtils;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
@@ -435,7 +435,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
 
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet)
@@ -506,15 +506,12 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initPreference() {
-        if (userSession != null
-                && !TextUtils.isEmpty(userSession.getUserId())
-                && getApplication() instanceof GroupChatModuleRouter) {
+        if (userSession != null && !TextUtils.isEmpty(userSession.getUserId())) {
 
             sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(getContext());
 
-            String NOTIFICATION_GROUP_CHAT =
-                    ((GroupChatModuleRouter) getApplication()).getNotificationPreferenceConstant();
+            String NOTIFICATION_GROUP_CHAT = ApplinkConst.Play.NOTIFICATION_GROUP_CHAT;
 
             boolean isNotificationOn =
                     sharedPreferences.getBoolean(NOTIFICATION_GROUP_CHAT, false);
@@ -617,10 +614,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (userSession.isLoggedIn()) {
             userId = userSession.getUserId();
         }
-
-        ((GroupChatModuleRouter) getApplication()).shareGroupChat(this,
-                viewModel.getChannelInfoViewModel().getChannelId(), viewModel.getChannelName(), description,
-                viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl(), userId, "sharing");
     }
 
     private void setupViewPager() {
@@ -857,7 +850,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                     public void onClick(DialogInterface dialogInterface, int i) {
                         analytics.eventUserExit(getChannelInfoViewModel().getChannelId() + " "+ getDurationOnGroupChat());
                         if (isTaskRoot()) {
-                            startActivity(((GroupChatModuleRouter) getApplicationContext()).getInboxChannelsIntent(context));
+                            startActivity(RouteManager.getIntent(getApplicationContext(), ApplinkConst.GROUPCHAT_LIST));
                         }
                         if (onPlayTime != 0) {
                             analytics.eventWatchVideoDuration(getChannelInfoViewModel().getChannelId(), getDurationWatchVideo());
@@ -1271,7 +1264,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void openSponsor(String adsLink) {
-        ((GroupChatModuleRouter) getApplicationContext()).openRedirectUrl(this, adsLink);
+        RouteManager.route(this, ApplinkConst.WEBVIEW, adsLink);
     }
 
     @Override
@@ -1543,9 +1536,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             findViewById(R.id.card_retry).findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = ((GroupChatModuleRouter) getApplicationContext())
-//                            .getHomeIntent(v.getContext());
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     String adsLink = "tokopedia://webview?url=https://tokopedia.link/playfreezestate";
                     openSponsor(adsLink);
                     finish();
@@ -1670,7 +1660,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         overlayDialog.setOnShowListener(dialog -> {
             BottomSheetDialog d = (BottomSheetDialog) dialog;
 
-            FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+            FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
             if (bottomSheet != null) {
                 BottomSheetBehavior.from(bottomSheet)
@@ -1933,7 +1923,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (isTaskRoot()) {
-                            startActivity(((GroupChatModuleRouter) getApplicationContext()).getInboxChannelsIntent(context));
+                            startActivity(RouteManager.getIntent(getApplicationContext(), ApplinkConst.GROUPCHAT_LIST));
                         }
                         finish();
                         GroupChatActivity.super.onBackPressed();
@@ -2173,6 +2163,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void reportWebSocket(String url, String error) {
-        ((GroupChatModuleRouter) getApplication()).sendAnalyticsGroupChat(url, error);
+        //no-op
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.timber;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.config.GlobalConfig;
@@ -91,9 +91,6 @@ public class TimberReportingTree extends Timber.DebugTree {
                     .append(userId)
                     .append("#");
         }
-        stringBuilder.append("app=")
-                .append(GlobalConfig.getPackageApplicationName())
-                .append("#");
         stringBuilder.append("vernm=")
                 .append(GlobalConfig.VERSION_NAME)
                 .append("#");

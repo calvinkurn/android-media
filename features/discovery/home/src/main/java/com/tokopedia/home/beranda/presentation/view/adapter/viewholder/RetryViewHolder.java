@@ -1,12 +1,12 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeFeedsListener;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel;
 
 /**
  * Created by henrypriyono on 1/12/18.

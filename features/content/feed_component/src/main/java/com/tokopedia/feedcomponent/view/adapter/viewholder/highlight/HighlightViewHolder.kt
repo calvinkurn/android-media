@@ -1,8 +1,8 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.highlight
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -52,12 +52,34 @@ class HighlightViewHolder(val v: View,
         adapter = HighlightAdapter(element.cards, highlightListener)
         highlightRv.adapter = adapter
         highlightRv.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        highlightRv.isNestedScrollingEnabled = false
         bindTitle(element.title, element.template.cardhighlight.title)
+    }
+
+    override fun bind(element: HighlightViewModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        if (element == null || payloads.isEmpty()) {
+            return
+        }
+        val payloadDataList: List<Any> = payloads[0]  as ArrayList<Any>
+        if (payloadDataList.size > 0) {
+            var columnNumber = 0
+            if (payloadDataList.size > 1) {
+                columnNumber = payloadDataList[1] as Int
+            }
+
+            when (payloadDataList[0] as Int) {
+                PAYLOAD_UPDATE_LIKE, PAYLOAD_UPDATE_COMMENT -> {
+                    adapter.notifyItemChanged(columnNumber)
+                }
+                else -> bind(element)
+            }
+        }
     }
 
     private fun bindTitle(title: Title, template: TemplateTitle) {
         itemView.cardTitle.shouldShowWithAction(shouldShowTitle(template)) {
-            itemView.cardTitle.bind(title, template)
+            itemView.cardTitle.bind(title, template, adapterPosition)
         }
         itemView.cardTitle.listener = cardTitleListener
     }

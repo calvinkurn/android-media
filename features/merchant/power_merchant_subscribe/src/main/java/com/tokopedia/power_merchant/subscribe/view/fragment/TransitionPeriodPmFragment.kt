@@ -2,7 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -44,7 +44,9 @@ class TransitionPeriodPmFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         ImageHandler.LoadImage(img_kyc_verification, IMG_URL_KYC_TRANSITION)
         btn_kyc_verification_transition.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.KYC_SELLER_DASHBOARD)
+            val intent = RouteManager.getIntent(activity, ApplinkConst.KYC)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
+            startActivity(intent)
         }
         tv_label_transition_desc.text = MethodChecker.fromHtml( getString(R.string.pm_label_transition_period_desc))
         renderTxtTnc()

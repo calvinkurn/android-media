@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.http.SslError;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.SslErrorHandler;
@@ -15,32 +15,18 @@ import android.webkit.WebViewClient;
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.core2.R;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.message.interactor.CacheInteractorImpl;
-import com.tokopedia.core.prototype.InboxCache;
-import com.tokopedia.core.prototype.ManageProductCache;
-import com.tokopedia.core.prototype.PembelianCache;
-import com.tokopedia.core.prototype.PenjualanCache;
-import com.tokopedia.core.prototype.ProductCache;
-import com.tokopedia.core.prototype.ShopCache;
-import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.session.DialogLogoutFragment;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
-import com.tokopedia.linker.requests.LinkerGenericRequest;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 @Deprecated
 /**
@@ -127,15 +113,6 @@ public class SessionHandler {
     public static void clearUserData(Context context) {
 
         logoutInstagram(context);
-        InboxCache.ClearCache(context);
-        PenjualanCache.ClearCache(context);
-        PembelianCache.ClearCache(context);
-        ShopSettingCache.ClearCache(context);
-        ProductCache.ClearCache(context);
-        ShopCache.ClearCache(context);
-        ManageProductCache.ClearCache(context);
-        CacheInteractorImpl messageCacheInteractor = new CacheInteractorImpl();
-        messageCacheInteractor.deleteCache();
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(LOGIN_ID, null);
@@ -173,7 +150,7 @@ public class SessionHandler {
         logoutInstagram(context);
         try {
             MethodChecker.removeAllCookies(context);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
@@ -182,7 +159,7 @@ public class SessionHandler {
 
         deleteCacheBalanceTokoCash();
 
-        LocalCacheHandler.clearCache(context,TkpdCache.REFERRAL);
+        LocalCacheHandler.clearCache(context, TkpdCache.REFERRAL);
         deleteCacheTokoPoint();
         deleteCacheExploreData();
     }
@@ -202,7 +179,7 @@ public class SessionHandler {
     }
 
     private static void logoutInstagram(Context context) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context,  INSTAGRAM_CACHE_KEY);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, INSTAGRAM_CACHE_KEY);
         localCacheHandler.clearCache(INSTAGRAM_CACHE_KEY);
         if (isV4Login(context) && context instanceof AppCompatActivity) {
             ((AppCompatActivity) context).setContentView(R.layout.activity_webview_general);
@@ -305,6 +282,7 @@ public class SessionHandler {
 
     /**
      * Use shop info use case to get gold merchant status
+     *
      * @param context
      * @return
      */
@@ -316,13 +294,14 @@ public class SessionHandler {
 
     /**
      * Use shop info use case to get gold merchant status
+     *
      * @param context
      * @param goldMerchant
      */
     public static void setGoldMerchant(Context context, int goldMerchant) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor edit = sharedPrefs.edit();
-        edit.putBoolean(IS_GOLD_MERCHANT, goldMerchant!= -1 && goldMerchant!= 0);
+        edit.putBoolean(IS_GOLD_MERCHANT, goldMerchant != -1 && goldMerchant != 0);
         edit.apply();
     }
 
@@ -584,7 +563,7 @@ public class SessionHandler {
             if (((AppCompatActivity) context).getFragmentManager().findFragmentByTag(DialogLogoutFragment.FRAGMENT_TAG) == null) {
                 DialogLogoutFragment dialogLogoutFragment = new DialogLogoutFragment();
                 dialogLogoutFragment.show(((AppCompatActivity) context).getFragmentManager(), DialogLogoutFragment.FRAGMENT_TAG);
-                if(!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier("");
+                if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier("");
             }
         }
 
@@ -600,7 +579,7 @@ public class SessionHandler {
     }
 
     public void forceLogout() {
-        if(context != null) {
+        if (context != null) {
             PasswordGenerator.clearTokenStorage(context);
             TrackApp.getInstance().getMoEngage().logoutEvent();
         }
@@ -631,7 +610,7 @@ public class SessionHandler {
     }
 
     public void setGoldMerchant(int goldMerchant) {
-        setGoldMerchant(goldMerchant!= -1 && goldMerchant!= 0);
+        setGoldMerchant(goldMerchant != -1 && goldMerchant != 0);
     }
 
     public void setGoldMerchant(boolean isGoldMerchant) {
@@ -736,7 +715,7 @@ public class SessionHandler {
     }
 
     public String getTempLoginSession() {
-       return getTempLoginSession(context);
+        return getTempLoginSession(context);
     }
 
     public String getProfilePicture() {

@@ -1,10 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -271,15 +271,7 @@ public class InboxReputationDetailItemViewHolder extends
 
 
         }
-
-        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
-                || element.isReviewSkipped()
-                || isOwnProduct(element)) {
-            giveReview.setVisibility(View.GONE);
-        } else {
-            giveReview.setVisibility(View.VISIBLE);
-        }
-
+        showOrHideGiveReviewLayout(element);
         giveReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -305,6 +297,17 @@ public class InboxReputationDetailItemViewHolder extends
         });
 
 
+    }
+
+    private void showOrHideGiveReviewLayout(InboxReputationDetailItemViewModel element) {
+        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
+                || element.isReviewSkipped()
+                || isOwnProduct(element)
+                || element.isReviewHasReviewed()) {
+            giveReview.setVisibility(View.GONE);
+        } else {
+            giveReview.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setSellerReply(final InboxReputationDetailItemViewModel element) {

@@ -3,9 +3,9 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.Fragment;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import androidx.fragment.app.Fragment;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
@@ -127,22 +127,6 @@ public class HotlistActivity extends DiscoveryActivity
 
     public void setFragmentListener(FragmentListener fragmentListener) {
         this.fragmentListener = fragmentListener;
-    }
-
-    @Override
-    public void onSearchViewShown() {
-        super.onSearchViewShown();
-        if (fragmentListener != null) {
-            fragmentListener.stopScroll();
-        }
-        appBarLayout.setVisibility(View.GONE);
-        setSearchQuery(getToolbarTitle().toString());
-    }
-
-    @Override
-    public void onSearchViewClosed() {
-        super.onSearchViewClosed();
-        appBarLayout.setVisibility(View.VISIBLE);
     }
 
     public void renderHotlistDescription(String txt) {

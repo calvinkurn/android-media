@@ -1,15 +1,15 @@
 package com.tokopedia.tradein_common.viewcontrollers;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +28,9 @@ import com.tokopedia.unifycomponents.Toaster;
 
 public abstract class BaseViewModelActivity<T extends BaseViewModel> extends BaseSimpleActivity {
 
+    protected boolean isTncShowing = false;
+    protected T bVM;
+
     protected void initView() {
 
     }
@@ -44,11 +47,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     abstract protected boolean doNeedReattach();
 
-    abstract protected ViewModelProvider.NewInstanceFactory getVMFactory();
-
-    protected boolean isTncShowing = false;
-
-    protected T bVM;
+    abstract protected ViewModelProvider.AndroidViewModelFactory getVMFactory();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +58,6 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         initView();
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
         bVM.getProgBarVisibility().observe(this, (visibility) -> {
             if (visibility != null) {
                 if (visibility)
@@ -78,7 +71,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
             hideProgressBar();
             if (!TextUtils.isEmpty(message)) {
                 try {
-                    Toaster.Companion.showError(this.findViewById(android.R.id.content),
+                    Toaster.INSTANCE.showError(this.findViewById(android.R.id.content),
                             message,
                             Snackbar.LENGTH_LONG);
                 } catch (Exception e) {
@@ -86,6 +79,23 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
                 }
             }
         });
+        bVM.getErrorMessage().observe(this, (message) -> {
+            hideProgressBar();
+            if (!TextUtils.isEmpty(message)) {
+                try {
+                    Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
+                            message,
+                            Snackbar.LENGTH_LONG, getButtonStringOnError(), (v) -> retryOnError());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private void setViewModel() {
@@ -94,19 +104,27 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         getLifecycle().addObserver(getLifeCycleObserver(bVM));
     }
 
+    protected void retryOnError() {
+
+    }
+
+    protected String getButtonStringOnError() {
+        return getString(R.string.close);
+    }
+
     protected BaseLifeCycleObserver getLifeCycleObserver(BaseViewModel viewModel) {
         return new BaseLifeCycleObserver(viewModel);
     }
 
     public void showMessageWithAction(String message, String actionText, View.OnClickListener listener) {
-        Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+        Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                 message,
                 Snackbar.LENGTH_INDEFINITE, actionText, listener);
 
     }
 
     public void showMessage(String message) {
-        Toaster.Companion.showError(this.findViewById(android.R.id.content),
+        Toaster.INSTANCE.showError(this.findViewById(android.R.id.content),
                 message,
                 Snackbar.LENGTH_LONG);
     }
@@ -115,13 +133,9 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         startActivityForResult(intent, requestCode);
     }
 
-    public void showProgressBar() {
-        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.VISIBLE);
-    }
+    protected abstract void showProgressBar();
 
-    public void hideProgressBar() {
-        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.GONE);
-    }
+    protected abstract void hideProgressBar();
 
     @Override
     protected void setupStatusBar() {
@@ -214,15 +228,17 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.addToBackStack("TNC");
-        transaction.replace(R.id.root_view, fragment);
+        transaction.replace(getRootViewId(), fragment);
         transaction.commit();
     }
 
-    protected void showDialogFragment(int resId, String titleText, String bodyText, String positiveButton, String negativeButton) {
+    public int getRootViewId() {
+        return R.id.root_view;
+    }
+
+    protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
-        if (resId != 0)
-            accessDialog.setLayoutResId(resId);
         accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);

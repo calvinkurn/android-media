@@ -1,13 +1,17 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
+import androidx.fragment.app.FragmentActivity
 import android.view.View
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
+import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 /**
  * @author : Steven 28/05/19
@@ -20,9 +24,11 @@ class VideoHorizontalHelper(
         private var youTubePlayer: YouTubePlayer?,
         private var setChatListHasSpaceOnTop: (Int) -> Unit,
         private var liveIndicator: View,
-        analytics: GroupChatAnalytics
+        analytics: GroupChatAnalytics,
+        var activity: FragmentActivity
 ): PlayBaseHelper(model) {
 
+    var remoteConfig: FirebaseRemoteConfigImpl
     init {
         hideVideoToggle.setOnClickListener {
             hideVideo()
@@ -34,6 +40,7 @@ class VideoHorizontalHelper(
             analytics.eventClickShowVideoToggle(viewModel?.channelId)
             setChatListHasSpaceOnTop.invoke(HORIZONTAL_WITH_VIDEO)
         }
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     fun showVideo() {
@@ -49,6 +56,7 @@ class VideoHorizontalHelper(
 
     fun assignPlayer(youTubePlayer: YouTubePlayer) {
         this.youTubePlayer = youTubePlayer
+        setYoutubeLandscapeEnabled()
     }
 
     fun hideAllToggle() {
@@ -87,6 +95,10 @@ class VideoHorizontalHelper(
     fun clearDataVideoHorizontal() {
         viewModel?.videoId = ""
         viewModel?.isVideoLive = false
+    }
+
+    private fun setYoutubeLandscapeEnabled() {
+        youTubePlayer?.setShowFullscreenButton(remoteConfig.getBoolean(RemoteConfigKey.PLAY_YOUTUBE_FULL_SCREEN))
     }
 
     companion object {

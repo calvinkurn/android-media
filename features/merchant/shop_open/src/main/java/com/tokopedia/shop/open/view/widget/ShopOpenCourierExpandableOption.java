@@ -2,11 +2,11 @@ package com.tokopedia.shop.open.view.widget;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -69,8 +69,8 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
 
     @Override
     protected void init() {
-        setHeaderLayoutRes(R.layout.item_shop_courier_expandable_header);
-        setFooterLayoutRes(R.layout.item_shop_courier_expandable_child);
+        setHeaderLayoutRes(com.tokopedia.seller.R.layout.item_shop_courier_expandable_header);
+        setFooterLayoutRes(com.tokopedia.seller.R.layout.item_shop_courier_expandable_child);
         shopServiceCourierAdapter = new ShopOpenCourierAdapter(getContext(), null, null, this);
         super.init();
     }
@@ -79,12 +79,12 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
     protected void initView(View view) {
         initRootLayout(view);
 
-        ivIcon = view.findViewById(R.id.iv_icon);
-        tvTitle = view.findViewById(R.id.tv_title);
-        tvDesc = view.findViewById(R.id.tv_desc);
-        switchCompat = view.findViewById(R.id.switch_button);
+        ivIcon = view.findViewById(com.tokopedia.abstraction.R.id.iv_icon);
+        tvTitle = view.findViewById(com.tokopedia.design.R.id.tv_title);
+        tvDesc = view.findViewById(com.tokopedia.seller.R.id.tv_desc);
+        switchCompat = view.findViewById(com.tokopedia.seller.R.id.switch_button);
 
-        final RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        final RecyclerView recyclerView = view.findViewById(com.tokopedia.abstraction.R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(shopServiceCourierAdapter);
         recyclerView.setNestedScrollingEnabled(false);
@@ -165,11 +165,11 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
         layoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
         layoutTransition.disableTransitionType(LayoutTransition.APPEARING);
 
-        View vgRoot = view.findViewById(R.id.vg_root);
+        View vgRoot = view.findViewById(com.tokopedia.seller.R.id.vg_root);
         if (vgRoot instanceof LinearLayout) {
             LinearLayout linearLayout = (LinearLayout) vgRoot;
             linearLayout.setShowDividers(SHOW_DIVIDER_MIDDLE);
-            linearLayout.setDividerDrawable(ContextCompat.getDrawable(getContext(), R.drawable.line_divider));
+            linearLayout.setDividerDrawable(ContextCompat.getDrawable(getContext(), com.tokopedia.abstraction.R.drawable.line_divider));
         }
     }
 
@@ -247,9 +247,9 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
             return;
         }
         if (mEnabled) {
-            tvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_primary_70));
+            tvTitle.setTextColor(ContextCompat.getColor(getContext(),com.tokopedia.design.R.color.font_black_primary_70));
         } else {
-            tvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_disabled_38));
+            tvTitle.setTextColor(ContextCompat.getColor(getContext(),com.tokopedia.design.R.color.font_black_disabled_38));
         }
         if (TextUtils.isEmpty(titleText)) {
             tvTitle.setVisibility(View.GONE);
@@ -264,11 +264,11 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
             return;
         }
         if (mEnabled) {
-            tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_secondary_54));
-            tvDesc.setText(getContext().getString(R.string.shop_open_choose_delivery_packet));
+            tvDesc.setTextColor(ContextCompat.getColor(getContext(),com.tokopedia.design.R.color.font_black_secondary_54));
+            tvDesc.setText(getContext().getString(com.tokopedia.seller.R.string.shop_open_choose_delivery_packet));
         } else {
-            tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_disabled_38));
-            tvDesc.setText(getContext().getString(R.string.shop_open_delivery_not_available));
+            tvDesc.setTextColor(ContextCompat.getColor(getContext(),com.tokopedia.design.R.color.font_black_disabled_38));
+            tvDesc.setText(getContext().getString(com.tokopedia.seller.R.string.shop_open_delivery_not_available));
         }
     }
 

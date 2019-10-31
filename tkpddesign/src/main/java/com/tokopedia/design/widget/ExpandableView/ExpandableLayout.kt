@@ -1,7 +1,7 @@
 package com.tokopedia.design.widget.ExpandableView
 
 import android.animation.TimeInterpolator
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 
 interface ExpandableLayout {
 

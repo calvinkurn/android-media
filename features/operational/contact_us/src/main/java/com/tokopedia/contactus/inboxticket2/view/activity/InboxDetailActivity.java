@@ -4,24 +4,28 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.os.PersistableBundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.app.TaskStackBuilder;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
@@ -101,19 +105,19 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static final String PARAM_TICKET_T_ID = "id";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
     private CloseableBottomSheetDialog helpFullBottomSheet, closeComplainBottomSheet,servicePrioritiesBottomSheet;
-    List<CommentsItem> commentsItems = new ArrayList<>();
+    private List<CommentsItem> commentsItems;
+    private boolean iscloseAllow = false;
 
-    @DeepLink(ApplinkConst.TICKET_DETAIL)
-    public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Intent parentIntent = new Intent(context, InboxListActivity.class);
-        String ticketId = bundle.getString(PARAM_TICKET_T_ID);
-        if (ticketId == null) {
-            ticketId = bundle.getString(PARAM_TICKET_ID, "");
-        }
-        taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(getIntent(context, ticketId));
-        return taskStackBuilder;
+    private boolean isSendButtonEnabled = false;
+
+    @Override
+    public void onCreateNavigateUpTaskStack(android.app.TaskStackBuilder builder) {
+        super.onCreateNavigateUpTaskStack(builder);
+    }
+
+    @Override
+    public void onCreateSupportNavigateUpTaskStack(@NonNull TaskStackBuilder builder) {
+        super.onCreateSupportNavigateUpTaskStack(builder);
     }
 
     public static Intent getIntent(Context context, String ticketId) {
@@ -126,6 +130,10 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void renderMessageList(Tickets ticketDetail) {
         commentsItems = ticketDetail.getComments();
+        if(commentsItems ==null){
+            commentsItems = new ArrayList<>();
+        }
+        iscloseAllow = ticketDetail.isAllowClose();
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
 
         edMessage.getText().clear();
@@ -138,8 +146,8 @@ public class InboxDetailActivity extends InboxBaseActivity
         if (ticketDetail.getStatus().equalsIgnoreCase(utils.SOLVED)
                 || ticketDetail.getStatus().equalsIgnoreCase(utils.OPEN)) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
-                    getResources().getColor(R.color.y_200),
-                    getResources().getColor(R.color.orange_500), textSizeLabel));
+                    getResources().getColor(com.tokopedia.design.R.color.y_200),
+                    getResources().getColor(com.tokopedia.design.R.color.orange_500), textSizeLabel));
             rvMessageList.setPadding(0, 0, 0,
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
             if(commentsItems.get(commentsItems.size()-1).getCreatedBy().getRole().equalsIgnoreCase(ROLE_TYPE_AGENT)&&commentsItems.get(commentsItems.size()-1).getRating().equalsIgnoreCase("")){
@@ -154,14 +162,14 @@ public class InboxDetailActivity extends InboxBaseActivity
         } else if (ticketDetail.getStatus().equalsIgnoreCase(utils.CLOSED)
                 && !ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.closed),
-                    getResources().getColor(R.color.grey_200),
-                    getResources().getColor(R.color.black_38), textSizeLabel));
+                    getResources().getColor(com.tokopedia.design.R.color.grey_200),
+                    getResources().getColor(com.tokopedia.design.R.color.black_38), textSizeLabel));
             showIssueClosed();
 
         } else if (ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.need_rating),
-                    getResources().getColor(R.color.r_100),
-                    getResources().getColor(R.color.r_400), textSizeLabel));
+                    getResources().getColor(com.tokopedia.design.R.color.r_100),
+                    getResources().getColor(com.tokopedia.design.R.color.r_400), textSizeLabel));
             toggleTextToolbar(View.GONE);
             rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
         }
@@ -310,6 +318,14 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> paths = UriUtil.destructureUri(ApplinkConst.TICKET_DETAIL, uri);
+            if (!paths.isEmpty()) {
+                String ticketId = paths.get(0);
+                getIntent().putExtra(PARAM_TICKET_T_ID, ticketId);
+            }
+        }
         super.onCreate(savedInstanceState);
         imageUploadAdapter = new ImageUploadAdapter(this, this);
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -322,13 +338,12 @@ public class InboxDetailActivity extends InboxBaseActivity
 
 
     private void showImagePickerDialog() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
                 null, null);
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_IMAGE_PICKER);
-
     }
 
     @Override
@@ -408,7 +423,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     void sendMessage() {
         ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
-        edMessage.setHint(R.string.type_here);
+        edMessage.setHint(R.string.contact_us_type_here);
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickSubmitReply,
@@ -494,7 +509,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         rvSelectedImages.setVisibility(View.GONE);
         edMessage.getText().clear();
         setSubmitButtonEnabled(false);
-        edMessage.setHint(R.string.type_here);
+        edMessage.setHint(R.string.contact_us_type_here);
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
         rvMessageList.setPadding(0, 0, 0,
@@ -566,8 +581,8 @@ public class InboxDetailActivity extends InboxBaseActivity
         int textSizeLabel = 11;
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
         tvTicketTitle.setText(utils.getStatusTitle(subject + ".   " + getString(R.string.closed),
-                getResources().getColor(R.color.grey_200),
-                getResources().getColor(R.color.black_38), textSizeLabel));
+                getResources().getColor(com.tokopedia.design.R.color.grey_200),
+                getResources().getColor(com.tokopedia.design.R.color.black_38), textSizeLabel));
     }
 
     @Override
@@ -577,11 +592,11 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void setSubmitButtonEnabled(boolean enabled) {
-        ivSendButton.setClickable(enabled);
+        isSendButtonEnabled = enabled;
         if (enabled) {
-            ivSendButton.setColorFilter(getResources().getColor(R.color.green_nob));
+            ivSendButton.setColorFilter(getResources().getColor(com.tokopedia.design.R.color.green_nob));
         } else {
-            ivSendButton.setColorFilter(getResources().getColor(R.color.grey_300));
+            ivSendButton.setColorFilter(getResources().getColor(com.tokopedia.design.R.color.grey_300));
         }
     }
 
@@ -666,7 +681,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         } else if (id == R.id.btn_inactive_1 || id == R.id.btn_inactive_2 || id == R.id.btn_inactive_3 || id == R.id.btn_inactive_4 || id == R.id.btn_inactive_5) {
             onEmojiClick(view);
         } else if (id == R.id.iv_send_button) {
-            sendMessage();
+            sendMessage(isSendButtonEnabled);
         } else if (id == R.id.txt_hyper || id == R.id.tv_view_transaction) {
             onClickListener(view);
         } else if (id == R.id.iv_next_down || id == R.id.iv_previous_up) {
@@ -702,20 +717,29 @@ public class InboxDetailActivity extends InboxBaseActivity
                 }
             }
             if (agreed) {
-                closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-                closeComplainBottomSheet.setCustomContentView(new CloseComplainBottomSheet(InboxDetailActivity.this, this), "", true);
-                closeComplainBottomSheet.show();
                 viewReplyButton.setVisibility(View.GONE);
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick(true, commentPosition, item.getId());
                 helpFullBottomSheet.dismiss();
+                if(iscloseAllow){
+                    sendGTmEvent(InboxTicketTracking.Label.EventHelpful,
+                            InboxTicketTracking.Action.EventRatingCsatOnSlider);
+                    closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+                    closeComplainBottomSheet.setCustomContentView(new CloseComplainBottomSheet(InboxDetailActivity.this, this), "", true);
+                    closeComplainBottomSheet.show();
+                }else{
+                    textToolbar.setVisibility(View.VISIBLE);
+                }
+
             } else {
+                sendGTmEvent(InboxTicketTracking.Label.EventNotHelpful,
+                        InboxTicketTracking.Action.EventRatingCsatOnSlider);
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick(false, commentPosition, item.getId());
                 textToolbar.setVisibility(View.VISIBLE);
                 helpFullBottomSheet.dismiss();
             }
         }
 
-        @Override
+    @Override
         public void onSuccessSubmitOfRating ( int rating, int commentPosition){
             CommentsItem item = commentsItems.get(commentPosition);
             String rate = rating == INT_KEY_LIKED ? KEY_LIKED : KEY_DIS_LIKED;
@@ -726,10 +750,14 @@ public class InboxDetailActivity extends InboxBaseActivity
         @Override
         public void onClickComplain (boolean agreed){
             if (agreed) {
+                sendGTmEvent(InboxTicketTracking.Label.EventYes,
+                        InboxTicketTracking.Action.EventClickCloseTicket);
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).closeTicket();
                 closeComplainBottomSheet.dismiss();
 
             } else {
+                sendGTmEvent(InboxTicketTracking.Label.EventNo,
+                        InboxTicketTracking.Action.EventClickCloseTicket);
                 viewReplyButton.setVisibility(View.GONE);
                 viewHelpRate.setVisibility(View.GONE);
                 textToolbar.setVisibility(View.VISIBLE);
@@ -766,13 +794,30 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void showMessage(String message) {
         super.showMessage(message);
-        Toaster.Companion.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, v1 -> {
+        Toaster.INSTANCE.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, v1 -> {
         });
     }
 
     @Override
     public void onClickClose() {
         servicePrioritiesBottomSheet.dismiss();
+    }
+
+    private void sendMessage(boolean isSendButtonEnabled) {
+
+        if (isSendButtonEnabled){
+            sendMessage();
+        }else{
+            Toaster.INSTANCE.showErrorWithAction(getRootView(),this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK,v1 -> {
+            });
+        }
+    }
+
+    private void sendGTmEvent(String eventLabel,String action) {
+        ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventName,
+                InboxTicketTracking.Category.EventHelpMessageInbox,
+                action,
+                eventLabel);
     }
 }
 

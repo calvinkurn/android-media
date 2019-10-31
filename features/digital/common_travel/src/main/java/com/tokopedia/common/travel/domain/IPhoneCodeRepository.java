@@ -1,8 +1,6 @@
 package com.tokopedia.common.travel.domain;
 
-import com.tokopedia.common.travel.data.entity.TravelPassengerEntity;
-import com.tokopedia.common.travel.presentation.model.TravelPassenger;
-import com.tokopedia.flight.country.database.CountryPhoneCodeTable;
+import com.tokopedia.common.travel.database.CountryPhoneCodeTable;
 
 import java.util.List;
 
@@ -14,4 +12,6 @@ import rx.Observable;
 public interface IPhoneCodeRepository {
 
     Observable<List<CountryPhoneCodeTable>> getPhoneCodeList(String string);
+
+    List<CountryPhoneCodeTable> getCountryById(String id);
 }

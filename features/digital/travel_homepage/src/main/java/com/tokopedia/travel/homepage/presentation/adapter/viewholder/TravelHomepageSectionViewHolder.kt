@@ -1,6 +1,6 @@
 package com.tokopedia.travel.homepage.presentation.adapter.viewholder
 
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,6 +51,8 @@ class TravelHomepageSectionViewHolder(itemView: View,
                         val layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                         list_recycler_view.layoutManager = layoutManager
                         list_recycler_view.adapter = orderAdapter
+                    } else {
+                        orderAdapter.updateList(element.list)
                     }
                 }
             } else {
@@ -61,9 +63,9 @@ class TravelHomepageSectionViewHolder(itemView: View,
             itemView.shimmering.visibility = View.VISIBLE
             itemView.section_layout.visibility = View.GONE
             when (element.type) {
-                TYPE_ORDER_LIST -> onItemBindListener.onOrderListVHBind()
-                TYPE_RECENT_SEARCH -> onItemBindListener.onRecentSearchVHBind()
-                TYPE_RECOMMENDATION -> onItemBindListener.onRecommendationVHBind()
+                TYPE_ORDER_LIST -> onItemBindListener.onOrderListVHBind(element.isLoadFromCloud)
+                TYPE_RECENT_SEARCH -> onItemBindListener.onRecentSearchVHBind(element.isLoadFromCloud)
+                TYPE_RECOMMENDATION -> onItemBindListener.onRecommendationVHBind(element.isLoadFromCloud)
             }
         }
     }

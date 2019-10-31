@@ -1,6 +1,6 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -59,10 +59,6 @@ public interface FlightDashboardContract {
         void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel);
 
         void showAirportShouldDifferentCity(@StringRes int resId);
-
-        void navigateToLoginPage();
-
-        void closePage();
 
         void renderBannerView(List<BannerDetail> bannerList);
 
@@ -130,8 +126,6 @@ public interface FlightDashboardContract {
         void onSearchTicketButtonClicked();
 
         void onDestroyView();
-
-        void onLoginResultReceived();
 
         void onBannerItemClick(int position, BannerDetail bannerDetail);
 

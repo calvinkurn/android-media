@@ -1,7 +1,7 @@
 package com.tokopedia.iris.data.db.mapper
 
-import com.tokopedia.iris.KEY_CONTAINER
-import com.tokopedia.iris.KEY_EVENT
+import com.tokopedia.iris.util.KEY_CONTAINER
+import com.tokopedia.iris.util.KEY_EVENT
 import com.tokopedia.iris.data.db.table.Tracking
 import org.json.JSONArray
 import org.json.JSONException

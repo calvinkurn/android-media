@@ -13,11 +13,6 @@ abstract class SettingViewHolder<T : BaseSetting>(
 
     protected val settingSwitch: Switch? = getSwitchView(itemView)
 
-    private val PARAM_SETTING_KEY = "name"
-    private val PARAM_SETTING_VALUE = "value"
-
-    private val SETTING_EMAIL_BULLETIN = "bulletin_newsletter"
-
     abstract fun getSwitchView(itemView: View?): Switch?
 
     interface SettingListener {
@@ -25,7 +20,6 @@ abstract class SettingViewHolder<T : BaseSetting>(
         fun getParentSetting(childAdapterPosition: Int): Pair<ParentSetting, Int>?
         fun getNotificationType(): String
         fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
-        fun setMoengageEmailPreference(checked: Boolean)
     }
 
     override fun bind(element: T?) {
@@ -64,10 +58,6 @@ abstract class SettingViewHolder<T : BaseSetting>(
     }
 
     protected fun getMapSettingToChange(element: BaseSetting, checked: Boolean) : Map<String, Any> {
-        if (element.key == SETTING_EMAIL_BULLETIN) {
-            settingListener.setMoengageEmailPreference(checked)
-        }
-
         return mapOf(
                 Pair(PARAM_SETTING_KEY, element.key),
                 Pair(PARAM_SETTING_VALUE, checked)
@@ -78,6 +68,8 @@ abstract class SettingViewHolder<T : BaseSetting>(
 
     companion object {
         val PAYLOAD_SWITCH = "payload_switch"
+        val PARAM_SETTING_KEY = "name"
+        val PARAM_SETTING_VALUE = "value"
     }
 
 }

@@ -1,0 +1,21 @@
+{
+  "repository_name": "android-tokopedia-core",
+  "description": "Code base for android application (seller app & customer app).",
+  "security_owner": "ricoharisin",
+  "app": [
+    {
+      "name": "customerapp",
+      "description": "Code base for customerapp",
+      "owner": "ricoharisin",
+      "slack_channel": "mobileapp",
+      "db": []
+    },
+    {
+      "name": "sellerapp",
+      "description": "Code base for sellerapp",
+      "owner": "milhamj",
+      "slack_channel": "mobileapp",
+      "db": []
+    }
+  ]
+}

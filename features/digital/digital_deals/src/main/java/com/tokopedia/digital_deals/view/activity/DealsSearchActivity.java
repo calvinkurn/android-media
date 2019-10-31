@@ -5,12 +5,13 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -25,12 +26,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
-import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
@@ -42,10 +42,10 @@ import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,10 +53,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class DealsSearchActivity extends DealsBaseActivity implements
-        DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
+        DealsSearchContract.View, SearchInputView.Listener, SearchInputView.FocusChangeListener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, SelectLocationBottomSheet.SelectedLocationListener {
 
     private final boolean IS_SHORT_LAYOUT = true;
     public static final String EXTRA_LIST = "list";
+    private static final String SEARCH_PAGE = "DealsSearchActivity";
     public static final String SCREEN_NAME = "/digital/deals/search";
 
     private CoordinatorLayout mainContent;
@@ -86,12 +87,12 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private String searchText;
     private int adapterPosition = -1;
     private boolean forceRefresh;
-    CloseableBottomSheetDialog selectLocationFragment;
     private AppBarLayout appBarToolbar;
+    private boolean isLocationUpdated;
 
     @Override
     public int getLayoutRes() {
-        return R.layout.activity_deals_search;
+        return com.tokopedia.digital_deals.R.layout.activity_deals_search;
     }
 
     @Override
@@ -100,64 +101,69 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         initInjector();
         setUpVariables();
         searchInputView.setListener(this);
+        searchInputView.setFocusChangeListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         categoryList = getIntent().getParcelableArrayListExtra(EXTRA_LIST);
-        categoryId = getIntent().getStringExtra("cat_id");
         mPresenter.attachView(this);
         mPresenter.initialize();
     }
 
+    @Override
+    protected int getToolbarResourceID(){
+        return R.id.deals_toolbar;
+    }
     @Override
     protected void onStart() {
         super.onStart();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
+            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+            });
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
         dealsAnalytics.sendScreenNameEvent(SCREEN_NAME);
     }
 
     private void setUpVariables() {
-        rvDeals = findViewById(R.id.rv_search_results);
-        searchInputView = findViewById(R.id.search_input_view);
-        noBrandsFound = findViewById(R.id.no_brands);
-        appBarBrands = findViewById(R.id.app_bar_brands);
-        appBarToolbar = findViewById(R.id.app_bar_toolbar);
-        mainContent = findViewById(R.id.main_content);
-        dealsHeading = findViewById(R.id.tv_topevents);
-        brandsHeading = findViewById(R.id.brand_list);
-        brandCount = findViewById(R.id.num_of_brands);
-        back = findViewById(R.id.imageViewBack);
-        divider = findViewById(R.id.divider);
-        noContent = findViewById(R.id.no_content);
-        brandLayout = findViewById(R.id.brand_layout);
-        tvCityName = findViewById(R.id.tv_location);
+        rvDeals = findViewById(com.tokopedia.digital_deals.R.id.rv_search_results);
+        searchInputView = findViewById(com.tokopedia.digital_deals.R.id.search_input_view);
+        noBrandsFound = findViewById(com.tokopedia.digital_deals.R.id.no_brands);
+        appBarBrands = findViewById(com.tokopedia.digital_deals.R.id.app_bar_brands);
+        appBarToolbar = findViewById(com.tokopedia.digital_deals.R.id.app_bar_toolbar);
+        mainContent = findViewById(com.tokopedia.digital_deals.R.id.main_content);
+        dealsHeading = findViewById(com.tokopedia.digital_deals.R.id.tv_topevents);
+        brandsHeading = findViewById(com.tokopedia.digital_deals.R.id.brand_list);
+        brandCount = findViewById(com.tokopedia.digital_deals.R.id.num_of_brands);
+        back = findViewById(com.tokopedia.digital_deals.R.id.imageViewBack);
+        divider = findViewById(com.tokopedia.digital_deals.R.id.divider);
+        noContent = findViewById(com.tokopedia.digital_deals.R.id.no_content);
+        brandLayout = findViewById(com.tokopedia.digital_deals.R.id.brand_layout);
+        tvCityName = findViewById(com.tokopedia.digital_deals.R.id.tv_location);
         tvCityName.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                (this, R.drawable.location_arrow_down), null);
-        clLocation = findViewById(R.id.cl_location);
+                (this, com.tokopedia.digital_deals.R.drawable.location_arrow_down), null);
+        clLocation = findViewById(com.tokopedia.digital_deals.R.id.cl_location);
         back.setOnClickListener(this);
         tvCityName.setOnClickListener(this);
-        searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals));
-        searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
-        searchInputView.setSearchImageView(MethodChecker.getDrawable(this,R.drawable.ic_search_deal));
+        searchInputView.setSearchHint(getResources().getString(com.tokopedia.digital_deals.R.string.search_input_hint_deals));
+        searchInputView.setSearchTextSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_16));
+        searchInputView.setSearchImageView(MethodChecker.getDrawable(this, com.tokopedia.digital_deals.R.drawable.ic_search_deal));
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
         dealsCategoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.SEARCH_PAGE, this, !IS_SHORT_LAYOUT);
         rvDeals.setAdapter(dealsCategoryAdapter);
-        searchInputView.getSearchTextView().requestFocus();
         appBarBrands.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 if (verticalOffset != 0) {
                     divider.setVisibility(View.GONE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_4));
+                        appBarToolbar.setElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_4));
                     }
                 } else {
                     divider.setVisibility(View.VISIBLE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
+                        appBarToolbar.setElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_0));
                     }
                 }
             }
@@ -207,9 +213,11 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstTime) {
-        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(DealsSearchActivity.this, isForFirstTime, locationList, this, tvCityName.getText().toString(), this), "", false);
-        selectLocationFragment.show();
+        Location location = Utils.getSingletonInstance().getLocation(this);
+        Fragment fragment = SelectLocationBottomSheet.createInstance(tvCityName.getText().toString(), location);
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up)
+                .add(com.tokopedia.digital_deals.R.id.main_content, fragment).addToBackStack(SEARCH_PAGE).commit();
     }
 
     @Override
@@ -220,9 +228,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     private SpannableString getHeaderFormattedText(String searchText, int count) {
-        String text = String.format(getString(R.string.deals_search_location_result), searchText);
+        String text = String.format(getString(com.tokopedia.digital_deals.R.string.deals_search_location_result), searchText);
         int startIndexOfLink = text.length();
-        text += " " + String.format(getActivity().getResources().getString(R.string.number_of_items), count);
+        text += " " + String.format(getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.number_of_items), count);
         SpannableString spannableString = new SpannableString(text);
         spannableString.setSpan(new ClickableSpan() {
             @Override
@@ -233,7 +241,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(R.color.black_38));
+                ds.setColor(getResources().getColor(com.tokopedia.design.R.color.black_38));
             }
         }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableString;
@@ -246,7 +254,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             requestParams.putString(Utils.BRAND_QUERY_TAGS, searchInputView.getSearchText());
         }
         Location location = Utils.getSingletonInstance().getLocation(this);
-        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        if (!TextUtils.isEmpty(location.getCoordinates())) {
+            requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        }
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND_AND_PRODUCT);
         if (!TextUtils.isEmpty(categoryId)) {
             requestParams.putString(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoryId);
@@ -264,7 +274,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         searchText = highlight;
         if (productItems != null && !productItems.isEmpty()) {
-            dealsHeading.setText(getResources().getString(R.string.products_title_search_default));
+            dealsHeading.setText(getResources().getString(com.tokopedia.digital_deals.R.string.products_title_search_default));
             dealsHeading.setVisibility(View.VISIBLE);
             rvDeals.clearOnScrollListeners();
             dealsCategoryAdapter.clearList();
@@ -310,17 +320,17 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             brandsHeading.setVisibility(View.VISIBLE);
             if (count > 4) {
                 brandCount.setVisibility(View.VISIBLE);
-                brandCount.setText(String.format(getResources().getString(R.string.brand_count_text), searchInputView.getSearchText(),count));
+                brandCount.setText(String.format(getResources().getString(com.tokopedia.digital_deals.R.string.brand_count_text), searchInputView.getSearchText(), count));
             } else {
                 brandCount.setVisibility(View.GONE);
             }
             noBrandsFound.setVisibility(View.GONE);
             LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) dealsHeading.getLayoutParams();
-            params1.setMargins(getResources().getDimensionPixelOffset(R.dimen.dp_16), getResources().getDimensionPixelOffset(R.dimen.dp_12), 0, 0);
+            params1.setMargins(getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_16), getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12), 0, 0);
             dealsHeading.setLayoutParams(params1);
             brandLayout.removeAllViews();
             View view;
-            int itemCount = Utils.getScreenWidth() / (int) (getResources().getDimension(R.dimen.dp_66) + getResources().getDimension(R.dimen.dp_8));//Divide by item width including margin
+            int itemCount = Utils.getScreenWidth() / (int) (getResources().getDimension(com.tokopedia.digital_deals.R.dimen.dp_66) + getResources().getDimension(com.tokopedia.design.R.dimen.dp_8));//Divide by item width including margin
             int maxBrands = Math.min(brandList.size(), itemCount);
 
             dealsAnalytics.sendBrandsSuggestionImpressionEvent(brandList, searchText);
@@ -328,12 +338,12 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             TextView brandName;
             for (int index = 0; index < maxBrands; index++) {
                 LayoutInflater inflater = getLayoutInflater();
-                view = inflater.inflate(R.layout.item_brand_home, brandLayout, false);
+                view = inflater.inflate(com.tokopedia.digital_deals.R.layout.item_brand_home, brandLayout, false);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) view.getLayoutParams();
-                imageViewBrandItem = view.findViewById(R.id.iv_brand);
-                brandName = view.findViewById(R.id.brandName);
+                imageViewBrandItem = view.findViewById(com.tokopedia.digital_deals.R.id.iv_brand);
+                brandName = view.findViewById(com.tokopedia.digital_deals.R.id.brandName);
                 brandName.setText(brandList.get(index).getTitle());
-                ImageHandler.loadImage(this, imageViewBrandItem, brandList.get(index).getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+                ImageHandler.loadImage(this, imageViewBrandItem, brandList.get(index).getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
                 view.setLayoutParams(params);
                 brandLayout.addView(view);
                 final int position1 = index;
@@ -361,7 +371,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (showList) {
             if (location != null) {
-                dealsHeading.setText(String.format(getResources().getString(R.string.products_title_search), location.getName().toUpperCase()));
+                dealsHeading.setText(String.format(getResources().getString(com.tokopedia.digital_deals.R.string.products_title_search), location.getName().toUpperCase()));
                 tvCityName.setText(location.getName());
             }
             rvDeals.clearOnScrollListeners();
@@ -500,26 +510,28 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
-    public void onLocationItemSelected(boolean locationUpdated) {
+    public void onLocationItemUpdated(boolean isLocationUpdated) {
+        this.isLocationUpdated = isLocationUpdated;
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location == null) {
-            finish();
-        } else {
+        if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
-            if (selectLocationFragment != null) {
-                selectLocationFragment.dismiss();
-            }
-            if (locationUpdated) {
-                Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
-            }
+            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+            });
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
     }
 
     @Override
-    public void closeBottomsheet() {
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
-        }
+    public void setDefaultLocationOnHomePage() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(this, location);
+        tvCityName.setText(location.getName());
+        mPresenter.getDealsListBySearch(searchInputView.getSearchText());
+    }
+
+    @Override
+    public void onFocusChanged(boolean hasFocus) {
     }
 }

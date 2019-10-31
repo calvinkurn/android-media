@@ -4,23 +4,21 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.*
+import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.Toaster
-import timber.log.Timber
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -42,7 +40,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var progressText: TextView
     private lateinit var progressTextPercent: TextView
     private lateinit var buttonDownload: Button
-    private lateinit var closeButton: View
     private lateinit var imageView: ImageView
     private lateinit var progressGroup: View
     private var isAutoDownload = false
@@ -52,6 +49,11 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var moduleNameTranslated: String
     private lateinit var applink: String
     private var imageUrl: String? = null
+    private var moduleSize = 0L
+
+    private var errorList:MutableList<String> = mutableListOf()
+    private var downloadTimes = 0
+    private var successInstall = false
 
     companion object {
         private const val EXTRA_NAME = "dfname"
@@ -60,6 +62,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         private const val EXTRA_IMAGE = "dfimage"
         private const val defaultImageUrl = "https://ecs7.tokopedia.net/img/android/empty_profile/drawable-xxxhdpi/product_image_48_x_48.png"
         private const val CONFIRMATION_REQUEST_CODE = 1
+        private const val ONE_KB = 1024
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,21 +77,23 @@ class DFInstallerActivity : BaseSimpleActivity() {
                 imageUrl = defaultImageUrl
             }
         }
+
+        super.onCreate(savedInstanceState)
+        manager = SplitInstallManagerFactory.create(this)
         if (moduleName.isEmpty()) {
             finish()
+            return
         }
-        super.onCreate(savedInstanceState)
         if (moduleNameTranslated.isNotEmpty()) {
             setTitle(getString(R.string.installing_x, moduleNameTranslated))
         }
         setContentView(R.layout.activity_dynamic_feature_installer)
-        manager = SplitInstallManagerFactory.create(this)
         initializeViews()
         if (manager.installedModules.contains(moduleName)) {
             onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
-                Timber.w("P3Download Module {$moduleName}")
+                downloadTimes++
                 loadAndLaunchModule(moduleName)
             } else {
                 hideProgress()
@@ -121,21 +126,10 @@ class DFInstallerActivity : BaseSimpleActivity() {
             ContextCompat.getColor(this, R.color.tkpd_main_green),
             android.graphics.PorterDuff.Mode.MULTIPLY);
         buttonDownload = findViewById(R.id.button_download)
-        closeButton = findViewById<View>(R.id.close_button)
 
         buttonDownload.setOnClickListener {
+            downloadTimes++
             loadAndLaunchModule(moduleName)
-        }
-        closeButton.setOnClickListener {
-            try {
-                sessionId?.run {
-                    manager.cancelInstall(this)
-                }
-            } catch (e: Exception) {
-            } finally {
-                sessionId = null
-            }
-            hideProgress()
         }
         progressGroup = findViewById(R.id.progress_group)
 
@@ -148,6 +142,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     }
 
     private fun loadAndLaunchModule(name: String) {
+        moduleSize = 0
         displayProgress()
         progressText.text = getString(R.string.downloading_x, moduleNameTranslated)
 
@@ -164,28 +159,37 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
         // Load and install the requested feature module.
         manager.startInstall(request).addOnSuccessListener {
-            sessionId = it
-        }.addOnFailureListener {
+            if (it == 0) {
+                onSuccessfulLoad(moduleName, true)
+            } else {
+                sessionId = it
+            }
+        }.addOnFailureListener { exception ->
+            val errorCode = (exception as? SplitInstallException)?.errorCode
             sessionId = null
             hideProgress()
             val message = getString(R.string.error_for_module_x, moduleName)
-            showFailedMessage(message)
+            showFailedMessage(message, errorCode?.toString() ?: exception.toString())
         }
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
-        Timber.w("P3Installed Module {$moduleName}")
+        successInstall = manager.installedModules.contains(moduleName)
         progressGroup.visibility = View.INVISIBLE
-        if (launch && manager.installedModules.contains(moduleName)) {
-            RouteManager.getIntentNoFallback(this, applink)?.let {
-                it.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                intent.extras?.let { passBundle ->
-                    it.putExtras(passBundle)
-                }
-                startActivity(it)
-            }
+        if (launch && successInstall) {
+            launchAndForwardIntent(applink)
         }
         this.finish()
+    }
+
+    private fun launchAndForwardIntent(applink: String) {
+        RouteManager.getIntentNoFallback(this, applink)?.let {
+            it.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            intent.extras?.let { passBundle ->
+                it.putExtras(passBundle)
+            }
+            startActivity(it)
+        }
     }
 
     /** Listener used to handle changes in state for install requests. */
@@ -201,6 +205,9 @@ class DFInstallerActivity : BaseSimpleActivity() {
             SplitInstallSessionStatus.DOWNLOADING -> {
                 //  In order to see this, the application has to be uploaded to the Play Store.
                 displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
+                if (moduleSize == 0L) {
+                    moduleSize = state.totalBytesToDownload()
+                }
             }
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                 /*
@@ -222,16 +229,24 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                showFailedMessage(message)
+                showFailedMessage(message, state.errorCode().toString())
                 hideProgress()
             }
         }
     }
 
-    private fun showFailedMessage(message: String) {
-        Timber.w("P3Failed Module {$moduleName}")
+    private fun showFailedMessage(message: String, errorCode: String = "") {
+        errorList.add(errorCode)
+        val userMessage: String
+        if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
+            userMessage = getString(R.string.error_install_df_insufficient_storate)
+        } else if (SplitInstallErrorCode.NETWORK_ERROR.toString() == errorCode) {
+            userMessage = getString(R.string.msg_no_connection)
+        } else {
+            userMessage = message
+        }
         Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
-            message,
+            userMessage,
             Snackbar.LENGTH_INDEFINITE,
             getString(R.string.general_label_ok), View.OnClickListener { })
     }
@@ -247,7 +262,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         progressText.text = String.format("%.2f KB / %.2f KB",
-            (bytesDownloaded.toFloat() / 1024), totalBytesToDowload.toFloat() / 1024)
+            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
     }
 
@@ -275,6 +290,13 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         return null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DFInstallerLogUtil.logStatus(this, "DFM",
+            moduleName, moduleSize,
+            errorList, downloadTimes, successInstall)
     }
 
 }

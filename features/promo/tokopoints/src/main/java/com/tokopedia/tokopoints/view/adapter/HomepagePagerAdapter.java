@@ -1,10 +1,10 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +41,7 @@ public class HomepagePagerAdapter extends PagerAdapter {
         this.mCoupons = coupons;
         this.mPresenter = presenter;
         this.mCatalogsAdapter = new CatalogListOldAdapter(presenter, mCatalogs, true);
-        this.mCouponsAdapter = new CouponListAdapter(presenter, mCoupons, true);
+        this.mCouponsAdapter = new CouponListAdapter(mCoupons);
     }
 
     @Override

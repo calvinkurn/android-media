@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
@@ -8,11 +8,11 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
+import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
+import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
@@ -40,22 +40,20 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     @Inject
     public DigitalDealCheckoutPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                         DigitalAnalytics digitalAnalytics,
+                                        RechargeAnalytics rechargeAnalytics,
                                         DigitalModuleRouter digitalModuleRouter,
                                         ICartDigitalInteractor cartDigitalInteractor,
                                         UserSession userSession,
                                         DigitalCheckoutUseCase digitalCheckoutUseCase,
-                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                        DigitalPostPaidLocalCache digitalPostPaidLocalCache,
-                                        RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase) {
+                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
         super(digitalAddToCartUseCase,
                 digitalAnalytics,
+                rechargeAnalytics,
                 digitalModuleRouter,
                 cartDigitalInteractor,
                 userSession,
                 digitalCheckoutUseCase,
-                digitalInstantCheckoutUseCase,
-                digitalPostPaidLocalCache,
-                rechargePushEventRecommendationUseCase);
+                digitalInstantCheckoutUseCase);
         this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;
     }
@@ -64,6 +62,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     public void onDealsCheckout() {
         getView().setCheckoutParameter(buildCheckoutData(getView().getCartInfoData(), userSession.getAccessToken()));
         renderBaseCart(getView().getCartInfoData());
+        renderPostPaidPopUp(getView().getCartInfoData());
         getView().renderCategoryInfo(getView().getCartInfoData().getAttributes().getCategoryName());
         if (getView().getCartInfoData().getCrossSellingConfig() != null) {
             getView().updateToolbarTitle(getView().getCartInfoData().getCrossSellingConfig().getHeaderTitle());
@@ -75,7 +74,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             getView().updateToolbarTitle(R.string.digital_deal_toolbar_title);
         }
 
-        if (getView().isAlreadyShowOnBoard()){
+        if (getView().isAlreadyShowOnBoard()) {
             autoCollapseCheckoutView();
         }
     }
@@ -120,7 +119,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             getView().showCartDetailView();
             if (getView().getSelectedDeals().size() > 0) {
                 getView().showDealsContainerView();
-            }else {
+            } else {
                 getView().hideDealsContainerView();
             }
             getView().renderIconToCollapse();
@@ -129,7 +128,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
 
     @Override
     public void onNewSelectedDeal(DealProductViewModel viewModel) {
-        if (getView().isCartDetailViewVisible() && !getView().isAlreadyCollapsByUser()){
+        if (getView().isCartDetailViewVisible() && !getView().isAlreadyCollapsByUser()) {
             getView().hideCartDetailView();
             getView().hideDealsContainerView();
             getView().renderIconToExpand();

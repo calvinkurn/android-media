@@ -1,6 +1,6 @@
 package com.tokopedia.loginregister.registerinitial.view.presenter
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -143,12 +143,10 @@ class RegisterInitialPresenter @Inject constructor(
                         view.onGoToSecurityQuestion(email)))
     }
 
-    override fun getUserInfo(shouldGoToCreatePassword : Boolean) {
+    override fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 view.onSuccessGetUserInfo(),
-                view.onErrorGetUserInfo(),
-                view.onGoToCreatePassword(),
-                shouldGoToCreatePassword))
+                view.onErrorGetUserInfo()))
     }
 
     override fun getTickerInfo() {

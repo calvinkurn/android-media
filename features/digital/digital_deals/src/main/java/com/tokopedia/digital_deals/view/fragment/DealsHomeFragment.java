@@ -8,25 +8,27 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,17 +41,20 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkContentPosition;
 import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
@@ -57,18 +62,19 @@ import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryItemAdapter;
-import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.adapter.PromoAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
-import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -76,21 +82,18 @@ import com.tokopedia.user.session.UserSessionInterface;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
-public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
+public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, CloseableBottomSheetDialog.OnCancelListener, PopupMenu.OnMenuItemClickListener {
 
     private final long SHOW_CASE_DELAY = 400;
     private final String SCREEN_NAME = "/digital/deals/homepage";
+    private static final String HOME_FRAGMENT = "DealsHomeFragment";
+    private static final String LOCATION_UPDATE = "isLocationUpdated";
 
     private Menu mMenu;
     @Inject
@@ -113,8 +116,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private NestedScrollView nestedScrollView;
     private LinearLayout curatedDealsLayout;
     private LinearLayout toolbarNameLayout;
+    private TextView topDealsHeading;
     private final boolean IS_SHORT_LAYOUT = false;
     OpenTrendingDeals openTrendingDeals;
+    CurrentLocationCallBack currentLocationCallBack;
 
     private TextView tvLocationName;
     private LinearLayoutManager layoutManager;
@@ -132,9 +137,14 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private CategoryItem categoryItem;
     private boolean isFirstTime = false;
     private TextView promoheading;
+    private UserSession userSession;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
-    public static Fragment createInstance() {
-        Fragment fragment = new DealsHomeFragment();
+    public static DealsHomeFragment createInstance(boolean isLocationUpdated) {
+        DealsHomeFragment fragment = new DealsHomeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(LOCATION_UPDATE, isLocationUpdated);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -142,17 +152,25 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            isLocationUpdated = getArguments().getBoolean(LOCATION_UPDATE);
+        }
+        permissionCheckerHelper = new PermissionCheckerHelper();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_deals_home, container, false);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.fragment_deals_home, container, false);
 
         setHasOptionsMenu(true);
         setUpVariables(view);
         checkLocationStatus();
 
         categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
+        userSession = new UserSession(getActivity());
+        if (userSession.isLoggedIn()) {
+            mPresenter.sendNSQEvent(userSession.getUserId(), "home-page");
+        }
         return view;
     }
 
@@ -161,29 +179,38 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         super.onStart();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !tvLocationName.getText().equals(location.getName())) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
         }
         mPresenter.sendScreenNameEvent(getScreenName());
     }
 
     private void checkLocationStatus() {
 
-        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        permissionCheckerHelper.checkPermission(DealsHomeFragment.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+            @Override
+            public void onPermissionDenied(String permissionText) {
+                setDefaultLocation();
+            }
 
-        if (location != null) {
-            tvLocationName.setText(location.getName());
-            mPresenter.getDealsList(true);
-        } else {
-            mPresenter.getLocations(true);
-        }
+            @Override
+            public void onNeverAskAgain(String permissionText) {
+            }
+
+            @Override
+            public void onPermissionGranted() {
+                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, currentLocationCallBack);
+            }
+        }, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_use_current_location));
     }
 
     private void startShowCase() {
         ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
-        coachItems.add(new CoachMarkItem(toolbarNameLayout, getString(R.string.coachicon_title_location), getString(R.string.coachicon_description_location)));
-        coachItems.add(new CoachMarkItem(searchInputView, getString(R.string.coachicon_title_searchbar), getString(R.string.coachicon_description_searchbar)));
-        coachItems.add(new CoachMarkItem(promoheading, getString(R.string.coachicon_title_promo), getString(R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, R.color.white, nestedScrollView));
+        coachItems.add(new CoachMarkItem(toolbarNameLayout, getString(com.tokopedia.digital_deals.R.string.coachicon_title_location), getString(com.tokopedia.digital_deals.R.string.coachicon_description_location)));
+        coachItems.add(new CoachMarkItem(searchInputView, getString(com.tokopedia.digital_deals.R.string.coachicon_title_searchbar), getString(com.tokopedia.digital_deals.R.string.coachicon_description_searchbar)));
+        coachItems.add(new CoachMarkItem(promoheading, getString(com.tokopedia.digital_deals.R.string.coachicon_title_promo), getString(com.tokopedia.digital_deals.R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, com.tokopedia.design.R.color.white, nestedScrollView));
         CoachMark coachMark = new CoachMarkBuilder().build();
         coachMark.setShowCaseStepListener(new CoachMark.OnShowCaseStepListener() {
             @Override
@@ -203,57 +230,60 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof DealsHomeActivity)
+        if (context instanceof DealsHomeActivity) {
             openTrendingDeals = (OpenTrendingDeals) context;
+            currentLocationCallBack = (CurrentLocationCallBack) context;
+        }
     }
 
     private void setUpVariables(View view) {
-        shimmerLayout = view.findViewById(R.id.shimmer_layout);
-        ((TextView)shimmerLayout.findViewById(R.id.location_arrow_down_tv)).setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                (getActivity(), R.drawable.location_arrow_down), null);
-        toolbar = view.findViewById(R.id.deals_toolbar);
-        toolbarNameLayout = view.findViewById(R.id.toolbar_home_layout);
-        toolbarTitle = view.findViewById(R.id.toolbar_title);
+        shimmerLayout = view.findViewById(com.tokopedia.digital_deals.R.id.shimmer_layout);
+        ((TextView)shimmerLayout.findViewById(com.tokopedia.digital_deals.R.id.location_arrow_down_tv)).setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getActivity(), com.tokopedia.digital_deals.R.drawable.location_arrow_down), null);
+        toolbar = view.findViewById(com.tokopedia.digital_deals.R.id.deals_toolbar);
+        toolbarNameLayout = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar_home_layout);
+        toolbarTitle = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar_title);
         toolbarTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                (getActivity(), R.drawable.location_arrow_down), null);
-        backArrow = view.findViewById(R.id.backArraw);
-        overFlowIcon = view.findViewById(R.id.overFlow_icon);
-        catItems = view.findViewById(R.id.category_items);
-        rvBrandItems = view.findViewById(R.id.rv_brand_items);
-        rvTrendingDeals = view.findViewById(R.id.rv_trending_deals);
-        mainContent = view.findViewById(R.id.main_content);
-        baseMainContent = view.findViewById(R.id.base_main_content);
-        searchInputView = view.findViewById(R.id.search_input_view);
+                (getActivity(), com.tokopedia.digital_deals.R.drawable.location_arrow_down), null);
+        backArrow = view.findViewById(com.tokopedia.digital_deals.R.id.backArraw);
+        overFlowIcon = view.findViewById(com.tokopedia.digital_deals.R.id.overFlow_icon);
+        catItems = view.findViewById(com.tokopedia.digital_deals.R.id.category_items);
+        rvBrandItems = view.findViewById(com.tokopedia.digital_deals.R.id.rv_brand_items);
+        rvTrendingDeals = view.findViewById(com.tokopedia.digital_deals.R.id.rv_trending_deals);
+        mainContent = view.findViewById(com.tokopedia.digital_deals.R.id.main_content);
+        baseMainContent = view.findViewById(com.tokopedia.digital_deals.R.id.base_main_content);
+        searchInputView = view.findViewById(com.tokopedia.digital_deals.R.id.search_input_view);
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_search_deal), null, null , null);
-        tvLocationName = view.findViewById(R.id.tv_location_name);
-        clBrands = view.findViewById(R.id.cl_brands);
-        clPromos = view.findViewById(R.id.cl_promos);
-        rvPromos = view.findViewById(R.id.rv_trending_promos);
-        noContent = view.findViewById(R.id.no_content);
-        tvSeeAllBrands = view.findViewById(R.id.tv_see_all_brands);
-        tvSeeAllTrendingDeals = view.findViewById(R.id.tv_see_all_deals);
-        curatedDealsLayout = view.findViewById(R.id.curated_deals);
-        promoheading = view.findViewById(R.id.tv_promos);
+                (getActivity(), com.tokopedia.digital_deals.R.drawable.ic_search_deal), null, null , null);
+        tvLocationName = view.findViewById(com.tokopedia.digital_deals.R.id.tv_location_name);
+        clBrands = view.findViewById(com.tokopedia.digital_deals.R.id.cl_brands);
+        clPromos = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promos);
+        rvPromos = view.findViewById(com.tokopedia.digital_deals.R.id.rv_trending_promos);
+        noContent = view.findViewById(com.tokopedia.digital_deals.R.id.no_content);
+        tvSeeAllBrands = view.findViewById(com.tokopedia.digital_deals.R.id.tv_see_all_brands);
+        tvSeeAllTrendingDeals = view.findViewById(com.tokopedia.digital_deals.R.id.tv_see_all_deals);
+        curatedDealsLayout = view.findViewById(com.tokopedia.digital_deals.R.id.curated_deals);
+        promoheading = view.findViewById(com.tokopedia.digital_deals.R.id.tv_promos);
+        topDealsHeading = view.findViewById(com.tokopedia.digital_deals.R.id.tv_popular);
         tvSeeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
         tvLocationName.setOnClickListener(this);
         toolbarTitle.setOnClickListener(this);
-        nestedScrollView = view.findViewById(R.id.nested_scroll_view);
+        nestedScrollView = view.findViewById(com.tokopedia.digital_deals.R.id.nested_scroll_view);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        trendingDeals = view.findViewById(R.id.cl_topDeals);
+        trendingDeals = view.findViewById(com.tokopedia.digital_deals.R.id.cl_topDeals);
         rvTrendingDeals.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         rvTrendingDeals.setNestedScrollingEnabled(false);
         selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         dealsCategoryBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
 
-        Drawable img = getResources().getDrawable(R.drawable.ic_search_deal);
+        Drawable img = getResources().getDrawable(com.tokopedia.digital_deals.R.drawable.ic_search_deal);
         setDrawableTint(img);
 
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
 
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
+        appBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.app_bar_layout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -262,7 +292,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 } else {
                     DealsHomeFragment.this.showSearchButton();
                 }
-                Log.d("Offest Changed", "Offset : " + verticalOffset);
             }
         });
 
@@ -292,7 +321,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(getActivity(), v);
                 MenuInflater menuInflater = popupMenu.getMenuInflater();
-                menuInflater.inflate(R.menu.menu_deals_home, popupMenu.getMenu());
+                menuInflater.inflate(com.tokopedia.digital_deals.R.menu.menu_deals_home, popupMenu.getMenu());
                 mMenu = popupMenu.getMenu();
                 for (int i = 0; i < mMenu.size(); i++) {
                     MenuItem item = popupMenu.getMenu().getItem(i);
@@ -312,12 +341,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private void setDrawableTint(Drawable img) {
         Drawable wrappedDrawable = DrawableCompat.wrap(img);
         Drawable mutableDrawable = wrappedDrawable.mutate();
-        DrawableCompat.setTint(mutableDrawable, ContextCompat.getColor(getContext(), R.color.color_search_icon));
+        DrawableCompat.setTint(mutableDrawable, ContextCompat.getColor(getContext(), com.tokopedia.digital_deals.R.color.color_search_icon));
     }
 
     public void hideSearchButton() {
         if (mMenu != null) {
-            MenuItem item = mMenu.findItem(R.id.action_menu_search);
+            MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_search);
             item.setVisible(false);
             item.setEnabled(false);
         }
@@ -325,7 +354,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     public void showSearchButton() {
         if (mMenu != null) {
-            MenuItem item = mMenu.findItem(R.id.action_menu_search);
+            MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_search);
             item.setVisible(true);
             item.setEnabled(true);
         }
@@ -388,11 +417,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
             for (int position = 0; position < 4; position++) {
                 LayoutInflater inflater = getLayoutInflater();
-                view = inflater.inflate(R.layout.category_item, mainContent, false);
-                imageViewCatItem = view.findViewById(R.id.iv_category);
-                textViewCatItem = view.findViewById(R.id.tv_category);
+                view = inflater.inflate(com.tokopedia.digital_deals.R.layout.category_item, mainContent, false);
+                imageViewCatItem = view.findViewById(com.tokopedia.digital_deals.R.id.iv_category);
+                textViewCatItem = view.findViewById(com.tokopedia.digital_deals.R.id.tv_category);
                 textViewCatItem.setText(categoryList.get(position).getTitle());
-                ImageHandler.loadImage(getActivity(), imageViewCatItem, categoryList.get(position).getMediaUrl(), R.color.grey_1100, R.color.grey_1100);
+                ImageHandler.loadImage(getActivity(), imageViewCatItem, categoryList.get(position).getMediaUrl(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
                 final int position1 = position;
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -410,11 +439,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 catItems.addView(view);
             }
             LayoutInflater inflater = getLayoutInflater();
-            view = inflater.inflate(R.layout.category_item, mainContent, false);
-            imageViewCatItem = view.findViewById(R.id.iv_category);
-            textViewCatItem = view.findViewById(R.id.tv_category);
-            textViewCatItem.setText(getContext().getResources().getString(R.string.sell_all_category));
-            imageViewCatItem.setImageResource(R.drawable.ic_semua_kategori);
+            view = inflater.inflate(com.tokopedia.digital_deals.R.layout.category_item, mainContent, false);
+            imageViewCatItem = view.findViewById(com.tokopedia.digital_deals.R.id.iv_category);
+            textViewCatItem = view.findViewById(com.tokopedia.digital_deals.R.id.tv_category);
+            textViewCatItem.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.sell_all_category));
+            imageViewCatItem.setImageResource(com.tokopedia.digital_deals.R.drawable.ic_semua_kategori);
             view.setLayoutParams(params);
             catItems.addView(view);
             view.setOnClickListener(new View.OnClickListener() {
@@ -436,6 +465,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void renderTopDeals(CategoryItem categoryItem) {
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
             this.categoryItem = categoryItem;
+            topDealsHeading.setText(categoryItem.getTitle());
             trendingDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
             categoryAdapter.clearList();
@@ -451,7 +481,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
                             mPresenter.sendSeeAllTrendingDealsEvent();
-                            mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals));
+                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), getContext().getResources().getString(com.tokopedia.digital_deals.R.string.trending_deals), 0);
                         }
                     }
                 });
@@ -521,11 +551,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void renderAllTrendingDeals(List<ProductItem> items, String title) {
-        openTrendingDeals.replaceFragment(items, 0, title);
-    }
-
-    @Override
     public void addDealsToCards(CategoryItem top) {
         if (top.getItems() != null) {
             ((DealsCategoryAdapter) rvTrendingDeals.getAdapter()).addAll(top.getItems());
@@ -559,6 +584,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+    }
+
+    @Override
     public int getRequestCode() {
         return DealsHomeActivity.REQUEST_CODE_LOGIN;
     }
@@ -567,7 +598,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        requestParams.putInt(DealsHomePresenter.TAG, location.getId());
+        if (!TextUtils.isEmpty(location.getCoordinates())) {
+            requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        }
+        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+        }
         return requestParams;
     }
 
@@ -576,7 +612,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        if (!TextUtils.isEmpty(location.getCoordinates())) {
+            requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        }
+        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+        }
         return requestParams;
     }
 
@@ -597,26 +638,25 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void hideFavouriteButton() {
-        MenuItem item = mMenu.findItem(R.id.action_menu_favourite);
+        MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_favourite);
         item.setVisible(false);
     }
 
     @Override
     public void showFavouriteButton() {
-        MenuItem item = mMenu.findItem(R.id.action_menu_favourite);
+        MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_favourite);
         item.setVisible(false);
     }
 
     @Override
     public void startGeneralWebView(String url) {
-        ((DealsModuleRouter) getActivity().getApplication())
-                .actionOpenGeneralWebView(getActivity(), url);
+        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_deals_home, menu);
+        inflater.inflate(com.tokopedia.digital_deals.R.menu.menu_deals_home, menu);
         mMenu = menu;
         for (int i = 0; i < mMenu.size(); i++) {
             MenuItem item = menu.getItem(i);
@@ -681,44 +721,19 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void onLocationItemSelected(boolean locationUpdated) {
+    public void startLocationFragment() {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location == null) {
-            if (getActivity() != null)
-                getActivity().finish();
-        } else {
-            if (locationUpdated) {
-                isLocationUpdated = locationUpdated;
-                selectLocationFragment.setCanceledOnTouchOutside(true);
-                Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
-                mPresenter.getDealsList(true);
-                tvLocationName.setText(location.getName());
-            }
-            if (selectLocationFragment != null) {
-                selectLocationFragment.dismiss();
-            }
-        }
-    }
-
-    @Override
-    public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
-        Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
-        this.isFirstTime = isForFirstime;
-        if (isForFirstime) {
-            mPresenter.getDealsList(false);
-        }
-        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this, tvLocationName.getText().toString(), this), "", false);
-        selectLocationFragment.show();
-        if (isForFirstime) {
-            selectLocationFragment.setCanceledOnTouchOutside(false);
-        }
+        Fragment fragment = SelectLocationBottomSheet.createInstance(tvLocationName.getText().toString(), location);
+        getChildFragmentManager().beginTransaction().setCustomAnimations(com.tokopedia.digital_deals.R.anim.deals_slide_in_up, com.tokopedia.digital_deals.R.anim.deals_slide_in_down,
+                com.tokopedia.digital_deals.R.anim.deals_slide_out_down, com.tokopedia.digital_deals.R.anim.deals_slide_out_up)
+                .add(com.tokopedia.digital_deals.R.id.main_content, fragment).addToBackStack(HOME_FRAGMENT).commit();
     }
 
     @Override
     public void startDealsCategoryFragment(List<CategoryItem> categoryItems, List<CategoriesModel> categoriesModels) {
-        View categoryView = getLayoutInflater().inflate(R.layout.deals_category_bottomsheet_layout, null);
-        RecyclerView recyclerView = categoryView.findViewById(R.id.rv_category_items);
-        ImageView crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
+        View categoryView = getLayoutInflater().inflate(com.tokopedia.digital_deals.R.layout.deals_category_bottomsheet_layout, null);
+        RecyclerView recyclerView = categoryView.findViewById(com.tokopedia.digital_deals.R.id.rv_category_items);
+        ImageView crossIcon = categoryView.findViewById(com.tokopedia.digital_deals.R.id.cross_icon_bottomsheet);
         crossIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -738,6 +753,36 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public String getSearchInputText() {
         return searchInputView.getText().toString();
+    }
+
+    @Override
+    public void updateInitialLocation(List<Location> locations) {
+        Utils.getSingletonInstance().updateLocation(getContext(), locations.get(0));
+        tvLocationName.setText(locations.get(0).getName());
+        mPresenter.getDealsList(true);
+        mPresenter.getBrandsHome();
+    }
+
+    @Override
+    public void setDefaultLocation() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(getContext(), location);
+        if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
+            mPresenter.getLocations();
+        } else if (location != null){
+            tvLocationName.setText(location.getName());
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
+        }
+    }
+
+    @Override
+    public void showErrorMessage() {
+        Toaster.INSTANCE.showNormalWithAction(mainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+        });
+        setDefaultLocation();
     }
 
     @Override
@@ -761,14 +806,43 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         selectLocationFragment.dismiss();
     }
 
-    @Override
-    public void closeBottomsheet() {
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
+    public void refreshHomePage(boolean isLocationUpdated) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
+            tvLocationName.setText(location.getName());
+            Toaster.INSTANCE.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+            });
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
         }
     }
 
+    public void setDefaultLocationName() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(getContext(), location);
+        if (location != null) {
+            tvLocationName.setText(location.getName());
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
+        }
+    }
+
+    public void setCurrentCoordinates() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), TkpdCache.DEALS_LOCATION);
+        String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
+        String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
+        if (!TextUtils.isEmpty(lattitude) && !TextUtils.isEmpty(longitude)) {
+            mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+        } else {
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
+        }
+    }
+
+
     public interface OpenTrendingDeals {
-        void replaceFragment(List<ProductItem> trendingDeals, int flag, String title);
+        void replaceFragment(String url, String title, int position);
     }
 }

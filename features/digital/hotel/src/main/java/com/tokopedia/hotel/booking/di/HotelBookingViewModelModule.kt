@@ -1,7 +1,7 @@
 package com.tokopedia.hotel.booking.di
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
@@ -18,10 +18,10 @@ abstract class HotelBookingViewModelModule {
 
     @HotelBookingScope
     @Binds
-    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @ViewModelKey(HotelBookingViewModel::class)
-    internal abstract fun hotelDestinationViewModel(viewModel: HotelBookingViewModel): ViewModel
+    abstract fun hotelDestinationViewModel(viewModel: HotelBookingViewModel): ViewModel
 }

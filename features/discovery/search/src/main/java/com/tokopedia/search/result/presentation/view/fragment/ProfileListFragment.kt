@@ -14,11 +14,14 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID
-import com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE
-import com.tokopedia.discovery.common.data.Option
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
+import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE
+import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.R
+import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.ProfileListSectionContract
 import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewModel
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
@@ -61,11 +64,11 @@ class ProfileListFragment :
 
     var query : String = ""
 
+    var searchParameter: SearchParameter? = null
+
     var nextPage : Int = 1
 
     var hasLoadData = false
-
-    var fragmentPosition = 0
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -74,6 +77,14 @@ class ProfileListFragment :
             attachNavigationListener(it)
             attachRedirectionListener(it)
         }
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.profile_list_recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.profile_list_swipe_refresh_layout
     }
 
     private fun attachNavigationListener(context: Context) {
@@ -151,6 +162,8 @@ class ProfileListFragment :
 
         totalProfileCount = profileListViewModel.totalSearchCount
         renderList(profileListViewModel.profileModelList, profileListViewModel.isHasNextPage)
+
+        removeSearchPageLoading()
     }
 
     override fun renderList(list: List<ProfileViewModel>, hasNextPage: Boolean) {
@@ -252,14 +265,12 @@ class ProfileListFragment :
     }
 
     companion object {
-        private val EXTRA_QUERY = "EXTRA_QUERY"
-        private const val EXTRA_FRAGMENT_POSITION = "EXTRA_FRAGMENT_POSITION"
+        private val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
         private const val SCREEN_SEARCH_PAGE_PROFILE_TAB = "Search result - Profile tab"
 
-        fun newInstance(query: String, fragmentPosition: Int): ProfileListFragment {
+        fun newInstance(searchParameter: SearchParameter): ProfileListFragment {
             val args = Bundle()
-            args.putString(EXTRA_QUERY, query)
-            args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition)
+            args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
 
             val profileListFragment = ProfileListFragment()
             profileListFragment.arguments = args
@@ -269,14 +280,13 @@ class ProfileListFragment :
     }
 
     private fun loadDataFromSavedState(savedInstanceState: Bundle) {
-        query = savedInstanceState.getString(EXTRA_QUERY) ?: ""
-        fragmentPosition = savedInstanceState.getInt(EXTRA_FRAGMENT_POSITION)
+        searchParameter = savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER)
+        query = searchParameter?.getSearchQuery() ?: ""
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(EXTRA_QUERY, query)
-        outState.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition)
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -295,7 +305,7 @@ class ProfileListFragment :
 
     private fun createProfileEmptySearchModel(context: Context, query: String, sectionTitle: String): EmptySearchProfileViewModel {
         val emptySearchModel = EmptySearchProfileViewModel()
-        emptySearchModel.imageRes = R.drawable.ic_empty_search
+        emptySearchModel.imageRes = com.tokopedia.design.R.drawable.ic_empty_search
         emptySearchModel.title = getEmptySearchTitle(context, sectionTitle)
         emptySearchModel.content = String.format(context.getString(R.string.empty_search_content_template), query)
         emptySearchModel.buttonText = context.getString(R.string.empty_search_button_text)
@@ -319,6 +329,12 @@ class ProfileListFragment :
                 NetworkErrorHelper.createSnackbarWithAction(activity) { loadData(nextPage) }.showRetrySnackbar()
             }
         }
+    }
+
+    override fun hideLoading() {
+        super.hideLoading()
+
+        removeSearchPageLoading()
     }
 
     override fun onEmptyButtonClicked() {
@@ -382,7 +398,11 @@ class ProfileListFragment :
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
-        return fragmentPosition == 0
+        return isFirstActiveTab()
+    }
+
+    private fun isFirstActiveTab(): Boolean {
+        return searchParameter?.get(SearchApiConst.ACTIVE_TAB) ?: "" == SearchConstant.ActiveTab.PROFILE
     }
 
     override fun getBaseAppComponent(): BaseAppComponent {
@@ -399,6 +419,12 @@ class ProfileListFragment :
     fun backToTop() {
         view?.let {
             getRecyclerView(view)?.smoothScrollToPosition(0)
+        }
+    }
+
+    private fun removeSearchPageLoading() {
+        if (isFirstActiveTab()) {
+            searchNavigationListener.removeSearchPageLoading()
         }
     }
 }

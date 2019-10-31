@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.listener;
 
 import android.content.Context;
 import android.content.res.Resources;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -76,11 +77,11 @@ public interface FeedPlus {
 
         void setLastCursorOnFirstPage(String lastCursor);
 
-        void onOpenVideo(String videoUrl, String subtitle);
+        void setFirstPageCursor(@NonNull String firstPageCursor);
 
         void onInfoClicked();
 
-        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed, WhitelistViewModel whitelistViewModel);
+        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed);
 
         void onErrorGetFeedFirstPage(String errorMessage);
 
@@ -139,17 +140,20 @@ public interface FeedPlus {
 
         void onErrorToggleFavoriteShop(String message, int rowNumber, int adapterPosition,
                                        String shopId);
+
+        void onSuccessDeletePost(int rowNumber);
+
+        void onErrorDeletePost(String errorMessage, int id, int rowNumber);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void fetchFirstPage();
+        void fetchFirstPage(String firstPageCursor);
 
         void fetchNextPage();
 
         void favoriteShop(final Data promotedShopViewModel, final int adapterPosition);
-
-        void refreshPage();
 
         void setCursor(String cursor);
 
@@ -176,5 +180,7 @@ public interface FeedPlus {
         void trackAffiliate(String url);
 
         void addPostTagItemToCart(PostTagItem postTagItem);
+
+        void deletePost(int id, int rowNumber);
     }
 }

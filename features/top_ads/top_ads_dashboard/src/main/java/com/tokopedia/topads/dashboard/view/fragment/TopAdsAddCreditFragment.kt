@@ -3,7 +3,8 @@ package com.tokopedia.topads.dashboard.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,14 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
         return inflater.inflate(R.layout.fragment_top_ads_add_credit, container, false)
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         button_submit.setOnClickListener { chooseCredit() }
@@ -42,7 +51,7 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
     }
 
     private fun initErrorNetworkViewModel() {
-        adapter.errorNetworkModel = ErrorNetworkModel().apply { iconDrawableRes = R.drawable.ic_error_network }
+        adapter.errorNetworkModel = ErrorNetworkModel().apply { iconDrawableRes = com.tokopedia.abstraction.R.drawable.ic_error_network }
     }
 
     override fun loadData(page: Int) {

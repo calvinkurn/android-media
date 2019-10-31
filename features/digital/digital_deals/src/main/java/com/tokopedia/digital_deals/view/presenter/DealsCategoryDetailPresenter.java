@@ -1,6 +1,6 @@
 package com.tokopedia.digital_deals.view.presenter;
 
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -10,16 +10,19 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetNearestLocationUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextCategoryPageUseCase;
+import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
@@ -30,7 +33,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -38,7 +40,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.Subscribers;
 import rx.schedulers.Schedulers;
 
 ;
@@ -52,11 +53,12 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     private boolean isLastPage;
     private volatile boolean isDealsLoaded = false;
     private volatile boolean isBrandsLoaded = false;
-
+    private GetNearestLocationUseCase getNearestLocationUseCase;
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetLocationListRequestUseCase getLocationListRequestUseCase;
     private GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase;
     private GetNextCategoryPageUseCase getNextCategoryPageUseCase;
+    private PostNsqEventUseCase postNsqEventUseCase;
     private List<ProductItem> productItems;
     private List<Brand> brands;
     private Page page;
@@ -65,11 +67,13 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
 
     @Inject
-    public DealsCategoryDetailPresenter(GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetNextCategoryPageUseCase getNextCategoryPageUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetLocationListRequestUseCase getLocationListRequestUseCase) {
+    public DealsCategoryDetailPresenter(GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetNextCategoryPageUseCase getNextCategoryPageUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetLocationListRequestUseCase getLocationListRequestUseCase, PostNsqEventUseCase postNsqEventUseCase, GetNearestLocationUseCase getNearestLocationUseCase) {
         this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
         this.getNextCategoryPageUseCase = getNextCategoryPageUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getLocationListRequestUseCase = getLocationListRequestUseCase;
+        this.postNsqEventUseCase = postNsqEventUseCase;
+        this.getNearestLocationUseCase = getNearestLocationUseCase;
     }
 
     @Override
@@ -82,11 +86,13 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         getCategoryDetailRequestUseCase.unsubscribe();
         getNextCategoryPageUseCase.unsubscribe();
         getAllBrandsUseCase.unsubscribe();
+        postNsqEventUseCase.unsubscribe();
+        getNearestLocationUseCase.unsubscribe();
     }
 
     @Override
     public boolean onOptionMenuClick(int id) {
-//        if (id == R.id.action_menu_search) {
+//        if (id == com.tokopedia.digital_deals.R.id.action_menu_search) {
 //            setTopDeals();
 //            getView().checkLocationStatus();
 //        } else {
@@ -172,6 +178,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     public void getCategoryDetails(boolean showProgressBar) {
         if (showProgressBar)
             getView().showProgressBar();
+        getCategoryDetailRequestUseCase.setCategoryUrl(getView().getCategoryUrl());
         getCategoryDetailRequestUseCase.setRequestParams(getView().getCategoryParams());
         getCategoryDetailRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -215,6 +222,9 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     private void loadMoreItems() {
         isLoading = true;
 
+        if (getView() == null)
+            return;
+        getView().addFooter();
         getNextCategoryPageUseCase.setRequestParams(searchNextParams);
         getNextCategoryPageUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -290,7 +300,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
                                 loadMoreItems();
                             }
                         } else
-                            getView().addFooter();
+                            getView().removeFooter();
                     }
                 });
     }
@@ -346,5 +356,67 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         });
     }
 
+    public void sendNSQEvent(String userId, String action) {
+        NsqServiceModel nsqServiceModel = new NsqServiceModel();
+        nsqServiceModel.setService(Utils.NSQ_SERVICE);
+        NsqMessage nsqMessage = new NsqMessage();
+        nsqMessage.setUserId(Integer.parseInt(userId));
+        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
+        nsqMessage.setAction(action);
+        nsqServiceModel.setMessage(nsqMessage);
+        postNsqEventUseCase.setRequestModel(nsqServiceModel);
+        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper(e);
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Log.d("Naveen", "NSQ Event Sent category event");
+            }
+        });
+    }
+
+    public void getNearestLocation(String coordinates) {
+        if (getView() == null) {
+            return;
+        }
+        RequestParams params = RequestParams.create();
+        params.putString(Utils.LOCATION_COORDINATES, coordinates);
+        getNearestLocationUseCase.setRequestParams(params);
+        getNearestLocationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                if (locationResponse != null && locationResponse.getLocations() != null) {
+                    getView().setCurrentLocation(locationResponse.getLocations());
+                } else {
+                    getView().showErrorMessage();
+                    getCategoryDetails(true);
+                    getBrandsList(true);
+                }
+            }
+        });
+    }
 }
 

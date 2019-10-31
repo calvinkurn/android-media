@@ -1,8 +1,8 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
 import android.content.Context
-import android.support.v4.app.FragmentManager
-import android.support.v7.widget.Toolbar
+import androidx.fragment.app.FragmentManager
+import androidx.appcompat.widget.Toolbar
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
@@ -11,6 +11,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 
 /**
  * @author : Steven 13/02/19
@@ -50,7 +51,7 @@ interface PlayViewState {
     fun onShowOverlayCTAFromDynamicButton(it: DynamicButton)
     fun onShowOverlayWebviewFromDynamicButton(it: DynamicButton)
     fun setBottomView()
-    fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentViewModel)
+    fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentsViewModel)
     fun onErrorGetStickyComponent()
     fun errorViewShown(): Boolean
     fun autoAddSprintSale()

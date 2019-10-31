@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.data.repository.cataloglist;
 
 import com.tokopedia.discovery.common.Repository;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.data.source.searchcatalog.SearchCatalogDataSource;
 import com.tokopedia.search.result.data.source.searchcatalog.SearchCatalogDataSourceModule;
 import com.tokopedia.search.result.domain.model.SearchCatalogModel;

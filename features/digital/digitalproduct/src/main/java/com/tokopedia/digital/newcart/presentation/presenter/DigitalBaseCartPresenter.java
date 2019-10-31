@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
@@ -22,15 +22,13 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
+import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.digital.common.data.entity.response.RechargePushEventRecommendationResponseEntity;
-import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
@@ -38,8 +36,8 @@ import com.tokopedia.digital.newcart.domain.model.VoucherAttributeDigital;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.track.TrackApp;
@@ -62,36 +60,33 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         implements DigitalBaseContract.Presenter<T> {
     private final int COUPON_ACTIVE = 1;
     private DigitalAnalytics digitalAnalytics;
+    private RechargeAnalytics rechargeAnalytics;
     private DigitalModuleRouter digitalModuleRouter;
     private ICartDigitalInteractor cartDigitalInteractor;
     private UserSession userSession;
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
-    private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
-    private RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase;
     private String PROMO_CODE = "promoCode";
     public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
 
 
     public DigitalBaseCartPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                     DigitalAnalytics digitalAnalytics,
+                                    RechargeAnalytics rechargeAnalytics,
                                     DigitalModuleRouter digitalModuleRouter,
                                     ICartDigitalInteractor cartDigitalInteractor,
                                     UserSession userSession,
                                     DigitalCheckoutUseCase digitalCheckoutUseCase,
-                                    DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                    DigitalPostPaidLocalCache digitalPostPaidLocalCache,
-                                    RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase) {
+                                    DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalAnalytics = digitalAnalytics;
+        this.rechargeAnalytics = rechargeAnalytics;
         this.digitalModuleRouter = digitalModuleRouter;
         this.cartDigitalInteractor = cartDigitalInteractor;
         this.userSession = userSession;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
         this.digitalInstantCheckoutUseCase = digitalInstantCheckoutUseCase;
-        this.digitalPostPaidLocalCache = digitalPostPaidLocalCache;
-        this.rechargePushEventRecommendationUseCase = rechargePushEventRecommendationUseCase;
     }
 
     @Override
@@ -104,7 +99,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     @Override
     public void onViewCreated() {
-        if (!userSession.isLoggedIn()){
+        if (!userSession.isLoggedIn()) {
             getView().closeViewWithMessageAlert(getView().getString(R.string.digital_cart_login_message));
         } else {
             getView().hideCartView();
@@ -122,10 +117,17 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         RequestBodyAtcDigital requestBodyAtcDigital = new RequestBodyAtcDigital();
         List<Field> fieldList = new ArrayList<>();
         String clientNumber = getView().getClientNumber();
+        String zoneId = getView().getZoneId();
         if (clientNumber != null && !clientNumber.isEmpty()) {
             Field field = new Field();
             field.setName("client_number");
             field.setValue(clientNumber);
+            fieldList.add(field);
+        }
+        if (zoneId != null && !zoneId.isEmpty()) {
+            Field field = new Field();
+            field.setName("zone_id");
+            field.setValue(zoneId);
             fieldList.add(field);
         }
         Attributes attributes = new Attributes();
@@ -143,6 +145,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setShowSubscribeFlag(true);
         attributes.setThankyouNative(true);
         attributes.setThankyouNativeNew(true);
+        // Handle subscription params
+        DigitalSubscriptionParams subParams = getView().getDigitalSubscriptionParams();
+        if (subParams.getShowSubscribePopUp() != null) {
+            attributes.setShowSubscribePopUp(subParams.getShowSubscribePopUp());
+        }
+        if (subParams.getAutoSubscribe() != null) {
+            attributes.setAutoSubscribe(subParams.getAutoSubscribe());
+        }
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
         return requestBodyAtcDigital;
@@ -194,7 +204,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                     getView().hideFullPageLoading();
                     getView().interruptRequestTokenVerification(userSession.getPhoneNumber());
                 } else {
-                    trackRechargePushEventRecommendation(Integer.parseInt(getView().getCartPassData().getCategoryId()));
+                    rechargeAnalytics.trackAddToCartRechargePushEventRecommendation(Integer.parseInt(getView().getCartPassData().getCategoryId()));
                     renderCart(cartDigitalInfoData);
                 }
             }
@@ -247,8 +257,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         renderAutoApplyPromo(cartDigitalInfoData);
 
         branchAutoApplyCouponIfAvailable();
-
-        renderPostPaidPopUp(cartDigitalInfoData);
     }
 
     private void renderAutoApplyPromo(CartDigitalInfoData cartDigitalInfoData) {
@@ -290,15 +298,12 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         }
     }
 
-    private void renderPostPaidPopUp(CartDigitalInfoData cartDigitalInfoData) {
-        if (!getView().isAlreadyShowPostPaid()
-                && cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null
-                && !digitalPostPaidLocalCache.isAlreadyShowPostPaidPopUp(userSession.getUserId())) {
+    public void renderPostPaidPopUp(CartDigitalInfoData cartDigitalInfoData) {
+        if (!getView().getDigitalSubscriptionParams().isSubscribed() && cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null) {
             getView().showPostPaidDialog(
                     cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
                     cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),
-                    cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle(),
-                    userSession.getUserId()
+                    cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getConfirmButtonTitle()
             );
         }
     }
@@ -322,7 +327,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         }
     }
 
-    private void applyPromoCode(String promoCode){
+    private void applyPromoCode(String promoCode) {
         PromoCodeAutoApplyUseCase promoCodeAutoApplyUseCase = new PromoCodeAutoApplyUseCase(getView().getActivity());
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putString(PROMO_CODE, promoCode);
@@ -439,7 +444,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     @Override
     public void onReceivePromoCode(String couponTitle, String couponMessage, String couponCode, int isCoupon) {
-        if (isViewAttached()){
+        if (isViewAttached()) {
             VoucherDigital voucherDigital = new VoucherDigital();
             VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
             voucherAttributeDigital.setIsCoupon(isCoupon);
@@ -482,7 +487,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setClientId(digitalModuleRouter.getTrackingClientId());
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam(
                 TrackApp.getInstance().getAppsFlyer().getUniqueId(),
-                TrackApp.getInstance().getAppsFlyer().getGoogleAdId()));
+                ""));
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
                 new Relationships(new Cart(new Data(
@@ -520,7 +525,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 getView().getGeneratedAuthParamNetwork(userSession.getUserId(), userSession.getDeviceId(), paramGetCart),
                 getSubscriberCartInfo()
         );
-
 
 
     }
@@ -690,24 +694,5 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         builder.userAgent(DeviceUtil.getUserAgentForApiCall());
         builder.needOtp(cartDigitalInfoData.isNeedOtp());
         return builder;
-    }
-
-    private void trackRechargePushEventRecommendation(int categoryId) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, "ATC"), new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                RechargePushEventRecommendationResponseEntity response = graphqlResponse.getData(RechargePushEventRecommendationResponseEntity.class);
-            }
-        });
     }
 }

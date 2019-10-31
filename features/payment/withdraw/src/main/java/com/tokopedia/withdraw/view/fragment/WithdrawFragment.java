@@ -8,17 +8,9 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import androidx.cardview.widget.CardView;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -35,6 +27,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Group;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -55,9 +59,6 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
-import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
-import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
-import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -195,7 +196,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
 
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet)
@@ -233,6 +234,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         return view;
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -732,17 +734,13 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void goToAddBank() {
-        Intent intent = new Intent(getActivity(), AddEditBankActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtras(bundle);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.ADD_BANK);
         startActivityForResult(intent, BANK_INTENT);
     }
 
     @Override
     public void goToSettingBank() {
-        Intent intent = new Intent(getActivity(), SettingBankActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtras(bundle);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK);
         startActivityForResult(intent, BANK_SETTING_INTENT);
     }
 
@@ -774,19 +772,28 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         switch (requestCode) {
             case BANK_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
-                    BankAccount bankAccount = new BankAccount();
-                    bankAccount.setBankAccountId(parcelable.getAccountId());
-                    bankAccount.setBankAccountName(parcelable.getAccountName());
-                    bankAccount.setBankAccountNumber(parcelable.getAccountNumber());
-                    bankAccount.setBankId(parcelable.getBankId());
-                    bankAccount.setBankName(parcelable.getBankName());
+                    if(data!= null && data.getExtras()!= null){
+                        String accountId = data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_ID,"");
+                        String accountName = data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NAME,"");
+                        String accountNumber = data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NO,"");
+                        String bankId = data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_BANK_ID,"");
+                        String bankName = data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_BANK_NAME,"");
 
-                    bankAdapter.addItem(bankAccount);
-                    bankAdapter.changeItemSelected(listBank.size() - 2);
-                    itemSelected();
-                    snackBarInfo.setText(R.string.success_add_bank);
-                    snackBarInfo.show();
+                        BankAccount bankAccount = new BankAccount();
+                        bankAccount.setBankAccountId(accountId);
+                        bankAccount.setBankAccountName(accountName);
+                        bankAccount.setBankAccountNumber(accountNumber);
+                        bankAccount.setBankId(bankId);
+                        bankAccount.setBankName(bankName);
+
+                        bankAdapter.addItem(bankAccount);
+                        bankAdapter.changeItemSelected(listBank.size() - 2);
+                        itemSelected();
+                        snackBarInfo.setText(R.string.success_add_bank);
+                        snackBarInfo.show();
+                    }else{
+                        presenter.refreshBankList();
+                    }
                 }
                 break;
             case BANK_SETTING_INTENT:

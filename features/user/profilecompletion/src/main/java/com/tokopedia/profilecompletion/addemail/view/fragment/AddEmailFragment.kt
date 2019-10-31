@@ -2,12 +2,12 @@ package com.tokopedia.profilecompletion.addemail.view.fragment
 
 //import com.tokopedia.unifycomponents.Toaster
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -86,7 +86,7 @@ class AddEmailFragment : BaseDaggerFragment() {
                 setErrorText(getString(R.string.wrong_email_format))
             } else {
                 showLoading()
-                goToVerificationActivity(email.trim())
+                context?.run { viewModel.checkEmail(this, email) }
             }
         }
     }
@@ -133,14 +133,24 @@ class AddEmailFragment : BaseDaggerFragment() {
                 Observer {
                     when (it) {
                         is Success -> onSuccessAddEmail(it.data)
-                        is Fail -> onErrorAddEmail(it.throwable)
+                        is Fail -> onErrorShowSnackbar(it.throwable)
+                    }
+                }
+        )
+
+        viewModel.mutateCheckEmailResponse.observe(
+                this,
+                Observer {
+                    when (it) {
+                        is Success -> goToVerificationActivity(it.data)
+                        is Fail -> onErrorShowSnackbar(it.throwable)
                     }
                 }
         )
 
     }
 
-    private fun onErrorAddEmail(throwable: Throwable) {
+    private fun onErrorShowSnackbar(throwable: Throwable) {
         dismissLoading()
         view?.run {
             Toaster.showError(
@@ -177,19 +187,19 @@ class AddEmailFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_ADD_EMAIL_COTP && resultCode == Activity.RESULT_OK) {
             onSuccessVerifyAddEmail(data)
-        }else{
+        } else {
             dismissLoading()
         }
     }
 
     private fun onSuccessVerifyAddEmail(data: Intent?) {
-        data?.extras?.run{
+        data?.extras?.run {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
-            if(otpCode.isNotBlank()) {
+            if (otpCode.isNotBlank()) {
                 val email = et_email.text.toString().trim()
-                viewModel.mutateAddEmail(email, otpCode)
-            }else{
-                onErrorAddEmail(MessageErrorException(getString(R.string.default_request_error_unknown),
+                viewModel.mutateAddEmail(context!!, email, otpCode)
+            } else {
+                onErrorShowSnackbar(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
             }
         }

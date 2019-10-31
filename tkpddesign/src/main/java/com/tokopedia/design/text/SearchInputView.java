@@ -41,6 +41,10 @@ public class SearchInputView extends BaseCustomView {
 
     }
 
+    public interface FocusChangeListener {
+        void onFocusChanged(boolean hasFocus);
+    }
+
     public interface ResetListener {
         void onSearchReset();
     }
@@ -56,6 +60,7 @@ public class SearchInputView extends BaseCustomView {
     private long delayTextChanged;
     private Listener listener;
     private ResetListener reset;
+    private FocusChangeListener focusChangeListener;
 
     public EditText getSearchTextView() {
         return searchTextView;
@@ -67,6 +72,10 @@ public class SearchInputView extends BaseCustomView {
 
     public void setResetListener(ResetListener listener) {
         this.reset = listener;
+    }
+
+    public void setFocusChangeListener(FocusChangeListener focusChangeListener) {
+        this.focusChangeListener = focusChangeListener;
     }
 
     public SearchInputView(Context context) {
@@ -98,9 +107,9 @@ public class SearchInputView extends BaseCustomView {
 
     protected void init() {
         view = inflate(getContext(), getLayout(), this);
-        searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
-        searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
-        closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
+        searchImageView = (ImageView) view.findViewById(getSearchImageViewResourceId());
+        searchTextView = (EditText) view.findViewById(getSearchTextViewResourceId());
+        closeImageButton = (ImageButton) view.findViewById(getCloseImageButtonResourceId());
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
 
         if (searchDrawable != null) {
@@ -123,6 +132,15 @@ public class SearchInputView extends BaseCustomView {
                 return false;
             }
         });
+
+        searchTextView.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (focusChangeListener != null) {
+                    focusChangeListener.onFocusChanged(hasFocus);
+                }
+            }
+        });
         searchTextView.addTextChangedListener(getSearchTextWatcher());
         closeImageButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -134,6 +152,18 @@ public class SearchInputView extends BaseCustomView {
                 }
             }
         });
+    }
+
+    public int getSearchImageViewResourceId() {
+        return R.id.image_view_search;
+    }
+
+    public int getSearchTextViewResourceId() {
+        return R.id.edit_text_search;
+    }
+
+    public int getCloseImageButtonResourceId() {
+        return R.id.image_button_close;
     }
 
     public void hideKeyboard(){

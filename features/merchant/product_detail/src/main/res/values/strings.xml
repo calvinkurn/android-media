@@ -28,6 +28,7 @@
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="add_product_to_cart">Tambah ke Keranjang</string>
+    <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promo_hourly">Promo Perjam</string>
     <string name="promote_topads">Iklan TopAds</string>
@@ -54,6 +55,7 @@
     <string name="product_detail">Detail Produk</string>
     <string name="quantity_total">Jumlah</string>
     <string name="label_desc">Deskripsi</string>
+    <string name="label_spec">Spesifikasi</string>
     <string name="label_report_type">Jenis Laporan</string>
     <string name="label_report_product">Laporkan Produk</string>
 
@@ -129,9 +131,10 @@
     <string name="value_proposition_title_original">Pasti ori</string>
     <string name="value_proposition_desc_original">Semua barang di Official Store Tokopedia dijamin asli. Kalau terbukti palsu, uangmu akan dikembalikan 2x lipat.</string>
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
-    <string name="mau_akses_semua_fitur">Mau akses semua fitur?</string>
-    <string name="masuk_yuk">Masuk yuk</string>
     <string name="atc_done_add_product_success">Produk berhasil ditambahkan</string>
     <string name="atc_done_see_cart">Lihat Keranjang</string>
+    <string name="pdp_etalase_empty_default_value">Semua  Etalase</string>
+    <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
+    <string name="recom_see_more_title">Lihat semua</string>
 
 </resources>

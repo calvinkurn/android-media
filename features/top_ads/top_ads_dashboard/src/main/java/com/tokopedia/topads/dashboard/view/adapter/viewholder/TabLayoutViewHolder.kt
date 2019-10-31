@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.view.adapter.viewholder
 
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 
@@ -23,9 +23,9 @@ class TabLayoutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun toggleActivate(isActive: Boolean) {
-        val white = ContextCompat.getColor(itemView.context, R.color.white)
-        val black = ContextCompat.getColor(itemView.context, R.color.font_voucher)
-        val blackDisabled = ContextCompat.getColor(itemView.context, R.color.font_black_disabled_38)
+        val white = ContextCompat.getColor(itemView.context, com.tokopedia.topads.auto.R.color.white)
+        val black = ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.font_voucher)
+        val blackDisabled = ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.font_black_disabled_38)
         if (isActive) {
             baseView.background = ContextCompat.getDrawable(itemView.context, R.drawable.gradient_background)
             mainTextView.setTextColor(white)

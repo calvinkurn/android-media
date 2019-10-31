@@ -3,8 +3,8 @@ package com.tokopedia.shop.open.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -35,6 +35,7 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.shop.open.R;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
@@ -124,18 +125,18 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_open_domain, container, false);
-        TextView textHello = view.findViewById(R.id.text_hello);
-        imgShopOpen = view.findViewById(R.id.img_shop_open);
-        buttonSubmit = view.findViewById(R.id.button_submit);
-        textInputShopName = view.findViewById(R.id.text_input_shop_name);
-        textInputDomainName = view.findViewById(R.id.text_input_domain_name);
+        View view = inflater.inflate(com.tokopedia.seller.R.layout.fragment_shop_open_domain, container, false);
+        TextView textHello = view.findViewById(com.tokopedia.seller.R.id.text_hello);
+        imgShopOpen = view.findViewById(com.tokopedia.seller.R.id.img_shop_open);
+        buttonSubmit = view.findViewById(com.tokopedia.seller.R.id.button_submit);
+        textInputShopName = view.findViewById(com.tokopedia.seller.R.id.text_input_shop_name);
+        textInputDomainName = view.findViewById(com.tokopedia.seller.R.id.text_input_domain_name);
         editTextInputShopName = textInputShopName.getEditText();
         editTextInputDomainName = (PrefixEditText) textInputDomainName.getEditText();
-        tvTncOpenShop = view.findViewById(R.id.tv_shop_tnc);
-        cbTncOpenShop = view.findViewById(R.id.cb_shop_tnc);
+        tvTncOpenShop = view.findViewById(com.tokopedia.seller.R.id.tv_shop_tnc);
+        cbTncOpenShop = view.findViewById(com.tokopedia.seller.R.id.cb_shop_tnc);
         openShopAddressViewHolder = new OpenShopAddressViewHolder(view, getContext(), this);
-        String helloName = getString(R.string.hello_x, userSession.getName());
+        String helloName = getString(com.tokopedia.seller.R.string.hello_x, userSession.getName());
         textHello.setText(MethodChecker.fromHtml(helloName));
         setupTncOpenShop();
 
@@ -151,9 +152,9 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                 buttonSubmit.setEnabled(false);
                 hideSnackBarRetry();
                 if (TextUtils.isEmpty(s)) {
-                    textInputShopName.setError(getString(R.string.shop_open_error_shop_name_must_be_filled));
+                    textInputShopName.setError(getString(com.tokopedia.seller.R.string.shop_open_error_shop_name_must_be_filled));
                 } else if (s.toString().length() < MIN_SHOP_NAME_LENGTH) {
-                    textInputShopName.setError(getString(R.string.shop_open_error_shop_name_min_char));
+                    textInputShopName.setError(getString(com.tokopedia.seller.R.string.shop_open_error_shop_name_min_char));
                 } else if (s.toString().length() <= textInputShopName.getCounterMaxLength()) {
                     shopOpenDomainPresenter.checkShop(editTextInputShopName.getText().toString());
                 }
@@ -169,10 +170,10 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                     hideSnackBarRetry();
                     String domainInputStr = editTextInputDomainName.getTextWithoutPrefix();
                     if (TextUtils.isEmpty(domainInputStr)) {
-                        textInputDomainName.setError(getString(R.string.shop_open_error_domain_name_must_be_filled));
+                        textInputDomainName.setError(getString(com.tokopedia.seller.R.string.shop_open_error_domain_name_must_be_filled));
                         textInputDomainName.resetCounter();
                     } else if (domainInputStr.length() < MIN_SHOP_DOMAIN_LENGTH) {
-                        textInputDomainName.setError(getString(R.string.shop_open_error_domain_name_min_char));
+                        textInputDomainName.setError(getString(com.tokopedia.seller.R.string.shop_open_error_domain_name_min_char));
                     } else if (s.toString().length() <= textInputDomainName.getCounterMaxLength()) {
                         shopOpenDomainPresenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
                     }
@@ -194,6 +195,18 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (!userSession.isMsisdnVerified()
+                && getActivity() != null
+                && getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+            Intent intent = ((SellerModuleRouter) getActivity().getApplicationContext())
+                    .getPhoneVerificationActivityIntent(getActivity());
+            startActivity(intent);
+        }
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         trackingOpenShop.eventMoEngageOpenShop(SCREEN_NAME);
@@ -202,17 +215,17 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     private void setupTncOpenShop() {
-        SpannableString textTnc = new SpannableString(getString(R.string.tnc_open_shop));
-        ClickableSpan tncClickableSpan = setupClickableSpan(URL_TNC, getString(R.string.tnc_webview_title));
-        ClickableSpan privacyPolicyClickableSpan = setupClickableSpan(URL_PRIVACY_POLICY, getString(R.string.privacy_policy_webview_title));
+        SpannableString textTnc = new SpannableString(getString(com.tokopedia.core2.R.string.tnc_open_shop));
+        ClickableSpan tncClickableSpan = setupClickableSpan(URL_TNC, getString(com.tokopedia.core2.R.string.tnc_webview_title));
+        ClickableSpan privacyPolicyClickableSpan = setupClickableSpan(URL_PRIVACY_POLICY, getString(com.tokopedia.core2.R.string.privacy_policy_webview_title));
 
         textTnc.setSpan(tncClickableSpan, 21, 42, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textTnc.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 21, 42, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textTnc.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.tkpd_main_green)), 21, 42, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textTnc.setSpan(new ForegroundColorSpan(getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green)), 21, 42, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         textTnc.setSpan(privacyPolicyClickableSpan, 48, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textTnc.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 48, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textTnc.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.tkpd_main_green)), 48, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textTnc.setSpan(new ForegroundColorSpan(getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green)), 48, textTnc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvTncOpenShop.setText(textTnc);
         tvTncOpenShop.setMovementMethod(LinkMovementMethod.getInstance());
     }
@@ -266,7 +279,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public void showSubmitLoading() {
         if (tkpdProgressDialog == null) {
             tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
-                    getString(R.string.title_loading));
+                    getString(com.tokopedia.abstraction.R.string.title_loading));
         }
         tkpdProgressDialog.showDialog();
     }
@@ -295,11 +308,11 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onSuccessCheckShopName(boolean existed, String domainSuggestion) {
         if (existed) {
-            textInputShopName.setSuccess(getString(R.string.shop_name_available));
+            textInputShopName.setSuccess(getString(com.tokopedia.core2.R.string.shop_name_available));
             editTextInputDomainName.setText(domainSuggestion);
-            textInputDomainName.setSuccess(getString(R.string.domain_name_available));
+            textInputDomainName.setSuccess(getString(com.tokopedia.core2.R.string.domain_name_available));
         } else {
-            textInputShopName.setError(getString(R.string.shop_name_not_available));
+            textInputShopName.setError(getString(com.tokopedia.core2.R.string.shop_name_not_available));
         }
         checkEnableSubmit();
     }
@@ -316,9 +329,9 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onSuccessCheckShopDomain(boolean existed) {
         if (existed) {
-            textInputDomainName.setSuccess(getString(R.string.domain_name_available));
+            textInputDomainName.setSuccess(getString(com.tokopedia.core2.R.string.domain_name_available));
         } else {
-            textInputDomainName.setError(getString(R.string.domain_name_not_available));
+            textInputDomainName.setError(getString(com.tokopedia.core2.R.string.domain_name_not_available));
         }
         checkEnableSubmit();
     }
@@ -342,7 +355,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
     private void errorToast(String message) {
         ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(R.string.title_ok, v -> {
+                .setAction(com.tokopedia.abstraction.R.string.title_ok, v -> {
                 })
                 .show();
     }
@@ -430,7 +443,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public void onErrorCreateShop(String message) {
         hideSubmitLoading();
         ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(R.string.title_ok, v -> {
+                .setAction(com.tokopedia.abstraction.R.string.title_ok, v -> {
 
                 })
                 .show();

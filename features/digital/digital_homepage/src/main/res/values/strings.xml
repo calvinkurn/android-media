@@ -1,0 +1,8 @@
+<resources>
+    <string name="digital_home_app_name"><![CDATA[Top-up & Tagihan]]></string>
+    <string name="digital_subhomepage_name"><![CDATA[Top-up & Tagihan]]></string>
+    <string name="digital_home_label_favourite_number">Nomor Favorit</string>
+    <string name="digital_home_label_order_list">Daftar Transaksi</string>
+    <string name="digital_home_label_help">Bantuan</string>
+    <string name="digital_home_label_mybills">Langganan</string>
+</resources>

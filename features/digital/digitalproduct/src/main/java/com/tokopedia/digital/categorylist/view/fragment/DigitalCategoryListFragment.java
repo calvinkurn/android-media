@@ -6,13 +6,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.design.component.ticker.TickerView;
@@ -45,7 +46,6 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.network.constant.TkpdBaseURL;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.user.session.UserSession;
@@ -376,7 +376,7 @@ public class DigitalCategoryListFragment extends BaseDaggerFragment
 
     @Override
     public Map<String, String> getGeneratedAuthParamNetwork(Map<String, String> originParams) {
-        return AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), originParams);
+        return AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), originParams);
     }
 
     @Override

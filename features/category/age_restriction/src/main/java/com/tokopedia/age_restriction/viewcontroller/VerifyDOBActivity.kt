@@ -1,17 +1,18 @@
 package com.tokopedia.age_restriction.viewcontroller
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.view.View
 import com.tokopedia.age_restriction.R
 import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.main.layout_activity_dob.*
+import kotlinx.android.synthetic.main.layout_activity_dob.progress_bar_layout
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -85,7 +86,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             }
         } else {
             group.visibility = View.VISIBLE
-            changeButtonColor(R.color.grey_300)
+            changeButtonColor(com.tokopedia.design.R.color.grey_300)
             tv_update_dob.isClickable = false
             tv_update_dob.isFocusable = false
         }
@@ -157,7 +158,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
                     hideProgressBar()
                     ed_edit_dob.isClickable = true
                     iv_arrow_down.isClickable = true
-                    changeButtonColor(R.color.green_nob)
+                    changeButtonColor(com.tokopedia.design.R.color.green_nob)
                     tv_update_dob.isClickable = true
                     tv_update_dob.isFocusable = true
                 }
@@ -172,5 +173,15 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
         if (!travelCalenderSheet!!.isVisible) {
             travelCalenderSheet!!.show(supportFragmentManager, "CalendarBottomSheet")
         }
+    }
+
+
+
+    override fun showProgressBar() {
+        progress_bar_layout.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressBar() {
+        progress_bar_layout.visibility = View.GONE
     }
 }

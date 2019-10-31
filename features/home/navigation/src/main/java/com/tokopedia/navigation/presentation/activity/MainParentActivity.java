@@ -19,16 +19,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
-import android.support.design.bottomnavigation.LabelVisibilityMode;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
+import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,7 +54,9 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -87,6 +89,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+
 /**
  * Created by meta on 19/06/18.
  */
@@ -115,6 +120,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
+    private static final String SOURCE_ACCOUNT = "account";
     @Inject
     UserSessionInterface userSession;
     @Inject
@@ -218,11 +224,26 @@ public class MainParentActivity extends BaseActivity implements
         super.onStart();
         if (presenter.isFirstTimeUser()) {
             setDefaultShakeEnable();
-            Intent intent = RouteManager.getIntent(this,
-                    ApplinkConstInternalMarketplace.ONBOARDING);
-            startActivity(intent);
-            finish();
+            routeOnboarding();
         }
+    }
+
+    /**
+     * this is temporary fix for crash MediaPlayer,
+     *  because we already fix it 5times, and still appear on specific device
+     */
+    private void routeOnboarding() {
+        if (Build.MODEL.contains("vivo Y35")
+            || Build.MODEL.contains("vivo Y51L")) {
+            if (Build.VERSION.RELEASE.contains("5.0.2")) {
+                return;
+            }
+        }
+
+        Intent intent = RouteManager.getIntent(this,
+                ApplinkConstInternalMarketplace.ONBOARDING);
+        startActivity(intent);
+        finish();
     }
 
     private void setDefaultShakeEnable() {
@@ -372,8 +393,9 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         if ((position == CART_MENU || position == ACCOUNT_MENU) && !presenter.isUserLogin()) {
-            String applink = String.format("%s?source=%s", ApplinkConst.LOGIN, "account");
-            RouteManager.route(this, applink);
+            Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
+            intent.putExtra(PARAM_SOURCE, SOURCE_ACCOUNT);
+            startActivity(intent);
             return false;
         }
 
@@ -395,7 +417,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void checkAgeVerificationExtra(Intent intent) {
         if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS)) {
-            Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+            Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                     intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
                     getString(R.string.general_label_ok), (v) -> {
@@ -457,7 +479,7 @@ public class MainParentActivity extends BaseActivity implements
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
             }
-            ft.commitAllowingStateLoss();
+            ft.commitNowAllowingStateLoss();
         });
     }
 
@@ -601,14 +623,16 @@ public class MainParentActivity extends BaseActivity implements
      * Notification
      */
     private void setBadgeNotifCounter(Fragment fragment) {
-        if (fragment == null)
-            return;
+        handler.post(() -> {
+            if (fragment == null)
+                return;
 
-        if (fragment instanceof AllNotificationListener && notification != null) {
-            ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
-        }
+            if (fragment instanceof AllNotificationListener && notification != null) {
+                ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
+            }
 
-        invalidateOptionsMenu();
+            invalidateOptionsMenu();
+        });
     }
 
     @Override
@@ -837,7 +861,7 @@ public class MainParentActivity extends BaseActivity implements
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentHome.setAction(Intent.ACTION_VIEW);
 
-                    Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchAutoCompletePage(this);
+                    Intent productIntent = RouteManager.getIntent(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
                     productIntent.setAction(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 
@@ -865,7 +889,7 @@ public class MainParentActivity extends BaseActivity implements
                         shortcutInfos.add(wishlistShortcut);
                     }
 
-                    Intent digitalIntent = ((GlobalNavRouter) getApplication()).instanceIntentDigitalCategoryList();
+                    Intent digitalIntent = RouteManager.getIntent(this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
                     digitalIntent.setAction(Intent.ACTION_VIEW);
                     digitalIntent.putExtras(args);
 
@@ -882,8 +906,8 @@ public class MainParentActivity extends BaseActivity implements
                         String shopID = userSession.getShopId();
 
                         Intent shopIntent;
-                        if (shopID.equalsIgnoreCase(DEFAULT_NO_SHOP)) {
-                            shopIntent = ((GlobalNavRouter) getApplication()).getOpenShopIntent(this);
+                        if (!userSession.hasShop()) {
+                            shopIntent = RouteManager.getIntent(getContext(), OPEN_SHOP);
                         } else {
                             shopIntent = ((GlobalNavRouter) getApplication()).getShopPageIntent(this, shopID);
                         }

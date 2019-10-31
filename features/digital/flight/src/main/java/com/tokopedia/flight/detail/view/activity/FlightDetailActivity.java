@@ -3,13 +3,13 @@ package com.tokopedia.flight.detail.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
+import androidx.annotation.NonNull;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -57,7 +57,7 @@ public class FlightDetailActivity extends BaseTabActivity {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_flight_detail;
+        return com.tokopedia.flight.R.layout.activity_flight_detail;
     }
 
     @Override
@@ -65,14 +65,14 @@ public class FlightDetailActivity extends BaseTabActivity {
         flightDetailViewModel = getIntent().getParcelableExtra(EXTRA_FLIGHT_SEARCH_MODEL);
         isSubmitDisplayed = getIntent().getBooleanExtra(EXTRA_FLIGHT_DISPLAY_SUBMIT, true);
         super.setupLayout(savedInstanceState);
-        buttonSubmit = (Button) findViewById(R.id.button_submit);
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        buttonSubmit = (Button) findViewById(com.tokopedia.flight.R.id.button_submit);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(com.tokopedia.flight.R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(" ");
-        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
-        departureAirportCode = (TextView) findViewById(R.id.departure_airport_code);
-        departureAirportName = (TextView) findViewById(R.id.departure_airport_name);
-        arrivalAirportCode = (TextView) findViewById(R.id.arrival_airport_code);
-        arrivalAirportName = (TextView) findViewById(R.id.arrival_airport_name);
+        appBarLayout = (AppBarLayout) findViewById(com.tokopedia.flight.R.id.app_bar_layout);
+        departureAirportCode = (TextView) findViewById(com.tokopedia.flight.R.id.departure_airport_code);
+        departureAirportName = (TextView) findViewById(com.tokopedia.flight.R.id.departure_airport_name);
+        arrivalAirportCode = (TextView) findViewById(com.tokopedia.flight.R.id.arrival_airport_code);
+        arrivalAirportName = (TextView) findViewById(com.tokopedia.flight.R.id.arrival_airport_name);
 
         departureAirportCode.setText(flightDetailViewModel.getDepartureAirport());
         departureAirportName.setText(flightDetailViewModel.getDepartureAirportCity());
@@ -158,11 +158,11 @@ public class FlightDetailActivity extends BaseTabActivity {
             public CharSequence getPageTitle(int position) {
                 switch (position) {
                     case 0:
-                        return getString(R.string.flight_label);
+                        return getString(com.tokopedia.flight.R.string.flight_label);
                     case 1:
-                        return getString(R.string.flight_label_facility);
+                        return getString(com.tokopedia.flight.R.string.flight_label_facility);
                     case 2:
-                        return getString(R.string.flight_label_price);
+                        return getString(com.tokopedia.flight.R.string.flight_label_price);
                     default:
                         return super.getPageTitle(position);
                 }
@@ -223,5 +223,15 @@ public class FlightDetailActivity extends BaseTabActivity {
     @Override
     protected int getPageLimit() {
         return 3;
+    }
+
+    @Override
+    protected int getViewPagerResourceId() {
+        return R.id.pager;
+    }
+
+    @Override
+    protected int getTabLayoutResourceId() {
+        return R.id.indicator;
     }
 }

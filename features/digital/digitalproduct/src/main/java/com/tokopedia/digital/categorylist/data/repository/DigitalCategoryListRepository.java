@@ -1,6 +1,6 @@
 package com.tokopedia.digital.categorylist.data.repository;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;

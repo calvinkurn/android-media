@@ -1,16 +1,29 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/layout_homepoint"
     android:layout_height="@dimen/dp_48"
     android:background="@color/white">
 
-    <android.support.v7.widget.AppCompatImageView
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="heading_4"
+        android:id="@+id/tvNonLoginCta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_points_stack"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
-        android:layout_marginStart="@dimen/dp_32"
-        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginLeft="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -28,7 +41,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/tp_label_see_point"
-        android:textColor="@color/black_54"
+        android:textColor="@color/tp_loyalty_color"
         android:textSize="@dimen/tp_text_size_xxsmall"
         app:layout_constraintLeft_toRightOf="@+id/img_points_stack"
         app:layout_constraintStart_toEndOf="@+id/img_points_stack"
@@ -65,12 +78,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_loyalty_stack"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
-        android:layout_marginStart="@dimen/tp_margin_medium"
-        android:layout_marginLeft="@dimen/tp_margin_medium"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginLeft="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/line_separator_points_vertical"
@@ -90,7 +103,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/tp_label_see_loyalty"
-        android:textColor="@color/black_54"
+        android:textColor="@color/tp_loyalty_color"
         android:textSize="@dimen/tp_text_size_xxsmall"
         app:layout_constraintStart_toEndOf="@+id/img_loyalty_stack"
         app:layout_constraintTop_toTopOf="parent" />
@@ -132,4 +145,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

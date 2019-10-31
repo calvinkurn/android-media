@@ -1,13 +1,13 @@
 package com.tokopedia.topads.auto.view.widget
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.v4.app.FragmentActivity
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
+import androidx.fragment.app.FragmentActivity
+import androidx.core.content.ContextCompat
+import androidx.cardview.widget.CardView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Button
@@ -17,13 +17,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.view.activity.SettingBudgetAdsActivity
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
@@ -69,7 +70,7 @@ class AutoAdsWidgetView : CardView {
     private fun initView(context: Context) {
         getComponent(context).inject(this)
         useCompatPadding = true
-        radius = resources.getDimension(R.dimen.dp_8)
+        radius = resources.getDimension(com.tokopedia.design.R.dimen.dp_8)
         View.inflate(context, R.layout.layout_auto_ads_widget, this)
         statusAdsContainer = findViewById(R.id.status_ads_container)
         progressAdsContainer = findViewById(R.id.container_progress_status)
@@ -117,7 +118,7 @@ class AutoAdsWidgetView : CardView {
 
     private fun setNotDelivered(status: Int, budget: Int) {
         activeStatus.setBackgroundResource(R.drawable.bg_autoads_deactive)
-        activeStatus.setTextColor(ContextCompat.getColor(context, R.color.grey))
+        activeStatus.setTextColor(ContextCompat.getColor(context, R.color.auto_ads_grey))
         activeStatus.setText(R.string.ads_not_delivered)
         subTitle.setText(R.string.saatnya_beriklan_mudah_dan_efektif)
         startAdsBtn.visibility = View.GONE
@@ -138,7 +139,7 @@ class AutoAdsWidgetView : CardView {
 
     private fun setInProgress() {
         activeStatus.setBackgroundResource(R.drawable.bg_autoads_inprogress)
-        activeStatus.setTextColor(ContextCompat.getColor(context, R.color.orange_300))
+        activeStatus.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.orange_300))
         activeStatus.setText(R.string.ads_inprogress)
         subTitle.setText(R.string.akan_aktif_dalam_beberapa_menit)
         startAdsBtn.visibility = View.GONE
@@ -150,7 +151,7 @@ class AutoAdsWidgetView : CardView {
 
     private fun setInActive(status: Int, budget: Int) {
         activeStatus.setBackgroundResource(R.drawable.bg_autoads_deactive)
-        activeStatus.setTextColor(ContextCompat.getColor(context, R.color.grey))
+        activeStatus.setTextColor(ContextCompat.getColor(context, R.color.auto_ads_grey))
         activeStatus.setText(R.string.ads_deactive)
         subTitle.setText(R.string.saatnya_beriklan_mudah_dan_efektif)
         startAdsBtn.visibility = View.VISIBLE
@@ -192,7 +193,7 @@ class AutoAdsWidgetView : CardView {
     }
 
     private fun openAutoAdsRouteActivityLink() {
-        (context.applicationContext as TopAdsAutoRouter).goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
+        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS)
     }
 
     fun setActiveListener(activeListener: ActiveListener) {

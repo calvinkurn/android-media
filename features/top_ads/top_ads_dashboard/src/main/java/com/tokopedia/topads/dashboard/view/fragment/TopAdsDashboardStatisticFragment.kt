@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.view.fragment
 
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,7 +79,7 @@ abstract class TopAdsDashboardStatisticFragment : TkpdBaseV4Fragment() {
                         } else indexToDisplay.contains(i)
 
                     })
-                    .setDotDrawable(ContextCompat.getDrawable(activity!!, R.drawable.oval_2_copy_6))
+                    .setDotDrawable(ContextCompat.getDrawable(activity!!, com.db.williamchart.R.drawable.oval_2_copy_6))
                     .buildChart(content_graph)
         } catch (e: Exception) {
         }

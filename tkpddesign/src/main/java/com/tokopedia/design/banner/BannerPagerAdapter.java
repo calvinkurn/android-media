@@ -3,19 +3,14 @@ package com.tokopedia.design.banner;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.Target;
 import com.tokopedia.design.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -77,7 +72,7 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
             Glide.with(holder.itemView.getContext())
                     .load(bannerImageUrls.get(position))
                     .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .placeholder(R.drawable.ic_loading_image)
                     .error(R.drawable.ic_loading_image)
                     .centerCrop()

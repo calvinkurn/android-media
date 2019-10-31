@@ -2,10 +2,10 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -177,10 +177,10 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         void bindViewHolder(TicketsItem item) {
             if (item.getReadStatusId() == 2) {
-                tvTicketDesc.setTextColor(mContext.getResources().getColor(R.color.black_38));
+                tvTicketDesc.setTextColor(mContext.getResources().getColor(com.tokopedia.design.R.color.black_38));
                 tvTicketTitle.setTypeface(null, Typeface.NORMAL);
             } else {
-                tvTicketDesc.setTextColor(mContext.getResources().getColor(R.color.black_70));
+                tvTicketDesc.setTextColor(mContext.getResources().getColor(com.tokopedia.design.R.color.black_70));
                 tvTicketTitle.setTypeface(null, Typeface.BOLD);
             }
             tvTicketTitle.setText(item.getSubject());
@@ -189,14 +189,14 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if (item.getStatusId() == 1) {
                 tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_yellow);
                 tvTicketStatus.setText(R.string.on_going);
-                tvTicketStatus.setTextColor(mContext.getResources().getColor(R.color.black_38));
+                tvTicketStatus.setTextColor(mContext.getResources().getColor(com.tokopedia.design.R.color.black_38));
             } else if (item.getStatusId() == 2 && item.getNeedRating() != 1) {
                 tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_grey);
-                tvTicketStatus.setTextColor(mContext.getResources().getColor(R.color.black_38));
+                tvTicketStatus.setTextColor(mContext.getResources().getColor(com.tokopedia.design.R.color.black_38));
                 tvTicketStatus.setText(R.string.closed);
             } else if (item.getNeedRating() == 1) {
                 tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_orange);
-                tvTicketStatus.setTextColor(mContext.getResources().getColor(R.color.red_150));
+                tvTicketStatus.setTextColor(mContext.getResources().getColor(com.tokopedia.design.R.color.red_150));
                 tvTicketStatus.setText(R.string.need_rating);
             }
 

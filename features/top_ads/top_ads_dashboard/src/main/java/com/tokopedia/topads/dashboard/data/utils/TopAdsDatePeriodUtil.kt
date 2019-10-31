@@ -14,18 +14,18 @@ object TopAdsDatePeriodUtil {
         val periodRangeList = ArrayList<PeriodRangeModel>()
         var startCalendar = Calendar.getInstance()
         val endCalendar = Calendar.getInstance()
-        periodRangeList.add(PeriodRangeModel(endCalendar.timeInMillis, endCalendar.timeInMillis, context.getString(R.string.label_today)))
+        periodRangeList.add(PeriodRangeModel(endCalendar.timeInMillis, endCalendar.timeInMillis, context.getString(com.tokopedia.datepicker.range.R.string.label_today)))
         startCalendar.add(Calendar.DATE, -1)
-        periodRangeList.add(PeriodRangeModel(startCalendar.timeInMillis, startCalendar.timeInMillis, context.getString(R.string.yesterday)))
+        periodRangeList.add(PeriodRangeModel(startCalendar.timeInMillis, startCalendar.timeInMillis, context.getString(com.tokopedia.datepicker.range.R.string.yesterday)))
         startCalendar = Calendar.getInstance()
         startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_WEEK)
-        periodRangeList.add(PeriodRangeModel(startCalendar.timeInMillis, endCalendar.timeInMillis, context.getString(R.string.seven_days_ago)))
+        periodRangeList.add(PeriodRangeModel(startCalendar.timeInMillis, endCalendar.timeInMillis, context.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)))
         startCalendar = Calendar.getInstance()
         startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_MONTH)
-        periodRangeList.add(PeriodRangeModel(startCalendar.timeInMillis, endCalendar.timeInMillis, context.getString(R.string.thirty_days_ago)))
+        periodRangeList.add(PeriodRangeModel(startCalendar.timeInMillis, endCalendar.timeInMillis, context.getString(com.tokopedia.datepicker.range.R.string.thirty_days_ago)))
         startCalendar = Calendar.getInstance()
         startCalendar.set(Calendar.DATE, 1)
-        periodRangeList.add(PeriodRangeModel(startCalendar.timeInMillis, endCalendar.timeInMillis, context.getString(R.string.label_this_month)))
+        periodRangeList.add(PeriodRangeModel(startCalendar.timeInMillis, endCalendar.timeInMillis, context.getString(com.tokopedia.datepicker.range.R.string.label_this_month)))
         return periodRangeList
     }
 }

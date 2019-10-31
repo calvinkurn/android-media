@@ -1,6 +1,6 @@
 package com.tokopedia.home_recom.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -84,8 +84,10 @@ open class RecommendationPageViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
             }
             gqlData.getSuccessData<PrimaryProductEntity>().productRecommendationProductDetail?.let {
-                val productDetailResponse = it.data.get(0).recommendation.get(0)
-                productInfoDataModel.value = ProductInfoDataModel(productDetailResponse)
+                if(it.data[0].recommendation.isNotEmpty()){
+                    val productDetailResponse = it.data[0].recommendation[0]
+                    productInfoDataModel.value = ProductInfoDataModel(productDetailResponse)
+                }
             }
         }) {
         }
@@ -98,13 +100,14 @@ open class RecommendationPageViewModel @Inject constructor(
      */
     fun getRecommendationList(
             productIds: List<String>,
+            queryParam: String,
             onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
         getRecommendationUseCase.execute(
                 getRecommendationUseCase.getRecomParams(
-                        1,
-                        xSource,
-                        pageName,
-                        productIds), object : Subscriber<List<RecommendationWidget>>() {
+                        pageNumber = 1,
+                        productIds = productIds,
+                        pageName = "recom_1,recom_2,recom_3",
+                        queryParam = queryParam), object : Subscriber<List<RecommendationWidget>>() {
             override fun onNext(t: List<RecommendationWidget>?) {
                 recommendationListModel.value = t
             }
@@ -193,6 +196,5 @@ open class RecommendationPageViewModel @Inject constructor(
      * [isLoggedIn] is the function get user session is login or not login
      */
     fun isLoggedIn() = userSessionInterface.isLoggedIn
-
 
 }

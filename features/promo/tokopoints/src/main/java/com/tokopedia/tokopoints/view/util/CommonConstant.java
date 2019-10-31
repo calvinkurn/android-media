@@ -15,7 +15,7 @@ public interface CommonConstant {
     int PAGE_SIZE = 10;
     int HOMEPAGE_PAGE_SIZE = 10;
     int TAB_SETUP_DELAY_MS = 150;
-    int HOMEPAGE_TAB_COUNT = 2;
+    int HOMEPAGE_TAB_COUNT = 1;
     int DEFAULT_SORT_TYPE = 1;
     int DEFAULT_CATEGORY_TYPE = 1;
     int DEFAULT_AUTO_REFRESH_S = 10000;
@@ -41,6 +41,7 @@ public interface CommonConstant {
     int UI_SETTLING_DELAY_MS = 250;
     int UI_SETTLING_DELAY_MS2 = 500;
     String ARGS_POINTS_AVAILABILITY = "points_availability";
+    String BUNDLE_ARGS_USER_IS_LOGGED_IN = "USER_IS_LOGGEDIN";
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;

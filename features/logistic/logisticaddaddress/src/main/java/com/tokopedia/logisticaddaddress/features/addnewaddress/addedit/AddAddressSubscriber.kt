@@ -4,7 +4,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import rx.Subscriber
 
 /**
@@ -21,9 +21,13 @@ class AddAddressSubscriber(val view: AddEditAddressListener,
             AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess()
         }
 
-        val addAddressResponseUiModel = mapper.map(t)
-        saveAddressDataModel.id = addAddressResponseUiModel.data.addressId
-        view.onSuccessAddAddress(saveAddressDataModel)
+        val response = mapper.map(t)
+        if (response.data.isSuccess == 1) {
+            saveAddressDataModel.id = response.data.addressId
+            view.onSuccessAddAddress(saveAddressDataModel)
+        } else {
+            view.showError(Throwable())
+        }
     }
 
     override fun onCompleted() {

@@ -1,16 +1,15 @@
 package com.tokopedia.profilecompletion.addbod.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
+import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
 import com.tokopedia.profilecompletion.addbod.data.UserProfileCompletionUpdateBodData
-import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -25,31 +24,29 @@ import javax.inject.Inject
 
 class AddBodViewModel @Inject constructor(
         private val bodGraphqlUseCase: GraphqlUseCase<UserProfileCompletionUpdateBodData>,
-        private val rawQueries: Map<String, String>,
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
 
     val editBodUserProfileResponse = MutableLiveData<Result<AddBodData>>()
 
-    fun editBodUserProfile(selectedDate: String) {
+    fun editBodUserProfile(context: Context, selectedDate: String) {
 
-
-        rawQueries[ProfileCompletionQueriesConstant.MUTATION_ADD_BOD]?.let { query ->
+        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_bod)?.let { query ->
             bodGraphqlUseCase.run {
                 setGraphqlQuery(query)
 
                 setTypeClass(UserProfileCompletionUpdateBodData::class.java)
 
-                val params = mapOf(ProfileCompletionQueriesConstant.PARAM_BOD to selectedDate)
+                val params = mapOf(ProfileCompletionQueryConstant.PARAM_BOD to selectedDate)
                 setRequestParams(params)
 
                 execute(onSuccessEditBOD(),
                         onErrorEditBOD()
                 )
             }
-
         }
+
     }
 
     private fun onErrorEditBOD(): (Throwable) -> Unit {

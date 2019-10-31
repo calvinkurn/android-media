@@ -17,7 +17,7 @@
 package com.github.rubensousa.bottomsheetbuilder.adapter;
 
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 
 class BottomSheetDivider implements BottomSheetItem {

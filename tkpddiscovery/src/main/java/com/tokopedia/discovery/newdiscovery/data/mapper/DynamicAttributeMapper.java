@@ -3,7 +3,7 @@ package com.tokopedia.discovery.newdiscovery.data.mapper;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 
 import retrofit2.Response;
 import rx.functions.Func1;

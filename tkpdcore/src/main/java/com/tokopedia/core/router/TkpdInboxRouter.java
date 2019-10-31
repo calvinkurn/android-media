@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
@@ -47,10 +47,6 @@ public interface TkpdInboxRouter {
     Intent getShopPageIntent(Context context, String shopId);
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
-
-    Fragment getChannelFragment(Bundle bundle);
-
-    String getChannelFragmentTag();
 
     Intent getLoginIntent(Context context);
 

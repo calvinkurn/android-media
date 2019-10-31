@@ -3,10 +3,10 @@ package com.tokopedia.saldodetails.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
@@ -26,8 +28,7 @@ import com.tokopedia.saldodetails.contract.SaldoHistoryContract;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoHistoryPresenter;
-import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
-import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.date.util.SaldoDatePickerUtil;
 import com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager;
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem;
 import com.tokopedia.user.session.UserSession;
@@ -92,7 +93,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_saldo_history, container, false);
+        View view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_history, container, false);
         initViews(view);
         return view;
     }
@@ -117,18 +118,18 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
     }
 
     private void initViews(View view) {
-        startDateLayout = view.findViewById(R.id.start_date_layout);
-        endDateLayout = view.findViewById(R.id.end_date_layout);
-        startDateTV = view.findViewById(R.id.start_date_tv);
+        startDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_layout);
+        endDateLayout = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_layout);
+        startDateTV = view.findViewById(com.tokopedia.saldodetails.R.id.start_date_tv);
         startDateTV.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_calendar_grey), null, null , null);
-        endDateTV = view.findViewById(R.id.end_date_tv);
+                (context, com.tokopedia.design.R.drawable.ic_calendar_grey), null, null , null);
+        endDateTV = view.findViewById(com.tokopedia.saldodetails.R.id.end_date_tv);
         endDateTV.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.ic_calendar_grey), null, null , null);
+                (context, com.tokopedia.design.R.drawable.ic_calendar_grey), null, null , null);
 
-        depositHistoryViewPager = view.findViewById(R.id.transaction_history_view_pager);
-        depositHistoryTabLayout = view.findViewById(R.id.transaction_history_tab_layout);
-        tabSeparator = view.findViewById(R.id.transaction_history_tab_view_separator);
+        depositHistoryViewPager = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_view_pager);
+        depositHistoryTabLayout = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_tab_layout);
+        tabSeparator = view.findViewById(com.tokopedia.saldodetails.R.id.transaction_history_tab_view_separator);
     }
 
     private void initialVar() {
@@ -224,8 +225,7 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
 
     @Override
     public void onEmptyButtonClicked() {
-        Intent intent = ((SaldoDetailsRouter) getActivity().getApplication())
-                .getHomeIntent(context);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
         startActivity(intent);
     }
 

@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.comment.view.adapter.viewholder;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
@@ -72,12 +72,19 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
             ImageHandler.loadImageCircle2(badge.getContext(), badge, element.getUserBadges());
         }
 
+        String caption;
+        if (badge.getVisibility() == View.VISIBLE) {
+            caption = SPACE + getCommentText(element);
+        } else {
+            caption = getCommentText(element);
+        }
+
         if (!TextUtils.isEmpty(element.getTagsLink())) {
             UrlUtil.setTextWithClickableTokopediaUrl(comment,
-                    SPACE + getCommentText(element),
+                    caption,
                     getUrlClickableSpan(element));
         } else {
-            UrlUtil.setTextWithClickableTokopediaUrl(comment, SPACE + getCommentText(element));
+            UrlUtil.setTextWithClickableTokopediaUrl(comment, caption);
         }
 
         if (element.isCanLoadMore())

@@ -1,7 +1,7 @@
 package com.tokopedia.recentview.data.mapper;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.recentview.data.entity.Badge;

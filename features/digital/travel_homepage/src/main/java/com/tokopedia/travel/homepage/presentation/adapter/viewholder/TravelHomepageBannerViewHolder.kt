@@ -2,10 +2,10 @@ package com.tokopedia.travel.homepage.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.banner.BannerView
+import com.tokopedia.banner.BannerView
+import com.tokopedia.banner.dynamic.BannerViewDynamicBackground
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageBannerModel
-import com.tokopedia.travel.homepage.presentation.customview.TravelHomepageBannerViewDynamicBackground
 import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment
 import com.tokopedia.travel.homepage.presentation.listener.ActivityStateListener
 import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
@@ -20,7 +20,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     : AbstractViewHolder<TravelHomepageBannerModel>(itemView), BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener {
 
-    private val bannerView: TravelHomepageBannerViewDynamicBackground = itemView.findViewById(R.id.banner)
+    private val bannerView: BannerViewDynamicBackground = itemView.findViewById(R.id.banner)
     private lateinit var bannerList: List<TravelHomepageBannerModel.Banner>
     private var showAllUrl: String = ""
 
@@ -48,7 +48,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
             } catch (e: Throwable) {
 
             }
-        } else onBindListener.onBannerVHItemBind()
+        } else onBindListener.onBannerVHItemBind(element.isLoadFromCloud)
 
         itemView.banner_shimmering.visibility = if (element.isLoaded) View.GONE else View.VISIBLE
     }
@@ -58,12 +58,12 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     }
 
     override fun onPromoClick(position: Int) {
-        onItemClickListener.onTrackBannerClick(bannerList[position], position+1)
+        onItemClickListener.onTrackBannerClick(bannerList[position], position + 1)
         onItemClickListener.onItemClick(bannerList[position].attribute.appUrl, bannerList[position].attribute.webUrl)
     }
 
     override fun onPromoScrolled(position: Int) {
-        onItemClickListener.onTrackBannerImpression(bannerList[position], position+1)
+        onItemClickListener.onTrackBannerImpression(bannerList[position], position + 1)
     }
 
     override fun onPromoAllClick() {

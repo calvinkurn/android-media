@@ -7,7 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +24,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.groupchat.room.di.PlayComponent
 import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 
-import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -270,7 +269,7 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
 
     private fun openHomePage() {
         activity?.run {
-            startActivity((applicationContext as GroupChatModuleRouter).getHomeIntent(this))
+            startActivity(RouteManager.getIntent(this, ApplinkConst.HOME))
             finish()
         }
 

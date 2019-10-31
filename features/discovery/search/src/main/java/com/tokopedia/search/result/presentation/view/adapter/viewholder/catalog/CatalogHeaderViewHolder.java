@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.catalog;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -21,7 +21,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.catalog_header_layout;
+    public static final int LAYOUT = R.layout.search_catalog_header_layout;
     public static final String DEFAULT_ITEM_VALUE = "1";
     private TopAdsBannerView adsBannerView;
     private Context context;

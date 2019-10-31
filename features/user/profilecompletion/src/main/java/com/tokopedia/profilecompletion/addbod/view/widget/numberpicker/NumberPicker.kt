@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.Build
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.*
 import android.view.animation.DecelerateInterpolator
@@ -82,7 +82,7 @@ class NumberPicker @JvmOverloads constructor(
 
         selectedTextColor = attributesArray.getColor(
             R.styleable.NumberPicker_np_selectedTextColor
-            , ContextCompat.getColor(context, R.color.black)
+            , ContextCompat.getColor(context, com.tokopedia.design.R.color.black)
         );
         unSelectedTextColor = attributesArray.getColor(
             R.styleable.NumberPicker_np_textColor

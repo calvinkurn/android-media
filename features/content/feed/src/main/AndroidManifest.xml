@@ -8,14 +8,26 @@
         android:supportsRtl="true">
 
         <activity
+            android:name=".profilerecommendation.view.activity.FollowRecomActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/recommendation_for_you"
+            android:theme="@style/Theme.White"/>
+
+        <activity
             android:name=".view.activity.TransparentVideoActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:theme="@style/Theme.Transparent.Black"/>
 
         <activity
-            android:name="com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity"
+            android:name=".view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".view.activity.FeedOnboardingActivity"
+            android:label="@string/title_feed_onboarding"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 

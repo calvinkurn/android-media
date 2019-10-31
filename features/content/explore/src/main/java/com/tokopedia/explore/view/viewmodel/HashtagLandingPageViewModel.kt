@@ -1,11 +1,12 @@
 package com.tokopedia.explore.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.explore.data.CoroutineThread
 import com.tokopedia.explore.domain.entity.GetExploreData
 import com.tokopedia.explore.domain.entity.PostKol
 import com.tokopedia.explore.domain.interactor.GetExploreDataUseCase
+import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -30,7 +31,7 @@ class HashtagLandingPageViewModel
     var hashtag: String = ""
     private var cursor = ""
 
-    val postResponse = MutableLiveData<Result<List<PostKol>>>()
+    val postResponse = MutableLiveData<Result<List<PostKolUiModel>>>()
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
@@ -49,7 +50,10 @@ class HashtagLandingPageViewModel
                     PARAM_LIMIT to LIMIT))
             val exploreData = withContext(coroutineThread.IO){graphqlUseCase.executeOnBackground()}
             cursor = exploreData.getDiscoveryKolData.lastCursor
-            postResponse.value = Success(exploreData.getDiscoveryKolData.postKol)
+            postResponse.value = Success(
+                    exploreData.getDiscoveryKolData.postKol
+                            .map { PostKolUiModel(it) }
+            )
         }) {
             postResponse.value = Fail(it)
         }

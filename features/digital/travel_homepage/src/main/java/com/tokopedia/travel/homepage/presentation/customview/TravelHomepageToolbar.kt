@@ -3,8 +3,8 @@ package com.tokopedia.travel.homepage.presentation.customview
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.Toolbar
 import android.util.AttributeSet
 import com.tokopedia.travel.homepage.R
 
@@ -19,18 +19,18 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
 
     fun toInitialMode() {
         hideShadow()
-        setTitleTextColor(resources.getColor(R.color.white))
-        setBackgroundColor(resources.getColor(R.color.transparent))
+        setTitleTextColor(resources.getColor(com.tokopedia.design.R.color.white))
+        setBackgroundColor(resources.getColor(com.tokopedia.design.R.color.transparent))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(resources.getColor(R.color.white))
+            navigationIcon?.setTint(resources.getColor(com.tokopedia.design.R.color.white))
         } else navigationIcon = resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_white_24)
     }
 
     fun toOnScrolledMode() {
         showShadow()
-        setTitleTextColor(resources.getColor(R.color.grey_800))
+        setTitleTextColor(resources.getColor(com.tokopedia.design.R.color.grey_800))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(resources.getColor(R.color.grey_800))
+            navigationIcon?.setTint(resources.getColor(com.tokopedia.design.R.color.grey_800))
         } else navigationIcon =  resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
 
     }
@@ -45,7 +45,7 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
             }
             val pR = this.paddingRight
             val pB = resources.getDimensionPixelSize(R.dimen.toolbar_padding)
-            this.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
+            this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.design.R.color.white))
             this.setPadding(pL, pT, pR, pB)
         }
     }

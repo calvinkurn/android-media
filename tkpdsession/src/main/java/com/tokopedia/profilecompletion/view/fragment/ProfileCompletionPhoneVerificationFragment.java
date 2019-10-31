@@ -1,8 +1,8 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +28,7 @@ public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificatio
 
     public static final String TAG = "verif";
 
-    private ProfileCompletionContract.View parentView;
+    private ProfileCompletionContract.View  parentView;
     private ProfileCompletionContract.Presenter parentPresenter;
 
     protected TextView verifyButton;

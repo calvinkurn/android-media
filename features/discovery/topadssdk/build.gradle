@@ -6,43 +6,52 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
+        jcenter()
+        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
-project.ext {
-    artifactId = 'topads'
-    groupId = 'com.tokopedia.topads.sdk'
-    versionName = "2.22"
-    artifactName ="tkpdtopadssdk-release"
-}
-
-
 dependencies {
-
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.goldMerchantResource)
-    implementation project(rootProject.ext.libraries.design)
-    androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
-    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.0'
-    implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation rootProject.ext.firebase.core
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.0'
+    implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.dagger
-    implementation project(rootProject.ext.libraries.trackingOptimizer)
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
+}
+
+project.ext {
+    artifactId = 'sdk'
+    groupId = 'com.tokopedia.topads'
+    versionName = "1.0.0"
+    artifactName ="topadssdk-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -1,7 +1,7 @@
 package com.tokopedia.browse.categoryNavigation.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.CategoryHotlist
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
@@ -18,7 +18,7 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
 
     var childItem = MutableLiveData<Result<List<ChildItem>>>()
 
-    var hotlistItem = MutableLiveData<List<ListItem>>()
+    var hotlistItem = MutableLiveData<MutableList<ListItem>>()
 
 
     fun refresh(id: String) {
@@ -39,18 +39,12 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
 
 
     fun fetchHotlist(categoryId: String, categoryname: String) {
-
         getCategoryHotListUseCase.execute(getCategoryHotListUseCase.createRequestParams(categoryId.toInt(), categoryname), object : Subscriber<CategoryHotlist>() {
             override fun onNext(categoryHotlist: CategoryHotlist?) {
                 categoryHotlist!!.list.let {
-                    if (categoryHotlist.list!!.isNotEmpty()) {
-                        hotlistItem.value = categoryHotlist.list
-                    }
-
+                    hotlistItem.value = categoryHotlist.list
                 }
-
             }
-
             override fun onCompleted() {
 
             }
@@ -68,7 +62,7 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
         return childItem
     }
 
-    fun getCategoryHotlist(): MutableLiveData<List<ListItem>> {
+    fun getCategoryHotlist(): MutableLiveData<MutableList<ListItem>> {
         return hotlistItem
     }
 }

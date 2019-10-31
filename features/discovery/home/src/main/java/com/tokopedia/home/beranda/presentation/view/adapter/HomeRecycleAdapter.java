@@ -8,11 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel;
 
 import java.util.List;
 
@@ -21,7 +21,6 @@ import java.util.List;
  */
 
 public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
-
     //without ticker
     static public final int POSITION_GEOLOCATION_WITHOUT_TICKER = 3;
     static public final int POSITION_HEADER_WITHOUT_TICKER = 1;
@@ -95,20 +94,14 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     }
 
     //mapping another visitable to visitables from home_query
-    public void setItems(List<Visitable> visitables, HeaderViewModel headerViewModel) {
+    public void setItems(List<Visitable> visitables) {
         this.visitables = visitables;
-        addHomeHeaderViewModel(headerViewModel);
         notifyDataSetChanged();
     }
 
     public void updateHomeQueryItems(List<Visitable> newVisitable) {
-        int headerHomePosition = hasHomeHeaderViewModel();
-        if (headerHomePosition != POSITION_UNDEFINED) {
-            newVisitable.add(headerHomePosition, getItems().get(headerHomePosition));
-        }
         clearItems();
         this.visitables = newVisitable;
-
         notifyDataSetChanged();
     }
 
@@ -171,14 +164,10 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     }
 
     private int removeGeolocation() {
-        switch (hasGeolocationViewModel()) {
-            case POSITION_GEOLOCATION_WITH_TICKER: {
-                this.visitables.remove(POSITION_GEOLOCATION_WITH_TICKER);
-                return POSITION_GEOLOCATION_WITH_TICKER;
-            }
-            case POSITION_GEOLOCATION_WITHOUT_TICKER: {
-                this.visitables.remove(POSITION_GEOLOCATION_WITHOUT_TICKER);
-                return POSITION_GEOLOCATION_WITHOUT_TICKER;
+        for(int i=0; i<visitables.size(); i++){
+            if(visitables.get(i) instanceof GeolocationPromptViewModel){
+                visitables.remove(i);
+                return i;
             }
         }
         return POSITION_UNDEFINED;

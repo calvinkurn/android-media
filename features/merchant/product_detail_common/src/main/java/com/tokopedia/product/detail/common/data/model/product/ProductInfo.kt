@@ -58,8 +58,44 @@ data class ProductInfo(
 
         @SerializedName("stock")
         @Expose
-        val stock: Stock = Stock()
+        val stock: Stock = Stock(),
+
+        @SerializedName("media")
+        @Expose
+        val media: List<Media> = listOf(),
+
+        @SerializedName("freeOngkir")
+        @Expose
+        val freeOngkir: FreeOngkir = FreeOngkir()
+
+
 ) {
+
+    fun getProductImageUrl(): String? {
+        if (pictures == null || pictures.isEmpty()) return null
+        return pictures[0].urlThumbnail
+    }
+
+    fun getProductName(): String? {
+        return basic.name
+    }
+
+    fun getProductPrice(): Float {
+        return basic.price
+    }
+
+    fun getProductUrl(): String? {
+        return basic.url
+    }
+
+    fun getFsProductIsActive(): Boolean {
+        return freeOngkir.isFreeOngkirActive
+    }
+
+    fun getFsProductImageUrl(): String {
+        return freeOngkir.freeOngkirImgUrl
+    }
+
     data class Response(
             @SerializedName("getPDPInfo")
             @Expose
@@ -90,16 +126,16 @@ data class ProductInfo(
         get() = with(preorder) { isActive && duration > 0 }
 
     val hasWholesale: Boolean
-        get() = wholesale!= null && wholesale.size > 0
+        get() = wholesale != null && wholesale.size > 0
 
     val firstThumbnailPicture: String
         get() {
-            if (pictures!= null && pictures.size > 0) {
-                if (pictures[0].urlThumbnail.isNotEmpty()){
+            if (pictures != null && pictures.size > 0) {
+                if (pictures[0].urlThumbnail.isNotEmpty()) {
                     return pictures[0].urlThumbnail
-                } else if (pictures[0].url300.isNotEmpty()){
+                } else if (pictures[0].url300.isNotEmpty()) {
                     return pictures[0].url300
-                } else if (pictures[0].urlOriginal.isNotEmpty()){
+                } else if (pictures[0].urlOriginal.isNotEmpty()) {
                     return pictures[0].urlOriginal
                 } else {
                     return ""

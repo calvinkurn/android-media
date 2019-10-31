@@ -3,8 +3,8 @@ package com.tokopedia.settingbank.banklist.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -156,7 +156,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     private fun showErrorAddAccount(reason: String) {
         var errorMessage = reason
         if (errorMessage.isEmpty()) {
-            errorMessage = activity!!.getString(R.string.default_request_error_unknown)
+            errorMessage = activity!!.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
         }
         ToasterError.make(view, errorMessage, BaseToaster.LENGTH_LONG)
                 .show()

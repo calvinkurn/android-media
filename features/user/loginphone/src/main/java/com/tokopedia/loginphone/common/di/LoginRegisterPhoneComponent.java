@@ -5,10 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.sessioncommon.data.GetProfileApi;
-import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.di.SessionCommonScope;
 import com.tokopedia.sessioncommon.di.SessionModule;
@@ -29,10 +26,6 @@ import retrofit2.Retrofit;
         dependencies = BaseAppComponent.class)
 public interface LoginRegisterPhoneComponent {
 
-    MakeLoginApi provideMakeLoginApi();
-
-    GetProfileApi provideGetProfileApi();
-
     TokenApi provideTokenApi();
 
     @Named(SessionModule.SESSION_MODULE)
@@ -50,6 +43,4 @@ public interface LoginRegisterPhoneComponent {
     AbstractionRouter provideAbstractionRouter();
 
     UserSessionInterface userSession();
-
-    TkpdAuthInterceptor tkpdAuthInterceptor();
 }

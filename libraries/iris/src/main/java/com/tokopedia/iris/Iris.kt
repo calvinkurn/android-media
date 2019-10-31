@@ -10,6 +10,11 @@ import com.tokopedia.iris.model.Configuration
 interface Iris {
 
     /**
+     * Simplify initialize iris
+     */
+    fun initialize()
+
+    /**
      * set custom configuration by json
      * param:
      * config, ex: {"row_limit":25,"interval":1}
@@ -18,8 +23,6 @@ interface Iris {
     fun setService(config: String, isEnabled: Boolean)
 
     fun setService(config: Configuration)
-
-    fun resetService(config: Configuration)
 
     /**
      * save event to persistence storage,
@@ -36,5 +39,7 @@ interface Iris {
     fun setUserId(userId: String)
 
     fun setDeviceId(deviceId: String)
+
+    fun setAlarm(isTurnOn: Boolean)
 
 }

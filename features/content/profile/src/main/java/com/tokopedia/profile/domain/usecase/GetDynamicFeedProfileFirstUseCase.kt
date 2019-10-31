@@ -7,12 +7,12 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.profile.R
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliateQuotaData
-import com.tokopedia.profile.data.pojo.profileheader.Profile
-import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
-import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderError
+import com.tokopedia.feedcomponent.data.pojo.profileheader.Profile
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderError
+import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileUseCase.Companion.SOURCE_ID
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
@@ -104,7 +104,9 @@ class GetDynamicFeedProfileFirstUseCase
 
     companion object {
         fun createRequestParams(selfUserId: String, targetUserId: String): RequestParams {
-            val requestParams = GetDynamicFeedUseCase.createRequestParams(selfUserId, "", GetDynamicFeedUseCase.SOURCE_PROFILE)
+            val requestParams = GetDynamicFeedUseCase.createRequestParams(
+                    userId = selfUserId, cursor = "", source = GetDynamicFeedUseCase.SOURCE_PROFILE
+            )
             requestParams.putInt(GetProfileHeaderUseCase.PARAM_USER_ID_TARGET, targetUserId.toInt())
             requestParams.putString(SOURCE_ID, targetUserId)
             return requestParams

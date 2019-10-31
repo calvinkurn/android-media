@@ -5,7 +5,8 @@ import android.app.Application;
 import android.app.Service;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+
 
 import java.util.Map;
 
@@ -87,6 +88,8 @@ public abstract class ContextAnalytics implements Analytics {
     public void eventError(String screenName, String errorDesc) {}
 
     public void clearEnhanceEcommerce() {}
+
+    public void sendCampaign(Map<String,Object> param){}
 
     public void pushEvent(String eventName, Map<String, Object> values){}
 

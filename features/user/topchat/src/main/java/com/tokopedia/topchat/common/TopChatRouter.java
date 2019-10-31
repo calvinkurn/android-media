@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * @author by nisie on 5/18/18.
@@ -16,10 +16,6 @@ public interface TopChatRouter {
     Intent getHomeIntent(Context context);
 
     boolean isIndicatorVisible();
-
-    String getChannelFragmentTag();
-
-    Fragment getChannelFragment(Bundle bundle);
 
     Intent getTopProfileIntent(Context context, String userId);
 
