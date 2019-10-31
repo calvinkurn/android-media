@@ -54,7 +54,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mNoPermissionsView = findViewById(R.id.view_no_permissions)
         mButtonActivate = findViewById(R.id.button_activate_gps)
         mButtonActivate.setOnClickListener {
-            createLocationRequest()
+            checkAndRequestLocation()
         }
         mButtonGrant = findViewById(R.id.button_grant_permission)
         mButtonGrant.setOnClickListener {
@@ -115,7 +115,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         when (requestCode) {
             REQUEST_CODE_LOCATION -> {
                 if (resultCode == Activity.RESULT_CANCELED) setLocationEmptyView()
-                else checkForPermission()
+                else if (resultCode == Activity.RESULT_OK) checkForPermission()
             }
         }
     }
@@ -175,7 +175,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                                             val newLoc = LatLng(it.latitude, it.longitude)
                                             moveCamera(newLoc)
                                         } else {
-                                            createLocationRequest()
+                                            // If it is null, either Google Play Service has just
+                                            // been restarted or the location service is deactivated
+                                            checkAndRequestLocation()
                                         }
                                     }
                                     .addOnFailureListener { _ -> setLocationEmptyView() }
@@ -192,7 +194,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
     }
 
-    private fun createLocationRequest() {
+    private fun checkAndRequestLocation() {
         val locationRequest = LocationRequest.create()?.apply {
             interval = 10000
             fastestInterval = 5000
@@ -204,6 +206,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         val client: SettingsClient = LocationServices.getSettingsClient(this)
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
         task.addOnSuccessListener {
+            // Request location update once then remove when settings are satisfied
             mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, null)
         }
         task.addOnFailureListener {
