@@ -23,7 +23,7 @@ import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
-import com.tokopedia.promotionstarget.subscriber.GratificationSubscriber;
+import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.track.TrackApp;
 
 
