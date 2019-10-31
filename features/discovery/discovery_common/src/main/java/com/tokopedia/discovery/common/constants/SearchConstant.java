@@ -10,23 +10,24 @@ public interface SearchConstant {
 
     String SEARCH_RESULT_TRACE = "search_result_trace";
 
-    String GCM_ID = "gcm_id";
-    String GCM_STORAGE = "GCM_STORAGE";
+    String SEARCH_VIEW_MODEL_FACTORY = "search_view_model_factory";
 
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
 
-    int AUTO_COMPLETE_ACTIVITY_REQUEST_CODE = 14332;
-    int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY = 12323;
-
     interface RecyclerView {
-        int VIEW_PRODUCT = 3;
-        int VIEW_PRODUCT_GRID_1 = 12;
-        int VIEW_PRODUCT_GRID_2 = 13;
+        int VIEW_LIST = 3;
+        int VIEW_PRODUCT_BIG_GRID = 12;
+        int VIEW_PRODUCT_SMALL_GRID = 13;
     }
 
-    enum GridType {
-        GRID_1, GRID_2, GRID_3
+    enum ViewType {
+        LIST, SMALL_GRID, BIG_GRID
+    }
+
+    interface DefaultViewType {
+        int SMALL_GRID = 1;
+        int LIST = 2;
     }
 
     interface Wishlist {
@@ -63,6 +64,7 @@ public interface SearchConstant {
         String GET_DYNAMIC_FILTER_USE_CASE = "get_dynamic_filter_use_case";
         String GET_DYNAMIC_FILTER_V4_USE_CASE = "get_dynamic_filter_v4_use_case";
         String GET_DYNAMIC_FILTER_GQL_USE_CASE = "get_dynamic_filter_gql_use_case";
+        String GET_DYNAMIC_FILTER_SHOP_USE_CASE = "get_dynamic_filter_shop_use_case";
         String DYNAMIC_FILTER_REPOSITORY = "dynamic_filter_repository";
         String DYNAMIC_FILTER_REPOSITORY_V4 = "dynamic_filter_repository_v4";
     }
@@ -83,6 +85,7 @@ public interface SearchConstant {
         String HEADLINE_TEMPLATE_VALUE = "3";
         String HEADLINE_ITEM_VALUE = "1";
         String ADS_SOURCE = "search";
+        String SEARCH_SHOP_VIEW_MODEL_FACTORY = "search_shop_view_model_factory";
         int SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT = 3;
     }
 
@@ -111,6 +114,13 @@ public interface SearchConstant {
     interface Cart {
         String CART_LOCAL_CACHE_NAME = "CART";
         String CACHE_TOTAL_CART = "CACHE_TOTAL_CART";
+        String CART_LOCAL_CACHE = "CART_LOCAL_CACHE";
+    }
+
+    interface GCM {
+        String GCM_ID = "gcm_id";
+        String GCM_STORAGE = "GCM_STORAGE";
+        String GCM_LOCAL_CACHE = "GCM_LOCAL_CACHE";
     }
 
     interface ActiveTab {
@@ -118,5 +128,10 @@ public interface SearchConstant {
         String SHOP = "shop";
         String CATALOG = "catalog";
         String PROFILE = "profile";
+    }
+
+    interface FreeOngkir {
+        String FREE_ONGKIR_LOCAL_CACHE_NAME = "SEARCH_PRODUCT_FREE_ONGKIR";
+        String FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN = "FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN";
     }
 }

@@ -14,21 +14,34 @@ buildscript {
 
 dependencies {
 
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
-
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     testCompile rootProject.ext.testDependencies.junit
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    implementation project(rootProject.ext.libraries.design)
 }
+
+project.ext {
+    artifactId = 'common'
+    groupId = 'com.tokopedia.transaction'
+    versionName = "1.0.0"
+    artifactName ="tkpdtransaction-common-release"
+}
+
+apply from: '../publish_local.gradle'

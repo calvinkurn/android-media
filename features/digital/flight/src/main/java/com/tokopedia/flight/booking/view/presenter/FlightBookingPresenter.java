@@ -1,7 +1,7 @@
 
 package com.tokopedia.flight.booking.view.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Patterns;
 
 import com.tokopedia.common.travel.domain.GetPhoneCodeUseCase;
@@ -226,7 +226,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             renderInsurance(flightBookingCartData, isFromSavedInstance);
 
             if (!isFromSavedInstance) {
-                flightAnalytics.eventAddToCart(getView().getCurrentBookingParamViewModel().getSearchParam().getFlightClass(), flightBookingCartData, resultTotalPrice, flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
+                flightAnalytics.eventAddToCart(getView().getCurrentBookingParamViewModel().getSearchParam().getFlightClass(),
+                        flightBookingCartData, resultTotalPrice, flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip(),
+                        getComboKey());
             }
         } else {
             initialize();

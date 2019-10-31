@@ -5,10 +5,9 @@ import android.text.TextUtils
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
-import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
-import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 
@@ -23,7 +22,6 @@ import rx.schedulers.Schedulers
  */
 class GetDynamicFeedFirstPageUseCase @Inject
 constructor(private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-            private val getWhitelistUseCase: GetWhitelistUseCase,
             private val getWhitelistInterestUseCase: GetWhitelistUseCase)
     : UseCase<DynamicFeedFirstPageDomainModel>() {
 
@@ -31,12 +29,10 @@ constructor(private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
             : Observable<DynamicFeedFirstPageDomainModel> {
         return Observable.zip(
                 getDynamicFeed(requestParams),
-                getCreatePostWhitelist(requestParams),
                 getInterestWhitelist(requestParams)
-        ) { dynamicFeedDomainModel, whitelistDomain, isInterestWhitelist ->
+        ) { dynamicFeedDomainModel, isInterestWhitelist ->
             DynamicFeedFirstPageDomainModel(
                     dynamicFeedDomainModel,
-                    whitelistDomain,
                     isInterestWhitelist
             )
         }
@@ -44,20 +40,6 @@ constructor(private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
 
     private fun getDynamicFeed(requestParams: RequestParams): Observable<DynamicFeedDomainModel> {
         return getDynamicFeedUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
-    }
-
-    private fun getCreatePostWhitelist(requestParams: RequestParams): Observable<WhitelistDomain> {
-        return if (requestParams.getBoolean(PARAM_IS_LOGIN, true)) {
-            getWhitelistUseCase.clearRequest()
-            getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
-                    GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_ENTRY_POINT))
-            )
-            getWhitelistUseCase.createObservable(RequestParams.EMPTY)
-                    .subscribeOn(Schedulers.io())
-                    .map(mapCreatePostWhitelist())
-        } else {
-            Observable.just(WhitelistDomain())
-        }
     }
 
     private fun getInterestWhitelist(requestParams: RequestParams): Observable<Boolean> {
@@ -74,31 +56,6 @@ constructor(private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
         }
     }
 
-    private fun mapCreatePostWhitelist(): Func1<GraphqlResponse, WhitelistDomain> {
-        return Func1 { graphqlResponse ->
-            val query = graphqlResponse.getData<WhitelistQuery>(WhitelistQuery::class.java)
-            getWhitelistDomain(query)
-        }
-    }
-
-    private fun getWhitelistDomain(query: WhitelistQuery?): WhitelistDomain? {
-        return if (query == null) {
-            null
-        } else {
-            WhitelistDomain().apply {
-                error = query.whitelist.error ?: ""
-                url = query.whitelist.url ?: ""
-                isWhitelist = query.whitelist.isWhitelist
-                title = query.whitelist.title ?: ""
-                desc = query.whitelist.description ?: ""
-                titleIdentifier = query.whitelist.titleIdentifier ?: ""
-                postSuccessMessage = query.whitelist.postSuccessMessage ?: ""
-                image = query.whitelist.imageUrl ?: ""
-                authors = query.whitelist.authors ?: arrayListOf()
-            }
-        }
-    }
-
     private fun mapInterestWhitelist(): Func1<GraphqlResponse, Boolean> {
         return Func1 { graphqlResponse ->
             val whitelistQuery = graphqlResponse.getData<WhitelistQuery>(WhitelistQuery::class.java)
@@ -112,9 +69,14 @@ constructor(private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
         private const val PARAM_IS_LOGIN = "isLogin"
 
         @JvmOverloads
-        fun createRequestParams(userId: String, cursor: String = "", source: String,
+        fun createRequestParams(userId: String, cursor: String = "",
+                                source: String,
+                                firstPageCursor: String = "",
                                 isLogin: Boolean = true): RequestParams {
-            val requestParams = GetDynamicFeedUseCase.createRequestParams(userId, cursor, source)
+            val requestParams = GetDynamicFeedUseCase.createRequestParams(
+                    userId= userId, cursor =  cursor,
+                    source = source, firstPageCursor = firstPageCursor
+            )
             requestParams.putBoolean(PARAM_IS_LOGIN, isLogin)
             return requestParams
         }

@@ -1,8 +1,8 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +16,14 @@ import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalProductSubMenu
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
-import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
+import com.tokopedia.common_digital.common.RechargeAnalytics
+import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
+import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topupbills.telco.view.widget.DigitalSubMenuWidget
 import kotlinx.android.synthetic.main.fragment_digital_telco.*
+import rx.Subscriber
 import javax.inject.Inject
 
 /**
@@ -29,6 +34,8 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     private var posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_LEFT
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
 
     override fun getScreenName(): String? {
         return null
@@ -54,9 +61,14 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     fun renderSubMenu() {
         val listMenuTab = mutableListOf<DigitalTabTelcoItem>()
         arguments?.run {
-            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM_TELCO) as DigitalTelcoExtraParam
-            var prepaidExtraParam = DigitalTelcoExtraParam()
-            var postpaidExtraParam = DigitalTelcoExtraParam()
+            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM_TELCO) as TopupBillsExtraParam
+            var prepaidExtraParam = TopupBillsExtraParam()
+            var postpaidExtraParam = TopupBillsExtraParam()
+
+            digitalTelcoExtraParam.categoryId.toIntOrNull()?.let {
+                rechargeAnalytics.eventDigitalCategoryScreenLaunch(topupAnalytics.getCategoryName(it), digitalTelcoExtraParam.categoryId)
+                rechargeAnalytics.trackVisitRechargePushEventRecommendation(it)
+            }
 
             if (digitalTelcoExtraParam.menuId.toInt() == TelcoComponentType.TELCO_PREPAID) {
                 prepaidExtraParam = digitalTelcoExtraParam
@@ -125,10 +137,10 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
 
         const val EXTRA_PARAM_TELCO = "extra_param_telco"
 
-        fun newInstance(digitalTelcoExtraParam: DigitalTelcoExtraParam): Fragment {
+        fun newInstance(topupBillsExtraParam: TopupBillsExtraParam): Fragment {
             val fragment = DigitalTelcoFragment()
             val bundle = Bundle()
-            bundle.putParcelable(EXTRA_PARAM_TELCO, digitalTelcoExtraParam)
+            bundle.putParcelable(EXTRA_PARAM_TELCO, topupBillsExtraParam)
             fragment.arguments = bundle
             return fragment
         }

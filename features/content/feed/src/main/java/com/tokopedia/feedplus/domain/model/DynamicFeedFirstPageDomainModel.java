@@ -8,14 +8,11 @@ import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
  */
 public class DynamicFeedFirstPageDomainModel {
     private DynamicFeedDomainModel dynamicFeedDomainModel;
-    private WhitelistDomain whitelistDomain;
     private boolean isInterestWhitelist;
 
     public DynamicFeedFirstPageDomainModel(DynamicFeedDomainModel dynamicFeedDomainModel,
-                                           WhitelistDomain whitelistDomain, boolean
-                                                   isInterestWhitelist) {
+                                           boolean isInterestWhitelist) {
         this.dynamicFeedDomainModel = dynamicFeedDomainModel;
-        this.whitelistDomain = whitelistDomain;
         this.isInterestWhitelist = isInterestWhitelist;
     }
 
@@ -25,14 +22,6 @@ public class DynamicFeedFirstPageDomainModel {
 
     public void setDynamicFeedDomainModel(DynamicFeedDomainModel dynamicFeedDomainModel) {
         this.dynamicFeedDomainModel = dynamicFeedDomainModel;
-    }
-
-    public WhitelistDomain getWhitelistDomain() {
-        return whitelistDomain;
-    }
-
-    public void setWhitelistDomain(WhitelistDomain whitelistDomain) {
-        this.whitelistDomain = whitelistDomain;
     }
 
     public boolean isInterestWhitelist() {

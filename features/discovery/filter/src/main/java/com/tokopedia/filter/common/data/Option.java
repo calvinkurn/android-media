@@ -14,9 +14,13 @@ public final class Option implements Parcelable {
     public static final String KEY_PRICE_MAX = "pmax";
     public static final String KEY_PRICE_MIN_MAX_RANGE = "pmin-pmax";
     public static final String KEY_PRICE_WHOLESALE = "wholesale";
+    public static final String KEY_PRICE_RANGE_1 = "price_range_1";
+    public static final String KEY_PRICE_RANGE_2 = "price_range_2";
+    public static final String KEY_PRICE_RANGE_3 = "price_range_3";
     public static final String KEY_CATEGORY = "sc";
     public static final String KEY_OFFICIAL = "official";
     public static final String KEY_RATING = "rt";
+    public static final String KEY_ANNOTATION_ID = "annotation_id";
 
     public static final String INPUT_TYPE_TEXTBOX = "textbox";
     public static final String INPUT_TYPE_CHECKBOX = "checkbox";
@@ -44,16 +48,10 @@ public final class Option implements Parcelable {
     String hexColor;
     @SerializedName("metric")
     @Expose
-    String metric;
+    String metric = "";
     @SerializedName(value="total_data", alternate={"totalData"})
     @Expose
     String totalData;
-    @SerializedName("key_min")
-    @Expose
-    String keyMin;
-    @SerializedName("key_max")
-    @Expose
-    String keyMax;
     @SerializedName(value="val_min", alternate={"valMin"})
     @Expose
     String valMin;
@@ -63,7 +61,7 @@ public final class Option implements Parcelable {
     @SerializedName("icon")
     @Expose
     String iconUrl;
-    @SerializedName("description")
+    @SerializedName(value="description", alternate={"Description"})
     @Expose
     String description;
     @SerializedName(value="is_popular", alternate={"isPopular"})
@@ -77,6 +75,10 @@ public final class Option implements Parcelable {
     List<LevelTwoCategory> levelTwoCategoryList;
 
     String inputState = "";
+
+    public boolean isAnnotation() {
+        return Option.KEY_ANNOTATION_ID.equals(getKey());
+    }
 
     public boolean isCategoryOption() {
         return Option.KEY_CATEGORY.equals(getKey());
@@ -140,22 +142,6 @@ public final class Option implements Parcelable {
 
     public void setTotalData(String totalData) {
         this.totalData = totalData;
-    }
-
-    public String getKeyMin() {
-        return keyMin;
-    }
-
-    public void setKeyMin(String keyMin) {
-        this.keyMin = keyMin;
-    }
-
-    public String getKeyMax() {
-        return keyMax;
-    }
-
-    public void setKeyMax(String keyMax) {
-        this.keyMax = keyMax;
     }
 
     public String getValMin() {
@@ -229,6 +215,20 @@ public final class Option implements Parcelable {
     public Option() {}
 
     @Override
+    public boolean equals(Object obj)
+    {
+        if(this == obj) return true;
+
+        if(obj == null || obj.getClass()!= this.getClass()) return false;
+
+        Option option = (Option) obj;
+
+        return this.key.equals(option.key)
+                && this.value.equals(option.value)
+                && this.name.equals(option.name);
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -242,8 +242,6 @@ public final class Option implements Parcelable {
         dest.writeString(this.hexColor);
         dest.writeString(this.metric);
         dest.writeString(this.totalData);
-        dest.writeString(this.keyMin);
-        dest.writeString(this.keyMax);
         dest.writeString(this.valMin);
         dest.writeString(this.valMax);
         dest.writeString(this.iconUrl);
@@ -262,8 +260,6 @@ public final class Option implements Parcelable {
         this.hexColor = in.readString();
         this.metric = in.readString();
         this.totalData = in.readString();
-        this.keyMin = in.readString();
-        this.keyMax = in.readString();
         this.valMin = in.readString();
         this.valMax = in.readString();
         this.iconUrl = in.readString();

@@ -23,6 +23,8 @@ import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.GetUserLikesUseCase;
 import com.tokopedia.events.domain.postusecase.CheckoutPaymentUseCase;
 import com.tokopedia.events.domain.postusecase.PostInitCouponUseCase;
+import com.tokopedia.events.domain.postusecase.PostNsqEventUseCase;
+import com.tokopedia.events.domain.postusecase.PostNsqTravelDataUseCase;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
@@ -39,6 +41,7 @@ import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.contractor.ScanCodeContract;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
+import com.tokopedia.events.view.customview.SelectEventDateBottomSheet;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.presenter.EventFavouritePresenter;
 import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
@@ -203,8 +206,8 @@ public class EventModule {
 
     @Provides
     @EventScope
-    EventsDetailsContract.EventDetailPresenter providesEventsDetailsPresenter(GetEventDetailsRequestUseCase getEventDetailsRequestUseCase, EventsAnalytics eventsAnalytics, CheckScanOptionUseCase checkScanOptionUseCase) {
-        return new EventsDetailsPresenter(getEventDetailsRequestUseCase, eventsAnalytics, checkScanOptionUseCase);
+    EventsDetailsContract.EventDetailPresenter providesEventsDetailsPresenter(GetEventDetailsRequestUseCase getEventDetailsRequestUseCase, EventsAnalytics eventsAnalytics, CheckScanOptionUseCase checkScanOptionUseCase, PostNsqEventUseCase postNsqEventUseCase, PostNsqTravelDataUseCase postNsqTravelDataUseCase) {
+        return new EventsDetailsPresenter(getEventDetailsRequestUseCase, eventsAnalytics, checkScanOptionUseCase, postNsqEventUseCase, postNsqTravelDataUseCase);
     }
 
     @Provides
@@ -234,9 +237,9 @@ public class EventModule {
     EventsContract.EventHomePresenter providesEventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
                                                                  PostUpdateEventLikesUseCase eventLikesUseCase,
                                                                  GetUserLikesUseCase likesUseCase,
-                                                                 GetProductRatingUseCase ratingUseCase, EventsAnalytics eventsAnalytics) {
+                                                                 GetProductRatingUseCase ratingUseCase, PostNsqEventUseCase postNsqEventUseCase, EventsAnalytics eventsAnalytics) {
         return new EventHomePresenter(getEventsListRequestUsecase,
-                eventLikesUseCase, likesUseCase, ratingUseCase, eventsAnalytics);
+                eventLikesUseCase, likesUseCase, ratingUseCase, postNsqEventUseCase, eventsAnalytics);
     }
 
 
@@ -261,4 +264,9 @@ public class EventModule {
         return new ScanCodeDataPresenter(scanBarCodeUseCase, redeemTicketUseCase);
     }
 
+    @Provides
+    @EventScope
+    SelectEventDateBottomSheet providesSelectEventDateBottomSheet() {
+        return new SelectEventDateBottomSheet();
+    }
 }

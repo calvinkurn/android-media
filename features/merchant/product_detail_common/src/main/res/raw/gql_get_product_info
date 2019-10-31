@@ -84,6 +84,7 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             endDate
             endDateUnix
             appLinks
+            hideGimmick
         }
         cashback {
             percentage
@@ -111,6 +112,19 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
           useStock
           value
           stockWording
+        }
+        media {
+          type
+          URL300
+          URLOriginal
+          URLThumbnail
+          IsAutoplay
+          Description
+          VideoURLAndroid
+         }
+        freeOngkir {
+          isActive
+          imgURL
         }
     }
 }

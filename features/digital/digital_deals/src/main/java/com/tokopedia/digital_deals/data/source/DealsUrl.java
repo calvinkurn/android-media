@@ -18,6 +18,8 @@ public class DealsUrl {
         String DEALS_LIKES_PRODUCT = "v1/api/deal/rating/product";
         String DEALS_BRAND = "v1/api/b/";
         String DEALS_CATEGORIES = "v1/api/c/deal/children";
+        String DEALS_NSQ_EVENT = "/v1/api/tracking";
+        String DEALS_NEAREST_LOCATION = "/v1/api/s/nearestlocation";
     }
 
     public interface WebUrl{

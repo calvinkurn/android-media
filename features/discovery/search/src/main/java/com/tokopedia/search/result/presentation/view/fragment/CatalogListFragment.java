@@ -2,10 +2,10 @@ package com.tokopedia.search.result.presentation.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +23,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.CatalogListSectionContract;
@@ -76,7 +77,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
     private static final String SEARCH_CATALOG_TRACE = "search_catalog_trace";
 
     protected RecyclerView recyclerView;
-    protected ProgressBar loadingView;
 
     protected CatalogListAdapter catalogAdapter;
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
@@ -190,7 +190,7 @@ public class CatalogListFragment extends SearchSectionFragment implements
                              @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         presenter.initInjector(this);
-        return inflater.inflate(R.layout.search_fragment_base_discovery, container, false);
+        return inflater.inflate(R.layout.search_result_product_fragment_layout, container, false);
     }
 
     @Override
@@ -207,12 +207,12 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        catalogAdapter.onSaveInstanceState(outState);
         saveDataToBundle(outState);
     }
 
     private void saveDataToBundle(Bundle outState) {
         outState.putString(EXTRA_SHARE_URL, getShareUrl());
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
     }
 
     @Override
@@ -227,7 +227,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recyclerview);
-        loadingView = view.findViewById(R.id.loading);
     }
 
     protected void prepareView() {
@@ -369,11 +368,8 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
-
-        if(catalogAdapter != null) {
-            catalogAdapter.onRestoreInstanceState(savedInstanceState);
-        }
     }
 
     @Override
@@ -587,5 +583,10 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public void removeLoading() {
         removeSearchPageLoading();
+    }
+
+    @Override
+    protected String getFilterTrackingCategory() {
+        return FilterEventTracking.Category.FILTER_CATALOG;
     }
 }

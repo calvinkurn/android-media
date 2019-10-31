@@ -3,8 +3,9 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
 import android.os.Parcelable;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -14,17 +15,19 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetInitialLocationUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetLocationCityUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetNearestLocationUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
+import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
@@ -36,8 +39,9 @@ import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
-import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
@@ -75,11 +79,13 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     public final static String TAG = "url";
     private final String CAROUSEL = "carousel";
     private final String TOP = "top";
+    private GetNearestLocationUseCase getNearestLocationUseCase;
     private GetDealsListRequestUseCase getDealsListRequestUseCase;
     private GetInitialLocationUseCase getInitialLocationUseCase;
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetNextDealPageUseCase getNextDealPageUseCase;
     private ArrayList<CategoryItem> categoryItems;
+    private PostNsqEventUseCase postNsqEventUseCase;
     private ArrayList<CategoryItem> curatedItems;
     private List<Brand> brands;
     private List<CategoriesModel> categoriesModels;
@@ -97,13 +103,15 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
 
     @Inject
-    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetInitialLocationUseCase getInitialLocationUseCase, DealsAnalytics dealsAnalytics) {
+    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetInitialLocationUseCase getInitialLocationUseCase, PostNsqEventUseCase postNsqEventUseCase, GetNearestLocationUseCase getNearestLocationUseCase, DealsAnalytics dealsAnalytics) {
         this.getDealsListRequestUseCase = getDealsListRequestUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextDealPageUseCase = getNextDealPageUseCase;
         this.getSearchLocationListRequestUseCase = getSearchLocationListRequestUseCase;
         this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
         this.getInitialLocationUseCase = getInitialLocationUseCase;
+        this.postNsqEventUseCase = postNsqEventUseCase;
+        this.getNearestLocationUseCase = getNearestLocationUseCase;
         this.dealsAnalytics = dealsAnalytics;
     }
 
@@ -125,6 +133,12 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
         if (getInitialLocationUseCase != null) {
             getInitialLocationUseCase.unsubscribe();
+        }
+        if (postNsqEventUseCase != null) {
+            postNsqEventUseCase.unsubscribe();
+        }
+        if (getNearestLocationUseCase != null) {
+            getNearestLocationUseCase.unsubscribe();
         }
         stopBannerSlide();
     }
@@ -191,35 +205,37 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        if (id == R.id.search_input_view || id == R.id.action_menu_search) {
+        if (id == com.tokopedia.digital_deals.R.id.search_input_view || id == com.tokopedia.digital_deals.R.id.action_menu_search) {
             dealsAnalytics.sendSearchClickedEvent(getView().getSearchInputText());
+            if (userSession.isLoggedIn()) {
+                sendNSQEvent(userSession.getUserId(), "search");
+            }
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
             TopDealsCacheHandler.init().setTopDeals(getCarouselOrTop(categoryItems, TOP).getItems());
             searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
-        } else if (id == R.id.tv_location_name || id == R.id.toolbar_title) {
+        } else if (id == com.tokopedia.digital_deals.R.id.tv_location_name || id == com.tokopedia.digital_deals.R.id.toolbar_title) {
             getView().startLocationFragment();
-        } else if (id == R.id.action_menu_favourite) {
+        } else if (id == com.tokopedia.digital_deals.R.id.action_menu_favourite) {
 
-        } else if (id == R.id.action_promo) {
+        } else if (id == com.tokopedia.digital_deals.R.id.action_promo) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_PROMO,
                     "");
             getView().startGeneralWebView(DealsUrl.WebUrl.PROMOURL);
-        } else if (id == R.id.action_booked_history) {
+        } else if (id == com.tokopedia.digital_deals.R.id.action_booked_history) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_DAFTAR_TRANSAKSI,
                     "");
             if (userSession.isLoggedIn()) {
                 getView().startOrderListActivity();
             } else {
-                Intent intent = ((DealsModuleRouter) getView().getActivity().getApplication()).
-                        getLoginIntent(getView().getActivity());
+                Intent intent = RouteManager.getIntent(getView().getActivity(), ApplinkConst.LOGIN);
                 getView().navigateToActivityRequest(intent, getView().getRequestCode());
             }
-        } else if (id == R.id.action_faq) {
+        } else if (id == com.tokopedia.digital_deals.R.id.action_faq) {
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_BANTUAN,
                     "");
             getView().startGeneralWebView(DealsUrl.WebUrl.FAQURL);
-        } else if (id == R.id.tv_see_all_brands) {
+        } else if (id == com.tokopedia.digital_deals.R.id.tv_see_all_brands) {
             dealsAnalytics.sendAllBrandsClickEvent(DealsAnalytics.SEE_ALL_BRANDS_HOME);
             Intent brandIntent = new Intent(getView().getActivity(), AllBrandsActivity.class);
             brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
@@ -472,8 +488,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
         CategoriesModel categoriesModel = new CategoriesModel();
         categoriesModel.setCategoryUrl("");
-        categoriesModel.setTitle(getView().getActivity().getResources().getString(R.string.all_brands));
-        categoriesModel.setName(getView().getActivity().getResources().getString(R.string.all_brands));
+        categoriesModel.setTitle(getView().getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.all_brands));
+        categoriesModel.setName(getView().getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.all_brands));
         categoriesModel.setPosition(0);
         categoriesModels.add(0, categoriesModel);
         return categoryList;
@@ -587,5 +603,67 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     public void sendScreenNameEvent(String screenName) {
         dealsAnalytics.sendScreenNameEvent(screenName);
+    }
+
+    public void sendNSQEvent(String userId, String action) {
+        NsqServiceModel nsqServiceModel = new NsqServiceModel();
+        nsqServiceModel.setService(Utils.NSQ_SERVICE);
+        NsqMessage nsqMessage = new NsqMessage();
+        nsqMessage.setUserId(Integer.parseInt(userId));
+        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
+        nsqMessage.setAction(action);
+        nsqServiceModel.setMessage(nsqMessage);
+        postNsqEventUseCase.setRequestModel(nsqServiceModel);
+        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper(e);
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+            }
+        });
+    }
+
+
+    public void getNearestLocation(String coordinates) {
+        if (getView() == null) {
+            return;
+        }
+        RequestParams params = RequestParams.create();
+        params.putString(Utils.LOCATION_COORDINATES, coordinates);
+        getNearestLocationUseCase.setRequestParams(params);
+        getNearestLocationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                if (locationResponse != null && locationResponse.getLocations() != null) {
+                    getView().updateInitialLocation(locationResponse.getLocations());
+                } else {
+                    getView().showErrorMessage();
+                    getView().setDefaultLocation();
+                }
+            }
+        });
     }
 }

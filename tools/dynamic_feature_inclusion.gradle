@@ -7,9 +7,9 @@ ext {
         final def filemap = new File("buildconfig/appcompile/dynamic-feature-" + projectName + ".cfg")
         if (filemap.exists()) {
             return filemap.readLines().collect{it.trim()}
-                    .findAll {!it.empty && !it.startsWith('#') && !it.startsWith('//')}
+                    .findAll {!it.empty && it.startsWith("v")}
                     .collect {
-                        it.replaceAll("\t|\\s", "")
+                        it.replaceFirst("v", "").replaceAll("\t|\\s", "")
                     }
         }
         []
@@ -27,10 +27,34 @@ ext {
         }
     }
 
+    generateAssetFile = {Project project, LinkedHashSet<String> strings ->
+        def projectName = project.name
+        def assetDir = new File(projectName + "/src/main/assets")
+        def fileAsset = new File(projectName + "/src/main/assets/df.cfg")
+        if (strings.size() > 0) {
+            if (!assetDir.exists()) {
+                assetDir.mkdirs()
+            }
+            if (fileAsset.exists()) {
+                fileAsset.delete()
+            }
+            fileAsset.createNewFile()
+            strings.collect {
+                def pathArray = it.split(":")
+                fileAsset.append(pathArray[pathArray.size() - 1] + "\n")
+            }
+        } else {
+            if (fileAsset.exists()) {
+                fileAsset.delete()
+            }
+        }
+    }
+
     includeDynamicFeatureIfEnabled = {String projectName ->
         if (gradle.properties.toString().contains("disable-dynamic-feature")) {
             println("Dynamic feature is disabled")
         } else {
+            println("Dynamic feature is enabled. Inclusion is below:")
             getDynamicFeatureListByProjectName(projectName).each {
                 def itTrim = ""
                 if (it.startsWith(':')) {

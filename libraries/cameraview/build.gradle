@@ -1,31 +1,9 @@
 apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 //region android dependencies
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
-
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 28
-        versionCode 1
-        versionName project.version
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        debug {
-            testCoverageEnabled true
-        }
-
-        release {
-            minifyEnabled false
-            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            proguardFiles 'proguard-rules.pro'
-        }
-    }
-
     sourceSets {
         main.java.srcDirs += 'src/main/options'
         main.java.srcDirs += 'src/main/views'
@@ -38,15 +16,23 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.23.0'
 
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation "com.android.support:exifinterface:28.0.0"
-    implementation "com.android.support:support-annotations:28.0.0"
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation "androidx.exifinterface:exifinterface:1.0.0"
+    implementation "androidx.annotation:annotation:1.0.0"
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
     androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
 }
 
+project.ext {
+    artifactId = 'camera-view'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "cameraview-release"
+}
+
+apply from: '../../publish_local.gradle'
 //endregion

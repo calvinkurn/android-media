@@ -3,45 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/dp_16"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:padding="@dimen/dp_16">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/til_contact_name"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24">
 
-            <android.support.v7.widget.AppCompatAutoCompleteTextView
+            <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/travel_contact_data_name_hint" />
+                android:hint="@string/travel_contact_data_name_hint"
+                android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
+                android:importantForAutofill="no" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/til_contact_email"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24">
 
-            <android.support.v7.widget.AppCompatAutoCompleteTextView
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/travel_contact_data_email_hint" />
+                android:hint="@string/travel_contact_data_email_hint"
+                android:inputType="text" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_contact_phone_title"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/dp_2"
@@ -51,42 +55,49 @@
             app:layout_constraintTop_toBottomOf="@id/til_contact_email"
             app:textViewTheme="lightDisabled" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/dp_24">
+            android:layout_marginBottom="@dimen/dp_24"
+            android:paddingTop="@dimen/dp_4">
 
             <Spinner
                 android:id="@+id/sp_contact_phone_code"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.Widget.AppCompat.Spinner.Underlined"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"/>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_contact_phone_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                style="@style/HintTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/sp_contact_phone_code"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/dp_4"
+                >
 
-                <android.support.v7.widget.AppCompatAutoCompleteTextView
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:hint="@string/travel_contact_data_phone_number_hint" />
+                    android:hint="@string/travel_contact_data_phone_number_hint"
+                    android:inputType="number" />
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/contact_data_info_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tickerType="warning"
             app:closeButtonVisibility="gone"
+            app:descriptionText="@string/travel_contact_data_notice"
             app:tickerShapeType="loose"
-            app:descriptionText="@string/travel_contact_data_notice"/>
+            app:tickerType="warning" />
 
     </LinearLayout>
 
@@ -94,8 +105,8 @@
         android:id="@+id/contact_data_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
-        android:text="@string/travel_select_passenger_submit_button"
         android:layout_alignParentBottom="true"
+        android:text="@string/travel_select_passenger_submit_button"
         app:buttonCompatType="primary" />
 
 </RelativeLayout>

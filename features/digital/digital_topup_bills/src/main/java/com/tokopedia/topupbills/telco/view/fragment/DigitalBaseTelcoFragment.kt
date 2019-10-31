@@ -1,14 +1,14 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
-import android.support.design.widget.Snackbar
-import android.support.v4.widget.NestedScrollView
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.widget.NestedScrollView
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
@@ -17,6 +17,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
+import com.tokopedia.common.topupbills.data.TopupBillsPromo
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -102,7 +106,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     abstract fun setFavNumbers(data: TelcoRechargeFavNumberData)
 
-    fun renderTicker(tickers: List<TelcoTicker>) {
+    fun renderTicker(tickers: List<TopupBillsTicker>) {
         if (tickers.isNotEmpty()) {
             val messages = ArrayList<TickerData>()
             for (item in tickers) {
@@ -230,13 +234,13 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun handleCallbackSearchNumberCancel()
 
-    private fun renderRecentTransactions(recentNumbers: List<TelcoRecommendation>) {
+    private fun renderRecentTransactions(recentNumbers: List<TopupBillsRecommendation>) {
         if (recentNumbers.isNotEmpty()) {
             recentNumbersWidget.setListener(object : DigitalRecentTransactionWidget.ActionListener {
-                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryId: Int,
+                override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int,
                                                  position: Int) {
-                    telcoRecommendation.position = position
-                    onClickItemRecentNumber(telcoRecommendation)
+                    topupBillsRecommendation.position = position
+                    onClickItemRecentNumber(topupBillsRecommendation)
                 }
 
                 override fun onTrackImpressionRecentList(digitalTrackRecentList: List<DigitalTrackRecentTransactionTelco>) {
@@ -257,9 +261,9 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
-    protected abstract fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation)
+    protected abstract fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation)
 
-    private fun renderPromoList(promos: List<TelcoPromo>) {
+    private fun renderPromoList(promos: List<TopupBillsPromo>) {
         if (promos.isNotEmpty()) {
             promoListWidget.visibility = View.VISIBLE
             promoListWidget.setListener(object : DigitalPromoListWidget.ActionListener {
@@ -285,10 +289,10 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     topupAnalytics.impressionEnhanceCommercePromoList(digitalTrackPromoList)
                 }
 
-                override fun onClickItemPromo(telcoPromo: TelcoPromo, position: Int) {
-                    topupAnalytics.clickEnhanceCommercePromo(telcoPromo, position)
-                    if (!TextUtils.isEmpty(telcoPromo.urlBannerPromo)) {
-                        RouteManager.route(activity, telcoPromo.urlBannerPromo)
+                override fun onClickItemPromo(topupBillsPromo: TopupBillsPromo, position: Int) {
+                    topupAnalytics.clickEnhanceCommercePromo(topupBillsPromo, position)
+                    if (!TextUtils.isEmpty(topupBillsPromo.urlBannerPromo)) {
+                        RouteManager.route(activity, topupBillsPromo.urlBannerPromo)
                     }
                 }
             })

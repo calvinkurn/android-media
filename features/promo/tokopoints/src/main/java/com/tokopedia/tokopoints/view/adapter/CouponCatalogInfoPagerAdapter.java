@@ -1,8 +1,8 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ public class CouponCatalogInfoPagerAdapter extends PagerAdapter {
     private LayoutInflater mLayoutInflater;
     private String mInfo;
     private String mTnC;
+    private final int TAB_COUNT = 2;
 
     public CouponCatalogInfoPagerAdapter(Context context, String info, String tnC) {
         this.mLayoutInflater = LayoutInflater.from(context);
@@ -48,7 +49,7 @@ public class CouponCatalogInfoPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return CommonConstant.HOMEPAGE_TAB_COUNT;
+        return TAB_COUNT;
     }
 
     @Override

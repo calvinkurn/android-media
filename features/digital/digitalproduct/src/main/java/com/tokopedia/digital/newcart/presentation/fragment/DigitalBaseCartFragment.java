@@ -3,9 +3,9 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,7 +16,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
@@ -39,8 +41,8 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartChecko
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView;
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -54,6 +56,7 @@ import com.tokopedia.track.interfaces.AFAdsIDCallback;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
@@ -62,6 +65,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         DigitalCartCheckoutHolderView.ActionListener {
     protected static final String ARG_PASS_DATA = "ARG_PASS_DATA";
     protected static final String ARG_CART_INFO = "ARG_CART_INFO";
+    protected static final String ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS";
     private static final int REQUEST_CODE_OTP = 1001;
 
     protected CartDigitalInfoData cartDigitalInfoData;
@@ -78,6 +82,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private SaveInstanceCacheManager saveInstanceCacheManager;
     private DigitalAnalytics digitalAnalytics;
     protected PromoData promoData = new PromoData();
+
+    private DigitalSubscriptionParams digitalSubscriptionParams = new DigitalSubscriptionParams();
 
     private static final String EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER";
     private static final String EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA";
@@ -99,6 +105,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         });
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
+        DigitalSubscriptionParams subParams = getArguments().getParcelable(ARG_SUBSCRIPTION_PARAMS);
+        if (subParams != null) {
+            digitalSubscriptionParams = subParams;
+        }
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         digitalAnalytics = new DigitalAnalytics();
         if (savedInstanceState != null) {
@@ -207,7 +217,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public Map<String, String> getGeneratedAuthParamNetwork(String userId, String deviceId, Map<String, String> param) {
-        return AuthUtil.generateParamsNetwork(userId, deviceId, param);
+        return AuthHelper.generateParamsNetwork(userId, deviceId, param);
     }
 
     @Override
@@ -227,26 +237,32 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickUsePromo() {
-        digitalAnalytics.eventclickUseVoucher(cartDigitalInfoData.getAttributes().getCategoryName());
+        digitalAnalytics.eventclickUseVoucher(getCategoryName());
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
-        intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+        intent.putExtra("EXTRA_COUPON_ACTIVE",
+                Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
+        );
         intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
         startActivityForResult(intent, ConstantKt.getREQUST_CODE_PROMO_LIST());
     }
 
     private PromoDigitalModel getPromoDigitalModel() {
         return new PromoDigitalModel(
-                Integer.parseInt(cartPassData.getCategoryId()),
+                Integer.parseInt(Objects.requireNonNull(cartPassData.getCategoryId())),
                 getProductId(),
-                cartPassData.getClientNumber(),
-                cartDigitalInfoData.getAttributes().getPricePlain()
+                cartPassData.getClientNumber() != null ? cartPassData.getClientNumber() : "",
+                cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0
         );
     }
 
     @Override
     public void onDisablePromoDiscount() {
-        digitalAnalytics.eventclickCancelApplyCoupon(cartDigitalInfoData.getAttributes().getCategoryName(), promoData.getPromoCode());
+        digitalAnalytics.eventclickCancelApplyCoupon(getCategoryName(), promoData.getPromoCode());
         promoData.setPromoCode("");
+    }
+
+    private String getCategoryName() {
+        return Objects.requireNonNull(Objects.requireNonNull(cartDigitalInfoData.getAttributes()).getCategoryName());
     }
 
     @Override
@@ -258,7 +274,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
-                intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+                intent.putExtra("EXTRA_COUPON_ACTIVE",
+                        Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
+                );
                 requestCode = ConstantKt.getREQUST_CODE_PROMO_LIST();
             } else {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);
@@ -313,9 +331,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     }
                 }
             }
-        } else if (requestCode == TopPayActivity.REQUEST_CODE) {
+        } else if (requestCode == PaymentConstant.REQUEST_CODE) {
             switch (resultCode) {
-                case TopPayActivity.PAYMENT_SUCCESS:
+                case PaymentConstant.PAYMENT_SUCCESS:
                     if (getActivity() != null && getActivity().getApplicationContext() instanceof DigitalModuleRouter) {
                         FragmentManager manager = getActivity().getSupportFragmentManager();
 
@@ -333,13 +351,13 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     }
                     presenter.onPaymentSuccess(cartPassData.getCategoryId());
                     break;
-                case TopPayActivity.PAYMENT_FAILED:
+                case PaymentConstant.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
                     presenter.processGetCartDataAfterCheckout(cartPassData.getCategoryId());
                     break;
-                case TopPayActivity.PAYMENT_CANCELLED:
+                case PaymentConstant.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
                     presenter.processGetCartDataAfterCheckout(cartPassData.getCategoryId());
                     break;
@@ -379,7 +397,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.convertToPaymenPassData(checkoutDigitalData);
         navigateToActivityRequest(TopPayActivity.createInstance(getActivity(), paymentPassData),
-                TopPayActivity.REQUEST_CODE);
+                PaymentConstant.REQUEST_CODE);
     }
 
 
@@ -394,6 +412,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
+    public String getZoneId() {
+        return cartPassData.getZoneId();
+    }
+
+    @Override
     public boolean isInstantCheckout() {
         return cartPassData.getInstantCheckout().equals("1");
     }
@@ -401,7 +424,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public int getProductId() {
         String productIdString = cartPassData.getProductId();
-        return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
+        try {
+            return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override
@@ -488,6 +515,15 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         if (!traceStop) {
             performanceMonitoring.stopTrace();
             traceStop = true;
+        }
+    }
+
+    @Override
+    public DigitalSubscriptionParams getDigitalSubscriptionParams() {
+        if (digitalSubscriptionParams != null) {
+            return digitalSubscriptionParams;
+        } else {
+            return new DigitalSubscriptionParams();
         }
     }
 

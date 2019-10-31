@@ -2,12 +2,12 @@ package com.tokopedia.navigation.presentation.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -36,6 +36,8 @@ import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -73,6 +75,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Inject
     GlobalNavAnalytics globalNavAnalytics;
+
+    @Inject
+    RemoteConfig remoteConfig;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
@@ -232,7 +237,12 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private void getCallingIntent(int position) {
         switch (position) {
             case CHAT_MENU:
-                RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
+                boolean isChatUsingOld = remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_OLD);
+                if(isChatUsingOld) {
+                    RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_OLD);
+                } else {
+                    RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
+                }
                 break;
             case DISCUSSION_MENU:
                 if (getActivity() != null

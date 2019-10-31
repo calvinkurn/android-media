@@ -1,15 +1,22 @@
 package com.tokopedia.promocheckout.list.view.presenter
 
+import android.content.res.Resources
 import android.text.TextUtils
+import android.util.Log
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.promocheckout.list.model.listpromocatalog.ResponseExchangeCoupon
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
@@ -86,6 +93,34 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
         })
 
     }
+
+    override fun getListExchangeCoupon(resources: Resources) {
+        view.showProgressBar()
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.promo_checkout_exchange_coupon), ResponseExchangeCoupon::class.java, null, false)
+        val getListCouponUseCase = GraphqlUseCase()
+        getListCouponUseCase.clearRequest()
+        getListCouponUseCase.addRequest(graphqlRequest)
+        getListCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+            override fun onCompleted() {
+                view.hideProgressBar()
+            }
+
+            override fun onError(e: Throwable) {
+                if (isViewAttached) {
+                    view.hideProgressBar()
+                    view.showGetListLastSeenError(e)
+                }
+            }
+
+            override fun onNext(objects: GraphqlResponse) {
+                view.hideProgressBar()
+                val dataExchangeCoupon = objects.getData<ResponseExchangeCoupon>(ResponseExchangeCoupon::class.java)
+                view.renderListExchangeCoupon((dataExchangeCoupon.tokopointsCatalogHighlight!!))
+            }
+        })
+    }
+
 
     override fun detachView() {
         checkPromoStackingCodeUseCase.unsubscribe()

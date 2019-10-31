@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -126,11 +126,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     @Override
     public Fragment getFavoriteFragment() {
         return null;
-    }
-
-    @Override
-    public void gotoTopAdsDashboard(Context context) {
-
     }
 
     @Override

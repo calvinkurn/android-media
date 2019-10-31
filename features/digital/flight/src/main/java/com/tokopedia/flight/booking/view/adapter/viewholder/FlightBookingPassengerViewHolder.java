@@ -1,9 +1,9 @@
 package com.tokopedia.flight.booking.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -32,7 +32,6 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
 
     private LabelView headerLabel;
     private LinearLayout passengerDetailLayout;
-    private AppCompatTextView tvPassengerName;
     private RecyclerView rvPassengerDetail;
 
     private FlightBookingPassengerActionListener listener;
@@ -46,14 +45,13 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
     private void findViews(View view) {
         headerLabel = (LabelView) view.findViewById(R.id.header_label);
         passengerDetailLayout = (LinearLayout) view.findViewById(R.id.passenger_detail_layout);
-        tvPassengerName = (AppCompatTextView) view.findViewById(R.id.tv_passenger_name);
         rvPassengerDetail = (RecyclerView) view.findViewById(R.id.rv_list_details);
     }
 
     @Override
     public void bind(final FlightBookingPassengerViewModel viewModel) {
         headerLabel.setTitle(String.valueOf(viewModel.getHeaderTitle()));
-        headerLabel.setContentColorValue(itemView.getResources().getColor(R.color.colorPrimary));
+        headerLabel.setContentColorValue(itemView.getResources().getColor(R.color.bg_button_green_border_outline));
         headerLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,21 +75,21 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
         if (viewModel.getPassengerTitle() != null && viewModel.getPassengerTitle().length() > 0) {
             passengerName = String.format("%s %s", viewModel.getPassengerTitle(), passengerName);
         }
-        tvPassengerName.setText(String.valueOf(passengerName));
+        headerLabel.setTitle(String.valueOf(passengerName));
         initiatePassengerDetailView(viewModel);
     }
 
     private void initiatePassengerDetailView(FlightBookingPassengerViewModel viewModel) {
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
         if (viewModel.getPassengerBirthdate() != null && viewModel.getPassengerBirthdate().length() > 0) {
-            simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(R.string.flight_booking_list_passenger_birthdate_label) + " :", String.valueOf(FlightDateUtil.formatDate(
+            simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(R.string.flight_booking_list_passenger_birthdate_label) + "  | ", String.valueOf(FlightDateUtil.formatDate(
                     FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, viewModel.getPassengerBirthdate()
             ))));
         }
 
         if (viewModel.getPassportNumber() != null && viewModel.getPassportNumber().length() > 0) {
             simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(
-                    R.string.flight_passenger_passport_number_hint) + " :", viewModel.getPassportNumber()));
+                    R.string.flight_passenger_passport_number_hint) + "  | ", viewModel.getPassportNumber()));
         }
 
         if (viewModel.getFlightBookingLuggageMetaViewModels() != null) {
@@ -101,7 +99,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
                     selectedLuggages.add(flightBookingLuggageViewModel.getTitle());
                 }
                 simpleViewModels.add(new SimpleViewModel(
-                        itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + " " + flightBookingLuggageRouteViewModel.getDescription() + " :",
+                        itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + " " + flightBookingLuggageRouteViewModel.getDescription() + "  | ",
                         TextUtils.join(" + ", selectedLuggages)
                 ));
             }
@@ -110,14 +108,14 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
         if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
             for (FlightBookingAmenityMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
                 simpleViewModels.add(new SimpleViewModel(
-                        itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + " " + flightBookingMealRouteViewModel.getDescription() + " :",
+                        itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + " " + flightBookingMealRouteViewModel.getDescription() + "  | ",
                         TextUtils.join(" + ", flightBookingMealRouteViewModel.getAmenities())
                 ));
             }
         }
 
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
-        adapter.setTitleBold(true);
+        adapter.setTitleHalfView(false);
         adapter.setContentAllignmentLeft(true);
         adapter.setDescriptionTextColor(itemView.getResources().getColor(R.color.font_black_secondary_54));
         LinearLayoutManager layoutManager

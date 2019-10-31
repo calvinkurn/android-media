@@ -1,7 +1,7 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
@@ -130,9 +129,9 @@ public class DealsSearchPresenter
 
     @Override
     public boolean onItemClick(int id) {
-        if (id == R.id.tv_location) {
+        if (id == com.tokopedia.digital_deals.R.id.tv_location) {
             getLocations(false);
-        } else if (id == R.id.imageViewBack) {
+        } else if (id == com.tokopedia.digital_deals.R.id.imageViewBack) {
             getView().goBack();
         }
         return true;
@@ -234,5 +233,4 @@ public class DealsSearchPresenter
             }
         });
     }
-
 }

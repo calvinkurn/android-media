@@ -47,7 +47,7 @@ class DigitalHomeTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, BANNER_IMPRESSION,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item?.title}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, products))
                 ))
     }
 
@@ -67,28 +67,29 @@ class DigitalHomeTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, BANNER_CLICK,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item?.title}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, products))
                 ))
 
     }
 
-    fun eventCategoryImpression(item: DigitalHomePageCategoryModel.Submenu?, position: Int) {
+    fun eventCategoryImpression(items: List<DigitalHomePageCategoryModel.Submenu?>) {
         val products = mutableListOf<Any>()
-        products.add(DataLayer.mapOf(
-                NAME, item?.name,
-                POSITION, position,
-                ID, item?.id,
-                CREATIVE, item?.name,
-                CREATIVE_URL, item?.icon
-        ))
-
+        for ((index, item) in items.withIndex()) {
+            products.add(DataLayer.mapOf(
+                    NAME, item?.name,
+                    POSITION, index,
+                    ID, item?.id,
+                    CREATIVE, item?.name,
+                    CREATIVE_URL, item?.icon
+            ))
+        }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, PROMO_VIEW,
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, DYNAMIC_ICON_IMPRESSION,
-                        TrackAppUtils.EVENT_LABEL, "$position - ${item?.name}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        TrackAppUtils.EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, products))
                 ))
     }
 
@@ -108,7 +109,7 @@ class DigitalHomeTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, DYNAMIC_ICON_CLICK,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item?.name}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, products))
                 ))
 
     }

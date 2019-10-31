@@ -6,8 +6,10 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -44,7 +46,9 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.adapter.RechargeWidgetAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
@@ -65,6 +69,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
+
     @Inject
     OrderListDetailPresenter presenter;
     OrderDetailsComponent orderListComponent;
@@ -88,6 +93,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     TextView secondaryActionBtn;
     FrameLayout progressBarLayout;
     private boolean isSingleButton;
+    private RecyclerView recommendationList;
+    private TextView recommendListTitle;
+    private LinearLayout ViewRecomendItems;
 
 
     @Override
@@ -131,6 +139,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         primaryActionBtn = view.findViewById(R.id.langannan);
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
+        recommendationList = view.findViewById(R.id.recommendation_list);
+        recommendListTitle = view.findViewById(R.id.recommend_title);
+        ViewRecomendItems = view.findViewById(R.id.recommend_items);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -323,6 +334,21 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+        if (rechargeWidgetResponse.getHomeWidget() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid() != null) {
+            if (rechargeWidgetResponse.getHomeWidget().getWidgetGrid().isEmpty()) {
+                ViewRecomendItems.setVisibility(View.GONE);
+            } else {
+                if (getContext() != null) {
+                    recommendListTitle.setText(getContext().getString(R.string.tkpdtransaction_widget_title));
+                    recommendationList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                    recommendationList.setAdapter(new RechargeWidgetAdapter(rechargeWidgetResponse.getHomeWidget().getWidgetGrid()));
+                }
+            }
+        }
+    }
+
+    @Override
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
@@ -462,5 +488,4 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public void setMainViewVisible(int visibility) {
         mainView.setVisibility(visibility);
     }
-
 }

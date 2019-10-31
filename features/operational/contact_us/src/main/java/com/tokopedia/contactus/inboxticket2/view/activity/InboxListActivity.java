@@ -3,9 +3,9 @@ package com.tokopedia.contactus.inboxticket2.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.app.TaskStackBuilder;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
@@ -42,25 +43,11 @@ public class InboxListActivity extends InboxBaseActivity
     private CustomEditText editText;
     private View clearSearch;
     private TicketListAdapter mAdapter;
-
     private TextView btnFilterTv;
-
-    @DeepLink(ApplinkConst.INBOX_TICKET)
-    public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
-        Intent homeIntent = ((ContactUsModuleRouter) context.getApplicationContext()).getHomeIntent
-                (context);
-        Intent parentIntent = InboxListActivity.getCallingIntent(context);
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(parentIntent);
-        return taskStackBuilder;
-    }
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, InboxListActivity.class);
     }
-
 
     @Override
     public void renderTicketList(List<TicketsItem> ticketList) {
@@ -132,11 +119,16 @@ public class InboxListActivity extends InboxBaseActivity
     }
 
     @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
+    }
+
+    @Override
     void initView() {
         findingViewsId();
         settingOnClickListener();
         btnFilterTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (this, R.drawable.ic_filter_list), null, null , null);
+                (this, R.drawable.contactus_ic_filter_list), null, null , null);
         rvEmailList.addOnScrollListener(rvOnScrollListener);
         editText.setListener(((InboxListContract.InboxListPresenter) mPresenter).getSearchListener());
     }

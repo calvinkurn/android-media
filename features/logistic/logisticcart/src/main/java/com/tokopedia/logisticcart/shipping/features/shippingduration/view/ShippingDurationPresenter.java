@@ -1,10 +1,11 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
@@ -70,29 +71,31 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         if (getView() != null) {
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
-            loadDuration(0, selectedServiceId, codHistory, isCorner, isLeasing, shopShipmentList, query, shippingParam);
+            loadDuration(0, selectedServiceId, codHistory, isCorner, isLeasing, shopShipmentList, query, shippingParam, "");
         }
     }
 
     @Override
     public void loadCourierRecommendation(ShipmentDetailData shipmentDetailData,
                                           int selectedServiceId,
-                                          List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner, boolean isLeasing) {
+                                          List<ShopShipment> shopShipmentList,
+                                          int codHistory, boolean isCorner,
+                                          boolean isLeasing, String pslCode,
+                                          List<Product> products, String cartString) {
         if (getView() != null) {
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
-            ShippingParam shippingParam = getShippingParam(shipmentDetailData);
+            ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString);
             int selectedSpId = 0;
             if (shipmentDetailData.getSelectedCourier() != null) {
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
             }
-            loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing, shopShipmentList, query, shippingParam);
+            loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing, shopShipmentList, query, shippingParam, pslCode);
         }
     }
 
-    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory, boolean isCorner, boolean isLeasing, List<ShopShipment> shopShipmentList, String query, ShippingParam shippingParam) {
-        getCourierRecommendationUseCase.execute(query, codHistory, isCorner, isLeasing, shippingParam, selectedSpId, selectedServiceId, shopShipmentList,
-                new Subscriber<ShippingRecommendationData>() {
+    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory, boolean isCorner, boolean isLeasing, List<ShopShipment> shopShipmentList, String query, ShippingParam shippingParam, String pslCode) {
+        getCourierRecommendationUseCase.execute(query, codHistory, isCorner, isLeasing, pslCode, selectedSpId, selectedServiceId, shopShipmentList, new Subscriber<ShippingRecommendationData>() {
                     @Override
                     public void onCompleted() {
 
@@ -133,11 +136,11 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                             }
                         }
                     }
-                });
+                }, shippingParam);
     }
 
     @NonNull
-    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData) {
+    private ShippingParam getShippingParam(ShipmentDetailData shipmentDetailData, List<Product> products, String cartString) {
         ShippingParam shippingParam = new ShippingParam();
         shippingParam.setOriginDistrictId(shipmentDetailData.getShipmentCartData().getOriginDistrictId());
         shippingParam.setOriginPostalCode(shipmentDetailData.getShipmentCartData().getOriginPostalCode());
@@ -159,6 +162,8 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
         shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setTradein(shipmentDetailData.isTradein());
+        shippingParam.setProducts(products);
+        shippingParam.setUniqueId(cartString);
         return shippingParam;
     }
 

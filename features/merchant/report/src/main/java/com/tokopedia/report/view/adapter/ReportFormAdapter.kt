@@ -1,9 +1,9 @@
 package com.tokopedia.report.view.adapter
 
 import android.graphics.Typeface
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.InputFilter
 import android.text.Spannable
 import android.text.method.LinkMovementMethod
@@ -227,7 +227,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
         init {
             with(itemView.rv_uploaded_foto){
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_6),
+                addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6),
                         LinearLayoutManager.HORIZONTAL))
             }
         }

@@ -1,9 +1,9 @@
 package com.tokopedia.abstraction.base.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,13 +47,17 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
 
     @NonNull
     protected SearchInputView getSearchInputView(View view) {
-        return (SearchInputView) view.findViewById(R.id.search_input_view);
+        return (SearchInputView) view.findViewById(getSearchInputViewResourceId());
+    }
+
+    public int getSearchInputViewResourceId(){
+        return R.id.search_input_view;
     }
 
     @Nullable
     @Override
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
-        return view.findViewById(R.id.swipe_refresh_layout);
+        return view.findViewById(getSwipeRefreshLayoutResourceId());
     }
 
     @Override

@@ -3,8 +3,8 @@ package com.tokopedia.home.account;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
@@ -25,15 +25,11 @@ public interface AccountHomeRouter {
 
     void goToManageCreditCard(Context context);
 
-    void goToTokoCash(String applinkUrl, Activity activity);
-
     void goToSaldo(Context context);
 
     AccountHomeInjection getAccountHomeInjection();
 
     Fragment getFavoriteFragment();
-
-    void gotoTopAdsDashboard(Context context);
 
     String getStringRemoteConfig(String key, String defaultValue);
 
@@ -47,13 +43,7 @@ public interface AccountHomeRouter {
 
     void setPromoPushPreference(Boolean newValue);
 
-    Observable<WalletModel> getTokoCashAccountBalance();
-
     boolean isEnableInterestPick();
   
-    Intent getMitraToppersActivityIntent(Context context);
-
-    Intent getAddPasswordIntent(Context context);
-
     void setNewsletterEmailPref(Boolean newValue);
 }

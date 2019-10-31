@@ -3,19 +3,12 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.view.Window
-import android.view.WindowManager
-import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.AddressConstants.*
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 
 /**

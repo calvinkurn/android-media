@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -192,14 +192,14 @@ public class FlightPassengerUpdateFragment extends BaseDaggerFragment implements
 
     @Override
     public void renderSpinnerForAdult() {
-        String[] entries = getResources().getStringArray(R.array.flight_adult_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_adult_titles);
         spPassengerTitle.setEntries(entries);
         spPassengerTitle.setValues(entries);
     }
 
     @Override
     public void renderSpinnerForChildAndInfant() {
-        String[] entries = getResources().getStringArray(R.array.flight_child_infant_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_child_infant_titles);
         spPassengerTitle.setEntries(entries);
         spPassengerTitle.setValues(entries);
     }

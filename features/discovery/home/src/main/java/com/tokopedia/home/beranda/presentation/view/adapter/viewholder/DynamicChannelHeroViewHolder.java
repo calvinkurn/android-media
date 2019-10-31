@@ -1,10 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,15 +90,14 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                                 context,
                                 element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
                         );
-                        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]),
-                                element.getChannel().getHomeAttribution(1, element.getChannel().getHero()[0].getAttribution()));
+                        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]));
                     }
                 });
             }
             seeAllButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
+                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
             });
         }catch (Exception e){
@@ -150,8 +149,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                                     holder.getContext(),
                                     channel.getEnhanceClickDynamicChannelHomePage(grid, position + 2)
                             );
-                            listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
-                                    channel.getHomeAttribution(position + 2, grid.getAttribution()));
+                            listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid));
                         }
                     });
                 }

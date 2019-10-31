@@ -3,10 +3,10 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.support.annotation.LayoutRes
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
@@ -98,7 +98,13 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
              */
             title.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16).toFloat())
             title.text = model.title
-            if (!TextUtils.isEmpty(model.tagName)) {
+
+            /**
+             * Validate tag value
+             */
+            if (model.tagName.isNotEmpty()
+                    && model.tagNameHexcolor.isNotEmpty()
+                    && model.tagHexcolor.isNotEmpty()) {
                 tag.text = model.tagName.toUpperCase()
                 tag.setTextColor(Color.parseColor(model.tagNameHexcolor))
                 ViewCompat.setBackgroundTintList(
@@ -109,12 +115,17 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
                 tag.visibility = View.GONE
             }
 
+            /**
+             * Validate description value
+             */
             val longDescription = SpannableStringBuilder()
             longDescription.append(model.description)
             longDescription.append(" ")
             val start = longDescription.length
             longDescription.append(model.ctaText)
-            longDescription.setSpan(ForegroundColorSpan(Color.parseColor(model.ctaTextHexcolor)), start, longDescription.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (model.ctaTextHexcolor.isNotEmpty())      {
+                longDescription.setSpan(ForegroundColorSpan(Color.parseColor(model.ctaTextHexcolor)), start, longDescription.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
             longDescription.setSpan(StyleSpan(android.graphics.Typeface.BOLD), start, longDescription.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             description.text = longDescription
 

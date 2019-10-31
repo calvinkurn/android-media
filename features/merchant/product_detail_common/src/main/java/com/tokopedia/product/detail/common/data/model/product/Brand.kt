@@ -58,3 +58,43 @@ data class Stock(
         @Expose
         val stockWording: String = ""
 )
+
+data class Media(
+        @SerializedName("type")
+        @Expose
+        val type: String = "",
+
+        @SerializedName("URL300")
+        @Expose
+        val url300: String = "",
+
+        @SerializedName("URLOriginal")
+        @Expose
+        val urlOriginal: String = "",
+
+        @SerializedName("URLThumbnail")
+        @Expose
+        val urlThumbnail: String = "",
+
+        @SerializedName("Description")
+        @Expose
+        val mediaDescription: String = "",
+
+        @SerializedName("VideoURLAndroid")
+        @Expose
+        val videoUrl: String = "",
+
+        @SerializedName("IsAutoplay")
+        @Expose
+        val isAutoPlay: Boolean = false
+)
+
+data class FreeOngkir(
+        @SerializedName("isActive")
+        @Expose
+        val isFreeOngkirActive: Boolean = false,
+
+        @SerializedName("imgURL")
+        @Expose
+        val freeOngkirImgUrl: String = ""
+)

@@ -3,10 +3,10 @@ package com.tokopedia.topupbills.telco.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
-import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -14,7 +14,7 @@ import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
 class TelcoProductActivity : BaseTelcoActivity() {
 
     override fun getNewFragment(): Fragment {
-        val digitalTelcoExtraParam = DigitalTelcoExtraParam()
+        val digitalTelcoExtraParam = TopupBillsExtraParam()
         val bundle = intent.extras
         digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID) ?: ""
         digitalTelcoExtraParam.categoryId = bundle?.getString(PARAM_CATEGORY_ID) ?: ""

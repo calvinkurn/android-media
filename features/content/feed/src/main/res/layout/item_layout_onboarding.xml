@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_16"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="-8dp"
+        app:cardCornerRadius="@dimen/dp_10"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/dp_16">
+
+            <ImageView
+                android:id="@+id/iv_onboarding_user"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
+                android:layout_gravity="center"
+                android:foregroundGravity="center" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_onboarding_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="heading_2"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    tools:text="Mungkin Kamu Suka"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_onboarding_instruction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_2"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    tools:text="Mungkin Kamu Suka"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_onboarding_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        app:typographyType="heading_2"
+        tools:text="Mungkin Kamu Suka"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_interest_pick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"/>
+    
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_onboarding"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_12"
+        tools:text="Mungkin Kamu Suka"/>
+
+</LinearLayout>

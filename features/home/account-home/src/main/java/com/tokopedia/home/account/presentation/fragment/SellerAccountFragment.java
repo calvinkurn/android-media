@@ -3,11 +3,11 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent;
 import com.tokopedia.home.account.di.component.SellerAccountComponent;
@@ -29,6 +30,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.track.TrackApp;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -110,9 +112,12 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && !isLoaded) {
-            getData();
-            isLoaded = !isLoaded;
+        if (isVisibleToUser) {
+            if (!isLoaded) {
+                getData();
+                isLoaded = !isLoaded;
+            }
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
         }
     }
 
@@ -134,7 +139,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     @Override
     protected String getScreenName() {
-        return TAG;
+        return String.format("/%s/%s",
+                AccountConstants.Analytics.USER,
+                AccountConstants.Analytics.JUAL);
     }
 
     private void initInjector() {

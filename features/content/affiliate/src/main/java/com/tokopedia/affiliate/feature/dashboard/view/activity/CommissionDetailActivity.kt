@@ -3,7 +3,7 @@ package com.tokopedia.affiliate.feature.dashboard.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.affiliate.feature.dashboard.view.fragment.CommissionDetailFragment
 
@@ -13,12 +13,10 @@ import com.tokopedia.affiliate.feature.dashboard.view.fragment.CommissionDetailF
 class CommissionDetailActivity: BaseSimpleActivity() {
 
     companion object {
-        const val PARAM_AFF_ID = "AFF_ID"
-
         @JvmStatic
-        fun newInstance(context: Context, bundle: Bundle): Intent {
+        fun newInstance(context: Context, affPostId: String): Intent {
             val intent = Intent(context, CommissionDetailActivity::class.java)
-            intent.putExtras(bundle)
+            intent.putExtra(CommissionDetailFragment.PARAM_AFF_ID, affPostId)
             return intent
         }
     }

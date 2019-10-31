@@ -2,11 +2,11 @@ package com.tokopedia.banner.dynamic.adapter
 
 import android.content.Context
 import android.graphics.Point
-import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
@@ -59,7 +59,7 @@ class BannerDynamicPagerAdapter(bannerImageUrls: List<String>,
             Glide.with(holder.itemView.context)
                     .load(bannerImageUrls[position])
                     .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .centerCrop()
                     .into(holder.bannerImage)

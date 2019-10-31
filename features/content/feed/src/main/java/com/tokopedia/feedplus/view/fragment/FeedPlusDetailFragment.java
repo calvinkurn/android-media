@@ -2,26 +2,29 @@ package com.tokopedia.feedplus.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.feedplus.FeedModuleRouter;
+import com.tokopedia.feedcomponent.util.util.DataMapper;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory;
@@ -36,10 +39,20 @@ import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewMode
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.ShareCallback;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.LinkerShareData;
+import com.tokopedia.linker.model.LinkerShareResult;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -48,13 +61,50 @@ import javax.inject.Inject;
  */
 
 public class FeedPlusDetailFragment extends BaseDaggerFragment
-        implements FeedPlusDetail.View, WishListActionListener {
+        implements FeedPlusDetail.View, WishListActionListener, ShareCallback {
 
     private static final String ARGS_DETAIL_ID = "DETAIL_ID";
     private static final int REQUEST_OPEN_PDP = 111;
 
     public static final String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
     public static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
+
+    private final String TYPE = "text/plain";
+    private final String PLACEHOLDER_LINK = "{{branchlink}}";
+    private final String KEY_OTHER = "lainnya";
+    private final String TITLE_OTHER = "Lainnya";
+
+    interface Event{
+        String CATEGORY_PAGE = "clickKategori";
+        String CLICK_APP_SHARE_WHEN_REFERRAL_OFF = "clickAppShare";
+        String CLICK_APP_SHARE_REFERRAL = "clickReferral";
+        String PRODUCT_DETAIL_PAGE = "clickPDP";
+    }
+
+    interface EventLabel{
+        String SHARE_TO = "Share - ";
+    }
+
+    interface Category{
+        String CATEGORY_PAGE = "Category Page";
+        String REFERRAL = "Referral";
+        String APPSHARE = "App share";
+        String PRODUCT_DETAIL = "Product Detail Page";
+    }
+
+    interface Action{
+        String CATEGORY_SHARE = "Bottom Navigation - Share";
+        String SELECT_CHANNEL = "select channel";
+        String CLICK = "Click";
+    }
+
+    interface MoEngage {
+        String CHANNEL = "channel";
+    }
+
+    interface EventMoEngage {
+        String REFERRAL_SHARE_EVENT = "Share_Event";
+    }
 
     RecyclerView recyclerView;
     TextView shareButton;
@@ -76,6 +126,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     private PagingHandler pagingHandler;
     private ProgressBar progressBar;
     private String detailId;
+    private LinkerData shareData;
+
 
     public static FeedPlusDetailFragment createInstance(Bundle bundle) {
         FeedPlusDetailFragment fragment = new FeedPlusDetailFragment();
@@ -177,9 +229,19 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                                                 final String description) {
         return v -> {
             if (getActivity() != null) {
-                ((FeedModuleRouter) getActivity().getApplicationContext()).shareFeed(
-                        getActivity(), detailId, url, title, imageUrl, description);
-
+                shareData = LinkerData.Builder.getLinkerBuilder().setId(detailId)
+                        .setName(title)
+                        .setDescription(description)
+                        .setImgUri(imageUrl)
+                        .setUri(url)
+                        .setType(LinkerData.FEED_TYPE)
+                        .build();
+                LinkerShareData linkerShareData = new DataMapper().getLinkerShareData(shareData);
+                LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(
+                        0,
+                        linkerShareData,
+                        this
+                ));
             }
         };
     }
@@ -373,8 +435,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     public void onGoToProductDetail(FeedDetailViewModel feedDetailViewModel, int adapterPosition) {
         if (getActivity() != null
                 && getActivity().getApplicationContext() != null
-                && getArguments() != null
-                && getActivity().getApplicationContext() instanceof FeedModuleRouter) {
+                && getArguments() != null) {
             getActivity().startActivityForResult(
                     getProductIntent(String.valueOf(feedDetailViewModel.getProductId())),
                     REQUEST_OPEN_PDP
@@ -474,5 +535,116 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         } catch (NumberFormatException ignored) {
             return 0;
         }
+    }
+
+    @Override
+    public void urlCreated(LinkerShareResult linkerShareData) {
+        Intent intent = getIntent(linkerShareData.getShareContents(), linkerShareData.getUrl());
+        if (null != getActivity()) {
+            getActivity().startActivity(Intent.createChooser(intent, TITLE_OTHER));
+            sendTracker();
+        }
+    }
+
+    @Override
+    public void onError(LinkerError linkerError) {
+
+    }
+
+    private Intent getIntent(String contains, String url) {
+        final Intent mIntent = new Intent(Intent.ACTION_SEND);
+        mIntent.setType(TYPE);
+
+        String title = "";
+        if (shareData != null) {
+            title = shareData.getName();
+        }
+
+        if(!TextUtils.isEmpty(shareData.getCustmMsg()) && shareData.getCustmMsg().contains(PLACEHOLDER_LINK)) {
+            contains = FindAndReplaceHelper.findAndReplacePlaceHolders(shareData.getCustmMsg(), PLACEHOLDER_LINK, url);
+        }
+
+        mIntent.putExtra(Intent.EXTRA_TITLE, title);
+        mIntent.putExtra(Intent.EXTRA_SUBJECT, title);
+        mIntent.putExtra(Intent.EXTRA_TEXT, contains);
+        return mIntent;
+    }
+
+    private void sendTracker() {
+        if (shareData.getType().equals(LinkerData.CATEGORY_TYPE)) {
+            shareCategory(shareData);
+        } else {
+            sendAnalyticsToGtm(shareData.getType());
+        }
+    }
+
+    private void shareCategory(LinkerData data) {
+        String[] shareParam = data.getSplittedDescription(",");
+        if (shareParam.length == 2) {
+            eventShareCategory(shareParam[0], shareParam[1] + "-" + KEY_OTHER);
+        }
+    }
+
+    public void eventShareCategory(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Event.CATEGORY_PAGE,
+                Category.CATEGORY_PAGE + "-" + parentCat,
+                Action.CATEGORY_SHARE,
+                label);
+    }
+
+    private void sendAnalyticsToGtm(String type) {
+        switch (type) {
+            case LinkerData.REFERRAL_TYPE:
+                sendEventReferralAndShare(
+                        Action.SELECT_CHANNEL,
+                        KEY_OTHER
+                );
+                sendMoEngageReferralShareEvent(KEY_OTHER);
+                break;
+            case LinkerData.APP_SHARE_TYPE:
+                sendEventAppShareWhenReferralOff(
+                        Action.SELECT_CHANNEL,
+                        KEY_OTHER
+                );
+                break;
+            default:
+                sendEventShare(KEY_OTHER);
+                break;
+        }
+    }
+
+    public static void sendMoEngageReferralShareEvent(String channel) {
+        Map<String, Object> value = DataLayer.mapOf(
+                MoEngage.CHANNEL, channel
+        );
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, EventMoEngage.REFERRAL_SHARE_EVENT);
+    }
+
+    private void sendEventReferralAndShare(String action, String label){
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", Event.CLICK_APP_SHARE_REFERRAL);
+        eventTracking.put("eventCategory", Category.REFERRAL);
+        eventTracking.put("eventAction", action);
+        eventTracking.put("eventLabel", label);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventTracking);
+    }
+
+    public static void sendEventAppShareWhenReferralOff(String action, String label) {
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", Event.CLICK_APP_SHARE_WHEN_REFERRAL_OFF);
+        eventTracking.put("eventCategory", Category.APPSHARE);
+        eventTracking.put("eventAction", action);
+        eventTracking.put("eventLabel", label);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventTracking);
+    }
+
+    public static void sendEventShare(String label) {
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", Event.PRODUCT_DETAIL_PAGE);
+        eventTracking.put("eventCategory", Category.PRODUCT_DETAIL);
+        eventTracking.put("eventAction", Action.CLICK);
+        eventTracking.put("eventLabel", EventLabel.SHARE_TO + label);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventTracking);
     }
 }

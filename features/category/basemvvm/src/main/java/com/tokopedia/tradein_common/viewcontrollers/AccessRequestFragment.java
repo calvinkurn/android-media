@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +38,8 @@ public class AccessRequestFragment extends DialogFragment {
     }
 
     public void setLayoutResId(int resId) {
-        layoutResId = resId;
+        if (resId != 0)
+            layoutResId = resId;
     }
 
     public void setBodyText(String bodyText) {
@@ -103,6 +104,15 @@ public class AccessRequestFragment extends DialogFragment {
         accessRequestListener = (IAccessRequestListener) activity;
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (!fromClickButtons) {
+            if (getActivity() != null)
+                getActivity().finish();
+        }
+    }
+
     public class AccessRequestClickListener implements View.OnClickListener {
 
         @Override
@@ -126,15 +136,6 @@ public class AccessRequestFragment extends DialogFragment {
                     "product detail page",
                     "click - asking permission trade in",
                     label);
-        }
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        if (!fromClickButtons) {
-            if (getActivity() != null)
-                getActivity().finish();
         }
     }
 }

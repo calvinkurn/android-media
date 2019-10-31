@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">account-home</string>
-    <string name="label_account_buyer">Beli</string>
-    <string name="label_account_seller">Jual</string>
+    <string name="label_account_buyer">Akun Pembeli</string>
+    <string name="label_account_seller">Akun Toko</string>
     <string name="title_account">Akun Saya</string>
     <string name="label_menu_setting">Pengaturan</string>
     <string name="label_menu_notification">Feed</string>
     <string name="label_user_tokopoint">TokoPoints</string>
     <string name="label_user_voucher">Kupon Saya</string>
+    <string name="label_user_tokomember">TokoMember</string>
     <string name="title_account_setting">Akun</string>
     <string name="account_home_title_shop_setting">Toko</string>
     <string name="title_tkpd_pay_setting">Pembayaran</string>
@@ -87,7 +88,7 @@
     <string name="error_no_password_no">Tutup</string>
     <string name="message_success_change_profile">Sukses mengubah profil</string>
 
-    <string name="label_profile_completion">Kelengkapan Profile %1$d%%</string>
+    <string name="label_profile_completion">Kelengkapan Profil %1$d%%</string>
     <string name="label_tokopedia_pay_title">Tokopedia Pay</string>
     <string name="label_tokopedia_pay_see_all">Lihat Semua</string>
     <string name="label_tokopedia_pay_deposit">Saldo</string>
@@ -200,6 +201,7 @@
     <string name="title_menu_affiliate">Raih Komisi di By Me</string>
     <string name="label_menu_affiliate">Ajak teman beli produk pilihanmu!</string>
     <string name="curate_product_by_me">Post Rekomendasi By Me</string>
+    <string name="create_post_by_me">Buat Post</string>
     <string name="selesai">Selesai</string>
     <string name="title_seller_saldo">Saldo</string>
 
@@ -222,5 +224,17 @@
 
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
+
+    <string name="title_app_advanced_setting">Pengaturan Tambahan</string>
+    <string name="title_app_advanced_clear_cache">Bersihkan Cache</string>
+    <string name="title_app_advanced_push_notification">Push Notification Troubleshooter</string>
+
+    <string name="account_home_clear_cache_warning">Peringatan</string>
+    <string name="account_home_clear_cache_message">Dengan membersihkan cache, berarti Anda juga setuju untuk <b>keluar</b> dan <b>menutup aplikasi</b>.</string>
+    <string name="account_home_label_clear_cache_ok">Lakukan</string>
+    <string name="account_home_label_clear_cache_cancel">Batal</string>
+
+    <string name="account_home_add_phone_title">Tambah Nomor Ponsel</string>
+    <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
 
 </resources>

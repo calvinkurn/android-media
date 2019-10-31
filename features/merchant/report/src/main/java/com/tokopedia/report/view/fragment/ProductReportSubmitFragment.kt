@@ -1,11 +1,11 @@
 package com.tokopedia.report.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -105,7 +105,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         if (!isSuccess){
             view?.let {
                 Toaster.showErrorWithAction(it, getString(R.string.fail_to_report),
-                        Snackbar.LENGTH_LONG, getString(R.string.OK), View.OnClickListener {})
+                        Snackbar.LENGTH_LONG, getString(com.tokopedia.imagepicker.R.string.OK), View.OnClickListener {})
             }
         } else {
             sendResult()
@@ -124,7 +124,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, false)
         view?.let {
             Toaster.showErrorWithAction(it, ErrorHandler.getErrorMessage(activity, throwable),
-                    Snackbar.LENGTH_LONG, getString(R.string.OK), View.OnClickListener {})
+                    Snackbar.LENGTH_LONG, getString(com.tokopedia.imagepicker.R.string.OK), View.OnClickListener {})
         }
     }
 

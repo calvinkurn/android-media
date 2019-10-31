@@ -1,7 +1,8 @@
 package com.tokopedia.age_restriction.viewmodel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import android.app.Application
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.age_restriction.data.UserDOBResponse
@@ -14,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class ARHomeViewModel : BaseViewModel(), CoroutineScope {
+class ARHomeViewModel(application : Application) : BaseViewModel(application), CoroutineScope {
 
     private var userDetailLiveData: UserDOBResponse? = null
     private val askUserLogin = MutableLiveData<Int>()

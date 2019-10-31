@@ -3,11 +3,12 @@ package com.tokopedia.flight.bookingV2.presentation.presenter
 import android.util.Patterns
 import com.tokopedia.common.travel.domain.GetPhoneCodeUseCase
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
+import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
@@ -59,7 +60,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         if (userSession.isMsisdnVerified) {
             processGetCartData()
             onGetProfileData()
-        } else {
+        } else if (userSession.isLoggedIn) {
             view.navigateToOtpPage()
         }
     }
@@ -90,8 +91,8 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     override fun updateTotalPrice(totalPrice: Int) {
         view.getCurrentBookingParamViewModel().totalPriceNumeric = totalPrice
         view.getCurrentBookingParamViewModel().totalPriceFmt =
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice)
-        view.renderTotalPrices(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice))
+                FlightCurrencyFormatUtil.convertToIdrPrice(totalPrice)
+        view.renderTotalPrices(FlightCurrencyFormatUtil.convertToIdrPrice(totalPrice))
     }
 
     override fun onCountDownTimestampChanged(timestamp: String) {
@@ -114,6 +115,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     }
 
     override fun onGetProfileData() {
+        view.showContactDataProgressBar()
         compositeSubscription.add(view.getProfileObservable()
                 .onBackpressureDrop()
                 .subscribeOn(Schedulers.io())
@@ -122,6 +124,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 .subscribe(object : Subscriber<ProfileInfo>() {
                     override fun onNext(profileInfo: ProfileInfo?) {
                         if (profileInfo != null && isViewAttached) {
+                            view.hideContactDataProgressBar()
                             if (view.getContactName().isEmpty()) {
                                 view.setContactName(profileInfo.fullname)
                             }
@@ -145,6 +148,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                     }
 
                     override fun onError(e: Throwable?) {
+                        view.hideContactDataProgressBar()
                         e?.printStackTrace()
                     }
                 }))
@@ -152,7 +156,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun onButtonSubmitClicked() {
         if (validateFields()) {
-            flightAnalytics.eventBookingNextClick(view.getString(R.string.flight_booking_analytics_customer_page))
+            flightAnalytics.eventBookingNextClick(view.getCurrentCartPassData(),
+                    view.getCurrentBookingParamViewModel().searchParam, view.getPriceViewModel().comboKey)
+
             view.getCurrentBookingParamViewModel().contactName = view.getContactName()
             view.getCurrentBookingParamViewModel().contactEmail = view.getContactEmail()
             view.getCurrentBookingParamViewModel().contactPhone = view.getContactPhoneNumber()
@@ -168,11 +174,6 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                     view.getString(R.string.flight_passenger_passport_number_hint)
             ))
         }
-    }
-
-    override fun onPhoneCodeResultReceived(phoneCode: CountryPhoneCode) {
-        view.getCurrentBookingParamViewModel().phoneCode = phoneCode
-        view.renderPhoneCodeView(String.format("+%s", phoneCode.countryPhoneCode))
     }
 
     override fun onPassengerResultReceived(passengerViewModel: FlightBookingPassengerViewModel) {
@@ -301,7 +302,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 view.renderPassengersList(view.getCurrentBookingParamViewModel().passengerViewModels)
                 view.setContactName(view.getCurrentBookingParamViewModel().contactName)
                 view.setContactEmail(view.getCurrentBookingParamViewModel().contactEmail)
-                view.setContactPhoneNumber(view.getCurrentBookingParamViewModel().contactPhone)
+                view.setContactPhoneNumber(view.getCurrentBookingParamViewModel().contactPhone, view.getCurrentBookingParamViewModel().phoneCode.countryPhoneCode.toInt())
                 val expiredDate = view.getExpiredTransactionDate()
                 if (expiredDate != null) {
                     view.getCurrentBookingParamViewModel().orderDueTimestamp = FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT)
@@ -313,7 +314,6 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 view.renderFinishTimeCountDown(expiredDate)
             }
             view.getCurrentBookingParamViewModel().phoneCode = flightBookingCartData.defaultPhoneCode
-            view.renderPhoneCodeView(String.format("+%s", view.getCurrentBookingParamViewModel().phoneCode.countryPhoneCode))
 
             val oldTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.departureTrip, flightBookingCartData.returnTrip)
             var resultTotalPrice = oldTotalPrice
@@ -347,7 +347,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 val newTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.departureTrip, flightBookingCartData.returnTrip)
                 if (newTotalPrice != oldTotalPrice && getCurrentCartData().total > 0) {
                     resultTotalPrice = newTotalPrice
-                    view.showPriceChangesDialog(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(resultTotalPrice), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(oldTotalPrice))
+                    view.showPriceChangesDialog(FlightCurrencyFormatUtil.convertToIdrPrice(resultTotalPrice), FlightCurrencyFormatUtil.convertToIdrPrice(oldTotalPrice))
                 }
             }
             updateTotalPrice(resultTotalPrice)
@@ -364,7 +364,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             if (!isFromSavedInstance) {
                 flightAnalytics.eventAddToCart(view.getCurrentBookingParamViewModel().searchParam.flightClass,
                         flightBookingCartData, resultTotalPrice, flightBookingCartData.departureTrip,
-                        flightBookingCartData.returnTrip)
+                        flightBookingCartData.returnTrip, view.getPriceViewModel().comboKey)
             }
         } else {
             initialize()
@@ -623,9 +623,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         val baseCartData = getCurrentCartData()
         val fares = arrayListOf<Fare>()
         fares.add(Fare(
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.adultNumericPrice),
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.childNumericPrice),
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.infantNumericPrice),
+                FlightCurrencyFormatUtil.convertToIdrPrice(departureFlightDetailViewModel.adultNumericPrice),
+                FlightCurrencyFormatUtil.convertToIdrPrice(departureFlightDetailViewModel.childNumericPrice),
+                FlightCurrencyFormatUtil.convertToIdrPrice(departureFlightDetailViewModel.infantNumericPrice),
                 departureFlightDetailViewModel.adultNumericPrice,
                 departureFlightDetailViewModel.childNumericPrice,
                 departureFlightDetailViewModel.infantNumericPrice
@@ -634,9 +634,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         if (returnFlightDetailViewModel != null) {
             fares.add(
                     Fare(
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.adultNumericPrice),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.childNumericPrice),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.infantNumericPrice),
+                            FlightCurrencyFormatUtil.convertToIdrPrice(returnFlightDetailViewModel.adultNumericPrice),
+                            FlightCurrencyFormatUtil.convertToIdrPrice(returnFlightDetailViewModel.childNumericPrice),
+                            FlightCurrencyFormatUtil.convertToIdrPrice(returnFlightDetailViewModel.infantNumericPrice),
                             returnFlightDetailViewModel.adultNumericPrice,
                             returnFlightDetailViewModel.childNumericPrice,
                             returnFlightDetailViewModel.infantNumericPrice
@@ -809,6 +809,11 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() &&
                     !contactEmail.contains(".@") && !contactEmail.contains("@.")
 
+    override fun onContactDataResultRecieved(contactData: TravelContactData) {
+        view.setContactName(contactData.name)
+        view.setContactEmail(contactData.email)
+        view.setContactPhoneNumber(contactData.phone, contactData.phoneCode)
+    }
 
     companion object {
 

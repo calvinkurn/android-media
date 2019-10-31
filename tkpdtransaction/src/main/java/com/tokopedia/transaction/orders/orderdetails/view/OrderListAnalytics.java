@@ -13,7 +13,10 @@ import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,19 +32,29 @@ public class OrderListAnalytics {
     private static final String PRODUCT_EVENT_ACTION = "click product";
     private static final String FILTER_EVENT_ACTION = "click quick filter";
     private static final String DATE_EVENT_ACTION = "submit date filter";
+    private static final String DATE_FILTER_CLICK_EVENT_ACTION = "click filter button";
+    private static final String EVENT_ACTION_CLICK_HELP = "click disini for help";
+    private static final String EVENT_ACTION_LIHAT_INVOICE = "click lihat on invoice";
+    private static final String EVENT_ACTION_LIHAT_STATUS = "click lihat on status order";
+
+
     private static final String SEARCH_EVENT_ACTION = "submit search";
+    private static final String SEARCH_EVENT_CANCEL_ACTION = "click cancel search";
     private static final String INVOICE_EVENT_ACTION = "click view invoice";
     private static final String LOAD_MORE_EVENT_ACTION = "scroll load more";
     private static final String EVENT_ADD_TO_CART = "addToCart";
 
     private static final String ID = "id";
-    private static final String CATEGORY = "deals";
+    private static final String CATEGORY_DEALS = "deals";
+    private static final String CATEGORY_EVENTS = "hiburan";
     private static final String NAME = "name";
     private static final String PRICE = "price";
     private static final String EVENT_TRANSACTION = "transaction";
     private static final String EVENT_CARTEGORY = "digital-deals";
-    private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list detail - mp";
-    private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi order";
+    private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL = "my purchase list detail - mp";
+    private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list - mp";
+    private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi";
+
     private static final String EVENT_LABEL_BUY_AGAIN_SUCCESS = "success";
     private static final String EVENT_LABEL_BUY_AGAIN_FAILURE = "failure";
     private static final String KEY_ADD = "add";
@@ -58,6 +71,8 @@ public class OrderListAnalytics {
     private static final String CURRENCY_CODE = "currencyCode";
     private static final String IDR = "IDR";
     private static final String QUANTITY = "quantity";
+    private static final String PAYMENT_TYPE = "payment_type";
+    private static final String PAYMENT_STATUS = "payment_status";
     private static final String REVENUE = "revenue";
     private static final String AFFILIATION = "affiliation";
     private static final String BRAND = "brand";
@@ -68,7 +83,8 @@ public class OrderListAnalytics {
     private static final String KEY_PRODUCTS = "products";
     private static final String KEY_PURCHASE = "purchase";
     private static final String KEY_ACTION_FIELD = "actionField";
-    private static final String SCREEN_NAME = "/digital/deals/thanks";
+    private static final String DEALS_SCREEN_NAME = "/digital/deals/thanks";
+    private static final String Events_SCREEN_NAME = "/digital/events/thanks";
     private static final String ACTION_CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
     private static final String NONE = "none/other";
     private static final String RECOMMENDATION_PRODUCT_EVENT_CATEGORY = "my purchase list - mp - bom_empty";
@@ -76,41 +92,105 @@ public class OrderListAnalytics {
     private static final String REMOVE_WISHLIST = "click remove - wishlist on product recommendation";
     private List<Object> dataLayerList = new ArrayList<>();
     private String recomTitle;
+    public static String DIGITAL_EVENT = "digital - event";
 
+    private static final String PRODUCT_CLICK = "ProductClick";
+    private static final String CLICK_ON_WIDGET_RECOMMENDATION = "click on widget recommendation";
+    private static final String PRODUCT_VIEW = "ProductView";
+    private static final String IMPRESSION_ON_WIDGET_RECOMMENDATION = "impression on widget recommendation";
+    private static final String EVENT = "event";
+    private static final String EVENT_CATEGORY = "eventCategory";
+    private static final String EVENT_ACTION = "eventAction";
+    private static final String EVENT_LABEL = "eventLabel";
+    private static final String ECOMMERCE = "ecommerce";
+    private static final String LIST = "list";
+    private static final String POSITION = "position";
+    private static final String ACTION_FIELD = "actionField";
+    private static final String PRODUCTS = "products";
+    private static final String CLICK = "click";
+    private static final String IMPRESSIONS = "impressions";
+    private static final String BUY_AGAIN_OPTION_PRODUCT = "product";
 
     @Inject
     public OrderListAnalytics() {
     }
 
-    public void sendProductClickEvent(String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, PRODUCT_EVENT_ACTION, eventLabel));
+    private void sendGtmData(String action, String eventLable) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, action, eventLable));
     }
 
-    public void sendQuickFilterClickEvent(String filterLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, FILTER_EVENT_ACTION, filterLabel));
+    public void sendHelpEventData(String eventLabel) {
+        sendGtmDataDetails(EVENT_ACTION_CLICK_HELP, eventLabel);
+    }
+
+    public void sendProductClickEvent(String eventLabel) {
+        sendGtmData(PRODUCT_EVENT_ACTION, eventLabel);
+    }
+
+    public void sendLihatStatusClick(String eventLabel) {
+        sendGtmDataDetails(EVENT_ACTION_LIHAT_STATUS, eventLabel);
     }
 
     public void sendDateFilterClickEvent() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, DATE_EVENT_ACTION, ""));
+        sendGtmData(DATE_FILTER_CLICK_EVENT_ACTION, "");
     }
 
-    public void sendSearchFilterClickEvent() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, SEARCH_EVENT_ACTION, ""));
+    public void sendLihatInvoiceClick(String eventLabel) {
+        sendGtmDataDetails(EVENT_ACTION_LIHAT_INVOICE, eventLabel);
+    }
+
+    public void sendQuickFilterClickEvent(String filterLabel) {
+
+        sendGtmData(FILTER_EVENT_ACTION, filterLabel);
+    }
+
+    public void sendDateFilterSubmitEvent() {
+
+        sendGtmData(DATE_EVENT_ACTION, "");
+    }
+
+
+    public void sendSearchFilterClickEvent(String keyword) {
+
+        sendGtmData(SEARCH_EVENT_ACTION, keyword);
+    }
+
+    public void sendSearchFilterCancelClickEvent() {
+
+        sendGtmData(SEARCH_EVENT_CANCEL_ACTION, "");
     }
 
     public void sendViewInvoiceClickEvent() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, INVOICE_EVENT_ACTION, ""));
+
+        sendGtmData(INVOICE_EVENT_ACTION, "");
     }
 
     public void sendActionButtonClickEvent(String eventAction) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, eventAction, ""));
+
+        sendGtmDataDetails(eventAction, "");
+    }
+
+    public void sendActionButtonClickEvent(String eventAction,String eventLabel) {
+
+        sendGtmDataDetails(eventAction, eventLabel);
+    }
+
+    public void sendActionButtonClickEventList(String eventAction,String eventLabel) {
+
+        sendGtmData(eventAction, eventLabel);
+    }
+
+    private void sendGtmDataDetails(String eventAction, String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_DETAIL, eventAction, eventLabel));
+
     }
 
     public void sendLoadMoreEvent(String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, LOAD_MORE_EVENT_ACTION, eventLabel));
+
+        sendGtmData(LOAD_MORE_EVENT_ACTION, eventLabel);
     }
 
-    public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String brandName, String orderId) {
+    public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String brandName, String orderId, int categoryType, String paymentType, String paymentStatus) {
         Map<String, Object> products = new HashMap<>();
         Map<String, Object> purchase = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
@@ -119,7 +199,11 @@ public class OrderListAnalytics {
         products.put(ID, String.valueOf(entityProductId));
         products.put(NAME, entityProductName);
         products.put(PRICE, totalTicketPrice);
-        products.put("Category", CATEGORY);
+        if (categoryType == 1) {
+            products.put("Category", CATEGORY_DEALS);
+        } else {
+            products.put("Category", CATEGORY_EVENTS);
+        }
         products.put(QUANTITY, quantity);
         products.put(BRAND, brandName);
         products.put(COUPON_CODE, "none");
@@ -139,16 +223,28 @@ public class OrderListAnalytics {
 
         Map<String, Object> map = new HashMap<>();
         map.put("event", EVENT_TRANSACTION);
-        map.put("eventCategory", EVENT_CARTEGORY);
+        if (categoryType == 1) {
+            map.put("eventCategory", EVENT_CARTEGORY);
+            map.put("eventLabel", brandName);
+        } else {
+            map.put("eventCategory", DIGITAL_EVENT);
+            map.put("eventLabel", String.format("%s - %s", CATEGORY_EVENTS, entityProductName));
+        }
         map.put("eventAction", ACTION);
-        map.put("eventLabel", brandName);
         map.put("currentSite", "tokopediadigital");
+        map.put(PAYMENT_STATUS, paymentStatus);
+        map.put(PAYMENT_TYPE, paymentType);
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(SCREEN_NAME);
+        if (categoryType == 1) {
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(DEALS_SCREEN_NAME);
+        } else{
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(Events_SCREEN_NAME);
+        }
     }
 
-    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess) {
+
+    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess, boolean fromDetail, String eventActionLabel) {
         ArrayList<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> add = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
@@ -170,7 +266,7 @@ public class OrderListAnalytics {
             product.put(KEY_SHOP_NAME, shopInfo.getShopName());
             product.put(KEY_SHOP_TYPE, NONE);
             String cartId = NONE;
-            for(Datum datum : responseBuyAgainList)
+            for (Datum datum : responseBuyAgainList)
                 if (datum.getProductId() == item.getId()) {
                     cartId = String.valueOf(datum.getCartId());
                     break;
@@ -188,8 +284,12 @@ public class OrderListAnalytics {
 
         Map<String, Object> map = new HashMap<>();
         map.put("event", EVENT_ADD_TO_CART);
-        map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
-        map.put("eventAction", EVENT_ACTION_BUY_AGAIN);
+
+        if(fromDetail)
+            map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN_DETAIL);
+        else
+            map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
+        map.put("eventAction", EVENT_ACTION_BUY_AGAIN + eventActionLabel);
         map.put("eventLabel", isSuccess ? EVENT_LABEL_BUY_AGAIN_SUCCESS : EVENT_LABEL_BUY_AGAIN_FAILURE);
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
@@ -203,17 +303,16 @@ public class OrderListAnalytics {
                 "eventAction", "click - product recommendation",
                 "eventLabel", recomTitle,
                 "ecommerce", DataLayer.mapOf(
-                        "click", DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
-                                        "products", DataLayer.listOf(DataLayer.mapOf(
-                                                "name", item.getName(),
-                                                "id", item.getProductId(),
-                                                "price", item.getPrice().replaceAll("[^0-9]", ""),
-                                                "brand", "none/other",
-                                                "category", item.getCategoryBreadcrumbs(),
-                                                "variant", "none/other",
-                                                "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
-                                                "position", String.valueOf(position)))))
+                        "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : "")),
+                                "products", DataLayer.listOf(DataLayer.mapOf(
+                                        "name", item.getName(),
+                                        "id", item.getProductId(),
+                                        "price", item.getPrice().replaceAll("[^0-9]", ""),
+                                        "brand", "none/other",
+                                        "category", item.getCategoryBreadcrumbs(),
+                                        "variant", "none/other",
+                                        "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                                        "position", String.valueOf(position))))
                 )));
     }
 
@@ -260,23 +359,23 @@ public class OrderListAnalytics {
                 "eventLabel", orderListRecomViewModel.getRecomTitle(),
                 "ecommerce", DataLayer.mapOf(
                         "currencyCode", "IDR",
-                        "add", DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
-                                        "products", DataLayer.listOf(DataLayer.mapOf(
-                                                "name", orderListRecomViewModel.getRecommendationItem().getName(),
-                                                "id", orderListRecomViewModel.getRecommendationItem().getProductId(),
-                                                "price", orderListRecomViewModel.getRecommendationItem().getPrice().replaceAll("[^0-9]", ""),
-                                                "brand", "none/other",
-                                                "category", orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs(),
-                                                "variant", "none/other",
-                                                "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
-                                                "dimension45", addToCartDataModel.getData().getCartId(),
-                                                "quantity",orderListRecomViewModel.getRecommendationItem().getMinOrder(),
-                                                "shop_id",String.valueOf(orderListRecomViewModel.getRecommendationItem().getShopId()),
-                                                "shop_type",orderListRecomViewModel.getRecommendationItem().getShopType(),
-                                                "shop_name",orderListRecomViewModel.getRecommendationItem().getShopName(),
-                                                "category_id",NONE
-                                                ))))
+                        "add", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : "")),
+                                "products", DataLayer.listOf(DataLayer.mapOf(
+                                        "name", orderListRecomViewModel.getRecommendationItem().getName(),
+                                        "id", orderListRecomViewModel.getRecommendationItem().getProductId(),
+                                        "price", orderListRecomViewModel.getRecommendationItem().getPrice().replaceAll("[^0-9]", ""),
+                                        "brand", "none/other",
+                                        "category", orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs(),
+                                        "variant", "none/other",
+                                        "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
+                                        "dimension45", addToCartDataModel.getData().getCartId(),
+                                        "quantity", orderListRecomViewModel.getRecommendationItem().getMinOrder(),
+                                        "shop_id", String.valueOf(orderListRecomViewModel.getRecommendationItem().getShopId()),
+                                        "shop_type", orderListRecomViewModel.getRecommendationItem().getShopType(),
+                                        "shop_name", orderListRecomViewModel.getRecommendationItem().getShopName(),
+                                        "category_id", NONE
+                                )))
                 )));
     }
 
@@ -288,4 +387,67 @@ public class OrderListAnalytics {
                         isAdd ? ADD_WISHLIST : REMOVE_WISHLIST,
                         recomTitle));
     }
+
+    public static void eventWidgetListView(@NotNull WidgetGridItem contentItemTab, int position) {
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT, PRODUCT_VIEW,
+                EVENT_CATEGORY, "my purchase list - " + contentItemTab.getName(),
+                EVENT_ACTION, IMPRESSION_ON_WIDGET_RECOMMENDATION,
+                EVENT_LABEL, "historical - " + contentItemTab.getName() + " - " + (1 + position),
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
+                                NAME, contentItemTab.getName(),
+                                ID, contentItemTab.getId(),
+                                PRICE, contentItemTab.getPrice(),
+                                LIST, contentItemTab.getName(),
+                                POSITION, position + 1
+                                )
+                        )
+                )
+
+        ));
+
+    }
+
+    public static void eventWidgetClick(@NotNull WidgetGridItem item, int position) {
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT, PRODUCT_CLICK,
+                EVENT_CATEGORY, "my purchase list - " + item.getName(),
+                EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
+                EVENT_LABEL, "historical - " + item.getName() + " - " + (1 + position),
+                ECOMMERCE, DataLayer.mapOf(
+                        CLICK, DataLayer.mapOf(
+                                ACTION_FIELD, DataLayer.mapOf(
+                                        LIST, item.getName(),
+                                        PRODUCTS, DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        NAME, item.getName(),
+                                                        ID, item.getId(),
+                                                        PRICE, item.getPrice(),
+                                                        LIST, item.getName(),
+                                                        POSITION, position + 1
+                                                )
+                                        )
+                                )
+                        )
+
+                )
+
+        ));
+    }
+
+    public void sendPageClickEvent(String page) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("event", "OpenScreen");
+        map.put("EventName", "OpenScreen");
+        map.put("Screen Name", page);
+        map.put("is Login", "YES");
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
+
+    }
+
+
 }

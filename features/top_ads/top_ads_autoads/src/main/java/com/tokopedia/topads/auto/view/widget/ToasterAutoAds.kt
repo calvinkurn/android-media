@@ -1,7 +1,7 @@
 package com.tokopedia.topads.auto.view.widget
 
 import android.app.Activity
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.view.View
 
 import com.tokopedia.design.base.BaseToaster
@@ -19,8 +19,8 @@ class ToasterAutoAds : BaseToaster() {
                  @BaseToaster.Duration duration: Int): Snackbar {
             return BaseToaster.Builder(view, snackbarText, duration)
                     .setBackgroundDrawable(R.drawable.bg_toaster_autoads)
-                    .setTextColor(R.color.white)
-                    .setActionTextColor(R.color.white)
+                    .setTextColor(com.tokopedia.design.R.color.white)
+                    .setActionTextColor(com.tokopedia.design.R.color.white)
                     .build()
         }
 

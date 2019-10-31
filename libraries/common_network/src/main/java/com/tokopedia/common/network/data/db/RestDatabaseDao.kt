@@ -1,6 +1,6 @@
 package com.tokopedia.common.network.data.db
 
-import android.arch.persistence.room.*
+import androidx.room.*
 
 
 @Dao

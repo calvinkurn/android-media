@@ -1,11 +1,11 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.presentation.adapter.NotifcenterProductRecommendationAdapter
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
@@ -41,11 +41,12 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationU
 
     override fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
         itemView.setOnClickListener {
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            val context = it.context
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
             RouteManager.route(
-                    itemView.context,
-                    ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
+                    context,
+                    ApplinkConst.RECOMMENDATION_PAGE,
                     getLastShowedProductId(element),
                     NotificationUpdateItemViewModel.SOURCE
             )
@@ -64,7 +65,9 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationU
 
         return if (lastPosition >= 0) {
             element.products[lastPosition].productId
-        } else { "0" }
+        } else {
+            "0"
+        }
     }
 
     companion object {

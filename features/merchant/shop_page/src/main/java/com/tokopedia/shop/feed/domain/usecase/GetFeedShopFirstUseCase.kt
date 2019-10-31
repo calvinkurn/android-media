@@ -8,13 +8,12 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
-import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.shop.feed.domain.DynamicFeedShopDomain
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
 import rx.functions.Func1
 import rx.schedulers.Schedulers
@@ -35,7 +34,9 @@ class GetFeedShopFirstUseCase
         fun createRequestParams(userId: String, sourceId: String = "", isPullToRefresh: Boolean)
                 : RequestParams {
             val requestParams = GetDynamicFeedUseCase.createRequestParams(
-                    userId, "", GetDynamicFeedUseCase.SOURCE_SHOP, sourceId)
+                    userId= userId, cursor = "",
+                    source = GetDynamicFeedUseCase.SOURCE_SHOP, sourceId = sourceId
+            )
             requestParams.putString(GetWhitelistUseCase.WHITELIST_SHOP, sourceId)
             requestParams.putBoolean(IS_PULL_TO_REFRESH, isPullToRefresh)
             return requestParams
@@ -87,15 +88,15 @@ class GetFeedShopFirstUseCase
             return null
         else {
             val domain = WhitelistDomain()
-            domain.error = query.whitelist.error ?: ""
-            domain.url = query.whitelist.url ?: ""
+            domain.error = query.whitelist.error
+            domain.url = query.whitelist.url
             domain.isWhitelist = (query.whitelist.isWhitelist)
-            domain.title = query.whitelist.title ?: ""
-            domain.desc = query.whitelist.description ?: ""
-            domain.titleIdentifier = query.whitelist.titleIdentifier ?: ""
-            domain.postSuccessMessage = query.whitelist.postSuccessMessage ?: ""
-            domain.image = query.whitelist.imageUrl ?: query.whitelist.imageUrl
-            domain.authors = query.whitelist.authors ?: ArrayList()
+            domain.title = query.whitelist.title
+            domain.desc = query.whitelist.description
+            domain.titleIdentifier = query.whitelist.titleIdentifier
+            domain.postSuccessMessage = query.whitelist.postSuccessMessage
+            domain.image = query.whitelist.imageUrl
+            domain.authors = query.whitelist.authors
             return domain
         }
     }

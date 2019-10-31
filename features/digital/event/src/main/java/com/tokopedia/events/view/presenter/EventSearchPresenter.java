@@ -3,7 +3,7 @@ package com.tokopedia.events.view.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -12,11 +12,15 @@ import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
+import com.tokopedia.events.domain.model.NsqMessage;
+import com.tokopedia.events.domain.model.NsqServiceModel;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
+import com.tokopedia.events.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFilterActivity;
@@ -30,10 +34,11 @@ import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -84,7 +89,7 @@ public class EventSearchPresenter
     }
 
 
-    private void getEventsListBySearch(String searchText) {
+    private void getEventsListBySearch(String searchText, boolean shouldFireEvent) {
         highlight = searchText;
         previousSearch = searchText;
         RequestParams requestParams = RequestParams.create();
@@ -108,12 +113,12 @@ public class EventSearchPresenter
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
                 NetworkErrorHelper.showEmptyState(mView.getActivity(),
-                        mView.getRootView(), () -> getEventsListBySearch(highlight));
+                        mView.getRootView(), () -> getEventsListBySearch(highlight, shouldFireEvent));
             }
 
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
-                mView.setSuggestions(processSearchResponse(searchDomainModel), highlight, showCards);
+                mView.setSuggestions(processSearchResponse(searchDomainModel), highlight, showCards, shouldFireEvent);
                 checkIfToLoad(mView.getLayoutManager());
                 mView.hideProgressBar();
                 CommonUtils.dumper("enter onNext");
@@ -182,10 +187,9 @@ public class EventSearchPresenter
     public void searchTextChanged(String searchText) {
         if (searchText != null) {
             if (searchText.length() > 2) {
-                showCards = false;
-                getEventsListBySearch(searchText);
+                showCards = true;
+                getEventsListBySearch(searchText, false);
                 searchTag = searchText;
-                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
             }
             if (searchText.length() == 0) {
                 mView.setTopEvents(mTopEvents);
@@ -197,10 +201,10 @@ public class EventSearchPresenter
 
     @Override
     public void searchSubmitted(String searchText) {
-        showCards = true;
-        getEventsListBySearch(searchText);
+        showCards = false;
+        getEventsListBySearch(searchText, true);
         searchTag = searchText;
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
+        eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.CLICK_SEARCH_ICON, searchText);
     }
 
     @Override
@@ -216,8 +220,6 @@ public class EventSearchPresenter
 
     @Override
     public void onSearchResultClick(SearchViewModel searchViewModel, int position) {
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK, searchTag + " - " +
-                searchViewModel.getTitle() + " - " + position);
         CategoryItemsViewModel detailsViewModel = new CategoryItemsViewModel();
         detailsViewModel.setTitle(searchViewModel.getTitle());
         detailsViewModel.setDisplayName(searchViewModel.getDisplayName());
@@ -274,7 +276,7 @@ public class EventSearchPresenter
                     startDate = date;
                     timeFilter = time;
                     if (!previousSearch.isEmpty() || isEventCalendar || showCards)
-                        getEventsListBySearch(previousSearch);
+                        getEventsListBySearch(previousSearch, false);
                 }
             }
         }
@@ -351,7 +353,8 @@ public class EventSearchPresenter
         mView = (EventSearchContract.EventSearchView) view;
         isEventCalendar = mView.getActivity().getIntent().
                 getBooleanExtra(Utils.Constants.EXTRA_EVENT_CALENDAR, false);
-        mTopEvents = mView.getActivity().getIntent().getParcelableArrayListExtra(Utils.Constants.TOPEVENTS);
+        mTopEvents = (ArrayList<CategoryItemsViewModel>) Utils.getSingletonInstance()
+                .getTopEvents();
         if (isEventCalendar) {
             searchSubmitted("");
         } else {

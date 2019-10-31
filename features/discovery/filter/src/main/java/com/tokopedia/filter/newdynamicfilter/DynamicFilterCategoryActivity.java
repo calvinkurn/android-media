@@ -2,10 +2,10 @@ package com.tokopedia.filter.newdynamicfilter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -15,13 +15,14 @@ import com.tokopedia.filter.R;
 import com.tokopedia.filter.newdynamicfilter.adapter.CategoryChildAdapter;
 import com.tokopedia.filter.newdynamicfilter.adapter.CategoryParentAdapter;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 
-import static com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity.EXTRA_EVENT_CATEGORY_PREFIX;
+import static com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity.EXTRA_TRACKING_DATA;
 import static com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity.EXTRA_IS_USING_TRACKING;
 
 
@@ -53,14 +54,14 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
     private String defaultCategoryId;
     private String defaultCategoryRootId;
     private boolean isUsingTracking;
-    private String trackingPrefix;
+    private FilterTrackingData trackingData;
 
     public static void moveTo(AppCompatActivity activity,
                               List<Option> optionList,
                               String defaultCategoryRootId,
                               String defaultCategoryId,
                               boolean isUsingTracking,
-                              String trackingPrefix
+                              FilterTrackingData trackingData
                               ) {
 
         if (activity != null) {
@@ -69,7 +70,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
             intent.putExtra(EXTRA_DEFAULT_CATEGORY_ROOT_ID, defaultCategoryRootId);
             intent.putExtra(EXTRA_DEFAULT_CATEGORY_ID, defaultCategoryId);
             intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
-            intent.putExtra(EXTRA_EVENT_CATEGORY_PREFIX, trackingPrefix);
+            intent.putExtra(EXTRA_TRACKING_DATA, trackingData);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }
@@ -85,7 +86,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
 
     private void fetchDataFromIntent() {
         isUsingTracking = getIntent().getBooleanExtra(EXTRA_IS_USING_TRACKING, false);
-        trackingPrefix = getIntent().getStringExtra(EXTRA_EVENT_CATEGORY_PREFIX);
+        trackingData = getIntent().getParcelableExtra(EXTRA_TRACKING_DATA);
         defaultCategoryId
                 = getIntent().getStringExtra(DynamicFilterCategoryActivity.EXTRA_DEFAULT_CATEGORY_ID);
         defaultCategoryRootId
@@ -154,10 +155,10 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
             categoryChildAdapter.toggleSelectedChildbyId(category.getId());
         } else {
             if (isUsingTracking) {
-                FilterTracking.eventSearchResultFilterJourney(
-                        trackingPrefix,
+                FilterTracking.eventFilterJourney(
+                        trackingData,
                         getResources().getString(R.string.title_category),
-                        category.getName(), true, true);
+                        category.getName(), true, true, category.isAnnotation());
             }
             applyFilter(category);
         }

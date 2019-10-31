@@ -1,6 +1,6 @@
 package com.tokopedia.age_restriction.viewcontroller
 
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import com.tokopedia.tradein_common.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
@@ -31,8 +31,8 @@ abstract class BaseARActivity<T : BaseViewModel> : BaseViewModelActivity<T>() {
 
     }
 
-    override fun getVMFactory(): ViewModelProvider.NewInstanceFactory {
-        return ViewModelProvider.NewInstanceFactory()
+    override fun getVMFactory(): ViewModelProvider.AndroidViewModelFactory {
+        return ViewModelProvider.AndroidViewModelFactory(this.application)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

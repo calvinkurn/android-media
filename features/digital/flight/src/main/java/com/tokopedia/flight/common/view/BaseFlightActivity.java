@@ -2,11 +2,13 @@ package com.tokopedia.flight.common.view;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -14,6 +16,7 @@ import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -28,6 +31,8 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
 
     @Inject
     FlightAnalytics flightAnalytics;
+    @Inject
+    UserSessionInterface userSession;
 
     private FlightComponent component;
 
@@ -69,8 +74,12 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
             navigateToAllPromoPage();
             return true;
         } else if (item.getItemId() == R.id.menu_transaction_list) {
-            flightAnalytics.eventClickTransactions(getScreenName());
-            startActivity(FlightOrderListActivity.getCallingIntent(this));
+            if (userSession.isLoggedIn()) {
+                flightAnalytics.eventClickTransactions(getScreenName());
+                startActivity(FlightOrderListActivity.getCallingIntent(this));
+            } else {
+                RouteManager.route(this, ApplinkConst.LOGIN);
+            }
             return true;
         } else if (item.getItemId() == R.id.menu_help) {
             if (getApplication() instanceof FlightModuleRouter
@@ -90,8 +99,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
         if (getApplication() instanceof FlightModuleRouter) {
             if (((FlightModuleRouter) getApplication())
                     .isPromoNativeEnable()) {
-                startActivity(((FlightModuleRouter) getApplication())
-                        .getPromoListIntent(this));
+                RouteManager.route(this, ApplinkConst.PROMO_LIST);
             } else {
                 startActivity(((FlightModuleRouter) getApplication())
                         .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK));

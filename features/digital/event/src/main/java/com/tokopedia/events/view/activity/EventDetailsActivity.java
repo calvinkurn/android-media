@@ -8,10 +8,10 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.content.res.ResourcesCompat;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.core.content.res.ResourcesCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -42,12 +42,14 @@ import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import at.blogc.android.views.ExpandableTextView;
 
 public class EventDetailsActivity extends EventBaseActivity implements
         EventsDetailsContract.EventDetailsView, View.OnClickListener {
 
+    public static final String SCREEN_NAME = "digital/events/detail";
 
     private ImageView eventDetailBanner;
     private ExpandableTextView tvExpandableDescription;
@@ -74,6 +76,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
     private ImageTextViewHolder locationHolder;
     private ImageTextViewHolder addressHolder;
     private Menu mMenu;
+    private TextView eventExpired;
 
 
     EventsDetailsContract.EventDetailPresenter eventsDetailsPresenter;
@@ -88,6 +91,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
     public static final int FROM_DEEPLINK = 2;
 
     private EventsAnalytics eventsAnalytics;
+    private UserSession userSession;
     private static final int CODE = 1001;
 
 
@@ -128,7 +132,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
 
         eventsAnalytics = new EventsAnalytics();
-
+        userSession = new UserSession(this);
         AppBarLayout appBarLayout = findViewById(R.id.appbarlayout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -147,6 +151,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
                 }
             }
         });
+        eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
     @Override
@@ -169,6 +174,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
         expandLayout = findViewById(R.id.expand_view);
         expandTnc = findViewById(R.id.expand_view_tnc);
         ivArrowSeatingTnC = findViewById(R.id.down_arrow_tnc);
+        eventExpired = findViewById(R.id.event_ended);
         eventPrice = findViewById(R.id.tv_event_price);
         View view = findViewById(R.id.event_detail_card).findViewById(R.id.event_details_layout);
         dateRangeName = view.findViewById(R.id.event_time).findViewById(R.id.textview_holder_small);
@@ -284,11 +290,26 @@ public class EventDetailsActivity extends EventBaseActivity implements
             if (!TextUtils.isEmpty(data.getSchedulesViewModels().get(0).getaDdress())) {
                 address.setText(data.getSchedulesViewModels().get(0).getaDdress());
                 addressImageView.setImageResource(R.drawable.ic_skyline);
+            } else {
+                address.setVisibility(View.GONE);
+                addressImageView.setVisibility(View.GONE);
             }
             if (!TextUtils.isEmpty(data.getSchedulesViewModels().get(0).getCityName())) {
                 cityName.setText(data.getSchedulesViewModels().get(0).getCityName());
                 cityImageView.setImageResource(R.drawable.ic_placeholder);
+            } else {
+                cityName.setVisibility(View.GONE);
+                cityImageView.setVisibility(View.GONE);
             }
+            btnBook.setVisibility(View.VISIBLE);
+            eventExpired.setVisibility(View.GONE);
+        } else {
+            address.setVisibility(View.GONE);
+            addressImageView.setVisibility(View.GONE);
+            cityName.setVisibility(View.GONE);
+            cityImageView.setVisibility(View.GONE);
+            btnBook.setVisibility(View.GONE);
+            eventExpired.setVisibility(View.VISIBLE);
         }
 
         textViewTitle.setText(data.getTitle());
@@ -315,7 +336,12 @@ public class EventDetailsActivity extends EventBaseActivity implements
         }
 
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
+        eventsAnalytics.sendProductLoadEvent(EventsAnalytics.VIEW_PRODUCT, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_VIEW_PRODUCT, data);
         eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
+        if (userSession.isLoggedIn()) {
+            eventsDetailsPresenter.sendNsqEvent(userSession.getUserId(), data);
+            eventsDetailsPresenter.sendNsqTravelEvent(userSession.getUserId(), data);
+        }
     }
 
     @Override
@@ -354,7 +380,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
 
     @Override
     public String getScreenName() {
-        return eventsDetailsPresenter.getSCREEN_NAME();
+        return SCREEN_NAME;
     }
 
     @Override
@@ -406,6 +432,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
             }
             tvExpandableTermsNCondition.toggle();
         } else if (v.getId() == R.id.btn_book) {
+            eventsAnalytics.sendPayTicketEvent(toolbar.getTitle().toString());
             eventsDetailsPresenter.bookBtnClick();
         }
     }

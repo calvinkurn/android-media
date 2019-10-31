@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -25,6 +26,7 @@ import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -35,6 +37,7 @@ import java.util.List;
 public class EventSearchActivity extends EventBaseActivity implements
         EventSearchContract.EventSearchView, SearchInputView.Listener, View.OnClickListener {
 
+    public static final String SCREEN_NAME = "digital/events/search";
     public EventSearchPresenter eventSearchPresenter;
 
     FrameLayout mainContent;
@@ -76,6 +79,7 @@ public class EventSearchActivity extends EventBaseActivity implements
         searchInputView.setListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         eventsAnalytics = new EventsAnalytics();
+        eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
     @Override
@@ -101,6 +105,7 @@ public class EventSearchActivity extends EventBaseActivity implements
 
     @Override
     public void onSearchSubmitted(String text) {
+        String customMessage = "NOTHING";
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null)
             imm.hideSoftInputFromWindow(getRootView().getWindowToken(), 0);
@@ -142,8 +147,8 @@ public class EventSearchActivity extends EventBaseActivity implements
     @Override
     public void setTopEvents(List<CategoryItemsViewModel> searchViewModels) {
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, eventSearchPresenter, true);
-            rvTopEventSuggestions.setLayoutManager(layoutManager);
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, eventSearchPresenter, false, false);
+            rvTopEventSuggestions.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             rvTopEventSuggestions.setAdapter(adapter);
             rvTopEventSuggestions.removeOnScrollListener(rvOnScrollListener);
             tvTopevents.setText(Utils.Constants.TOP_EVENTS);
@@ -160,10 +165,10 @@ public class EventSearchActivity extends EventBaseActivity implements
     }
 
     @Override
-    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards) {
+    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards, boolean shouldFireEvent) {
         if (suggestions != null && !suggestions.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, eventSearchPresenter, showCards);
-            if (showCards)
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, eventSearchPresenter, showCards, shouldFireEvent);
+            if (!showCards)
                 filterBtn.setVisibility(View.VISIBLE);
             adapter.setHighLightText(highlight);
             rvTopEventSuggestions.setLayoutManager(layoutManager);
@@ -238,7 +243,7 @@ public class EventSearchActivity extends EventBaseActivity implements
 
     @Override
     public String getScreenName() {
-        return eventSearchPresenter.getSCREEN_NAME();
+        return SCREEN_NAME;
     }
 
     @Override

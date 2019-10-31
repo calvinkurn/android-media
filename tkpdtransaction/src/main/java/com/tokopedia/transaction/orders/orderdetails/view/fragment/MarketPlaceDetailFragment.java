@@ -6,18 +6,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -35,6 +29,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -64,6 +67,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
@@ -76,12 +80,9 @@ import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
-import com.tokopedia.unifycomponents.ticker.TickerData;
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -103,6 +104,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String STATUS_CODE_220 = "220";
     public static final String STATUS_CODE_400 = "400";
     public static final String STATUS_CODE_11 = "11";
+    private static final String CLICK_REQUEST_CANCEL = "click request cancel";
+    private static final String CLICK_TRACK= "click track";
+    private static final String CLICK_ASK_SELLER = "click ask seller";
+    private static final String CLICK_ASK_SELLER_CANCELATION = "click ask seller - cancelation";
+    private static final String CLICK_KEMBALI = "click kembali - cancelation";
+    private static final String  CLICK_SUBMIT_CANCELATION = "click submit cancelation";
+    private static final String CLICK_VIEW_COMPLAIN ="click view complain";
+    private static final String TOTAL_SHIPPING_PRICE = "Total Ongkos Kirim";
+
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
     public static final int CANCEL_BUYER_REQUEST = 103;
@@ -120,6 +130,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView additionalText;
     private TextView infoLabel;
     private TextView helpLabel;
+    private FrameLayout stickyButton;
     private LinearLayout statusDetail;
     private LinearLayout detailContent;
     private LinearLayout additionalInfoLayout;
@@ -130,6 +141,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView primaryActionBtn;
     private TextView secondaryActionBtn;
     private FrameLayout parentLayout;
+    private NestedScrollView nestedScrollView;
     private RecyclerView itemsRecyclerView;
     private TextView productInformationTitle;
     private boolean isSingleButton;
@@ -172,6 +184,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         View view = inflater.inflate(R.layout.fragment_marketplace_order_list_detail, container, false);
         parentLayout = view.findViewById(R.id.parentLayout);
         mainView = view.findViewById(R.id.main_view);
+        nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         statusLabel = view.findViewById(R.id.status_label);
         statusValue = view.findViewById(R.id.status_value);
         conditionalInfoText = view.findViewById(R.id.conditional_info);
@@ -196,9 +209,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         paymentMethod = view.findViewById(R.id.info_payment_method);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        stickyButton = view.findViewById(R.id.sticky_btn);
         myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
         setMainViewVisible(View.GONE);
         itemsRecyclerView.setNestedScrollingEnabled(false);
+        setUpScrollChangeListener();
         presenter.attachView(this);
         return view;
     }
@@ -222,6 +237,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         statusLihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                orderListAnalytics.sendLihatStatusClick(status.status());
                 startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
                         getActivity(), getArguments().getString(KEY_ORDER_ID)
                 ));
@@ -272,11 +288,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if(!presenter.isValidUrl(invoice.invoiceUrl())){
+        if (!presenter.isValidUrl(invoice.invoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
             orderListAnalytics.sendViewInvoiceClickEvent();
+            orderListAnalytics.sendLihatInvoiceClick(status.status());
             try {
                 startActivity(((UnifiedOrderListRouter) getActivity()
                         .getApplication()).getWebviewActivityWithIntent(getContext(),
@@ -367,13 +384,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
         if (getContext()!= null && tickerInfos.size() > 0) {
+            mTickerInfos.setTickerTitle(tickerInfos.get(0).getTitle());
             mTickerInfos.setHtmlDescription(tickerInfos.get(0).getNotes());
             mTickerInfos.setVisibility(View.VISIBLE);
             if (url != null) {
                 mTickerInfos.setDescriptionClickEvent(new TickerCallback() {
                     @Override
                     public void onDescriptionViewClick(CharSequence charSequence) {
-                        RouteManager.route(getContext(), url);
+                        RouteManager.route(getContext(),
+                                String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
                     }
 
                     @Override
@@ -391,7 +410,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         doubleTextView.setTopText(pricing.label());
         doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
         doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
-        doubleTextView.setBottomText(pricing.value());
+        if (pricing.label().contains(TOTAL_SHIPPING_PRICE) && pricing.value().contains("Rp 0"))
+            doubleTextView.setBottomText(getResources().getString(R.string.tkpdtransaction_bebas_ongkir));
+        else
+            doubleTextView.setBottomText(pricing.value());
         doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
@@ -489,7 +511,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.Companion.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        Toaster.INSTANCE.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
     }
 
     @Override
@@ -517,6 +539,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setActionButtons(List<ActionButton> actionButtons) {
         actionBtnLayout.removeAllViews();
         actionBtnLayout.setOrientation(LinearLayout.VERTICAL);
+        boolean stickyButtonAdded = false;
         for (ActionButton actionButton : actionButtons) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
@@ -543,7 +566,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems();
+                        presenter.onBuyAgainAllItems(" - order");
                     }
                 });
             } else {
@@ -552,6 +575,42 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 }
             }
             actionBtnLayout.addView(textView);
+            if(!stickyButtonAdded){
+                //Cant add the same textview as it has a parent already so making a new instance of the textview and adding it for the sticky
+                TextView stickyTextView = new TextView(getContext());
+                stickyTextView.setText(actionButton.getLabel());
+                stickyTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
+                stickyTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                stickyTextView.setGravity(Gravity.CENTER);
+                shape.setShape(GradientDrawable.RECTANGLE);
+                shape.setCornerRadius(getResources().getDimensionPixelSize(R.dimen.dp_4));
+                if (!actionButton.getActionColor().getBackground().equals("")) {
+                    shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+                }
+                if (!actionButton.getActionColor().getBorder().equals("")) {
+                    shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
+                }
+                LinearLayout.LayoutParams stickyButtonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                stickyTextView.setBackground(shape);
+                stickyTextView.setLayoutParams(stickyButtonParams);
+                if (!actionButton.getActionColor().getTextColor().equals("")) {
+                    stickyTextView.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
+                }
+                if (actionButton.getLabel().equalsIgnoreCase(BELI_LAGI)) {
+                    stickyTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            presenter.onBuyAgainAllItems(" - order");
+                        }
+                    });
+                } else {
+                    if (!TextUtils.isEmpty(actionButton.getUri())) {
+                        stickyTextView.setOnClickListener(clickActionButton(actionButton));
+                    }
+                }
+                stickyButton.addView(stickyTextView);
+                stickyButtonAdded = true;
+            }
         }
     }
 
@@ -603,10 +662,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 default:
                     break;
             }
-            orderListAnalytics.sendActionButtonClickEvent(orderStatusEvent);
         }
         return view -> {
             if (actionButton.getActionButtonPopUp() != null && !TextUtils.isEmpty(actionButton.getActionButtonPopUp().getTitle())) {
+                if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Tanya Penjual")) {
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, "response API -" + "SUCCESS");
+                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain")) {
+                    orderListAnalytics.sendActionButtonClickEvent("click complain");
+                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("selesai")) {
+                    orderListAnalytics.sendActionButtonClickEvent("selesai");
+                }
                 final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE) {
                     @Override
                     public int layoutResId() {
@@ -633,6 +698,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                             getArguments().getString(KEY_ORDER_ID));
                                     startActivityForResult(newIntent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
+                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Tanya penjual")) {
+                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER_CANCELATION, status.status());
+                                } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(0).getLabel().equalsIgnoreCase("Kembali")) {
+                                    orderListAnalytics.sendActionButtonClickEvent(CLICK_KEMBALI, status.status());
                                 } else {
                                     if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
                                         startSellerAndAddInvoice(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
@@ -660,21 +729,30 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                 if (actionButton.getUri().contains("askseller")) {
                     startSellerAndAddInvoice(actionButton.getUri());
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER, statusValue.getText().toString());
+                } else if (actionButton.getKey().contains("view_complaint")) {
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_VIEW_COMPLAIN, statusValue.getText().toString());
+                    RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
                     intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                     intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
                     if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
                         if (presenter.shouldShowTimeForCancellation()) {
-                            Toaster.Companion.showErrorWithAction(mainView,
-                                            presenter.getCancelTime(),
+                            Toaster.INSTANCE.showErrorWithAction(mainView,
+                                    presenter.getCancelTime(),
                                     Snackbar.LENGTH_LONG,
-                                    getResources().getString(R.string.title_ok), v -> {});
-                        } else
+                                    getResources().getString(R.string.title_ok), v -> {
+                                    });
+                        } else {
                             startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
+                            orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, "response API -" + "SUCCESS");
+                        }
                     } else if (this.status.status().equals(STATUS_CODE_11)) {
                         startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
+
+                        orderListAnalytics.sendActionButtonClickEvent(CLICK_TRACK);
                         String routingAppLink;
                         routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", getArguments().getString(KEY_ORDER_ID));
 
@@ -728,6 +806,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
                 presenter.updateOrderCancelReason(reason, getArguments().getString(KEY_ORDER_ID), reasonCode, data.getStringExtra(ACTION_BUTTON_URL));
             }
+            orderListAnalytics.sendActionButtonClickEvent(CLICK_SUBMIT_CANCELATION, statusValue.getText().toString() + "-" + reason);
 
 //            presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
         }
@@ -768,6 +847,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             @Override
             public void onClick(View view) {
                 try {
+                    orderListAnalytics.sendHelpEventData(status.status());
                     startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),
                             URLEncoder.encode(helpLink, ORDER_LIST_URL_ENCODING)));
@@ -884,5 +964,25 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void onRefresh(View view) {
         presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
+    }
+
+    private void setUpScrollChangeListener() {
+        Rect scrollBounds = new Rect();
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (nestedScrollView, scrollX, scrollY, scrollOldX, scrollOldY) -> {
+            nestedScrollView.getHitRect(scrollBounds);
+            if (actionBtnLayout.getLocalVisibleRect(scrollBounds)) {
+                // Any portion of the sticky button, even a single pixel, is within the visible window
+                stickyButton.setVisibility(View.GONE);
+            } else {
+                // NONE of the sticky button is within the visible window
+                stickyButton.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+
+    @Override
+    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+
     }
 }

@@ -4,10 +4,13 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
-import android.support.annotation.DimenRes
-import android.support.annotation.StringRes
+import androidx.annotation.DimenRes
+import androidx.annotation.StringRes
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -18,8 +21,9 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
-import android.graphics.Bitmap
-import android.graphics.Canvas
+import android.graphics.drawable.GradientDrawable
+
+
 
 
 /**
@@ -197,7 +201,7 @@ fun View.getDimens(@DimenRes id: Int): Int {
 
 
 fun ImageView.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
-    addOnImpressionListener(holder, object : ViewHintListener{
+    addOnImpressionListener(holder, object : ViewHintListener {
         override fun onViewHint() {
             onView.invoke()
         }
@@ -247,7 +251,7 @@ private fun View.createBitmap(width: Int, height: Int): Bitmap {
 }
 
 fun View.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
-    addOnImpressionListener(holder, object : ViewHintListener{
+    addOnImpressionListener(holder, object : ViewHintListener {
         override fun onViewHint() {
             onView.invoke()
         }
@@ -269,6 +273,27 @@ fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListen
     }
 }
 
+fun View.isNotVisibleOnTheScreen(listener: ViewHintListener) {
+    viewTreeObserver.addOnScrollChangedListener {
+        if (getVisiblePercent(this@isNotVisibleOnTheScreen) == -1) {
+            listener.onViewHint()
+        }
+    }
+
+}
+
+fun getVisiblePercent(v: View): Int {
+    if (v.isShown) {
+        val r = Rect()
+        val isVisible = v.getGlobalVisibleRect(r)
+        return if (isVisible) {
+            0
+        } else {
+            -1
+        }
+    }
+    return -1
+}
 
 private fun viewIsVisible(view: View?): Boolean {
     if (view == null) {
@@ -302,4 +327,13 @@ fun getScreenHeight(): Int {
 
 interface ViewHintListener {
     fun onViewHint()
+}
+
+fun View.addOneTimeGlobalLayoutListener(onGlobalLayout: () -> Unit) {
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            onGlobalLayout()
+            viewTreeObserver.removeOnGlobalLayoutListener(this)
+        }
+    })
 }

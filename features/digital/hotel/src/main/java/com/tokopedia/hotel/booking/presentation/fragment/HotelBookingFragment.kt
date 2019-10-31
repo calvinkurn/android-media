@@ -2,12 +2,12 @@ package com.tokopedia.hotel.booking.presentation.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
@@ -18,6 +18,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -25,13 +26,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
-import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.common.travel.presentation.model.TravelContactData
+import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
+import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
+import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -63,6 +66,8 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     lateinit var progressDialog: ProgressDialog
 
+    lateinit var travelContactArrayAdapter: TravelContactArrayAdapter
+
     var roomRequestMaxCharCount = ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +86,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.hotelCartResult.observe(this, android.arch.lifecycle.Observer {
+        bookingViewModel.hotelCartResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     hotelCart = it.data
@@ -93,7 +98,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
         })
 
-        bookingViewModel.hotelCheckoutResult.observe(this, android.arch.lifecycle.Observer {
+        bookingViewModel.hotelCheckoutResult.observe(this, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
@@ -116,6 +121,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                 }
             }
         })
+
+        bookingViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
+            contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -129,9 +138,11 @@ class HotelBookingFragment : HotelBaseFragment() {
                     ?: HotelBookingPageModel()
         }
         initProgressDialog()
+        initGuestInfoEditText()
         showLoadingBar()
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
+        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -141,7 +152,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             REQUEST_CODE_CONTACT_DATA -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.run {
-                        hotelBookingPageModel.contactData = this.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
+                        hotelBookingPageModel.contactData = this.getParcelableExtra(HotelContactDataFragment.EXTRA_CONTACT_DATA)
                         renderContactData()
                     }
                 }
@@ -167,6 +178,18 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupImportantNotes(hotelCart.property)
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
+    }
+
+    fun initGuestInfoEditText() {
+        context?.let {
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv,
+                    arrayListOf(), object: TravelContactArrayAdapter.ContactArrayListener {
+                override fun getFilterText(): String {
+                    return til_guest.editText.text.toString()
+                }
+            })
+            (til_guest.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+        }
     }
 
     private fun initProgressDialog() {
@@ -293,11 +316,16 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
         renderContactData()
 
-        iv_edit_contact.setOnClickListener {
-            context?.run {
-                startActivityForResult(TravelContactDataActivity.getCallingIntent(this, hotelBookingPageModel.contactData), REQUEST_CODE_CONTACT_DATA)
+        widget_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
+            override fun onClickEdit() {
+                context?.run {
+                    startActivityForResult(TravelContactDataActivity.getCallingIntent(this, hotelBookingPageModel.contactData,
+                            TravelContactDataActivity.HOTEL),
+                            REQUEST_CODE_CONTACT_DATA)
+                }
             }
-        }
+
+        })
 
         if (hotelBookingPageModel.guestName.isNotEmpty() && hotelBookingPageModel.isForOtherGuest == 1) {
             radio_button_contact_guest.isChecked = true
@@ -322,11 +350,11 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun renderContactData() {
         val contactData = hotelBookingPageModel.contactData
-        tv_contact_name.text = contactData.name
-        tv_contact_email.text = contactData.email
-        tv_contact_phone_number.text = getString(R.string.hotel_booking_contact_detail_phone_number,
-                contactData.phoneCode, contactData.phone)
-        user_contact_info.invalidate()
+        widget_traveller_info.setContactName(contactData.name)
+        widget_traveller_info.setContactEmail(contactData.email)
+        widget_traveller_info.setContactPhoneNum(getString(R.string.hotel_booking_contact_detail_phone_number,
+                contactData.phoneCode, contactData.phone))
+        widget_traveller_info.invalidate()
     }
 
     private fun toggleShowGuestForm(value: Boolean) {

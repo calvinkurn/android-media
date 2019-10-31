@@ -2,7 +2,7 @@ package com.tokopedia.shop.common.view.adapter
 
 import android.content.Context
 import android.graphics.Point
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +24,7 @@ class MembershipStampAdapter(private val context: Context, private val listener:
 
     interface MembershipStampAdapterListener {
         fun onButtonClaimClicked(questId: Int)
-        fun goToVoucherOrRegister(url: String?)
+        fun goToVoucherOrRegister(url: String? = null, clickOrigin: String? = null)
     }
 
     private var membershipData: List<BaseMembershipViewModel> = listOf()

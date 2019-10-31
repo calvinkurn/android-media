@@ -2,14 +2,14 @@ package com.tokopedia.filter.widget;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.AttrRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.AttrRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -29,6 +29,7 @@ import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.filter.newdynamicfilter.adapter.typefactory.BottomSheetDynamicFilterTypeFactoryImpl;
 import com.tokopedia.filter.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterDbHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterDetailActivityRouter;
@@ -64,7 +65,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private int selectedExpandableItemPosition;
 
     private FilterController filterController;
-    private String trackingPrefix;
+    private FilterTrackingData trackingData;
 
     public BottomSheetFilterView(@NonNull Context context) {
         super(context);
@@ -122,8 +123,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
             enrichWithInputState(filter);
 
 
-            FilterTracking.eventSearchResultNavigateToFilterDetail(trackingPrefix, filter.getTitle());
-            FilterDetailActivityRouter.launchDetailActivity(callback.getActivity(), filter, true, trackingPrefix);
+            FilterTracking.eventNavigateToFilterDetail(trackingData, filter.getTitle());
+            FilterDetailActivityRouter.launchDetailActivity(callback.getActivity(), filter, true, trackingData);
         }
     }
 
@@ -132,9 +133,9 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         CategoryFilterModel selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 
-        FilterTracking.eventSearchResultNavigateToFilterDetail(trackingPrefix, getResources().getString(R.string.title_category));
+        FilterTracking.eventNavigateToFilterDetail(trackingData, getResources().getString(R.string.title_category));
         FilterDetailActivityRouter.launchCategoryActivity(callback.getActivity(),
-                filter, selectedCategoryRootId, categoryId, true, trackingPrefix);
+                filter, selectedCategoryRootId, categoryId, true, trackingData);
     }
 
     private void enrichWithInputState(Filter filter) {
@@ -156,7 +157,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     public void saveCheckedState(Option option, Boolean isChecked, String filterTitle) {
-        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, filterTitle, option.getName(), false, isChecked);
+        FilterTracking.eventFilterJourney(trackingData, filterTitle, option.getName(),
+                false, isChecked, option.isAnnotation());
         filterController.setFilter(option, isChecked);
         applyFilter();
     }
@@ -169,10 +171,12 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void removeSavedTextInput(String uniqueId) {
-        filterController.setFilter(OptionHelper.generateOptionFromUniqueId(uniqueId), false, true);
+        Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
+        filterController.setFilter(option, false, true);
 
         String key = OptionHelper.parseKeyFromUniqueId(uniqueId);
-        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, key, "", false, false);
+        FilterTracking.eventFilterJourney(trackingData, key, "",
+                false, false, option.isAnnotation());
         updateResetButtonVisibility();
     }
 
@@ -183,7 +187,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         filterController.setFilter(textInputOption, true, true);
 
         String key = textInputOption.getKey();
-        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, key, textInput, false, true);
+        FilterTracking.eventFilterJourney(trackingData, key, textInput,
+                false, true, textInputOption.isAnnotation());
         updateResetButtonVisibility();
     }
 
@@ -200,7 +205,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     @Override
     public void removeSelectedOption(Option option, String filterTitle) {
         if (Option.KEY_CATEGORY.equals(option.getKey())) {
-            FilterTracking.eventSearchResultFilterJourney(trackingPrefix, filterTitle, option.getName(), false, false);
+            FilterTracking.eventFilterJourney(trackingData, filterTitle, option.getName(),
+                    false, false, option.isAnnotation());
             filterController.setFilter(option, false, true);
             applyFilter();
         } else {
@@ -215,8 +221,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         applyFilter();
     }
 
-    public void initFilterBottomSheet(String trackingPrefix) {
-        this.trackingPrefix = trackingPrefix;
+    public void initFilterBottomSheet(FilterTrackingData trackingData) {
+        this.trackingData = trackingData;
         initBottomSheetListener();
         initFilterMainRecyclerView();
     }
@@ -302,7 +308,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void selectCategory(Option option, String filterTitle) {
-        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, filterTitle, option.getName(), false, true);
+        FilterTracking.eventFilterJourney(trackingData, filterTitle, option.getName(),
+                false, true, option.isAnnotation());
         filterController.setFilter(option, true, true);
         applyFilter();
     }
@@ -422,6 +429,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     @Override
     public boolean getFilterViewState(String uniqueId) {
         return filterController.getFilterViewState(uniqueId);
+    }
+
+    @Override
+    public void onPriceRangeClicked() {
+        applyFilter();
     }
 
     public interface Callback {

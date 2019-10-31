@@ -19,6 +19,12 @@ public class ValidateOtpUseCase extends UseCase<ValidateOtpDomain> {
     public static final String PARAM_USER = "user";
     public static final String PARAM_CODE = "code";
     public static final String PARAM_PHONE = "msisdn";
+    public static final String PARAM_MODE = "mode";
+
+    public static final String MODE_SMS = "sms";
+    public static final String MODE_PIN = "PIN";
+    public static final String MODE_CALL = "call";
+    public static final String MODE_EMAIL = "email";
 
     public static final int OTP_TYPE_SECURITY_QUESTION = 13;
     public static final int OTP_TYPE_PHONE_NUMBER_VERIFICATION = 11;
@@ -38,10 +44,11 @@ public class ValidateOtpUseCase extends UseCase<ValidateOtpDomain> {
     }
 
     public static RequestParams getParam(String userId, int otpType, String otp,
-                                         String phoneNumber) {
+                                         String phoneNumber, String mode) {
         RequestParams param = RequestParams.create();
         param.putString(PARAM_USER, userId);
         param.putInt(PARAM_OTP_TYPE, otpType);
+        param.putString(PARAM_MODE, mode);
         param.putString(PARAM_CODE, otp);
         if(!phoneNumber.isEmpty()) {
             param.putString(PARAM_PHONE, phoneNumber);
@@ -50,11 +57,12 @@ public class ValidateOtpUseCase extends UseCase<ValidateOtpDomain> {
         return param;
     }
 
-    public static RequestParams getRegisterPhoneNumberParam(String phoneNumber, int otpType, String otp) {
+    public static RequestParams getRegisterPhoneNumberParam(String phoneNumber, int otpType, String otp, String mode) {
         RequestParams param = RequestParams.create();
         param.putString(PARAM_PHONE, phoneNumber);
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putString(PARAM_CODE, otp);
+        param.putString(PARAM_MODE, mode);
         return param;
     }
 }

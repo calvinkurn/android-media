@@ -12,14 +12,15 @@ import com.tokopedia.usecase.coroutines.UseCase
 class GQLGetShopInfoUseCase(private var gqlQuery: String,
                             private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ShopInfo>() {
 
-    var gqlFavoriteQuery: String = ""
     var params: RequestParams = RequestParams.EMPTY
     var isFromCacheFirst: Boolean = true
+    val request by lazy{
+        GraphqlRequest(gqlQuery, ShopInfo.Response::class.java, params.parameters)
+    }
 
     override suspend fun executeOnBackground(): ShopInfo {
-        val gqlRequest = GraphqlRequest(if (isQueryFavorite()) gqlFavoriteQuery else gqlQuery, ShopInfo.Response::class.java, params.parameters)
         gqlUseCase.clearRequest()
-        gqlUseCase.addRequest(gqlRequest)
+        gqlUseCase.addRequest(request)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
                 .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
 
@@ -31,8 +32,6 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
     }
-
-    private fun isQueryFavorite(): Boolean = gqlFavoriteQuery != ""
 
     companion object {
         private const val PARAM_SHOP_IDS = "shopIds"

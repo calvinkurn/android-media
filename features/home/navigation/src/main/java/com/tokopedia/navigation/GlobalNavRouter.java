@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -37,8 +37,6 @@ public interface GlobalNavRouter {
     Intent getShopPageIntent(Context context, String shopID);
 
     Intent getHomeIntent(Context context);
-
-    Intent gotoSearchAutoCompletePage(Context context);
 
     Intent instanceIntentDigitalCategoryList();
 

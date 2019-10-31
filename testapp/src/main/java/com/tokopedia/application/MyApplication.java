@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.widget.Toast;
 
+import com.google.android.gms.security.ProviderInstaller;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -23,7 +25,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
@@ -32,14 +33,13 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
 
-import timber.log.Timber;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.Response;
+import timber.log.Timber;
 
 /**
  * Created by hendry on 25/06/18.
@@ -50,6 +50,11 @@ public class MyApplication extends BaseMainApplication
         NetworkRouter,
         ApplinkRouter, CharacterPerMinuteInterface {
 
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     @Override
     public void onCreate() {
         GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
@@ -58,6 +63,8 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+
+        upgradeSecurityProvider();
 
         GraphqlClient.init(this);
         NetworkClient.init(this);
@@ -75,6 +82,24 @@ public class MyApplication extends BaseMainApplication
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
+        }
+    }
+
+    private void upgradeSecurityProvider() {
+        try {
+            ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
+                @Override
+                public void onProviderInstalled() {
+                    // Do nothing
+                }
+
+                @Override
+                public void onProviderInstallFailed(int i, Intent intent) {
+                    // Do nothing
+                }
+            });
+        } catch (Throwable t) {
+            // Do nothing
         }
     }
 

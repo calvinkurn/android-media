@@ -1,7 +1,7 @@
 package com.tokopedia.seller.common.utils;
 
 
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 

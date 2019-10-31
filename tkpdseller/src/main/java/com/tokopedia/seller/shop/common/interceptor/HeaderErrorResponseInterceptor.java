@@ -1,6 +1,6 @@
 package com.tokopedia.seller.shop.common.interceptor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;

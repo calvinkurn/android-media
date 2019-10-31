@@ -1,14 +1,14 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.NotifcenterProductRecommendationAdapter
@@ -29,7 +29,7 @@ class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHol
         itemView.setOnClickListener {
             RouteManager.route(
                     itemView.context,
-                    ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
+                    ApplinkConst.RECOMMENDATION_PAGE,
                     productData.productId,
                     NotificationUpdateItemViewModel.SOURCE
             )

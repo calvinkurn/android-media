@@ -3,9 +3,9 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -63,7 +63,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     private EmptySearchViewModel boundedEmptySearchModel;
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.list_empty_search_product;
+    public static final int LAYOUT = R.layout.search_list_empty_search_product;
 
     public EmptySearchViewHolder(View view, EmptyStateListener emptyStateListener,
                                  BannerAdsListener bannerAdsListener, Config topAdsConfig) {
@@ -91,8 +91,8 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
         selectedFilterRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         selectedFilterRecyclerView.setAdapter(selectedFilterAdapter);
         selectedFilterRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
-                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
-                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         ));
     }
 
@@ -124,24 +124,26 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
                 .topAdsParams(topAdsParams)
                 .setEndpoint(Endpoint.CPM)
                 .build();
-        topAdsBannerView.setConfig(bannerAdsConfig);
-        topAdsBannerView.setTopAdsBannerClickListener((position, appLink, data) -> {
-            if(bannerAdsListener != null) {
-                bannerAdsListener.onBannerAdsClicked(position, appLink, data);
-            }
-        });
-        topAdsBannerView.setAdsListener(new TopAdsListener() {
-            @Override
-            public void onTopAdsLoaded(List<Item> list) {
-                loadProductAds();
-            }
+        if(topAdsBannerView != null) {
+            topAdsBannerView.setConfig(bannerAdsConfig);
+            topAdsBannerView.setTopAdsBannerClickListener((position, appLink, data) -> {
+                if (bannerAdsListener != null) {
+                    bannerAdsListener.onBannerAdsClicked(position, appLink, data);
+                }
+            });
+            topAdsBannerView.setAdsListener(new TopAdsListener() {
+                @Override
+                public void onTopAdsLoaded(List<Item> list) {
+                    loadProductAds();
+                }
 
-            @Override
-            public void onTopAdsFailToLoad(int errorCode, String message) {
-                loadProductAds();
-            }
-        });
-        topAdsBannerView.loadTopAds();
+                @Override
+                public void onTopAdsFailToLoad(int errorCode, String message) {
+                    loadProductAds();
+                }
+            });
+            topAdsBannerView.loadTopAds();
+        }
     }
 
     @Override
@@ -265,7 +267,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
 
         @Override
         public SelectedFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.filter_empty_state_selected_filter_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_filter_empty_state_selected_filter_item, parent, false);
             return new SelectedFilterItemViewHolder(view, clickListener);
         }
 

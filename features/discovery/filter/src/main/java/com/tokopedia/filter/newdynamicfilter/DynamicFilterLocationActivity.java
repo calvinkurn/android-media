@@ -1,8 +1,9 @@
 package com.tokopedia.filter.newdynamicfilter;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterDbHelper;
 
 import rx.Observable;
@@ -34,7 +35,7 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
                               boolean isSearchable,
                               String searchHint,
                               boolean isUsingTracking,
-                              String trackingPrefix) {
+                              FilterTrackingData trackingData) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterLocationActivity.class);
@@ -42,7 +43,7 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
-            intent.putExtra(EXTRA_EVENT_CATEGORY_PREFIX, trackingPrefix);
+            intent.putExtra(EXTRA_TRACKING_DATA, trackingData);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }

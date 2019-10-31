@@ -1,7 +1,7 @@
 package com.tokopedia.productcard.v2
 
 import android.content.Context
-import android.support.v7.widget.CardView
+import androidx.cardview.widget.CardView
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.productcard.R
@@ -33,7 +33,7 @@ class ProductCardViewList: ProductCardView {
         cardViewImageProduct = inflatedView.findViewById(R.id.cardViewImageProduct)
     }
 
-    override fun setImageTopAdsConstraint() {
+    override fun setLocationConstraintEnd() {
         // Do nothing
         // Top Ads icon constraints do not need to be realigned
     }

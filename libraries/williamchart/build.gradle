@@ -21,3 +21,12 @@ dependencies {
     })
     testCompile rootProject.ext.testDependencies.junit
 }
+
+project.ext {
+    artifactId = 'williamchart'
+    groupId = 'com.db.williamchart'
+    versionName = "1.0.0"
+    artifactName = "williamchart-release"
+}
+
+apply from: '../../publish_local.gradle'

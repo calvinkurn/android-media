@@ -3,7 +3,7 @@ package com.tokopedia.interestpick.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.MenuItem
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -23,8 +23,8 @@ class InterestPickActivity : BaseSimpleActivity() {
     }
 
     object DeeplinkIntent {
-        @DeepLink(ApplinkConst.INTEREST_PICK)
         @JvmStatic
+        @DeepLink(ApplinkConst.INTEREST_PICK)
         fun createIntent(context: Context, extras: Bundle) = Companion.createIntent(context)
     }
 

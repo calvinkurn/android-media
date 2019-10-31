@@ -91,11 +91,9 @@
     <string name="shop_product_limited_empty_product_title_owner">Toko Anda belum memiliki produk</string>
     <string name="shop_product_limited_empty_product_title_owner_at_etalase">Toko Anda belum memiliki produk di etalase ini</string>
     <string name="shop_product_limited_empty_product_content_owner">Tambah produk &amp; mulai berjualan sekarang &#x21;</string>
-    <string name="shop_product_empty_product_title_etalase">Oops… Hasil pencarian Anda tidak ditemukan di etalase ini</string>
-    <string name="shop_product_empty_product_title_owner_etalase">Silakan lakukan pencarian dengan kata kunci / filter lain.</string>
+    <string name="shop_product_empty_product_content">Silakan lakukan pencarian dengan kata kunci / filter lain.</string>
 
-    <string name="shop_product_empty_product_title_no_etalase">Oops… Hasil pencarian Anda tidak ditemukan.</string>
-    <string name="shop_product_empty_product_title_owner_no_etalase">Silakan lakukan pencarian dengan kata kunci / filter lain.</string>
+    <string name="shop_product_empty_product_title">Oops, Produk Nggak Ditemukan</string>
 
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>
@@ -155,9 +153,12 @@
     <string name="empty_feed_title">Tingkatkan Penjualanmu</string>
     <string name="empty_feed_subtitle">Yuk, post promo dan update dari Tokomu \nsupaya makin banyak yang belanja!</string>
     <string name="empty_feed_btn">Post Sekarang</string>
-    
-    <string name="masuk_yuk">Masuk yuk</string>
-    <string name="mau_akses_semua_fitur">Mau akses semua fitur?</string>
 
     <string name="label_cart">Keranjang</string>
+
+    <string name="shop_search_product">Search Shop Product</string>
+    <string name="shop_search_product_in_this_shop_etalase">di Etalase Toko ini</string>
+    <string name="shop_search_product_in_tokopedia">di Tokopedia</string>
+    <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
+
 </resources>

@@ -3,8 +3,8 @@ package com.tokopedia.logisticaddaddress.features.pinpoint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.Html;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
@@ -28,11 +28,11 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.IMapsRepository;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticaddaddress.R;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
 
@@ -285,7 +285,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
             public void onNext(String query) {
                 CommonUtils.dumper("PORING Kirim Data " + query);
                 Map<String, String> temp = new HashMap<>();
-                temp = AuthUtil.generateParamsNetwork(mUser.getUserId(), mUser.getDeviceId(), temp);
+                temp = AuthHelper.generateParamsNetwork(mUser.getUserId(), mUser.getDeviceId(), temp);
                 TKPDMapParam<String, Object> params = new TKPDMapParam<>();
                 params.put("input", query);
                 params.putAll(temp);

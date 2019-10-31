@@ -1,9 +1,10 @@
 package com.tokopedia.flight.country.database
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 /**
  * Created by nabillasabbaha on 12/03/19.
@@ -22,6 +23,9 @@ interface CountryPhoneCodeDao {
 
     @Query("SELECT * FROM CountryPhoneCodeTable WHERE country_id LIKE :query")
     fun getCountryIdByKeyword(query: String): CountryPhoneCodeTable
+
+    @Query("SELECT * FROM CountryPhoneCodeTable WHERE country_id LIKE :query")
+    fun getCountryById(query: String): List<CountryPhoneCodeTable>
 
     @Query("DELETE FROM CountryPhoneCodeTable")
     fun deleteAll(): Int

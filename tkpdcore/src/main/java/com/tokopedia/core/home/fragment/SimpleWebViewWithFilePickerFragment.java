@@ -8,8 +8,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +26,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -34,7 +35,6 @@ import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core2.R;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;
@@ -183,7 +183,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
                     NetworkRouter networkRouter = (NetworkRouter) getContext().getApplicationContext();
                     FingerprintModel fingerprintModel = networkRouter.getFingerprintModel();
                     String fingerprintHashData = fingerprintModel.getFingerprintHash();
-                    String fingerprintHash = AuthUtil.md5(fingerprintHashData + "+" +
+                    String fingerprintHash = AuthHelper.getMD5Hash(fingerprintHashData + "+" +
                             new UserSession(getContext()).getUserId());
                     Map<String, String> requestHeader = request.getRequestHeaders();
                     requestHeader.put(FINGERPRINT_HASH, fingerprintHash);

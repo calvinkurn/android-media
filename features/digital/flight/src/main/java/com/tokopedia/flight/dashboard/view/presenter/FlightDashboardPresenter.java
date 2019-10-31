@@ -1,7 +1,7 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -136,14 +136,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void initialize() {
-        if (userSession.isLoggedIn()) {
-            onInitialize();
-        } else {
-            getView().navigateToLoginPage();
-        }
-    }
-
-    private void onInitialize() {
         setupViewModel();
         getBannerData();
 
@@ -312,7 +304,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onReturnDateButtonClicked() {
-        Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getReturnDate());
         Date minDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
         Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_DATE_ADDITION_YEAR);
         maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
@@ -322,7 +313,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY);
         maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY);
 
-        getView().showReturnCalendarDatePicker(selectedDate, minDate, maxDateCalendar.getTime());
+        getView().showReturnCalendarDatePicker(null, minDate, maxDateCalendar.getTime());
     }
 
     @Override
@@ -436,7 +427,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onSearchTicketButtonClicked() {
         if (validateSearchParam(getView().getCurrentDashboardViewModel())) {
-            flightAnalytics.eventSearchClick(getView().getScreenName());
+            flightAnalytics.eventSearchClick(getView().getCurrentDashboardViewModel());
             flightDeleteAllFlightSearchDataUseCase.execute(new Subscriber<Boolean>() {
                 @Override
                 public void onCompleted() {
@@ -466,15 +457,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         flightDeleteAllFlightSearchDataUseCase.unsubscribe();
         getFlightClassByIdUseCase.unsubscribe();
         detachView();
-    }
-
-    @Override
-    public void onLoginResultReceived() {
-        if (userSession.isLoggedIn()) {
-            onInitialize();
-        } else {
-            getView().closePage();
-        }
     }
 
     private void transformExtras() {
@@ -770,7 +752,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private String getAirportListString(List<String> airports) {
         String airportsString = "";
-        for (int i=0;i<airports.size();i++) {
+        for (int i = 0; i < airports.size(); i++) {
             airportsString += airports.get(i);
             if (i < airports.size() - 1) {
                 airportsString += ",";

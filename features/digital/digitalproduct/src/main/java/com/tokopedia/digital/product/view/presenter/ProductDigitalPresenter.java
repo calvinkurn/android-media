@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.common.RechargeAnalytics;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
@@ -22,9 +23,9 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.digital.common.data.entity.response.RechargePushEventRecommendationResponseEntity;
+import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
-import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
+import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
@@ -102,10 +103,10 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     private final String PARAM_VALUE_SORT = "label";
     //    private Activity activity;
     private DigitalAnalytics digitalAnalytics;
+    private RechargeAnalytics rechargeAnalytics;
     private IProductDigitalInteractor productDigitalInteractor;
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
     private DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase;
-    private RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase;
     private String slotKey = "com.android.phone.force.slot";
     private String accoutHandleKey = "android.telecom.extra.PHONE_ACCOUNT_HANDLE";
     private Handler ussdHandler;
@@ -117,18 +118,18 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     @Inject
     public ProductDigitalPresenter(
             DigitalAnalytics digitalAnalytics,
+            RechargeAnalytics rechargeAnalytics,
             LocalCacheHandler localCacheHandler,
             IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
             DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase,
-            RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase,
             UserSession userSession) {
         super(localCacheHandler, userSession);
         this.digitalAnalytics = digitalAnalytics;
+        this.rechargeAnalytics = rechargeAnalytics;
         this.productDigitalInteractor = productDigitalInteractor;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
         this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
-        this.rechargePushEventRecommendationUseCase = rechargePushEventRecommendationUseCase;
         this.userSession = userSession;
     }
 
@@ -684,22 +685,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         return passData;
     }
 
-    public void trackRechargePushEventRecommendation(int categoryId) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, "VISIT"), new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                RechargePushEventRecommendationResponseEntity response = graphqlResponse.getData(RechargePushEventRecommendationResponseEntity.class);
-            }
-        });
+    public void trackVisitRechargePushEventRecommendation(int categoryId) {
+        rechargeAnalytics.trackVisitRechargePushEventRecommendation(categoryId);
     }
 }

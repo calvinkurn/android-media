@@ -31,4 +31,7 @@ class DigitalBrowseCategoryRowEntity(
         val appLinks: String = "",
         @SerializedName("categoryLabel")
         @Expose
-        val categoryLabel: String = "")
+        val categoryLabel: String = "",
+        @SerializedName("bu_identifier")
+        @Expose
+        val buIdentifier: String = "")

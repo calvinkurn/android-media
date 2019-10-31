@@ -1,12 +1,12 @@
 package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.CatalogNavListAdapter
+import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
@@ -44,6 +45,8 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     override fun setOnCatalogClicked(catalogID: String, catalogName: String) {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalDiscovery.CATALOG)
         intent.putExtra(EXTRA_CATALOG_ID, catalogID)
+        intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, mDepartmentId)
+        intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, mDepartmentName)
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL)
     }
 
@@ -102,7 +105,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun getScreenName(): String {
-        return ""
+        return "category page - " + getDepartMentId();
     }
 
     override fun initInjector() {
@@ -313,4 +316,15 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         catalogNavViewModel.onDetach()
     }
 
+    override fun onListItemImpressionEvent(item: Visitable<Any>, position: Int) {
+
+    }
+
+    override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
+        CategoryPageAnalytics.catAnalyticsInstance.eventSortApplied(getDepartMentId(),
+                selectedSortName, sortValue)
+    }
+
+    override fun wishListEnabledTracker(wishListTrackerUrl: String) {
+    }
 }

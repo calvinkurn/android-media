@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.v7.content.res.AppCompatResources;
+import androidx.annotation.DrawableRes;
+import androidx.appcompat.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -37,7 +37,7 @@ public class BottomActionView extends BaseCustomView {
     private int icon2Res;
     private View vMark1;
     private View vMark2;
-    private boolean isBav1Display, isBav2Display, isBav2IconDisplay;
+    private boolean isBav1Display, isBav2Display, isBav1IconDisplay ,isBav2IconDisplay;
     private ImageView icon2ImageView;
     private ImageView icon1ImageView;
     private boolean isShow = true;
@@ -68,6 +68,7 @@ public class BottomActionView extends BaseCustomView {
             icon2Res = styledAttributes.getResourceId(R.styleable.BottomActionView_bav_icon_2, DEFAULT_ICON);
             label2 = styledAttributes.getString(R.styleable.BottomActionView_bav_label_2);
             isBav2Display = styledAttributes.getBoolean(R.styleable.BottomActionView_bav_2_display, false);
+            isBav1IconDisplay = styledAttributes.getBoolean(R.styleable.BottomActionView_bav_1_icon_display, true);
             isBav2IconDisplay = styledAttributes.getBoolean(R.styleable.BottomActionView_bav_2_icon_display, true);
         } finally {
             styledAttributes.recycle();
@@ -128,6 +129,10 @@ public class BottomActionView extends BaseCustomView {
 
         if(!isBav2IconDisplay) {
             icon2ImageView.setVisibility(View.GONE);
+        }
+
+        if (!isBav1IconDisplay) {
+            icon1ImageView.setVisibility(View.GONE);
         }
 
         invalidate();

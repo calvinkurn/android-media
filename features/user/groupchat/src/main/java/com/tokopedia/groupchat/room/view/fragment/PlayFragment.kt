@@ -6,10 +6,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.support.design.widget.Snackbar
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import com.airbnb.lottie.LottieAnimationView
@@ -479,7 +479,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         if (generateLink.isBlank())
             return
 
-        RouteManager.route(activity, ApplinkConst.WEBVIEW, generateLink)
+        if(RouteManager.isSupportApplink(activity, generateLink)) {
+            RouteManager.route(activity, generateLink)
+        } else {
+            RouteManager.route(activity, ApplinkConst.WEBVIEW, generateLink)
+        }
     }
 
     private fun getInboxChannelsIntent(): Intent? {

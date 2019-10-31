@@ -2,10 +2,10 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
+import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
@@ -154,11 +156,11 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             }
             if(item.getRating()!=null && item.getRating().equals(KEY_DIS_LIKED)){
                 ratingThumbsDown.setVisibility(View.VISIBLE);
-                ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
+                ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_600));
                 ratingThumbsUp.setVisibility(View.GONE);
             }else if(item.getRating()!=null && item.getRating().equals(KEY_LIKED)) {
                 ratingThumbsUp.setVisibility(View.VISIBLE);
-                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
+                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.g_500));
                 ratingThumbsDown.setVisibility(View.GONE);
             }
             if (position == commentList.size() - 1 || !commentList.get(position).isCollapsed() || searchMode) {
@@ -207,20 +209,29 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
             ratingThumbsUp.setOnClickListener((View v) -> {
                 if(item.getRating() != null && !(item.getRating().equals(KEY_LIKED) || item.getRating().equals(KEY_DIS_LIKED))) {
-                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
+                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.g_500));
                     ratingThumbsDown.setVisibility(View.GONE);
                     mPresenter.onClick(true, position, item.getId());
+                    sendGTMEvent(InboxTicketTracking.Label.EventHelpful);
                 }
             });
 
             ratingThumbsDown.setOnClickListener((View v) -> {
                 if(item.getRating() != null && !(item.getRating().equals(KEY_LIKED) || item.getRating().equals(KEY_DIS_LIKED))) {
-                    ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
+                    ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_600));
                     ratingThumbsUp.setVisibility(View.GONE);
                     mPresenter.onClick(false, position, item.getId());
+                    sendGTMEvent(InboxTicketTracking.Label.EventNotHelpful);
                 }
             });
 
+        }
+
+        private void sendGTMEvent(String eventLabel) {
+            ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventName,
+                    InboxTicketTracking.Category.EventHelpMessageInbox,
+                    InboxTicketTracking.Action.EventClickCsatPerReply,
+                    eventLabel);
         }
 
         private boolean isRoleAgent(CommentsItem item) {
