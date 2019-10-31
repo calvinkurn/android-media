@@ -24,7 +24,7 @@
         app:layout_constraintTop_toBottomOf="@+id/dc_header_main_container"
         app:layout_constraintBottom_toTopOf="@+id/dc_thematic_rv">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/dc_thematic_banner_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

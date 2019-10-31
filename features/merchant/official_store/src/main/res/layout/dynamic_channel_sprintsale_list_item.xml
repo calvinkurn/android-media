@@ -74,7 +74,7 @@
             app:layout_constraintTop_toBottomOf="@id/dc_sprintsale_item_disc_label"
             app:layout_constraintHorizontal_bias="0" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/dc_sprintsale_item_freeongkir"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
