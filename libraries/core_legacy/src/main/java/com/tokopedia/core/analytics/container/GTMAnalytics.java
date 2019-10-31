@@ -73,7 +73,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendGeneralEvent(Map<String, Object> value) {
-        pushGeneralGtmV5(value);
+        pushGeneralGtmV5Internal(value);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class GTMAnalytics extends ContextAnalytics {
         map.put(KEY_ACTION, action);
         map.put(KEY_LABEL, label);
 
-        pushGeneralGtmV5(map);
+        pushGeneralGtmV5Internal(map);
     }
 
 
@@ -1012,8 +1012,11 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent("campaignTrack", bundle, context);
     }
 
-    public void pushGeneralGtmV5(Map<String, Object> params) {
+    public void pushGeneralGtmV5Internal(Map<String, Object> params) {
         pushGeneral(params);
+
+        if(TextUtils.isEmpty((String)params.get(KEY_EVENT)))
+            return;
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
@@ -1023,7 +1026,7 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent(params.get(KEY_EVENT) + "", bundle, context);
     }
 
-    public void pushGeneralGtmV5(String event, String category, String action, String label) {
+    public void pushGeneralGtmV5Internal(String event, String category, String action, String label) {
         sendGeneralEvent(event, category, action, label);
 
         Bundle bundle = new Bundle();
