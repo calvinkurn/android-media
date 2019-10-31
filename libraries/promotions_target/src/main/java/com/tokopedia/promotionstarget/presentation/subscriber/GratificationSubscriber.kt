@@ -171,7 +171,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             if (autoHitActionButton && weakOldClaimCouponApi?.get() != null) {
                 claimApi = weakOldClaimCouponApi?.get()!!
             } else {
-                claimApi = ClaimCouponApi(scope, claimGratificationUseCase)
+                claimApi = ClaimCouponApi(scope, Dispatchers.Main, Dispatchers.IO, claimGratificationUseCase)
                 weakOldClaimCouponApi?.clear()
                 weakOldClaimCouponApi = WeakReference(claimApi)
             }

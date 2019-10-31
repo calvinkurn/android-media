@@ -11,6 +11,8 @@ import kotlinx.coroutines.*
 import java.util.concurrent.Semaphore
 
 class ClaimCouponApi(val scope: CoroutineScope,
+                     val uiDispatcher: CoroutineDispatcher,
+                     val workerDispatcher: CoroutineDispatcher,
                      private val claimPopGratificationUseCase: ClaimPopGratificationUseCase) {
 
     private val HTTP_CODE_OK = "200"
@@ -21,7 +23,7 @@ class ClaimCouponApi(val scope: CoroutineScope,
     fun claimGratification(claimPayload: ClaimPayload, responseCallback: ClaimCouponApiResponseCallback) {
 
         suspend fun sendResponse(response: ClaimPopGratificationResponse?) {
-            withContext(Dispatchers.Main) {
+            withContext(uiDispatcher) {
                 if (response != null) {
                     if (response.popGratificationClaim?.resultStatus?.code == HTTP_CODE_OK) {
                         responseCallback.onNext(Success(response))
@@ -35,12 +37,12 @@ class ClaimCouponApi(val scope: CoroutineScope,
         }
 
         val ceh = CoroutineExceptionHandler { _, exception ->
-            GlobalScope.launch(Dispatchers.Main) {
+            GlobalScope.launch(uiDispatcher) {
                 responseCallback.onError(Throwable(exception))
             }
 
         }
-        scope.launch(Dispatchers.IO + ceh) {
+        scope.launch(workerDispatcher + ceh) {
             supervisorScope {
                 /*
                 * 1. If currentPayload is same as old
