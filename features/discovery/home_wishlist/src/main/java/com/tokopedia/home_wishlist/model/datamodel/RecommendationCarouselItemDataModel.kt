@@ -6,16 +6,18 @@ import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactory
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 data class RecommendationCarouselItemDataModel (
-        val recommendationItem: RecommendationItem
+        val recommendationItem: RecommendationItem,
+        val isWishlist: Boolean,
+        val parentPosition: Int
 ) : WishlistDataModel {
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
-        if(dataModel.javaClass == this.javaClass){
-            return this.getUniqueIdentity() == (dataModel as WishlistDataModel).getUniqueIdentity()
+        if(dataModel is RecommendationCarouselItemDataModel){
+            return isWishlist == dataModel.isWishlist
         }
         return false
     }
 
-    override fun getUniqueIdentity(): Any = recommendationItem
+    override fun getUniqueIdentity(): Any = recommendationItem.productId
 
     override fun type(typeFactory: WishlistTypeFactory): Int {
         return typeFactory.type(this)

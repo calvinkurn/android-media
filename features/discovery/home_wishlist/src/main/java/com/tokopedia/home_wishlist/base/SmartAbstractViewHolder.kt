@@ -19,7 +19,6 @@ abstract class SmartAbstractViewHolder<T : Visitable<*>>(itemView: View) : Recyc
      */
     fun bind(element: T, payloads: List<Any>) {}
 
-
     /*
     Override this to do recycle and clear image resources
      */

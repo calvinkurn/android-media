@@ -16,6 +16,7 @@ import com.tokopedia.home_wishlist.model.entity.Shop
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.datamodel.WishlistData
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.BulkRemoveWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
@@ -36,6 +37,7 @@ class WishlistViewModelTestSpek : Spek({
         val userSessionInterface by memoized<UserSessionInterface>()
         val wishlistRepository by memoized<WishlistRepository>()
         val removeWishlistUseCase by memoized<RemoveWishListUseCase>()
+        val addWishlistUseCase by memoized<AddWishListUseCase>()
         val addToCartUseCase by memoized<AddToCartUseCase>()
         val bulkRemoveWishlistUseCase by memoized<BulkRemoveWishlistUseCase>()
 
@@ -45,7 +47,8 @@ class WishlistViewModelTestSpek : Spek({
                 wishlistCoroutineDispatcherProvider = TestDispatcherProvider(),
                 removeWishListUseCase = removeWishlistUseCase,
                 addToCartUseCase = addToCartUseCase,
-                bulkRemoveWishlistUseCase = bulkRemoveWishlistUseCase
+                bulkRemoveWishlistUseCase = bulkRemoveWishlistUseCase,
+                addWishListUseCase = addWishlistUseCase
         )
     }
 

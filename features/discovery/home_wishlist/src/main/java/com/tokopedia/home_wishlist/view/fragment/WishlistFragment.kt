@@ -208,7 +208,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
      */
     private fun loadData(){
         viewModel.wishlistData.observe(viewLifecycleOwner, Observer { response ->
-            renderList(response)
+            if(response.isNotEmpty()) renderList(response)
         })
         viewModel.loadInitialPage()
         viewModel.getWishlistData()
@@ -244,6 +244,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun renderList(list: List<Visitable<*>>?){
+        swipeToRefresh?.isRefreshing = false
         if(list?.isEmptyWishlist() == true || list?.isErrorWishlist() == true){
             searchView?.hide()
             menu?.findItem(R.id.cancel)?.isVisible = false
@@ -298,7 +299,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     override fun onTryAgainClick() {
-        viewModel.refresh()
+        viewModel.loadInitialPage()
     }
 
     private fun onBulkDelete(){
@@ -308,7 +309,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private fun getProductId(dataModel: WishlistDataModel): Int{
         return when (dataModel) {
             is WishlistItemDataModel -> dataModel.productItem.id.toInt()
-            is RecommendationCarouselItemDataModel -> dataModel.recommendationItem.productId
             else -> -1
         }
     }
