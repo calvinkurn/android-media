@@ -90,18 +90,6 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
             }
         });
         optionVibrate = (CustomCheckBoxPreference) findPreference(SETTING_NOTIFICATION_VIBRATE);
-        optionVibrate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences
-                        (context);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putBoolean(SETTING_NOTIFICATION_VIBRATE, !settings.getBoolean(SETTING_NOTIFICATION_VIBRATE
-                        , false));
-                editor.apply();
-                return true;
-            }
-        });
-
         optionPromo = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_PROMO);
         optionPromo.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
     }
