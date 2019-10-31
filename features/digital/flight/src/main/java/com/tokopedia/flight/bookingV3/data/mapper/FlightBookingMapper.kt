@@ -19,7 +19,6 @@ class FlightBookingMapper {
                 var airlineName = ""
                 var departureCityName = ""
                 var arrivalCityName = ""
-                var isMultipleAirline = false
 
                 for ((position, route) in item.routes.withIndex()) {
                     for (includedItem in flightCart.included) {
@@ -43,13 +42,18 @@ class FlightBookingMapper {
                     }
                 }
 
+                var departureDateString = TravelDateUtil.dateToString(TravelDateUtil.EEE_DD_MMM_YY, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.departureTime))
+                departureDateString += String.format(" • %s-%s", TravelDateUtil.dateToString(TravelDateUtil.HH_MM, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.departureTime)),
+                        TravelDateUtil.dateToString(TravelDateUtil.HH_MM, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.arrivalTime)))
+                if (item.addDayArrival > 0) departureDateString += String.format(" (+%d hari)", item.addDayArrival)
+
                 newJourney.airline = airlineName
                 newJourney.routeName = String.format("%s (%s) → %s (%s)", departureCityName, item.departureAirportId,
                         arrivalCityName, item.arrivalAirportId)
-                newJourney.date
                 newJourney.isRefundable = item.routes[0].refundable
-                newJourney.isDirectFlight = item.routes.size == 1
+                newJourney.transit = item.routes.size - 1
                 newJourney.journeyDetailUrl //TOBEFILLED
+                newJourney.date = departureDateString
 
                 journies.add(newJourney)
             }

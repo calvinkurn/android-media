@@ -35,9 +35,24 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
         fun bind(journey: FlightCartViewEntity.JourneySummary) {
-            view.tv_flight_airline_name.text = journey.airline
-            view.tv_flight_route_name.text = journey.routeName
-            view.iv_flight_airlines_logo.loadImage(journey.airlineLogo)
+
+            with(view) {
+                tv_flight_airline_name.text = journey.airline
+                tv_flight_route_name.text = journey.routeName
+                if (journey.isMultipleAirline) iv_flight_airlines_logo.setImageResource(R.drawable.ic_flight_multi_airlines) else iv_flight_airlines_logo.loadImage(journey.airlineLogo)
+                tv_flight_route_date_detail.text = journey.date
+
+                if (journey.isRefundable) {
+                    iv_refundable.setImageResource(R.drawable.ic_flight_booking_refundable)
+                    tv_refundable_info.text = "Refundable"
+                } else {
+                    iv_refundable.setImageResource(R.drawable.ic_flight_booking_non_refundable)
+                    tv_refundable_info.text = "Non-Refundable"
+                }
+
+                tv_transit_info.text = if (journey.transit == 0) "Langsung" else String.format("%d Transit", journey.transit)
+            }
+
 
         }
 

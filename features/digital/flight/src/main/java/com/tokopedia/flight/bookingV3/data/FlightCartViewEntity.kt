@@ -13,7 +13,7 @@ data class FlightCartViewEntity(
             var routeName: String = "",
             var date: String = "",
             var isRefundable: Boolean = false,
-            var isDirectFlight: Boolean = true,
+            var transit: Int = 0,
             var journeyDetailUrl: String = "",
             var isMultipleAirline: Boolean = false
     )

@@ -75,7 +75,8 @@
             android:layout_marginTop="@dimen/dp_10"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_flight_route_date_detail" />
+            app:layout_constraintTop_toBottomOf="@id/tv_flight_route_date_detail"
+            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_refundable_info"
@@ -101,7 +102,8 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_refundable"
             app:layout_constraintLeft_toRightOf="@id/tv_refundable_info"
             app:layout_constraintStart_toEndOf="@id/tv_refundable_info"
-            app:layout_constraintTop_toTopOf="@id/iv_refundable" />
+            app:layout_constraintTop_toTopOf="@id/iv_refundable"
+            app:srcCompat="@drawable/ic_flight_booking_transit"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_transit_info"

@@ -12,9 +12,19 @@
               "attributes": {
                   "name": "Batavia Air",
                   "short_name": "Batavia Air",
-                  "logo": ""
+                  "logo": "https://banner2.cleanpng.com/20180824/szy/kisspng-airasia-logo-product-brand-airbus-a32-family-spicy-bucket-vector-logos-free-download-5b80bf7e00dda4.7197433515351642860036.jpg"
               }
           },
+          {
+                        "type": "airline",
+                        "id": "SA",
+                        "attributes": {
+                            "name": "Garuda Air",
+                            "short_name": "Batavia Air",
+                            "logo": "https://banner2.cleanpng.com/20180824/szy/kisspng-airasia-logo-product-brand-airbus-a32-family-spicy-bucket-vector-logos-free-download-5b80bf7e00dda4.7197433515351642860036.jpg"
+                        }
+                    },
+
           {
               "type": "airport",
               "id": "CGK",
@@ -128,7 +138,7 @@
               "arrivalTerminal": "",
               "totalTransit": 0,
               "totalStop": 0,
-              "addDayArrival": 0,
+              "addDayArrival": 2,
               "duration": "2j",
               "durationMinute": 120,
               "durationLong": "2 jam",
@@ -168,7 +178,35 @@
                       "label": "Makanan"
                     }
                   ]
-                }
+                },
+                {
+                                  "operatingAirlineID": "",
+                                  "departureAirportID": "CGK",
+                                  "departureTime": "2019-11-07T06:00:00Z",
+                                  "arrivalAirportID": "DPS",
+                                  "arrivalTime": "2019-11-07T08:00:00Z",
+                                  "airlineID": "SA",
+                                  "flightNumber": "101",
+                                  "duration": "2 jam",
+                                  "layover": "",
+                                  "refundable": true,
+                                  "departureTerminal": "X1",
+                                  "arrivalTerminal": "Z1",
+                                  "stop": 0,
+                                  "stopDetail": [],
+                                  "infos": [
+                                    {
+                                      "label": "Bagasi Kabin",
+                                      "value": "7kg"
+                                    }
+                                  ],
+                                  "amenities": [
+                                    {
+                                      "icon": "meal",
+                                      "label": "Makanan"
+                                    }
+                                  ]
+                                }
               ]
             },
             {
