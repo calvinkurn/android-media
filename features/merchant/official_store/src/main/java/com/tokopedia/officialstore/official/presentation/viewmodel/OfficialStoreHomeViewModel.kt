@@ -14,7 +14,6 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCas
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetOfficialStoreRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
@@ -27,8 +26,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.*
-import rx.Subscriber
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 class OfficialStoreHomeViewModel @Inject constructor(
@@ -103,21 +104,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     fun loadFirstData(category: Category?) {
         launchCatchError(block = {
-            /**
-             * Ian told me to getting data by prefixUrl+slug
-             */
             val slug = "${category?.prefixUrl}${category?.slug}"
-
             _officialStoreBannersResult.value = Success(getOfficialStoreBanners(slug).await())
             _officialStoreBenefitResult.value = Success(getOfficialStoreBenefit().await())
-            //_officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
-            // TODO remove this, for testing purpose
-            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop("0").await())
+            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
             getOfficialStoreDynamicChannel(slug)
-            /**
-             * I just realize, that we have load product recomm when user scroll (if user doesn't scroll product recom doesnt have to load data)
-              */
-            // _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString(), 1).await())
         }) {
             // TODO just ignore or handle?
         }
@@ -125,15 +116,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     fun loadMore(category: Category?, page: Int) {
         launchCatchError(block = {
-            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString()?: "", page).await())
+            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString(), page).await())
         }) {
 
         }
     }
 
-    /**
-     * can we just use async? or can we use another kotlin scope? - i have to research more deep.
-     */
     private fun getOfficialStoreBanners(categoryId: String): Deferred<OfficialStoreBanners> {
         return async(Dispatchers.IO) {
             var banner = OfficialStoreBanners()
@@ -196,7 +184,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 val dataProduct = getRecommendationUseCase.createObservable(
                         getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId))
                         .toBlocking()
-                dataProduct.first().get(0)?.let {
+                dataProduct.first()[0].let {
                     productRecommendation = it
                 }
             } catch (t: Throwable) {
@@ -271,6 +259,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     fun isLoggedIn() = userSessionInterface.isLoggedIn
 
-
-    // TODO clear job & observer
+    override fun onCleared() {
+        super.onCleared()
+        getRecommendationUseCase.unsubscribe()
+        addWishListUseCase.unsubscribe()
+        topAdsWishlishedUseCase.unsubscribe()
+        removeWishListUseCase.unsubscribe()
+    }
 }
