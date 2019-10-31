@@ -11,6 +11,8 @@ import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -170,7 +172,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Override
     public void openWebView(String url) {
-        RouteManager.route(getActivity(),String.format("%s?url=%s", ApplinkConst.WEBVIEW,url));
+        if (!TextUtils.isEmpty(url)) {
+            RouteManager.route(getActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
+        }
     }
 
     @Override

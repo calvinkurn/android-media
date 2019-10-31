@@ -1576,4 +1576,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             params.setMargins(0, 0, 0, 0);
         }
     }
+
+    @Override
+    public void onTokopointCheckNowClicked(@NotNull String applink) {
+        if(!TextUtils.isEmpty(applink)){
+            RouteManager.route(getContext(),applink);
+        }
+    }
 }

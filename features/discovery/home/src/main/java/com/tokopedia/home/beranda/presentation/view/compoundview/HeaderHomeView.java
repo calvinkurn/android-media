@@ -179,7 +179,7 @@ public class HeaderHomeView extends BaseCustomView {
     private OnClickListener onCheckNowListener() {
         return v -> {
             HomePageTracking.eventTokopointNonLogin(getContext());
-            RouteManager.route(getContext(), ApplinkConstInternalPromo.TOKOPOINTS_HOME);
+            listener.onTokopointCheckNowClicked(ApplinkConstInternalPromo.TOKOPOINTS_HOME);
         };
     }
 

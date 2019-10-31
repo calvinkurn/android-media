@@ -59,7 +59,7 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
     }
 
     public static Intent getCallingIntent(Context context, Bundle extras) {
-        Intent intent = new Intent(context, CatalogListingActivity.class);
+        final Intent intent = new Intent(context, CatalogListingActivity.class);
         intent.putExtras(extras);
         return intent;
     }

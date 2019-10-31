@@ -61,23 +61,6 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         mContainerMain = findViewById(com.tokopedia.design.R.id.container);
         initViews();
         UserSessionInterface userSession = new UserSession(this);
-//        if (userSession.isLoggedIn()) {
-//            if (getApplicationContext() instanceof TokopointRouter
-//                    && ((TokopointRouter) getApplicationContext())
-//                    .getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_COUPON_LISTING, false)) {
-//                finish();
-//                if (getIntent() == null || getIntent().getExtras() == null) {
-//                    startActivity(CouponListingStackedActivity.getCallingIntent(this));
-//                } else {
-//                    startActivity(CouponListingStackedActivity.getCallingIntent(this, getIntent().getExtras()));
-//                }
-//            } else {
-//                mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
-//                showLoading();
-//            }
-//        } else {
-//            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-//        }
         Bundle bundle = new Bundle();
         if ( getIntent().getData() != null ) {
             bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING, getIntent().getData(),bundle);
