@@ -8,7 +8,7 @@
 
 
     <com.tokopedia.promocheckout.customview.PromoTicketView
-        android:layout_width="268dp"
+        android:layout_width="274dp"
         android:layout_height="@dimen/dp_110"
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintStart_toStartOf="parent"

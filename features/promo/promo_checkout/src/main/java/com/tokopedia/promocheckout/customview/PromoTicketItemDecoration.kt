@@ -10,9 +10,8 @@ class PromoTicketItemDecoration(private val spaceHeight: Int) : RecyclerView.Ite
         with(outRect) {
             if (parent.getChildAdapterPosition(view) == 0) {
                 left = spaceHeight
-                right = spaceHeight-4
             }
-            right = spaceHeight - 4
+            right = spaceHeight - 8
         }
     }
 }

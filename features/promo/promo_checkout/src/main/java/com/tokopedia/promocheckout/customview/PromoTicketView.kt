@@ -36,7 +36,7 @@ class PromoTicketView : View {
     var cornerRadius = 8
     var scallopRadius = 8
     var mScallopHeight = 16
-    var offsetafter = 84
+    var offsetafter = 90
     var cardheight = 96
     private var mShadow: Bitmap? = null
     private var mShadowPaint = Paint(ANTI_ALIAS_FLAG)
