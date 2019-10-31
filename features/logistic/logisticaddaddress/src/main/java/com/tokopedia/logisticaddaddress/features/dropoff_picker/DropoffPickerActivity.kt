@@ -31,17 +31,18 @@ import com.tokopedia.unifycomponents.UnifyButton
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private val REQUEST_CODE_LOCATION: Int = 1
+    lateinit var mPermissionChecker: PermissionCheckerHelper
+    lateinit var mFusedLocationClient: FusedLocationProviderClient
+    lateinit var mLocationCallback: LocationCallback
+    private var mMap: GoogleMap? = null
+    private var mMapFragment: SupportMapFragment? = null
+
     lateinit var mSearchInput: SearchInputView
     lateinit var mSearchText: EditText
     lateinit var mDisabledLocationView: View
     lateinit var mNoPermissionsView: View
     lateinit var mButtonActivate: UnifyButton
     lateinit var mButtonGrant: UnifyButton
-    lateinit var mPermissionChecker: PermissionCheckerHelper
-    lateinit var mFusedLocationClient: FusedLocationProviderClient
-    lateinit var mLocationCallback: LocationCallback
-    private var mMap: GoogleMap? = null
-    private var mMapFragment: SupportMapFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
