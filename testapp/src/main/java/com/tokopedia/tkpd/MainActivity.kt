@@ -194,7 +194,6 @@ class MainActivity : AppCompatActivity() {
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
 
-        RouteManager.route(this, ApplinkConstInternalMarketplace.CART)
     }
 
 }

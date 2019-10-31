@@ -1,4 +1,4 @@
-include "libraries:analytics"
+//include "libraries:analytics"
 include "libraries:applink"
 //include "libraries:banner"
 //include "libraries:base_adapter"
@@ -6,38 +6,38 @@ include "libraries:applink"
 //include "libraries:bottom_sheet_builder"
 include "libraries:cache_api"
 //include "libraries:camera_view"
-include "libraries:cameraview"
+//include "libraries:cameraview"
 //include "libraries:cm_push_notifications"
 include "libraries:common_network"
-include "libraries:core_legacy"
-include "libraries:core_network"
+//include "libraries:core_legacy"
+//include "libraries:core_network"
 //include 'libraries:date_picker_range'
-include "libraries:fingerprint"
+//include "libraries:fingerprint"
 include "libraries:global_config"
 //include "libraries:graphql"
 include "libraries:cache_manager"
 //include "libraries:cache_manager_no_op"
-include "libraries:image_picker"
-include "libraries:image_preview"
-include 'libraries:imageuploader'
+//include "libraries:image_picker"
+//include "libraries:image_preview"
+//include 'libraries:imageuploader'
 include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
-include 'libraries:locationmanager'
+//include 'libraries:locationmanager'
 include "libraries:logger"
-include 'libraries:iris'
+//include 'libraries:iris'
 //include 'libraries:iris_no_op'
 include "libraries:network"
 //include "libraries:oms"
 //include "libraries:push_notification"
-include 'libraries:permissionchecker'
+//include 'libraries:permissionchecker'
 //include "libraries:react_native"
 include "libraries:remote_config"
 //include "libraries:travel_calendar"
-include "libraries:tracking_optimizer"
+//include "libraries:tracking_optimizer"
 //include "libraries:use_case"
 include "libraries:user_session"
 //include "libraries:video_recorder"
-include "libraries:videoplayer"
+//include "libraries:videoplayer"
 //include "libraries:websocket"
 //include "libraries:williamchart"
 //include "libraries:YouTubeAndroidPlayerApi"
@@ -46,7 +46,7 @@ include "libraries:videoplayer"
 include "libraries:track"
 //include "libraries:graph_view"
 include 'libraries:cpm'
-include "libraries:linker"
+//include "libraries:linker"
 //include "libraries:webview"
 //include "libraries:collapsing_tab_layout"
 
@@ -62,40 +62,6 @@ include "features:common:resources_common"
 
 // digital home
 //include ":features:digital:digital_homepage"
-
-
-include "features:merchant:product_detail"
-include "features:merchant:product_detail_common"
-include "features:content:affiliate_common"
-include "features:product:gallery"
-include "features:merchant:gold_merchant_resource"
-include "features:promo:merchant_voucher"
-include "features:merchant:product_share"
-include "features:merchant:shop_etalase_picker"
-include "features:merchant:shop_common"
-include "features:discovery:topadssdk"
-include "features:discovery:wishlist_common"
-include "features:top_ads:top_ads_management_sourcetagging"
-include "features:transaction:purchase_platform"
-include "features:transaction:purchase_platform_common"
-include 'tkpdtransaction-common'
-include "features:im:referral"
-include "features:category:tradein"
-include "features:category:basemvvm"
-include "features:logistic:logisticaddaddress"
-include "features:logistic:logisticcart"
-include "features:logistic:logisticdata"
-include 'features:user:profilecompletion'
-include "features:payment:payment"
-include "features:payment:common_payment"
-include "features:promo:promo_checkout_common"
-include 'features:discovery:recommendation_widget_common'
-include 'features:discovery:productcard'
-include "features:discovery:discovery_common"
-include "features:user:stickylogin"
-include "features:transaction:atc_common"
-include "features:home:navigation-common"
-include "libraries:sharedata"
 
 
 include 'testapp'
