@@ -1,0 +1,262 @@
+package com.tokopedia.officialstore.analytics
+
+import android.content.Context
+import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.interfaces.ContextAnalytics
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import java.util.*
+
+class OfficialStoreTracking(context: Context) {
+
+    private var trackingQueue = TrackingQueue(context)
+
+    private val EVENT = "event"
+    private val EVENT_CATEGORY = "eventCategory"
+    private val EVENT_ACTION = "eventAction"
+    private val EVENT_LABEL = "eventLabel"
+
+    private val ECOMMERCE = "ecommerce"
+    private val CLICK = "click"
+    private val IMPRESSION = "impression"
+    private val ECOMMERCE_IMPRESSIONS = "impressions"
+    private val ECOMMERCE_CURRENCY_CODE = "currencyCode"
+
+    private val CLICK_OS_MICROSITE = "clickOSMicrosite"
+    private val PROMO_CLICK = "promoClick"
+    private val PROMO_VIEW = "promoView"
+    private val CATEGORY = "category"
+
+    private val OS_MICROSITE = "os microsite - "
+
+    private val FIELD_PRODUCTS = "products"
+    private val FIELD_PRODUCT_NAME = "name"
+    private val FIELD_PRODUCT_ID = "id"
+    private val FIELD_PRODUCT_PRICE = "price"
+    private val FIELD_PRODUCT_BRAND = "brand"
+    private val FIELD_PRODUCT_VARIANT = "variant"
+    private val FIELD_PRODUCT_CATEGORY = "category"
+    private val FIELD_PRODUCT_LIST = "list"
+    private val FIELD_PRODUCT_QUANTITY = "quantity"
+    private val FIELD_PRODUCT_POSITION = "position"
+    private val FIELD_ACTION_FIELD = "actionField"
+    private val FIELD_CATEGORY_ID = "category_id"
+    private val FIELD_SHOP_ID = "shop_id"
+    private val FIELD_SHOP_TYPE = "shop_type"
+    private val FIELD_SHOP_NAME = "shop_name"
+
+    private val VALUE_NONE_OTHER = "none / other"
+    private val VALUE_IDR = "IDR"
+    private val VALUE_EMPTY = ""
+
+    private val EVENT_PRODUCT_VIEW = "productView"
+    private val EVENT_PRODUCT_CLICK = "productClick"
+    private val ATTRIBUTION = "attribution"
+
+
+    private val PRODUCT_EVENT_ACTION = "impression - product recommendation"
+
+    private val EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID = "recommendation page with product id"
+
+
+    private fun getTracker(): ContextAnalytics {
+        return TrackApp.getInstance().gtm
+    }
+
+    fun sendScreen(categoryName: String) {
+        val screenName = "/official-store/$categoryName"
+        val customDimension = HashMap<String, String>()
+        customDimension["cd35"] = "/official-store"
+        getTracker().sendScreenAuthenticated(screenName, customDimension)
+    }
+
+    fun eventClickCategory(categoryName: String, categoryId: String, categoryPosition: Int, imageUrl: String) {
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, "$CATEGORY - $CLICK",
+                EVENT_LABEL, "$CLICK $CATEGORY",
+                ECOMMERCE, DataLayer.mapOf(
+                PROMO_CLICK, DataLayer.mapOf(
+                        "promotions",DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "id", categoryId,
+                                    "name", "/official-store/$categoryName - category navigation",
+                                    "position", "$categoryPosition",
+                                    "creative", categoryName,
+                                    "creative_url", imageUrl,
+                                    "promo_id", null,
+                                    "promo_code", null
+                            )
+                        )
+                    )
+                )
+            )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    fun eventImpressionCategory(categoryName: String, categoryId: String, categoryPosition: Int, imageUrl: String) {
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, "$CATEGORY - $IMPRESSION",
+                EVENT_LABEL, "$IMPRESSION of $CATEGORY",
+                    ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                        "promotions",DataLayer.listOf(
+                        DataLayer.mapOf(
+                                "id", categoryId,
+                                "name", "/official-store/$categoryName - category navigation",
+                                "position", "$categoryPosition",
+                                "creative", categoryName,
+                                "creative_url", imageUrl,
+                                "promo_id", null,
+                                "promo_code", null
+                        )
+                    )
+                )
+            )
+        )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    fun eventClickBanner(categoryName: String, bannerId: String, bannerPosition: Int, bannerName: String, imageUrl: String) {
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, "banner - $CLICK",
+                EVENT_LABEL, "$CLICK banner",
+                ECOMMERCE, DataLayer.mapOf(
+                PROMO_CLICK, DataLayer.mapOf(
+                "promotions",DataLayer.listOf(
+                DataLayer.mapOf(
+                        "id", bannerId,
+                        "name", "/official-store/$categoryName - slider banner",
+                        "position", "$bannerPosition",
+                        "creative", bannerName,
+                        "creative_url", imageUrl,
+                        "promo_id", null,
+                        "promo_code", null
+                        )
+                    )
+                )
+            )
+        )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    fun eventImpressionBanner(categoryName: String, bannerId: String, bannerPosition: Int, bannerName: String, imageUrl: String) {
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, "banner - $IMPRESSION",
+                EVENT_LABEL, "$IMPRESSION of banner",
+                ECOMMERCE, DataLayer.mapOf(
+                PROMO_VIEW, DataLayer.mapOf(
+                "promotions",DataLayer.listOf(
+                DataLayer.mapOf(
+                        "id", bannerId,
+                        "name", "/official-store/$categoryName - slider banner",
+                        "position", "$bannerPosition",
+                        "creative", bannerName,
+                        "creative_url", imageUrl,
+                        "promo_id", null,
+                        "promo_code", null
+                        )
+                    )
+                )
+            )
+        )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    fun eventClickAllBanner(categoryName: String) {
+        getTracker().sendGeneralEvent(
+                TrackAppUtils
+                        .gtmData(CLICK_OS_MICROSITE,
+                                "$OS_MICROSITE$categoryName",
+                                "banner - $CLICK",
+                                "$CLICK view all"))
+    }
+
+    fun eventClickAllFeaturedBrand(categoryName: String) {
+        getTracker().sendGeneralEvent(
+                TrackAppUtils
+                        .gtmData( CLICK_OS_MICROSITE,
+                                "$OS_MICROSITE$categoryName",
+                                "all brands - $CLICK",
+                                "$CLICK view all"))
+    }
+
+
+
+    // No 21
+    fun eventClickProductRecommendation(
+            item: RecommendationItem,
+            position: String,
+            recommendationTitle: String,
+            isLogin: Boolean,
+            categoryName: String
+    ) {
+        val tracker = getTracker()
+        val data = DataLayer.mapOf(
+                EVENT, EVENT_PRODUCT_CLICK,
+                EVENT_CATEGORY, String.format(OS_MICROSITE, categoryName), // Here
+                EVENT_ACTION, PRODUCT_EVENT_ACTION,
+                EVENT_LABEL, recommendationTitle,
+                ECOMMERCE, DataLayer.mapOf(
+                CLICK, DataLayer.mapOf(
+                FIELD_ACTION_FIELD, DataLayer.mapOf(
+                FIELD_PRODUCT_LIST, getListProductClickInsideActionField(categoryName, item.recommendationType),
+                FIELD_PRODUCTS, DataLayer.listOf(
+                convertRecommendationItemToDataImpressionObject(item, isLogin, position)
+        )))))
+        tracker.sendEnhanceEcommerceEvent(data)
+    }
+
+    // No 22
+    fun eventImpressionProductRecommendation(
+            item: RecommendationItem,
+            isLogin: Boolean,
+            categoryName: String,
+            recommendationTitle: String,
+            position: String) {
+        val data = DataLayer.mapOf(
+                EVENT, EVENT_PRODUCT_VIEW,
+                EVENT_CATEGORY, String.format(OS_MICROSITE, categoryName),
+                EVENT_ACTION, PRODUCT_EVENT_ACTION,
+                EVENT_LABEL, recommendationTitle,
+                ECOMMERCE, DataLayer.mapOf(
+                ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
+                convertRecommendationItemToDataImpressionObject(item, isLogin, position)
+        )))
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem, isLogin: Boolean, position: String): Any {
+        return DataLayer.mapOf(
+                FIELD_PRODUCT_NAME, item.name,
+                FIELD_PRODUCT_ID, item.productId,
+                FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                FIELD_PRODUCT_BRAND, item.shopName,
+                FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+                FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+                FIELD_PRODUCT_LIST, getListProductInsideProductField(item.recommendationType, item.isTopAds, isLogin),
+                FIELD_PRODUCT_POSITION, position,
+                ATTRIBUTION, VALUE_NONE_OTHER
+        )
+    }
+
+    private fun getListProductClickInsideActionField(categoryName: String, recommendationType: String): String {
+        return "/official-store/$categoryName - rekomendasi untuk anda - $recommendationType"
+    }
+
+    private fun getListProductInsideProductField(recommendationType: String, isTopAds: Boolean, isLogin: Boolean): String {
+        val stringTopAds = if (isTopAds) " - product topads" else ""
+        val stringIsLogin = if (isLogin) "" else " - non login"
+        return "/official-store$stringIsLogin - rekomendasi untuk anda - $recommendationType$stringTopAds"
+    }
+}

@@ -19,7 +19,7 @@ import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.DynamicChannelTrackers
-import com.tokopedia.officialstore.analytics.OfficialStoreProductRecommendationTracking
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
@@ -34,7 +34,6 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -70,14 +69,18 @@ class OfficialHomeFragment :
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
-    private lateinit var trackingQueue: TrackingQueue
     private var counterTitleShouldBeRendered = 1
     private var totalScroll = 0
+
+    private lateinit var tracking: OfficialStoreTracking
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             category = it.getParcelable(BUNDLE_CATEGORY)
+        }
+        context?.let {
+            tracking = OfficialStoreTracking(it)
         }
     }
 
@@ -85,10 +88,6 @@ class OfficialHomeFragment :
         val view = inflater.inflate(R.layout.fragment_official_home_child, container, false)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         recyclerView = view.findViewById(R.id.recycler_view)
-
-        context?.let {
-            trackingQueue = TrackingQueue(it)
-        }
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
         endlesScrollListener = getEndlessRecyclerViewScrollListener()
@@ -304,7 +303,7 @@ class OfficialHomeFragment :
     }
 
     private fun eventTrackerClickListener(item: RecommendationItem, position: Int) {
-        OfficialStoreProductRecommendationTracking.eventClickProductRecommendation(
+        tracking.eventClickProductRecommendation(
                 item,
                 position.toString(),
                 PRODUCT_RECOMMENDATION_TITLE_SECTION,
@@ -333,13 +332,12 @@ class OfficialHomeFragment :
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        OfficialStoreProductRecommendationTracking.eventImpressionProductRecommendation(
+        tracking.eventImpressionProductRecommendation(
                 item,
                 viewModel.isLoggedIn(),
                 category?.title.toString(),
                 PRODUCT_RECOMMENDATION_TITLE_SECTION,
-                item.position.toString(),
-                trackingQueue
+                item.position.toString()
         )
     }
 

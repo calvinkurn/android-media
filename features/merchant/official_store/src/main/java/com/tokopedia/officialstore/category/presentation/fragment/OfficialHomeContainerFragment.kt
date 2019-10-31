@@ -11,15 +11,12 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
 import com.tokopedia.officialstore.category.di.DaggerOfficialStoreCategoryComponent
@@ -30,10 +27,8 @@ import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStore
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.view_official_store_category.view.*
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -57,8 +52,17 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
 
+    private lateinit var tracking: OfficialStoreTracking
+
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
         OfficialHomeContainerAdapter(context, childFragmentManager)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            tracking = OfficialStoreTracking(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -131,6 +135,39 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         tabAdapter.notifyDataSetChanged()
         tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
         tabLayout?.getTabAt(0)?.select()
+
+        val category = tabAdapter.categoryList[0]
+        tracking.eventImpressionCategory(
+                category.title,
+                category.categoryId,
+                0,
+                category.icon
+        )
+
+        tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+            override fun onTabReselected(p0: TabLayout.Tab?) {
+                val categoryReselected = tabAdapter.categoryList[p0?.position.toZeroIfNull()]
+                tracking.eventClickCategory(
+                        categoryReselected.title,
+                        categoryReselected.categoryId,
+                        p0?.position.toZeroIfNull(),
+                        categoryReselected.icon
+                )
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {}
+
+            override fun onTabSelected(p0: TabLayout.Tab?) {
+                val categorySelected = tabAdapter.categoryList[p0?.position.toZeroIfNull()]
+                tracking.eventClickCategory(
+                        categorySelected.title,
+                        categorySelected.categoryId,
+                        p0?.position.toZeroIfNull(),
+                        categorySelected.icon
+                )
+            }
+
+        })
     }
 
     private fun convertToCategoriesTabItem(data: List<Category>): List<OfficialCategoriesTab.CategoriesItemTab> {
