@@ -168,7 +168,6 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         counterInputViewStock.addTextChangedListener(new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                counterInputViewStock.removeTextChangedListener(this);
                 String sString = StringUtils.omitNonNumeric(s.toString());
                 int stock;
                 if (TextUtils.isEmpty(sString) || sString.equals("0")) {
@@ -176,10 +175,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
                 } else {
                     stock = (int) counterInputViewStock.getDoubleValue();
                 }
-                counterInputViewStock.setValue(stock);
                 checkStockValid(stock);
-                counterInputViewStock.addTextChangedListener(this);
-
                 if (productVariantCombinationViewModel.getStock() == stock) {
                     return;
                 }
@@ -189,6 +185,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
                 } else {
                     labelSwitchStatus.setChecked(true);
                 }
+
             }
         });
 
@@ -297,9 +294,9 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
     private void setStockLabel(boolean isChecked) {
         if (isChecked) {
-            labelSwitchStatus.subTitleText(getString(R.string.product_variant_status_available));
+            labelSwitchStatus.subTitleText(getString(R.string.label_always_active));
         } else {
-            labelSwitchStatus.subTitleText(getString(R.string.product_variant_status_not_available));
+            labelSwitchStatus.subTitleText(getString(R.string.label_always_nonactive));
         }
     }
 
