@@ -27,7 +27,7 @@
         android:textSize="@dimen/fontSize_lvl2"
         android:textStyle="bold"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_below="@+id/title_featured_shop"
         android:id="@+id/recycler_view_featured_shop"
         android:layout_marginTop="@dimen/spacing_lvl3"
