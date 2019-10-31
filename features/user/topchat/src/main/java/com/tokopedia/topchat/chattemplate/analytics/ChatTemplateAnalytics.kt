@@ -71,6 +71,15 @@ class ChatTemplateAnalytics @Inject constructor() {
         )
     }
 
+    fun trackConfirmDeleteTemplateChat() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                NAME_TEMPLATE_CHAT,
+                CATEGORY_TEMPLATE_CHAT,
+                ACTION_CLICK_CONFIRM_DELETE_TEMPLATE_CHAT,
+                ""
+        )
+    }
+
     companion object {
         const val NAME_TEMPLATE_CHAT = "clickTemplateChat"
 
@@ -80,5 +89,6 @@ class ChatTemplateAnalytics @Inject constructor() {
         const val ACTION_CLICK_ADD_TEMPLATE_CHAT = "click on add template chat"
         const val ACTION_CLICK_SAVE_TEMPLATE_CHAT = "click on save edit template"
         const val ACTION_CLICK_DELETE_TEMPLATE_CHAT = "click on delete icon template chat"
+        const val ACTION_CLICK_CONFIRM_DELETE_TEMPLATE_CHAT = "click yes on delete template chat"
     }
 }

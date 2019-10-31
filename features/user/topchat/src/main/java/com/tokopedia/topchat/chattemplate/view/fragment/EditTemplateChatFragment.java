@@ -135,6 +135,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        analytics.trackConfirmDeleteTemplateChat();
                         presenter.deleteTemplate(getArguments().getInt(InboxMessageConstant.PARAM_POSITION));
                         dialog.dismiss();
                     }
