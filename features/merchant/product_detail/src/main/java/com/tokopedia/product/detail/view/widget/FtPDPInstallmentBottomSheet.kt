@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.design.bottomsheet.BottomSheetViewPager
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
@@ -33,18 +34,13 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private var tabLayout: TabLayout? = null
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
-    private var heightWrappingViewPager: ViewPager? = null
+    private var heightWrappingViewPager: BottomSheetViewPager? = null
     internal var ftInstallmentItemList: MutableList<FtInstallmentListItem> = ArrayList()
 
     private var installmentData: FinancingDataResponse = FinancingDataResponse()
     private var productPrice: Float = 0f
 
-
-    fun getLayoutResourceId(): Int {
-        return R.layout.pdp_installment_calculation_bottom_sheet
-    }
-
-    fun getBaseLayoutResourceId(): Int {
+    private fun getBaseLayoutResourceId(): Int {
         return R.layout.widget_bottomsheet_installment_calculation
     }
 
@@ -59,7 +55,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
             heightWrappingViewPager = view.findViewById(R.id.view_pager)
         }
         loadData()
-//        configBottomSheetHeight()
+        configBottomSheetHeight()
     }
 
     fun title(): String {
