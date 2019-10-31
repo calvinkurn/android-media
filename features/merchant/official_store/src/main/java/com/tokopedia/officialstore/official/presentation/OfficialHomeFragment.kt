@@ -9,6 +9,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -46,7 +47,6 @@ class OfficialHomeFragment :
 {
 
     companion object {
-        const val DEFAULT_PAGE = 1
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
         var PRODUCT_RECOMMENDATION_TITLE_SECTION = ""
@@ -125,6 +125,7 @@ class OfficialHomeFragment :
 
     private fun refreshData() {
         adapter?.clearAllElements()
+        adapter?.resetState()
         endlesScrollListener?.resetState()
         viewModel.loadFirstData(category)
     }
@@ -246,10 +247,6 @@ class OfficialHomeFragment :
                         totalScroll += dy
 
                         scrollListener.onContentScrolled(dy, totalScroll)
-
-                        // TODO logic load more
-                        // please see ProductDetailFragment > function addLoadMoreImpression
-                        // viewModel.loadMore()
                     }
 
                 })
@@ -277,6 +274,12 @@ class OfficialHomeFragment :
     }
 
     override fun onDestroy() {
+        viewModel.officialStoreBannersResult.removeObservers(this)
+        viewModel.officialStoreBenefitsResult.removeObservers(this)
+        viewModel.officialStoreFeaturedShopResult.removeObservers(this)
+        viewModel.officialStoreDynamicChannelResult.removeObservers(this)
+        viewModel.officialStoreProductRecommendationResult.removeObservers(this)
+        viewModel.clear()
         super.onDestroy()
     }
 

@@ -114,13 +114,13 @@ class OfficialStoreProductRecommendationTracking {
         }
 
         private fun getListProductClickInsideActionField(categoryName: String, recommendationType: String): String {
-            return "/official-store/${categoryName} - rekomendasi untuk anda - ${recommendationType}"
+            return "/official-store/$categoryName - rekomendasi untuk anda - $recommendationType"
         }
 
         private fun getListProductInsideProductField(recommendationType: String, isTopAds: Boolean, isLogin: Boolean): String {
             val stringTopAds = if (isTopAds) " - product topads" else ""
             val stringIsLogin = if (isLogin) "" else " - non login"
-            return "/official-store${stringIsLogin} - rekomendasi untuk anda - ${recommendationType}${stringTopAds}"
+            return "/official-store$stringIsLogin - rekomendasi untuk anda - $recommendationType$stringTopAds"
         }
     }
 }
