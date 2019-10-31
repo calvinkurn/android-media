@@ -130,7 +130,7 @@ class ChatItemListViewHolder(
 
     private fun responseSuccessChangeStateRead(list: List<ChatStateItem>, element: ItemChatListPojo) {
         for (state in list) {
-            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+            if (element.hasTheSameMsgId(state) && state.isSuccess()) {
                 changeStateMarkAsRead(element)
             }
         }
@@ -148,7 +148,7 @@ class ChatItemListViewHolder(
 
     private fun responseSuccessChangeStateUnread(list: List<ChatStateItem>, element: ItemChatListPojo) {
         for (state in list) {
-            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+            if (element.hasTheSameMsgId(state) && state.isSuccess()) {
                 changeStateMarkAsUnread(element)
             }
         }
