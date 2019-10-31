@@ -1,7 +1,7 @@
 package com.tokopedia.topads.widget.dashboard.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.topads.widget.dashboard.DashboardWidgetFragment
+import com.tokopedia.topads.widget.dashboard.view.DashboardWidgetFragment
 import dagger.Component
 
 /**

@@ -1,9 +1,7 @@
-package com.tokopedia.topads.widget.dashboard
+package com.tokopedia.topads.widget.dashboard.view
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.util.AttributeSet

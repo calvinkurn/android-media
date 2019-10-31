@@ -1,12 +1,10 @@
-package com.tokopedia.topads.widget.dashboard
+package com.tokopedia.topads.widget.dashboard.view
 
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
@@ -19,6 +17,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.widget.R
 import com.tokopedia.topads.widget.dashboard.data.TopAdsDepositResponse
 import com.tokopedia.topads.widget.dashboard.data.TopAdsStatisticResponse
@@ -89,11 +88,13 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
 
     private fun showActiveAds() {
         container_topads_inactive.visibility = View.GONE
-        btn_go_to_dashboard_topads.visibility = View.VISIBLE
         txt_empty_wording.visibility = View.GONE
+        btn_go_to_dashboard_topads.visibility = View.VISIBLE
+        detail_statistic_container.visibility = View.VISIBLE
     }
 
     private fun showNoTopAds() {
+        detail_statistic_container.visibility = View.GONE
         container_topads_inactive.visibility = View.GONE
         btn_go_to_dashboard_topads.visibility = View.GONE
         txt_empty_wording.visibility = View.VISIBLE
@@ -103,6 +104,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         btn_go_to_dashboard_topads.visibility = View.GONE
         txt_empty_wording.visibility = View.GONE
         container_topads_inactive.visibility = View.VISIBLE
+        detail_statistic_container.visibility = View.VISIBLE
     }
 
     private fun onError(t: Throwable) {
@@ -121,15 +123,11 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
     private fun setupView() {
         context?.let {
             val txt = SpannableString(getString(R.string.wording_empty_ads))
-            txt.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.tkpd_main_green)), 74, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            txt.setSpan(StyleSpan(Typeface.BOLD), 74, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            txt.setSpan(object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
-                }
-            }, 74, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            txt_empty_wording.setText(txt)
-            txt_empty_wording.movementMethod = LinkMovementMethod.getInstance()
+            txt.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.tkpd_main_green)), 73, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            txt.setSpan(StyleSpan(Typeface.BOLD), 73, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            txt_empty_wording.setOnClickListener {
+                RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
+            }
         }
         btn_expander.setOnClickListener {
             toggleStatisticView(statistic_container.visibility != View.VISIBLE)
@@ -139,6 +137,12 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         }
         btn_retry.setOnClickListener {
             loadData()
+        }
+        layout_ads_saldo.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)
+        }
+        btn_start_active_topads.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
         }
     }
 
@@ -151,7 +155,6 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
     }
 
     private fun toggleStatisticView(isVisible: Boolean) {
-        txt_empty_wording.visibility = View.GONE
         if (isVisible) {
             statistic_container.visibility = View.VISIBLE
             btn_expander.setImageResource(R.drawable.topads_widget_ic_up)
