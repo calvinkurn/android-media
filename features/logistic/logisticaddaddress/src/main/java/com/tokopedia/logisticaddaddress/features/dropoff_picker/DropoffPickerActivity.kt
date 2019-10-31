@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.dropoff_picker
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.Toast
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -31,6 +32,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.DaggerDropoffPickerComponent
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
 import javax.inject.Inject
 
 
@@ -105,6 +107,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mMapFragment = supportFragmentManager.findFragmentById(R.id.map_dropoff) as SupportMapFragment
         mMapFragment?.getMapAsync(this)
 
+        setObservers()
         checkForPermission()
     }
 
@@ -138,6 +141,14 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun setObservers() {
+        viewModel.stores.observe(this, Observer { result ->
+            when (result) {
+                is Fail -> Toast.makeText(this@DropoffPickerActivity, result.toString(), Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     private fun moveCamera(latLng: LatLng) {
         setMapView()
         val cameraPosition = CameraPosition.Builder()
@@ -146,6 +157,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 .build()
         mMap?.addMarker(MarkerOptions().position(latLng))
         mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        viewModel.getStores("${latLng.latitude},${latLng.longitude}")
     }
 
     private fun setLocationEmptyView() {

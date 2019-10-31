@@ -7,6 +7,7 @@ import dagger.Component
 @DropoffPickerScope
 @Component(modules = [
     DropoffPickerViewModelsModule::class,
+    DropoffPickerGraphqlModule::class,
     CoreModule::class
 ], dependencies = [BaseAppComponent::class])
 interface DropoffPickerComponent {
