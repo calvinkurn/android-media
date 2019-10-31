@@ -83,7 +83,7 @@ apply plugin: 'com.uber.okbuck'
 
 okbuck {
 
-    buildToolVersion = "29.0.2"
+    buildToolVersion = "27.0.3"
     target = "android-28"
     linearAllocHardLimit = [
             customerapp: 10130000,
