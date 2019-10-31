@@ -14,21 +14,26 @@
         android:background="@color/white"
         android:clipChildren="true"
         android:clipToPadding="true"
-        app:cornerRadius="6dp"
+        app:blurRadius="@dimen/dp_8"
+        app:cornerRadius="@dimen/dp_8"
+        app:shadowBottomOffset="-2dp"
+        app:shadowEndOffset="0dp"
+        app:shadowStartOffset="0dp"
+        app:shadowTopOffset="0dp"
         tools:background="@color/y_200">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/appCompatImageView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@+id/couponView"
             android:background="@color/colorGray"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="h,3.3:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/couponView" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon"

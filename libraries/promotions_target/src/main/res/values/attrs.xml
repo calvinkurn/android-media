@@ -4,6 +4,10 @@
         <attr name="shadowHeight" format="dimension"/>
         <attr name="shadowDx" format="dimension"/>
         <attr name="shadowDy" format="dimension"/>
+        <attr name="shadowTopOffset" format="dimension"/>
+        <attr name="shadowBottomOffset" format="dimension"/>
+        <attr name="shadowStartOffset" format="dimension"/>
+        <attr name="shadowEndOffset" format="dimension"/>
         <attr name="shadowStartY" format="dimension"/>
         <attr name="shadowColor" format="color"/>
         <attr name="shadowStrokeWidth" format="dimension"/>

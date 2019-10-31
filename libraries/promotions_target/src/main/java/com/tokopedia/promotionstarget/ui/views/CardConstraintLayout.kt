@@ -33,6 +33,10 @@ open class CardConstraintLayout : ConstraintLayout {
     private var shadowHeight = 0f
     private var shadowDx = 0f
     private var shadowDy = 0f
+    private var shadowStartOffset = 0f
+    private var shadowEndOffset = 0f
+    private var shadowTopOffset = 0f
+    private var shadowBottomOffset = 0f
     private var shadowStartY = java.lang.Float.MIN_VALUE
     private var enableShadow = false
     private var enableBorder = false
@@ -65,10 +69,12 @@ open class CardConstraintLayout : ConstraintLayout {
             val typedArray =
                     context.theme.obtainStyledAttributes(attrs, R.styleable.CardConstraintLayout, 0, 0)
             shadowHeight = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowHeight, 0f)
-            shadowDx =
-                    typedArray.getDimension(R.styleable.CardConstraintLayout_shadowDx, dpToPx(context, 0))
-            shadowDy =
-                    typedArray.getDimension(R.styleable.CardConstraintLayout_shadowDy, dpToPx(context, 0))
+            shadowDx = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowDx, dpToPx(context, 0))
+            shadowDy = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowDy, dpToPx(context, 0))
+            shadowTopOffset = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowTopOffset, dpToPx(context, 0))
+            shadowBottomOffset = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowBottomOffset, dpToPx(context, 0))
+            shadowStartOffset = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowStartOffset, dpToPx(context, 0))
+            shadowEndOffset = typedArray.getDimension(R.styleable.CardConstraintLayout_shadowEndOffset, dpToPx(context, 0))
             shadowStartY = typedArray.getDimension(
                     R.styleable.CardConstraintLayout_shadowStartY,
                     java.lang.Float.MIN_VALUE
@@ -84,7 +90,7 @@ open class CardConstraintLayout : ConstraintLayout {
                     dpToPx(context, 3)
             )
             blurRadius =
-                    typedArray.getDimension(R.styleable.CardConstraintLayout_blurRadius, dpToPx(context, 12))
+                    typedArray.getDimension(R.styleable.CardConstraintLayout_blurRadius, dpToPx(context, 8))
             enableShadow = typedArray.getBoolean(R.styleable.CardConstraintLayout_enableShadow, true)
             enableBorder = typedArray.getBoolean(R.styleable.CardConstraintLayout_enableBorder, false)
             borderHeight = typedArray.getDimension(R.styleable.CardConstraintLayout_borderHeight, 0f)
@@ -156,19 +162,17 @@ open class CardConstraintLayout : ConstraintLayout {
 
         shadowPaint.maskFilter = blurMaskFilter
 
-        val yOffset = -shadowDy.toInt()
-        val xOffset = -shadowDx.toInt()
 
         if (shadowStartY == java.lang.Float.MIN_VALUE) {
             shadowStartY = (height / 2).toFloat()
         }
 
         shadowPath.reset()
-        shadowPath.moveTo((width + xOffset).toFloat(), shadowStartY)
-        shadowPath.lineTo((-xOffset).toFloat(), shadowStartY)
-        shadowPath.lineTo((-xOffset).toFloat(), (height + yOffset).toFloat())
-        shadowPath.lineTo((width + xOffset).toFloat(), (height + yOffset).toFloat())
-        shadowPath.lineTo((width + xOffset).toFloat(), shadowStartY)
+        shadowPath.moveTo((width + (shadowEndOffset)), shadowStartY + shadowTopOffset)               //Top Right
+        shadowPath.lineTo((shadowStartOffset), shadowStartY+shadowTopOffset)                         // TR -> TL
+        shadowPath.lineTo((shadowStartOffset), (height + shadowBottomOffset))                           // TL -> BL
+        shadowPath.lineTo((width + shadowEndOffset), (height + shadowBottomOffset))                   // BL -> BR
+        shadowPath.lineTo((width + shadowEndOffset), shadowStartY)                                      // BR -> TR
 
         canvas.drawPath(shadowPath, shadowPaint)
         canvas.restore()
