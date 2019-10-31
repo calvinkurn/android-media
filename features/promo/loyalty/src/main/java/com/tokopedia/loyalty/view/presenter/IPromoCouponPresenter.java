@@ -32,7 +32,5 @@ public interface IPromoCouponPresenter {
 
     void detachView();
 
-    void submitFlightVoucher(CouponData data, String cartId);
-
     void submitDealVoucher(CouponData couponData, JsonObject requestBody, boolean flag);
 }
