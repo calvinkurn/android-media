@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
@@ -58,7 +59,7 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-    private lateinit var tracking: OfficialStoreTracking
+    private var tracking: OfficialStoreTracking? = null
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -75,6 +76,11 @@ class OfficialHomeFragment :
         super.onCreate(savedInstanceState)
         arguments?.let { category = it.getParcelable(BUNDLE_CATEGORY) }
         context?.let { tracking = OfficialStoreTracking(it) }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        tracking?.sendScreen(category?.title.toEmptyStringIfNull())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -296,7 +302,7 @@ class OfficialHomeFragment :
     }
 
     private fun eventTrackerClickListener(item: RecommendationItem, position: Int) {
-        tracking.eventClickProductRecommendation(
+        tracking?.eventClickProductRecommendation(
                 item,
                 position.toString(),
                 PRODUCT_RECOMMENDATION_TITLE_SECTION,
@@ -325,7 +331,7 @@ class OfficialHomeFragment :
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        tracking.eventImpressionProductRecommendation(
+        tracking?.eventImpressionProductRecommendation(
                 item,
                 viewModel.isLoggedIn(),
                 category?.title.toString(),
@@ -362,7 +368,7 @@ class OfficialHomeFragment :
             val applink = gridData?.applink ?: ""
 
             gridData?.let {
-                tracking.dynamicChannelImageClick(
+                tracking?.dynamicChannelImageClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
@@ -376,7 +382,7 @@ class OfficialHomeFragment :
 
     override fun onClickFlashSaleActionText(applink: String): View.OnClickListener {
         return View.OnClickListener {
-            tracking.flashSaleActionTextClick(viewModel.currentSlug)
+            tracking?.flashSaleActionTextClick(viewModel.currentSlug)
             RouteManager.route(context, applink)
         }
     }
@@ -387,7 +393,7 @@ class OfficialHomeFragment :
             val applink = gridData?.applink ?: ""
 
             gridData?.let {
-                tracking.flashSalePDPClick(
+                tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
@@ -411,7 +417,7 @@ class OfficialHomeFragment :
             val applink = gridData?.applink ?: ""
 
             gridData?.let {
-                tracking.dynamicChannelMixCardClick(
+                tracking?.dynamicChannelMixCardClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
