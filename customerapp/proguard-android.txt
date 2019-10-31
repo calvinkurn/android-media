@@ -216,3 +216,6 @@ public protected *;
 -assumenosideeffects class com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity {
     public void initTranslator();
 }
+-keepclassmembers class com.google.android.material.bottomsheet.BottomSheetDialog {
+    private <fields>;
+}
