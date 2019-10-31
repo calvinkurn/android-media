@@ -686,14 +686,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
 
-
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                HomePageTracking.EVENT_TOKO_POINT,
-                HomePageTracking.CATEGORY_HOMEPAGE_TOKOPOINTS,
-                HomePageTracking.ACTION_CLICK_POINT,
-                HomePageTracking.LABEL_TOKOPOINTS));
+        HomePageTracking.sendTokopointTrackerClick();
     }
 
     @Override

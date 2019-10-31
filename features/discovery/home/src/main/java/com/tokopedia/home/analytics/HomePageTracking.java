@@ -36,14 +36,14 @@ public class HomePageTracking {
     public static final String PESAN_INI_ITU_CLICK = "pesan ini itu click";
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
-    public static final String CATEGORY_HOMEPAGE_TOKOPOINTS = "homepage-tokopoints";
-    public static final String ACTION_CLICK_POINT = "click point & tier status";
+    private static final String CATEGORY_HOMEPAGE_TOKOPOINTS = "homepage-tokopoints";
+    private static final String ACTION_CLICK_POINT = "click point & tier status";
 
     private static final String EVENT_CLICK_HOME_PAGE = "clickHomePage";
     private static final String EVENT_CLICK_HOME_PAGE_WISHLIST = "clickHomepage";
     private static final String EVENT_GIMMICK = "clickGimmick";
     private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
-    public static final String EVENT_TOKO_POINT = "eventTokopoint";
+    private static final String EVENT_TOKO_POINT = "eventTokopoint";
     private static final String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
 
     public static final String CATEGORY_HOME_PAGE = "homepage";
@@ -76,7 +76,7 @@ public class HomePageTracking {
     private static final String ACTION_CLICK_OPEN_SHOP = "jual ini itu buka toko";
     private static final String ACTION_CLICK_EDIT_SHOP = "jual ini itu click ubah";
 
-    public static final String LABEL_TOKOPOINTS = "tokopoints";
+    private static final String LABEL_TOKOPOINTS = "tokopoints";
     private static final String LABEL_EMPTY = "";
     public static final String EVENT = "event";
     public static final String PROMO_VIEW = "promoView";
@@ -1576,5 +1576,14 @@ public class HomePageTracking {
             }
         }
         return list;
+    }
+
+    public static void sendTokopointTrackerClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        HomePageTracking.EVENT_TOKO_POINT,
+                        HomePageTracking.CATEGORY_HOMEPAGE_TOKOPOINTS,
+                        HomePageTracking.ACTION_CLICK_POINT,
+                        HomePageTracking.LABEL_TOKOPOINTS));
     }
 }
