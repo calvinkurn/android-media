@@ -9,4 +9,23 @@ query getTopadsDashboardStatistics($startDate: String!, $endDate:String!,$shopId
       }
     }
   }
+  topAdsGetShopInfo(shop_id:$shopId){
+    data {
+      category
+      category_desc
+    }
+  }
+  topAdsGetAutoAds(shopId:$shopId){
+      data {
+        shop_id
+        status
+        status_desc
+        daily_budget
+        daily_usage
+        info {
+          reason
+          message
+        }
+      }
+    }
 }

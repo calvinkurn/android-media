@@ -1,12 +1,10 @@
 package com.tokopedia.topads.widget.dashboard
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -27,7 +25,9 @@ import com.tokopedia.topads.widget.dashboard.data.TopAdsStatisticResponse
 import com.tokopedia.topads.widget.dashboard.di.DaggerDashboardWidgetComponent
 import com.tokopedia.topads.widget.dashboard.di.DashboardWidgetComponent
 import com.tokopedia.topads.widget.dashboard.viewmodel.DashboardWidgetViewModel
-import kotlinx.android.synthetic.main.fragment_widget_dashboard_topads.*
+import kotlinx.android.synthetic.main.layout_ads_saldo.*
+import kotlinx.android.synthetic.main.layout_ads_statistic.*
+import kotlinx.android.synthetic.main.layout_error_state.*
 import javax.inject.Inject
 
 /**
@@ -61,9 +61,8 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(DashboardWidgetViewModel::class.java)
-        viewModel.getTopAdsDeposit(this::onSuccessGetDeposit, this::onError)
-        viewModel.getTopAdsStatisctic(this::onSuccessGetStatistic, this::onError)
         setupView()
+        loadData()
     }
 
     private fun onSuccessGetStatistic(data: TopAdsStatisticResponse.Data) {
@@ -74,10 +73,43 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
             txt_spend_count.setText(it.data.summary.adsCostSumFmt)
             toggleStatisticView(true)
         }
+        data.topAdsGetAutoAds?.let {
+            if (it.data.status == 500) {
+                showActiveAds()
+            } else{
+                showInactiveAds()
+            }
+        }
+        data.topAdsGetShopInfo?.let {
+            when(it.data.category){
+                2 -> showNoTopAds()
+            }
+        }
+    }
+
+    private fun showActiveAds() {
+        container_topads_inactive.visibility = View.GONE
+        btn_go_to_dashboard_topads.visibility = View.VISIBLE
+        txt_empty_wording.visibility = View.GONE
+    }
+
+    private fun showNoTopAds() {
+        container_topads_inactive.visibility = View.GONE
+        btn_go_to_dashboard_topads.visibility = View.GONE
+        txt_empty_wording.visibility = View.VISIBLE
+    }
+
+    private fun showInactiveAds() {
+        btn_go_to_dashboard_topads.visibility = View.GONE
+        txt_empty_wording.visibility = View.GONE
+        container_topads_inactive.visibility = View.VISIBLE
     }
 
     private fun onError(t: Throwable) {
         t.printStackTrace()
+        layout_ads_saldo.visibility = View.GONE
+        layout_ads_statistic.visibility = View.GONE
+        layout_error_state.visibility = View.VISIBLE
     }
 
     private fun onSuccessGetDeposit(data: TopAdsDepositResponse.Data) {
@@ -91,7 +123,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
             val txt = SpannableString(getString(R.string.wording_empty_ads))
             txt.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.tkpd_main_green)), 74, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             txt.setSpan(StyleSpan(Typeface.BOLD), 74, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            txt.setSpan(object : ClickableSpan(){
+            txt.setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
                     RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
                 }
@@ -105,17 +137,17 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         btn_go_to_dashboard_topads.setOnClickListener {
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
         }
+        btn_retry.setOnClickListener {
+            loadData()
+        }
     }
 
-    private fun toggleEmptyView(isVisible: Boolean) {
-        statistic_container.visibility = View.GONE
-        if (isVisible) {
-            txt_empty_wording.visibility = View.VISIBLE
-            btn_expander.setImageResource(R.drawable.topads_widget_ic_up)
-        } else {
-            txt_empty_wording.visibility = View.GONE
-            btn_expander.setImageResource(R.drawable.topads_widget_ic_down)
-        }
+    private fun loadData() {
+        layout_error_state.visibility = View.GONE
+        layout_ads_statistic.visibility = View.VISIBLE
+        layout_ads_saldo.visibility = View.VISIBLE
+        viewModel.getTopAdsDeposit(this::onSuccessGetDeposit, this::onError)
+        viewModel.getTopAdsStatisctic(this::onSuccessGetStatistic, this::onError)
     }
 
     private fun toggleStatisticView(isVisible: Boolean) {
