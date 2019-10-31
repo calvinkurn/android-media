@@ -45,19 +45,19 @@
                 app:srcCompat="@drawable/topads_widget_ic_toa" />
 
             <TextView
-                style="@style/TextView.Small.Bold"
+                style="@style/TextView.Micro.Bold"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:text="@string/kredit_topads" />
 
             <TextView
                 android:id="@+id/txt_saldo_topads"
                 style="@style/TextView.Title.Green"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="right"
+                android:layout_height="match_parent"
+                android:gravity="right|center_vertical"
                 android:text="@string/rp_0"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -88,11 +88,11 @@
                     app:srcCompat="@drawable/topads_widget_ic_stat" />
 
                 <TextView
-                    style="@style/TextView.Small.Bold"
+                    style="@style/TextView.Micro.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="left"
+                    android:gravity="left|center_vertical"
                     android:text="@string/statistik_topads_minggu_ini" />
 
                 <ImageView
@@ -150,12 +150,14 @@
                         android:padding="@dimen/dp_5">
 
                         <TextView
+                            style="@style/TextView.Micro"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/tampil" />
 
                         <TextView
+                            style="@style/TextView.Title.Bold"
                             android:id="@+id/txt_impresion_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -181,12 +183,14 @@
                         android:padding="@dimen/dp_5">
 
                         <TextView
+                            style="@style/TextView.Micro"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/klik" />
 
                         <TextView
+                            style="@style/TextView.Title.Bold"
                             android:id="@+id/txt_click_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -218,12 +222,14 @@
                         android:padding="@dimen/dp_5">
 
                         <TextView
+                            style="@style/TextView.Micro"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/pengeluaran" />
 
                         <TextView
+                            style="@style/TextView.Title.Bold"
                             android:id="@+id/txt_spend_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -241,12 +247,6 @@
                         app:dashThickness="1dp"
                         app:orientation="vertical" />
 
-                    <!--                    <View-->
-                    <!--                        android:layout_width="2dp"-->
-                    <!--                        android:layout_height="match_parent"-->
-                    <!--                        android:layout_centerHorizontal="true"-->
-                    <!--                        android:background="@drawable/topads_widget_v_line" />-->
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -255,12 +255,14 @@
                         android:padding="@dimen/dp_5">
 
                         <TextView
+                            style="@style/TextView.Micro"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/pendapatan" />
 
                         <TextView
+                            style="@style/TextView.Title.Bold"
                             android:id="@+id/txt_profit_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
