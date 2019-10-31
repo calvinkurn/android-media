@@ -40,6 +40,8 @@ data class Data(
     var latitude: String = "",
     @SerializedName("longitude")
     var longitude: String = "",
+    @SerializedName("opening_hours")
+    var openingHours: String = "",
     @SerializedName("phone")
     var phone: String = "",
     @SerializedName("postal_code")
@@ -51,5 +53,11 @@ data class Data(
     @SerializedName("receiver_name")
     var receiverName: String = "",
     @SerializedName("status")
-    var status: Int = 0
+    var status: Int = 0,
+    @SerializedName("store_code")
+    var storeCode: String = "",
+    @SerializedName("store_distance")
+    var storeDistance: String = "",
+    @SerializedName("type")
+    var type: Int = 0
 )
