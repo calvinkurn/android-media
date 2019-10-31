@@ -10,7 +10,7 @@
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_48">
+        android:layout_marginTop="@dimen/dp_6">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/user_identification_final_ticker"
