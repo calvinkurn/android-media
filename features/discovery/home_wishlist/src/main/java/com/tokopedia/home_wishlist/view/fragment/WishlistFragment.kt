@@ -126,7 +126,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                viewModel.updateWishlist(id.toInt(), position, wishlistStatusFromPdp)
+//                viewModel.updateWishlist(id.toInt(), position, wishlistStatusFromPdp)
             }
         }
     }
@@ -167,7 +167,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         swipeToRefresh?.setOnRefreshListener{
             if(!modeBulkDelete) {
                 endlessRecyclerViewScrollListener?.resetState()
-                viewModel.refresh()
+                viewModel.getWishlistData()
             }
         }
         searchView?.setDelayTextChanged(250)
@@ -274,7 +274,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                     .setTitle("Hapus Wishlist")
                     .setMessage("Yakin kamu mau menghapus produk ini dari Wishlist?")
                     .setPositiveButton("Hapus") { dialog, which ->
-                        viewModel.removeWishlistedProduct(getProductId(dataModel).toString())
+                        viewModel.removeWishlistedProduct(adapterPosition)
                     }
                     .setNegativeButton("Batal") { dialog, which -> }
                     .show()
@@ -289,8 +289,8 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         viewModel.setWishlistOnMarkDelete(position, isChecked)
     }
 
-    override fun onWishlistClick(parentPosition: Int, childPosition: Int) {
-        viewModel.addWishlist(parentPosition, childPosition)
+    override fun onWishlistClick(parentPosition: Int, childPosition: Int, wishlistStatus: Boolean) {
+        viewModel.setRecommendationItemWishlist(parentPosition, childPosition, wishlistStatus)
     }
 
     override fun onProductImpression(dataModel: WishlistDataModel) {
@@ -298,11 +298,11 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     override fun onTryAgainClick() {
-        viewModel.refresh()
+        viewModel.getWishlistData()
     }
 
     private fun onBulkDelete(){
-        viewModel.bulkRemoveWishlist(viewModel.getWishlistPositionOnMark())
+        viewModel.bulkRemoveWishlist()
     }
 
     private fun getProductId(dataModel: WishlistDataModel): Int{
