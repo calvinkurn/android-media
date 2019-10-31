@@ -6,15 +6,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.unifyprinciples.Typography
 
 class DynamicChannelLegoViewHolder(
-        private val view: View?
+        private val view: View?,
+        private val dcEventHandler: DynamicChannelEventHandler
 ) : AbstractViewHolder<DynamicChannelViewModel>(view) {
 
     private val columnNum = 3
@@ -28,7 +28,7 @@ class DynamicChannelLegoViewHolder(
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
             setupHeader(dynamicChannelData.header)
-            setupContent(dynamicChannelData.grids)
+            setupContent(dynamicChannelData)
         }
     }
 
@@ -41,9 +41,7 @@ class DynamicChannelLegoViewHolder(
             if (header.applink.isNotEmpty()) {
                 headerActionText.apply {
                     visibility = View.VISIBLE
-                    setOnClickListener {
-                        RouteManager.route(view?.context, header.applink)
-                    }
+                    setOnClickListener(dcEventHandler.onClickLegoHeaderActionText(header.applink))
                 }
             } else {
                 headerActionText.visibility = View.GONE
@@ -53,8 +51,8 @@ class DynamicChannelLegoViewHolder(
         }
     }
 
-    private fun setupContent(grids: MutableList<Grid?>?) {
-        if (!grids.isNullOrEmpty()) {
+    private fun setupContent(channelData: Channel) {
+        if (!channelData.grids.isNullOrEmpty()) {
             mainContainer.visibility = View.VISIBLE
 
             contentList.apply {
@@ -64,7 +62,7 @@ class DynamicChannelLegoViewHolder(
                         GridLayoutManager.VERTICAL,
                         false
                 )
-                adapter = LegoListAdapter(view?.context, grids)
+                adapter = LegoListAdapter(view?.context, channelData, dcEventHandler)
             }
         } else {
             mainContainer.visibility = View.GONE

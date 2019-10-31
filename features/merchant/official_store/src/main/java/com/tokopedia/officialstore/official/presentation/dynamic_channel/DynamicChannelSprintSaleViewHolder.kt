@@ -15,7 +15,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class DynamicChannelSprintSaleViewHolder(
         private val view: View?,
-        private val countDownListener: CountDownView.CountDownListener
+        private val dcEventHandler: DynamicChannelEventHandler
 ) : AbstractViewHolder<DynamicChannelViewModel>(view) {
 
     private val columnNum = 3
@@ -44,7 +44,7 @@ class DynamicChannelSprintSaleViewHolder(
                 headerCountDown.setup(
                         OfficialStoreDateHelper.getServerTimeOffset(header.serverTime),
                         expiredTime,
-                        countDownListener
+                        dcEventHandler
                 )
                 headerCountDown.visibility = View.VISIBLE
             } else {
