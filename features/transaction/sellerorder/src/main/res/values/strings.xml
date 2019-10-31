@@ -66,4 +66,7 @@
     <string name="desc_bottomsheet_immutable_courier">Kurir dan layanan pengiriman harus sesuai dengan pesanan.</string>
     <string name="title_bottomsheet_wajib_tulis_kode_booking">Wajib tulis kode booking</string>
     <string name="desc_bottomsheet_wajib_tulis_kode_booking">Cetak label pengiriman atau tulis kode booking di kemasan paketmu. Kurir akan memastikan kode booking sudah selesai.</string>
+
+    <string name="datepicker_start_title">Mulai Dari</string>
+    <string name="datepicker_end_title">Sampai</string>
 </resources>

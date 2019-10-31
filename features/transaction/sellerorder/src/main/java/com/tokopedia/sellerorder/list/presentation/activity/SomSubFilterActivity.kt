@@ -31,6 +31,8 @@ class SomSubFilterActivity : BaseSimpleActivity() {
     private lateinit var subFilterAdapter: SomSubFilterAdapter
     private var category: String = ""
 
+    /*override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple*/
     override fun getLayoutRes(): Int = R.layout.activity_filter_sublist
     override fun getNewFragment(): Fragment? = null
 

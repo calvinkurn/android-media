@@ -300,7 +300,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (orderList.isNotEmpty()) renderOrderList()
                     else {
                         if (tabActive == getString(R.string.key_all_order)) renderCekPeluang()
-                        else renderFilterEmpty()
+                        else if (paramOrder.startDate.isNotEmpty() || paramOrder.endDate.isNotEmpty()) renderFilterEmpty(getString(empty_search_title) + "", getString(R.string.empty_filter_desc))
+                        else renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
                     }
                 }
                 is Fail -> {
@@ -322,17 +323,13 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     }
 
-    private fun renderFilterEmpty() {
+    private fun renderFilterEmpty(title: String, desc: String) {
         refreshHandler?.finishRefresh()
         order_list_rv.visibility = View.GONE
         empty_state_order_list.visibility = View.VISIBLE
         title_empty?.text = getString(R.string.empty_filter_title)
         desc_empty?.text = getString(R.string.empty_filter_desc)
         btn_cek_peluang?.visibility = View.GONE
-    }
-
-    private fun renderSearchEmpty() {
-
     }
 
     private fun renderCekPeluang() {

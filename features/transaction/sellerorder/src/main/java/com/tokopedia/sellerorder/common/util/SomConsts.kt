@@ -6,7 +6,7 @@ package com.tokopedia.sellerorder.common.util
 object SomConsts {
     const val PARAM_INPUT = "input"
     const val PARAM_SELLER = "seller"
-    const val PARAM_CLIENT = "desktop"
+    const val PARAM_CLIENT = "android"
     const val PARAM_LIST_ORDER = "param_list_order"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
@@ -71,4 +71,7 @@ object SomConsts {
     const val BOTTOMSHEET_TEXT_ONLY_TYPE = "text_only"
     const val BOTTOMSHEET_TEXT_RADIO_TYPE = "text_radio"
     const val BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE = "text_radio_reason"
+
+    const val START_DATE = "start_date"
+    const val END_DATE = "end_date"
 }

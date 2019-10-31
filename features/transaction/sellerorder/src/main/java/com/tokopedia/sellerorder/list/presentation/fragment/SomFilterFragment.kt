@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
@@ -19,10 +21,12 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.END_DATE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_CHECKBOX
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_RADIO
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_SEPARATOR
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.START_DATE
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
@@ -99,16 +103,6 @@ class SomFilterFragment : BaseDaggerFragment() {
         observingStatusOrderList()
     }
 
-    /*private fun setListeners() {
-        rl_status?.isClickable = true
-        rl_status?.setOnClickListener {
-            context?.let {
-                val intentStatus = SomSubFilterActivity.createIntent(it, listStatusRadioBtn, currentFilterParams, CATEGORY_ORDER_STATUS)
-                startActivityForResult(intentStatus, REQUEST_ORDER_STATUS_LIST)
-            }
-        }
-    }*/
-
     private fun setListeners() {
         btn_terapkan?.setOnClickListener {
             val listOrderParam = currentFilterParams
@@ -117,14 +111,53 @@ class SomFilterFragment : BaseDaggerFragment() {
             })
             activity?.finish()
         }
+        et_start_date?.setOnClickListener { showDatePicker(START_DATE) }
+        et_end_date?.setOnClickListener { showDatePicker(END_DATE) }
+    }
 
-        et_start_date?.setOnClickListener {
-            // show bottomsheet with datepicker
-            context?.let {
-                val datePickerStart = DatePickerUnify(it, Calendar.getInstance(), Calendar.getInstance(), Calendar.getInstance())
-                datePickerStart.show(fragmentManager, "")
+    @SuppressLint("SetTextI18n")
+    private fun showDatePicker(flag: String) {
+        context?.let {
+            val minDate = GregorianCalendar(2010, 0, 1)
+            val dateNow = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+            val datePicker = DatePickerUnify(it, minDate, dateNow, dateNow)
+            when { flag.equals(START_DATE, true) -> datePicker.setTitle(getString(R.string.mulai_dari))
+                   flag.equals(END_DATE, true) -> datePicker.setTitle(getString(R.string.sampai)) }
+            datePicker.show(fragmentManager, "")
+            datePicker.datePickerButton.setOnClickListener {
+                val resultDate = datePicker.getDate()
+                when { flag.equals(START_DATE, true) -> {
+                            // TODO : Ask Indhry
+                            currentFilterParams?.startDate = "${resultDate[0]}/${resultDate[1]+1}/${resultDate[2]}"
+                            et_start_date.setText("${resultDate[0]} ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                        }
+                       flag.equals(END_DATE, true) -> {
+                           currentFilterParams?.endDate = "${resultDate[0]}/${resultDate[1]+1}/${resultDate[2]}"
+                           et_end_date.setText("${resultDate[0]} ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                       } }
+                datePicker.dismiss()
             }
+            datePicker.setCloseClickListener { datePicker.dismiss() }
         }
+    }
+
+    private fun convertMonth(mm: Int): String {
+        var monthString = ""
+        when (mm) {
+            0 -> monthString = "Jan"
+            1 -> monthString = "Feb"
+            2 -> monthString = "Mar"
+            3 -> monthString = "Apr"
+            4 -> monthString = "Mei"
+            5 -> monthString = "Jun"
+            6 -> monthString = "Jul"
+            7 -> monthString = "Ags"
+            8 -> monthString = "Sep"
+            9 -> monthString = "Okt"
+            10 -> monthString = "Nov"
+            11 -> monthString = "Des"
+        }
+        return monthString
     }
 
     private fun loadAllFilter() {

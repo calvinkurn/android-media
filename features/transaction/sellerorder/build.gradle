@@ -3,6 +3,9 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android{
+    /*dataBinding {
+        enabled = true
+    }*/
     testOptions {
         unitTests {
             includeAndroidResources = true
