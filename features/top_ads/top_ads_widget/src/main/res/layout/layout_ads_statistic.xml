@@ -227,7 +227,7 @@
                 <TextView
                     android:id="@+id/btn_start_active_topads"
                     style="@style/TextView.Micro.Green.Bold"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/wording_title"
                     android:paddingLeft="@dimen/dp_10"

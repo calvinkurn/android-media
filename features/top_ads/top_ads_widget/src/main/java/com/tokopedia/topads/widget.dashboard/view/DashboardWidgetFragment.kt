@@ -91,6 +91,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         txt_empty_wording.visibility = View.GONE
         btn_go_to_dashboard_topads.visibility = View.VISIBLE
         detail_statistic_container.visibility = View.VISIBLE
+        btn_expander.visibility = View.VISIBLE
     }
 
     private fun showNoTopAds() {
@@ -98,6 +99,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         container_topads_inactive.visibility = View.GONE
         btn_go_to_dashboard_topads.visibility = View.GONE
         txt_empty_wording.visibility = View.VISIBLE
+        btn_expander.visibility = View.INVISIBLE
     }
 
     private fun showInactiveAds() {
@@ -105,6 +107,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
         txt_empty_wording.visibility = View.GONE
         container_topads_inactive.visibility = View.VISIBLE
         detail_statistic_container.visibility = View.VISIBLE
+        btn_expander.visibility = View.VISIBLE
     }
 
     private fun onError(t: Throwable) {
@@ -125,6 +128,7 @@ class DashboardWidgetFragment : BaseDaggerFragment() {
             val txt = SpannableString(getString(R.string.wording_empty_ads))
             txt.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, R.color.tkpd_main_green)), 73, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             txt.setSpan(StyleSpan(Typeface.BOLD), 73, txt.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            txt_empty_wording.setText(txt)
             txt_empty_wording.setOnClickListener {
                 RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
             }
