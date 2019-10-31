@@ -13,4 +13,5 @@ public class OrderCategory {
     public static final String HOTELS = "HOTELS";
     public static final String MARKETPLACE = "MARKETPLACE";
     public static final String SURVEY_PARAM = "params";
+    public static final String INSURANCE = "insurance";
 }
