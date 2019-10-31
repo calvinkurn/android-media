@@ -142,6 +142,7 @@ class ChatItemListViewHolder(
                 readStatus = STATE_CHAT_READ
                 bindReadState(readStatus, unreads)
                 listener.decreaseNotificationCounter()
+                listener.trackChangeReadStatus(element)
             }
         }
     }
@@ -160,6 +161,7 @@ class ChatItemListViewHolder(
                 readStatus = STATE_CHAT_UNREAD
                 bindReadState(readStatus, unreads)
                 listener.increaseNotificationCounter()
+                listener.trackChangeReadStatus(element)
             }
         }
     }
@@ -277,6 +279,7 @@ class ChatItemListViewHolder(
         const val PAYLOAD_TYPING_STATE = 3207
         const val PAYLOAD_STOP_TYPING_STATE = 5431
 
+        const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"
         const val OFFICIAL_TAG = "Official"
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.analytic
 
+import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
@@ -31,7 +32,7 @@ class ChatListAnalytic @Inject constructor(){
             val ACTION_CLICK_ON_GEAR_ICON_SETTING = "click on gear icon setting"
             val ACTION_CLICK_TAB_CHAT_ON_INBOX_CHAT = "click tab chat on inbox chat"
             val ACTION_CLICK_ON_CHATLIST = "click on chatlist"
-            val ACTION_CLICK_ON_MARK_AS_UNREAD = "click on mark as unread"
+            val ACTION_CLICK_ON_MARK_MESSAGE = "click on mark message"
             val ACTION_CLICK_BROADCAST_WIZARD = "click on broadcast wizard"
         }
     }
@@ -83,6 +84,18 @@ class ChatListAnalytic @Inject constructor(){
                     Category.CATEGORY_INBOX_CHAT,
                     Action.ACTION_CLICK_BROADCAST_WIZARD,
                     ""
+                )
+        )
+    }
+
+    fun trackChangeReadStatus(element: ItemChatListPojo) {
+        val eventLabel = "${element.getLiteralReadStatus()} - ${element.getLiteralUserType()}"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        Event.CLICK_INBOX_CHAT,
+                        Category.CATEGORY_INBOX_CHAT,
+                        Action.ACTION_CLICK_ON_MARK_MESSAGE,
+                        eventLabel
                 )
         )
     }

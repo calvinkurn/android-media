@@ -552,6 +552,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         activityContract?.loadNotificationCounter()
     }
 
+    override fun trackChangeReadStatus(element: ItemChatListPojo) {
+        chatListAnalytics.trackChangeReadStatus(element)
+    }
+
     private fun isTabSeller(): Boolean {
         return sightTag == PARAM_TAB_SELLER
     }
