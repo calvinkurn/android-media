@@ -556,6 +556,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatListAnalytics.trackChangeReadStatus(element)
     }
 
+    override fun trackDeleteChat(element: ItemChatListPojo) {
+        chatListAnalytics.trackDeleteChat(element)
+    }
+
     private fun isTabSeller(): Boolean {
         return sightTag == PARAM_TAB_SELLER
     }

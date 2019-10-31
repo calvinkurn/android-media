@@ -102,6 +102,7 @@ class ChatItemListViewHolder(
     }
 
     private fun delete(element: ItemChatListPojo) {
+        listener.trackDeleteChat(element)
         listener.deleteChat(element, adapterPosition)
     }
 

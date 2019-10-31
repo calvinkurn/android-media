@@ -15,4 +15,5 @@ interface ChatListItemListener {
     fun increaseNotificationCounter()
     fun decreaseNotificationCounter()
     fun trackChangeReadStatus(element: ItemChatListPojo)
+    fun trackDeleteChat(element: ItemChatListPojo)
 }

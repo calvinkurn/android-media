@@ -13,27 +13,29 @@ import javax.inject.Inject
 class ChatListAnalytic @Inject constructor(){
     interface Event {
         companion object {
-            val CLICK_INBOX_CHAT = "clickInboxChat"
+            const val CLICK_INBOX_CHAT = "clickInboxChat"
+            const val CLICK_CHAT_DETAIL = "clickChatDetail"
         }
     }
 
     interface Category {
         companion object {
-            val CATEGORY_INBOX_CHAT = "inbox-chat"
-            val CATEGORY_CHAT_DETAIL = "chat detail"
+            const val CATEGORY_INBOX_CHAT = "inbox-chat"
+            const val CATEGORY_CHAT_DETAIL = "chat detail"
         }
     }
 
     interface Action {
         companion object {
-            val ACTION_SEARCH_ON_CHATLIST = "search on chatlist"
-            val ACTION_CLICK_ON_FILTER = "click on filter"
-            val ACTION_CLICK_ON_LIST_FILTER_CHAT = "click on list filter chat"
-            val ACTION_CLICK_ON_GEAR_ICON_SETTING = "click on gear icon setting"
-            val ACTION_CLICK_TAB_CHAT_ON_INBOX_CHAT = "click tab chat on inbox chat"
-            val ACTION_CLICK_ON_CHATLIST = "click on chatlist"
-            val ACTION_CLICK_ON_MARK_MESSAGE = "click on mark message"
-            val ACTION_CLICK_BROADCAST_WIZARD = "click on broadcast wizard"
+            const val ACTION_SEARCH_ON_CHATLIST = "search on chatlist"
+            const val ACTION_CLICK_ON_FILTER = "click on filter"
+            const val ACTION_CLICK_ON_LIST_FILTER_CHAT = "click on list filter chat"
+            const val ACTION_CLICK_ON_GEAR_ICON_SETTING = "click on gear icon setting"
+            const val ACTION_CLICK_TAB_CHAT_ON_INBOX_CHAT = "click tab chat on inbox chat"
+            const val ACTION_CLICK_ON_CHATLIST = "click on chatlist"
+            const val ACTION_CLICK_ON_MARK_MESSAGE = "click on mark message"
+            const val ACTION_CLICK_BROADCAST_WIZARD = "click on broadcast wizard"
+            const val DELETE_CHAT = "click on delete chat"
         }
     }
 
@@ -96,6 +98,17 @@ class ChatListAnalytic @Inject constructor(){
                         Category.CATEGORY_INBOX_CHAT,
                         Action.ACTION_CLICK_ON_MARK_MESSAGE,
                         eventLabel
+                )
+        )
+    }
+
+    fun trackDeleteChat(element: ItemChatListPojo) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        Event.CLICK_CHAT_DETAIL,
+                        Category.CATEGORY_CHAT_DETAIL,
+                        Action.DELETE_CHAT,
+                        ""
                 )
         )
     }
