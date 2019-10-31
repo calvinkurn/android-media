@@ -5,6 +5,8 @@ query pdpInstallmentCalculation($price: Float!, $quantity: Int!){
         partner_code
         partner_name
         partner_icon
+        partner_url
+        tnc_id
         installment_list {
           term
           mdr_value
@@ -39,6 +41,13 @@ query pdpInstallmentCalculation($price: Float!, $quantity: Int!){
           order
           description
           ins_image_url
+        }
+      }
+      tnc {
+        tnc_id
+        tnc_list {
+            order
+            description
         }
       }
     }

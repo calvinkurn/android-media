@@ -2,12 +2,6 @@ package com.tokopedia.product.detail.view.widget
 
 import android.app.Dialog
 import android.os.Bundle
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.BottomSheetDialogFragment
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,19 +9,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.view.adapter.InstallmentDataPagerAdapter
 import com.tokopedia.product.detail.view.fragment.FtPdpInstallmentCalculationFragment
 import com.tokopedia.product.detail.view.util.FtInstallmentListItem
-import com.tokopedia.referral.view.HeightWrappingViewPager
 import java.util.*
 
 class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         const val KEY_PDP_FINANCING_DATA = "keyPDPFinancingData"
+        const val KEY_PDP_PRODUCT_PRICE = "keyPDPProductPrice"
+
     }
 
     private var tabLayout: TabLayout? = null
@@ -36,6 +37,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     internal var ftInstallmentItemList: MutableList<FtInstallmentListItem> = ArrayList()
 
     private var installmentData: FinancingDataResponse = FinancingDataResponse()
+    private var productPrice: Float = 0f
 
 
     fun getLayoutResourceId(): Int {
@@ -66,9 +68,9 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private fun loadData() {
         populateTwoTabItem()
-        val instantLoanPagerAdapter = InstallmentDataPagerAdapter(childFragmentManager)
-        instantLoanPagerAdapter.setData(ftInstallmentItemList)
-        heightWrappingViewPager?.adapter = instantLoanPagerAdapter
+        val installmentDataPagerAdapter = InstallmentDataPagerAdapter(childFragmentManager)
+        installmentDataPagerAdapter.setData(ftInstallmentItemList)
+        heightWrappingViewPager?.adapter = installmentDataPagerAdapter
         tabLayout?.setupWithViewPager(heightWrappingViewPager)
         heightWrappingViewPager?.currentItem = 0
         tabLayout?.getTabAt(0)?.select()
@@ -76,7 +78,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private fun configBottomSheetHeight() {
         dialog?.run {
-            val parent = findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
             val displaymetrics = DisplayMetrics()
             activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
             val screenHeight = displaymetrics.heightPixels
@@ -148,18 +150,18 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private fun populateTwoTabItem() {
         ftInstallmentItemList.add(FtInstallmentListItem(getPageTitle(0),
-                getCreditInstallmentFragment()))
-        ftInstallmentItemList.add(FtInstallmentListItem(getPageTitle(1),
                 getNonCreditInstallmentFragment()))
+        ftInstallmentItemList.add(FtInstallmentListItem(getPageTitle(1),
+                getCreditInstallmentFragment()))
     }
 
     private fun getNonCreditInstallmentFragment(): Fragment? {
-        return FtPdpInstallmentCalculationFragment.createInstance(
+        return FtPdpInstallmentCalculationFragment.createInstance(productPrice,
                 installmentData.ftInstallmentCalculation.data.nonCreditCardInstallmentData)
     }
 
     private fun getCreditInstallmentFragment(): Fragment? {
-        return FtPdpInstallmentCalculationFragment.createInstance(
+        return FtPdpInstallmentCalculationFragment.createInstance(productPrice,
                 installmentData.ftInstallmentCalculation.data.creditCardInstallmentData)
     }
 
@@ -174,7 +176,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         bottomSheetDialog.setOnShowListener { dialog ->
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
             if (bottomSheet != null) {
                 val behavior = BottomSheetBehavior.from(bottomSheet)
                 behavior.skipCollapsed = true
@@ -187,6 +189,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     private fun getArgumentsData() {
         arguments?.let {
             installmentData = it.getParcelable(KEY_PDP_FINANCING_DATA) ?: FinancingDataResponse()
+            productPrice = it.getFloat(KEY_PDP_PRODUCT_PRICE)
         }
     }
 }

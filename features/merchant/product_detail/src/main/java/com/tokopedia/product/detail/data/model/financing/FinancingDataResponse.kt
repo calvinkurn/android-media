@@ -63,7 +63,10 @@ data class FtInstallmentCalcualtionData(
         val creditCardInstallmentData: ArrayList<FtCalculationPartnerData> = ArrayList(),
 
         @SerializedName("non_credit_card")
-        val nonCreditCardInstallmentData: ArrayList<FtCalculationPartnerData> = ArrayList()
+        val nonCreditCardInstallmentData: ArrayList<FtCalculationPartnerData> = ArrayList(),
+
+        @SerializedName("tnc")
+        val tncDataList: ArrayList<FtInstallmentTnc> = ArrayList()
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -72,11 +75,18 @@ data class FtInstallmentCalcualtionData(
             },
             arrayListOf<FtCalculationPartnerData>().apply {
                 parcel.readList(this, FtCalculationPartnerData::class.java.classLoader)
+            },
+
+            arrayListOf<FtInstallmentTnc>().apply {
+                parcel.readList(this, FtInstallmentTnc::class.java.classLoader)
             }
     )
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
 
+        dest.writeList(creditCardInstallmentData)
+        dest.writeList(nonCreditCardInstallmentData)
+        dest.writeList(tncDataList)
     }
 
     override fun describeContents(): Int {
@@ -96,6 +106,76 @@ data class FtInstallmentCalcualtionData(
     }
 }
 
+data class FtInstallmentTnc(
+
+        @SerializedName("tnc_id")
+        val tncId: Int,
+
+        @SerializedName("tnc_list")
+        val tncList: ArrayList<FtTncData> = ArrayList()
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            arrayListOf<FtTncData>().apply {
+                parcel.readList(this, FtTncData::class.java.classLoader)
+            }
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(tncId)
+        parcel.writeList(tncList)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FtTncData> {
+        override fun createFromParcel(parcel: Parcel): FtTncData {
+            return FtTncData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<FtTncData?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+data class FtTncData(
+
+        @SerializedName("order")
+        val tncOrder: Int,
+
+        @SerializedName("description")
+        val tncDescription: String
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+            parcel.readInt(),
+            parcel.readString() ?: "") {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(tncOrder)
+        parcel.writeString(tncDescription)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FtTncData> {
+        override fun createFromParcel(parcel: Parcel): FtTncData {
+            return FtTncData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<FtTncData?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+
 data class FtCalculationPartnerData(
         @SerializedName("partner_code")
         val partnerCode: String,
@@ -105,6 +185,9 @@ data class FtCalculationPartnerData(
 
         @SerializedName("partner_icon")
         val partnerIcon: String,
+
+        @SerializedName("tnc_id")
+        val tncId: Int,
 
         @SerializedName("installment_list")
         val creditCardInstallmentList: ArrayList<CalculationInstallmentData> = ArrayList(),
@@ -117,6 +200,7 @@ data class FtCalculationPartnerData(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
+            parcel.readInt(),
             arrayListOf<CalculationInstallmentData>().apply {
                 parcel.readList(this, CalculationInstallmentData::class.java.classLoader)
             },
@@ -129,6 +213,9 @@ data class FtCalculationPartnerData(
         parcel.writeString(partnerCode)
         parcel.writeString(partnerName)
         parcel.writeString(partnerIcon)
+        parcel.writeInt(tncId)
+        parcel.writeList(creditCardInstallmentList)
+        parcel.writeList(creditCardInstructionList)
     }
 
     override fun describeContents(): Int {

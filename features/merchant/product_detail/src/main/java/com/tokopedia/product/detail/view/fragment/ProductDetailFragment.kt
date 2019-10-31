@@ -103,6 +103,7 @@ import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_ADDED_PRODUCT_DATA_MODEL
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_FINANCING_DATA
+import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_PRODUCT_PRICE
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -1233,6 +1234,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         val bundleData = Bundle()
         bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
+        bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price!!)
         pdpInstallmentBottomSheet.arguments = bundleData
         pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
     }

@@ -1,9 +1,12 @@
 package com.tokopedia.product.detail.view.adapter
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.PagerAdapter
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.product.detail.view.util.FtInstallmentListItem
 import java.util.*
 
@@ -34,19 +37,26 @@ class InstallmentDataPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm
         return searchSectionItemList[position].title
     }
 
-    /*override fun setPrimaryItem(container: ViewGroup, position: Int, any: Any) {
-        super.setPrimaryItem(container, position, any)
+    override fun setPrimaryItem(container: ViewGroup, position: Int, `object`: Any) {
+        super.setPrimaryItem(container, position, `object`)
+        val f = `object` as Fragment
+        val view = f.view
 
-        if (container !is HeightWrappingViewPager) {
-            throw UnsupportedOperationException("ViewPager is not a WrappingViewPager")
+        if (view != null) {
+            val nestedView = view.findViewWithTag<View>("nested")
+            if (nestedView != null && nestedView is NestedScrollView) {
+                nestedView.isNestedScrollingEnabled = true
+            }
         }
-        val fragment = any as Fragment
-        val pager = container as HeightWrappingViewPager?
-        if (fragment.view != null) {
-            mCurrentPosition = position
-            pager!!.onPageChanged(fragment.view!!)
+
+        for (i in 0 until count) {
+            if (i != position) {
+                val otherScrollView = container.findViewWithTag<View>("nested")
+                if (otherScrollView != null && otherScrollView is NestedScrollView)
+                    otherScrollView.isNestedScrollingEnabled = false
+            }
         }
-    }*/
 
-
+        container.requestLayout()
+    }
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_8"
+    android:orientation="horizontal"
+    android:weightSum="2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_month_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/pdp_installment_price_heading"
+        app:typographyType="body_2"
+        tools:text="Cicilan 6x" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_installment_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        app:typographyType="heading_5"
+        tools:text="Rp 150.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        app:typographyType="body_3"
+        android:text=" /bulan" />
+
+</LinearLayout>
