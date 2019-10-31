@@ -10,7 +10,7 @@ import javax.inject.Inject
  */
 class ChatTemplateAnalytics @Inject constructor() {
 
-    object Companion {
+    object Companions {
         const val SCREEN_TEMPLATE_CHAT_SETTING = "template setting"
         const val SCREEN_TEMPLATE_CHAT_SET = "template update"
     }
@@ -22,5 +22,43 @@ class ChatTemplateAnalytics @Inject constructor() {
                 TopChatAnalytics.Action.UPDATE_TEMPLATE,
                 ""
         ))
+    }
+
+
+    fun trackOnCheckedChange(value: Boolean) {
+        val status = if (value) "on" else "off"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                NAME_TEMPLATE_CHAT,
+                CATEGORY_TEMPLATE_CHAT,
+                ACTION_TOGGLE_TEMPLATE_CHAT,
+                status
+        )
+    }
+
+    fun trackAddTemplateChat() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                NAME_TEMPLATE_CHAT,
+                CATEGORY_TEMPLATE_CHAT,
+                ACTION_CLICK_ADD_TEMPLATE_CHAT,
+                ""
+        )
+    }
+
+    fun trackEditTemplateChat() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                NAME_TEMPLATE_CHAT,
+                CATEGORY_TEMPLATE_CHAT,
+                ACTION_CLICK_ADD_TEMPLATE_CHAT,
+                ""
+        )
+    }
+
+    companion object {
+        const val NAME_TEMPLATE_CHAT = "clickTemplateChat"
+
+        const val CATEGORY_TEMPLATE_CHAT = "template chat"
+
+        const val ACTION_TOGGLE_TEMPLATE_CHAT = "click on toggle setting"
+        const val ACTION_CLICK_ADD_TEMPLATE_CHAT = "click on add template chat"
     }
 }

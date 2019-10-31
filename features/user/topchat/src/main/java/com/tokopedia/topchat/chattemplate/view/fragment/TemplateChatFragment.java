@@ -24,16 +24,15 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topchat.R;
+import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity;
-import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.TemplateChatSettingPresenter;
 import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.common.analytics.TemplateChatAnalytic;
 import com.tokopedia.topchat.common.util.SimpleItemTouchHelperCallback;
 
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
     TemplateChatSettingPresenter presenter;
 
     @Inject
-    TemplateChatAnalytic analytic;
+    ChatTemplateAnalytics analytic;
 
     private ItemTouchHelper mItemTouchHelper;
     private Snackbar snackbarError;
