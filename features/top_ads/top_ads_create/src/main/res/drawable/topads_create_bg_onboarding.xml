@@ -9,6 +9,7 @@
                 android:startColor="#EBF7F8" />
         </shape>
     </item>
+<!--    <item android:drawable="@drawable/topads_create_bg_header_onboarding" />-->
     <item android:top="150dp">
         <shape android:shape="rectangle">
             <corners

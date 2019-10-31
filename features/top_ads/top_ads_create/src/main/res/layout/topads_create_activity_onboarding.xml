@@ -33,8 +33,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="@dimen/dp_8"
-            app:cardUseCompatPadding="true"
-            app:contentPadding="@dimen/dp_20">
+            app:cardUseCompatPadding="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|top"
+                app:srcCompat="@drawable/topads_create_bg_top_corner" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,20 +47,22 @@
                 android:orientation="vertical">
 
 
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
                     android:layout_marginBottom="@dimen/dp_10"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/icon1"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        tools:src="@tools:sample/avatars" />
+                        app:srcCompat="@drawable/topads_create_ic_thumb_up" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -84,14 +91,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
                     android:padding="@dimen/dp_10">
 
                     <ImageView
                         android:id="@+id/icon2"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        tools:src="@tools:sample/avatars" />
+                        app:srcCompat="@drawable/topads_create_ic_iklan_otomatis_1" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -105,13 +114,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Beriklan jadi mudah" />
+                            android:text="@string/beriklan_jadi_mudah" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Iklan produk akan otomatis aktif sesuai jumlah nominal anggaran harianmu." />
+                            android:text="@string/iklan_produk_akan_otomatis_aktif_sesuai_jumlah_nominal_anggaran_harianmu" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -119,14 +128,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
                     android:padding="@dimen/dp_10">
 
                     <ImageView
                         android:id="@+id/icon3"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        tools:src="@tools:sample/avatars" />
+                        app:srcCompat="@drawable/topads_create_ic_iklan_otomatis_2" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -140,13 +151,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Pengaturan iklan lebih optimal" />
+                            android:text="@string/pengaturan_iklan_lebih_optimal" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Kami akan memilih produk dan biaya iklan terbaik untuk optimalkan iklanmu." />
+                            android:text="@string/kami_akan_memilih_produk_dan_biaya_iklan_terbaik_untuk_optimalkan_iklanmu" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -154,14 +165,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
                     android:padding="@dimen/dp_10">
 
                     <ImageView
                         android:id="@+id/icon4"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        tools:src="@tools:sample/avatars" />
+                        app:srcCompat="@drawable/topads_create_ic_iklan_otomatis_3" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -175,13 +188,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Hemat waktu dalam beriklan" />
+                            android:text="@string/hemat_waktu_dalam_beriklan" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Pengaturan iklan akan diperbarui secara berkala untuk tingkatkan potensi penjualanmu." />
+                            android:text="@string/pengaturan_iklan_akan_diperbarui_secara_berkala_untuk_tingkatkan_potensi_penjualanmu" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -190,7 +203,9 @@
                     style="@style/Button.Submit.Green"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Mulai Iklan Otomatis" />
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:text="@string/mulai_iklan_otomatis" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
@@ -200,8 +215,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="@dimen/dp_8"
-            app:cardUseCompatPadding="true"
-            app:contentPadding="@dimen/dp_20">
+            app:cardUseCompatPadding="true">
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|top"
+                app:srcCompat="@drawable/topads_create_bg_top_corner" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -212,15 +233,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:layout_marginLeft="@dimen/dp_20"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/icon5"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        tools:src="@tools:sample/avatars" />
+                        android:src="@drawable/topads_create_ic_gear" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -249,6 +273,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:layout_marginLeft="@dimen/dp_20"
                     android:padding="@dimen/dp_10">
 
                     <ImageView
@@ -256,7 +282,7 @@
                         android:layout_width="42dp"
                         android:layout_height="42dp"
                         android:layout_alignParentLeft="true"
-                        tools:src="@tools:sample/avatars" />
+                        app:srcCompat="@drawable/topads_create_ic_iklan_manual_1" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -270,13 +296,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Atur produk manual" />
+                            android:text="@string/atur_produk_manual" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Pilih produk-produk terbaik yang ingin kamu iklankan." />
+                            android:text="@string/pilih_produk_produk_terbaik_yang_ingin_kamu_iklankan" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -284,6 +310,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:layout_marginLeft="@dimen/dp_20"
                     android:padding="@dimen/dp_10">
 
                     <ImageView
@@ -291,7 +319,7 @@
                         android:layout_width="42dp"
                         android:layout_height="42dp"
                         android:layout_alignParentLeft="true"
-                        tools:src="@tools:sample/avatars" />
+                        app:srcCompat="@drawable/topads_create_ic_iklan_manual_2" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -305,13 +333,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Atur strategi kata kunci" />
+                            android:text="@string/atur_strategi_kata_kunci" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Masukkan kata kunci yang sesuai untuk produkmu secara manual." />
+                            android:text="@string/masukkan_kata_kunci_yang_sesuai_untuk_produkmu_secara_manual" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -319,14 +347,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:layout_marginLeft="@dimen/dp_20"
                     android:padding="@dimen/dp_10">
 
                     <ImageView
                         android:id="@+id/icon8"
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        tools:src="@tools:sample/avatars" />
+                        app:srcCompat="@drawable/topads_create_ic_iklan_manual_3" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -340,13 +370,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Atur biaya iklan manual" />
+                            android:text="@string/atur_biaya_iklan_manual" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Pasang biaya iklan sesuai dengan rekomendasi." />
+                            android:text="@string/pasang_biaya_iklan_sesuai_dengan_rekomendasi" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -356,7 +386,9 @@
                     style="@style/Button.Submit.White.Border.Green"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Gunakan Iklan Manual" />
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:text="@string/gunakan_iklan_manual" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

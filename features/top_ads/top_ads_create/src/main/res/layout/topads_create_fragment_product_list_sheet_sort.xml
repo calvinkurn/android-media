@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/topads_create_bg_top_round"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_10"
+            android:padding="@dimen/dp_2"
+            app:srcCompat="@drawable/topads_create_ic_group_close" />
+
+        <TextView
+            style="@style/TextView.TitleBig.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:gravity="center_vertical"
+            android:text="@string/urutkan" />
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:divider="@drawable/topads_create_h_divider"
+        android:dividerPadding="16dip"
+        android:showDividers="middle"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rb_terlaris"
+            style="@style/TopadsProductSortRadioButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layoutDirection="rtl"
+            android:checked="true"
+            android:text="@string/terlaris"
+            android:textAlignment="textStart" />
+
+        <RadioButton
+            android:id="@+id/rb_terbaru"
+            style="@style/TopadsProductSortRadioButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layoutDirection="rtl"
+            android:text="@string/terbaru"
+            android:textAlignment="textStart" />
+
+        <RadioButton
+            android:id="@+id/rb_tertinggi"
+            style="@style/TopadsProductSortRadioButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layoutDirection="rtl"
+            android:text="@string/harga_tertinggi"
+            android:textAlignment="textStart" />
+
+        <RadioButton
+            android:id="@+id/rb_terendah"
+            style="@style/TopadsProductSortRadioButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layoutDirection="rtl"
+            android:text="@string/harga_terendah"
+            android:textAlignment="textStart" />
+    </RadioGroup>
+
+</LinearLayout>
