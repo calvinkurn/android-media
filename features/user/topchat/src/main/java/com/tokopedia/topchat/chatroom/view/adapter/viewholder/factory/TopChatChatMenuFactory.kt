@@ -23,5 +23,4 @@ class TopChatChatMenuFactory : ChatMenuFactory {
                 ChatMenu(icon = R.drawable.ic_image_picker_grey, title = "Gambar")
         )
     }
-
 }

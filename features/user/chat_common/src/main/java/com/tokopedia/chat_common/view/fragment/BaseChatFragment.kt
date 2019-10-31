@@ -257,9 +257,16 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun showChatMenu() {
         if(bottomChatMenu.isAdded) return
         bottomChatMenu.show(childFragmentManager, BottomChatMenuFragment.TAG)
+        trackChatMenuClicked(getChatMenuEventLabel())
     }
+
+    open fun trackChatMenuClicked(chatMenuEventtLabel: String) {}
 
     override fun onClickAttachProduct() {}
 
     override fun onClickImagePicker() {}
+
+    private fun getChatMenuEventLabel(): String {
+        return "product, image"
+    }
 }

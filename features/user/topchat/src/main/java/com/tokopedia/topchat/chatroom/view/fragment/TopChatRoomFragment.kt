@@ -877,6 +877,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return opponentName
     }
 
+    override fun trackChatMenuClicked(chatMenuEventtLabel: String) {
+        analytics.trackChatMenuClicked(chatMenuEventtLabel)
+    }
+
     override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {
         if (attachment is InvoicePreviewViewModel) {
             analytics.invoiceAttachmentSent(attachment)

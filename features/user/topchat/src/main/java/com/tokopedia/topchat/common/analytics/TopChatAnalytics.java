@@ -83,6 +83,7 @@ public class TopChatAnalytics {
         public static final String CLICK_BUY_PRODUCT_THUMBNAIL ="click buy on product thumbnail";
         public static final String SENT_INVOICE_ATTACHMENT = "click kirim after attach invoice";
         public static final String CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
+        public static final String CLICK_ADD_ATTACHMENT = "click add attachment";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
 
@@ -385,6 +386,16 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER,
                 ""
+        );
+    }
+
+
+    public void trackChatMenuClicked(@NotNull String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_ADD_ATTACHMENT,
+                label
         );
     }
 }
