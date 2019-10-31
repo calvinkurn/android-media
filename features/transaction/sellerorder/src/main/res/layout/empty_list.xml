@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_marginStart="@dimen/dp_24"
     android:layout_marginEnd="@dimen/dp_24">
@@ -31,9 +31,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyWeight="bold"
         app:typographyType="heading_4"
-        android:layout_marginStart="@dimen/dp_15"
-        android:layout_marginEnd="@dimen/dp_15"
         android:layout_marginTop="@dimen/dp_24"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
+        android:textAlignment="center"
         tools:text="@string/empty_filter_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -45,10 +46,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyWeight="reguler"
         app:typographyType="body_2"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_24"
-        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingRight="@dimen/dp_24"
+        android:textAlignment="center"
         tools:text="@string/empty_peluang_desc"/>
 
     <com.tokopedia.unifycomponents.UnifyButton

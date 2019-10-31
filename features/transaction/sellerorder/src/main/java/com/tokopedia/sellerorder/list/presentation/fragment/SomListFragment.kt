@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -44,6 +45,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
@@ -292,6 +294,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun observingOrders() {
         somListViewModel.orderListResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
@@ -300,8 +303,15 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (orderList.isNotEmpty()) renderOrderList()
                     else {
                         if (tabActive == getString(R.string.key_all_order)) renderCekPeluang()
-                        else if (paramOrder.startDate.isNotEmpty() || paramOrder.endDate.isNotEmpty()) renderFilterEmpty(getString(empty_search_title) + "", getString(R.string.empty_filter_desc))
-                        else renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
+                        else if (paramOrder.startDate.isNotEmpty() || paramOrder.endDate.isNotEmpty()) {
+                            val inputFormat = SimpleDateFormat("dd/MM/yyyy")
+                            val outputFormat = SimpleDateFormat("dd MMM yyyy")
+                            val startDate = inputFormat.parse(paramOrder.startDate)
+                            val startDateStr = outputFormat.format(startDate)
+                            val endDate = inputFormat.parse(paramOrder.endDate)
+                            val endDateStr = outputFormat.format(endDate)
+                            renderFilterEmpty(getString(R.string.empty_search_title) + " " + startDateStr + " - " + endDateStr, getString(R.string.empty_search_desc))
+                        } else renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
                     }
                 }
                 is Fail -> {
@@ -319,16 +329,12 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         somListItemAdapter.notifyDataSetChanged()
     }
 
-    private fun renderErrorPage() {
-
-    }
-
     private fun renderFilterEmpty(title: String, desc: String) {
         refreshHandler?.finishRefresh()
         order_list_rv.visibility = View.GONE
         empty_state_order_list.visibility = View.VISIBLE
-        title_empty?.text = getString(R.string.empty_filter_title)
-        desc_empty?.text = getString(R.string.empty_filter_desc)
+        title_empty?.text = title
+        desc_empty?.text = desc
         btn_cek_peluang?.visibility = View.GONE
     }
 
