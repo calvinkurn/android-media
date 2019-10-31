@@ -108,7 +108,7 @@ public class GTMAnalytics extends ContextAnalytics {
             // prevent sending null keyevent
             if (keyEvent == null)
                 return;
-            pushEECommerce(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
+            pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
         }catch (Exception e){
             if(e != null && !TextUtils.isEmpty(e.getMessage())) {
                 Timber.e("P2[GTMAnalytic Error]%s %s", e.getMessage(), stacktrace.toString());
@@ -957,7 +957,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String PROMOCLICK = "promoclick";
     public static final String PROMOVIEW = "promoview";
 
-    public void pushEECommerce(String keyEvent, Bundle bundle) {
+    private void pushEECommerceInternal(String keyEvent, Bundle bundle) {
         // replace list
         if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
                 && !TextUtils.isEmpty(bundle.getString("list"))) {
