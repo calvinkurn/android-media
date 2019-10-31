@@ -11,6 +11,7 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.officialstore.R
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.view_official_store_category.view.*
 import java.util.*
 
@@ -45,28 +46,37 @@ class OfficialCategoriesTab(context: Context, attributes: AttributeSet) : TabLay
         addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabReselected(tab: Tab) {
                 tab.customView?.apply {
-                    text_view_category_title?.setTextColor(MethodChecker.getColor(
-                            context,
-                            R.color.Purple_P600
-                    ))
+                    text_view_category_title?.apply {
+                        setTextColor(MethodChecker.getColor(
+                                context,
+                                R.color.Purple_P600
+                        ))
+                        setWeight(Typography.BOLD)
+                    }
                 }
             }
 
             override fun onTabUnselected(tab: Tab) {
                 tab.customView?.apply {
-                    text_view_category_title?.setTextColor(MethodChecker.getColor(
-                            context,
-                            R.color.Neutral_N700_96
-                    ))
+                    text_view_category_title?.apply {
+                        setTextColor(MethodChecker.getColor(
+                                context,
+                                R.color.Neutral_N700_96
+                        ))
+                        setWeight(Typography.REGULAR)
+                    }
                 }
             }
 
             override fun onTabSelected(tab: Tab) {
                 tab.customView?.apply {
-                    text_view_category_title?.setTextColor(MethodChecker.getColor(
-                            context,
-                            R.color.Purple_P600
-                    ))
+                    text_view_category_title?.apply {
+                        setTextColor(MethodChecker.getColor(
+                                context,
+                                R.color.Purple_P600
+                        ))
+                        setWeight(Typography.BOLD)
+                    }
                 }
             }
         })
@@ -139,7 +149,7 @@ class OfficialCategoriesTab(context: Context, attributes: AttributeSet) : TabLay
     }
 
     private fun getTabView(context: Context, position: Int): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.view_official_store_category,null)
+        val view = LayoutInflater.from(context).inflate(R.layout.view_official_store_category, null)
         with(view){
             ImageHandler.loadImage(
                     context,
