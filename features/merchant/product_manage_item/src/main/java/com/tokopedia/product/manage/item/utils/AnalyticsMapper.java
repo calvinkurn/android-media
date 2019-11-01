@@ -36,6 +36,9 @@ public class AnalyticsMapper {
         if (viewModel.getProductStock() == ProductStockTypeDef.TYPE_ACTIVE) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_STOCK_MANAGEMENT);
         }
+        if( !viewModel.getProductSku().isEmpty()){
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_SKU_PRODUCT);
+        }
         if (viewModel.isProductFreeReturn()) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_FREE_RETURN);
         }
@@ -44,6 +47,12 @@ public class AnalyticsMapper {
         }
         if (viewModel.getProductVideo() != null && viewModel.getProductVideo().size() > 0) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PRODUCT_VIDEO);
+        }
+        if( null != viewModel.getProductEtalase()){
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_ETALASE);
+        }
+        if(viewModel.isProductMustInsurance()){
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_INSURANCE);
         }
         if (viewModel.getProductPreorder().getPreorderStatus() > 0) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
