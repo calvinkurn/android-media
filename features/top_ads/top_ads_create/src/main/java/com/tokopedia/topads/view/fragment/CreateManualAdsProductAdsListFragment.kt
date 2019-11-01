@@ -9,6 +9,8 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.view.sheet.InfoSheetGroupList
 import com.tokopedia.topads.view.sheet.InfoSheetProductList
+import com.tokopedia.topads.view.sheet.ProductFilterSheetBudgetList
+import com.tokopedia.topads.view.sheet.ProductSortSheetBudgetList
 import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list.*
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list.tip_btn
@@ -59,6 +61,12 @@ class CreateManualAdsProductAdsListFragment: CreateManualAdsBaseStepperFragment<
         }
         tip_btn.setOnClickListener {
             InfoSheetProductList.newInstance(it.context).show()
+        }
+        btn_sort.setOnClickListener {
+            ProductSortSheetBudgetList.newInstance(it.context).show()
+        }
+        btn_filter.setOnClickListener {
+            ProductFilterSheetBudgetList.newInstance(it.context).show()
         }
     }
 }
