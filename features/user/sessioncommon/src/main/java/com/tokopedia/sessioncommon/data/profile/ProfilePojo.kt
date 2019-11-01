@@ -28,6 +28,12 @@ data class ProfileInfo(
         @SerializedName("email")
         @Expose
         var email: String = "",
+        @SerializedName("bday")
+        @Expose
+        var birthday: String = "",
+        @SerializedName("gender")
+        @Expose
+        var gender: String = "",
         @SerializedName("phone")
         @Expose
         var phone: String = "",
