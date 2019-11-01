@@ -19,8 +19,6 @@ import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
@@ -64,7 +62,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     public static String DEFAULT_CATEGORY = "0";
     public static String PEFORMANCE_EXPLORE = "mp_explore";
     public static int CATEGORY_POSITION_NONE = -1;
-    static final String LABEL_TAG_COACHMARK_CATEGORY_1 = "explore-category-affiliate-%s";
 
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
@@ -325,7 +322,8 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 categoryAdapter.notifyItemChanged(position);
             }
 
-            if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE) {
+            if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE &&
+                    affiliatePreference.isCoachmarkExploreAsAffiliateShown(userSession.getUserId())) {
                 view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
@@ -343,8 +341,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
                         coachMarkItemList.add(coachMarkItem);
                     }
                 });
-                coachMark = new CoachMarkBuilder().build();
-                coachMark.show(getActivity(), String.format(LABEL_TAG_COACHMARK_CATEGORY_1, userSession.getUserId()), coachMarkItemList);
             }
         }
         presenter.getExploreData(true);
@@ -403,29 +399,33 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void addExploreItemCoachmark(View view) {
-        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int[] originalPost = new int[2];
-                view.getLocationOnScreen(originalPost);
-                int xpos2 = originalPost[0] + view.getWidth();
-                int ypos2 = originalPost[1] + view.getHeight();
-                int[] arrayList = {originalPost[0], originalPost[1], xpos2, ypos2};
-                CoachMarkItem coachMarkItem = new CoachMarkItem(
-                        view,
-                        getActivity().getResources().getString(R.string.coachmark_explore_title_2),
-                        getActivity().getResources().getString(R.string.coachmark_explore_content_2)
-                ).withCustomTarget(arrayList);
-                coachMarkItemList.add(coachMarkItem);
-                showCoachMark();
-            }
-        });
+        if (!affiliatePreference.isCoachmarkExploreAsAffiliateShown(userSession.getUserId())) {
+            view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    int[] originalPost = new int[2];
+                    view.getLocationOnScreen(originalPost);
+                    int xpos2 = originalPost[0] + view.getWidth();
+                    int ypos2 = originalPost[1] + view.getHeight();
+                    int[] arrayList = {originalPost[0], originalPost[1], xpos2, ypos2};
+                    CoachMarkItem coachMarkItem = new CoachMarkItem(
+                            view,
+                            getActivity().getResources().getString(R.string.coachmark_explore_title_2),
+                            getActivity().getResources().getString(R.string.coachmark_explore_content_2)
+                    ).withCustomTarget(arrayList);
+                    coachMarkItemList.add(coachMarkItem);
+                    showCoachMark();
+                }
+
+            });
+        }
     }
 
     public void showCoachMark() {
         coachMark = new CoachMarkBuilder().build();
-        coachMark.show(getActivity(), String.format(LABEL_TAG_COACHMARK_CATEGORY_1, userSession.getUserId()), coachMarkItemList);
+        coachMark.show(getActivity(), String.format(AffiliatePreference.LABEL_TAG_COACHMARK_CATEGORY, userSession.getUserId()), coachMarkItemList);
+        affiliatePreference.setCoachmarkExploreAsAffiliateShown(userSession.getUserId());
     }
 
     @Override

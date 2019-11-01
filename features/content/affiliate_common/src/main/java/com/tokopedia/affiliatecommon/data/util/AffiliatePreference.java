@@ -18,7 +18,7 @@ public class AffiliatePreference {
     private static final String FORMAT_FIRST_OPEN_DASHBOARD = "first_open_dashboard_%s";
     private static final String FORMAT_COACHMARK_SUGGESTION = "coachmark_suggestion_%s";
     private static final String FORMAT_CREATE_POST_ENTRY_ONBOARDING = "create_post_entry_onboarding_%s";
-    private static final String LABEL_TAG_COACHMARK_CATEGORY = "explore-category-affiliate-%s";
+    public static final String LABEL_TAG_COACHMARK_CATEGORY = "explore-category-affiliate-%s";
 
     private final SharedPreferences sharedPrefs;
 
@@ -70,7 +70,10 @@ public class AffiliatePreference {
         sharedPrefs.edit().putBoolean(String.format(FORMAT_CREATE_POST_ENTRY_ONBOARDING, tag), true).apply();
     }
 
-    public void setExploreAsAffiliateShown(String tag) {
+    public void setCoachmarkExploreAsAffiliateShown(String tag) {
         sharedPrefs.edit().putBoolean(String.format(LABEL_TAG_COACHMARK_CATEGORY, tag), true).apply();
+    }
+    public boolean isCoachmarkExploreAsAffiliateShown(String tag) {
+        return sharedPrefs.getBoolean(String.format(LABEL_TAG_COACHMARK_CATEGORY, tag), false);
     }
 }
