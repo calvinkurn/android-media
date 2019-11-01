@@ -1,6 +1,6 @@
 package com.tokopedia.common.travel.domain;
 
-import com.tokopedia.flight.country.database.CountryPhoneCodeTable;
+import com.tokopedia.common.travel.database.CountryPhoneCodeTable;
 
 import java.util.List;
 

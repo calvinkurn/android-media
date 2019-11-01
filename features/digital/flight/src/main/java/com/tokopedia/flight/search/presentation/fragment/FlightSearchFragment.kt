@@ -292,7 +292,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun addToolbarElevation() {
         (activity as AppCompatActivity).supportActionBar!!.elevation =
-                resources.getDimension(R.dimen.dp_4)
+                resources.getDimension(com.tokopedia.design.R.dimen.dp_4)
     }
 
     override fun addProgress(numberToAdd: Int) {
@@ -740,14 +740,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             var maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_DATE_ADDITION_YEAR)
             maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1)
             maxDate = FlightDateUtil.trimDate(maxDate)
-            var title = getString(R.string.travel_calendar_label_choose_departure_trip_date)
+            var title = getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_departure_trip_date)
             var minDate: Date
 
             if (isReturning()) {
                 val dateDepStr = flightSearchPassData.getDate(false)
                 val dateDep = FlightDateUtil.stringToDate(dateDepStr)
                 minDate = FlightDateUtil.trimDate(dateDep)
-                title = getString(R.string.travel_calendar_label_choose_return_trip_date)
+                title = getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_return_trip_date)
             } else {
                 minDate = FlightDateUtil.trimDate(FlightDateUtil.getCurrentDate())
 

@@ -5,7 +5,6 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.data.source.entity.ResponseFlightPopularCity
 import com.tokopedia.flight.airport.domain.FlightAirportMapper
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -28,7 +27,7 @@ class FlightAirportPopularCityUseCase @Inject constructor(@ApplicationContext va
     override fun createObservable(requestParams: RequestParams): Observable<List<Visitable<*>>> {
         return Observable.just(requestParams)
                 .flatMap(Func1<RequestParams, Observable<GraphqlResponse>> {
-                    val query = GraphqlHelper.loadRawString(context.resources, R.raw.flight_airport_popular_city)
+                    val query = GraphqlHelper.loadRawString(context.resources, com.tokopedia.flight.R.raw.flight_airport_popular_city)
                     if (!TextUtils.isEmpty(query)) {
                         graphqlUseCase.clearRequest()
                         graphqlUseCase.addRequest(GraphqlRequest(query, ResponseFlightPopularCity::class.java))
