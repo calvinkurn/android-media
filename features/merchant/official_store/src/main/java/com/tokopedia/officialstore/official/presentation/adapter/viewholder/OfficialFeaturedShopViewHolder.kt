@@ -74,7 +74,7 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
                             shop.imageUrl.toEmptyStringIfNull()
                     )
 
-                    RouteManager.route(context, shop.logoUrl)
+                    RouteManager.route(context, shop.url)
                 }
 
             }

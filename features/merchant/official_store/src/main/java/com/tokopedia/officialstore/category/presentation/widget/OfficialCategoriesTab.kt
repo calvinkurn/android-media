@@ -130,14 +130,6 @@ class OfficialCategoriesTab(context: Context,
         }
     }
 
-//    private fun startTabHeightCollapseAnimation() {
-//        if (tabHeightCollapseAnimator?.animatedFraction.orZero() < 1
-//                && !tabHeightCollapseAnimator?.isStarted!!) {
-//            tabHeightCollapseAnimator?.start()
-//            lastTabCollapseFraction = 1f
-//        }
-//    }
-
     private fun isFullyCollapsed(fraction: Float): Boolean {
         return fraction >= 1
     }
