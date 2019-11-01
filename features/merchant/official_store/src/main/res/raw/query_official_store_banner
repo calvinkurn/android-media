@@ -1,6 +1,6 @@
-query OfficialStoreBanners($slug: String) {
-  slides {
-		slides(page: $slug) {
+query OfficialStoreBanners($page: String) {
+  slides(device: 4) {
+		slides(page: $page) {
           id
           title
           image_url

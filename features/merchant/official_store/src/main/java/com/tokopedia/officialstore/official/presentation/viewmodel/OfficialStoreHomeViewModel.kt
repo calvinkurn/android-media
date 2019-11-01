@@ -51,29 +51,25 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val userId: String
         get() = userSessionInterface.userId
 
-    val officialStoreBannersResult: LiveData<Result<OfficialStoreBanners>> by lazy {
-        _officialStoreBannersResult
-    }
+    val officialStoreBannersResult: LiveData<Result<OfficialStoreBanners>>
+        get() = _officialStoreBannersResult
 
-    val officialStoreBenefitsResult: LiveData<Result<OfficialStoreBenefits>> by lazy {
-        _officialStoreBenefitResult
-    }
 
-    val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>> by lazy {
-        _officialStoreFeaturedShopResult
-    }
+    val officialStoreBenefitsResult: LiveData<Result<OfficialStoreBenefits>>
+        get() = _officialStoreBenefitResult
 
-    val officialStoreDynamicChannelResult: LiveData<Result<DynamicChannel>> by lazy {
-        _officialStoreDynamicChannelResult
-    }
 
-    val officialStoreProductRecommendationResult: LiveData<Result<RecommendationWidget>> by lazy {
-        _officialStoreProductRecommendation
-    }
+    val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>>
+        get() = _officialStoreFeaturedShopResult
 
-    val topAdsWishlistResult: LiveData<Result<WishlistModel>> by lazy {
-        _topAdsWishlistResult
-    }
+    val officialStoreDynamicChannelResult: LiveData<Result<DynamicChannel>>
+        get() = _officialStoreDynamicChannelResult
+
+    val officialStoreProductRecommendationResult: LiveData<Result<RecommendationWidget>>
+        get() = _officialStoreProductRecommendation
+
+    val topAdsWishlistResult: LiveData<Result<WishlistModel>>
+        get() = _topAdsWishlistResult
 
     val wishlistResult: LiveData<Result<WishlistModel>> by lazy {
         _wishlistResult
@@ -114,7 +110,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop("0").await())
             getOfficialStoreDynamicChannel(currentSlug)
         }) {
-            // TODO just ignore or handle?
+            _officialStoreBannersResult.value = Fail(it)
+            _officialStoreBenefitResult.value = Fail(it)
+            _officialStoreFeaturedShopResult.value = Fail(it)
         }
     }
 

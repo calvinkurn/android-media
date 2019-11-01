@@ -18,6 +18,7 @@ import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemD
 
 class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
 
+    private var context: Context? = null
     private var recyclerView: RecyclerView? = null
     private var link: TextView? = null
     private var title: TextView? = null
@@ -32,6 +33,7 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
         title = view?.findViewById(R.id.title_featured_shop)
 
         view?.context?.let {
+            context = it
             officialStoreTracking = OfficialStoreTracking(it)
             adapter = FeaturedShopAdapter(it)
             recyclerView?.layoutManager = GridLayoutManager(it, 2)
@@ -66,7 +68,7 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
             )
 
             adapter?.onItemClickListener = object: FeaturedShopAdapter.OnItemClickListener {
-                override fun onItemClick(context: Context, position: Int, shop: Shop) {
+                override fun onItemClick(position: Int, shop: Shop) {
                     officialStoreTracking?.eventClickFeaturedBrand(
                             element.categoryName.toEmptyStringIfNull(),
                             shop.shopId.toEmptyStringIfNull(),
