@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
@@ -76,6 +77,8 @@ public class ContentExploreFragment extends BaseDaggerFragment
     ExploreImageAdapter imageAdapter;
     @Inject
     UserSessionInterface userSession;
+    @Inject
+    AffiliatePreference affiliatePreference;
 
     private SearchInputView searchInspiration;
     private RecyclerView exploreCategoryRv;
@@ -327,11 +330,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
                     @Override
                     public void onGlobalLayout() {
                         view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        int xPos1 = (int) view.getX();
-                        int yPos1 = (int) view.getY();
-                        int xpos2 = xPos1 + view.getWidth();
-                        int ypos2 = yPos1 + view.getHeight();
-                        int[] arrayList = {xPos1, yPos1, xpos2, ypos2};
+                        int[] originalPost = new int[2];
+                        view.getLocationOnScreen(originalPost);
+                        int xpos2 = originalPost[0] + view.getWidth();
+                        int ypos2 = originalPost[1] + view.getHeight();
+                        int[] arrayList = {originalPost[0], originalPost[1], xpos2, ypos2};
                         CoachMarkItem coachMarkItem = new CoachMarkItem(
                                 view,
                                 getActivity().getResources().getString(R.string.coachmark_explore_title_1),
