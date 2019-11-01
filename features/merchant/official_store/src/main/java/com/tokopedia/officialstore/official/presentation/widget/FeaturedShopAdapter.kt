@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.Shop
 
@@ -27,12 +28,7 @@ class FeaturedShopAdapter(private val context: Context, var shopList: List<Shop>
 
     override fun onBindViewHolder(holder: FeaturedShopViewHolder, position: Int) {
         val shop = shopList[position]
-        Glide.with(context)
-                .load(shop.imageUrl)
-                .dontAnimate()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(holder.imageView)
+        ImageHandler.loadImageAndCache(holder.imageView, shop.imageUrl)
 
         holder.itemView.setOnClickListener {
             onItemClickListener?.onItemClick(context, position, shop)
