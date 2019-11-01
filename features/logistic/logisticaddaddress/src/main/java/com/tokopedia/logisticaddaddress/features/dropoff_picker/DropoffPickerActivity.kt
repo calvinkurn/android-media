@@ -58,7 +58,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mButtonGrant: UnifyButton
     lateinit var mBottomSheet: View
     lateinit var mBehavior: BottomSheetBehavior<View>
-    val mNearbyAdapter: NearbyStoreAdapter = NearbyStoreAdapter()
+    private val mNearbyAdapter: NearbyStoreAdapter = NearbyStoreAdapter()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -136,6 +136,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap?) {
         mMap = googleMap
+        mMap?.setOnMarkerClickListener {
+            val bs = DropoffDetailBottomsheet.newInstance()
+            bs.show(supportFragmentManager, "bottomsheep")
+            true
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -265,8 +270,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         for (datum in data) {
             mMap?.addMarker(MarkerOptions()
                     .position(LatLng(datum.latitude.toDouble(), datum.longitude.toDouble()))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green))
-                    .title(datum.addrName))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green)))
+                    ?.tag = datum
         }
     }
 
