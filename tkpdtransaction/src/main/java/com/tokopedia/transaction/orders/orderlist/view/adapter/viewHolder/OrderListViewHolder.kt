@@ -221,7 +221,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                 orderListAnalytics.sendProductClickEvent(status?.text.toString())
                 orderListAnalytics.sendPageClickEvent("order - detail")
 
-                RouteManager.route(itemView.context, "${order.appLink}?upstream=${order.upstream}")
+                RouteManager.route(itemView.context, "${appLink}?upstream=${order.upstream}")
             }
         }
     }
