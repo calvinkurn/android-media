@@ -69,7 +69,7 @@ class OfficialHomeFragment :
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
-    private var counterTitleShouldBeRendered = 1
+    private var counterTitleShouldBeRendered = 0
     private var totalScroll = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {

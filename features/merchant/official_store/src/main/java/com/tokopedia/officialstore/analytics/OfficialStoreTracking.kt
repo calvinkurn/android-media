@@ -361,7 +361,7 @@ class OfficialStoreTracking(context: Context) {
     ) {
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_CLICK,
-                EVENT_CATEGORY, String.format(OS_MICROSITE, categoryName), // Here
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName", // Here
                 EVENT_ACTION, PRODUCT_EVENT_ACTION,
                 EVENT_LABEL, recommendationTitle,
                 ECOMMERCE, DataLayer.mapOf(
@@ -397,7 +397,7 @@ class OfficialStoreTracking(context: Context) {
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem, isLogin: Boolean, position: String): Any {
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, item.name,
-                FIELD_PRODUCT_ID, item.productId,
+                FIELD_PRODUCT_ID, item.productId.toString(),
                 FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
                 FIELD_PRODUCT_BRAND, item.shopName,
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
