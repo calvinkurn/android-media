@@ -16,26 +16,26 @@ class FeaturedShopAdapter(private val context: Context, var shopList: List<Shop>
 
     var onItemClickListener: OnItemClickListener? = null
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): FeaturedShopViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, position: Int): FeaturedShopViewHolder {
         return FeaturedShopViewHolder(LayoutInflater.from(context).
-                inflate(R.layout.widget_official_featured_shop, p0, false))
+                inflate(R.layout.widget_official_featured_shop, parent, false))
     }
 
     override fun getItemCount(): Int {
         return shopList.size
     }
 
-    override fun onBindViewHolder(p0: FeaturedShopViewHolder, p1: Int) {
-        val shop = shopList[p1]
+    override fun onBindViewHolder(holder: FeaturedShopViewHolder, position: Int) {
+        val shop = shopList[position]
         Glide.with(context)
                 .load(shop.imageUrl)
                 .dontAnimate()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(p0.imageView)
+                .into(holder.imageView)
 
-        p0.itemView.setOnClickListener {
-            onItemClickListener?.onItemClick(context, p1, shop)
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.onItemClick(context, position, shop)
         }
     }
 
@@ -49,6 +49,6 @@ class FeaturedShopAdapter(private val context: Context, var shopList: List<Shop>
     }
 
     interface OnItemClickListener {
-        fun onItemClick(context: Context, p0: Int, shop: Shop)
+        fun onItemClick(context: Context, position: Int, shop: Shop)
     }
 }

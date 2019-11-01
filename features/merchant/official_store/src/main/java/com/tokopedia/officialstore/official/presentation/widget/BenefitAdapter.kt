@@ -17,28 +17,28 @@ class BenefitAdapter(private val context: Context, var benefitList: List<Benefit
     var onItemClickListener: OnItemClickListener? = null
 
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): BenefitViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): BenefitViewHolder {
         return BenefitViewHolder(LayoutInflater.from(context).
-                inflate(R.layout.widget_official_benefit, p0, false))
+                inflate(R.layout.widget_official_benefit, viewGroup, false))
     }
 
     override fun getItemCount(): Int {
         return benefitList.size
     }
 
-    override fun onBindViewHolder(p0: BenefitViewHolder, p1: Int) {
-        val item = benefitList[p1]
+    override fun onBindViewHolder(holder: BenefitViewHolder, position: Int) {
+        val item = benefitList[position]
         ImageHandler.loadImage(
                 context,
-                p0.imageView,
+                holder.imageView,
                 item.iconUrl,
                 R.drawable.ic_loading_image
         )
 
-        p0.textView?.text = item.label
+        holder.textView?.text = item.label
 
-        p0.itemView.setOnClickListener{
-            onItemClickListener?.onItemClick(context, p1, item)
+        holder.itemView.setOnClickListener{
+            onItemClickListener?.onItemClick(context, position, item)
         }
     }
 
@@ -54,6 +54,6 @@ class BenefitAdapter(private val context: Context, var benefitList: List<Benefit
     }
 
     interface OnItemClickListener {
-        fun onItemClick(context: Context, p0: Int, item: Benefit)
+        fun onItemClick(context: Context, position: Int, item: Benefit)
     }
 }

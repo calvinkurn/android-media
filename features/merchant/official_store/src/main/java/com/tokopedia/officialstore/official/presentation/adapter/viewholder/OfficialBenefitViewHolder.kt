@@ -40,7 +40,7 @@ class OfficialBenefitViewHolder(view: View?): AbstractViewHolder<OfficialBenefit
             adapter?.notifyDataSetChanged()
 
             adapter?.onItemClickListener = object: BenefitAdapter.OnItemClickListener {
-                override fun onItemClick(context: Context, p0: Int, item: Benefit) {
+                override fun onItemClick(context: Context, position: Int, item: Benefit) {
                     RouteManager.route(context,
                             "${ApplinkConst.WEBVIEW}?url=${item.redirectUrl}")
 
