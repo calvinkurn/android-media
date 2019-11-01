@@ -6,6 +6,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.OfficialStoreRecommendationEntity
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
@@ -52,7 +53,7 @@ constructor(
         val productIdsString = TextUtils.join(",", productIds)
 
         if (userSession.isLoggedIn) {
-            params.putInt(USER_ID, userSession.userId.toInt())
+            params.putInt(USER_ID, userSession.userId.toIntOrZero())
         } else {
             params.putInt(USER_ID, 0)
         }

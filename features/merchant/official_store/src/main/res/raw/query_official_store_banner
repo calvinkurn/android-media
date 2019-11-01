@@ -2,8 +2,9 @@ query OfficialStoreBanners($slug: String) {
   slides {
 		slides(page: $slug) {
           id
-          image_url
           title
+          image_url
+          topads_view_url
           redirect_url
           applink
         }

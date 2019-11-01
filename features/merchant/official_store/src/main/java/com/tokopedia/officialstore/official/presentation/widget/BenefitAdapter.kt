@@ -14,25 +14,32 @@ import com.tokopedia.officialstore.official.data.model.Benefit
 class BenefitAdapter(private val context: Context, var benefitList: List<Benefit> = ArrayList()) :
         RecyclerView.Adapter<BenefitAdapter.BenefitViewHolder>() {
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): BenefitViewHolder {
+    var onItemClickListener: OnItemClickListener? = null
+
+
+    override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): BenefitViewHolder {
         return BenefitViewHolder(LayoutInflater.from(context).
-                inflate(R.layout.widget_official_benefit, p0, false))
+                inflate(R.layout.widget_official_benefit, viewGroup, false))
     }
 
     override fun getItemCount(): Int {
         return benefitList.size
     }
 
-    override fun onBindViewHolder(p0: BenefitViewHolder, p1: Int) {
-        val item = benefitList[p1]
+    override fun onBindViewHolder(holder: BenefitViewHolder, position: Int) {
+        val item = benefitList[position]
         ImageHandler.loadImage(
                 context,
-                p0.imageView,
+                holder.imageView,
                 item.iconUrl,
                 R.drawable.ic_loading_image
         )
 
-        p0.textView?.text = item.label
+        holder.textView?.text = item.label
+
+        holder.itemView.setOnClickListener{
+            onItemClickListener?.onItemClick(context, position, item)
+        }
     }
 
     class BenefitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -44,5 +51,9 @@ class BenefitAdapter(private val context: Context, var benefitList: List<Benefit
             imageView = itemView.findViewById(R.id.image_icon_benefit)
             textView = itemView.findViewById(R.id.title_benefit)
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(context: Context, position: Int, item: Benefit)
     }
 }

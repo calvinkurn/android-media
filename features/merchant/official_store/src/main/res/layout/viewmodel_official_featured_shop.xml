@@ -6,8 +6,8 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_featured_shop"
+        android:textColor="@color/Neutral_N700_96"
         app:typographyType="heading_3"
-        app:typographyWeight="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -24,8 +24,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:textSize="@dimen/fontSize_lvl2"
-        android:textStyle="bold"/>
+        android:textSize="@dimen/fontSize_lvl2"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_below="@+id/title_featured_shop"

@@ -10,11 +10,14 @@ data class Banner(@SerializedName("id")
                   val title: String = "",
                   @SerializedName("image_url")
                   val imageUrl: String = "",
+                  @SerializedName("topads_view_url")
+                  val topadsViewUrl: String = "",
                   @SerializedName("redirect_url")
                   val redirectUrl: String = "",
                   @SerializedName("applink")
                   val applink: String = "") : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -25,6 +28,7 @@ data class Banner(@SerializedName("id")
         parcel.writeString(bannerId)
         parcel.writeString(title)
         parcel.writeString(imageUrl)
+        parcel.writeString(topadsViewUrl)
         parcel.writeString(redirectUrl)
         parcel.writeString(applink)
     }

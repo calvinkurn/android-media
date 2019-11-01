@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.officialstore.R
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -85,6 +86,16 @@ class OfficialCategoriesTab(context: Context,
             val tab = getTabAt(i)
             tab?.customView = getTabView(context, i)
         }
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                startTabHeightExpandAnimation()
+            }
+
+            override fun onPageSelected(position: Int) {}
+
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
     }
 
     private fun resetAllState() {
@@ -109,6 +120,14 @@ class OfficialCategoriesTab(context: Context,
             adjustTabLayoutHeight(valueAnimator.animatedValue as Int)
         }
         tabHeightCollapseAnimator?.duration = DEFAULT_ANIMATION_DURATION
+    }
+
+    private fun startTabHeightExpandAnimation() {
+        if (tabHeightCollapseAnimator?.animatedFraction.orZero() > 0
+                && !tabHeightCollapseAnimator?.isStarted!!) {
+            tabHeightCollapseAnimator?.reverse()
+            lastTabCollapseFraction = 0f
+        }
     }
 
     private fun isFullyCollapsed(fraction: Float): Boolean {
