@@ -161,6 +161,7 @@ public interface ApplinkConst {
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
     String FLIGHT = "tokopedia://pesawat";
+    String FLIGHT_PHONE_VERIFICATION = "tokopedia-android-internal://pesawat/phone-verification";
 
     String PRODUCT_MANAGE = "tokopedia://seller/product/manage";
     String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
@@ -268,6 +269,29 @@ public interface ApplinkConst {
     String DEALS_ALL_BRANDS = "tokopedia://deals/allbrands/{isVoucher}";
     String DEALS_CATEGORY = "tokopedia://deals/category/page";
 
+    interface TokoPoints {
+        String HOMEPAGE = "tokopedia://tokopoints";
+        String HOMEPAGE2 = "tokopedia://tokopoints/";
+        String CATALOG_LISTING = "tokopedia://tokopoints/tukar-point";
+        String CATALOG_LISTING2 = "tokopedia://tokopoints/tukar-point/";
+        String CATALOG_LISTING3 = "tokopedia://tokopoints/tukar-point//";
+        String CATALOG_LISTING4 = "tokopedia://tokopoints/tukar-point/{slug_category}/{slug_sub_category}";
+        String CATALOG_LISTING5 = "tokopedia://tokopoints/tukar-point/{slug_category}/{slug_sub_category}/";
+        String CATALOG_LISTING6 = "tokopedia://tokopoints/tukar-point/{slug_category}";
+        String CATALOG_LISTING7 = "tokopedia://tokopoints/tukar-point/{slug_category}/";
+        String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
+        String COUPON_LISTING2 = "tokopedia://tokopoints/kupon-saya/";
+        String COUPON_LISTING4 = "tokopedia://tokopoints/kupon-saya/{slug}/";
+        String COUPON_LISTING3 = "tokopedia://tokopoints/kupon-saya/{slug}";
+
+        //New applinks
+        String CATALOG_DETAIL3 = "tokopedia://tokopoints/tukar-point/detail/{catalog_code}";
+        String CATALOG_DETAIL4 = "tokopedia://tokopoints/tukar-point/detail/{catalog_code}/";
+
+        String COUPON_DETAIL3 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}";
+        String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
+    }
+
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
     }
@@ -290,6 +314,7 @@ public interface ApplinkConst {
         String BROWSER = "sellerapp://browser";
         String TOPADS_AUTOADS = "sellerapp://topads/autoads";
         String FLASHSALE_MANAGEMENT = "sellerapp://flashsale/management";
+        String WEBVIEW = "sellerapp://webview";
     }
 
     interface Query {

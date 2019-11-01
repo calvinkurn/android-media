@@ -2,7 +2,7 @@ package com.tokopedia.challenges.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.fragments.submit.ChallengesSubmitFragment;

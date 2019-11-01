@@ -358,9 +358,11 @@
     <string name="ic_checklist_desc">ic_checklist</string>
     <string name="confirm_msg_1a">Dengan menerima pesanan, kamu </string>
     <string name="confirm_msg_1b">tidak dapat mengubah pilihan kurir</string>
-    <string name="confirm_msg_2a">Segera Request Pickup </string>
+    <string name="confirm_msg_2a_reguler">Segera Konfirmasi atau Request Pickup </string>
+    <string name="confirm_msg_2a_free_shipping">Segera Request Pickup </string>
     <string name="confirm_msg_2b">sebelum batas respons berakhir</string>
-    <string name="confirm_msg_3">Cetak label pengiriman atau tulis kode booking di kemasan paket</string>
+    <string name="confirm_msg_3_reguler">Untuk pesanan dengan Kode Booking, cetak label pengiriman atau tulis kode booking di kemasan paket</string>
+    <string name="confirm_msg_3_free_shipping">Cetak label pengiriman atau tulis kode booking di kemasan paket</string>
 
     <string name="request_pickup_title">Konfirmasi Request Pick-Up</string>
     <string name="request_pickup_location_label">Lokasi Tokomu:</string>

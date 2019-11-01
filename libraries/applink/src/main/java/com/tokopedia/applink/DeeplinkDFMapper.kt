@@ -27,10 +27,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_AUTOADS
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL
@@ -69,6 +71,7 @@ object DeeplinkDFMapper {
     val DFM_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val DFM_SHOP_OPEN_CUSTOMERAPP = "shop_open"
     private val DFM_HOTEL_TRAVEL = "hotel_travel"
+    private val DFM_FLIGHT_TRAVEL = "flight_travel"
     private val DFM_DIGITAL_TOPUP = "digital_topup"
     private val DFM_VOUCHER_GAME = "voucher_game"
     private val DFM_DIGITAL_DEALS = "digital_deals"
@@ -83,11 +86,13 @@ object DeeplinkDFMapper {
     private val DFM_CUSTOMER_REPORT_PRODUCT = "customer_report_product"
     private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
     private val DFM_AGE_RESTRICTION = "age_restriction"
+    private val DFM_TOKOPOINTS = "tokopoints"
     private var DFM_MODULE_FINTECH_INSTANT_LOAN = "instantloan"
     private val DFM_CONTACT_US = "contact_us"
     private val DFM_SALDO_DEPOSIT = "saldo_deposit"
     private val DFM_OVOP2P = "ovop2p"
     private val DFM_SALDO_INTRO = "saldo_deposit"
+    private val DFM_REFERRAL = "im_referral"
     private val DFM_WALLET = "fintech_wallet"
 
 
@@ -98,6 +103,8 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) }, DFM_IMAGE_SEARCH, R.string.title_image_search))
             add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWith(HOTEL) }, DFM_HOTEL_TRAVEL, R.string.title_hotel))
+            add(DFP({ it.startsWith(FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
+            add(DFP({ it.startsWith(INTERNAL_FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL_TOPUP, R.string.digital_topup_title))
             add(DFP({ it.startsWith(VOUCHER_GAME) }, DFM_VOUCHER_GAME, R.string.title_voucher_game))
@@ -117,12 +124,16 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(AUTOCOMPLETE) }, DFM_AUTOCOMPLETE, R.string.title_autocomplete))
             add(DFP({ it.startsWith(SEARCH_RESULT) }, DFM_SEARCH_RESULT, R.string.title_search_result))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
+            add(DFP({it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
+            add(DFP({it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
+            add(DFP({it.startsWith(SALDO_INTRO)}, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
             add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DFM_OVOP2P, R.string.title_ovop2p))
             add(DFP({ it.startsWith(SALDO_DEPOSIT) }, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
             add(DFP({ it.startsWith(SALDO_INTRO) }, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN_TAB)
                     || it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
+            add(DFP({ it.startsWith(REFERRAL) }, DFM_REFERRAL, R.string.applink_title_im_referral))
             add(DFP({it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
             add(DFP({ it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
         }

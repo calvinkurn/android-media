@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/dp_16"
@@ -65,7 +65,7 @@
                     tools:textColor="@color/light_primary"
                     tools:textSize="@dimen/sp_12"
                     tools:textStyle="bold" />
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:id="@+id/seperator_1"
@@ -87,7 +87,7 @@
                 android:background="@color/grey_300"
                 app:layout_constraintTop_toBottomOf="@+id/checkin_checkout_date" />
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_16">
@@ -177,7 +177,7 @@
                     app:tickerShapeType="loose"
                     app:tickerType="announcement" />
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/special_request_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -194,7 +194,7 @@
                     tools:text="Dana deposit, pajak wisata, dan biaya lainnya mungkin akan ditagihkan saat check-in. "
                     tools:textSize="@dimen/sp_12" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:id="@+id/seperator_2"
@@ -204,7 +204,7 @@
                 android:background="@color/grey_300"
                 app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/call_hotel_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -234,17 +234,17 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/call_icon"
                     app:layout_constraintTop_toTopOf="parent" />
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_2">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/dp_16"
@@ -296,6 +296,6 @@
                 tools:textColor="@color/light_primary"
                 tools:textSize="@dimen/sp_14"
                 tools:textStyle="bold" />
-        </android.support.constraint.ConstraintLayout>
-    </android.support.v7.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

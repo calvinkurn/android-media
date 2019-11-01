@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.shop.presentation.viewholder
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction

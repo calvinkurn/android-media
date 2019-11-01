@@ -1,6 +1,6 @@
 package com.tokopedia.shop.settings.etalase.view.viewholder
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.TextView

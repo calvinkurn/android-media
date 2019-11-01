@@ -4,7 +4,7 @@ import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 

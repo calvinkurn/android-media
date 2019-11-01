@@ -1,31 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/image_search_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/image_search_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetEnd="0dp"
             android:background="@color/white"
-            app:navigationIcon="@drawable/icon_back"
             app:titleTextColor="@color/black_70"
-            />
+            >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:clipChildren="false">
+
+                <ImageView
+                    android:id="@+id/action_up_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_12"
+                    app:srcCompat="@drawable/image_search_ic_back" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/imageSearchTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:paddingTop="@dimen/dp_6"
+                    android:paddingBottom="@dimen/dp_6"
+                    android:paddingLeft="@dimen/dp_4"
+                    android:paddingStart="@dimen/dp_4"
+                    android:paddingRight="@dimen/dp_10"
+                    android:paddingEnd="@dimen/dp_10"
+                    android:lines="1"
+                    android:text="@string/image_search_toolbar_text"
+                    android:textColor="#7031353b"
+                    android:background="@drawable/image_search_bg_autocomplete_input"
+                    app:typographyType="body_2"
+                    app:typographyWeight="reguler" />
+                
+                <ImageView
+                    android:id="@+id/imageSearchThumbnail"
+                    android:layout_width="@dimen/dp_36"
+                    android:layout_height="@dimen/dp_36"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    />
+
+            </LinearLayout>
+
+        </androidx.appcompat.widget.Toolbar>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@drawable/top_bar_shadow" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ProgressBar
         android:id="@+id/image_search_progressBar"
@@ -43,4 +94,4 @@
 
     </FrameLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

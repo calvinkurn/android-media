@@ -1,13 +1,17 @@
 package com.tokopedia.digital_deals.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +22,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
@@ -27,8 +33,11 @@ import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.AllBrandsPresenter;
+import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -51,7 +60,9 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     private String searchText;
     private String selectedLocation;
     private UpdateLocation updateLocation;
+    private CurrentLocationCallBack currentLocationCallBack;
     private Location currentLocation;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
 
     public static Fragment newInstance(CategoriesModel categoriesModel, String searchText) {
@@ -68,9 +79,29 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         super.onCreate(savedInstanceState);
         this.categoriesModel = getArguments().getParcelable(ARG_PARAM_EXTRA_DEALS_DATA);
         this.searchText = getArguments().getString(AllBrandsActivity.SEARCH_TEXT);
+        permissionCheckerHelper = new PermissionCheckerHelper();
+        checkForCurrentLocation();
         currentLocation = Utils.getSingletonInstance().getLocation(getActivity());
         setHasOptionsMenu(true);
 
+    }
+
+    private void checkForCurrentLocation() {
+        permissionCheckerHelper.checkPermission(AllBrandsFragment.this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
+            @Override
+            public void onPermissionDenied(String permissionText) {
+                mPresenter.getAllBrands();
+            }
+
+            @Override
+            public void onNeverAskAgain(String permissionText) {
+            }
+
+            @Override
+            public void onPermissionGranted() {
+                Utils.getSingletonInstance().detectAndSendLocation(getActivity(), permissionCheckerHelper, currentLocationCallBack);
+            }
+        }, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_use_current_location));
     }
 
     @Override
@@ -82,7 +113,20 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         catch (Exception e) {
             throw new ClassCastException(activity.toString() + "must implement Update Location Interface");
         }
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof AllBrandsActivity) {
+            currentLocationCallBack = (CurrentLocationCallBack) context;
+        }
+    }
+
+    @Override
+    public void showErrorMessage() {
+        Toaster.INSTANCE.showNormalWithAction(baseMainContent, Utils.getSingletonInstance().getLocationErrorMessage(getContext()), Snackbar.LENGTH_LONG, getContext().getResources().getString(com.tokopedia.digital_deals.R.string.location_deals_changed_toast_oke), v1 -> {
+        });
     }
 
     public void getLocations(String selectedLocation) {
@@ -113,6 +157,12 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         layoutManager = new GridLayoutManager(getContext(), 4, GridLayoutManager.VERTICAL, false);
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(new DealsBrandAdapter(null, DealsBrandAdapter.ITEM_BRAND_NORMAL));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
     }
 
     @Override
@@ -272,6 +322,12 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
         updateLocation.startLocationFragment(locations);
     }
 
+    @Override
+    public void setCurrentLocation(List<Location> locations) {
+        Utils.getSingletonInstance().updateLocation(getContext(), locations.get(0));
+        mPresenter.getAllBrands();
+    }
+
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -311,6 +367,26 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Override
     public void onFocusChanged(boolean hasFocus) {
 
+    }
+
+    public void setDefaultLocation() {
+        Location location = new Location();
+        location.setName(Utils.LOCATION_NAME);
+        location.setId(Utils.LOCATION_ID);
+        Utils.getSingletonInstance().updateLocation(getContext(), location);
+        mPresenter.getAllBrands();
+    }
+
+    public void setCurrentCoordinates() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), TkpdCache.DEALS_LOCATION);
+
+        String lattitude = localCacheHandler.getString(Utils.KEY_LOCATION_LAT);
+        String longitude = localCacheHandler.getString(Utils.KEY_LOCATION_LONG);
+        if (!TextUtils.isEmpty(lattitude) && !TextUtils.isEmpty(longitude)) {
+            mPresenter.getNearestLocation(String.format("%s,%s", lattitude, longitude));
+        } else {
+            mPresenter.getAllBrands();
+        }
     }
 
     public interface UpdateLocation {

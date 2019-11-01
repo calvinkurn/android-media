@@ -1,18 +1,17 @@
 package com.tokopedia.flight.common.di.module;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.country.data.FlightCountryListDbSource;
-import com.tokopedia.flight.country.database.FlightAirportCountryDao;
+import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
@@ -30,8 +29,12 @@ import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.country.data.FlightCountryListDbSource;
+import com.tokopedia.flight.country.database.FlightAirportCountryDao;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
+import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
+import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
 import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.passenger.data.db.FlightPassengerDao;
@@ -42,6 +45,9 @@ import com.tokopedia.flight.search.data.db.FlightComboDao;
 import com.tokopedia.flight.search.data.db.FlightJourneyDao;
 import com.tokopedia.flight.search.data.db.FlightRouteDao;
 import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -72,24 +78,15 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public FlightModuleRouter provideFlightModuleRouter(@ApplicationContext Context context) {
-        if (context instanceof FlightModuleRouter) {
-            return ((FlightModuleRouter) context);
-        }
-        throw new RuntimeException("App should implement " + FlightModuleRouter.class.getSimpleName());
-    }
-
-    @FlightScope
-    @Provides
     @FlightChuckQualifier
-    public Interceptor provideChuckInterceptory(FlightModuleRouter flightModuleRouter) {
-        return flightModuleRouter.getChuckInterceptor();
+    public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
+        return new ChuckInterceptor(context);
     }
 
     @FlightScope
     @Provides
     public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
-        return (NetworkRouter)context;
+        return (NetworkRouter) context;
     }
 
     @FlightScope
@@ -149,6 +146,12 @@ public class FlightModule {
     @Provides
     public FlightApi provideFlightAirportApi(@FlightQualifier Retrofit retrofit) {
         return retrofit.create(FlightApi.class);
+    }
+
+    @FlightScope
+    @Provides
+    public FlightOrderApi provideFlightOrderApi(@FlightQualifier Retrofit retrofit) {
+        return retrofit.create(FlightOrderApi.class);
     }
 
     @FlightScope
@@ -229,5 +232,36 @@ public class FlightModule {
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
+
+    @FlightScope
+    @Provides
+    public Resources provideResources(@ApplicationContext Context context) {
+        return context.getResources();
+    }
+
+    @FlightScope
+    @Provides
+    public FlightGetOrderUseCase provideFlightGetOrderUseCase(FlightRepository flightRepository) {
+        return new FlightGetOrderUseCase(flightRepository);
+    }
+
+    @FlightScope
+    @Provides
+    public GraphqlRepository provideGraphqlRepository() {
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @FlightScope
+    @Provides
+    public MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(GraphqlRepository graphqlRepository) {
+        return new MultiRequestGraphqlUseCase(graphqlRepository);
+    }
+
+    @FlightScope
+    @Provides
+    public TrackingCrossSellUtil provideTrackingCrossSellUtil() {
+        return new TrackingCrossSellUtil();
+    }
+
 
 }

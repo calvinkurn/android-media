@@ -1,7 +1,8 @@
 package com.tokopedia.flight.common.util;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;

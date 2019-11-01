@@ -1,6 +1,6 @@
 package com.tokopedia.promocheckout.list.view.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
 import kotlinx.android.synthetic.main.item_last_seen_promo_history.view.*
