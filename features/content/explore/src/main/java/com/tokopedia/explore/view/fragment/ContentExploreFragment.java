@@ -62,7 +62,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     public static String DEFAULT_CATEGORY = "0";
     public static String PEFORMANCE_EXPLORE = "mp_explore";
     public static int CATEGORY_POSITION_NONE = -1;
-    static final String LABEL_TAG_COACHMARK_CATEGORY_1 = "explore-category-affiliate-%d";
+    static final String LABEL_TAG_COACHMARK_CATEGORY_1 = "explore-category-affiliate-%s";
 
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
