@@ -1,7 +1,10 @@
 package com.tokopedia.home_wishlist.model.datamodel
 
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactory
+import com.tokopedia.home_wishlist.view.ext.equalsList
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 data class RecommendationCarouselDataModel (
         val id: String = "",
@@ -10,9 +13,11 @@ data class RecommendationCarouselDataModel (
         val list: List<RecommendationCarouselItemDataModel> = listOf(),
         var isOnBulkRemoveProgress: Boolean = false
 ): WishlistDataModel {
+
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
         if(dataModel is RecommendationCarouselDataModel){
             return dataModel.isOnBulkRemoveProgress == isOnBulkRemoveProgress && dataModel.list == list && title == dataModel.title
+                    && dataModel.list.zip(list).all { (list1, list2) -> list1.equalsDataModel(list2) }
         }
         return false
     }

@@ -870,7 +870,7 @@ class WishlistViewModelTestSpek : Spek({
                 assertEquals(0, wishlistViewmodel.wishlistData.value!!.size)
             }
             Then("Expect that wishlist action for bulk remove is success and not partially failed") {
-                val bulkRemoveWishlistActionData = wishlistViewmodel.bulkRemovewishlistActionData.value
+                val bulkRemoveWishlistActionData = wishlistViewmodel.bulkRemoveWishlistActionData.value
                 assertEquals(true, bulkRemoveWishlistActionData!!.peekContent().isSuccess)
                 assertEquals(false, bulkRemoveWishlistActionData!!.peekContent().isPartiallyFailed)
             }
@@ -915,7 +915,7 @@ class WishlistViewModelTestSpek : Spek({
                 assertEquals(2, wishlistViewmodel.wishlistData.value!!.size)
             }
             Then("Expect that wishlist action for bulk remove is success but partially failed") {
-                val bulkRemoveWishlistActionData = wishlistViewmodel.bulkRemovewishlistActionData.value
+                val bulkRemoveWishlistActionData = wishlistViewmodel.bulkRemoveWishlistActionData.value
                 assertEquals(true, bulkRemoveWishlistActionData!!.peekContent().isSuccess)
                 assertEquals(true, bulkRemoveWishlistActionData!!.peekContent().isPartiallyFailed)
             }
@@ -956,7 +956,7 @@ class WishlistViewModelTestSpek : Spek({
                 assertEquals(4, wishlistViewmodel.wishlistData.value!!.size)
             }
             Then("Expect that wishlist action for bulk remove is failed and not partially failed") {
-                val bulkRemoveWishlistActionData = wishlistViewmodel.bulkRemovewishlistActionData.value
+                val bulkRemoveWishlistActionData = wishlistViewmodel.bulkRemoveWishlistActionData.value
                 assertEquals(false, bulkRemoveWishlistActionData!!.peekContent().isSuccess)
                 assertEquals(false, bulkRemoveWishlistActionData!!.peekContent().isPartiallyFailed)
                 assertEquals(mockErrorMessage, bulkRemoveWishlistActionData!!.peekContent().message)

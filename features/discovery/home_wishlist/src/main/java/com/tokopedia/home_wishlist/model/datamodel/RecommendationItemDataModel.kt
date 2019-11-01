@@ -8,13 +8,13 @@ class RecommendationItemDataModel(
         val recommendationItem: RecommendationItem
 ) : WishlistDataModel {
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
-        if(dataModel.javaClass == this.javaClass){
-            return this.getUniqueIdentity() == (dataModel as WishlistDataModel).getUniqueIdentity()
+        if(dataModel is RecommendationItemDataModel){
+            return recommendationItem.isWishlist == dataModel.recommendationItem.isWishlist
         }
         return false
     }
 
-    override fun getUniqueIdentity(): Any = recommendationItem
+    override fun getUniqueIdentity(): Any = recommendationItem.productId
 
     override fun type(typeFactory: WishlistTypeFactory): Int {
         return typeFactory.type(this)

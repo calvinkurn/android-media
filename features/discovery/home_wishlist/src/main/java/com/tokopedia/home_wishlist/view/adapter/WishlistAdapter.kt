@@ -1,13 +1,16 @@
 package com.tokopedia.home_wishlist.view.adapter
 
+import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.base.SmartRecyclerAdapter
-import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
+import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 
 /**
@@ -25,14 +28,52 @@ class WishlistAdapter(
         appExecutors = smartExecutors,
         adapterTypeFactory = adapterTypeFactory,
         diffCallback = object : DiffUtil.ItemCallback<WishlistDataModel>(){
+            override fun getChangePayload(oldItem: WishlistDataModel, newItem: WishlistDataModel): Any? {
+                if(oldItem is WishlistItemDataModel && newItem is WishlistItemDataModel){
+                    val bundle = Bundle()
+                    if(oldItem.isOnChecked != newItem.isOnChecked){
+                        bundle.putBoolean("isOnChecked", newItem.isOnChecked)
+                    }
+
+                    if(oldItem.isOnAddToCartProgress != newItem.isOnAddToCartProgress){
+                        bundle.putBoolean("isOnAddToCartProgress", newItem.isOnAddToCartProgress)
+                    }
+
+                    if(oldItem.isOnBulkRemoveProgress != newItem.isOnBulkRemoveProgress){
+                        bundle.putBoolean("isOnBulkRemoveProgress", newItem.isOnBulkRemoveProgress)
+                    }
+                    return bundle
+                }else if(oldItem is RecommendationCarouselDataModel && newItem is RecommendationCarouselDataModel){
+                    val bundle = Bundle()
+                    if(oldItem.isOnBulkRemoveProgress != newItem.isOnBulkRemoveProgress){
+                        bundle.putBoolean("isOnBulkRemoveProgress", newItem.isOnBulkRemoveProgress)
+                    }
+
+                    val differentList = oldItem.list.zip(newItem.list).find{ (list1, list2) -> list1.recommendationItem.isWishlist != list2.recommendationItem.isWishlist}
+                    if(differentList != null){
+                        val index = newItem.list.indexOf(differentList.second)
+                        bundle.putInt("updateList", index)
+                        bundle.putBoolean("updateIsWishlist", differentList.second.recommendationItem.isWishlist)
+                    }
+                    return bundle
+                }else if(oldItem is RecommendationItemDataModel && newItem is RecommendationItemDataModel){
+                    val bundle = Bundle()
+                    if(oldItem.recommendationItem.isWishlist != newItem.recommendationItem.isWishlist){
+                        bundle.putBoolean("wishlist", newItem.recommendationItem.isWishlist)
+                    }
+                    return bundle
+                }
+
+                return null
+            }
+
             override fun areItemsTheSame(oldItem: WishlistDataModel, newItem: WishlistDataModel): Boolean {
-                return oldItem::class == newItem::class && oldItem.getUniqueIdentity() == newItem.getUniqueIdentity()
+                return oldItem::class == newItem::class || oldItem.getUniqueIdentity() == newItem.getUniqueIdentity() || oldItem.hashCode() == newItem.hashCode()
             }
 
             override fun areContentsTheSame(oldItem: WishlistDataModel, newItem: WishlistDataModel): Boolean {
                 return oldItem.equalsDataModel(newItem)
             }
-
         }
 ) {
     /**
@@ -42,7 +83,23 @@ class WishlistAdapter(
      * @param position the position of the viewHolder
      */
     override fun bind(holder: SmartAbstractViewHolder<Visitable<*>>, item: WishlistDataModel) {
+        val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        when(item){
+            is WishlistItemDataModel,
+            is LoadMoreDataModel,
+            is RecommendationCarouselDataModel,
+            is LoadingDataModel,
+            is EmptyWishlistDataModel,
+            is ErrorWishlistDataModel,
+            is RecommendationTitleDataModel-> layout.isFullSpan = true
+        }
         holder.bind(item, wishlistListener)
+    }
+
+    override fun bind(holder: SmartAbstractViewHolder<Visitable<*>>, item: WishlistDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty()){
+            holder.bind(item, wishlistListener, payloads)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
