@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.explore.R;
+import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 
@@ -48,6 +49,10 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
         image.setOnClickListener(v -> {
             listener.goToKolPostDetail(element.getKolPostViewModel());
         });
+
+        if (element.getItemPos() == 0 && listener.getExploreCategory() == ExploreCategoryAdapter.CAT_ID_AFFILIATE) {
+
+        }
     }
 
     private int getBadgeId(ExploreImageViewModel element) {

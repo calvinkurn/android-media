@@ -402,6 +402,33 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void addExploreItemCoachmark(View view) {
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int[] originalPost = new int[2];
+                view.getLocationOnScreen(originalPost);
+                int xpos2 = originalPost[0] + view.getWidth();
+                int ypos2 = originalPost[1] + view.getHeight();
+                int[] arrayList = {originalPost[0], originalPost[1], xpos2, ypos2};
+                CoachMarkItem coachMarkItem = new CoachMarkItem(
+                        view,
+                        getActivity().getResources().getString(R.string.coachmark_explore_title_2),
+                        getActivity().getResources().getString(R.string.coachmark_explore_content_2)
+                ).withCustomTarget(arrayList);
+                coachMarkItemList.add(coachMarkItem);
+                showCoachMark();
+            }
+        });
+    }
+
+    public void showCoachMark() {
+        coachMark = new CoachMarkBuilder().build();
+        coachMark.show(getActivity(), String.format(LABEL_TAG_COACHMARK_CATEGORY_1, userSession.getUserId()), coachMarkItemList);
+    }
+
+    @Override
     public void onSearchSubmitted(String text) {
         dropKeyboard();
         resetDataParam();
@@ -458,6 +485,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
+    public int getExploreCategory() {
+        return categoryId;
+    }
+
+    @Override
     public void stopTrace() {
         if (performanceMonitoring != null && !isTraceStopped) {
             performanceMonitoring.stopTrace();
@@ -467,6 +499,9 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
         imageAdapter.addList(new ArrayList<>(exploreImageViewModelList));
+        if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE) {
+
+        }
     }
 
     private void loadTagData(List<ExploreCategoryViewModel> tagViewModelList) {

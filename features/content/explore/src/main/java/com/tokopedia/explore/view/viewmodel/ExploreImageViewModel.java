@@ -12,10 +12,12 @@ public class ExploreImageViewModel implements Visitable<ExploreImageTypeFactory>
 
     private String imageUrl;
     private KolPostViewModel kolPostViewModel;
+    private int itemPos = 0;
 
-    public ExploreImageViewModel(String imageUrl, KolPostViewModel kolPostViewModel) {
+    public ExploreImageViewModel(String imageUrl, KolPostViewModel kolPostViewModel, int itemPos) {
         this.imageUrl = imageUrl;
         this.kolPostViewModel = kolPostViewModel;
+        this.itemPos = itemPos;
     }
 
     @Override
@@ -37,5 +39,13 @@ public class ExploreImageViewModel implements Visitable<ExploreImageTypeFactory>
 
     public void setKolPostViewModel(KolPostViewModel kolPostViewModel) {
         this.kolPostViewModel = kolPostViewModel;
+    }
+
+    public int getItemPos() {
+        return itemPos;
+    }
+
+    public void setItemPos(int itemPos) {
+        this.itemPos = itemPos;
     }
 }

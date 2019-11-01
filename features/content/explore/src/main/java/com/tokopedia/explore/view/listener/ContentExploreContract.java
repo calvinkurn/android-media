@@ -45,6 +45,8 @@ public interface ContentExploreContract {
 
         void goToKolPostDetail(KolPostViewModel kolPostViewModel);
 
+        void addExploreItemCoachmark(android.view.View view);
+
         void dropKeyboard();
 
         void scrollToTop();
@@ -52,6 +54,8 @@ public interface ContentExploreContract {
         void resetDataParam();
 
         void stopTrace();
+
+        int getExploreCategory();
     }
 
     interface Presenter extends CustomerPresenter<View> {
