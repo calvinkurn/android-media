@@ -40,6 +40,8 @@ class DynamicChannelThematicViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
+            dcEventHandler.mixBannerImpression(dynamicChannelData)
+            dcEventHandler.mixImageImpression(dynamicChannelData)
             setupHeader(dynamicChannelData.header)
             setupBanner(dynamicChannelData.banner, dynamicChannelData)
             setupContent(dynamicChannelData)

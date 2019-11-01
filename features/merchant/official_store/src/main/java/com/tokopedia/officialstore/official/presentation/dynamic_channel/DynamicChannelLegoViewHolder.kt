@@ -27,6 +27,7 @@ class DynamicChannelLegoViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
+            dcEventHandler.legoImpression(dynamicChannelData)
             setupHeader(dynamicChannelData.header)
             setupContent(dynamicChannelData)
         }
