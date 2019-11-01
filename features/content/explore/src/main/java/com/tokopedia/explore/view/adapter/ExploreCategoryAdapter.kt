@@ -26,7 +26,7 @@ constructor(val listener: ContentExploreContract.View) : RecyclerView.Adapter<Ex
     companion object {
         const val CAT_ID_AFFILIATE = 2000001
     }
-    private var list: List<ExploreCategoryViewModel> = arrayListOf()
+    private var list: ArrayList<ExploreCategoryViewModel> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -64,7 +64,8 @@ constructor(val listener: ContentExploreContract.View) : RecyclerView.Adapter<Ex
     }
 
     fun setList(list: List<ExploreCategoryViewModel>) {
-        this.list = list
+        this.list.clear()
+        this.list.addAll(list)
         notifyDataSetChanged()
     }
     
