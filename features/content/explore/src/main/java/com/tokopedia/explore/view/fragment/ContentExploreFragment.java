@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
@@ -322,13 +323,24 @@ public class ContentExploreFragment extends BaseDaggerFragment
             }
 
             if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE) {
+                view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        int xPos1 = (int) view.getX();
+                        int yPos1 = (int) view.getY();
+                        int xpos2 = xPos1 + view.getWidth();
+                        int ypos2 = yPos1 + view.getHeight();
+                        int[] arrayList = {xPos1, yPos1, xpos2, ypos2};
+                        CoachMarkItem coachMarkItem = new CoachMarkItem(
+                                view,
+                                getActivity().getResources().getString(R.string.coachmark_explore_title_1),
+                                getActivity().getResources().getString(R.string.coachmark_explore_content_1)
+                        ).withCustomTarget(arrayList);
+                        coachMarkItemList.add(coachMarkItem);
+                    }
+                });
                 coachMark = new CoachMarkBuilder().build();
-                CoachMarkItem coachMarkItem = new CoachMarkItem(
-                        view,
-                        getActivity().getResources().getString(R.string.coachmark_explore_title_1),
-                        getActivity().getResources().getString(R.string.coachmark_explore_content_1)
-                );
-                coachMarkItemList.add(coachMarkItem);
                 coachMark.show(getActivity(), String.format(LABEL_TAG_COACHMARK_CATEGORY_1, userSession.getUserId()), coachMarkItemList);
             }
         }

@@ -74,4 +74,8 @@ public class ExploreModule {
         useCase.setTypeClass(GetExploreData.class);
         return useCase;
     }
+
+//    @ExploreScope
+//    @Provides
+//    AffiliateCo
 }
