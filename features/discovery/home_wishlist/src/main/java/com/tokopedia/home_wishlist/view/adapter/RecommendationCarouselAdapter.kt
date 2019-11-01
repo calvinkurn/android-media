@@ -11,36 +11,39 @@ import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDat
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.view.viewholder.RecommendationCarouselItemViewHolder
 import android.os.Bundle
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 class RecommendationCarouselAdapter (
-        smartExecutors: SmartExecutors,
         private val wishlistListener: WishlistListener
-) : ListAdapter<RecommendationCarouselItemDataModel, RecommendationCarouselItemViewHolder>(
-        AsyncDifferConfig.Builder<RecommendationCarouselItemDataModel>(
-                object : DiffUtil.ItemCallback<RecommendationCarouselItemDataModel>(){
-                    override fun getChangePayload(oldItem: RecommendationCarouselItemDataModel, newItem: RecommendationCarouselItemDataModel): Any? {
-                        val diff = Bundle()
-                        if (newItem.isWishlist != oldItem.isWishlist) {
-                            diff.putBoolean("wishlist", newItem.isWishlist)
-                        }
-                        return if (diff.size() == 0) {
-                            null
-                        } else diff
-                    }
-
-                    override fun areItemsTheSame(oldItem: RecommendationCarouselItemDataModel, newItem: RecommendationCarouselItemDataModel): Boolean {
-                        return oldItem.recommendationItem.productId == newItem.recommendationItem.productId
-                    }
-
-                    override fun areContentsTheSame(oldItem: RecommendationCarouselItemDataModel, newItem: RecommendationCarouselItemDataModel): Boolean {
-                        return oldItem.isWishlist == newItem.isWishlist
-                    }
-
-                }
-        )
-        .setBackgroundThreadExecutor(smartExecutors.diskIO())
-        .build()
-) {
+) : RecyclerView.Adapter<RecommendationCarouselItemViewHolder>()
+//        AsyncDifferConfig.Builder<RecommendationCarouselItemDataModel>(
+//                object : DiffUtil.ItemCallback<RecommendationCarouselItemDataModel>(){
+//                    override fun getChangePayload(oldItem: RecommendationCarouselItemDataModel, newItem: RecommendationCarouselItemDataModel): Any? {
+//                        val diff = Bundle()
+//                        if (newItem.isWishlist != oldItem.isWishlist) {
+//                            diff.putBoolean("wishlist", newItem.isWishlist)
+//                        }
+//                        return if (diff.size() == 0) {
+//                            null
+//                        } else diff
+//                    }
+//
+//                    override fun areItemsTheSame(oldItem: RecommendationCarouselItemDataModel, newItem: RecommendationCarouselItemDataModel): Boolean {
+//                        return oldItem.recommendationItem.productId == newItem.recommendationItem.productId
+//                    }
+//
+//                    override fun areContentsTheSame(oldItem: RecommendationCarouselItemDataModel, newItem: RecommendationCarouselItemDataModel): Boolean {
+//                        return oldItem.isWishlist == newItem.isWishlist
+//                    }
+//
+//                }
+//        )
+//        .setBackgroundThreadExecutor(smartExecutors.diskIO())
+//        .build()
+//)
+{
+    private var list = ArrayList<RecommendationCarouselItemDataModel>()
 
     override fun onBindViewHolder(holder: RecommendationCarouselItemViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) {
@@ -56,8 +59,12 @@ class RecommendationCarouselAdapter (
         }
     }
 
+    override fun getItemCount(): Int {
+        return list.size
+    }
+
     override fun onBindViewHolder(holder: RecommendationCarouselItemViewHolder, position: Int) {
-        holder.bind(getItem(position), wishlistListener)
+        holder.bind(list[position], wishlistListener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationCarouselItemViewHolder {
@@ -71,5 +78,14 @@ class RecommendationCarouselAdapter (
 
     override fun getItemViewType(position: Int): Int {
         return RecommendationCarouselItemViewHolder.LAYOUT
+    }
+
+    fun updateList(newList: List<RecommendationCarouselItemDataModel>) {
+        val diffResult = DiffUtil.calculateDiff(WishlistCallback(list, newList))
+
+        list.clear()
+        list.addAll(newList)
+
+        diffResult.dispatchUpdatesTo(this)
     }
 }

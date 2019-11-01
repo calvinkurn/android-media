@@ -24,8 +24,7 @@ class RecommendationCarouselItemViewHolder (
     private val productCardView: ProductCardView by lazy { view.findViewById<ProductCardView>(R.id.product_item) }
 
     override fun bind(element: RecommendationCarouselItemDataModel, listener: SmartListener) {
-        productCardView.run {
-
+        productCardView.apply {
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.recommendationItem.slashedPrice,
@@ -70,7 +69,10 @@ class RecommendationCarouselItemViewHolder (
             }
 
             setButtonWishlistOnClickListener {
-                (listener as WishlistListener).onWishlistClick(element.parentPosition, adapterPosition)
+                updateWishlist(true)
+                (listener as WishlistListener).onWishlistClick(element.parentPosition, adapterPosition){
+                    updateWishlist(false)
+                }
             }
         }
     }

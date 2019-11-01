@@ -12,7 +12,7 @@ data class RecommendationCarouselItemDataModel (
 ) : WishlistDataModel {
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
         if(dataModel is RecommendationCarouselItemDataModel){
-            return isWishlist == dataModel.isWishlist
+            return isWishlist == dataModel.isWishlist && recommendationItem.productId == dataModel.recommendationItem.productId
         }
         return false
     }

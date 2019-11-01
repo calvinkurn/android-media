@@ -159,13 +159,18 @@ open class WishlistViewModel @Inject constructor(
     }
 
     fun addWishlist(parentPosition: Int, childPosition: Int){
-        val list = wishlistData.value.copy()
+        val list = wishlistData.value.toMutableList()
         if(list[parentPosition] is RecommendationCarouselDataModel && (list[parentPosition] as RecommendationCarouselDataModel).list.size >= childPosition ) {
             val recommendationCarousel = list[parentPosition] as RecommendationCarouselDataModel
+//            list[parentPosition] = recommendationCarousel.copy(title = (0..10).random().toString())
+//            wishlistData.value = list.copy()
             val children = recommendationCarousel.list.copy()
             val dataModel = children[childPosition]
             addWishListUseCase.createObservable(dataModel.recommendationItem.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    children[childPosition] = dataModel.copy(isWishlist = true)
+                    list[parentPosition] = recommendationCarousel.copy(list = children)
+                    wishlistData.value = list.copy()
                     action.value = Event(
                             WishlistAction(
                                     message = errorMessage ?: "",
@@ -176,9 +181,6 @@ open class WishlistViewModel @Inject constructor(
                 }
 
                 override fun onSuccessAddWishlist(productId: String?) {
-                    children[childPosition] = dataModel.copy(isWishlist = true)
-                    list[parentPosition] = recommendationCarousel.copy(list = children)
-                    wishlistData.value = list
                     action.value = Event(
                             WishlistAction(
                                     message = "",

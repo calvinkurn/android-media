@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -31,7 +32,9 @@ import com.tokopedia.home_wishlist.util.TypeAction
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.custom.CustomSearchView
-import com.tokopedia.home_wishlist.view.ext.*
+import com.tokopedia.home_wishlist.view.ext.bulkWishlist
+import com.tokopedia.home_wishlist.view.ext.isEmptyWishlist
+import com.tokopedia.home_wishlist.view.ext.isErrorWishlist
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_PRODUCT_ID
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_UPDATED_POSITION
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.REQUEST_FROM_PDP
@@ -47,6 +50,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
+
 
 /**
  * A Class of Recommendation Fragment.
@@ -192,6 +196,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         }
         recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView?.adapter = adapter
+        recyclerView?.itemAnimator = DefaultItemAnimator()
         endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
             override fun getCurrentPage(): Int = 1
 
@@ -257,7 +262,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         }
 
         val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
-        adapter.submitList(list as MutableList<WishlistDataModel>)
+        adapter.submitList(list as MutableList<WishlistDataModel>?)
         recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
 
@@ -290,8 +295,9 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         viewModel.setWishlistOnMarkDelete(position, isChecked)
     }
 
-    override fun onWishlistClick(parentPosition: Int, childPosition: Int) {
+    override fun onWishlistClick(parentPosition: Int, childPosition: Int, errorCallback: () -> Unit) {
         viewModel.addWishlist(parentPosition, childPosition)
+
     }
 
     override fun onProductImpression(dataModel: WishlistDataModel) {

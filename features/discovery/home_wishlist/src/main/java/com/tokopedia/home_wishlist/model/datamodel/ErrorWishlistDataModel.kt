@@ -1,5 +1,6 @@
 package com.tokopedia.home_wishlist.model.datamodel
 
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactory
 

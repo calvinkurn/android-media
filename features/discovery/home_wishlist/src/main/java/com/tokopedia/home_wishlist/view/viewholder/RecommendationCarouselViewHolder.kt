@@ -12,9 +12,10 @@ import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataModel
-import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
 import com.tokopedia.home_wishlist.view.adapter.RecommendationCarouselAdapter
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
+import androidx.recyclerview.widget.DefaultItemAnimator
+import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
 
 
 class RecommendationCarouselViewHolder(view: View, private val appExecutors: SmartExecutors) : SmartAbstractViewHolder<RecommendationCarouselDataModel>(view) {
@@ -23,6 +24,7 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recyclerView: RecyclerView by lazy { view.findViewById<RecyclerView>(R.id.list) }
     private val disabledView: View by lazy { view.findViewById<View>(R.id.disabled_view) }
+    private var clickedItem: Int = -1
 
     override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener) {
         title.text = element.title
@@ -36,35 +38,18 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
         recyclerView.apply {
             if(adapter == null) {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                adapter = RecommendationCarouselAdapter(
-                        appExecutors,
-                        object : WishlistListener{
-                            override fun onProductImpression(dataModel: WishlistDataModel) {}
-
-                            override fun onProductClick(dataModel: WishlistDataModel, position: Int) {
-                                (listener as WishlistListener).onProductClick(dataModel, position)
-                            }
-
-                            override fun onDeleteClick(dataModel: WishlistDataModel, adapterPosition: Int) {}
-
-                            override fun onAddToCartClick(dataModel: WishlistDataModel, adapterPosition: Int) {}
-
-                            override fun onWishlistClick(parentPosition: Int, childPosition: Int) {
-                                val recyclerViewState = layoutManager?.onSaveInstanceState()
-                                (listener as WishlistListener).onWishlistClick(parentPosition, childPosition)
-                                layoutManager?.onRestoreInstanceState(recyclerViewState)
-                            }
-
-                            override fun onClickCheckboxDeleteWishlist(position: Int, isChecked: Boolean) {}
-
-                            override fun onTryAgainClick() {}
-                        })
+                itemAnimator = DefaultItemAnimator()
                 GravitySnapHelper(Gravity.START).attachToRecyclerView(this)
                 setRecycledViewPool(viewPool)
+                isNestedScrollingEnabled = false
+                setHasFixedSize(true)
+                adapter = RecommendationCarouselAdapter(listener as WishlistListener)
             }
-
-            (recyclerView.adapter as RecommendationCarouselAdapter).submitList(dataModel.list)
-
+            (recyclerView.adapter as RecommendationCarouselAdapter).updateList(dataModel.list)
+            if(clickedItem != -1) {
+                recyclerView.layoutManager?.scrollToPosition(clickedItem - 1)
+                clickedItem = -1
+            }
         }
 
     }

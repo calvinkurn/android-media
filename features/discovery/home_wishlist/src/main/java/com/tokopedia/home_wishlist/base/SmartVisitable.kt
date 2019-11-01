@@ -1,5 +1,6 @@
 package com.tokopedia.home_wishlist.base
 
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 /**
