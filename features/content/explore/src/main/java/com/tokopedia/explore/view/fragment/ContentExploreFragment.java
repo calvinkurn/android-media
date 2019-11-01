@@ -12,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.coachmark.CoachMark;
+import com.tokopedia.coachmark.CoachMarkBuilder;
+import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
@@ -40,6 +43,7 @@ import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,16 +62,19 @@ public class ContentExploreFragment extends BaseDaggerFragment
     public static String DEFAULT_CATEGORY = "0";
     public static String PEFORMANCE_EXPLORE = "mp_explore";
     public static int CATEGORY_POSITION_NONE = -1;
+    static final String LABEL_TAG_COACHMARK_CATEGORY_1 = "explore-category-affiliate-%d"
 
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
     private static final int LOAD_MORE_THRESHOLD = 2;
     @Inject
     ContentExploreContract.Presenter presenter;
-    @Inject
+
     ExploreCategoryAdapter categoryAdapter;
     @Inject
     ExploreImageAdapter imageAdapter;
+    @Inject
+    UserSessionInterface userSession;
 
     private SearchInputView searchInspiration;
     private RecyclerView exploreCategoryRv;
@@ -81,6 +88,9 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private boolean canLoadMore;
     private boolean hasLoadedOnce;
     private boolean isTraceStopped;
+
+    private CoachMark coachMark;
+    private ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
 
     public static ContentExploreFragment newInstance(Bundle bundle) {
         ContentExploreFragment fragment = new ContentExploreFragment();
@@ -150,12 +160,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
             searchInspiration.getSearchTextView().setCursorVisible(true);
         });
         swipeToRefresh.setOnRefreshListener(this);
+        categoryAdapter = new ExploreCategoryAdapter(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
         exploreCategoryRv.setLayoutManager(linearLayoutManager);
-        categoryAdapter.setListener(this);
         exploreCategoryRv.setAdapter(categoryAdapter);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
@@ -282,7 +292,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCategoryClicked(int position, int categoryId, String categoryName) {
+    public void onCategoryClicked(int position, int categoryId, String categoryName, View view) {
         NetworkErrorHelper.removeEmptyState(getView());
         clearSearch();
         resetDataParam();
@@ -310,13 +320,24 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 categoryAdapter.getList().get(position).setActive(true);
                 categoryAdapter.notifyItemChanged(position);
             }
+
+            if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE) {
+                coachMark = new CoachMarkBuilder().build();
+                CoachMarkItem coachMarkItem = new CoachMarkItem(
+                        view,
+                        getActivity().getResources().getString(R.string.coachmark_explore_title_1),
+                        getActivity().getResources().getString(R.string.coachmark_explore_content_1)
+                );
+                coachMarkItemList.add(coachMarkItem);
+                coachMark.show(getActivity(), String.format(LABEL_TAG_COACHMARK_CATEGORY_1, userSession.getUserId()), coachMarkItemList);
+            }
         }
         presenter.getExploreData(true);
     }
 
     @Override
     public void onCategoryReset() {
-        onCategoryClicked(CATEGORY_POSITION_NONE, Integer.valueOf(DEFAULT_CATEGORY), "");
+        onCategoryClicked(CATEGORY_POSITION_NONE, Integer.valueOf(DEFAULT_CATEGORY), "", null);
     }
 
     @Override

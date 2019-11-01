@@ -1,6 +1,7 @@
 package com.tokopedia.explore.view.listener;
 
 import android.content.Context;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -30,7 +31,7 @@ public interface ContentExploreContract {
 
         void clearData();
 
-        void onCategoryClicked(int position, int categoryId, String categoryName);
+        void onCategoryClicked(int position, int categoryId, String categoryName, android.view.View view);
 
         void onCategoryReset();
 
