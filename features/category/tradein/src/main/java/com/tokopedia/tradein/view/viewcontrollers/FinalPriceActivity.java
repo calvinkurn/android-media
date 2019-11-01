@@ -244,7 +244,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         sendGeneralEvent(viewEvent,
                 category,
                 TradeInGTMConstants.ACTION_VIEW_HARGA_FINAL,
-                "diagnostic id - " + deviceId);
+                String.format("diagnostic id - %s",deviceId));
     }
 
     private void setVisibilityGroup(int visibility) {
