@@ -521,7 +521,7 @@ open class WishlistViewModel @Inject constructor(
                 RecommendationCarouselDataModel(
                         id = recommendationList.first().tid,
                         title = recommendationList.first().title,
-                        list = recommendationList.first().recommendationItemList.map { RecommendationCarouselItemDataModel(it, it.isWishlist, currentPage * 20 + 4) } as MutableList<RecommendationCarouselItemDataModel>,
+                        list = recommendationList.first().recommendationItemList.map { RecommendationCarouselItemDataModel(it, it.isWishlist, (currentPage - 1) * 20 + 4) } as MutableList<RecommendationCarouselItemDataModel>,
                         seeMoreAppLink = recommendationList.first().seeMoreAppLink))
         return list
     }

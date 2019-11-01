@@ -69,9 +69,8 @@ class RecommendationCarouselItemViewHolder(
             }
 
             setButtonWishlistOnClickListener {
-                updateWishlist(true)
-                element.recommendationItem.isWishlist = !element.recommendationItem.isWishlist
-                (listener as WishlistListener).onWishlistClick(element.parentPosition, adapterPosition, element.recommendationItem.isWishlist)
+                updateWishlist(!element.recommendationItem.isWishlist)
+                (listener as WishlistListener).onWishlistClick(element.parentPosition, adapterPosition, !element.recommendationItem.isWishlist)
             }
         }
     }
