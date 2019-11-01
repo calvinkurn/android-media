@@ -62,7 +62,7 @@ public class CouponDetailPresenter extends BaseDaggerPresenter<CouponDetailContr
         Map<String, Object> variables = new HashMap<>();
         variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_ID, item.getId());
         variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, 0);   //Never be a gift
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_validate_redeem),
+        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_tokopoint_validate_redeem),
                 ValidateCouponBaseEntity.class, variables, false);
         mRedeemCouponUseCase.clearRequest();
         mRedeemCouponUseCase.addRequest(graphqlRequest);
@@ -142,7 +142,7 @@ public class CouponDetailPresenter extends BaseDaggerPresenter<CouponDetailContr
         variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_ID, item.getId());
         variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, 0);     //Never be a gift
 
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(),
                 R.raw.tp_gql_tokopoint_redeem_coupon),
                 RedeemCouponBaseEntity.class,
                 variables, false);
@@ -188,7 +188,7 @@ public class CouponDetailPresenter extends BaseDaggerPresenter<CouponDetailContr
         Map<String, Object> variables = new HashMap<>();
         variables.put(CommonConstant.GraphqlVariableKeys.CODE, uniqueCouponCode);
 
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(),
                 R.raw.tp_gql_coupon_detail),
                 CouponDetailOuter.class,
                 variables, false);
@@ -222,7 +222,7 @@ public class CouponDetailPresenter extends BaseDaggerPresenter<CouponDetailContr
         Map<String, Object> variables = new HashMap<>();
         variables.put(CommonConstant.GraphqlVariableKeys.CODE, uniqueCouponCode);
 
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(),
                 R.raw.tp_gql_refetch_real_code),
                 CouponDetailOuter.class,
                 variables, false);
@@ -263,7 +263,7 @@ public class CouponDetailPresenter extends BaseDaggerPresenter<CouponDetailContr
         variables.put(CommonConstant.GraphqlVariableKeys.CODE, partnerCode);
         variables.put(CommonConstant.GraphqlVariableKeys.PIN, pin);
 
-        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(),
                 R.raw.tp_gql_swipe_coupon),
                 CouponSwipeUpdateOuter.class,
                 variables, false);
