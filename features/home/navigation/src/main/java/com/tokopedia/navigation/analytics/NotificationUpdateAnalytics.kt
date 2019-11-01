@@ -286,8 +286,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
                             "category", "",
                             "variant", "",
                             "list", "",
-                            "position", position,
-                            "attribution", ""
+                            "position", position
                         )
                     )
                 )
