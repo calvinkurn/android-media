@@ -188,7 +188,7 @@ class OfficialStoreTracking(context: Context) {
                                 "$CLICK view all"))
     }
 
-    fun eventClickFeaturedBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, imageUrl: String) {
+    fun eventClickFeaturedBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, imageUrl: String, additionalInformation: String) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -213,7 +213,7 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
-    fun eventImpressionFeatureBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, imageUrl: String) {
+    fun eventImpressionFeatureBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, imageUrl: String, additionalInformation: String) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",

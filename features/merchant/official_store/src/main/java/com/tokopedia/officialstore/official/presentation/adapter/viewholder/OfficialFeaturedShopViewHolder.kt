@@ -61,7 +61,8 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
                     shopItem.shopId.toEmptyStringIfNull(),
                     0,
                     shopItem.name.toEmptyStringIfNull(),
-                    shopItem.imageUrl.toEmptyStringIfNull()
+                    shopItem.imageUrl.toEmptyStringIfNull(),
+                    shopItem.additionalInformation.toEmptyStringIfNull()
             )
 
             adapter?.onItemClickListener = object: FeaturedShopAdapter.OnItemClickListener {
@@ -71,7 +72,8 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
                             shop.shopId.toEmptyStringIfNull(),
                             p0,
                             shop.name.toEmptyStringIfNull(),
-                            shop.imageUrl.toEmptyStringIfNull()
+                            shop.imageUrl.toEmptyStringIfNull(),
+                            shop.additionalInformation.toEmptyStringIfNull()
                     )
 
                     RouteManager.route(context, shop.url)
