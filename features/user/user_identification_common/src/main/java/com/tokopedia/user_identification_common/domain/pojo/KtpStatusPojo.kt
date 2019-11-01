@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 
 class KtpStatusPojo {
     @Expose
-    @SerializedName("isKtp")
+    @SerializedName("isKTP")
     var valid: Boolean = false
 
     @Expose
