@@ -13,11 +13,10 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.unifyprinciples.Typography
 
 class DynamicChannelSprintSaleViewHolder(
-        private val view: View?,
+        view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
 ) : AbstractViewHolder<DynamicChannelViewModel>(view) {
 
-    private val columnNum = 3
     private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_sprintsale_main_container)
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
@@ -75,7 +74,7 @@ class DynamicChannelSprintSaleViewHolder(
                         GridLayoutManager.VERTICAL,
                         false
                 )
-                adapter = SprintSaleListAdapter(view?.context, channelData, dcEventHandler)
+                adapter = SprintSaleListAdapter(channelData, dcEventHandler)
             }
         } else {
             mainContainer.visibility = View.GONE
@@ -85,5 +84,7 @@ class DynamicChannelSprintSaleViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.dynamic_channel_sprintsale_main
+
+        private const val columnNum = 3
     }
 }
