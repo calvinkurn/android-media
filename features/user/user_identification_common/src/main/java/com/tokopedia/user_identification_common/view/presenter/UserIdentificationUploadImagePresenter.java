@@ -1,7 +1,6 @@
 package com.tokopedia.user_identification_common.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
@@ -214,7 +213,7 @@ public class UserIdentificationUploadImagePresenter extends
 
     @Override
     public void checkKtp(String image) {
-        cekKtpStatusUseCase.execute(cekKtpStatusUseCase.getRequestParam(ImageHandler.encodeToBase64(image)), new GetKtpStatusSubscriber(getView().getKtpStatusListener()));
+        cekKtpStatusUseCase.execute(cekKtpStatusUseCase.getRequestParam(image), new GetKtpStatusSubscriber(getView().getKtpStatusListener()));
     }
 
     @Override
