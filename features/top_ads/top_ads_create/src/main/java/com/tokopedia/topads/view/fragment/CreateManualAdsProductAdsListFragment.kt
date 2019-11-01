@@ -7,11 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
-import com.tokopedia.topads.view.sheet.InfoSheetGroupList
 import com.tokopedia.topads.view.sheet.InfoSheetProductList
-import com.tokopedia.topads.view.sheet.ProductFilterSheetBudgetList
-import com.tokopedia.topads.view.sheet.ProductSortSheetBudgetList
-import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
+import com.tokopedia.topads.view.sheet.ProductFilterSheetList
+import com.tokopedia.topads.view.sheet.ProductSortSheetList
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list.*
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list.tip_btn
 
@@ -19,6 +17,9 @@ import kotlinx.android.synthetic.main.topads_create_fragment_product_list.tip_bt
  * Author errysuprayogi on 29,October,2019
  */
 class CreateManualAdsProductAdsListFragment: CreateManualAdsBaseStepperFragment<CreateManualAdsStepperModel>() {
+
+    private lateinit var sortProductList: ProductSortSheetList
+    private lateinit var filteSheetProductList: ProductFilterSheetList
 
     companion object {
         fun createInstance(): Fragment {
@@ -56,6 +57,10 @@ class CreateManualAdsProductAdsListFragment: CreateManualAdsBaseStepperFragment<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            sortProductList = ProductSortSheetList.newInstance(it)
+            filteSheetProductList = ProductFilterSheetList.newInstance(it)
+        }
         btn_next.setOnClickListener {
             gotoNextPage()
         }
@@ -63,10 +68,15 @@ class CreateManualAdsProductAdsListFragment: CreateManualAdsBaseStepperFragment<
             InfoSheetProductList.newInstance(it.context).show()
         }
         btn_sort.setOnClickListener {
-            ProductSortSheetBudgetList.newInstance(it.context).show()
+            sortProductList.show()
         }
         btn_filter.setOnClickListener {
-            ProductFilterSheetBudgetList.newInstance(it.context).show()
+            filteSheetProductList.show()
         }
+        sortProductList.setActionListener(object: ProductSortSheetList.ActionListener{
+            override fun onSort(pos: Int) {
+                
+            }
+        })
     }
 }

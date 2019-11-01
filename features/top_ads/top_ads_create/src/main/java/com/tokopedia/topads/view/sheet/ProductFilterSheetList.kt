@@ -5,12 +5,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.FrameLayout
 import com.tokopedia.topads.create.R
-import kotlinx.android.synthetic.main.topads_create_fragment_group_sheet_info.*
+import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_filter.*
 
 /**
  * Author errysuprayogi on 07,May,2019
  */
-class InfoSheetGroupList {
+class ProductFilterSheetList {
 
     private var dialog: BottomSheetDialog? = null
 
@@ -29,19 +29,19 @@ class InfoSheetGroupList {
     }
 
     fun show() {
-        dialog?.show()
+        dialog!!.show()
     }
 
     fun dismissDialog() {
-        dialog?.dismiss()
+        dialog!!.dismiss()
     }
 
     companion object {
 
-        fun newInstance(context: Context): InfoSheetGroupList {
-            val fragment = InfoSheetGroupList()
+        fun newInstance(context: Context): ProductFilterSheetList {
+            val fragment = ProductFilterSheetList()
             fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
-            fragment.dialog!!.setContentView(R.layout.topads_create_fragment_group_sheet_info)
+            fragment.dialog!!.setContentView(R.layout.topads_create_fragment_product_list_sheet_filter)
             fragment.setupView(context)
             return fragment
         }
