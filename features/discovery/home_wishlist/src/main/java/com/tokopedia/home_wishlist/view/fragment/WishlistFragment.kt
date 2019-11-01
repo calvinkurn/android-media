@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -28,6 +29,7 @@ import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.util.Status
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.custom.CustomSearchView
@@ -192,14 +194,18 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                     .setNegativeButton(getString(R.string.wishlist_cancel)) { _, _ -> }
                     .show()
         }
-        recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView?.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.adapter = adapter
         recyclerView?.itemAnimator = DefaultItemAnimator()
         endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
             override fun getCurrentPage(): Int = 1
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if(menu?.findItem(R.id.cancel)?.isVisible == false) viewModel.getNextPageWishlistData()
+                if(viewModel.wishlistState.value == Status.EMPTY){
+                    viewModel.getRecommendationOnEmptyWishlist(page + 1)
+                }else{
+                    if(menu?.findItem(R.id.cancel)?.isVisible == false) viewModel.getNextPageWishlistData()
+                }
             }
         }
         recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)

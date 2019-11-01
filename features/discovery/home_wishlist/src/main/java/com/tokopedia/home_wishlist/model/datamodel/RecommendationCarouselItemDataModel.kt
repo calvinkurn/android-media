@@ -7,12 +7,11 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 data class RecommendationCarouselItemDataModel (
         val recommendationItem: RecommendationItem,
-        val isWishlist: Boolean,
         val parentPosition: Int
 ) : WishlistDataModel {
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
         if(dataModel is RecommendationCarouselItemDataModel){
-            return isWishlist == dataModel.isWishlist && recommendationItem.productId == dataModel.recommendationItem.productId
+            return recommendationItem.isWishlist == dataModel.recommendationItem.isWishlist && recommendationItem.productId == dataModel.recommendationItem.productId
         }
         return false
     }

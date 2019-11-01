@@ -1,5 +1,6 @@
 package com.tokopedia.home_wishlist.view.viewholder
 
+import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_wishlist.R
@@ -56,6 +57,15 @@ class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<Recomme
 
             setButtonWishlistOnClickListener {
 
+            }
+        }
+    }
+
+    override fun bind(element: RecommendationItemDataModel, listener: SmartListener, payloads: List<Any>) {
+        if(payloads.isNotEmpty()){
+            val bundle = payloads[0] as Bundle
+            if(bundle.containsKey("wishlist")){
+                productCardView.setButtonWishlistImage(bundle.getBoolean("wishlist"))
             }
         }
     }

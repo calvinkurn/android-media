@@ -37,7 +37,7 @@ class RecommendationCarouselItemViewHolder(
                             ratingCount = element.recommendationItem.rating,
                             shopLocation = element.recommendationItem.location,
                             isWishlistVisible = true,
-                            isWishlisted = element.isWishlist,
+                            isWishlisted = element.recommendationItem.isWishlist,
                             shopBadgeList = element.recommendationItem.badgesUrl.map {
                                 ProductCardModel.ShopBadge(imageUrl = it?:"")
                             },
@@ -69,8 +69,7 @@ class RecommendationCarouselItemViewHolder(
             }
 
             setButtonWishlistOnClickListener {
-                updateWishlist(!element.recommendationItem.isWishlist)
-                (listener as WishlistListener).onWishlistClick(element.parentPosition, adapterPosition, !element.recommendationItem.isWishlist)
+                (listener as WishlistListener).onWishlistClick(element.parentPosition, adapterPosition, element.recommendationItem.isWishlist)
             }
         }
     }

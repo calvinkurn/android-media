@@ -45,6 +45,7 @@ open class WishlistViewModel @Inject constructor(
     var keywordSearch = ""
     var currentPage = 0
     val wishlistData = WishlistLiveData<List<WishlistDataModel>>(listOf())
+    val wishlistState = WishlistLiveData(Status.LOADING)
 
     val addToCartActionData = SingleObserverLiveEvent<Event<AddToCartActionData>>()
     val removeWishlistActionData = SingleObserverLiveEvent<Event<RemoveWishlistActionData>>()
@@ -78,9 +79,12 @@ open class WishlistViewModel @Inject constructor(
                 return@launchCatchError
             }
 
-            if(data.items.isEmpty()){
+            if(!data.items.isEmpty()){
                 wishlistData.value = listOf(EmptyWishlistDataModel())
+                wishlistState.value = Status.EMPTY
+                getRecommendationOnEmptyWishlist(0)
             } else {
+                wishlistState.value = Status.SUCCESS
                 var visitableWishlist = mappingWishlistToVisitable(data.items)
 
                 wishlistData.value = visitableWishlist
@@ -98,6 +102,7 @@ open class WishlistViewModel @Inject constructor(
         }){
             it.printStackTrace()
             wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
+            wishlistState.value = Status.ERROR
             currentPage--
         }
     }
@@ -137,6 +142,20 @@ open class WishlistViewModel @Inject constructor(
             loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(isSuccess = false, message = it.message
                     ?: ""))
             currentPage--
+        }
+    }
+
+    fun getRecommendationOnEmptyWishlist(page: Int){
+        val emptyDataVisitable = wishlistData.value
+        wishlistData.value = wishlistData.value.plus(LoadMoreDataModel())
+        launchCatchError(block = {
+            val widget = wishlistRepository.getSingleRecommendationData(page)
+            val newList = ArrayList(emptyDataVisitable)
+            if(page == 0) newList.add(RecommendationTitleDataModel(widget.title, ""))
+            newList.addAll(widget.recommendationItemList.map { RecommendationItemDataModel(it) })
+            wishlistData.value = newList
+        }){
+
         }
     }
 
@@ -497,7 +516,7 @@ open class WishlistViewModel @Inject constructor(
             )
             wishlistData.value = wishslistDataTemp
         }
-        listVisitableMarked.plus(listOf())
+        listVisitableMarked.plus(listOf(productPosition))
     }
 
     private fun getWishlistPositionOnMark() = listVisitableMarked.withIndex().filter { (_, visitable) ->  visitable is WishlistItemDataModel && visitable.isOnChecked }.map{ (index, _) -> index }
@@ -521,7 +540,7 @@ open class WishlistViewModel @Inject constructor(
                 RecommendationCarouselDataModel(
                         id = recommendationList.first().tid,
                         title = recommendationList.first().title,
-                        list = recommendationList.first().recommendationItemList.map { RecommendationCarouselItemDataModel(it, it.isWishlist, (currentPage - 1) * 20 + 4) } as MutableList<RecommendationCarouselItemDataModel>,
+                        list = recommendationList.first().recommendationItemList.map { RecommendationCarouselItemDataModel(it, (currentPage - 1) * 20 + 4) } as MutableList<RecommendationCarouselItemDataModel>,
                         seeMoreAppLink = recommendationList.first().seeMoreAppLink))
         return list
     }

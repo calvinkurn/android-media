@@ -25,6 +25,14 @@ abstract class SmartRecyclerAdapter<T, V : WishlistTypeFactoryImpl>(
         return adapterTypeFactory.createViewHolder(view, viewType)
     }
 
+    override fun onBindViewHolder(holder: SmartAbstractViewHolder<*>, position: Int, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty()){
+            bind(holder as SmartAbstractViewHolder<Visitable<*>>, getItem(position), payloads)
+        }else{
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
     private fun onCreateViewItem(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(parent.context).inflate(viewType, parent, false)
     }
@@ -34,6 +42,9 @@ abstract class SmartRecyclerAdapter<T, V : WishlistTypeFactoryImpl>(
     }
 
     protected abstract fun bind(visitable: SmartAbstractViewHolder<Visitable<*>>, item: T)
+
+    protected abstract fun bind(visitable: SmartAbstractViewHolder<Visitable<*>>, item: T, payloads: MutableList<Any>)
+
 
     abstract override fun getItemViewType(position: Int): Int
 }

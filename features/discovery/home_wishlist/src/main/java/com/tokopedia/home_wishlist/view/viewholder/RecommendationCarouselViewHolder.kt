@@ -1,5 +1,6 @@
 package com.tokopedia.home_wishlist.view.viewholder
 
+import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
@@ -43,7 +44,7 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
                 setRecycledViewPool(viewPool)
                 isNestedScrollingEnabled = false
                 setHasFixedSize(true)
-                adapter = RecommendationCarouselAdapter(listener as WishlistListener)
+                adapter = RecommendationCarouselAdapter(listener as WishlistListener, appExecutors)
             }
             (recyclerView.adapter as RecommendationCarouselAdapter).updateList(dataModel.list)
             if(clickedItem != -1) {
@@ -52,6 +53,23 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
             }
         }
 
+    }
+
+    override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener, payloads: List<Any>) {
+        if(payloads.isNotEmpty()){
+            val bundle = payloads[0] as Bundle
+            if(bundle.containsKey("isOnBulkRemoveProgress")){
+                disabledView.visibility = if(bundle.getBoolean("isOnBulkRemoveProgress")) View.VISIBLE else View.GONE
+            }
+
+            if(bundle.containsKey("updateList")){
+                val index = bundle.getInt("updateList")
+                val isWishlist = bundle.getBoolean("updateIsWishlist")
+                if(recyclerView.adapter != null){
+                    (recyclerView.adapter as RecommendationCarouselAdapter).updateWishlist(index, isWishlist)
+                }
+            }
+        }
     }
 
     companion object{

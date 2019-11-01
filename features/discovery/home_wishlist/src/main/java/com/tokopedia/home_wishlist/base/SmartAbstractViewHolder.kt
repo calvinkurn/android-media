@@ -17,7 +17,7 @@ abstract class SmartAbstractViewHolder<T : Visitable<*>>(itemView: View) : Recyc
 
     Override this method to do the partial bind
      */
-    protected fun bind(element: T, payloads: List<Any>) {}
+    open fun bind(element: T, listener: SmartListener, payloads: List<Any>) {}
 
     /*
     Override this to do recycle and clear image resources
