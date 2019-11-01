@@ -5,11 +5,16 @@ import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 
 interface DynamicChannelEventHandler : CountDownView.CountDownListener {
+    // Lego layout event handlers
     fun onClickLegoHeaderActionText(applink: String): View.OnClickListener
     fun onClickLegoImage(channelData: Channel, position: Int): View.OnClickListener
+
+    // Flash Sale layout event handlers
     fun onClickFlashSaleActionText(applink: String): View.OnClickListener
     fun onClickFlashSaleImage(channelData: Channel, position: Int): View.OnClickListener
+
+    // Thematic layout event handlers
     fun onClickMixActionText(applink: String): View.OnClickListener
+    fun onClickMixBanner(channelData: Channel): View.OnClickListener
     fun onClickMixImage(channelData: Channel, position: Int): View.OnClickListener
-    fun onClickMixBanner(): View.OnClickListener
 }

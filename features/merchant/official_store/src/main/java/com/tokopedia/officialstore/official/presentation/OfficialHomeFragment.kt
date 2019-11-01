@@ -69,7 +69,7 @@ class OfficialHomeFragment :
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
-    private var counterTitleShouldBeRendered = 1
+    private var counterTitleShouldBeRendered = 0
     private var totalScroll = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -288,7 +288,7 @@ class OfficialHomeFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode === REQUEST_FROM_PDP) {
+        if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
                 val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
@@ -436,7 +436,20 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickMixBanner(): View.OnClickListener {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onClickMixBanner(channelData: Channel): View.OnClickListener {
+        return View.OnClickListener {
+            val bannerData = channelData.banner
+            val applink = bannerData?.applink ?: ""
+
+            bannerData?.let {
+                tracking?.dynamicChannelMixBannerClick(
+                        viewModel.currentSlug,
+                        channelData.header?.name ?: "",
+                        it
+                )
+            }
+
+            RouteManager.route(context, applink)
+        }
     }
 }

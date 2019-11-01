@@ -238,7 +238,7 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
-    // region TRACKER OF DYNAMIC CHANNEL (custom code folding purposes, don't remove)
+    // region TRACKER OF DYNAMIC CHANNEL (IntelliJ custom code folding purposes, don't remove)
     fun flashSaleActionTextClick(categoryName: String) {
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, "clickOSMicrosite",
@@ -326,13 +326,13 @@ class OfficialStoreTracking(context: Context) {
         ))
     }
 
-    fun dynamicChannelMixBannerClick(categoryName: String, headerName: String, position: String, bannerData: Banner) {
+    fun dynamicChannelMixBannerClick(categoryName: String, headerName: String, bannerData: Banner) {
         val ecommerceBody = DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(DataLayer.mapOf(
                         "id", bannerData.id,
                         "name", "/official-store/$categoryName - dynamic channel mix - $headerName",
-                        "position", position,
+                        "position", "0",
                         "creative", bannerData.title,
                         "creative_url", bannerData.imageUrl,
                         "promo_id", null,
@@ -349,7 +349,7 @@ class OfficialStoreTracking(context: Context) {
                 ECOMMERCE, ecommerceBody
         ))
     }
-    // endregion TRACKER OF DYNAMIC CHANNEL (custom code folding purposes, don't remove)
+    // endregion TRACKER OF DYNAMIC CHANNEL (IntelliJ custom code folding purposes, don't remove)
 
     // No 21
     fun eventClickProductRecommendation(
@@ -361,7 +361,7 @@ class OfficialStoreTracking(context: Context) {
     ) {
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_CLICK,
-                EVENT_CATEGORY, String.format(OS_MICROSITE, categoryName), // Here
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName", // Here
                 EVENT_ACTION, PRODUCT_EVENT_ACTION,
                 EVENT_LABEL, recommendationTitle,
                 ECOMMERCE, DataLayer.mapOf(
@@ -397,7 +397,7 @@ class OfficialStoreTracking(context: Context) {
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem, isLogin: Boolean, position: String): Any {
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, item.name,
-                FIELD_PRODUCT_ID, item.productId,
+                FIELD_PRODUCT_ID, item.productId.toString(),
                 FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
                 FIELD_PRODUCT_BRAND, item.shopName,
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,

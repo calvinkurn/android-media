@@ -10,10 +10,13 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class DynamicChannelThematicViewHolder(
@@ -30,13 +33,15 @@ class DynamicChannelThematicViewHolder(
     private val bannerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_thematic_banner_container)
     private val bannerTitle = itemView.findViewById<Typography>(R.id.dc_thematic_banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.dc_thematic_banner_description)
+    private val bannerButton = itemView.findViewById<UnifyButton>(R.id.dc_thematic_banner_button)
     private val bannerImage = itemView.findViewById<AppCompatImageView>(R.id.dc_thematic_banner_image)
+
     private val contentList = itemView.findViewById<RecyclerView>(R.id.dc_thematic_rv)
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
             setupHeader(dynamicChannelData.header)
-            setupBanner(dynamicChannelData.banner)
+            setupBanner(dynamicChannelData.banner, dynamicChannelData)
             setupContent(dynamicChannelData)
         }
     }
@@ -59,7 +64,33 @@ class DynamicChannelThematicViewHolder(
         }
     }
 
-    private fun setupBanner(banner: Banner?) {
+    private fun setupBannerButton(cta: Cta, channelData: Channel) {
+        if (cta.text.isNotEmpty()) {
+            bannerButton.visibility = View.VISIBLE
+            bannerButton.setOnClickListener(dcEventHandler.onClickMixBanner(channelData))
+
+            when (cta.mode) {
+                DynamicChannelIdentifiers.CTA_MODE_MAIN -> bannerButton.buttonType = UnifyButton.Type.MAIN
+                DynamicChannelIdentifiers.CTA_MODE_TRANSACTION -> bannerButton.buttonType = UnifyButton.Type.TRANSACTION
+                DynamicChannelIdentifiers.CTA_MODE_INVERTED -> bannerButton.isInverse = true
+                DynamicChannelIdentifiers.CTA_MODE_DISABLED -> bannerButton.isEnabled = false
+                DynamicChannelIdentifiers.CTA_MODE_ALTERNATE -> bannerButton.isEnabled = false
+            }
+
+            when (cta.type) {
+                DynamicChannelIdentifiers.CTA_TYPE_FILLED -> bannerButton.buttonVariant = UnifyButton.Variant.FILLED
+                DynamicChannelIdentifiers.CTA_TYPE_GHOST -> bannerButton.buttonVariant = UnifyButton.Variant.GHOST
+                DynamicChannelIdentifiers.CTA_TYPE_TEXT -> bannerButton.buttonVariant = UnifyButton.Variant.TEXT_ONLY
+                else -> bannerButton.buttonVariant = UnifyButton.Variant.FILLED
+            }
+
+            bannerButton.text = cta.text
+        } else {
+            bannerButton.visibility = View.GONE
+        }
+    }
+
+    private fun setupBanner(banner: Banner?, channelData: Channel) {
         if (banner != null && banner.imageUrl.isNotEmpty()) {
             bannerContainer.visibility = View.VISIBLE
 
@@ -71,6 +102,10 @@ class DynamicChannelThematicViewHolder(
             bannerDescription.apply {
                 text = banner.description
                 setTextColor(Color.parseColor(banner.textColor))
+            }
+
+            if (banner.cta != null) {
+                setupBannerButton(banner.cta, channelData)
             }
 
             Glide.with(itemView.context)

@@ -9,7 +9,7 @@ object GQLQueryConstant {
     const val QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION = "gql_query_official_store_product_recommendation"
 }
 
-object DynamicChannelLayoutType {
+object DynamicChannelIdentifiers {
     val LAYOUT_UNKNOWN = "unknown"
     val LAYOUT_BANNER_CAROUSEL = "banner_carousel"
     val LAYOUT_BANNER_ = "banner_organic"
@@ -18,4 +18,14 @@ object DynamicChannelLayoutType {
     val LAYOUT_SPRINT_LEGO = "sprint_lego"
     val LAYOUT_LEGO_3_IMAGE = "lego_3_image"
     val LAYOUT_6_IMAGE = "6_image"
+
+    val CTA_MODE_MAIN = "main"
+    val CTA_MODE_TRANSACTION = "transaction"
+    val CTA_MODE_INVERTED = "inverted"
+    val CTA_MODE_DISABLED = "disabled"
+    val CTA_MODE_ALTERNATE = "alternate"
+
+    val CTA_TYPE_FILLED = "filled"
+    val CTA_TYPE_GHOST = "ghost"
+    val CTA_TYPE_TEXT = "text_only"
 }
