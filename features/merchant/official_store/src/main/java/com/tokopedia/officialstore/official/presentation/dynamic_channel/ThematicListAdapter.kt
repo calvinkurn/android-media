@@ -25,17 +25,24 @@ class ThematicListAdapter(
         val itemData = channelData.grids?.get(position)
 
         itemData?.let { item ->
+            val freeongkirData = ProductCardModel.FreeOngkir(
+                    item.freeOngkir?.isActive ?: false,
+                    item.freeOngkir?.imageUrl ?: ""
+            )
+
             holder.productCard.apply {
                 setLinesProductTitle(2)
                 setProductModel(
                         ProductCardModel(
                                 productImageUrl = item.imageUrl,
                                 productName = item.name,
-                                formattedPrice = item.price
+                                formattedPrice = item.price,
+                                freeOngkir = freeongkirData
                         ),
                         BlankSpaceConfig(
                                 price = true,
-                                productName = true
+                                productName = true,
+                                freeOngkir = true
                         ))
                 setOnClickListener(dcEventHandler.onClickMixImage(channelData, position))
             }
