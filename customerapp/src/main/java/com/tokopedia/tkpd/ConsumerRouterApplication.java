@@ -250,7 +250,6 @@ import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
@@ -324,7 +323,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ITransactionOrderDetailRouter,
         NetworkRouter,
         TopChatRouter,
-        TokopointRouter,
         SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
@@ -1349,10 +1347,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(TokoPointWebviewActivity.getIntent(context, url));
     }
 
-    @Override
-    public void openTokopointWebview(Context context, String url, String title) {
-        context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, url, title));
-    }
+
 
     @Override
     public boolean isIndicatorVisible() {
