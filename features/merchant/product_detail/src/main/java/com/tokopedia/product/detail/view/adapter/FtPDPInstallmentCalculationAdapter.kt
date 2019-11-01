@@ -14,10 +14,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FtCalculationPartnerData
+import com.tokopedia.product.detail.data.model.financing.FtTncData
 import kotlin.math.roundToLong
 
 class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPrice: Float?,
-                                         var data: ArrayList<FtCalculationPartnerData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                                         var data: ArrayList<FtCalculationPartnerData>,
+                                         var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): RecyclerView.ViewHolder {
@@ -36,9 +38,8 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
             return
         }
 
-        var expandLayout = true
-
         val item = data[position]
+        var ftTncData = getDataFromFragment.getTncData(item.tncId)
 
         if (vHolder is InstallmentItemViewHolder) {
 
@@ -47,14 +48,14 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
             vHolder.tvInstallmentTitle.text = String.format(mContext!!.getString(R.string.ft_installment_heading), item.partnerName)
 
             vHolder.llInstallmentContainer.hide()
-            vHolder.ivInstallmentToggle.setOnClickListener {
+            /*vHolder.ivInstallmentToggle.setOnClickListener {
                 if (expandLayout) {
                     vHolder.llInstallmentContainer.show()
                 } else {
                     vHolder.llInstallmentContainer.hide()
                 }
                 expandLayout = !expandLayout
-            }
+            }*/
 
             vHolder.llInstallmentDetail.removeAllViews()
             for (installmentData in item.creditCardInstallmentList) {
@@ -63,8 +64,17 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
                 val monthCountTv = view.findViewById<TextView>(R.id.tv_month_count)
                 monthCountTv.text = String.format(mContext!!.getString(R.string.pdp_installment_price_heading), installmentData.creditCardInstallmentTerm)
 
+                val tvInstallmentPriceExt = view.findViewById<TextView>(R.id.tv_installment_price_ext)
                 val priceTv = view.findViewById<TextView>(R.id.tv_installment_price)
-                priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.monthlyPrice.roundToLong(), false)
+                productPrice?.compareTo(installmentData.minimumAmount)?.let {
+                    if (it < 0) {
+                        tvInstallmentPriceExt.text = String.format("\nMin Pembelanjaan %s",
+                                CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.monthlyPrice.roundToLong(), false))
+                        priceTv.text = "-"
+                    } else {
+                        priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.monthlyPrice.roundToLong(), false)
+                    }
+                }
 
                 vHolder.llInstallmentDetail.addView(view)
             }
@@ -96,6 +106,10 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
         }
     }
 
+    interface GetTncDataFromFragment {
+        fun getTncData(id: Int): ArrayList<FtTncData>?
+    }
+
     inner class InstallmentItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         internal val tvInstallmentTitle: TextView = view.findViewById(R.id.tv_installment_detail_heading)
         internal val tvInstallmentDataHeading = view.findViewById<TextView>(R.id.tv_installment_data_heading)
@@ -104,5 +118,19 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
         internal val llInstructionDetailContainer: LinearLayout = view.findViewById(R.id.instruction_detail_ll)
         internal val llInstallmentDetail: LinearLayout = view.findViewById(R.id.installment_detail_ll)
         internal val ivMainIcon: ImageView = view.findViewById(R.id.iv_installment_main_icon)
+
+
+        private var expandLayout = true
+
+        init {
+            ivInstallmentToggle.setOnClickListener {
+                if (expandLayout) {
+                    llInstallmentContainer.show()
+                } else {
+                    llInstallmentContainer.hide()
+                }
+                expandLayout = !expandLayout
+            }
+        }
     }
 }

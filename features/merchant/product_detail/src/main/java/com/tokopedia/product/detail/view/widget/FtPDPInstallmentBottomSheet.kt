@@ -153,11 +153,13 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private fun getNonCreditInstallmentFragment(): Fragment? {
         return FtPdpInstallmentCalculationFragment.createInstance(productPrice,
+                installmentData.ftInstallmentCalculation.data.tncDataList,
                 installmentData.ftInstallmentCalculation.data.nonCreditCardInstallmentData)
     }
 
     private fun getCreditInstallmentFragment(): Fragment? {
         return FtPdpInstallmentCalculationFragment.createInstance(productPrice,
+                installmentData.ftInstallmentCalculation.data.tncDataList,
                 installmentData.ftInstallmentCalculation.data.creditCardInstallmentData)
     }
 

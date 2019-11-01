@@ -23,16 +23,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="right"
+        android:gravity="end"
         app:typographyType="heading_5"
         tools:text="Rp 150.000" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_installment_price_ext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right"
         app:typographyType="body_3"
-        android:text=" /bulan" />
+        android:text="@string/pdp_installment_price_ext" />
 
 </LinearLayout>
