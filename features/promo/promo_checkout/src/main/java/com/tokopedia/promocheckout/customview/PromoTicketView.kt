@@ -5,20 +5,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import kotlin.math.roundToInt
-import android.renderscript.Element.U8
-import android.renderscript.ScriptIntrinsicBlur
-import android.renderscript.RenderScript
-import android.graphics.Bitmap
-import android.graphics.Color.BLACK
-import android.graphics.Color.TRANSPARENT
-import android.os.Build
-import android.renderscript.Allocation
-import android.graphics.Paint.ANTI_ALIAS_FLAG
 import com.tokopedia.promocheckout.R
-import android.graphics.PorterDuffColorFilter
-import android.support.constraint.ConstraintLayout
-
 
 class PromoTicketView : View {
 
@@ -27,20 +14,20 @@ class PromoTicketView : View {
     private val mDividerPaint = Paint()
     private var mDividerStopX: Float = 0F
     private var mDividerStopY: Float = 0F
-
-    val rectF = RectF()
-    val mPaint = Paint()
-    val mPath = Path()
-    var shadowBlur = 6
-    var offset = 158
-    var cornerRadius = 8
-    var scallopRadius = 8
-    var mScallopHeight = 16
-    var offsetafter = 90
-    var cardheight = 96
-    private var mShadow: Bitmap? = null
-    private var mShadowPaint = Paint(ANTI_ALIAS_FLAG)
-
+    private var mBackgroundColor: Int = 0
+    private var mShowBorder: Boolean = true
+    private var mBorderWidth: Int = 0
+    private var mCornerRadius: Int = 0
+    private var mScallopRadius: Int = 0
+    private var mOffset: Int = 0
+    private var mOffsetafter: Int = 0
+    private var mCardHeight: Int = 0
+    private var mScallopHeight: Int = 0
+    private var mShadowblur: Int = 0
+    private val rectF = RectF()
+    private val mPaint = Paint()
+    private val mPath = Path()
+    private var mDirty = true
 
     constructor(context: Context?) : super(context) {
         init(null)
@@ -58,161 +45,112 @@ class PromoTicketView : View {
         init(attrs)
     }
 
-
     fun init(attrs: AttributeSet?) {
 
-        cornerRadius = convertDpToPx(cornerRadius).roundToInt()
-        scallopRadius = convertDpToPx(scallopRadius).roundToInt()
-        mScallopHeight = scallopRadius * 2
-        offset = convertDpToPx(offset).roundToInt()
-        offsetafter = convertDpToPx(offsetafter).roundToInt()
-        cardheight = convertDpToPx(cardheight).roundToInt()
-        shadowBlur = convertDpToPx(shadowBlur).roundToInt()
+        if (attrs != null) {
+            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.PromoTicketView)
+            mBackgroundColor = typedArray.getColor(R.styleable.PromoTicketView_backgroundcolor, resources.getColor(android.R.color.white))
+            mScallopRadius = typedArray.getDimensionPixelSize(R.styleable.PromoTicketView_scallopRadius, convertDpToPx(8).toInt())
+            mShowBorder = typedArray.getBoolean(R.styleable.PromoTicketView_showborder, true)
+            mBorderWidth = typedArray.getDimensionPixelSize(R.styleable.PromoTicketView_borderwidth, convertDpToPx(2).toInt())
+            mCornerRadius = typedArray.getDimensionPixelSize(R.styleable.PromoTicketView_cornerradius, convertDpToPx(8).toInt())
+            mOffset = typedArray.getDimensionPixelSize(R.styleable.PromoTicketView_offset, convertDpToPx(158).toInt())
+            mOffsetafter = typedArray.getDimensionPixelSize(R.styleable.PromoTicketView_offsetafter, convertDpToPx(90).toInt())
+            mCardHeight = typedArray.getDimensionPixelSize(R.styleable.PromoTicketView_cardheight, convertDpToPx(90).toInt())
+            mShadowblur = typedArray.getDimensionPixelSize(R.styleable.PromoTicketView_shadowblur, convertDpToPx(8).toInt())
+            mScallopHeight = mScallopRadius * 2
 
-        with(mDividerPaint) {
-            isAntiAlias = true
-            color = resources.getColor(R.color.darker_color)
-            strokeWidth = resources.getDimension(R.dimen.dp_2)
+            typedArray.recycle()
         }
+        initElements()
+    }
 
-        with(mPaint) {
-            style = Paint.Style.FILL
-            color = Color.rgb(255, 235, 238)
-            alpha = 0
-            isAntiAlias = true
-        }
+    private fun initElements() {
 
+        setBackgroundPaint()
+        setBorderPaint()
+        mDirty = true
+        invalidate()
+    }
 
-        mShadowPaint.colorFilter = PorterDuffColorFilter(BLACK, PorterDuff.Mode.SRC_IN)
-        mShadowPaint.alpha = 51
+    private fun setBorderPaint() {
+        mDividerPaint.color = resources.getColor(R.color.promo_ticket_colorshadow)
+        mDividerPaint.strokeWidth = resources.getDimension(R.dimen.dp_2)
+        mDividerPaint.pathEffect = DashPathEffect(floatArrayOf(10f, 5f), 1.0.toFloat())
+    }
+
+    private fun setBackgroundPaint() {
+        mPaint.style = Paint.Style.FILL_AND_STROKE
+        mPaint.color = Color.WHITE
+        mPaint.isAntiAlias = true
+        mPaint.setShadowLayer(mShadowblur.toFloat() / 2F, 0F, 0F, resources.getColor(R.color.promo_ticket_colorshadow))
+        setLayerType(LAYER_TYPE_SOFTWARE, mPaint)
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        drawTicket()
-        mPaint.style = Paint.Style.FILL_AND_STROKE
-        mPaint.color = Color.WHITE
-        mPaint.isAntiAlias = true
-        mPaint.setShadowLayer(shadowBlur.toFloat() / 2F, 0F, 0F, resources.getColor(R.color.promo_ticket_colorshadow));
-        mDividerPaint.color=resources.getColor(R.color.promo_ticket_colorshadow)
-        mDividerPaint.strokeWidth=resources.getDimension(R.dimen.dp_2)
-        mDividerPaint.pathEffect=DashPathEffect(floatArrayOf(10f, 5f), 1.0.toFloat())
-        setLayerType(LAYER_TYPE_SOFTWARE, mPaint);
+        if (mDirty) {
+            drawTicket()
+        }
         canvas?.drawPath(mPath, mPaint)
-        canvas?.drawLine(mDividerStartX, mDividerStartY, mDividerStopX, mDividerStopY, mDividerPaint)
-
+        if (mShowBorder) {
+            canvas?.drawLine(mDividerStartX, mDividerStartY, mDividerStopX, mDividerStopY, mDividerPaint)
+        }
     }
 
     fun drawTicket() {
 
-        val left = paddingLeft + shadowBlur
-        val right = paddingRight + shadowBlur
-        val top = paddingTop + shadowBlur
-        val bottom = paddingBottom + shadowBlur
-
+        val left = paddingLeft + mShadowblur
+        val top = paddingTop + mShadowblur
 
         mPath.arcTo(getTopLeftCornerRoundedArc(top, left), 180.0f, 90.0f, false)
         rectF.set(
-                (left + offset).toFloat(),
-                (top - scallopRadius).toFloat(),
-                mScallopHeight.toFloat() + offset + left,
-                (top + scallopRadius).toFloat()
+                (left + mOffset).toFloat(),
+                (top - mScallopRadius).toFloat(),
+                mScallopHeight.toFloat() + mOffset + left,
+                (top + mScallopRadius).toFloat()
         )
 
         mPath.arcTo(rectF, 180.0f, -180.0f, false)
-        mPath.arcTo(
-                getTopRightCornerRoundedArc(
-                        top,
-                        (mScallopHeight.toFloat() + offset + left + offsetafter).toInt()
-                ), 270.0f, 90.0f, false
+        mPath.arcTo(getTopRightCornerRoundedArc(top, (mScallopHeight + mOffset + left + mOffsetafter)), 270.0f, 90.0f, false
+        )
+        mPath.arcTo(getBottomRightCornerRoundedArc((top + mCardHeight), (mScallopHeight + mOffset + left + mOffsetafter)), 0F, 90F, false
         )
 
-        mPath.arcTo(
-                getBottomRightCornerRoundedArc(
-                        (top + cardheight).toFloat(),
-                        (mScallopHeight.toFloat() + offset + left + offsetafter)
-                ), 0F, 90F, false
+        rectF.set((left + mOffset).toFloat(),
+                (top - mScallopRadius + mCardHeight).toFloat(),
+                mScallopHeight.toFloat() + mOffset + left,
+                (top + mCardHeight + mScallopRadius).toFloat()
         )
-
-
-        rectF.set(
-                (left + offset).toFloat(),
-                (top - scallopRadius + cardheight).toFloat(),
-                mScallopHeight.toFloat() + offset + left,
-                (top + cardheight + scallopRadius).toFloat()
-        )
-
         mPath.arcTo(rectF, 0f, -180.0f, false)
-
-        //   mPath.moveTo((left+offset).toFloat(), (top+200).toFloat())
-        mPath.arcTo(
-                getBottomLeftCornerRoundedArc(left.toFloat(), (top + cardheight).toFloat()),
-                90F,
-                90F,
-                false
-        )
-
+        mPath.arcTo(getBottomLeftCornerRoundedArc(left, (top + mCardHeight)), 90F, 90F, false)
         mPath.close()
 
-        mDividerStartX = (cornerRadius + left + offset).toFloat();
-        mDividerStartY = (top + scallopRadius).toFloat();
-        mDividerStopX = (cornerRadius + left + offset).toFloat();
-        mDividerStopY = (top+cardheight - scallopRadius).toFloat()
+        mDividerStartX = (mCornerRadius + left + mOffset).toFloat();
+        mDividerStartY = (top + mScallopRadius).toFloat();
+        mDividerStopX = (mCornerRadius + left + mOffset).toFloat();
+        mDividerStopY = (top + mCardHeight - mScallopRadius).toFloat()
 
-        // generateShadow()
-
-    }
-
-    private fun generateShadow() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-
-            if (mShadow == null) {
-                mShadow = Bitmap.createBitmap(width, height, Bitmap.Config.ALPHA_8)
-            } else {
-                mShadow?.eraseColor(TRANSPARENT)
-            }
-            val c = Canvas(mShadow)
-            c.drawPath(mPath, mShadowPaint)
-            val rs = RenderScript.create(context)
-            val blur = ScriptIntrinsicBlur.create(rs, U8(rs))
-            val input = Allocation.createFromBitmap(rs, mShadow)
-            val output = Allocation.createTyped(rs, input.getType())
-            blur.setRadius(shadowBlur.toFloat())
-
-            blur.setInput(input)
-            blur.forEach(output)
-            output.copyTo(mShadow)
-            input.destroy()
-            output.destroy()
-            blur.destroy()
-        }
     }
 
     fun getTopLeftCornerRoundedArc(left: Int, top: Int): RectF {
-        return RectF(
-                left.toFloat(),
-                top.toFloat(),
-                (left + cornerRadius * 2).toFloat(),
-                (top + cornerRadius * 2).toFloat()
-        )
+        rectF.set(left.toFloat(), top.toFloat(), (left + mCornerRadius * 2).toFloat(), (top + mCornerRadius * 2).toFloat())
+        return rectF
     }
 
     fun getTopRightCornerRoundedArc(top: Int, right: Int): RectF {
-        return RectF(
-                (right - cornerRadius * 2).toFloat(),
-                top.toFloat(),
-                right.toFloat(),
-                (top + cornerRadius * 2).toFloat()
-        )
+        rectF.set((right - mCornerRadius * 2).toFloat(), top.toFloat(), right.toFloat(), (top + mCornerRadius * 2).toFloat())
+        return rectF
     }
 
-    private fun getBottomLeftCornerRoundedArc(left: Float, bottom: Float): RectF {
-        return RectF(left, bottom - cornerRadius * 2, left + cornerRadius * 2, bottom)
-
+    private fun getBottomLeftCornerRoundedArc(left: Int, bottom: Int): RectF {
+        rectF.set(left.toFloat(), (bottom - mCornerRadius * 2).toFloat(), (left + mCornerRadius * 2).toFloat(), bottom.toFloat())
+        return rectF
     }
 
-    private fun getBottomRightCornerRoundedArc(bottom: Float, right: Float): RectF {
-        return RectF(right - cornerRadius * 2, bottom - cornerRadius * 2, right, bottom)
+    private fun getBottomRightCornerRoundedArc(bottom: Int, right: Int): RectF {
+        rectF.set((right - mCornerRadius * 2).toFloat(), (bottom - mCornerRadius * 2).toFloat(), right.toFloat(), bottom.toFloat())
+        return rectF
     }
 
     private fun convertDpToPx(dp: Int): Float {

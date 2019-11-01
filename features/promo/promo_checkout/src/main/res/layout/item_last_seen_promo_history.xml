@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
     xmlns:tool="http://schemas.android.com/tools"
     android:id="@+id/ticketPromoHistory"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-
     <com.tokopedia.promocheckout.customview.PromoTicketView
-        android:layout_width="274dp"
+        android:layout_width="@dimen/promo_ticket_container_width"
         android:layout_height="@dimen/dp_110"
         android:layout_marginTop="@dimen/dp_8"
+        app:backgroundcolor="@color/white"
+        app:borderwidth="@dimen/dp_2"
+        app:cardheight="@dimen/dp_90"
+        app:cornerradius="@dimen/dp_8"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:offset="@dimen/promo_ticket_offset"
+        app:offsetafter="@dimen/dp_90"
+        app:scallopRadius="@dimen/dp_8"
+        app:showborder="true" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
@@ -28,10 +35,10 @@
         android:layout_marginStart="@dimen/dp_28"
         android:layout_marginLeft="@dimen/dp_28"
         android:layout_marginTop="@dimen/dp_22"
+        android:textColor="@color/black"
         app:layout_constraintRight_toLeftOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/black"
         app:typographyType="body_3"
         tool:text="Jangan Sampai Gaji Habis Di Awal Bula" />
 
@@ -63,7 +70,6 @@
         app:layout_constraintLeft_toRightOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5" />
-
 
 </android.support.constraint.ConstraintLayout>
 

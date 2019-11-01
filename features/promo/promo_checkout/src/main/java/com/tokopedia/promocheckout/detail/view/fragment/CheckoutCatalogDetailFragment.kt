@@ -1,8 +1,6 @@
 package com.tokopedia.promocheckout.detail.view.fragment
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -21,9 +19,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
-import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
@@ -46,7 +41,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     private val couponRedemptionCode_QUOTA_LIMIT_REACHED = 42022
     private val couponRedemptionCode_PROFILE_INCOMPLETE = 42021
     private val couponRedemptionCode_SUCCESS = 200
-    lateinit var tukarSuccessListener:promoTukarSuccessListener
+    lateinit var tukarSuccessListener:PromoTukarSuccessListener
 
     @Inject
     lateinit var mPresenter: CheckoutCatalogDetailPresenter
@@ -117,7 +112,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         super.onAttach(context)
     }
 
-    fun setter(variable:promoTukarSuccessListener){
+    fun setter(variable:PromoTukarSuccessListener){
         tukarSuccessListener=variable
     }
 
@@ -208,7 +203,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val quota = view?.findViewById<Typography>(R.id.text_quota_count)
         val description = view?.findViewById<Typography>(R.id.text_description)
         val disabledError = view?.findViewById<Typography>(R.id.text_disabled_error)
-        val bottomSeparator = view?.findViewById<View>(R.id.bottom_separator)
         val btnAction2 = view?.findViewById<Typography>(R.id.button_action_2)
         val imgBanner = view?.findViewById<ImageView>(R.id.img_banner)
         val labelPoint = view?.findViewById<Typography>(R.id.text_point_label)
@@ -237,7 +231,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             pointValue.visibility = View.VISIBLE
             pointValue.text = data.pointsStr
         }
-
 
         //Quota text handling
         if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
@@ -329,30 +322,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         }
     }
 
-/*    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_DETAIL_PROMO) {
-            if (resultCode == Activity.RESULT_OK) {
-                activity?.setResult(Activity.RESULT_OK, data)
-                activity?.finish()
-            } else {
-                val intent = Intent()
-                val bundle = data?.getExtras()
-                val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
-                intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
-                activity?.setResult(RESULT_CLASHING, intent)
-
-                if (clashingInfoDetailUiModel != null) {
-                    activity?.finish()
-                }
-                childFragmentManager.beginTransaction().remove(this).commit()
-                childFragmentManager.popBackStack()
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }*/
-
-    interface promoTukarSuccessListener{
-
+    interface PromoTukarSuccessListener{
         fun removeCheckOutFragment()
     }
 }

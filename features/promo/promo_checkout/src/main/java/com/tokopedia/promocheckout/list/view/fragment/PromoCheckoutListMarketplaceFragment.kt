@@ -9,16 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.data.IS_COUPON_ACTIVE
-import com.tokopedia.promocheckout.common.data.PROMO_CODE
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
-import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
+import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract

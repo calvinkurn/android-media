@@ -265,12 +265,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         super.onDestroyView()
     }
 
-    override fun loadData(page: Int) {
-        if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
-        }
-    }
-
     companion object {
         val EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
         val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
