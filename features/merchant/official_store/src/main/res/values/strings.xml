@@ -7,4 +7,6 @@
     <string name="os_featured_shop_link">Semua Brand</string>
     <string name="os_product_recommendation_title">Rekomendasi Untukmu</string>
 
+    <string name="os_error_try_again">Coba lagi</string>
+
 </resources>

@@ -35,7 +35,7 @@ class FeaturedShopAdapter(private val context: Context, var shopList: List<Shop>
                 .into(holder.imageView)
 
         holder.itemView.setOnClickListener {
-            onItemClickListener?.onItemClick(context, position, shop)
+            onItemClickListener?.onItemClick(position, shop)
         }
     }
 
@@ -49,6 +49,6 @@ class FeaturedShopAdapter(private val context: Context, var shopList: List<Shop>
     }
 
     interface OnItemClickListener {
-        fun onItemClick(context: Context, position: Int, shop: Shop)
+        fun onItemClick(position: Int, shop: Shop)
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Gravity
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
@@ -19,6 +18,7 @@ class OfficialBenefitViewHolder(view: View?): AbstractViewHolder<OfficialBenefit
 
     private var recyclerView: RecyclerView? = null
     private var container: View? = null
+    private var context: Context? = null
 
     private var adapter: BenefitAdapter? = null
 
@@ -27,6 +27,7 @@ class OfficialBenefitViewHolder(view: View?): AbstractViewHolder<OfficialBenefit
         container = view?.findViewById(R.id.container_benefit)
 
         view?.context?.let {
+            context = it
             adapter = BenefitAdapter(it)
             recyclerView?.layoutManager = GridLayoutManager(it, 3)
             recyclerView?.addItemDecoration(GridSpacingItemDecoration(3, 0))
@@ -40,7 +41,7 @@ class OfficialBenefitViewHolder(view: View?): AbstractViewHolder<OfficialBenefit
             adapter?.notifyDataSetChanged()
 
             adapter?.onItemClickListener = object: BenefitAdapter.OnItemClickListener {
-                override fun onItemClick(context: Context, position: Int, item: Benefit) {
+                override fun onItemClick(position: Int, item: Benefit) {
                     RouteManager.route(context,
                             "${ApplinkConst.WEBVIEW}?url=${item.redirectUrl}")
 
