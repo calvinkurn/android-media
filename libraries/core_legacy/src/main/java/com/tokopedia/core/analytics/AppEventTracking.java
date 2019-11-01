@@ -1046,6 +1046,8 @@ public interface AppEventTracking {
         String FIELDS_OPTIONAL_ETALASE = "Etalase";
         String FIELDS_OPTIONAL_PREORDER_PROCESS_TIME = "Preorder Process Time";
         String FIELDS_OPTIONAL_PREORDER_TIME_UNIT = "Preorder Time Unit";
+        String FIELDS_OPTIONAL_PRODUCT_SIZE_CHART = "Product Size Chart";
+        String FIELDS_OPTIONAL_VARIANT_SKU_PRODUCT = "Variant SKU Product";
 
 
     }

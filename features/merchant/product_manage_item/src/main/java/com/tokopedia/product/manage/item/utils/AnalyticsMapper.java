@@ -7,6 +7,7 @@ import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.utils.constant.ProductStockTypeDef;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 
@@ -66,7 +67,9 @@ public class AnalyticsMapper {
         if (isShare) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_SHARE);
         }
-
+        if(!viewModel.getProductSizeChart().getFilePath().isEmpty()){
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PRODUCT_SIZE_CHART);
+        }
         if (viewModel.hasVariant()) {
             boolean hasCustomVariantLv1 = false;
             boolean hasCustomVariantLv2 = false;
@@ -98,6 +101,14 @@ public class AnalyticsMapper {
                 }
                 if (!hasCustomVariantLv2) {
                     listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL2);
+                }
+            }
+
+            List<ProductVariantCombinationViewModel> listProductVariantCombinationViewModel = viewModel.getProductVariant().getProductVariant();
+            for(ProductVariantCombinationViewModel productVariantCombinationViewModel : listProductVariantCombinationViewModel){
+                if(!productVariantCombinationViewModel.getSku().isEmpty()){
+                    listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_SKU_PRODUCT);
+                    break;
                 }
             }
         }
