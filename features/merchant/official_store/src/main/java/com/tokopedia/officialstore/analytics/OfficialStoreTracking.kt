@@ -188,6 +188,56 @@ class OfficialStoreTracking(context: Context) {
                                 "$CLICK view all"))
     }
 
+    fun eventClickFeaturedBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, imageUrl: String) {
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, "all brands - $CLICK",
+                EVENT_LABEL, "$CLICK shop logo",
+                ECOMMERCE, DataLayer.mapOf(
+                PROMO_CLICK, DataLayer.mapOf(
+                "promotions",DataLayer.listOf(
+                DataLayer.mapOf(
+                        "id", shopId,
+                        "name", "/official-store/$categoryName - popular brands",
+                        "position", "$shopPosition",
+                        "creative", shopName,
+                        "creative_url", imageUrl,
+                        "promo_id", null,
+                        "promo_code", null
+                        )
+                    )
+                )
+            )
+        )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    fun eventImpressionFeatureBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, imageUrl: String) {
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, "all brands - $IMPRESSION",
+                EVENT_LABEL, "$IMPRESSION of brand",
+                ECOMMERCE, DataLayer.mapOf(
+                PROMO_VIEW, DataLayer.mapOf(
+                "promotions",DataLayer.listOf(
+                DataLayer.mapOf(
+                        "id", shopId,
+                        "name", "/official-store/$categoryName - popular brands",
+                        "position", "$shopPosition",
+                        "creative", shopName,
+                        "creative_url", imageUrl,
+                        "promo_id", null,
+                        "promo_code", null
+                        )
+                    )
+                )
+            )
+        )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
     // region TRACKER OF DYNAMIC CHANNEL (custom code folding purposes, don't remove)
     fun flashSaleActionTextClick(categoryName: String) {
         tracker.sendGeneralEvent(DataLayer.mapOf(

@@ -138,7 +138,7 @@ class OfficialHomeFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingBanners(it.data, adapter)
+                    OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                 }
                 is Fail -> {
                     if (BuildConfig.DEBUG)

@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.official.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.DynamicChannelLayoutType
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
@@ -21,8 +22,8 @@ class OfficialHomeMapper {
         val BENEFIT_POSITION = 1
         val FEATURE_SHOP_POSITION = 2
 
-        fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?) {
-            notifyElement(BANNER_POSITION, OfficialBannerViewModel(banner.banners), adapter)
+        fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?) {
+            notifyElement(BANNER_POSITION, OfficialBannerViewModel(banner.banners, categoryName.toEmptyStringIfNull()), adapter)
         }
 
         fun mappingBenefit(benefits: OfficialStoreBenefits, adapter: OfficialHomeAdapter?) {
