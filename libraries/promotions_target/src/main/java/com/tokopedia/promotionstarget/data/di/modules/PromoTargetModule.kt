@@ -40,6 +40,11 @@ class PromoTargetModule {
 
     @Provides
     @PromoTargetScope
+    @Named("IO")
+    fun provideWorkerDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    @PromoTargetScope
     @Named(GET_COUPON_DETAIL)
     fun provideCouponDetailString(context: Context): String = context.resources.openRawResource(R.raw.query_hachiko_catalog_detail)
             .bufferedReader()
