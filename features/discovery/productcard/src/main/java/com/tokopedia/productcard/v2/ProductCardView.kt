@@ -490,7 +490,7 @@ abstract class ProductCardView: BaseCustomView {
 
         imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
                 shouldShowFreeOngkirImage, blankSpaceConfig.freeOngkir) {
-            ImageHandler.loadImageThumbs(context, it, freeOngkir.imageUrl)
+            ImageHandler.loadImageRounded2(context, it, freeOngkir.imageUrl)
         }
     }
 
