@@ -71,6 +71,7 @@ class OfficialHomeFragment :
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
     private var totalScroll = 0
+    private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -386,6 +387,13 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun legoImpression(channelData: Channel) {
+        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+            tracking?.dynamicChannelImpression(viewModel.currentSlug, channelData)
+            sentDynamicChannelTrackers.add(channelData.id)
+        }
+    }
+
     override fun onClickFlashSaleActionText(applink: String): View.OnClickListener {
         return View.OnClickListener {
             tracking?.flashSaleActionTextClick(viewModel.currentSlug)
@@ -408,6 +416,13 @@ class OfficialHomeFragment :
             }
 
             RouteManager.route(context, applink)
+        }
+    }
+
+    override fun flashSaleImpression(channelData: Channel) {
+        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+            tracking?.flashSaleImpression(viewModel.currentSlug, channelData)
+            sentDynamicChannelTrackers.add(channelData.id)
         }
     }
 
@@ -449,6 +464,20 @@ class OfficialHomeFragment :
             }
 
             RouteManager.route(context, applink)
+        }
+    }
+
+    override fun mixImageImpression(channelData: Channel) {
+        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+            tracking?.dynamicChannelMixCardImpression(viewModel.currentSlug, channelData)
+            sentDynamicChannelTrackers.add(channelData.id)
+        }
+    }
+
+    override fun mixBannerImpression(channelData: Channel) {
+        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+            tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
+            sentDynamicChannelTrackers.add(channelData.id)
         }
     }
 }

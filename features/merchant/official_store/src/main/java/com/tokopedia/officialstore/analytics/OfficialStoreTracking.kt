@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.analytics
 import android.content.Context
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
@@ -254,7 +255,7 @@ class OfficialStoreTracking(context: Context) {
                     "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - flash sale - $headerName"),
                     "products", DataLayer.listOf(DataLayer.mapOf(
                         "name", gridData.name,
-                        "id", gridData.id,
+                        "id", gridData.id.toString(10),
                         "price", gridData.price,
                         "brand", "none",
                         "category", "",
@@ -275,11 +276,43 @@ class OfficialStoreTracking(context: Context) {
         ))
     }
 
+    fun flashSaleImpression(categoryName: String, channelData: Channel) {
+        val headerName = channelData.header?.name ?: ""
+        val impressionBody = DataLayer.listOf()
+
+        channelData.grids?.forEachIndexed { index, grid ->
+            grid?.run {
+                impressionBody.add(DataLayer.mapOf(
+                        "name", name,
+                        "id", id.toString(10),
+                        "price", price,
+                        "brand", "none",
+                        "category", "",
+                        "variant", "none",
+                        "list", "/official-store/$categoryName - flash sale - $headerName",
+                        "position", (index + 1).toString(10),
+                        "attribution", attribution
+                ))
+            }
+        }
+
+        trackingQueue.putEETracking(DataLayer.mapOf(
+                EVENT, "productView",
+                EVENT_CATEGORY, "os microsite - $categoryName",
+                EVENT_ACTION, "flash sale - product impression",
+                EVENT_LABEL, "impression of product - $headerName",
+                ECOMMERCE, DataLayer.mapOf(
+                    "currencyCode", "IDR",
+                    "impressions", impressionBody
+            )
+        ) as HashMap<String, Any>)
+    }
+
     fun dynamicChannelImageClick(categoryName: String, headerName: String, position: String, gridData: Grid) {
         val ecommerceBody = DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(DataLayer.mapOf(
-                        "id", gridData.id,
+                        "id", gridData.id.toString(10),
                         "name", "/official-store/$categoryName - dynamic channel - $headerName",
                         "position", position,
                         "creative", gridData.name,
@@ -299,13 +332,44 @@ class OfficialStoreTracking(context: Context) {
         ))
     }
 
+    fun dynamicChannelImpression(categoryName: String, channelData: Channel) {
+        val headerName = channelData.header?.name ?: ""
+        val promotionBody = DataLayer.listOf()
+
+        channelData.grids?.forEachIndexed { index, grid ->
+            grid?.run {
+                promotionBody.add(DataLayer.mapOf(
+                        "id", id.toString(10),
+                        "name", "/official-store/$categoryName - dynamic channel - $headerName",
+                        "position", (index + 1).toString(10),
+                        "creative", name,
+                        "creative_url", imageUrl,
+                        "promo_id", null,
+                        "promo_code", null
+                ))
+            }
+        }
+
+        trackingQueue.putEETracking(DataLayer.mapOf(
+                EVENT, "promoView",
+                EVENT_CATEGORY, "os microsite - $categoryName",
+                EVENT_ACTION, "dynamic channel - impression",
+                EVENT_LABEL, "impression of dynamic channel - $headerName",
+                ECOMMERCE, DataLayer.mapOf(
+                    "promoView", DataLayer.mapOf(
+                        "promotions", promotionBody
+                )
+            )
+        ) as HashMap<String, Any>)
+    }
+
     fun dynamicChannelMixCardClick(categoryName: String, headerName: String, position: String, gridData: Grid) {
         val ecommerceBody = DataLayer.mapOf(
                 "click", DataLayer.mapOf(
                     "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - dynamic channel mix - $headerName"),
                     "products", DataLayer.listOf(DataLayer.mapOf(
                         "name", gridData.name,
-                        "id", gridData.id,
+                        "id", gridData.id.toString(10),
                         "price", gridData.price,
                         "brand", "none",
                         "category", "",
@@ -326,11 +390,43 @@ class OfficialStoreTracking(context: Context) {
         ))
     }
 
+    fun dynamicChannelMixCardImpression(categoryName: String, channelData: Channel) {
+        val headerName = channelData.header?.name ?: ""
+        val impressionBody = DataLayer.listOf()
+
+        channelData.grids?.forEachIndexed { index, grid ->
+            grid?.run {
+                impressionBody.add(DataLayer.mapOf(
+                        "name", name,
+                        "id", id.toString(10),
+                        "price", price,
+                        "brand", "none",
+                        "category", "",
+                        "variant", "none",
+                        "list", "/official-store/$categoryName - dynamic channel mix - $headerName",
+                        "position", (index + 1).toString(10),
+                        "attribution", attribution
+                ))
+            }
+        }
+
+        trackingQueue.putEETracking(DataLayer.mapOf(
+                EVENT, "productView",
+                EVENT_CATEGORY, "os microsite - $categoryName",
+                EVENT_ACTION, "dynamic channel mix - product impression",
+                EVENT_LABEL, "impression of product - $headerName",
+                ECOMMERCE, DataLayer.mapOf(
+                    "currencyCode", "IDR",
+                    "impressions", impressionBody
+            )
+        ) as HashMap<String, Any>)
+    }
+
     fun dynamicChannelMixBannerClick(categoryName: String, headerName: String, bannerData: Banner) {
         val ecommerceBody = DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(DataLayer.mapOf(
-                        "id", bannerData.id,
+                        "id", bannerData.id.toString(10),
                         "name", "/official-store/$categoryName - dynamic channel mix - $headerName",
                         "position", "0",
                         "creative", bannerData.title,
@@ -348,6 +444,37 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_LABEL, "click banner dc mix - $headerName",
                 ECOMMERCE, ecommerceBody
         ))
+    }
+
+    fun dynamicChannelMixBannerImpression(categoryName: String, channelData: Channel) {
+        val headerName = channelData.header?.name ?: ""
+        val promotionBody = DataLayer.listOf()
+
+        channelData.grids?.forEachIndexed { index, grid ->
+            grid?.run {
+                promotionBody.add(DataLayer.mapOf(
+                        "id", id.toString(10),
+                        "name", "/official-store/$categoryName - dynamic channel mix - $headerName",
+                        "position", (index + 1).toString(10),
+                        "creative", name,
+                        "creative_url", imageUrl,
+                        "promo_id", null,
+                        "promo_code", null
+                ))
+            }
+        }
+
+        trackingQueue.putEETracking(DataLayer.mapOf(
+                EVENT, "promoView",
+                EVENT_CATEGORY, "os microsite - $categoryName",
+                EVENT_ACTION, "dynamic channel mix - banner impression",
+                EVENT_LABEL, "impression banner dc mix - $headerName",
+                ECOMMERCE, DataLayer.mapOf(
+                    "promoView", DataLayer.mapOf(
+                        "promotions", promotionBody
+                )
+            )
+        ) as HashMap<String, Any>)
     }
     // endregion TRACKER OF DYNAMIC CHANNEL (IntelliJ custom code folding purposes, don't remove)
 

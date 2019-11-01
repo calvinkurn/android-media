@@ -27,6 +27,7 @@ class DynamicChannelSprintSaleViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
+            dcEventHandler.flashSaleImpression(dynamicChannelData)
             setupHeader(dynamicChannelData.header)
             setupContent(dynamicChannelData)
         }
