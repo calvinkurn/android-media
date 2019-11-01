@@ -20,6 +20,9 @@ class DropoffPickerViewModel
     val stores: LiveData<Result<List<Data>>>
         get() = mutableStoreResponse
 
+    private val mutableRadius = MutableLiveData<Int>()
+    val radius: LiveData<Int>
+        get() = mutableRadius
 
     fun getStores(latlng: String) {
 
@@ -31,12 +34,14 @@ class DropoffPickerViewModel
                 { response ->
                     if (response.keroAddressStoreLocation.data.isNotEmpty()) {
                         mutableStoreResponse.value = Success(response.keroAddressStoreLocation.data)
+                        mutableRadius.value = response.keroAddressStoreLocation.globalRadius
                     }
                 },
                 { _ ->
                     // todo: This is dummy implementation prior to live of production
                     mutableStoreResponse.value = Success(
                             LocationQuery.getStoreDummyObject.keroAddressStoreLocation.data)
+                    mutableRadius.value = LocationQuery.getStoreDummyObject.keroAddressStoreLocation.globalRadius
                 }
         )
     }

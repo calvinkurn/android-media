@@ -33,7 +33,6 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.DaggerDropoffPickerComponent
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.Data
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -43,11 +42,13 @@ import javax.inject.Inject
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private val REQUEST_CODE_LOCATION: Int = 1
+    private val GREEN_ARGB = 0x40388E3C
     lateinit var mPermissionChecker: PermissionCheckerHelper
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     lateinit var mLocationCallback: LocationCallback
     private var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
+    private var mLastLocation: LatLng = LatLng(0.0, 0.0)
 
     lateinit var mSearchInput: SearchInputView
     lateinit var mSearchText: EditText
@@ -95,7 +96,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         val rv = findViewById<RecyclerView>(R.id.rv_dropoff)
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = mNearbyAdapter
-        mNearbyAdapter.setActionListener(object: NearbyStoreAdapter.ActionListener {
+        mNearbyAdapter.setActionListener(object : NearbyStoreAdapter.ActionListener {
             override fun onItemClicked(view: View) {
                 Toast.makeText(this@DropoffPickerActivity, "Item clicked!", Toast.LENGTH_SHORT).show()
                 val bs = DropoffDetailBottomsheet.newInstance()
@@ -120,8 +121,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 stopLocationRequest()
                 if (result != null && result.locations.isNotEmpty()) {
                     val location = result.locations[0]
-                    val newLoc = LatLng(location.latitude, location.longitude)
-                    moveCamera(newLoc)
+                    mLastLocation = LatLng(location.latitude, location.longitude)
+                    moveCamera(mLastLocation)
                 }
             }
         }
@@ -174,6 +175,19 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 }
             }
         })
+
+        viewModel.radius.observe(this, Observer {
+            drawCircle(it ?: 0)
+        })
+    }
+
+    private fun drawCircle(radius: Int) {
+        if (radius > 0) {
+            mMap?.addCircle(CircleOptions().center(mLastLocation)
+                    .radius(radius * 1000.0)
+                    .fillColor(GREEN_ARGB)
+                    .strokeWidth(0.0f))
+        }
     }
 
     private fun moveCamera(latLng: LatLng) {
@@ -229,8 +243,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                             mFusedLocationClient.lastLocation
                                     .addOnSuccessListener {
                                         if (it != null) {
-                                            val newLoc = LatLng(it.latitude, it.longitude)
-                                            moveCamera(newLoc)
+                                            mLastLocation = LatLng(it.latitude, it.longitude)
+                                            moveCamera(mLastLocation)
                                         } else {
                                             // If it is null, either Google Play Service has just
                                             // been restarted or the location service is deactivated
