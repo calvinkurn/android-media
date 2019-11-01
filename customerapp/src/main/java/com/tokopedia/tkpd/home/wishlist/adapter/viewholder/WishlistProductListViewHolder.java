@@ -200,6 +200,6 @@ public class WishlistProductListViewHolder extends AbstractViewHolder<WishlistPr
 
     private void setFreeOngkir(ProductItem data){
         imageFreeOngkirPromo.setVisibility(data.getFreeOngkir() ? View.VISIBLE : View.GONE);
-        ImageHandler.loadImageThumbs(context, imageFreeOngkirPromo, data.getImageFreeOngkir());
+        ImageHandler.loadImageRounded2(context, imageFreeOngkirPromo, data.getImageFreeOngkir());
     }
 }
