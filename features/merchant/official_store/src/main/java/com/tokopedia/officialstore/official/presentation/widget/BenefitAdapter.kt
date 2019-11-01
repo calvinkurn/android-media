@@ -14,6 +14,9 @@ import com.tokopedia.officialstore.official.data.model.Benefit
 class BenefitAdapter(private val context: Context, var benefitList: List<Benefit> = ArrayList()) :
         RecyclerView.Adapter<BenefitAdapter.BenefitViewHolder>() {
 
+    var onItemClickListener: OnItemClickListener? = null
+
+
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): BenefitViewHolder {
         return BenefitViewHolder(LayoutInflater.from(context).
                 inflate(R.layout.widget_official_benefit, p0, false))
@@ -33,6 +36,10 @@ class BenefitAdapter(private val context: Context, var benefitList: List<Benefit
         )
 
         p0.textView?.text = item.label
+
+        p0.itemView.setOnClickListener{
+            onItemClickListener?.onItemClick(context, p1, item)
+        }
     }
 
     class BenefitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -44,5 +51,9 @@ class BenefitAdapter(private val context: Context, var benefitList: List<Benefit
             imageView = itemView.findViewById(R.id.image_icon_benefit)
             textView = itemView.findViewById(R.id.title_benefit)
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(context: Context, p0: Int, item: Benefit)
     }
 }

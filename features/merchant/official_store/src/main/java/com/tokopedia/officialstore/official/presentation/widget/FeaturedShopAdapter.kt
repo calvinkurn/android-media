@@ -34,7 +34,9 @@ class FeaturedShopAdapter(private val context: Context, var shopList: List<Shop>
                 R.drawable.ic_loading_image
         )
 
-        onItemClickListener?.onItemClick(context, p1, shop)
+        p0.itemView.setOnClickListener {
+            onItemClickListener?.onItemClick(context, p1, shop)
+        }
     }
 
     class FeaturedShopViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
