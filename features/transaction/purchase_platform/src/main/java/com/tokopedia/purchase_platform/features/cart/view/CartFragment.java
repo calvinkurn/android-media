@@ -1645,7 +1645,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllCartItem, boolean unselectAllItem) {
+    public void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllCartItem, boolean unselectAllItem, boolean hasAvailableItems) {
         if (dPresenter.getCartListData() != null) {
             dPresenter.getCartListData().setAllSelected(selectAllCartItem);
         }
@@ -1653,7 +1653,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cbSelectAll.setChecked(selectAllCartItem);
         }
         btnRemove.setVisibility(unselectAllItem ? View.INVISIBLE : View.VISIBLE);
-        cardHeader.setVisibility(cartAdapter.getAllAvailableCartItemData().isEmpty() ? View.GONE : View.VISIBLE);
+        cardHeader.setVisibility(hasAvailableItems ? View.GONE : View.VISIBLE);
         tvTotalPrice.setText(subtotalPrice);
         btnToShipment.setText(String.format(getString(R.string.cart_item_button_checkout_count_format), qty));
     }

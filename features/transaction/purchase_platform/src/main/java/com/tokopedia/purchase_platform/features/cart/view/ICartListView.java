@@ -56,7 +56,7 @@ public interface ICartListView extends IBaseView {
 
     List<CartItemData> getAllAvailableCartDataList();
 
-    void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllItem, boolean unselectAllItem);
+    void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllItem, boolean unselectAllItem, boolean hasAvailableItems);
 
     void updateCashback(double cashback);
 

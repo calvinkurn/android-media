@@ -778,7 +778,7 @@ public class CartListPresenter implements ICartListPresenter {
         boolean selectAllItem = view.getAllAvailableCartDataList().size() == allCartItemDataList.size() + errorProductCount &&
                 allCartItemDataList.size() > 0 && insuranceChecked;
         boolean unselectAllItem = allCartItemDataList.size() == 0;
-        view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString, selectAllItem, unselectAllItem);
+        view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString, selectAllItem, unselectAllItem, dataList.isEmpty());
 
     }
 

@@ -10,9 +10,6 @@ import rx.Observable
 
 interface ICartRepository {
 
-//    @Deprecated("Use GetCartListSimplifiedUseCase instead")
-//    fun getShopGroupList(param: Map<String, String>): Observable<CartDataListResponse>
-
     fun deleteCartData(param: Map<String, String>): Observable<DeleteCartDataResponse>
 
     fun updateCartData(param: Map<String, String>): Observable<UpdateCartDataResponse>
