@@ -41,7 +41,7 @@
             app:uiRotateGestures="false"
             app:uiScrollGestures="false"
             app:uiTiltGestures="false"
-            app:uiZoomGestures="false" />
+            app:uiZoomGestures="true" />
 
         <include
             android:id="@+id/view_gps_empty"
