@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.R;
-import com.tokopedia.otp.common.OTPAnalytics;
+import com.tokopedia.otp.common.analytics.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent;

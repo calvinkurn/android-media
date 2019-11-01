@@ -60,4 +60,18 @@
     <string name="cotp_miscall_verification_with_other_method">Gunakan Metode Verifikasi Lain</string>
   
     <string name="limit_reached">Anda sudah melakukan</string>
+
+    <!-- Validator -->
+    <string name="title_activity_activation">Aktivasi Akun</string>
+    <string name="validation_title">Masukkan Kode Aktivasi</string>
+    <string name="title_validation_otp">Aktivasi</string>
+    <string name="validation_resend_email">Tidak menerima kode? Kirim ulang</string>
+    <string name="validation_text"><![CDATA[Kode verifikasi telah dikirimkan melalui email ke <b>{email}</b>.]]></string>
+    <string name="param_email_validation_text">{email}</string>
+    <string name="message_resend_email_to">Apakah anda ingin kirim ulang email ke</string>
+    <string name="resend_activation_email">Kirim Ulang Email</string>
+    <string name="button_change_email">Ubah Email</string>
+    <string name="change_email_error_condition">change email</string>
+    <string name="success_resend_activation">Kode aktivasi telah dikirim ulang</string>
+    <string name="cancel_dialog_change_email">Batal</string>
 </resources>
