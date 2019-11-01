@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.BannerView
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -17,6 +18,9 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener {
 
+    val PROMO_NATIVE_OS_QUERY_CATEGORY_ID = "categoryID=8"
+    val PROMO_NATIVE_OS_QUERY_MENU_ID = "menuID=363"
+
     private var banner: BannerOfficialStore? = null
     private var elementBanner: OfficialBannerViewModel? = null
 
@@ -30,7 +34,7 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
     }
 
     override fun bind(element: OfficialBannerViewModel?) {
-        elementBanner = element
+            elementBanner = element
         banner?.setPromoList(element?.getBannerImgUrl())
         banner?.onPromoAllClickListener = this
         banner?.onPromoScrolledListener = this
@@ -58,7 +62,9 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
         officialStoreTracking?.eventClickAllBanner(
                 elementBanner?.categoryName.toEmptyStringIfNull())
 
-        // TODO add on banner see all click
+        RouteManager.route(itemView.context,
+                "${ApplinkConst.PROMO_LIST}?$PROMO_NATIVE_OS_QUERY_MENU_ID" +
+                        "&$PROMO_NATIVE_OS_QUERY_CATEGORY_ID")
     }
 
     override fun onPromoDragEnd() {}

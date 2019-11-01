@@ -23,15 +23,18 @@ class OfficialHomeMapper {
         val FEATURE_SHOP_POSITION = 2
 
         fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?) {
-            notifyElement(BANNER_POSITION, OfficialBannerViewModel(banner.banners, categoryName.toEmptyStringIfNull()), adapter)
+            notifyElement(BANNER_POSITION, OfficialBannerViewModel(banner.banners,
+                    categoryName.toEmptyStringIfNull()), adapter)
         }
 
         fun mappingBenefit(benefits: OfficialStoreBenefits, adapter: OfficialHomeAdapter?) {
             notifyElement(BENEFIT_POSITION, OfficialBenefitViewModel(benefits.benefits), adapter)
         }
 
-        fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?) {
-            notifyElement(FEATURE_SHOP_POSITION, OfficialFeaturedShopViewModel(featuredShop.featuredShops, featuredShop.header), adapter)
+        fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?, categoryName: String?) {
+            notifyElement(FEATURE_SHOP_POSITION,
+                    OfficialFeaturedShopViewModel(featuredShop.featuredShops, featuredShop.header,
+                    categoryName.toEmptyStringIfNull()), adapter)
         }
 
         fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {

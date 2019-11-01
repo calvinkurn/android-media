@@ -169,7 +169,7 @@ class OfficialHomeFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter)
+                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title)
                 }
                 is Fail -> {
                     if (BuildConfig.DEBUG)

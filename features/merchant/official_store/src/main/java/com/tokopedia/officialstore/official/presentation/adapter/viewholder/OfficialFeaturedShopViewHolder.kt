@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -40,12 +41,10 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
 
     override fun bind(element: OfficialFeaturedShopViewModel?) {
         link?.setOnClickListener {
-
             officialStoreTracking?.eventClickAllFeaturedBrand(
                     element?.categoryName.toEmptyStringIfNull())
 
-            // TODO route to ? webview or applink?
-            //RouteManager.route(it.context, element?.headerShop?.link)
+            RouteManager.route(it.context, element?.headerShop?.link)
         }
 
         link?.text = element?.headerShop?.ctaText
@@ -73,6 +72,8 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
                             shop.name.toEmptyStringIfNull(),
                             shop.imageUrl.toEmptyStringIfNull()
                     )
+
+
                 }
 
             }
