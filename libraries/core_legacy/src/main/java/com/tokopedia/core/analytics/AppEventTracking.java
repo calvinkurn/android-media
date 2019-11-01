@@ -1044,6 +1044,9 @@ public interface AppEventTracking {
         String FIELDS_OPTIONAL_EMPTY = "no optional field used";
         String FIELDS_OPTIONAL_SKU_PRODUCT = "SKU Product";
         String FIELDS_OPTIONAL_ETALASE = "Etalase";
+        String FIELDS_OPTIONAL_PREORDER_PROCESS_TIME = "Preorder Process Time";
+        String FIELDS_OPTIONAL_PREORDER_TIME_UNIT = "Preorder Time Unit";
+
 
     }
 

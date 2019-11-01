@@ -57,6 +57,12 @@ public class AnalyticsMapper {
         if (viewModel.getProductPreorder().getPreorderStatus() > 0) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
         }
+        if (viewModel.getProductPreorder().getPreorderProcessTime() > 0) {
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER_PROCESS_TIME);
+        }
+        if (viewModel.getProductPreorder().getPreorderTimeUnit() > 0) {
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER_TIME_UNIT);
+        }
         if (isShare) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_SHARE);
         }
