@@ -196,7 +196,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 .target(latLng)
                 .zoom(16f)
                 .build()
-        mMap?.addMarker(MarkerOptions().position(latLng))
+        mMap?.addMarker(MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_self_map_green)))
         mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
         viewModel.getStores("${latLng.latitude},${latLng.longitude}")
     }
