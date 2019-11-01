@@ -2,12 +2,12 @@ package com.tokopedia.officialstore.category.presentation.widget
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero

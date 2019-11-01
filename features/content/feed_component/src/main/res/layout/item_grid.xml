@@ -21,7 +21,7 @@
         android:layout_marginRight="@dimen/dp_2"
         android:background="@drawable/bg_frame_rounded">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -54,7 +54,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@color/black_38"
                 tools:text="+2" />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
     <TextView

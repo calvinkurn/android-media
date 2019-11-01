@@ -1,9 +1,9 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.officialstore.R

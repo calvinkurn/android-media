@@ -2,8 +2,8 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import android.graphics.Bitmap
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.support.v7.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import java.text.ParseException
 import java.text.SimpleDateFormat

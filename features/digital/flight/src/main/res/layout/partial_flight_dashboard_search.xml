@@ -13,14 +13,14 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_one_way_trip"
             style="@style/TravelButtonRound"
             android:layout_marginEnd="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
             android:text="@string/flight_search_one_way" />
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_round_trip"
             style="@style/TravelButtonRound"
             android:layout_marginLeft="@dimen/dp_5"
@@ -58,7 +58,7 @@
                 android:paddingStart="@dimen/dp_20"
                 android:paddingTop="@dimen/dp_20">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/TextView.Micro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                     android:gravity="left"
                     android:text="@string/flight_search_airport_departure_title" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_departure_airport_label"
                     style="@style/TextView.Small"
                     android:layout_width="match_parent"
@@ -101,7 +101,7 @@
                 android:paddingStart="@dimen/dp_20"
                 android:paddingTop="@dimen/dp_20">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/TextView.Micro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                     android:gravity="right"
                     android:text="@string/flight_search_airport_arrival_title" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_arrival_airport_label"
                     style="@style/TextView.Small"
                     android:layout_width="match_parent"
@@ -123,7 +123,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_reverse_airport"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
@@ -148,7 +148,7 @@
             android:paddingLeft="@dimen/dp_15"
             android:paddingRight="@dimen/dp_15"
             android:paddingTop="@dimen/dp_8"
-            app:tiv_icon="@drawable/ic_calendar_general"
+            app:tiv_icon="@drawable/flight_ic_calendar_general"
             app:tiv_remove_background="true"
             app:tiv_title_text="@string/flight_search_date_departure_title" />
 
@@ -169,7 +169,7 @@
             android:paddingRight="@dimen/dp_15"
             android:paddingTop="@dimen/dp_8"
             android:visibility="gone"
-            app:tiv_icon="@drawable/ic_calendar_general"
+            app:tiv_icon="@drawable/flight_ic_calendar_general"
             app:tiv_remove_background="true"
             app:tiv_title_text="@string/flight_search_date_arrival_title"
             tools:visibility="visible" />
@@ -222,7 +222,7 @@
             android:layout_marginRight="@dimen/dp_10"
             android:background="@drawable/bg_line_separator" />
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_search_ticket"
             style="@style/Button.Submit.Orange"
             android:layout_marginTop="@dimen/dp_20"

@@ -13,8 +13,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -72,7 +72,6 @@ import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
 import com.tokopedia.seller.purchase.detail.fragment.CancelShipmentFragment;
 import com.tokopedia.seller.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.seller.purchase.detail.fragment.RejectOrderFragment;
-import com.tokopedia.seller.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.seller.purchase.detail.model.detail.viewmodel.BookingCodeData;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
@@ -89,6 +88,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -97,7 +97,6 @@ import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderBaseFragment.FRAGMENT_REJECT_ORDER_SUB_MENU_TAG;
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderFragment.REJECT_ORDER_MENU_FRAGMENT_TAG;
-import static com.tokopedia.seller.purchase.detail.fragment.RequestPickupFragment.INFO_FRAGMENT_TAG;
 import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.PARAM_CONFIRM_PICKUP_ORDER_ID;
 import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.PARAM_CONFIRM_PICKUP_ORIGIN_ADDRESS;
 
@@ -215,9 +214,12 @@ public class OrderDetailActivity extends TActivity
         ViewGroup layout = findViewById(R.id.booking_code_layout);
         TextView tvBookingCode = findViewById(R.id.booking_code);
         TextView tvBookingCodePlaceholder = findViewById(R.id.booking_code_placeholder);
+        TextView seeDetailBtn = findViewById(R.id.see_detail_button);
         if (data.getBookingCode() != null && getExtraUserMode() == SELLER_MODE) {
+            layout.setVisibility(View.VISIBLE);
             tvBookingCodePlaceholder.setVisibility(View.GONE);
             tvBookingCode.setVisibility(View.VISIBLE);
+            seeDetailBtn.setVisibility(View.VISIBLE);
             tvBookingCode.setText(data.getBookingCode());
             BookingCodeData codeData = new BookingCodeData(
                     data.getBookingCode(), data.getBarcodeType(), data.getBookingCodeMessage()
@@ -229,8 +231,7 @@ public class OrderDetailActivity extends TActivity
                 startActivity(BookingCodeActivity.createInstance(this, codeData));
             });
         } else {
-            tvBookingCode.setVisibility(View.GONE);
-            tvBookingCodePlaceholder.setVisibility(View.VISIBLE);
+            layout.setVisibility(View.GONE);
         }
 
         RelativeLayout rlWajibDicantumkan = findViewById(R.id.rl_wajib_dicantumkan);
@@ -756,30 +757,36 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onAcceptOrder(OrderDetailData data) {
-        if (data.isFreeShipping()) {
-            showFreeShippingConfirmationDialog();
-        } else {
-            AcceptOrderDialog dialog = AcceptOrderDialog.createDialog(data.getOrderId());
-            dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
-        }
+        showFreeShippingConfirmationDialog(data.isFreeShipping());
     }
 
-    private void showFreeShippingConfirmationDialog() {
+    private void showFreeShippingConfirmationDialog(Boolean isFreeShipping) {
         DialogUnify dialogUnify = new DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         dialogUnify.setUnlockVersion();
 
         View dialogView = View.inflate(this, R.layout.dialog_accept_order_free_shipping, null);
         dialogUnify.setChild(dialogView);
 
-        String msgReguler1 = getString(R.string.confirm_msg_1a);
-        String msgBold1 = getString(R.string.confirm_msg_1b);
-        SpannableString str1 = new SpannableString(msgReguler1 + " " + msgBold1);
-        str1.setSpan(new StyleSpan(Typeface.BOLD), msgReguler1.length()+1, str1.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        RelativeLayout rlConfirmation1 = dialogView.findViewById(R.id.rl_confirmation_1);
+        String msgReguler2, msg3;
+        if (isFreeShipping) {
+            rlConfirmation1.setVisibility(View.VISIBLE);
+            String msgReguler1 = getString(R.string.confirm_msg_1a);
+            String msgBold1 = getString(R.string.confirm_msg_1b);
+            SpannableString str1 = new SpannableString(msgReguler1 + " " + msgBold1);
+            str1.setSpan(new StyleSpan(Typeface.BOLD), msgReguler1.length()+1, str1.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        Typography label1 = dialogView.findViewById(R.id.label_confirmation_msg_1);
-        label1.setText(str1);
+            Typography label1 = dialogView.findViewById(R.id.label_confirmation_msg_1);
+            label1.setText(str1);
 
-        String msgReguler2 = getString(R.string.confirm_msg_2a);
+            msgReguler2 = getString(R.string.confirm_msg_2a_free_shipping);
+            msg3 = getString(R.string.confirm_msg_3_free_shipping);
+        } else {
+            msgReguler2 = getString(R.string.confirm_msg_2a_reguler);
+            msg3 = getString(R.string.confirm_msg_3_reguler);
+            rlConfirmation1.setVisibility(View.GONE);
+        }
+
         String msgBold2 = getString(R.string.confirm_msg_2b);
         SpannableString str2 = new SpannableString(msgReguler2 + " " + msgBold2);
         str2.setSpan(new StyleSpan(Typeface.BOLD), msgReguler2.length()+1, str2.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -788,7 +795,7 @@ public class OrderDetailActivity extends TActivity
         label2.setText(str2);
 
         Typography label3 = dialogView.findViewById(R.id.label_confirmation_msg_3);
-        label3.setText(getString(R.string.confirm_msg_3));
+        label3.setText(msg3);
 
         UnifyButton btnBatal = dialogView.findViewById(R.id.btn_batal);
         btnBatal.setOnClickListener(v -> dialogUnify.dismiss());
@@ -1073,9 +1080,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().findFragmentByTag(INFO_FRAGMENT_TAG) != null) {
-            removeFragmentOnBackPressed(INFO_FRAGMENT_TAG);
-        } else if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
             toolbar.setTitle(getString(R.string.title_detail_transaction));
             removeFragmentOnBackPressed(VALIDATION_FRAGMENT_TAG);
         } else if (getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
@@ -1149,26 +1154,6 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onConfirmPickup(String orderId) {
-        presenter.processInstantCourierShipping(this, orderId);
-    }
-
-    @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-
-    }
-
-    @Override
     public void onRemoveTitle() {
         toolbar.setTitle("");
     }
@@ -1181,5 +1166,9 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onClickRequestPickupBtn(@NotNull String orderId) {
         presenter.processInstantCourierShipping(this, orderId);
+    }
+
+    public void setActionBarTitle(String title) {
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
     }
 }

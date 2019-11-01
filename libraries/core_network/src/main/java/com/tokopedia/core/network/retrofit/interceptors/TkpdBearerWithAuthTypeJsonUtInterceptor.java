@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by sebastianuskh on 3/13/17.

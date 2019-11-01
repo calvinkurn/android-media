@@ -1,10 +1,10 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
 import android.content.Context
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -14,7 +14,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Offic
 import com.tokopedia.officialstore.official.presentation.widget.BenefitAdapter
 import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
 
-class OfficialBenefitViewHolder(view: View?): AbstractViewHolder<OfficialBenefitViewModel>(view){
+class OfficialBenefitViewHolder(view: View?) : AbstractViewHolder<OfficialBenefitViewModel>(view) {
 
     private var recyclerView: RecyclerView? = null
     private var container: View? = null

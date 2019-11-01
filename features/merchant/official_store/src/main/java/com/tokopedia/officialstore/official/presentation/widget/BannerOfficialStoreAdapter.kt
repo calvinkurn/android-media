@@ -20,7 +20,7 @@ class BannerOfficialStoreAdapter(bannerImageUrls: List<String> , onPromoClickLis
                 .load(bannerImageUrls[position])
                 .dontAnimate()
                 .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(holder.bannerImage)
 
         holder.bannerImage.setOnClickListener(this.getBannerImageOnClickListener(position))

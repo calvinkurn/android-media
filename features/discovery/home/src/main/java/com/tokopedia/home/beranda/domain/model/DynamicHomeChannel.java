@@ -580,7 +580,7 @@ public class DynamicHomeChannel {
             );
         }
 
-        public Map<String, Object> getEnhanceClickProductChannelMix(int gridPosition) {
+        public Map<String, Object> getEnhanceClickProductChannelMix(int gridPosition, boolean isFreeOngkir) {
             return DataLayer.mapOf(
                     "event", "productClick",
                     "eventCategory", "homepage",
@@ -602,7 +602,8 @@ public class DynamicHomeChannel {
                                                     "category", "none / other",
                                                     "variant", "none / other",
                                                     "position", String.valueOf(gridPosition+1),
-                                                    "attribution", getHomeAttribution(gridPosition + 1, getGrids()[gridPosition].getId())
+                                                    "attribution", getHomeAttribution(gridPosition + 1, getGrids()[gridPosition].getId()),
+                                                    "dimension83", isFreeOngkir ? "bebas ongkir" : "none/other"
                                             )
                                     )
                             )

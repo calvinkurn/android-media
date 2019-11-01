@@ -1,10 +1,10 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
-import android.support.annotation.LayoutRes
-import android.support.constraint.ConstraintLayout
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.R

@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.atc_variant.view.presenter
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.res.Resources
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -10,7 +10,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.purchase_platform.features.express_checkout.domain.usecase.AddInsuranceProductUsecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -18,7 +17,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.features.atc_variant.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
@@ -26,13 +24,15 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.transaction.insurance.utils.INSURANCE_RECOMMENDATION_PARAM_GQL
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.AddInsuranceProductToCartRequest
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.AddMarketPlaceToCartRequest
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.InsuranceRecommendationRequest
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.AddInsuranceProductToCartGqlResponse
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceRecommendationGqlResponse
+import com.tokopedia.purchase_platform.features.atc_variant.di.RawQueryKeyConstant
 import com.tokopedia.purchase_platform.features.atc_variant.model.*
+import com.tokopedia.purchase_platform.features.express_checkout.domain.usecase.AddInsuranceProductUsecase
+import com.tokopedia.transaction.insurance.utils.INSURANCE_RECOMMENDATION_PARAM_GQL
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -64,7 +64,7 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
         needRefresh = arguments.getBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, DEFAULT_NEED_REFRESH)
     }
 
-    fun getProductInfo(productParams: ProductParams, resources: Resources, insuranceEnabled: Boolean, insuranceRecommendationRequest: InsuranceRecommendationRequest) {
+    fun getProductInfo(productParams: ProductParams, resources: Resources) {
 
         launchCatchError(block = {
             val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
@@ -123,23 +123,24 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
         }) {
             productInfoResp.value = Fail(it)
         }
+    }
+
+    fun getInsuranceProductRecommendation(insuranceRecommendationRequest: InsuranceRecommendationRequest) {
 
         launchCatchError(block = {
-            if (isUserSessionActive() && insuranceEnabled) {
-                val insuranceParams = mapOf(INSURANCE_RECOMMENDATION_PARAM_GQL to insuranceRecommendationRequest)
-                val graphqlInsuranceRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSURANCE_RECOMMENDATION],
-                        InsuranceRecommendationGqlResponse::class.java, insuranceParams)
+            val insuranceParams = mapOf(INSURANCE_RECOMMENDATION_PARAM_GQL to insuranceRecommendationRequest)
+            val graphqlInsuranceRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSURANCE_RECOMMENDATION],
+                    InsuranceRecommendationGqlResponse::class.java, insuranceParams)
 
-                val insuranceResponse = withContext(Dispatchers.IO) {
-                    graphqlRepository.getReseponse(listOf(graphqlInsuranceRecommendationRequest))
-                }
-
-                insuranceResponse.getSuccessData<InsuranceRecommendationGqlResponse>().let {
-                    insuranceRecommendationResponse = it
-                }
-
-                productInfoResp.value = InsuranceRecommendationContainer(insuranceRecommendationResponse)
+            val insuranceResponse = withContext(Dispatchers.IO) {
+                graphqlRepository.getReseponse(listOf(graphqlInsuranceRecommendationRequest))
             }
+
+            insuranceResponse.getSuccessData<InsuranceRecommendationGqlResponse>().let {
+                insuranceRecommendationResponse = it
+            }
+
+            productInfoResp.value = InsuranceRecommendationContainer(insuranceRecommendationResponse)
         }) {
 
         }

@@ -3,9 +3,9 @@ package com.tokopedia.affiliate.feature.onboarding.view.fragment
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.BottomSheetDialogFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.text.Editable
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -98,7 +98,7 @@ class UsernameInputFragment : BottomSheetDialogFragment(), UsernameInputContract
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.setOnShowListener {
             val d = dialog as BottomSheetDialog
-            val bottomSheet = d.findViewById<View>(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.let {
                 BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
             }

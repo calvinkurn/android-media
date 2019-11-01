@@ -1,7 +1,7 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
-import android.support.v7.widget.AppCompatTextView
 import android.view.View
+import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel

@@ -2,10 +2,6 @@ package com.tokopedia.tracking.view;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -17,6 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -42,7 +43,6 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifycomponents.ticker.TickerData;
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback;
-import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -278,42 +278,48 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         }
     }
 
-    private void setTickerInfoCourier(TrackingViewModel model) {
-        if (model.getAdditionalInfoList().isEmpty()) {
-            tickerInfoCourier.setVisibility(View.GONE);
-        } else {
-            if (model.getAdditionalInfoList().size() > 1) {
-                List<TickerData> tickerDataList = new ArrayList<>();
-                for (int i=0; i<model.getAdditionalInfoList().size(); i++) {
-                    AdditionalInfoUiModel additionalInfoUiModel = model.getAdditionalInfoList().get(i);
-                    String formattedDesc = formatTitleHtml(additionalInfoUiModel.getNotes(), additionalInfoUiModel.getUrlDetail(), additionalInfoUiModel.getUrlText());
-                    TickerData tickerData = new TickerData(additionalInfoUiModel.getTitle(), formattedDesc, Ticker.TYPE_ANNOUNCEMENT, true);
-                    tickerDataList.add(tickerData);
-                }
-                TickerPagerAdapter tickerPagerAdapter = new TickerPagerAdapter(getContext(), tickerDataList);
-                tickerPagerAdapter.setPagerDescriptionClickEvent((charSequence, o) -> {
-                    RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
-                });
-
+    private void setTickerInfoCourier(TrackingViewModel trackingViewModel) {
+        if (trackingViewModel.getAdditionalInfoList() != null) {
+            List<AdditionalInfoUiModel> additionalInfoUiModelList = trackingViewModel.getAdditionalInfoList();
+            if (additionalInfoUiModelList.isEmpty()) {
+                tickerInfoCourier.setVisibility(View.GONE);
             } else {
-                AdditionalInfoUiModel additionalInfoUiModel = model.getAdditionalInfoList().get(0);
-                String formattedDesc = formatTitleHtml(additionalInfoUiModel.getNotes(), additionalInfoUiModel.getUrlDetail(), additionalInfoUiModel.getUrlText());
-                tickerInfoCourier.setHtmlDescription(formattedDesc);
-                tickerInfoCourier.setTickerTitle(additionalInfoUiModel.getTitle());
-                tickerInfoCourier.setTickerType(Ticker.TYPE_ANNOUNCEMENT);
-                tickerInfoCourier.setTickerShape(Ticker.SHAPE_LOOSE);
-                tickerInfoCourier.setDescriptionClickEvent(new TickerCallback() {
-                    @Override
-                    public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                if (additionalInfoUiModelList.size() > 1) {
+                    List<TickerData> tickerDataList = new ArrayList<>();
+                    for (int i=0; i<additionalInfoUiModelList.size(); i++) {
+                        AdditionalInfoUiModel additionalInfoUiModel = additionalInfoUiModelList.get(i);
+                        String formattedDesc = formatTitleHtml(additionalInfoUiModel.getNotes(), additionalInfoUiModel.getUrlDetail(), additionalInfoUiModel.getUrlText());
+                        TickerData tickerData = new TickerData(additionalInfoUiModel.getTitle(), formattedDesc, Ticker.TYPE_ANNOUNCEMENT, true);
+                        tickerDataList.add(tickerData);
+                    }
+                    TickerPagerAdapter tickerPagerAdapter = new TickerPagerAdapter(getContext(), tickerDataList);
+                    tickerPagerAdapter.setPagerDescriptionClickEvent((charSequence, o) -> {
                         RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
-                    }
+                    });
+                    tickerInfoCourier.addPagerView(tickerPagerAdapter, tickerDataList);
 
-                    @Override
-                    public void onDismiss() {
+                } else {
+                    AdditionalInfoUiModel additionalInfoUiModel = additionalInfoUiModelList.get(0);
+                    String formattedDesc = formatTitleHtml(additionalInfoUiModel.getNotes(), additionalInfoUiModel.getUrlDetail(), additionalInfoUiModel.getUrlText());
+                    tickerInfoCourier.setHtmlDescription(formattedDesc);
+                    tickerInfoCourier.setTickerTitle(additionalInfoUiModel.getTitle());
+                    tickerInfoCourier.setTickerType(Ticker.TYPE_ANNOUNCEMENT);
+                    tickerInfoCourier.setTickerShape(Ticker.SHAPE_LOOSE);
+                    tickerInfoCourier.setDescriptionClickEvent(new TickerCallback() {
+                        @Override
+                        public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onDismiss() {
+
+                        }
+                    });
+                }
             }
+        } else {
+            tickerInfoCourier.setVisibility(View.GONE);
         }
     }
 

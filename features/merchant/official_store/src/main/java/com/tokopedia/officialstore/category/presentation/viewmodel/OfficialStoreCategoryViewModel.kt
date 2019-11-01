@@ -1,7 +1,7 @@
 package com.tokopedia.officialstore.category.presentation.viewmodel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
@@ -13,7 +13,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class OfficialStoreCategoryViewModel @Inject constructor(
         private val getOfficialStoreCategoriesUseCase: GetOfficialStoreCategoriesUseCase,

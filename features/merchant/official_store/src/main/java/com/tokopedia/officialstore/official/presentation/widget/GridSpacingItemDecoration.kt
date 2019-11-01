@@ -1,8 +1,8 @@
 package com.tokopedia.officialstore.official.presentation.widget
 
 import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
 class GridSpacingItemDecoration(private val spanCount: Int,
                                 private val spacing: Int) :

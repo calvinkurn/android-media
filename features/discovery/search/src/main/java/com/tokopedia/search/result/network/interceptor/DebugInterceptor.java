@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.network.interceptor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 

@@ -1,12 +1,12 @@
 package com.tokopedia.profilecompletion.addbod.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.annotation.NonNull
+import androidx.annotation.NonNull
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,9 +22,9 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_add_bod.*
 import java.util.*
 import javax.inject.Inject
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.Snackbar
-import android.support.v4.os.ConfigurationCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.os.ConfigurationCompat
 import android.widget.FrameLayout
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -93,7 +93,7 @@ class AddBodFragment: BaseDaggerFragment(){
         closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         closeableBottomSheetDialog.setCustomContentView(viewBottomSheetDialog, "DatePicker", true)
 
-        val bottomSheet = closeableBottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet) as FrameLayout?
+        val bottomSheet = closeableBottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
         val behavior = BottomSheetBehavior.from<View>(bottomSheet)
         behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {

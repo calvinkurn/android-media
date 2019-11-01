@@ -1,7 +1,7 @@
 package com.tokopedia.events.view.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;

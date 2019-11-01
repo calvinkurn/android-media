@@ -3,11 +3,10 @@ package com.tokopedia.flight.bookingV2.presentation.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.flight.FlightModuleRouter
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingFragment
@@ -41,12 +40,9 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
     }
 
     override fun getComponent(): FlightBookingComponent {
-        if (application is FlightModuleRouter) {
-            return DaggerFlightBookingComponent.builder()
-                    .flightComponent(flightComponent)
-                    .build()
-        }
-        throw RuntimeException("Application must implement FlightModuleRouter")
+        return DaggerFlightBookingComponent.builder()
+                .flightComponent(flightComponent)
+                .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

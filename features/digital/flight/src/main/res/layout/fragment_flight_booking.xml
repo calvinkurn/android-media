@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 style="@style/TextView.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 android:text="@string/flight_booking_atc_loading_label" />
         </LinearLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/container_full_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -73,7 +73,7 @@
                     android:paddingRight="@dimen/padding_16"
                     android:paddingBottom="@dimen/dp_20">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.Micro"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
                     android:padding="@dimen/dp_16"
                     android:background="@color/white">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.TitleBig.Bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
                     android:paddingRight="@dimen/padding_16"
                     android:paddingBottom="@dimen/dp_10">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.TitleBig.Bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
                             android:layout_weight="1"
                             android:text="@string/flight_booking_data_pemesan_sama_contact_label" />
 
-                        <android.support.v7.widget.AppCompatCheckBox
+                        <androidx.appcompat.widget.AppCompatCheckBox
                             android:id="@+id/checkbox"
                             android:layout_width="@dimen/dp_36"
                             android:layout_height="@dimen/dp_36"
@@ -186,7 +186,7 @@
                             android:theme="@style/checkBoxStyle" />
                     </LinearLayout>
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_passengers"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -206,7 +206,7 @@
                     android:paddingRight="@dimen/padding_16"
                     android:paddingBottom="@dimen/dp_10">
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_insurance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -225,7 +225,7 @@
                     android:paddingRight="@dimen/padding_16"
                     android:paddingBottom="@dimen/dp_10">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.TitleBig.Bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -233,7 +233,7 @@
                         android:layout_marginBottom="@dimen/dp_15"
                         android:text="@string/flight_booking_price_detail"/>
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_price_lists"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -251,14 +251,14 @@
                         android:layout_marginBottom="@dimen/dp_15"
                         android:orientation="horizontal">
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/TextView.Title.Bold"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/flight_booking_total_price_label"/>
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_total_price"
                             style="@style/TextView.Title.Bold"
                             android:layout_width="0dp"
@@ -278,13 +278,13 @@
                     android:paddingTop="@dimen/dp_10"
                     android:paddingBottom="@dimen/dp_10">
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/button_submit"
                         style="@style/Button.Submit.Orange"
                         android:text="@string/flight_booking_submit_button_label" />
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </RelativeLayout>
 
