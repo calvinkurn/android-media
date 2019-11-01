@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.official.data.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop

@@ -105,8 +105,8 @@ class OfficialCategoriesTab(context: Context,
     }
 
     private fun initResources() {
-        tabMaxHeight = resources.getDimensionPixelSize(R.dimen.layout_lvl7)
-        tabMinHeight = resources.getDimensionPixelSize(R.dimen.layout_lvl6)
+        tabMaxHeight = resources.getDimensionPixelSize(R.dimen.os_tab_max_height)
+        tabMinHeight = resources.getDimensionPixelSize(R.dimen.os_tab_min_height)
     }
 
     private fun initAnimator() {
@@ -176,12 +176,7 @@ class OfficialCategoriesTab(context: Context,
                     categoriesItemTab[position].iconUrl,
                     R.drawable.ic_loading_image
             )
-
-            var categoryName = categoriesItemTab[position].title
-            val maxLength = if (categoryName.length < 12)
-                categoryName.length else 12
-            categoryName = categoryName.substring(0, maxLength)
-            text_view_category_title.text = if (maxLength == 12) "${categoryName.trim()}..." else categoryName
+            text_view_category_title.text = categoriesItemTab[position].title
         }
         return view
     }

@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -16,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
@@ -34,8 +36,11 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.view.adapter.viewholder.home.DynamicChannelViewHolder
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.util.function.Predicate
 import javax.inject.Inject
 
 class OfficialHomeFragment :
@@ -118,6 +123,7 @@ class OfficialHomeFragment :
         observeFeaturedShop()
         observeDynamicChannel()
         observeProductRecommendation()
+        resetData()
         refreshData()
         setListener()
     }
@@ -127,10 +133,13 @@ class OfficialHomeFragment :
         tracking?.sendAll()
     }
 
-    private fun refreshData() {
+    private fun resetData() {
         adapter?.clearAllElements()
         adapter?.resetState()
         endlesScrollListener?.resetState()
+    }
+
+    private fun refreshData() {
         viewModel.loadFirstData(category)
     }
 
@@ -142,8 +151,8 @@ class OfficialHomeFragment :
                     OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG)
-                        it.throwable.printStackTrace()
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
                 }
             }
         })
@@ -157,8 +166,8 @@ class OfficialHomeFragment :
                     OfficialHomeMapper.mappingBenefit(it.data, adapter)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG)
-                        it.throwable.printStackTrace()
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
                 }
 
             }
@@ -173,8 +182,8 @@ class OfficialHomeFragment :
                     OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG)
-                        it.throwable.printStackTrace()
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
                 }
 
             }
@@ -192,7 +201,8 @@ class OfficialHomeFragment :
                     )
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG) result.throwable.printStackTrace()
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(result.throwable)
                 }
             }
         })
@@ -225,12 +235,18 @@ class OfficialHomeFragment :
             when (it) {
                 is Success -> { }
                 is Fail -> {
-                    if (BuildConfig.DEBUG) {
-                        it.throwable.printStackTrace()
-                    }
+                    showErrorNetwork(it.throwable)
                 }
             }
         })
+    }
+
+    fun showErrorNetwork(t: Throwable) {
+        view?.let {
+            Toaster.showError(it,
+                    ErrorHandler.getErrorMessage(context, t),
+                    Snackbar.LENGTH_LONG)
+        }
     }
 
     private fun setListener() {

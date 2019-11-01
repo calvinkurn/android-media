@@ -38,7 +38,7 @@ class BenefitAdapter(private val context: Context, var benefitList: List<Benefit
         holder.textView?.text = item.label
 
         holder.itemView.setOnClickListener{
-            onItemClickListener?.onItemClick(context, position, item)
+            onItemClickListener?.onItemClick(position, item)
         }
     }
 
@@ -54,6 +54,6 @@ class BenefitAdapter(private val context: Context, var benefitList: List<Benefit
     }
 
     interface OnItemClickListener {
-        fun onItemClick(context: Context, position: Int, item: Benefit)
+        fun onItemClick(position: Int, item: Benefit)
     }
 }

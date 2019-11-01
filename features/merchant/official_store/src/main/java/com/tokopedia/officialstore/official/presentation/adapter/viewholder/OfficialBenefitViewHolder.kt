@@ -18,6 +18,7 @@ class OfficialBenefitViewHolder(view: View?) : AbstractViewHolder<OfficialBenefi
 
     private var recyclerView: RecyclerView? = null
     private var container: View? = null
+    private var context: Context? = null
 
     private var adapter: BenefitAdapter? = null
 
@@ -26,6 +27,7 @@ class OfficialBenefitViewHolder(view: View?) : AbstractViewHolder<OfficialBenefi
         container = view?.findViewById(R.id.container_benefit)
 
         view?.context?.let {
+            context = it
             adapter = BenefitAdapter(it)
             recyclerView?.layoutManager = GridLayoutManager(it, 3)
             recyclerView?.addItemDecoration(GridSpacingItemDecoration(3, 0))
@@ -39,7 +41,7 @@ class OfficialBenefitViewHolder(view: View?) : AbstractViewHolder<OfficialBenefi
             adapter?.notifyDataSetChanged()
 
             adapter?.onItemClickListener = object: BenefitAdapter.OnItemClickListener {
-                override fun onItemClick(context: Context, position: Int, item: Benefit) {
+                override fun onItemClick(position: Int, item: Benefit) {
                     RouteManager.route(context,
                             "${ApplinkConst.WEBVIEW}?url=${item.redirectUrl}")
 
