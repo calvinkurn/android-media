@@ -7,21 +7,23 @@
     android:orientation="horizontal"
     android:padding="@dimen/dp_16">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/group_title"
         style="@style/TextView.Small.Bold"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:textAllCaps="true"
+        app:typographyType="heading_6"
         android:gravity="center_vertical"
         tools:text="@tools:sample/lorem" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/group_subtitle"
         style="@style/TextView.Micro"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
+        app:typographyType="body_3"
         android:text="@string/pencarian_bulan" />
 </LinearLayout>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/ilustration"
@@ -11,12 +12,13 @@
         android:layout_centerVertical="true"
         android:src="@drawable/ill_no_product" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         style="@style/TextView.TitleBig.Bold"
         android:layout_below="@+id/ilustration"
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:typographyType="heading_3"
         android:text="@string/oops_produk_ntidak_ditemukan" />
 </RelativeLayout>

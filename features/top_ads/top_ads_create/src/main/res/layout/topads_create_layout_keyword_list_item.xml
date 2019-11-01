@@ -7,21 +7,23 @@
     android:orientation="horizontal"
     android:padding="@dimen/dp_16">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keyword_name"
         style="@style/TextView.Small"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        app:typographyType="body_3"
         android:gravity="center_vertical"
         tools:text="@tools:sample/first_names" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keyword_count"
         style="@style/TextView.Micro"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
+        app:typographyType="body_3"
         tools:text="@tools:sample/last_names" />
 
     <CheckBox

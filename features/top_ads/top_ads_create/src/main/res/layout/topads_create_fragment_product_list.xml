@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:siv_search_hint="Cari Produk"
+            app:siv_search_hint="@string/cari_produk"
             app:siv_search_icon="@drawable/topads_create_ic_search" />
 
         <ImageButton
@@ -53,14 +53,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Belum Diiklankan" />
+            android:text="@string/belum_diiklankan" />
 
         <Button
             style="@style/Button.Submit.White.Border.Green"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sudah Diiklankan" />
+            android:text="@string/sudah_diiklankan" />
     </LinearLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -98,11 +98,12 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="@dimen/dp_16"
+            app:typographyType="body_3"
             tools:text="2 produk dipilih" />
 
         <Button
@@ -111,7 +112,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Lanjutkan" />
+            android:text="@string/lanjutkan" />
     </LinearLayout>
 </LinearLayout>
 

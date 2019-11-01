@@ -12,21 +12,21 @@
         android:orientation="vertical"
         android:padding="@dimen/dp_16">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             style="@style/TextView.SubHeadline.Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingTop="@dimen/dp_20"
-            android:text="Yuk, iklankan produkmu!" />
+            android:text="@string/yuk_iklankan_produkmu" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             style="@style/TextView.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingBottom="@dimen/dp_20"
-            android:text="Pilih cara beriklan yang sesuai kebutuhanmu" />
+            android:text="@string/pilih_cara_beriklan_yang_sesuai_kebutuhanmu" />
 
 
         <androidx.cardview.widget.CardView
@@ -71,19 +71,20 @@
                         android:layout_toLeftOf="@+id/icon1"
                         android:orientation="vertical">
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             style="@style/TextView.SubHeadline.Bold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
                             android:text="Iklan Otomatis" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             style="@style/TextView.Small"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
-                            android:text="Beriklan hanya dengan 1x klik" />
+                            app:typographyType="body_3"
+                            android:text="@string/beriklan_hanya_dengan_1x_klik" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -109,17 +110,19 @@
                         android:layout_toRightOf="@+id/icon2"
                         android:orientation="vertical">
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             style="@style/TextView.Title.Bold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="heading_5"
                             android:text="@string/beriklan_jadi_mudah" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="body_3"
                             android:text="@string/iklan_produk_akan_otomatis_aktif_sesuai_jumlah_nominal_anggaran_harianmu" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -146,17 +149,19 @@
                         android:layout_toRightOf="@+id/icon3"
                         android:orientation="vertical">
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             style="@style/TextView.Title.Bold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="heading_5"
                             android:text="@string/pengaturan_iklan_lebih_optimal" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="body_3"
                             android:text="@string/kami_akan_memilih_produk_dan_biaya_iklan_terbaik_untuk_optimalkan_iklanmu" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -183,17 +188,19 @@
                         android:layout_toRightOf="@+id/icon4"
                         android:orientation="vertical">
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             style="@style/TextView.Title.Bold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="heading_5"
                             android:text="@string/hemat_waktu_dalam_beriklan" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="body_3"
                             android:text="@string/pengaturan_iklan_akan_diperbarui_secara_berkala_untuk_tingkatkan_potensi_penjualanmu" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -253,18 +260,19 @@
                         android:layout_toLeftOf="@+id/icon5"
                         android:orientation="vertical">
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             style="@style/TextView.SubHeadline.Bold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
                             android:text="Iklan Manual" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             style="@style/TextView.Small"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="body_3"
                             android:text="Buat iklan dengan pengaturan lengkap" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -291,17 +299,19 @@
                         android:layout_toRightOf="@+id/icon6"
                         android:orientation="vertical">
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             style="@style/TextView.Title.Bold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="heading_5"
                             android:text="@string/atur_produk_manual" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="body_3"
                             android:text="@string/pilih_produk_produk_terbaik_yang_ingin_kamu_iklankan" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -328,17 +338,19 @@
                         android:layout_toRightOf="@+id/icon7"
                         android:orientation="vertical">
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             style="@style/TextView.Title.Bold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="heading_5"
                             android:text="@string/atur_strategi_kata_kunci" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="body_3"
                             android:text="@string/masukkan_kata_kunci_yang_sesuai_untuk_produkmu_secara_manual" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -365,21 +377,22 @@
                         android:layout_toRightOf="@+id/icon8"
                         android:orientation="vertical">
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             style="@style/TextView.Title.Bold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="heading_5"
                             android:text="@string/atur_biaya_iklan_manual" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
+                            app:typographyType="body_3"
                             android:text="@string/pasang_biaya_iklan_sesuai_dengan_rekomendasi" />
                     </LinearLayout>
                 </RelativeLayout>
-
 
                 <Button
                     android:id="@+id/btn_start_manual_ads"

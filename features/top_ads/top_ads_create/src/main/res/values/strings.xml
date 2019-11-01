@@ -30,7 +30,6 @@
     <string name="pilih_produk_terpopuler">Pilih produk terpopuler</string>
     <string name="lanjutkan">Lanjutkan</string>
     <string name="tip_memilih_kata_kunci">Tip memilih kata kunci</string>
-    <string name="tip_memilih_produk">Tip memilih produk</string>
     <string name="buat_group_iklan">Buat Group Iklan</string>
     <string name="contoh_spatu_lari_bando_wanita_gaun_pesta">Contoh: Spatu Lari, Bando Wanita, Gaun Pesta</string>
     <string name="ketik_nama_group_iklan">Ketik nama group iklan</string>
@@ -39,4 +38,12 @@
     <string name="pencarian_bulan">Pencarian / bulan</string>
     <string name="oops_produk_ntidak_ditemukan">Oops, produk tidak ditemukan</string>
     <string name="tip_biaya_iklan">Tip Biaya Iklan</string>
+    <string name="sudah_diiklankan">Sudah Diiklankan</string>
+    <string name="belum_diiklankan">Belum Diiklankan</string>
+    <string name="cari_produk">Cari Produk</string>
+    <string name="pilih_cara_beriklan_yang_sesuai_kebutuhanmu">Pilih cara beriklan yang sesuai kebutuhanmu</string>
+    <string name="yuk_iklankan_produkmu">Yuk, iklankan produkmu!</string>
+    <string name="beriklan_hanya_dengan_1x_klik">Beriklan hanya dengan 1x klik</string>
+    <string name="rekomendasi_rp">Rekomendasi Rp 2.500</string>
+    <string name="biaya_per_klik">Biaya per klik</string>
 </resources>

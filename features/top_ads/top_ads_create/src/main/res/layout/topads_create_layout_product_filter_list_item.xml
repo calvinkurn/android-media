@@ -16,19 +16,21 @@
         android:paddingBottom="@dimen/dp_16"
         android:layout_weight="1">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
             style="@style/TextView.Small.Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:typographyType="heading_5"
             tools:text="@tools:sample/lorem" />
 
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
             style="@style/TextView.Micro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:typographyType="body_3"
             tools:text="@tools:sample/lorem" />
 
     </LinearLayout>

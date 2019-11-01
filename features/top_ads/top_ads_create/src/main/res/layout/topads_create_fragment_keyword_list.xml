@@ -66,11 +66,12 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="@dimen/dp_16"
+            app:typographyType="body_3"
             tools:text="2 kata kunci dipilih" />
 
         <Button

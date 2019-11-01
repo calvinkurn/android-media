@@ -16,11 +16,11 @@
         android:paddingTop="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             style="@style/TextView.Small.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Biaya per Klik" />
+            android:text="@string/biaya_per_klik" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -35,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        app:cardCornerRadius="@dimen/dp_8"
         app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/dp_16">
 
@@ -44,12 +45,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 style="@style/TextView.Micro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_5"
-                android:text="Biaya per klik" />
+                app:typographyType="body_3"
+                android:text="@string/biaya_per_klik" />
 
             <LinearLayout
                 android:id="@+id/container_budget"
@@ -62,19 +64,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginRight="@dimen/dp_16"
                     android:hint="Rp" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     style="@style/TextView.Micro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Recomendasi Rp 2.500" />
+                    app:typographyType="body_3"
+                    android:text="@string/rekomendasi_rp" />
             </LinearLayout>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         style="@style/TextView.Small.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,7 +96,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:itemCount="10"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/topads_create_layout_budget_list_item"/>
 
         <com.tokopedia.design.component.RoundFloatingButton
             style="@style/TextView.Micro.Green"
@@ -116,13 +123,6 @@
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="@dimen/dp_16"
-            tools:text="2 kata kunci dipilih" />
 
         <Button
             android:id="@+id/btn_next"
