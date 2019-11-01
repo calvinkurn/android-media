@@ -277,7 +277,7 @@ public class EventBookTicketActivity
         if (v.getId() == R.id.pay_tickets) {
             bookTicketPresenter.payTicketsClick(title, tvDate.getText().toString(), tvLocation.getText().toString());
         } else if (v.getId() == R.id.tv_ubah_jadwal) {
-            if (eventsDetailsViewModel.getCustomText1() == Utils.getSingletonInstance().SHOW_DATE_PICKER && bookTicketPresenter.getLocationDateModels() != null && bookTicketPresenter.getLocationDateModels().size() > 0) {
+            if (eventsDetailsViewModel.getCustomText1() >= Utils.getSingletonInstance().SHOW_DATE_PICKER && bookTicketPresenter.getLocationDateModels() != null && bookTicketPresenter.getLocationDateModels().size() > 0) {
                 openCalender(bookTicketPresenter.getLocationDateModels());
             } else {
                 if (locationFragment == null)
