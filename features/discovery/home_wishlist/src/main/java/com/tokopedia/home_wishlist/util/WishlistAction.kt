@@ -10,7 +10,7 @@ data class WishlistAction(
 )
 
 enum class TypeAction{
-    ADD_TO_CART, ADD_WISHLIST, REMOVE_WISHLIST, BULK_DELETE_WISHLIST, NONE;
+    ADD_TO_CART, ADD_WISHLIST, REMOVE_WISHLIST, BULK_DELETE_WISHLIST, LOAD_MORE_ERROR, NONE;
 
     companion object {
         fun fromString(state: String) : TypeAction = when(state){
@@ -18,6 +18,7 @@ enum class TypeAction{
             "ad" -> ADD_WISHLIST
             "rw" -> REMOVE_WISHLIST
             "bk" -> BULK_DELETE_WISHLIST
+            "load_more_error" -> LOAD_MORE_ERROR
             else -> NONE
         }
     }

@@ -28,7 +28,7 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
 
     override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener) {
         title.text = element.title
-        disabledView.visibility = if(element.isBulkMode) View.VISIBLE else View.GONE
+        disabledView.visibility = if(element.isOnBulkRemoveProgress) View.VISIBLE else View.GONE
         seeMore.visibility = if(element.seeMoreAppLink.isEmpty()) View.GONE else View.VISIBLE
         seeMore.setOnClickListener { RouteManager.route(itemView.context, element.seeMoreAppLink) }
         setupRecyclerView(element, listener)

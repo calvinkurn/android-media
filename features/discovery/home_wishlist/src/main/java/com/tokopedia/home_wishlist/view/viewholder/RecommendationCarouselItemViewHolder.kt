@@ -17,7 +17,7 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
  *
  * A class for holder view Recommendation Carousel Item
  */
-class RecommendationCarouselItemViewHolder (
+class RecommendationCarouselItemViewHolder(
         private val view: View
 ) : SmartAbstractViewHolder<RecommendationCarouselItemDataModel>(view){
 
@@ -70,9 +70,8 @@ class RecommendationCarouselItemViewHolder (
 
             setButtonWishlistOnClickListener {
                 updateWishlist(true)
-                (listener as WishlistListener).onWishlistClick(element.parentPosition, adapterPosition){
-                    updateWishlist(false)
-                }
+                element.recommendationItem.isWishlist = !element.recommendationItem.isWishlist
+                (listener as WishlistListener).onWishlistClick(element.parentPosition, adapterPosition, element.recommendationItem.isWishlist)
             }
         }
     }

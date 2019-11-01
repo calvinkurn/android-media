@@ -1,4 +1,4 @@
-package com.tokopedia.home_wishlist.util
+package com.tokopedia.home_wishlist.model.action
 
 /**
  * Used as a wrapper for data that is exposed via a LiveData that represents an event.
