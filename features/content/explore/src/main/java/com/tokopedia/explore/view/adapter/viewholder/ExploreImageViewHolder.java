@@ -51,7 +51,7 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
         });
 
         if (element.getItemPos() == 0 && listener.getExploreCategory() == ExploreCategoryAdapter.CAT_ID_AFFILIATE) {
-
+            listener.addExploreItemCoachmark(itemView);
         }
     }
 
