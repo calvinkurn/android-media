@@ -320,7 +320,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
             goToCheckout();
             sendGeneralEvent(clickEvent,
                     category,
-                    "click "+getString(checkoutString)+" button",
+                    "click "+getString(checkoutString).toLowerCase()+" button",
                     "");
         });
     }
