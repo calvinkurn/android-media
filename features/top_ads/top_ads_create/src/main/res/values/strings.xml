@@ -57,4 +57,9 @@
     <string name="tambah_kredit_topads">Tambah Kredit TopAds</string>
     <string name="lihat_performa_iklan">Lihat performa iklan</string>
     <string name="create_group">Buat Group Iklan</string>
+    <string name="seputar_biaya_iklan">Seputar biaya iklan</string>
+    <string name="makin_tinggi_biaya_iklan_makin_besar_kemungkinan_produkmu_tampil_di_halaman_pencarian">Makin tinggi biaya iklan, makin besar kemungkinan produkmu tampil di halaman pencarian</string>
+    <string name="gunakan_rekomendasi_biaya_agar_produkmu_lebih_bersaing">Gunakan rekomendasi biaya agar produkmu lebih bersaing</string>
+    <string name="bayar_hanya_jika_iklan_produkmu_di_klik_dari_hasil_pencarian_kata_kunci_pilihan">Bayar hanya jika iklan produkmu di-klik dari hasil pencarian kata kunci pilihan.</string>
+    <string name="batas_biaya_tertinggi_saat_iklanmu_di_klik_calon_pembeli_di_tokopedia">Batas biaya tertinggi saat iklanmu di-klik calon pembeli\ndi Tokopedia.</string>
 </resources>

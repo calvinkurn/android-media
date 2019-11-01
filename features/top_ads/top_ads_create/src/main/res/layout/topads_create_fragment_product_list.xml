@@ -76,6 +76,7 @@
             tools:listitem="@layout/topads_create_layout_product_list_item" />
 
         <com.tokopedia.design.component.RoundFloatingButton
+            android:id="@+id/tip_btn"
             style="@style/TextView.Micro.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,7 +85,8 @@
             android:layout_gravity="bottom|center_horizontal"
             android:backgroundTint="#FFFCF5"
             android:text="@string/tip_memilih_produk"
-            app:buttonCompatSize="big"
+            android:textAllCaps="false"
+            app:buttonCompatSize="medium"
             app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

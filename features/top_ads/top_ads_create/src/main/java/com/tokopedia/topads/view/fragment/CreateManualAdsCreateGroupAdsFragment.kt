@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
+import com.tokopedia.topads.view.sheet.InfoSheetGroupList
 import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
 
 /**
@@ -53,6 +54,9 @@ class CreateManualAdsCreateGroupAdsFragment : CreateManualAdsBaseStepperFragment
         super.onViewCreated(view, savedInstanceState)
         btn_submit.setOnClickListener {
             gotoNextPage()
+        }
+        tip_btn.setOnClickListener {
+            InfoSheetGroupList.newInstance(it.context).show()
         }
     }
 }

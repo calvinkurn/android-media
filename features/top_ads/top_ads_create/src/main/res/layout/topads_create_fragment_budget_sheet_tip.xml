@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10"
             android:gravity="center_vertical"
-            android:text="@string/apa_itu_group_iklan"  />
+            android:text="@string/seputar_biaya_iklan"  />
 
     </LinearLayout>
 
@@ -49,7 +49,7 @@
             android:layout_marginBottom="@dimen/dp_10"
             android:gravity="top"
             app:typographyType="body_3"
-            android:text="@string/atur_dan_pilih_produkmu_untuk_diiklankan_sekaligus" />
+            android:text="@string/makin_tinggi_biaya_iklan_makin_besar_kemungkinan_produkmu_tampil_di_halaman_pencarian" />
 
     </LinearLayout>
 
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10"
             app:typographyType="body_3"
-            android:text="@string/isi_group_iklan_dengan_produk_dalam_kategori_serupa" />
+            android:text="@string/gunakan_rekomendasi_biaya_agar_produkmu_lebih_bersaing" />
     </LinearLayout>
 
     <LinearLayout
@@ -92,6 +92,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10"
             app:typographyType="body_3"
-            android:text="@string/produk_dalam_1_group_akan_menggunakan_kata_kunci_yang_sama" />
+            android:text="@string/bayar_hanya_jika_iklan_produkmu_di_klik_dari_hasil_pencarian_kata_kunci_pilihan" />
     </LinearLayout>
 </LinearLayout>

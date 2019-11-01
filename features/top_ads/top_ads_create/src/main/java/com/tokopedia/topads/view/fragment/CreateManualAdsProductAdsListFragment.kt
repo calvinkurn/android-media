@@ -7,7 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
+import com.tokopedia.topads.view.sheet.InfoSheetGroupList
+import com.tokopedia.topads.view.sheet.InfoSheetProductList
+import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list.*
+import kotlinx.android.synthetic.main.topads_create_fragment_product_list.tip_btn
 
 /**
  * Author errysuprayogi on 29,October,2019
@@ -52,6 +56,9 @@ class CreateManualAdsProductAdsListFragment: CreateManualAdsBaseStepperFragment<
         super.onViewCreated(view, savedInstanceState)
         btn_next.setOnClickListener {
             gotoNextPage()
+        }
+        tip_btn.setOnClickListener {
+            InfoSheetProductList.newInstance(it.context).show()
         }
     }
 }

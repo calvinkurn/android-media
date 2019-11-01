@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/topads_create_bg_top_round"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/btn_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_10"
+            android:padding="@dimen/dp_2"
+            app:srcCompat="@drawable/topads_create_ic_group_close" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            style="@style/TextView.TitleBig.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:gravity="center_vertical"
+            android:text="@string/biaya_per_klik"  />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        style="@style/TextView.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:gravity="top"
+        app:typographyType="body_3"
+        android:text="@string/batas_biaya_tertinggi_saat_iklanmu_di_klik_calon_pembeli_di_tokopedia" />
+
+
+</LinearLayout>

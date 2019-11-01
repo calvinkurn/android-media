@@ -50,6 +50,7 @@
     </LinearLayout>
 
     <com.tokopedia.design.component.RoundFloatingButton
+        android:id="@+id/tip_btn"
         style="@style/TextView.Micro.Green"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,7 +59,8 @@
         android:backgroundTint="#FFFCF5"
         android:gravity="center"
         android:text="@string/apa_itu_group_iklan"
-        app:buttonCompatSize="big"
+        android:textAllCaps="false"
+        app:buttonCompatSize="medium"
         app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips" />
 
     <Button

@@ -7,7 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
+import com.tokopedia.topads.view.sheet.InfoSheetBudgetList
+import com.tokopedia.topads.view.sheet.TipSheetBudgetList
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
+import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.tip_btn
+import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
 
 /**
  * Author errysuprayogi on 29,October,2019
@@ -52,6 +56,12 @@ class CreateManualAdsBudgetingAdsFragment: CreateManualAdsBaseStepperFragment<Cr
         super.onViewCreated(view, savedInstanceState)
         btn_next.setOnClickListener {
             gotoNextPage()
+        }
+        tip_btn.setOnClickListener {
+            TipSheetBudgetList.newInstance(it.context).show()
+        }
+        btn_info.setOnClickListener {
+            InfoSheetBudgetList.newInstance(it.context).show()
         }
     }
 }
