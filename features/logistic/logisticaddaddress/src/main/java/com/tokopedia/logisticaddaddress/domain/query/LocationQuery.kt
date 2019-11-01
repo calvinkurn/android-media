@@ -28,18 +28,12 @@ object LocationQuery {
               latitude
               longitude
               status
-              is_primary
-              is_active
-              is_whitelist
-              partner_id
-              partner_name
               type
-              is_corner
+              store_code
+              opening_hours
+              store_distance
             }
-            token {
-              district_recommendation
-              ut
-            }
+            global_radius
           }
         }
     """.trimIndent()
@@ -166,7 +160,8 @@ object LocationQuery {
           "opening_hours": "EVERYDAY (07.00-22.00)",
           "store_distance": "0.6183302"
         }
-      ]
+      ],
+      "global_radius": 5
     }
   }
 """.trimIndent()
