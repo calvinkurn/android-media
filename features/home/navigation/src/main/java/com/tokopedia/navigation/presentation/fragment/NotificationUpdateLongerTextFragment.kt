@@ -50,7 +50,10 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is LongerContentListener) {
+        val parent = parentFragment
+        if (parent is LongerContentListener) {
+            listener = parent
+        } else if (context is LongerContentListener) {
             listener = context
         }
     }
@@ -96,8 +99,8 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         }
 
         ctaButton.setOnClickListener {
-            RouteManager.route(it.context, appLink)
             listener?.trackOnClickCtaButton(templateKey)
+            RouteManager.route(it.context, appLink)
             dismiss()
         }
     }
