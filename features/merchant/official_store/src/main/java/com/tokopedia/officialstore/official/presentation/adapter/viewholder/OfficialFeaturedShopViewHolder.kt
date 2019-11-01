@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 
+import android.content.Context
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -64,7 +65,7 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
             )
 
             adapter?.onItemClickListener = object: FeaturedShopAdapter.OnItemClickListener {
-                override fun onItemClick(p0: Int, shop: Shop) {
+                override fun onItemClick(context: Context, p0: Int, shop: Shop) {
                     officialStoreTracking?.eventClickFeaturedBrand(
                             element.categoryName.toEmptyStringIfNull(),
                             shop.shopId.toEmptyStringIfNull(),
@@ -73,7 +74,7 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
                             shop.imageUrl.toEmptyStringIfNull()
                     )
 
-
+                    RouteManager.route(context, shop.logoUrl)
                 }
 
             }
