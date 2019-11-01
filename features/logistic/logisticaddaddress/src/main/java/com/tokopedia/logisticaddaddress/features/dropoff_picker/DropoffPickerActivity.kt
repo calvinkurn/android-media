@@ -56,8 +56,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mNoPermissionsView: View
     lateinit var mButtonActivate: UnifyButton
     lateinit var mButtonGrant: UnifyButton
-    lateinit var mBottomSheet: View
     lateinit var mBehavior: BottomSheetBehavior<View>
+    lateinit var mDetailBehavior: BottomSheetBehavior<View>
     private val mNearbyAdapter: NearbyStoreAdapter = NearbyStoreAdapter()
 
     @Inject
@@ -80,7 +80,6 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mSearchInput = findViewById(R.id.search_input_dropoff)
         mDisabledLocationView = findViewById(R.id.view_gps_empty)
         mNoPermissionsView = findViewById(R.id.view_no_permissions)
-        mBottomSheet = findViewById(R.id.bottom_sheet)
         mButtonActivate = findViewById(R.id.button_activate_gps)
         mButtonActivate.setOnClickListener {
             checkAndRequestLocation()
@@ -104,8 +103,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             }
         })
 
-        mBehavior = BottomSheetBehavior.from(mBottomSheet)
+        mBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
         mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        mDetailBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_shhet_detail))
+        mDetailBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -137,8 +138,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         mMap = googleMap
         mMap?.setOnMarkerClickListener {
-            val bs = DropoffDetailBottomsheet.newInstance()
-            bs.show(supportFragmentManager, "bottomsheep")
+            mDetailBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             true
         }
     }

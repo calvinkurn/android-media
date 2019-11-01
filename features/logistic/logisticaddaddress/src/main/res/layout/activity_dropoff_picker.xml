@@ -68,4 +68,5 @@
     </android.support.constraint.ConstraintLayout>
 
     <include layout="@layout/bottom_sheet_dropoff" />
+    <include layout="@layout/bottomsheet_dropoff_detail" />
 </android.support.design.widget.CoordinatorLayout>
