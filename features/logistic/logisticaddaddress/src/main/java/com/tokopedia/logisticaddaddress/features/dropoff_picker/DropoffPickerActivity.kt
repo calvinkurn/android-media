@@ -99,6 +99,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mNearbyAdapter.setActionListener(object: NearbyStoreAdapter.ActionListener {
             override fun onItemClicked(view: View) {
                 Toast.makeText(this@DropoffPickerActivity, "Item clicked!", Toast.LENGTH_SHORT).show()
+                val bs = DropoffDetailBottomsheet.newInstance()
+                bs.show(supportFragmentManager, "bottomsheep")
             }
         })
 
