@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 
 /**
@@ -16,7 +15,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 
 public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBookingAmenityViewModel> {
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_booking_amenity;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_amenity;
 
     public interface ListenerCheckedLuggage {
         boolean isItemChecked(FlightBookingAmenityViewModel selectedItem);
@@ -30,8 +29,8 @@ public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBoo
 
     public FlightBookingAmenityViewHolder(View itemView, ListenerCheckedLuggage listenerCheckedLuggage) {
         super(itemView);
-        title = (TextView) itemView.findViewById(R.id.tv_title);
-        imageChecked = (ImageView) itemView.findViewById(R.id.image_checked);
+        title = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.tv_title);
+        imageChecked = (ImageView) itemView.findViewById(com.tokopedia.flight.R.id.image_checked);
         this.listenerCheckedLuggage = listenerCheckedLuggage;
     }
 
@@ -45,10 +44,10 @@ public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBoo
         title.setText(String.format("%s - %s", flightBookingLuggageViewModel.getTitle(), flightBookingLuggageViewModel.getPrice()));
         if (isItemChecked) {
             imageChecked.setVisibility(View.VISIBLE);
-            title.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
+            title.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.design.R.color.tkpd_main_green));
         } else {
             imageChecked.setVisibility(View.INVISIBLE);
-            title.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.font_black_primary_70));
+            title.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.design.R.color.font_black_primary_70));
         }
     }
 }
