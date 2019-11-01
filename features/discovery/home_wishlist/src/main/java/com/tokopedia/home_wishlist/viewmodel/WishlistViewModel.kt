@@ -79,7 +79,7 @@ open class WishlistViewModel @Inject constructor(
                 return@launchCatchError
             }
 
-            if(!data.items.isEmpty()){
+            if(data.items.isEmpty()){
                 wishlistState.value = Status.EMPTY
                 wishlistData.value = listOf(EmptyWishlistDataModel())
                 getRecommendationOnEmptyWishlist(0)
@@ -509,14 +509,23 @@ open class WishlistViewModel @Inject constructor(
      * This function will set isOnChecked status of selected product
      */
     fun setWishlistOnMarkDelete(productPosition: Int, isChecked: Boolean){
-        val wishslistDataTemp: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
-        if(productPosition < wishslistDataTemp.size && wishslistDataTemp[productPosition] is WishlistItemDataModel){
-            wishslistDataTemp[productPosition] = (wishslistDataTemp[productPosition] as WishlistItemDataModel).copy(
+        val wishlistDataTemp: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
+        if(productPosition < wishlistDataTemp.size && wishlistDataTemp[productPosition] is WishlistItemDataModel){
+            wishlistDataTemp[productPosition] = (wishlistDataTemp[productPosition] as WishlistItemDataModel).copy(
                     isOnChecked = isChecked
             )
-            wishlistData.value = wishslistDataTemp
+            if(isChecked) listVisitableMarked.add(wishlistDataTemp[productPosition])
+            else {
+                listVisitableMarked.forEach {
+                    if(it is WishlistItemDataModel &&
+                            it.productItem.id == (wishlistDataTemp[productPosition] as WishlistItemDataModel).productItem.id) {
+                        listVisitableMarked.remove(it)
+                        return@forEach
+                    }
+                }
+            }
+            wishlistData.value = wishlistDataTemp
         }
-        listVisitableMarked.plus(listOf(productPosition))
     }
 
     private fun getWishlistPositionOnMark() = listVisitableMarked.withIndex().filter { (_, visitable) ->  visitable is WishlistItemDataModel && visitable.isOnChecked }.map{ (index, _) -> index }

@@ -220,6 +220,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         })
         viewModel.wishlistState.observe(viewLifecycleOwner, Observer { state ->
             if(state.isEmpty() || state.isLoading() || state.isError()){
+                if(state.isLoading()) endlessRecyclerViewScrollListener?.resetState()
                 searchView?.hide()
                 swipeToRefresh?.isRefreshing = false
                 menu?.findItem(R.id.cancel)?.isVisible = false

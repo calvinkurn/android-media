@@ -7,6 +7,7 @@ import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
@@ -41,22 +42,23 @@ class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<Recomme
                     )
             )
 
-            setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener {
+            setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener{
                 override fun onViewHint() {
                     if(element.recommendationItem.isTopAds){
                         ImpresionTask().execute(element.recommendationItem.trackerImageUrl)
                     }
-
                 }
             })
 
             setOnClickListener {
-
-                if (element.recommendationItem.isTopAds) ImpresionTask().execute(element.recommendationItem.clickUrl)
+                (listener as WishlistListener).onProductClick(element, adapterPosition)
+                if (element.recommendationItem.isTopAds) {
+                    ImpresionTask().execute(element.recommendationItem.clickUrl)
+                }
             }
 
             setButtonWishlistOnClickListener {
-
+                (listener as WishlistListener).onWishlistClick(-1, adapterPosition, element.recommendationItem.isWishlist)
             }
         }
     }
