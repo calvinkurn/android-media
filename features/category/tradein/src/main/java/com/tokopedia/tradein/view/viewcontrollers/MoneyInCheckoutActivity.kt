@@ -149,7 +149,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             when (it) {
                 is Success -> {
                     sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
-                            TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                            TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION_DROP,
                             TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
                             TradeInGTMConstants.SUCCESS)
                     val paymentPassData = PaymentPassData()
