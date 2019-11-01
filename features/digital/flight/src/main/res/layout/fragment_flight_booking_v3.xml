@@ -72,57 +72,57 @@
                 android:id="@+id/tv_passenger_info_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:text="Data Penumpang"
-                app:layout_constraintTop_toBottomOf="@id/seperator_1"
-                app:typographyType="heading_3"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16" />
+                app:layout_constraintTop_toBottomOf="@id/seperator_1"
+                app:typographyType="heading_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_traveller_as_passenger"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_passenger_info_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:textColor="@color/Neutral_N700_96"
-                android:text="Sama dengan pemesan"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
-                app:typographyType="body_2"
-                app:layout_constraintEnd_toStartOf="@id/switch_traveller_as_passenger" />
+                android:text="Sama dengan pemesan"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintEnd_toStartOf="@id/switch_traveller_as_passenger"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_passenger_info_title"
+                app:typographyType="body_2" />
 
             <Switch
                 android:id="@+id/switch_traveller_as_passenger"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@id/tv_traveller_as_passenger"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 app:layout_constraintBottom_toBottomOf="@id/tv_traveller_as_passenger"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16" />
+                app:layout_constraintTop_toTopOf="@id/tv_traveller_as_passenger" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_passenger_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tv_traveller_as_passenger"
-                android:layout_marginTop="@dimen/dp_16" />
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/tv_traveller_as_passenger" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_insurance_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/rv_passenger_info"
-                android:layout_marginTop="@dimen/dp_16" />
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/rv_passenger_info" />
 
             <View
                 android:id="@+id/seperator_3"
@@ -135,80 +135,80 @@
                 android:id="@+id/flight_promo_ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/seperator_3"
-                android:layout_margin="@dimen/dp_16" />
+                android:layout_margin="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/seperator_3" />
 
             <View
                 android:id="@+id/seperator_4"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
                 android:background="#f3f4f5"
-                app:layout_constraintTop_toBottomOf="@id/flight_promo_ticker_view"
-                android:layout_marginTop="@dimen/dp_16" />
+                app:layout_constraintTop_toBottomOf="@id/flight_promo_ticker_view" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_total_payment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Pembayaran"
-                app:typographyType="body_2"
-                app:layout_constraintTop_toBottomOf="@id/seperator_4"
-                android:layout_marginTop="@dimen/dp_14"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_14"
+                android:text="Total Pembayaran"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/seperator_4"
+                app:typographyType="body_2" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_total_payment_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:typographyType="heading_3"
-                app:layout_constraintTop_toTopOf="@id/tv_total_payment"
-                tools:text="Rp10.920.000"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:textColor="@color/Neutral_N700_96" />
+                android:layout_marginRight="@dimen/dp_16"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_total_payment"
+                app:typographyType="heading_3"
+                tools:text="Rp10.920.000" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_see_detail_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lihat detail"
-                android:drawableRight="@drawable/ic_arrow_down_detail_flight"
                 android:drawablePadding="@dimen/dp_4"
-                app:typographyType="body_3"
-                android:textColor="@color/Green_G500"
-                app:typographyWeight="bold"
                 android:padding="@dimen/dp_4"
+                android:text="Lihat detail"
+                android:textColor="@color/Green_G500"
+                app:layout_constraintEnd_toEndOf="@id/tv_total_payment_amount"
                 app:layout_constraintTop_toBottomOf="@id/tv_total_payment_amount"
-                app:layout_constraintEnd_toEndOf="@id/tv_total_payment_amount" />
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
 
             <View
                 android:id="@+id/thin_seperator_1"
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
+                android:layout_height="@dimen/dp_1"
                 android:layout_margin="@dimen/dp_16"
+                android:background="#f3f4f5"
                 app:layout_constraintTop_toBottomOf="@id/tv_see_detail_price" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_flight_price_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/thin_seperator_1"
                 android:layout_marginTop="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_16"
                 android:paddingStart="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_16" />
+                app:layout_constraintTop_toBottomOf="@id/thin_seperator_1" />
 
             <View
                 android:id="@+id/seperator_5"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
                 android:background="#f3f4f5"
-                app:layout_constraintTop_toBottomOf="@id/rv_flight_price_detail"
-                android:layout_marginTop="@dimen/dp_16" />
+                app:layout_constraintTop_toBottomOf="@id/rv_flight_price_detail" />
 
             <Button
                 android:id="@+id/button_submit"
@@ -235,7 +235,7 @@
     <include
         android:id="@+id/layout_loading"
         layout="@layout/layout_flight_booking_v3_loading"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 
 </RelativeLayout>

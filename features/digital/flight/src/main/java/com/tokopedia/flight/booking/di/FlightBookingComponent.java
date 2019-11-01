@@ -18,7 +18,7 @@ import dagger.Component;
  */
 
 @FlightBookingScope
-@Component(modules = {FlightBookingModule.class, CommonTravelModule.class}, dependencies = FlightComponent.class)
+@Component(modules = {FlightBookingModule.class, CommonTravelModule.class, FlightBookingViewModelModule.class}, dependencies = FlightComponent.class)
 public interface FlightBookingComponent {
 
     void inject(FlightBookingFragment flightBookingFragment);

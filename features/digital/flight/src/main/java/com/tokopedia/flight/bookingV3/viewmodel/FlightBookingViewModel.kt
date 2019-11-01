@@ -5,10 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
+import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
+import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,26 +26,63 @@ import javax.inject.Inject
  */
 
 class FlightBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                 val dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+                                                 val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val flightCartResult = MutableLiveData<Result<FlightCart>>()
+    val flightCartResult = MutableLiveData<Result<FlightCartViewEntity>>()
+    val profileResult = MutableLiveData<Result<ProfileInfo>>()
+
 
     fun getCart(rawQuery: String, cartId: String) {
         val params = mapOf(PARAM_CART_ID to cartId)
-//        launchCatchError(block = {
-//            val data = withContext(Dispatchers.Default) {
-//                val graphqlRequest = GraphqlRequest(rawQuery, FlightCart.Response::class.java, params)
-//                graphqlRepository.getReseponse(listOf(graphqlRequest))
-//            }.getSuccessData<FlightCart.Response>().flightCart
-//
-//            flightCartResult.value = Success(data)
-//        }) {
-//            flightCartResult.value = Fail(it)
-//        }
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, FlightCart.Response::class.java, params)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<FlightCart.Response>().flightCart
 
-        val gson = Gson()
-        flightCartResult.value = Success(gson.fromJson(rawQuery,
-                FlightCart.Response::class.java).flightCart)
+            flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
+        }) {
+            //            flightCartResult.value = Fail(it)
+            val gson = Gson()
+            flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(gson.fromJson(rawQuery,
+                    FlightCart.Response::class.java).flightCart))
+        }
+    }
+
+
+    fun getProfile(rawQuery: String) {
+        launchCatchError(block = {
+            val profileInfo = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, ProfilePojo::class.java)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<ProfilePojo>().profileInfo
+            profileInfo.phone = transformPhoneNum(profileInfo.phone)
+
+            profileResult.value = Success(profileInfo)
+        })
+        {
+            profileResult.value = Fail(it)
+        }
+    }
+
+    private fun transformPhoneNum(phoneRawString: String): String {
+        var phoneString: String = checkStart(phoneRawString)
+        phoneString = phoneString.replace("-", "")
+        val phoneNumArr = StringBuilder(phoneString)
+        if (phoneNumArr.isNotEmpty()) {
+            phoneNumArr.replace(0, 1, "")
+        }
+        return phoneNumArr.toString()
+    }
+
+    private fun checkStart(phoneNumber: String): String {
+        var phoneRawString = phoneNumber
+        if (phoneRawString.startsWith("62")) {
+            phoneRawString = phoneRawString.replaceFirst("62".toRegex(), "0")
+        } else if (phoneRawString.startsWith("+62")) {
+            phoneRawString = phoneRawString.replaceFirst("\\+62".toRegex(), "0")
+        }
+        return phoneRawString
     }
 
     companion object {

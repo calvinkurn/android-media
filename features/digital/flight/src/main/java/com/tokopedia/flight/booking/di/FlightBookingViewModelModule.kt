@@ -21,6 +21,7 @@ abstract class FlightBookingViewModelModule {
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
+    @FlightBookingScope
     @Binds
     @IntoMap
     @ViewModelKey(FlightBookingViewModel::class)

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
+import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
@@ -51,6 +52,7 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbar.setContentInsetStartWithNavigation(0);
+        startActivity(FlightBookingActivity.Companion.getCallingIntent(this));
 
     }
 
