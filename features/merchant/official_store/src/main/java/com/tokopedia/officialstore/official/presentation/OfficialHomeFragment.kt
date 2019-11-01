@@ -330,10 +330,9 @@ class OfficialHomeFragment :
 
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
         if (position > -1 && adapter != null) {
-            if (adapter?.list?.get(position) is ProductRecommendationViewModel) {
-                (adapter!!.list.get(position) as ProductRecommendationViewModel).productItem.isWishlist = isWishlist
-                adapter!!.notifyItemChanged(position)
-            }
+            (adapter?.list?.getOrNull(position) as?
+                    ProductRecommendationViewModel)?.productItem?.isWishlist = isWishlist
+            adapter?.notifyItemChanged(position)
         }
     }
 

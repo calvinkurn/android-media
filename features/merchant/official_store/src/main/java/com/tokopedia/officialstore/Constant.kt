@@ -1,5 +1,7 @@
 package com.tokopedia.officialstore
 
+import com.tokopedia.applink.ApplinkConst
+
 object GQLQueryConstant {
     const val QUERY_OFFICIAL_STORE_CATEGORIES = "gql_query_official_store_categories"
     const val QUERY_OFFICIAL_STORE_BANNERS = "gql_query_official_store_banners"
@@ -28,4 +30,11 @@ object DynamicChannelIdentifiers {
     val CTA_TYPE_FILLED = "filled"
     val CTA_TYPE_GHOST = "ghost"
     val CTA_TYPE_TEXT = "text_only"
+}
+
+object ApplinkConstant {
+
+    const val OFFICIAL_SEARCHBAR = "${ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE}?official=true&navsource=os"
+
+    val OFFICIAL_PROMO_NATIVE = "${ApplinkConst.PROMO_LIST}?categoryID=8&menuID=363"
 }

@@ -3,13 +3,12 @@ package com.tokopedia.officialstore.official.presentation.adapter.viewholder
 import android.support.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.BannerView
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
-import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 import com.tokopedia.officialstore.official.presentation.widget.BannerOfficialStore
 
@@ -17,9 +16,6 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener {
-
-    val PROMO_NATIVE_OS_QUERY_CATEGORY_ID = "categoryID=8"
-    val PROMO_NATIVE_OS_QUERY_MENU_ID = "menuID=363"
 
     private var banner: BannerOfficialStore? = null
     private var elementBanner: OfficialBannerViewModel? = null
@@ -44,17 +40,17 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
         banner?.buildView()
     }
 
-    override fun onPromoClick(p0: Int) {
-        val bannerItem = elementBanner?.banner?.get(p0)
+    override fun onPromoClick(position: Int) {
+        val bannerItem = elementBanner?.banner?.get(position)
         officialStoreTracking?.eventClickBanner(
                 elementBanner?.categoryName.toEmptyStringIfNull(),
                 bannerItem?.bannerId.toEmptyStringIfNull(),
-                p0,
+                position,
                 bannerItem?.title.toEmptyStringIfNull(),
                 bannerItem?.imageUrl.toEmptyStringIfNull())
 
         elementBanner?.banner?.let {
-            RouteManager.route(itemView.context, it[p0].applink)
+            RouteManager.route(itemView.context, it[position].applink)
         }
     }
 
@@ -62,9 +58,7 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
         officialStoreTracking?.eventClickAllBanner(
                 elementBanner?.categoryName.toEmptyStringIfNull())
 
-        RouteManager.route(itemView.context,
-                "${ApplinkConst.PROMO_LIST}?$PROMO_NATIVE_OS_QUERY_MENU_ID" +
-                        "&$PROMO_NATIVE_OS_QUERY_CATEGORY_ID")
+        RouteManager.route(itemView.context, ApplinkConstant.OFFICIAL_PROMO_NATIVE)
     }
 
     override fun onPromoDragEnd() {}

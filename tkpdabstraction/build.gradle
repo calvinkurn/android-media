@@ -41,7 +41,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.gson
-    api rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
 
     kapt rootProject.ext.miscDependencies.daggerCompiler

@@ -66,11 +66,11 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
             )
 
             adapter?.onItemClickListener = object: FeaturedShopAdapter.OnItemClickListener {
-                override fun onItemClick(context: Context, p0: Int, shop: Shop) {
+                override fun onItemClick(context: Context, position: Int, shop: Shop) {
                     officialStoreTracking?.eventClickFeaturedBrand(
                             element.categoryName.toEmptyStringIfNull(),
                             shop.shopId.toEmptyStringIfNull(),
-                            p0,
+                            position,
                             shop.name.toEmptyStringIfNull(),
                             shop.imageUrl.toEmptyStringIfNull(),
                             shop.additionalInformation.toEmptyStringIfNull()

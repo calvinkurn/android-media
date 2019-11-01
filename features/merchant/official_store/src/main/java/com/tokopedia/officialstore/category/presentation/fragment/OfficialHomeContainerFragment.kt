@@ -11,9 +11,9 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
+import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
@@ -30,7 +30,7 @@ import com.tokopedia.officialstore.common.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<OfficialStoreCategoryComponent>,
@@ -38,6 +38,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         RecyclerViewScrollListener {
 
     companion object {
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
     }
@@ -146,24 +147,24 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         )
 
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
-            override fun onTabReselected(p0: TabLayout.Tab?) {
-                val categoryReselected = tabAdapter.categoryList[p0?.position.toZeroIfNull()]
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                val categoryReselected = tabAdapter.categoryList[tab?.position.toZeroIfNull()]
                 tracking.eventClickCategory(
                         categoryReselected.title,
                         categoryReselected.categoryId,
-                        p0?.position.toZeroIfNull(),
+                        tab?.position.toZeroIfNull(),
                         categoryReselected.icon
                 )
             }
 
-            override fun onTabUnselected(p0: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
-            override fun onTabSelected(p0: TabLayout.Tab?) {
-                val categorySelected = tabAdapter.categoryList[p0?.position.toZeroIfNull()]
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val categorySelected = tabAdapter.categoryList[tab?.position.toZeroIfNull()]
                 tracking.eventClickCategory(
                         categorySelected.title,
                         categorySelected.categoryId,
-                        p0?.position.toZeroIfNull(),
+                        tab?.position.toZeroIfNull(),
                         categorySelected.icon
                 )
             }
@@ -203,7 +204,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private fun configMainToolbar(view: View) {
         mainToolbar = view.findViewById(R.id.maintoolbar)
-        mainToolbar?.searchApplink = "${ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE}?official=true&navsource=os"
+        mainToolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
         mainToolbar?.setQuerySearch(getString(R.string.os_query_search))
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
     }

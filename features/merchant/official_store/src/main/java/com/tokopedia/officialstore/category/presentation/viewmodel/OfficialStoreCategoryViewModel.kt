@@ -20,9 +20,8 @@ class OfficialStoreCategoryViewModel @Inject constructor(
         dispatchers: CoroutineDispatcher
 ) : BaseViewModel(dispatchers) {
 
-    val officialStoreCategoriesResult: LiveData<Result<OfficialStoreCategories>> by lazy {
-        _officialStoreCategoriesResult
-    }
+    val officialStoreCategoriesResult: LiveData<Result<OfficialStoreCategories>>
+        get() = _officialStoreCategoriesResult
 
     private val _officialStoreCategoriesResult by lazy {
         MutableLiveData<Result<OfficialStoreCategories>>()
