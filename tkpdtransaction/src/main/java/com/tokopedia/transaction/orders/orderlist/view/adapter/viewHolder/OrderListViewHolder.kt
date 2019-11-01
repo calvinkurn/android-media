@@ -69,7 +69,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     var orderCategory: String = ""
     var appLink: String = ""
 
-    override fun bind(element: OrderListViewMdotodel) {
+    override fun bind(element: OrderListViewModel) {
         setObservers(element)
         orderCategory = element.order.category()
         appLink = element.order.appLink
