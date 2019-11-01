@@ -196,7 +196,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         }
         recyclerView?.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.adapter = adapter
-        recyclerView?.itemAnimator = DefaultItemAnimator()
         endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
             override fun getCurrentPage(): Int = 1
 
@@ -219,6 +218,19 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         viewModel.wishlistData.observe(viewLifecycleOwner, Observer { response ->
             if(response.isNotEmpty()) renderList(response)
         })
+        viewModel.wishlistState.observe(viewLifecycleOwner, Observer { state ->
+            if(state.isEmpty() || state.isLoading() || state.isError()){
+                searchView?.hide()
+                swipeToRefresh?.isRefreshing = false
+                menu?.findItem(R.id.cancel)?.isVisible = false
+                menu?.findItem(R.id.manage)?.isVisible = false
+            } else {
+                // success state
+                swipeToRefresh?.isRefreshing = false
+                searchView?.show()
+                menu?.findItem(R.id.manage)?.isVisible = true
+            }
+        })
         viewModel.getWishlistData()
     }
 
@@ -231,18 +243,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun renderList(list: List<WishlistDataModel>){
-        swipeToRefresh?.isRefreshing = false
-        if(list.isEmptyWishlist() || list.isErrorWishlist()){
-            searchView?.hide()
-            menu?.findItem(R.id.cancel)?.isVisible = false
-            menu?.findItem(R.id.manage)?.isVisible = false
-        }else {
-            if(!modeBulkDelete){
-                searchView?.show()
-                menu?.findItem(R.id.manage)?.isVisible = true
-            }
-        }
-
         val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
         adapter.submitList(list)
         recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)

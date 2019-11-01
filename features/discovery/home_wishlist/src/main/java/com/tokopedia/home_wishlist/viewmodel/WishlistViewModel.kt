@@ -70,7 +70,7 @@ open class WishlistViewModel @Inject constructor(
     fun getWishlistData(keyword: String = ""){
         loadInitialPage(keyword)
         currentPage++
-
+        wishlistState.value = Status.LOADING
         launchCatchError(block = {
             val data = wishlistRepository.getData(keyword, currentPage)
             if (!data.isSuccess) {
@@ -80,8 +80,8 @@ open class WishlistViewModel @Inject constructor(
             }
 
             if(!data.items.isEmpty()){
-                wishlistData.value = listOf(EmptyWishlistDataModel())
                 wishlistState.value = Status.EMPTY
+                wishlistData.value = listOf(EmptyWishlistDataModel())
                 getRecommendationOnEmptyWishlist(0)
             } else {
                 wishlistState.value = Status.SUCCESS
