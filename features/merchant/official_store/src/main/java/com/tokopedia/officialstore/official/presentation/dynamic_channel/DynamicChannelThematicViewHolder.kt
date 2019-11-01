@@ -24,7 +24,6 @@ class DynamicChannelThematicViewHolder(
         private val dcEventHandler: DynamicChannelEventHandler
 ) : AbstractViewHolder<DynamicChannelViewModel>(view) {
 
-    private val bannerImageCornerRadius: Float = 16f
     private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_thematic_main_container)
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
@@ -137,5 +136,7 @@ class DynamicChannelThematicViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.dynamic_channel_thematic_main
+
+        private const val bannerImageCornerRadius = 16f
     }
 }

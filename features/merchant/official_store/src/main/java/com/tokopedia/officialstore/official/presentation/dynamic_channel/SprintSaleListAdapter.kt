@@ -1,13 +1,11 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
-import android.content.Context
 import android.graphics.Paint
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.officialstore.R
@@ -16,7 +14,6 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
 class SprintSaleListAdapter(
-        private val ctx: Context?,
         private val channelData: Channel,
         private val dcEventHandler: DynamicChannelEventHandler
 ) : RecyclerView.Adapter<SprintSaleListAdapter.SprintSaleItemViewHolder>() {
@@ -31,7 +28,7 @@ class SprintSaleListAdapter(
         val itemData = channelData.grids?.get(position)
 
         itemData?.let { item ->
-            ImageHandler.loadImageFitCenter(ctx, holder.imageView, item.imageUrl)
+            ImageHandler.loadImageFitCenter(holder.imageView.context, holder.imageView, item.imageUrl)
 
             holder.apply {
                 imageView.setOnClickListener(dcEventHandler.onClickFlashSaleImage(channelData, position))
@@ -39,12 +36,11 @@ class SprintSaleListAdapter(
                 oldPrice.text = item.slashedPrice
                 oldPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                 newPrice.text = item.price
-                Glide.with(ctx)
-                        .load(item.freeOngkir?.imageUrl)
-                        .asBitmap()
-                        .fitCenter()
-                        .dontAnimate()
-                        .into(freeOngkirView)
+                ImageHandler.loadImageFitCenter(
+                        holder.freeOngkirView.context,
+                        freeOngkirView,
+                        item.freeOngkir?.imageUrl
+                )
             }
         }
     }

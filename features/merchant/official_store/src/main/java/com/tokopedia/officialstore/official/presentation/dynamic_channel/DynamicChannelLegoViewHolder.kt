@@ -13,11 +13,10 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.unifyprinciples.Typography
 
 class DynamicChannelLegoViewHolder(
-        private val view: View?,
+        view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
 ) : AbstractViewHolder<DynamicChannelViewModel>(view) {
 
-    private val columnNum = 3
     private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_lego_main_container)
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
@@ -63,7 +62,7 @@ class DynamicChannelLegoViewHolder(
                         GridLayoutManager.VERTICAL,
                         false
                 )
-                adapter = LegoListAdapter(view?.context, channelData, dcEventHandler)
+                adapter = LegoListAdapter(channelData, dcEventHandler)
             }
         } else {
             mainContainer.visibility = View.GONE
@@ -73,5 +72,7 @@ class DynamicChannelLegoViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.dynamic_channel_lego_main
+
+        private const val columnNum = 3
     }
 }

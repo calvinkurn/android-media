@@ -1,6 +1,5 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 
 class LegoListAdapter(
-        private val ctx: Context?,
         private val channelData: Channel,
         private val dcEventHandler: DynamicChannelEventHandler
 ) : RecyclerView.Adapter<LegoListAdapter.LegoItemViewHolder>() {
@@ -26,7 +24,7 @@ class LegoListAdapter(
         val itemData = channelData.grids?.get(position)
 
         itemData?.let { item ->
-            ImageHandler.loadImageFitCenter(ctx, holder.imageView, item.imageUrl)
+            ImageHandler.loadImageFitCenter(holder.imageView.context, holder.imageView, item.imageUrl)
             holder.imageView.setOnClickListener(dcEventHandler.onClickLegoImage(channelData, position))
         }
     }
