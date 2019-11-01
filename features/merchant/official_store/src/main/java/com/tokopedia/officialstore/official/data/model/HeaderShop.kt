@@ -8,7 +8,7 @@ data class HeaderShop(@SerializedName("title")
                 val title: String? = "",
                       @SerializedName("ctaText")
                 val ctaText: String? = "",
-                      @SerializedName("logoUrl")
+                      @SerializedName("link")
                 val link: String? = "") : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),

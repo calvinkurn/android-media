@@ -1,7 +1,8 @@
 package com.tokopedia.officialstore.official.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.officialstore.DynamicChannelLayoutType
+import com.tokopedia.officialstore.DynamicChannelIdentifiers
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
@@ -21,25 +22,28 @@ class OfficialHomeMapper {
         val BENEFIT_POSITION = 1
         val FEATURE_SHOP_POSITION = 2
 
-        fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?) {
-            notifyElement(BANNER_POSITION, OfficialBannerViewModel(banner.banners), adapter)
+        fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?) {
+            notifyElement(BANNER_POSITION, OfficialBannerViewModel(banner.banners,
+                    categoryName.toEmptyStringIfNull()), adapter)
         }
 
         fun mappingBenefit(benefits: OfficialStoreBenefits, adapter: OfficialHomeAdapter?) {
             notifyElement(BENEFIT_POSITION, OfficialBenefitViewModel(benefits.benefits), adapter)
         }
 
-        fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?) {
-            notifyElement(FEATURE_SHOP_POSITION, OfficialFeaturedShopViewModel(featuredShop.featuredShops, featuredShop.header), adapter)
+        fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?, categoryName: String?) {
+            notifyElement(FEATURE_SHOP_POSITION,
+                    OfficialFeaturedShopViewModel(featuredShop.featuredShops, featuredShop.header,
+                    categoryName.toEmptyStringIfNull()), adapter)
         }
 
         fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?) {
             if (dynamicChannel.channels.isNotEmpty()) {
                 val availableScreens = setOf(
-                        DynamicChannelLayoutType.LAYOUT_BANNER_CAROUSEL,
-                        DynamicChannelLayoutType.LAYOUT_SPRINT_LEGO,
-                        DynamicChannelLayoutType.LAYOUT_6_IMAGE,
-                        DynamicChannelLayoutType.LAYOUT_LEGO_3_IMAGE
+                        DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
+                        DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
+                        DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
+                        DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE
                 )
                 val views = mutableListOf<Visitable<OfficialHomeAdapterTypeFactory>>()
 

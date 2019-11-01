@@ -15,10 +15,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.analytics.DynamicChannelTrackers
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.RecyclerViewScrollListener
@@ -59,7 +59,7 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-    private val dcTrackers: DynamicChannelTrackers by lazy { DynamicChannelTrackers() }
+    private var tracking: OfficialStoreTracking? = null
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -69,18 +69,20 @@ class OfficialHomeFragment :
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
-    private var counterTitleShouldBeRendered = 1
+    private var counterTitleShouldBeRendered = 0
     private var totalScroll = 0
-
-    private lateinit var tracking: OfficialStoreTracking
+    private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            category = it.getParcelable(BUNDLE_CATEGORY)
-        }
-        context?.let {
-            tracking = OfficialStoreTracking(it)
+        arguments?.let { category = it.getParcelable(BUNDLE_CATEGORY) }
+        context?.let { tracking = OfficialStoreTracking(it) }
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            tracking?.sendScreen(category?.title.toEmptyStringIfNull())
         }
     }
 
@@ -120,6 +122,11 @@ class OfficialHomeFragment :
         setListener()
     }
 
+    override fun onPause() {
+        super.onPause()
+        tracking?.sendAll()
+    }
+
     private fun refreshData() {
         adapter?.clearAllElements()
         adapter?.resetState()
@@ -132,7 +139,7 @@ class OfficialHomeFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingBanners(it.data, adapter)
+                    OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                 }
                 is Fail -> {
                     if (BuildConfig.DEBUG)
@@ -163,7 +170,7 @@ class OfficialHomeFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter)
+                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title)
                 }
                 is Fail -> {
                     if (BuildConfig.DEBUG)
@@ -282,7 +289,7 @@ class OfficialHomeFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode === REQUEST_FROM_PDP) {
+        if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
                 val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
@@ -303,7 +310,7 @@ class OfficialHomeFragment :
     }
 
     private fun eventTrackerClickListener(item: RecommendationItem, position: Int) {
-        tracking.eventClickProductRecommendation(
+        tracking?.eventClickProductRecommendation(
                 item,
                 position.toString(),
                 PRODUCT_RECOMMENDATION_TITLE_SECTION,
@@ -324,15 +331,14 @@ class OfficialHomeFragment :
 
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
         if (position > -1 && adapter != null) {
-            if (adapter?.list?.get(position) is ProductRecommendationViewModel) {
-                (adapter!!.list.get(position) as ProductRecommendationViewModel).productItem.isWishlist = isWishlist
-                adapter!!.notifyItemChanged(position)
-            }
+            (adapter?.list?.getOrNull(position) as?
+                    ProductRecommendationViewModel)?.productItem?.isWishlist = isWishlist
+            adapter?.notifyItemChanged(position)
         }
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        tracking.eventImpressionProductRecommendation(
+        tracking?.eventImpressionProductRecommendation(
                 item,
                 viewModel.isLoggedIn(),
                 category?.title.toString(),
@@ -369,7 +375,7 @@ class OfficialHomeFragment :
             val applink = gridData?.applink ?: ""
 
             gridData?.let {
-                dcTrackers.dynamicChannelImageClick(
+                tracking?.dynamicChannelImageClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
@@ -378,6 +384,100 @@ class OfficialHomeFragment :
             }
 
             RouteManager.route(context, applink)
+        }
+    }
+
+    override fun legoImpression(channelData: Channel) {
+        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+            tracking?.dynamicChannelImpression(viewModel.currentSlug, channelData)
+            sentDynamicChannelTrackers.add(channelData.id)
+        }
+    }
+
+    override fun onClickFlashSaleActionText(applink: String): View.OnClickListener {
+        return View.OnClickListener {
+            tracking?.flashSaleActionTextClick(viewModel.currentSlug)
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onClickFlashSaleImage(channelData: Channel, position: Int): View.OnClickListener {
+        return View.OnClickListener {
+            val gridData = channelData.grids?.get(position)
+            val applink = gridData?.applink ?: ""
+
+            gridData?.let {
+                tracking?.flashSalePDPClick(
+                        viewModel.currentSlug,
+                        channelData.header?.name ?: "",
+                        (position + 1).toString(10),
+                        it
+                )
+            }
+
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun flashSaleImpression(channelData: Channel) {
+        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+            tracking?.flashSaleImpression(viewModel.currentSlug, channelData)
+            sentDynamicChannelTrackers.add(channelData.id)
+        }
+    }
+
+    override fun onClickMixActionText(applink: String): View.OnClickListener {
+        return View.OnClickListener {
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onClickMixImage(channelData: Channel, position: Int): View.OnClickListener {
+        return View.OnClickListener {
+            val gridData = channelData.grids?.get(position)
+            val applink = gridData?.applink ?: ""
+
+            gridData?.let {
+                tracking?.dynamicChannelMixCardClick(
+                        viewModel.currentSlug,
+                        channelData.header?.name ?: "",
+                        (position + 1).toString(10),
+                        it
+                )
+            }
+
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onClickMixBanner(channelData: Channel): View.OnClickListener {
+        return View.OnClickListener {
+            val bannerData = channelData.banner
+            val applink = bannerData?.applink ?: ""
+
+            bannerData?.let {
+                tracking?.dynamicChannelMixBannerClick(
+                        viewModel.currentSlug,
+                        channelData.header?.name ?: "",
+                        it
+                )
+            }
+
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun mixImageImpression(channelData: Channel) {
+        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+            tracking?.dynamicChannelMixCardImpression(viewModel.currentSlug, channelData)
+            sentDynamicChannelTrackers.add(channelData.id)
+        }
+    }
+
+    override fun mixBannerImpression(channelData: Channel) {
+        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+            tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
+            sentDynamicChannelTrackers.add(channelData.id)
         }
     }
 }

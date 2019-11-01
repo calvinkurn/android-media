@@ -6,19 +6,17 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.unifyprinciples.Typography
 
 class DynamicChannelSprintSaleViewHolder(
-        private val view: View?,
+        view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
 ) : AbstractViewHolder<DynamicChannelViewModel>(view) {
 
-    private val columnNum = 3
     private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_sprintsale_main_container)
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
@@ -28,8 +26,9 @@ class DynamicChannelSprintSaleViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
+            dcEventHandler.flashSaleImpression(dynamicChannelData)
             setupHeader(dynamicChannelData.header)
-            setupContent(dynamicChannelData.grids)
+            setupContent(dynamicChannelData)
         }
     }
 
@@ -54,9 +53,7 @@ class DynamicChannelSprintSaleViewHolder(
             if (header.applink.isNotEmpty()) {
                 headerActionText.apply {
                     visibility = View.VISIBLE
-                    setOnClickListener {
-                        RouteManager.route(view?.context, header.applink)
-                    }
+                    setOnClickListener(dcEventHandler.onClickFlashSaleActionText(header.applink))
                 }
             } else {
                 headerActionText.visibility = View.GONE
@@ -66,8 +63,8 @@ class DynamicChannelSprintSaleViewHolder(
         }
     }
 
-    private fun setupContent(grids: MutableList<Grid?>?) {
-        if (!grids.isNullOrEmpty()) {
+    private fun setupContent(channelData: Channel) {
+        if (!channelData.grids.isNullOrEmpty()) {
             mainContainer.visibility = View.VISIBLE
 
             contentList.apply {
@@ -77,7 +74,7 @@ class DynamicChannelSprintSaleViewHolder(
                         GridLayoutManager.VERTICAL,
                         false
                 )
-                adapter = SprintSaleListAdapter(view?.context, grids)
+                adapter = SprintSaleListAdapter(channelData, dcEventHandler)
             }
         } else {
             mainContainer.visibility = View.GONE
@@ -87,5 +84,7 @@ class DynamicChannelSprintSaleViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.dynamic_channel_sprintsale_main
+
+        private const val columnNum = 3
     }
 }

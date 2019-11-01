@@ -39,13 +39,14 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+
     implementation rootProject.ext.playServicesDependencies.analytics
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     implementation rootProject.ext.debugToolsDependencies.chuck
 
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 

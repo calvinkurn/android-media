@@ -42,6 +42,7 @@ public class MainToolbar extends Toolbar {
     protected RemoteConfig remoteConfig;
     protected NotifAnalytics notifAnalytics;
 
+    public String searchApplink = ApplinkConstInternalDiscovery.AUTOCOMPLETE;
     protected String screenName = "";
 
     public MainToolbar(Context context) {
@@ -152,7 +153,7 @@ public class MainToolbar extends Toolbar {
 
         editTextSearch.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingSearchBar(screenName);
-            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
+            RouteManager.route(context, searchApplink);
         });
 
         btnNotification.setOnClickListener(v -> {

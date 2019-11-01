@@ -13,23 +13,24 @@ import com.tokopedia.officialstore.official.data.model.Shop
 class FeaturedShopAdapter(private val context: Context, var shopList: List<Shop> = ArrayList()) :
         RecyclerView.Adapter<FeaturedShopAdapter.FeaturedShopViewHolder>() {
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): FeaturedShopViewHolder {
+    var onItemClickListener: OnItemClickListener? = null
+
+    override fun onCreateViewHolder(parent: ViewGroup, position: Int): FeaturedShopViewHolder {
         return FeaturedShopViewHolder(LayoutInflater.from(context).
-                inflate(R.layout.widget_official_featured_shop, p0, false))
+                inflate(R.layout.widget_official_featured_shop, parent, false))
     }
 
     override fun getItemCount(): Int {
         return shopList.size
     }
 
-    override fun onBindViewHolder(p0: FeaturedShopViewHolder, p1: Int) {
-        val shop = shopList[p1]
-        ImageHandler.loadImage(
-                context,
-                p0.imageView,
-                shop.imageUrl,
-                R.drawable.ic_loading_image
-        )
+    override fun onBindViewHolder(holder: FeaturedShopViewHolder, position: Int) {
+        val shop = shopList[position]
+        ImageHandler.loadImageAndCache(holder.imageView, shop.imageUrl)
+
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.onItemClick(context, position, shop)
+        }
     }
 
     class FeaturedShopViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -39,5 +40,9 @@ class FeaturedShopAdapter(private val context: Context, var shopList: List<Shop>
         init {
             imageView = itemView.findViewById(R.id.image_featured_shop)
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(context: Context, position: Int, shop: Shop)
     }
 }

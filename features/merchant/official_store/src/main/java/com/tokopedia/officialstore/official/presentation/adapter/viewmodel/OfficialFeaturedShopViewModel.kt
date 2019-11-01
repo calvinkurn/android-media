@@ -5,7 +5,7 @@ import com.tokopedia.officialstore.official.data.model.HeaderShop
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 
-class OfficialFeaturedShopViewModel(val featuredShop: MutableList<Shop>, val headerShop: HeaderShop?) : Visitable<OfficialHomeAdapterTypeFactory> {
+class OfficialFeaturedShopViewModel(val featuredShop: MutableList<Shop>, val headerShop: HeaderShop?, val categoryName: String) : Visitable<OfficialHomeAdapterTypeFactory> {
 
     override fun type(adapterTypeFactory: OfficialHomeAdapterTypeFactory): Int {
         return adapterTypeFactory.type(this)

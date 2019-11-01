@@ -1,5 +1,5 @@
 query OfficialStoreFeaturedShop($categoryAliasID: Int) {
-   OfficialStoreFeaturedShop(categoryAliasID: $categoryAliasID, device: 1, size: 4){
+   OfficialStoreFeaturedShop(categoryAliasID: $categoryAliasID, device: 4, size: 4){
       totalShops
       header{
         ctaText

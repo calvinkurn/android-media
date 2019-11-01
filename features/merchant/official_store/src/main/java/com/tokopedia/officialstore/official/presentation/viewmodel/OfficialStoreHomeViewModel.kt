@@ -110,7 +110,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
             currentSlug = "${category?.prefixUrl}${category?.slug}"
             _officialStoreBannersResult.value = Success(getOfficialStoreBanners(currentSlug).await())
             _officialStoreBenefitResult.value = Success(getOfficialStoreBenefit().await())
-            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
+//            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop(category?.categoryId?: "").await())
+            _officialStoreFeaturedShopResult.value = Success(getOfficialStoreFeaturedShop("0").await())
             getOfficialStoreDynamicChannel(currentSlug)
         }) {
             // TODO just ignore or handle?
