@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import com.tokopedia.logisticaddaddress.R
 
 
 class DropoffDetailBottomsheet: BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.logisticaddaddress.R.layout.bottomsheet_dropoff_detail, container, false)
+        return inflater.inflate(R.layout.bottomsheet_dropoff_detail, container, false)
     }
 
     override fun onStart() {
