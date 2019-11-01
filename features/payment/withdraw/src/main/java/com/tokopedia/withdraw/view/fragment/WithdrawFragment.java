@@ -900,7 +900,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private void openTermsAndConditionBottomSheet() {
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View view = getLayoutInflater().inflate(R.layout.swd_layout_withdraw_tnc, null, true);
-        WebView webView = view.findViewById(R.id.catalog_webview);
+        WebView webView = view.findViewById(R.id.swd_tnc_webview);
         ImageView closeBtn = view.findViewById(R.id.close_button);
         Typography titleView = view.findViewById(R.id.title_closeable);
         webView.loadUrl(WithdrawConstant.WEB_TNC_URL);
