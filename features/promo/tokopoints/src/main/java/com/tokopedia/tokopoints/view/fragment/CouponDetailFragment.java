@@ -807,8 +807,8 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         int noConnectionImageId = R.drawable.ic_tp_no_connection;
 
         int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_large);
-        int buttonColor = MethodChecker.getColor(getActivity(), R.color.bg_button_green_border_outline);
-        int buttonFontColor = MethodChecker.getColor(getActivity(), R.color.white);
+        int buttonColor = MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.bg_button_green_border_outline);
+        int buttonFontColor = MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.white);
 
         CharSequence titleText = getResources().getText(R.string.tp_no_internet_title);
         CharSequence labelText = getResources().getText(R.string.tp_no_internet_label);
@@ -817,8 +817,8 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             noConnectionImageId = R.drawable.ic_tp_toped_sorry;
 
             buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_medium);
-            buttonColor = MethodChecker.getColor(getActivity(), R.color.transparent);
-            buttonFontColor = MethodChecker.getColor(getActivity(), R.color.tkpd_main_green);
+            buttonColor = MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.transparent);
+            buttonFontColor = MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.tkpd_main_green);
 
             titleText = getResources().getText(R.string.tp_label_server_error);
             labelText = getResources().getText(R.string.tp_label_try_again);
