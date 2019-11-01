@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
@@ -22,16 +21,17 @@ import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragme
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.flight.booking.di.FlightBookingComponent
-import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
-import com.tokopedia.flight.bookingV3.data.FlightVoucher
+import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
@@ -43,15 +43,14 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 
-
 /**
  * @author by jessica on 2019-10-24
  */
 
-class FlightBookingFragment: BaseDaggerFragment(), TickerCheckoutView.ActionListener {
+class FlightBookingFragment : BaseDaggerFragment() {
 
     val uiScope = CoroutineScope(Dispatchers.Main)
-    val flightVoucher = FlightVoucher()
+    var isCouponChanged = false
     val cartId = ""
 
     lateinit var flightRouteAdapter: FlightJourneyAdapter
@@ -84,6 +83,10 @@ class FlightBookingFragment: BaseDaggerFragment(), TickerCheckoutView.ActionList
 
                 }
             }
+        })
+
+        bookingViewModel.flightPromoResult.observe(this, Observer {
+            renderAutoApplyPromo(it)
         })
 
         bookingViewModel.profileResult.observe(this, Observer {
@@ -146,8 +149,65 @@ class FlightBookingFragment: BaseDaggerFragment(), TickerCheckoutView.ActionList
         })
 
         tv_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
-        flight_promo_ticker_view.actionListener = this
+    }
 
+    fun renderAutoApplyPromo(flightVoucher: FlightPromoViewEntity) {
+        if (flightVoucher.isCouponEnable) showVoucherContainer() else hideVoucherContainer()
+        renderPromoTicker(flightVoucher)
+    }
+
+    private fun renderPromoTicker(flightVoucher: FlightPromoViewEntity) {
+        flight_promo_ticker_view.state = flightVoucher.promoData.state
+        flight_promo_ticker_view.title = flightVoucher.promoData.title
+        flight_promo_ticker_view.desc = flightVoucher.promoData.description
+        flight_promo_ticker_view.actionListener = object : TickerCheckoutView.ActionListener {
+            override fun onClickUsePromo() {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
+                intent.putExtra("EXTRA_COUPON_ACTIVE", flightVoucher.isCouponActive)
+                intent.putExtra("EXTRA_CART_ID", cartId)
+                startActivityForResult(intent, REQUST_CODE_PROMO_LIST)
+            }
+
+            override fun onDisablePromoDiscount() {
+                isCouponChanged = true
+                bookingViewModel.onCancelAppliedVoucher(GraphqlHelper.loadRawString(resources,
+                        R.raw.promo_checkout_flight_cancel_voucher))
+//        updateFinalTotal(null, getCurrentBookingReviewModel())
+            }
+
+            override fun onClickDetailPromo() {
+                val intent: Intent
+                val promoCode = flightVoucher.promoData.promoCode
+                if (!promoCode.isEmpty()) {
+                    val requestCode: Int
+                    if (flightVoucher.promoData.typePromo == PromoData.TYPE_VOUCHER) {
+                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
+                        intent.putExtra("EXTRA_PROMO_CODE", promoCode)
+                        intent.putExtra("EXTRA_COUPON_ACTIVE", flightVoucher.isCouponActive)
+                        requestCode = REQUST_CODE_PROMO_LIST
+                    } else {
+                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT)
+                        intent.putExtra("EXTRA_IS_USE", true)
+                        intent.putExtra("EXTRA_KUPON_CODE", promoCode)
+                        requestCode = REQUEST_CODE_PROMO_DETAIL
+                    }
+                    intent.putExtra("EXTRA_CART_ID", cartId)
+                    startActivityForResult(intent, requestCode)
+                } else {
+                    Toast.makeText(activity, com.tokopedia.promocheckout.common.R.string.promo_none_applied, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun hideVoucherContainer() {
+        flight_promo_ticker_view.hide()
+        seperator_4.hide()
+    }
+
+    private fun showVoucherContainer() {
+        flight_promo_ticker_view.show()
+        seperator_4.show()
     }
 
     private fun randomLoadingSubtitle(): List<String> {
@@ -191,7 +251,7 @@ class FlightBookingFragment: BaseDaggerFragment(), TickerCheckoutView.ActionList
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_CONTACT_FORM -> if (resultCode == Activity.RESULT_OK) {
                 data?.let {
                     val contactData: TravelContactData = it.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
@@ -200,42 +260,26 @@ class FlightBookingFragment: BaseDaggerFragment(), TickerCheckoutView.ActionList
                     widget_traveller_info.setContactPhoneNum(contactData.phoneCode, contactData.phone)
                 }
             }
-        }
-    }
 
-    override fun onClickUsePromo() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
-        intent.putExtra("EXTRA_COUPON_ACTIVE", flightVoucher.isCouponActive)
-        intent.putExtra("EXTRA_CART_ID", cartId)
-        startActivityForResult(intent, REQUST_CODE_PROMO_LIST)
-    }
-
-    override fun onDisablePromoDiscount() {
-        flightVoucher.isCouponChanged = true
-//        flightBookingReviewPresenter.onCancelAppliedVoucher()
-//        updateFinalTotal(null, getCurrentBookingReviewModel())
-    }
-
-    override fun onClickDetailPromo() {
-        val intent: Intent
-        val promoCode = flightVoucher.promoData.promoCode
-        if (!promoCode.isEmpty()) {
-            val requestCode: Int
-            if (flightVoucher.promoData.typePromo == PromoData.TYPE_VOUCHER) {
-                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
-                intent.putExtra("EXTRA_PROMO_CODE", promoCode)
-                intent.putExtra("EXTRA_COUPON_ACTIVE", flightVoucher.isCouponActive)
-                requestCode = REQUST_CODE_PROMO_LIST
-            } else {
-                intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT)
-                intent.putExtra("EXTRA_IS_USE", true)
-                intent.putExtra("EXTRA_KUPON_CODE", promoCode)
-                requestCode = REQUEST_CODE_PROMO_DETAIL
+            REQUST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
+                data?.let {
+                    var promoData = PromoData()
+                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(EXTRA_PROMO_DATA)
+                    when (promoData.state) {
+                        TickerCheckoutView.State.EMPTY -> {
+                            promoData.promoCode = ""
+                            flight_promo_ticker_view.resetView()
+                        }
+                        TickerCheckoutView.State.FAILED -> {
+                            promoData.promoCode = ""
+                            bookingViewModel.updatePromoData(promoData)
+                        }
+                        TickerCheckoutView.State.ACTIVE -> {
+                            bookingViewModel.updatePromoData(promoData)
+                        }
+                    }
+                }
             }
-            intent.putExtra("EXTRA_CART_ID", cartId)
-            startActivityForResult(intent, requestCode)
-        } else {
-            Toast.makeText(activity, com.tokopedia.promocheckout.common.R.string.promo_none_applied, Toast.LENGTH_SHORT).show()
         }
     }
 

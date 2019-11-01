@@ -3,6 +3,11 @@ package com.tokopedia.flight.bookingV3.data.mapper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
+import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
+import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ONE
+import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 
 /**
  * @author by jessica on 2019-10-29
@@ -57,7 +62,26 @@ class FlightBookingMapper {
 
                 journies.add(newJourney)
             }
+
             return FlightCartViewEntity(journeySummaries = journies)
+        }
+
+        fun mapToFlightPromoViewEntity(voucher: FlightCart.Voucher): FlightPromoViewEntity {
+            val promoData = PromoData()
+            voucher.let {
+                if (it.autoApply.success) {
+                    if (!(it.isCouponActive == DEFAULT_IS_COUPON_ZERO &&
+                                    it.autoApply.isCoupon == DEFAULT_IS_COUPON_ONE)) {
+                        promoData.typePromo = it.autoApply.isCoupon
+                        promoData.promoCode = it.autoApply.code
+                        promoData.description = it.autoApply.messageSuccess
+                        promoData.title = it.autoApply.titleDescription
+                        promoData.amount = it.autoApply.discountedAmount
+                        promoData.state = TickerCheckoutView.State.ACTIVE
+                    }
+                }
+            }
+            return FlightPromoViewEntity(voucher.enableVoucher, voucher.isCouponActive, promoData)
         }
     }
 }

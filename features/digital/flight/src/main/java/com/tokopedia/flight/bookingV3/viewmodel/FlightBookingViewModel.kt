@@ -6,11 +6,14 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
+import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
+import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,7 +32,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                                                  val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val flightCartResult = MutableLiveData<Result<FlightCartViewEntity>>()
+    val flightPromoResult = MutableLiveData<FlightPromoViewEntity>()
     val profileResult = MutableLiveData<Result<ProfileInfo>>()
+    val flightCancelVoucherSuccess = MutableLiveData<Boolean>()
 
 
     fun getCart(rawQuery: String, cartId: String) {
@@ -41,11 +46,20 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<FlightCart.Response>().flightCart
 
             flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
+            flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
         }) {
             //            flightCartResult.value = Fail(it)
             val gson = Gson()
-            flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(gson.fromJson(rawQuery,
-                    FlightCart.Response::class.java).flightCart))
+            val data = gson.fromJson(rawQuery, FlightCart.Response::class.java).flightCart
+            flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
+            flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
+        }
+    }
+
+    fun updatePromoData(promoData: PromoData) {
+        flightPromoResult.value?.let {
+            it.promoData = promoData
+            flightPromoResult.value = it
         }
     }
 
@@ -62,6 +76,20 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         })
         {
             profileResult.value = Fail(it)
+        }
+    }
+
+    fun onCancelAppliedVoucher(rawQuery: String) {
+        launchCatchError(block = {
+            val profileInfo = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<FlightCancelVoucher>()
+
+            flightCancelVoucherSuccess.value = true
+        })
+        {
+            flightCancelVoucherSuccess.value = false
         }
     }
 

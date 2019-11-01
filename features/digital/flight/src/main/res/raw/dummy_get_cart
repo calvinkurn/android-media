@@ -272,15 +272,15 @@
           "isCouponActive": 1,
           "defaultPromo": "voucher",
           "autoApply": {
-            "success": false,
-            "code": "",
+            "success": true,
+            "code": "SOMETHING",
             "isCoupon": 0,
             "discountAmount": 0,
             "discountPrice": "",
             "discountedAmount": 0,
             "discountedPrice": "",
-            "titleDescription": "",
-            "messageSuccess": "",
+            "titleDescription": "Hehehehehe",
+            "messageSuccess": "YEYY Success",
             "promoID": 0
           }
         }
