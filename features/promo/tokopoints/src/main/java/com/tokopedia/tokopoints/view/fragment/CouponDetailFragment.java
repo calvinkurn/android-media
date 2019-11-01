@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -16,6 +18,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +94,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     public CouponDetailPresenter mPresenter;
     private View llBottomBtn;
     private String mRealCode;
+    private CardView mBarCodeContainer;
 
 
     public static Fragment newInstance(Bundle extras) {
@@ -594,6 +598,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             actionContainer.setDisplayedChild(CONTAINER_SWIPE);
 
             mSwipeCardView = getView().findViewById(R.id.card_swipe);
+            mBarCodeContainer = getView().findViewById(R.id.barcode_container);
             mBtnBarCode = getView().findViewById(R.id.btn_barcode);
             mBtnQrCode = getView().findViewById(R.id.btn_qrcode);
             mViewCodeSeparator = getView().findViewById(R.id.view_code_separator);
@@ -795,20 +800,23 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     public void onSwipeResponse(CouponSwipeUpdate data, String qrCodeLink, String barCodeLink) {
         mSwipeCardView.setCouponCode(data.getPartnerCode());
-
+        mBarCodeContainer.setVisibility(View.GONE);
         if (qrCodeLink != null && !qrCodeLink.isEmpty()) {
             mBtnQrCode.setVisibility(View.VISIBLE);
             mViewCodeSeparator.setVisibility(View.VISIBLE);
+            mTextSwipeNote.setGravity(Gravity.LEFT);
         }
 
         if (barCodeLink != null && !barCodeLink.isEmpty()) {
             mBtnBarCode.setVisibility(View.VISIBLE);
+            mTextSwipeNote.setGravity(Gravity.LEFT);
         }
 
         if (data.getNote() != null && !data.getNote().isEmpty()) {
             mTextSwipeNote.setVisibility(View.VISIBLE);
             mTextSwipeNote.setText(data.getNote());
             mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.black_38));
+            mBarCodeContainer.setVisibility(View.VISIBLE);
         } else {
             mTextSwipeNote.setVisibility(View.GONE);
         }
