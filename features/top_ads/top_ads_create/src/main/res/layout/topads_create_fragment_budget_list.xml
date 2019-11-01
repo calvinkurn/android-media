@@ -92,6 +92,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="-6dp"
         android:layout_weight="1">
 
 
@@ -125,7 +126,13 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_6"
+            android:layout_above="@+id/btn_submit"
+            android:background="@drawable/topads_create_bg_shader_gray" />
+
 
         <Button
             android:id="@+id/btn_next"

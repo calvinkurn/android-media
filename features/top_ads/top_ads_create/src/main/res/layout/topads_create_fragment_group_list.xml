@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/dp_16">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btn_submit"
-        android:orientation="vertical">
+        android:layout_above="@+id/container_btn"
+        android:layout_marginBottom="-6dp"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16">
 
 
         <com.tokopedia.unifyprinciples.Typography
@@ -27,8 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_35"
             android:gravity="left"
-            app:typographyType="body_3"
-            android:text="@string/atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk" />
+            android:text="@string/atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk"
+            app:typographyType="body_3" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -44,8 +45,8 @@
             style="@style/TextView.Micro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:typographyType="body_3"
-            android:text="@string/contoh_spatu_lari_bando_wanita_gaun_pesta" />
+            android:text="@string/contoh_spatu_lari_bando_wanita_gaun_pesta"
+            app:typographyType="body_3" />
 
     </LinearLayout>
 
@@ -54,8 +55,9 @@
         style="@style/TextView.Micro.Green"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_submit"
+        android:layout_above="@+id/container_btn"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_8"
         android:backgroundTint="#FFFCF5"
         android:gravity="center"
         android:text="@string/apa_itu_group_iklan"
@@ -63,11 +65,25 @@
         app:buttonCompatSize="medium"
         app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips" />
 
-    <Button
-        android:id="@+id/btn_submit"
-        style="@style/Button.Submit.Green"
+    <LinearLayout
+        android:id="@+id/container_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="@string/buat_group_iklan" />
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_6"
+            android:layout_above="@+id/btn_submit"
+            android:background="@drawable/topads_create_bg_shader_gray" />
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/btn_submit"
+            style="@style/Button.Submit.Green.Full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:text="@string/buat_group_iklan" />
+    </LinearLayout>
 </RelativeLayout>

@@ -22,16 +22,19 @@
             android:layout_marginRight="@dimen/dp_16"
             android:hint="Ketik kata kunci" />
 
-        <Button
+        <com.tokopedia.design.component.ButtonCompat
             style="@style/Button.Submit.Green.Full"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:buttonCompatSize="medium"
+            app:buttonCompatType="primary"
             android:text="Tambah" />
     </LinearLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="-6dp"
         android:layout_weight="1">
 
 
@@ -59,11 +62,15 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_6"
+        android:background="@drawable/topads_create_bg_shader_gray" />
+
     <LinearLayout
         android:id="@+id/container_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -76,9 +83,10 @@
             app:typographyType="body_3"
             tools:text="2 kata kunci dipilih" />
 
-        <Button
+        <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/btn_next"
             style="@style/Button.Submit.Green"
+            app:buttonCompatType="primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

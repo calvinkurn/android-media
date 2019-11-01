@@ -8,6 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="-6dp"
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
@@ -198,23 +199,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical"
         android:layout_gravity="bottom"
-        android:padding="@dimen/dp_8">
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_6"
+            android:layout_above="@+id/btn_submit"
+            android:background="@drawable/topads_create_bg_shader_gray" />
 
         <Button
             android:id="@+id/btn_submit"
-            style="@style/Button.Submit.Green"
+            style="@style/Button.Submit.Green.Full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:text="Iklankan" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
             android:gravity="center"
-            android:padding="@dimen/dp_8"
             android:text="Sistem TopAds akan melindungi iklanmu dari klik\nyang tidak valid. Info Selengkapnya"
             app:typographyType="body_3" />
     </LinearLayout>

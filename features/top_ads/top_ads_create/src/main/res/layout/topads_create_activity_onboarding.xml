@@ -395,11 +395,12 @@
                     </LinearLayout>
                 </RelativeLayout>
 
-                <Button
+                <com.tokopedia.design.component.ButtonCompat
                     android:id="@+id/btn_start_manual_ads"
                     style="@style/Button.Submit.White.Border.Green"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:buttonCompatType="ghost"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_16"
