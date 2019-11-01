@@ -10,10 +10,12 @@ import com.tokopedia.explore.domain.entity.GetDiscoveryKolData;
 import com.tokopedia.explore.domain.entity.GetExploreData;
 import com.tokopedia.explore.domain.entity.PostKol;
 import com.tokopedia.explore.domain.entity.Tag;
+import com.tokopedia.explore.domain.entity.Tracking;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kol.common.util.TimeConverter;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
@@ -123,7 +125,8 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 "",
                 getTagType(tag),
                 getTagCaption(tag),
-                getTagLink(tag)
+                getTagLink(tag),
+                convertToTrackingViewModel(postKol.getTracking())
         );
 
         return new ExploreImageViewModel(getImageUrl(content), kolPostViewModel);
@@ -211,5 +214,20 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 category.getId(),
                 category.getName() == null ? "" : category.getName()
         );
+    }
+
+    private List<TrackingViewModel> convertToTrackingViewModel(List<Tracking> trackingList) {
+        List<TrackingViewModel> trackingViewModelList = new ArrayList<>();
+        for (Tracking tracking: trackingList) {
+            trackingViewModelList.add(
+                    new TrackingViewModel(
+                            tracking.getClickURL(),
+                            tracking.getViewURL(),
+                            tracking.getType(),
+                            tracking.getSource()
+                    )
+            );
+        }
+        return trackingViewModelList;
     }
 }
