@@ -55,6 +55,9 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
     }
 
     override fun onPromoAllClick() {
+        officialStoreTracking?.eventClickAllBanner(
+                elementBanner?.categoryName.toEmptyStringIfNull())
+
         // TODO add on banner see all click
     }
 
@@ -64,7 +67,15 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
 
     override fun onPromoScrolled(position: Int) {}
 
-    override fun onPromoLoaded() {}
+    override fun onPromoLoaded() {
+        val bannerItem = elementBanner?.banner?.get(0)
+        officialStoreTracking?.eventImpressionBanner(
+                elementBanner?.categoryName.toEmptyStringIfNull(),
+                bannerItem?.bannerId.toEmptyStringIfNull(),
+                0,
+                bannerItem?.title.toEmptyStringIfNull(),
+                bannerItem?.imageUrl.toEmptyStringIfNull())
+    }
 
     companion object {
         @LayoutRes
