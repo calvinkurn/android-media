@@ -46,4 +46,14 @@
     <string name="beriklan_hanya_dengan_1x_klik">Beriklan hanya dengan 1x klik</string>
     <string name="rekomendasi_rp">Rekomendasi Rp 2.500</string>
     <string name="biaya_per_klik">Biaya per klik</string>
+    <string name="ringkasan_iklan">Ringkasan Iklan</string>
+    <string name="anggaran_harian">Anggaran harian</string>
+    <string name="optimalkan_penjualan_dengan_atur_anggaran_harian_iklan">Optimalkan penjualan dengan atur anggaran harian iklan</string>
+    <string name="type_iklan">Type iklan</string>
+    <string name="yay_produkmu_berhasil_diiklankan">Yay, produkmu\nberhasil diiklankan!</string>
+    <string name="pantau_terus_performa_iklan_produkmu_di_dashboard_topads">Pantau terus performa iklan produkmu di\nDashboard TopAds</string>
+    <string name="yuk_isi_kredit_sekarang">Yuk, isi kredit sekarang</string>
+    <string name="tambah_kredit_topads_agar_iklanmu_nselalu_tampil_dan_lebih_bersaing">Tambah kredit TopAds agar iklanmu\nselalu tampil dan lebih bersaing</string>
+    <string name="tambah_kredit_topads">Tambah Kredit TopAds</string>
+    <string name="lihat_performa_iklan">Lihat performa iklan</string>
 </resources>

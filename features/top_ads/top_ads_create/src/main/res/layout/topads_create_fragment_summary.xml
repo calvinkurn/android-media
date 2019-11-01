@@ -1,38 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_8"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="@dimen/dp_16">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/title"
+                    style="@style/TextView.Small.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:text="@string/anggaran_harian"
+                    app:typographyType="heading_5" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    style="@style/TextView.Micro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/title"
+                    android:text="@string/optimalkan_penjualan_dengan_atur_anggaran_harian_iklan"
+                    app:typographyType="body_3" />
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            app:cardCornerRadius="@dimen/dp_8"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="@dimen/dp_16">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    style="@style/TextView.Small.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:text="@string/ringkasan_iklan"
+                    app:typographyType="heading_5" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="left"
+                        android:text="@string/type_iklan"
+                        app:typographyType="body_3" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        app:typographyType="body_3"
+                        tools:text="Manual" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="left"
+                        android:text="Group iklan"
+                        app:typographyType="body_3" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        app:typographyType="body_3"
+                        tools:text="Group Kemeja Murah" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="left"
+                        android:text="Jumlah produk"
+                        app:typographyType="body_3" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        app:typographyType="body_3"
+                        tools:text="4" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="left"
+                        android:text="Biaya per klik"
+                        app:typographyType="body_3" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        app:typographyType="body_3"
+                        tools:text="Rp 5.000 - Rp 10.000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="left"
+                        android:text="Anggaran harian"
+                        app:typographyType="body_3" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        app:typographyType="body_3"
+                        tools:text="Tidak dibatasi" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardUseCompatPadding="true"
-        app:contentPadding="@dimen/dp_16">
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        android:padding="@dimen/dp_8">
 
-        <RelativeLayout
+        <Button
+            style="@style/Button.Submit.Green"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:text="Iklankan" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/title"
-                style="@style/TextView.Small.Bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:typographyType="heading_5"
-                android:text="Anggaran harian"/>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:layout_below="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/TextView.Micro"
-                app:typographyType="body_3"
-                android:text="Optimalkan penjualan dengan atur anggaran harian iklan" />
-        </RelativeLayout>
-
-    </androidx.cardview.widget.CardView>
-
-</LinearLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/dp_8"
+            android:text="Sistem TopAds akan melindungi iklanmu dari klik\nyang tidak valid. Info Selengkapnya"
+            app:typographyType="body_3" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
