@@ -319,6 +319,10 @@ query shop_group_simplified{
             warehouse_id
             is_parent
             is_campaign_error
+            free_shipping {
+              eligible
+              badge_url
+            }
           }
         }
       }
@@ -505,6 +509,10 @@ query shop_group_simplified{
             warehouse_id
             is_parent
             is_campaign_error
+            free_shipping {
+              eligible
+              badge_url
+            }
           }
         }
       }
