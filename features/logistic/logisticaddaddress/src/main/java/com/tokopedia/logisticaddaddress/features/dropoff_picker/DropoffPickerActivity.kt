@@ -24,15 +24,14 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.DaggerDropoffPickerComponent
+import com.tokopedia.logisticaddaddress.domain.model.dropoff.Data
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -169,6 +168,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             when (result) {
                 is Fail -> Toast.makeText(this@DropoffPickerActivity, result.toString(), Toast.LENGTH_SHORT).show()
                 is Success -> {
+                    drawStoreLocations(result.data)
                     mNearbyAdapter.setData(result.data)
                     mBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 }
@@ -242,6 +242,15 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
                     },
                     "")
+        }
+    }
+
+    private fun drawStoreLocations(data: List<Data>) {
+        for (datum in data) {
+            mMap?.addMarker(MarkerOptions()
+                    .position(LatLng(datum.latitude.toDouble(), datum.longitude.toDouble()))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green))
+                    .title(datum.addrName))
         }
     }
 
