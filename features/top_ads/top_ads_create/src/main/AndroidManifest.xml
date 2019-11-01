@@ -8,8 +8,11 @@
         android:supportsRtl="true"
         tools:replace="android:label">
 
-        <activity android:name="com.tokopedia.topads.view.activity.CreateAdsOnboardingActivity"
-            android:label="@string/mulai_beriklan">
+        <activity
+            android:name="com.tokopedia.topads.view.activity.CreateAdsOnboardingActivity"
+            android:label="@string/mulai_beriklan"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -23,7 +26,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.tokopedia.topads.view.activity.CreateAdsStepperActivity" />
+        <activity
+            android:name="com.tokopedia.topads.view.activity.CreateManualAdsStepperActivity"
+            android:exported="true"
+            android:label="@string/create_group"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan" />
+
     </application>
 </manifest>
 

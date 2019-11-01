@@ -204,6 +204,7 @@
         android:padding="@dimen/dp_8">
 
         <Button
+            android:id="@+id/btn_submit"
             style="@style/Button.Submit.Green"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
