@@ -468,7 +468,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             @Override
                             protected void setResource(GifDrawable resource) {
                                 ivFloatingEgg.setImageDrawable(resource);
-                                resource.start();
+//                                resource.start();
                                 onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
 
                             }
