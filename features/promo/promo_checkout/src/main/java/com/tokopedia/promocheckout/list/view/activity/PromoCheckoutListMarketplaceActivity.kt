@@ -53,25 +53,29 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
         }
     }
 
-    fun removeUIFragment(remove: Boolean) {
+    override fun onBackPressed() {
+
         val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
-        if (promocheckoutlistfragment != null && promocheckoutlistfragment is PromoCheckoutListMarketplaceFragment) {
+        if (promocheckoutlistfragment != null) {
+            if (promocheckoutlistfragment.childFragmentManager.backStackEntryCount > 0) {
+                promocheckoutlistfragment.childFragmentManager.popBackStack()
+            } else
+                super.onBackPressed()
+        } else {
+            super.onBackPressed()
+
+        }
+    }
+
+    override fun onResume() {
+        val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
+        if (promocheckoutlistfragment != null) {
             if (promocheckoutlistfragment.childFragmentManager.backStackEntryCount > 0) {
                 promocheckoutlistfragment.childFragmentManager.findFragmentByTag("kamal")?.let { promocheckoutlistfragment.childFragmentManager.beginTransaction().remove(it).commit() }
                 promocheckoutlistfragment.childFragmentManager.popBackStack()
             }
         }
-    }
-
-    override fun onBackPressed() {
-
-        removeUIFragment(false)
-            super.onBackPressed()
-    }
-
-    override fun onResume() {
-        removeUIFragment(false)
-            super.onResume()
+        super.onResume()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
