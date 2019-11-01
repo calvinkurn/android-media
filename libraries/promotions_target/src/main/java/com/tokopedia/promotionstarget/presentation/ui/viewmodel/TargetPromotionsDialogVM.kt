@@ -26,9 +26,9 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
             val response = withContext(workerDispatcher) {
                 autoApplyUseCase.getResponse(autoApplyUseCase.getQueryParams(code))
             }
-            autoApplyLiveData.value = Success(response)
+            autoApplyLiveData.postValue(Success(response))
         }, onError = {
-            autoApplyLiveData.value = Fail(it)
+            autoApplyLiveData.postValue(Fail(it))
         })
     }
 }
