@@ -25,7 +25,6 @@ fun AppCompatImageView.loadImageGlide(url: String?, onLoadingFinished: (success:
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         onLoadingFinished(true)
                         return false
-
                     }
 
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -70,7 +69,6 @@ fun getColor(context: Context, id: Int): Int {
             context.resources.getColor(id)
         }
     } catch (e: NullPointerException) {
-        e.printStackTrace()
         return 0
     }
 }
