@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="padding_vs">5dp</dimen>
+    <dimen name="padding_ms">5dp</dimen>
+
+    <dimen name="margin_ms">8dp</dimen>
+
+    <dimen name="new_margin_sm">24dp</dimen>
+</resources>
