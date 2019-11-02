@@ -38,7 +38,7 @@ class LoggerCloudDatasource {
 
         try {
             Timber.d("SENDING")
-            url = URL(Constants.URL_LOGENTRIES + token)
+            url = URL(Constants.SERVER_URL + token)
             urlConnection = url.openConnection() as HttpURLConnection
             urlConnection.requestMethod = "POST"
             urlConnection.doOutput = true

@@ -77,7 +77,7 @@ class LogManager : CoroutineScope {
             val logsDao = LoggerRoomDatabase.getDatabase(application).logDao()
             val server = LoggerCloudDatasource()
             loggerRepository = LoggerRepository(logsDao, server)
-            secretKey = generateKey(Constants.KEY)
+            secretKey = generateKey(Constants.ENCRYPTION_KEY)
             // Because JobService requires a minimum SDK version of 21, this if else block will allow devices with
             // SDK version lower than 21 to run a Service instead
             if (android.os.Build.VERSION.SDK_INT > 21) {
@@ -112,8 +112,8 @@ class LogManager : CoroutineScope {
         }
 
         suspend fun sendLogToServer() {
-            val highPriorityLoggers: List<Logger> = loggerRepository.getHighPostPrio(Constants.OFFLINE_LOGS)
-            val lowPriorityLoggers: List<Logger> = loggerRepository.getLowPostPrio(Constants.ONLINE_LOGS)
+            val highPriorityLoggers: List<Logger> = loggerRepository.getHighPostPrio(Constants.SEND_PRIORITY_OFFLINE)
+            val lowPriorityLoggers: List<Logger> = loggerRepository.getLowPostPrio(Constants.SEND_PRIORITY_ONLINE)
             val logs = highPriorityLoggers.toMutableList()
 
             for (lowPriorityLogger in lowPriorityLoggers) {
@@ -123,7 +123,7 @@ class LogManager : CoroutineScope {
             for (log in logs) {
                 val ts = log.timeStamp
                 val severity = getSeverity(log.serverChannel)
-                if (severity != Constants.NO_SEVERITY) {
+                if (severity != Constants.SEVERITY_NONE) {
                     val errorCode = loggerRepository.sendLogToServer(severity, TOKEN, log, secretKey)
                     if (errorCode == 204) {
                         loggerRepository.deleteEntry(ts)
@@ -146,7 +146,7 @@ class LogManager : CoroutineScope {
             return when (serverChannel) {
                 TimberReportingTree.P1 -> Constants.SEVERITY_HIGH
                 TimberReportingTree.P2 -> Constants.SEVERITY_MEDIUM
-                else -> Constants.NO_SEVERITY
+                else -> Constants.SEVERITY_NONE
             }
         }
     }

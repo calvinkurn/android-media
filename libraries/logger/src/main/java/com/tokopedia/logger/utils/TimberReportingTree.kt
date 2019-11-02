@@ -56,7 +56,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
     }
 
     private fun getReadableTimeStamp(timeStamp: Long): String {
-        return SimpleDateFormat(Constants.TIMESTAMP_FORMAT, Locale.US).format(Date(timeStamp))
+        return SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US).format(Date(timeStamp))
     }
 
     private fun getMessage(tag: String, timeStamp: Long, classLine: String, message: String): String {

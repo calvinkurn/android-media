@@ -10,7 +10,7 @@ import kotlin.system.measureTimeMillis
 class EncryptionBenchmark {
     companion object{
         val dummy_data = "P1#TagA#offline#Screen froze for 2s when opening activity"
-        val secretKey = generateKey(Constants.KEY)
+        val secretKey = generateKey(Constants.ENCRYPTION_KEY)
         val n = 1000
     }
 
@@ -28,8 +28,8 @@ class EncryptionBenchmark {
     @Before
     fun init(){
         rsaEncryptor.generateKeyPair()
-        arc4Key = arc4Encryptor.generateKey(Constants.KEY)
-        blowfishKey = blowfishEncryptor.generateKey(Constants.KEY)
+        arc4Key = arc4Encryptor.generateKey(Constants.ENCRYPTION_KEY)
+        blowfishKey = blowfishEncryptor.generateKey(Constants.ENCRYPTION_KEY)
         DESKey = DESEncryptor.generateKey()
         DESedeKey = DESedeEncryptor.generateKey()
     }
