@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel
-import com.tokopedia.reputation.common.view.AnimatedReviewPicker
+import com.tokopedia.reputation.common.view.AnimatedReputationView
 import kotlinx.android.synthetic.main.home_item_review.view.*
 
 class ReviewViewHolder(itemView: View, private val listener: HomeReviewListener) : AbstractViewHolder<ReviewViewModel>(itemView) {
@@ -18,7 +18,7 @@ class ReviewViewHolder(itemView: View, private val listener: HomeReviewListener)
     }
 
     override fun bind(element: ReviewViewModel) {
-        if (element.suggestedProductReview.suggestedProductReview.linkURL.isEmpty()) {
+        if (element.suggestedProductReview.suggestedProductReview.title.isEmpty()) {
             itemView.loading_review.visibility = View.VISIBLE
         } else {
             itemView.loading_review.visibility = View.GONE
@@ -26,8 +26,9 @@ class ReviewViewHolder(itemView: View, private val listener: HomeReviewListener)
             ImageHandler.loadImage(itemView.context, itemView.img_review, element.suggestedProductReview.suggestedProductReview.imageUrl, R.drawable.ic_loading_image)
         }
 
-        itemView.animated_review.setListener(object : AnimatedReviewPicker.AnimatedReviewPickerListener {
-            override fun onStarsClick(position: Int) {
+        itemView.animated_review.init()
+        itemView.animated_review.setListener(object : AnimatedReputationView.AnimatedReputationListener {
+            override fun onClick(position: Int) {
                 listener.onReviewClick(adapterPosition, position, element.suggestedProductReview.suggestedProductReview.linkURL)
             }
         })

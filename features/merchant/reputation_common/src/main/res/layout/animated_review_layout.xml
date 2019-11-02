@@ -15,8 +15,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_star_1"
-            android:layout_width="@dimen/dp_25"
-            android:layout_height="@dimen/dp_26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
             app:lottie_autoPlay="false"
@@ -26,8 +26,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_star_2"
-            android:layout_width="@dimen/dp_25"
-            android:layout_height="@dimen/dp_26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:lottie_autoPlay="false"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
@@ -37,8 +37,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_star_3"
-            android:layout_width="@dimen/dp_25"
-            android:layout_height="@dimen/dp_26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:lottie_autoPlay="false"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
@@ -48,8 +48,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_star_4"
-            android:layout_width="@dimen/dp_25"
-            android:layout_height="@dimen/dp_26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:lottie_autoPlay="false"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
@@ -59,8 +59,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_star_5"
-            android:layout_width="@dimen/dp_25"
-            android:layout_height="@dimen/dp_26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:lottie_autoPlay="false"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"

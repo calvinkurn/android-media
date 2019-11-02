@@ -6,13 +6,13 @@
 
     <ImageView
         android:id="@+id/notificationImage"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:scaleType="fitXY"
+        android:layout_width="@dimen/dp_52"
+        android:layout_height="@dimen/dp_52"
         android:layout_alignTop="@+id/notificationTitle"
         android:layout_alignBottom="@+id/notificationText"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:adjustViewBounds="true" />
 
     <TextView
         android:id="@+id/notificationTitle"
@@ -32,12 +32,13 @@
         android:layout_below="@+id/notificationTitle"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
+        android:layout_marginEnd="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
-        android:lineSpacingExtra="@dimen/dp_3"
         android:layout_toStartOf="@+id/notificationImage"
         android:layout_toLeftOf="@+id/notificationImage"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:lineSpacingExtra="@dimen/dp_3"
+        android:maxLines="1"
         android:text="Sudah [nn] hari, nih. Suka dengan [product] ini? Yuk, beri ulasan dan bagikan pengalamanmu ke pembeli lain!" />
 
 </RelativeLayout>

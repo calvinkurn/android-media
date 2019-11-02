@@ -10,6 +10,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory
 
 class ReviewNotificationBroadcastReceiver : BroadcastReceiver() {
+    companion object {
+        private const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
+    }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         var reviewPosition = 0
@@ -22,13 +25,14 @@ class ReviewNotificationBroadcastReceiver : BroadcastReceiver() {
         }
 
         context?.let {
-            val pmSubscribeRoute = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CREATE_REVIEW,"123","123")
-            pmSubscribeRoute.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            val createReviewRoute = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CREATE_REVIEW, "123", "123")
+            createReviewRoute.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            createReviewRoute.putExtra(REVIEW_CLICK_AT, reviewPosition)
 
-            val pmSubscribeIntent = PendingIntent.getActivity(
+            val createReviewPendingIntent = PendingIntent.getActivity(
                     context,
                     0,
-                    pmSubscribeRoute,
+                    createReviewRoute,
                     PendingIntent.FLAG_UPDATE_CURRENT
             )
 
@@ -37,7 +41,7 @@ class ReviewNotificationBroadcastReceiver : BroadcastReceiver() {
             Handler().postDelayed({
                 val closeNotificationBarIntent = Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)
                 context.sendBroadcast(closeNotificationBarIntent)
-                pmSubscribeIntent.send()
+                createReviewPendingIntent.send()
             }, 500)
 
         }

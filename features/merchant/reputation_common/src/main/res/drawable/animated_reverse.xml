@@ -28,10 +28,10 @@
     <aapt:attr name="android:drawable">
         <vector
             android:name="vector"
-            android:width="32dp"
-            android:height="32dp"
-            android:viewportWidth="32"
-            android:viewportHeight="32">
+            android:width="35dp"
+            android:height="35dp"
+            android:viewportWidth="35"
+            android:viewportHeight="35">
             <group
                 android:name="group"
                 android:pivotX="16"

@@ -7,30 +7,54 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.model.DefaultImageRevi
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewViewModel
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
 import com.tokopedia.tkpd.tkpdreputation.createreputation.usecase.GetProductReputationForm
-import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.tkpd.tkpdreputation.createreputation.util.*
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewDomain
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import rx.Subscriber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
+import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
 class CreateReviewViewModel @Inject constructor(@Named("Main")
                                                 val dispatcher: CoroutineDispatcher,
-                                                private val getProductReputationForm: GetProductReputationForm) : BaseViewModel(dispatcher) {
+                                                private val getProductReputationForm: GetProductReputationForm,
+                                                private val sendReviewWithoutImage: SendReviewValidateUseCase,
+                                                private val sendReviewWithImage: SendReviewUseCase) : BaseViewModel(dispatcher) {
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
     private var imageData: MutableList<BaseImageReviewViewModel> = mutableListOf()
+
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm = reputationDataForm
 
-    fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
+    private var sendReviewWithoutImageResponse = MutableLiveData<LoadingDataState<SendReviewValidateDomain>>()
+    val getSendReviewWithoutImageResponse = sendReviewWithoutImageResponse
+
+    private var sendReviewWithImageResponse = MutableLiveData<LoadingDataState<SendReviewDomain>>()
+    val getSendReviewWithImageResponse = sendReviewWithImageResponse
+
+    fun submitReview(reviewId: String, reputationId: String, productId: String, shopId: String, reviewDesc: String,
+                     ratingCount: Float, listOfImages: List<String>, isAnonymous: Boolean) {
+
+        if (listOfImages.isEmpty()) {
+            sendReviewWithoutImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous)
+        } else {
+            sendReviewWithImage(reviewId, reputationId, productId, shopId, reviewDesc, ratingCount, isAnonymous, listOfImages)
+        }
+    }
 
     fun getImageList(selectedImage: ArrayList<String>): MutableList<BaseImageReviewViewModel> {
         when (selectedImage.size) {
@@ -65,11 +89,66 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
             val data = withContext(Dispatchers.IO) {
                 getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(reptutationId, productId))
             }
-            reputationDataForm.value = Success(data)
+            reputationDataForm.value = CoroutineSuccess(data)
 
         }) {
-            reputationDataForm.value = Fail(it)
+            reputationDataForm.value = CoroutineFail(it)
 
         }
+    }
+
+    private fun sendReviewWithoutImage(reviewId: String, reputationId: String, productId: String, shopId: String,
+                                       reviewDesc: String, ratingCount: Float, isAnonymous: Boolean) {
+        sendReviewWithoutImageResponse.value = LoadingView
+        sendReviewWithoutImage.execute(SendReviewValidateUseCase.getParam(reviewId, productId,
+                reputationId, shopId, ratingCount.toString(), reviewDesc, isAnonymous)
+                , object : Subscriber<SendReviewValidateDomain>() {
+            override fun onNext(data: SendReviewValidateDomain) {
+                sendReviewWithoutImageResponse.value = Success(data)
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                sendReviewWithoutImageResponse.value = Fail(e)
+
+            }
+
+        })
+    }
+
+    private fun sendReviewWithImage(reviewId: String, reputationId: String, productId: String, shopId: String,
+                                    reviewDesc: String, ratingCount: Float, isAnonymous: Boolean, listOfImages: List<String>) {
+        sendReviewWithImageResponse.value = LoadingView
+        sendReviewWithImage.execute(SendReviewUseCase.getParam(reviewId, productId, reputationId, shopId, ratingCount.toString(),
+                reviewDesc, mapImageToObjectUpload(listOfImages), listOf(), isAnonymous), object : Subscriber<SendReviewDomain>() {
+            override fun onNext(data: SendReviewDomain) {
+                sendReviewWithImageResponse.value = Success(data)
+            }
+
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable) {
+                sendReviewWithImageResponse.value = Fail(e)
+            }
+
+        })
+    }
+
+    private fun mapImageToObjectUpload(listOfImages: List<String>): ArrayList<ImageUpload> {
+        val imageUpload: ArrayList<ImageUpload> = arrayListOf()
+        listOfImages.forEachIndexed { index, s ->
+            val imageUploadPojo: ImageUpload = ImageUpload()
+            imageUploadPojo.fileLoc = s
+            imageUploadPojo.description = ""
+            imageUploadPojo.position = index
+            imageUploadPojo.imageId = "${SendReviewUseCase.IMAGE}${UUID.randomUUID()}"
+            imageUpload.add(imageUploadPojo)
+        }
+
+        return imageUpload
     }
 }

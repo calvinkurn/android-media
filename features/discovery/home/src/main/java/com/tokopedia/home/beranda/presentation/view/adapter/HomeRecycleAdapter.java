@@ -111,7 +111,7 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     }
 
     public void updateReviewItem(SuggestedProductReview suggestedProductReview) {
-        if (visitables.get(hasReview()) instanceof ReviewViewModel) {
+        if (visitables.get(hasReview()) instanceof ReviewViewModel && hasReview() != -1) {
             ((ReviewViewModel) visitables.get(hasReview())).setSuggestedProductReview(suggestedProductReview);
             notifyItemChanged(hasReview());
         }
@@ -130,12 +130,16 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
 
     public void removeGeolocationViewModel() {
         int removedPosition = removeGeolocation();
-        notifyItemRemoved(removedPosition);
+        if (removedPosition != -1) {
+            notifyItemRemoved(removedPosition);
+        }
     }
 
-    public void removeReviewViewModel(){
+    public void removeReviewViewModel() {
         int reviewPosition = removeReview();
-        notifyItemRemoved(reviewPosition);
+        if (reviewPosition != -1) {
+            notifyItemRemoved(reviewPosition);
+        }
     }
 
     public void setHomeHeaderViewModel(HeaderViewModel homeHeaderViewModel) {

@@ -145,6 +145,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String KEY_NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
     public static final String KEY_DIMEN = "dimen";
     public static final String KEY_DEF_PACKAGE = "android";
+    public static final String REVIEW_CLICK_AT = "REVIEW_CLICK_AT";
     public static final String EXTRA_URL = "url";
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
@@ -767,7 +768,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onRefresh() {
         resetFeedState();
         removeNetworkError();
-
         if (presenter != null) {
             presenter.getSearchHint();
             presenter.getHomeData();
@@ -827,14 +827,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             adapter.setItems(itemAfterGeoloc);
             presenter.getFeedTabData();
             adapter.showLoading();
+
+            if (adapter.hasReview() != -1 && shouldDisplayReview && !needToShowGeolocationComponent()) {
+                shouldDisplayReview = false;
+                presenter.getSuggestedReview();
+            }
+
         } else {
             adapter.setItems(items);
         }
 
-        if (adapter.hasReview() != -1 && shouldDisplayReview && !needToShowGeolocationComponent()) {
-            shouldDisplayReview = false;
-            presenter.getSuggestedReview();
-        }
+
     }
 
     private boolean needToShowGeolocationComponent() {
@@ -991,7 +994,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (!visitables.isEmpty()) {
             presenter.getFeedTabData();
         }
-        adapter.updateHomeQueryItems(needToShowGeolocationComponent() ? visitables : removeGeolocationComponent(visitables));
+
+        List<Visitable> itemAfterGeoloc;
+
+        if (needToShowGeolocationComponent()) {
+            // Remove review component when Geolocation showing
+            itemAfterGeoloc = removeReviewComponent(visitables);
+        } else {
+            itemAfterGeoloc = removeGeolocationComponent(visitables);
+        }
+
+        adapter.updateHomeQueryItems(itemAfterGeoloc);
+
+        if (adapter.hasReview() != -1 && shouldDisplayReview && !needToShowGeolocationComponent()) {
+            shouldDisplayReview = false;
+            presenter.getSuggestedReview();
+        }
     }
 
     @Override
@@ -1605,7 +1623,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onReviewClick(int position, int clickReviewAt, @NotNull String applink) {
         new Handler().postDelayed(() -> {
             Intent intent = RouteManager.getIntent(getContext(), applink);
-            intent.putExtra("REVIEW_CLICK_AT", clickReviewAt);
+            intent.putExtra(REVIEW_CLICK_AT, clickReviewAt);
             startActivity(intent);
         }, 500);
     }
@@ -1628,7 +1646,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onErrorGetReviewData() {
-
+        adapter.removeReviewViewModel();
     }
 
     private void updateEggBottomMargin(FloatingEggButtonFragment floatingEggButtonFragment) {

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -42,6 +43,9 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val mNotificationManager =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        mNotificationManager.cancel(777)
         supportActionBar?.let {
             it.elevation = 0f
         }

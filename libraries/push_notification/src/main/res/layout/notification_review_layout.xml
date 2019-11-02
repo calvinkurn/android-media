@@ -8,10 +8,9 @@
 
     <ImageView
         android:id="@+id/img_notif"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:scaleType="fitXY"
-
+        android:layout_width="@dimen/dp_52"
+        android:layout_height="@dimen/dp_52"
+        android:adjustViewBounds="true"
         android:layout_alignTop="@+id/rate_title"
         android:layout_alignBottom="@+id/rate_message"
         android:layout_alignParentEnd="true"

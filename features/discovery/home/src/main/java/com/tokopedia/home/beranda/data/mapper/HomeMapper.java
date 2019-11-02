@@ -232,7 +232,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
         return new HomeViewModel(homeData.getHomeFlag(), list);
     }
 
-    private ReviewViewModel mappingToReviewViewModel(DynamicHomeChannel.Channels channel) {
+    private HomeVisitable mappingToReviewViewModel(DynamicHomeChannel.Channels channel) {
         ReviewViewModel reviewViewModel = new ReviewViewModel();
         return reviewViewModel;
     }

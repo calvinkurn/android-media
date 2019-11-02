@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import android.text.TextUtils
 import android.widget.RemoteViews
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.animation.GlideAnimation
@@ -25,17 +26,19 @@ import java.util.concurrent.TimeUnit
 
 class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(context) {
 
-    private val cacheManager = PersistentCacheManager(context)
-    lateinit var notificationLayout: RemoteViews
-    var resultReviewModel: ReviewNotificationModel = cacheManager.get(TAG, ReviewNotificationModel::class.java)
-            ?: ReviewNotificationModel()
-    val notificationManager: NotificationManagerCompat by lazy {
-        NotificationManagerCompat.from(context)
-    }
-
     companion object {
         @JvmField
         val TAG: String = ReviewNotificationFactory::class.java.simpleName
+    }
+
+    private val packageName = context.applicationContext.packageName
+    private val cacheManager = PersistentCacheManager(context)
+    private var resultReviewModel: ReviewNotificationModel = ReviewNotificationModel()
+    lateinit var notificationLayout: RemoteViews
+
+
+    val notificationManager: NotificationManagerCompat by lazy {
+        NotificationManagerCompat.from(context)
     }
 
     private val notificationBuilder = NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL).apply {
@@ -53,24 +56,33 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         }
     }
 
-    private val packageName = context.applicationContext.packageName
     override fun createNotification(applinkNotificationModel: ApplinkNotificationModel, notifcationType: Int, notificationId: Int): Notification {
-        //NO OP
+        cacheManager.delete(TAG)
+        cacheManager.put(TAG, ReviewNotificationModel(applinkNotificationModel, notifcationType, notificationId), TimeUnit.DAYS.toMillis(7))
+        resultReviewModel = cacheManager.get(TAG, ReviewNotificationModel::class.java)
+                ?: ReviewNotificationModel()
+
+        val titleIfNull = if (TextUtils.isEmpty(resultReviewModel.applinkNotificationModel.title)) context.resources.getString(R.string.title_general_push_notification) else resultReviewModel.applinkNotificationModel.title
+        notificationBuilder.setCustomBigContentView(
+                setupRemoteLayout(
+                        titleIfNull,
+                        resultReviewModel.applinkNotificationModel.desc,
+                        resultReviewModel.applinkNotificationModel.thumbnail))
+                .setCustomContentView(setupSimpleRemoteLayout(titleIfNull, resultReviewModel.applinkNotificationModel.desc, resultReviewModel.applinkNotificationModel.thumbnail))
+        notificationManager.notify(resultReviewModel.notificationId, notificationBuilder.build())
+
+        //NO OP RETURN FUNCTION
         return Notification()
     }
 
-    fun createNotificationCustom(applinkNotificationModel: ApplinkNotificationModel, notifcationType: Int, notificationId: Int) {
-        cacheManager.put(TAG, ReviewNotificationModel(applinkNotificationModel, notifcationType, notificationId), TimeUnit.DAYS.toMillis(7))
-        notificationBuilder.setCustomBigContentView(setupRemoteLayout(resultReviewModel.applinkNotificationModel.title, resultReviewModel.applinkNotificationModel.desc))
-                .setCustomContentView(setupSimpleRemoteLayout(resultReviewModel.applinkNotificationModel.title, resultReviewModel.applinkNotificationModel.desc))
-        notificationManager.notify(resultReviewModel.notificationId, notificationBuilder.build())
-    }
-
     fun updateReviewNotification(reviewPosition: Int) {
-        loadImageBitmap("https://ecs7.tokopedia.net/img/attachment/2019/8/20/22796090/22796090_b9954493-b3f2-4abe-b225-8685a5f71135.jpg", reviewPosition)
+        resultReviewModel = cacheManager.get(TAG, ReviewNotificationModel::class.java)
+                ?: ReviewNotificationModel()
+        loadImageBitmap(resultReviewModel.applinkNotificationModel.thumbnail, reviewPosition)
     }
 
-    private fun setupSimpleRemoteLayout(title: String, summary: String): RemoteViews {
+    // This function is use for load review for the first time, (getBitmap should run on another thread)
+    private fun setupSimpleRemoteLayout(title: String, summary: String, imageUrl: String): RemoteViews {
         val simpleRemoteView = RemoteViews(packageName, R.layout.notification_review_simple_layout)
         simpleRemoteView.setTextViewText(R.id.notificationTitle, title)
         simpleRemoteView.setTextViewText(
@@ -78,10 +90,11 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
                 summary
         )
 
-        simpleRemoteView.setImageViewBitmap(R.id.notificationImage, getBitmap("https://ecs7.tokopedia.net/img/attachment/2019/8/20/22796090/22796090_b9954493-b3f2-4abe-b225-8685a5f71135.jpg"))
+        simpleRemoteView.setImageViewBitmap(R.id.notificationImage, getBitmap(imageUrl))
         return simpleRemoteView
     }
 
+    // This function is use for load review after updated, or from BroadcastReceiver
     private fun setupSimpleRemoteWithHandler(title: String, summary: String, imageBitmap: Bitmap): RemoteViews {
         val simpleRemoteView = RemoteViews(packageName, R.layout.notification_review_simple_layout)
         simpleRemoteView.setTextViewText(R.id.notificationTitle, title)
@@ -102,11 +115,12 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         return notificationLayout
     }
 
-    private fun setupRemoteLayout(title: String, desc: String): RemoteViews {
+    // This function is use for load review for the first time, (getBitmap should run on another thread)
+    private fun setupRemoteLayout(title: String, desc: String, imageUrl: String): RemoteViews {
         notificationLayout = RemoteViews(packageName, R.layout.notification_review_layout)
         notificationLayout.setTextViewText(R.id.rate_title, title)
         notificationLayout.setTextViewText(R.id.rate_message, desc)
-        notificationLayout.setImageViewBitmap(R.id.img_notif, getBitmap("https://ecs7.tokopedia.net/img/attachment/2019/8/20/22796090/22796090_b9954493-b3f2-4abe-b225-8685a5f71135.jpg"))
+        notificationLayout.setImageViewBitmap(R.id.img_notif, getBitmap(imageUrl))
 
         val listOfStars = listOf(R.id.rate_1, R.id.rate_2, R.id.rate_3, R.id.rate_4, R.id.rate_5)
         listOfStars.forEachIndexed { index, starId ->
@@ -137,13 +151,13 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         }
     }
 
-    fun loadImageBitmap(imgUrl: String, reviewPosition: Int) {
+    private fun loadImageBitmap(imgUrl: String, reviewPosition: Int) {
         Handler(Looper.getMainLooper()).post {
             Glide.with(context.applicationContext)
                     .load(imgUrl)
                     .asBitmap()
                     .error(R.drawable.ic_big_notif_customerapp)
-                    .into(object : SimpleTarget<Bitmap>(100, 100) {
+                    .into(object : SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap,
                                                      glideAnimation: GlideAnimation<in Bitmap>?) {
                             notificationBuilder

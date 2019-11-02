@@ -17,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.animation.GlideAnimation
@@ -26,17 +27,25 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.core.base.di.component.AppComponent
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.view.AnimatedReviewPicker
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
+import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Fail
+import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
+import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Success
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
+import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import java.util.*
 import javax.inject.Inject
@@ -46,6 +55,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     companion object {
         const val REQUEST_CODE_IMAGE = 111
         private const val WRITE_REVIEW_MIN_LENGTH = 30
+        private const val DEFAULT_REVIEW_ID = "0"
         private const val PRODUCT_ID_REVIEW = "PRODUCT_ID"
         private const val REVIEW_ID = "REVIEW_ID"
         private const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
@@ -73,6 +83,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         ImageReviewAdapter(this::addImageClick)
     }
     private var selectedImage: ArrayList<String> = arrayListOf()
+
     private var isImageAdded: Boolean = false
     private var shouldPlayAnimation: Boolean = true
     private var shouldIncreaseProgressBar = true
@@ -80,6 +91,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private var reviewId: Int = 0
     private var productId: Int = 0
     private var currentBackground: Drawable? = null
+    private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
 
     private var reviewUserName: String = ""
     lateinit var imgAnimationView: LottieAnimationView
@@ -116,8 +128,39 @@ class CreateReviewFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         createReviewViewModel.getReputationDataForm.observe(this, Observer {
             when (it) {
-                is Success -> onSuccessGetReviewForm(it.data)
-                is Fail -> onErrorGetReviewForm(it.throwable)
+                is CoroutineSuccess -> {
+                    productRevGetForm = it.data
+                    onSuccessGetReviewForm(it.data)
+                }
+                is CoroutineFail -> onErrorGetReviewForm(it.throwable)
+            }
+        })
+
+        createReviewViewModel.getSendReviewWithoutImageResponse.observe(this, Observer {
+            when (it) {
+                is LoadingView -> showLoading()
+                is Fail -> {
+                    stopLoading()
+                    showToasterError(it.fail.message ?: "")
+                }
+                is Success -> {
+                    showToasterSuccess()
+                    stopLoading()
+                }
+            }
+        })
+
+        createReviewViewModel.getSendReviewWithImageResponse.observe(this, Observer {
+            when (it) {
+                is LoadingView -> showLoading()
+                is Fail -> {
+                    showToasterError(it.fail.message ?: "")
+                    stopLoading()
+                }
+                is Success -> {
+                    showToasterSuccess()
+                    stopLoading()
+                }
             }
         })
     }
@@ -132,6 +175,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         anonymous_text.text = generateAnonymousText()
         animatedReviewPicker.setListener(object : AnimatedReviewPicker.AnimatedReviewPickerListener {
             override fun onStarsClick(position: Int) {
+                reviewClickAt = position
                 shouldPlayAnimation = true
                 playAnimation()
                 generateReviewBackground(position)
@@ -202,6 +246,10 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
 
+        btn_submit_review.setOnClickListener {
+            createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, "227938765", "330633484",
+                    "125919", edit_text_review.text.toString(), reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked)
+        }
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
@@ -210,6 +258,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetReviewForm(t: Throwable) {
+
     }
 
     private fun generateReviewBackground(position: Int) {
@@ -238,7 +287,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun playAnimation() {
-        if (!imgAnimationView.isAnimating && shouldPlayAnimation && ::imgAnimationView.isInitialized) {
+        if (shouldPlayAnimation && ::imgAnimationView.isInitialized) {
             generateAnimationByIndex(animatedReviewPicker.getReviewClickAt())
             shouldPlayAnimation = false
         }
@@ -279,6 +328,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun generateAnimationByIndex(index: Int) {
+        imgAnimationView.repeatCount = 0
+        imgAnimationView.repeatCount = LottieDrawable.INFINITE
         when (index) {
             1 -> {
                 imgAnimationView.setAnimation(R.raw.lottie_anim_pedi_1)
@@ -339,5 +390,27 @@ class CreateReviewFragment : BaseDaggerFragment() {
             val intent = ImagePickerActivity.getIntent(it, builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
+    }
+
+    private fun showLoading() {
+        progressBarReview.show()
+    }
+
+    private fun stopLoading() {
+        progressBarReview.hide()
+    }
+
+    private fun showToasterError(message: String) {
+        ToasterError.make(view,
+                message,
+                BaseToaster.LENGTH_LONG
+        ).show()
+    }
+
+    private fun showToasterSuccess() {
+        ToasterNormal.make(view,
+                "Success",
+                BaseToaster.LENGTH_LONG
+        ).show()
     }
 }

@@ -15,22 +15,14 @@ class AnimatedStarsView @JvmOverloads constructor(
     private var showingFavorite: Boolean = false
 
     init {
+        init()
+    }
+
+    fun init() {
         showingFavorite = true
         favoriteToSend = AnimatedVectorDrawableCompat.create(context, R.drawable.animated_stars)
         sendToFavorite = AnimatedVectorDrawableCompat.create(context, R.drawable.animated_reverse)
         setImageDrawable(favoriteToSend)
-    }
-
-    fun showFavorite() {
-        if (!showingFavorite) {
-            morph()
-        }
-    }
-
-    fun showSend() {
-        if (showingFavorite) {
-            morph()
-        }
     }
 
     fun morph() {
