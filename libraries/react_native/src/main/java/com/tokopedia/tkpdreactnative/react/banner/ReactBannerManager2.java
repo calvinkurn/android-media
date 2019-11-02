@@ -2,7 +2,7 @@ package com.tokopedia.tkpdreactnative.react.banner;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -15,7 +15,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.banner.Banner;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.banner.Indicator;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 
 import java.util.ArrayList;

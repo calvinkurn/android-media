@@ -3,15 +3,14 @@ package com.tokopedia.flight.booking.view.fragment;
 import android.app.Activity;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.flight.R;
 
 public class FlightBookingNewPriceDialogFragment extends DialogFragment {
     private static final String EXTRA_NEW_PRICE = "EXTRA_NEW_PRICE";
@@ -52,11 +51,11 @@ public class FlightBookingNewPriceDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_flight_booking_new_price_dialog, container, false);
-        tvOldPrice = (AppCompatTextView) view.findViewById(R.id.tv_old_price);
-        tvNewPrice = (AppCompatTextView) view.findViewById(R.id.tv_new_price);
-        tvContinueProcess = (AppCompatTextView) view.findViewById(R.id.tv_continue_process);
-        tvFindAnotherFlight = (AppCompatTextView) view.findViewById(R.id.tv_find_another_flight);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_booking_new_price_dialog, container, false);
+        tvOldPrice = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_old_price);
+        tvNewPrice = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_new_price);
+        tvContinueProcess = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_continue_process);
+        tvFindAnotherFlight = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_find_another_flight);
         tvContinueProcess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,7 +86,7 @@ public class FlightBookingNewPriceDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvOldPrice.setText(String.valueOf(MethodChecker.fromHtml(getString(R.string.flight_booking_new_price_strike_label, oldPrice))));
+        tvOldPrice.setText(String.valueOf(MethodChecker.fromHtml(getString(com.tokopedia.flight.R.string.flight_booking_new_price_strike_label, oldPrice))));
         // add strikethrough to old price
         tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         tvNewPrice.setText(String.valueOf(newPrice));

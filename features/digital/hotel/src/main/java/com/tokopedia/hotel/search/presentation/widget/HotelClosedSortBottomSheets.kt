@@ -2,8 +2,8 @@ package com.tokopedia.hotel.search.presentation.widget
 
 import android.app.Dialog
 import android.graphics.Typeface
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.design.component.BottomSheets

@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.MenuRes;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.Fragment;
+import androidx.annotation.MenuRes;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -37,6 +37,8 @@ import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED;
+
 /**
  * Created by zulfikarrahman on 9/26/17.
  */
@@ -55,7 +57,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     public static Fragment createInstance(ProductManageFilterModel productManageFilterModel) {
         ProductManageFilterFragment productManageFilterFragment = new ProductManageFilterFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ProductManageConstant.EXTRA_FILTER_SELECTED, productManageFilterModel);
+        bundle.putParcelable(EXTRA_FILTER_SELECTED, productManageFilterModel);
         productManageFilterFragment.setArguments(bundle);
         return productManageFilterFragment;
     }
@@ -72,8 +74,8 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     }
 
     private void initialFilterModel() {
-        if (getArguments() != null && getArguments().getParcelable(ProductManageConstant.EXTRA_FILTER_SELECTED) != null) {
-            productManageFilterModel = getArguments().getParcelable(ProductManageConstant.EXTRA_FILTER_SELECTED);
+        if (getArguments() != null && getArguments().getParcelable(EXTRA_FILTER_SELECTED) != null) {
+            productManageFilterModel = getArguments().getParcelable(EXTRA_FILTER_SELECTED);
         } else {
             productManageFilterModel = new ProductManageFilterModel();
         }
@@ -209,7 +211,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
 
     private void onSubmitFilter() {
         Intent intent = new Intent();
-        intent.putExtra(ProductManageConstant.EXTRA_FILTER_SELECTED, productManageFilterModel);
+        intent.putExtra(EXTRA_FILTER_SELECTED, productManageFilterModel);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

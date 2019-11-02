@@ -1,7 +1,7 @@
 package com.tokopedia.flight.detail.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +34,7 @@ public class FlightDetailFacilityFragment extends BaseListFragment<FlightDetailR
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_flight_detail, container, false);
+        return inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_detail, container, false);
     }
 
     @Override
@@ -66,5 +66,10 @@ public class FlightDetailFacilityFragment extends BaseListFragment<FlightDetailR
     @Override
     public void onItemClicked(FlightDetailRouteViewModel flightDetailRouteViewModel) {
 
+    }
+
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
     }
 }

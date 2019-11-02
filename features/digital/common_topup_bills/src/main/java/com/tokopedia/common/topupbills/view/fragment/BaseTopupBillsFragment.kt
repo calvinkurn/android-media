@@ -1,7 +1,7 @@
 package com.tokopedia.common.topupbills.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment

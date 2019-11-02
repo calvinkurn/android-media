@@ -1,13 +1,12 @@
 package com.tokopedia.flight.search.presentation.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.search.presentation.model.EmptyResultViewModel;
 
@@ -18,7 +17,7 @@ import com.tokopedia.flight.search.presentation.model.EmptyResultViewModel;
 public class EmptyResultViewHolder extends AbstractViewHolder<EmptyResultViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_empty_list;
+    public static final int LAYOUT = com.tokopedia.design.R.layout.item_empty_list;
     public ImageView emptyIconImageView;
     public TextView emptyTitleTextView;
     private TextView emptyContentTextView;
@@ -38,11 +37,11 @@ public class EmptyResultViewHolder extends AbstractViewHolder<EmptyResultViewMod
     }
 
     private void findView(View itemView) {
-        emptyTitleTextView = (TextView) itemView.findViewById(R.id.text_view_empty_title_text);
-        emptyContentTextView = (TextView) itemView.findViewById(R.id.text_view_empty_content_text);
-        emptyContentItemTextView = (TextView) itemView.findViewById(R.id.text_view_empty_content_item_text);
-        emptyButtonItemButton = (Button) itemView.findViewById(R.id.button_add_promo);
-        emptyIconImageView = (ImageView) itemView.findViewById(R.id.no_result_image);
+        emptyTitleTextView = (TextView) itemView.findViewById(com.tokopedia.design.R.id.text_view_empty_title_text);
+        emptyContentTextView = (TextView) itemView.findViewById(com.tokopedia.design.R.id.text_view_empty_content_text);
+        emptyContentItemTextView = (TextView) itemView.findViewById(com.tokopedia.design.R.id.text_view_empty_content_item_text);
+        emptyButtonItemButton = (Button) itemView.findViewById(com.tokopedia.design.R.id.button_add_promo);
+        emptyIconImageView = (ImageView) itemView.findViewById(com.tokopedia.design.R.id.no_result_image);
     }
 
     @Override

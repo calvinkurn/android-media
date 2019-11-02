@@ -1,8 +1,8 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.highlight
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -19,9 +19,9 @@ import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 /**
  * @author by yoasfs on 2019-08-06
  */
-class HighlightViewHolder(val v: View,
-                          val highlightListener: HighlightAdapter.HighlightListener,
-                          val cardTitleListener: CardTitleView.CardTitleListener):
+class HighlightViewHolder(v: View,
+                          private val highlightListener: HighlightAdapter.HighlightListener,
+                          private val cardTitleListener: CardTitleView.CardTitleListener):
         AbstractViewHolder<HighlightViewModel>(v) {
 
     private lateinit var adapter: HighlightAdapter

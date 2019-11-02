@@ -1,6 +1,12 @@
 package com.tokopedia.promocheckout.detail.model.couponredeem
 
+import com.google.gson.annotations.SerializedName
+
 data class HachikoRedeem(
-	val coupons: List<CouponsItem?>? = null,
-	val rewardPoints: Int? = null
+
+        @SerializedName("coupons")
+        val coupons: List<CouponsItem?>? = null,
+
+        @SerializedName("reward_points")
+        val rewardPoints: Int? = null
 )

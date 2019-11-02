@@ -3,7 +3,7 @@ package com.tokopedia.settingbank.addeditaccount.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*

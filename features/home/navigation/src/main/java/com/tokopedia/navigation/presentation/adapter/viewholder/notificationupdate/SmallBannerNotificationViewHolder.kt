@@ -1,6 +1,6 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler

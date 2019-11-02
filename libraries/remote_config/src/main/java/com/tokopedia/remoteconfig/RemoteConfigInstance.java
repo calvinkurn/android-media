@@ -2,8 +2,8 @@ package com.tokopedia.remoteconfig;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.support.annotation.GuardedBy;
-import android.support.v4.util.Preconditions;
+import androidx.annotation.GuardedBy;
+import androidx.core.util.Preconditions;
 
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 

@@ -18,4 +18,6 @@
     <dimen name="margin_vl">40dp</dimen>
     <dimen name="margin_xl">45dp</dimen>
     <dimen name="fontvvs">10sp</dimen>
+    <dimen name="category_filter_padding_vertical">8dp</dimen>
+    <dimen name="category_filter_padding_horizontal">16dp</dimen>
 </resources>

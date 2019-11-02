@@ -1,10 +1,10 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,21 +47,21 @@ public class HomepagePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         View view = mLayoutInflater.inflate(R.layout.tp_layout_promos_list_container, container, false);
-        ViewFlipper containerInner = view.findViewById(R.id.container);
+        ViewFlipper containerInner = view.findViewById(com.tokopedia.design.R.id.container);
         if (position == 0) {
             if (mCatalogs != null && !mCatalogs.isEmpty()) {
                 containerInner.setDisplayedChild(0);
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
-                swipeToRefresh[position] = view.findViewById(R.id.swipe_refresh_layout);
+                swipeToRefresh[position] = view.findViewById(com.tokopedia.abstraction.R.id.swipe_refresh_layout);
                 swipeToRefresh[position].setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
                         mPresenter.getPromos();
                     }
                 });
-                recyclerView.addItemDecoration(new SpacesItemDecoration(container.getResources().getDimensionPixelOffset(R.dimen.dp_10),
-                        container.getResources().getDimensionPixelOffset(R.dimen.dp_14),
-                        container.getResources().getDimensionPixelOffset(R.dimen.dp_14)));
+                recyclerView.addItemDecoration(new SpacesItemDecoration(container.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
+                        container.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14),
+                        container.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14)));
                 recyclerView.setAdapter(mCatalogsAdapter);
             } else {
                 containerInner.setDisplayedChild(1);
@@ -90,11 +90,11 @@ public class HomepagePagerAdapter extends PagerAdapter {
             } else {
                 containerInner.setDisplayedChild(0);
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);
-                recyclerView.addItemDecoration(new SpacesItemDecoration(container.getResources().getDimensionPixelOffset(R.dimen.dp_14),
-                        container.getResources().getDimensionPixelOffset(R.dimen.dp_16),
-                        container.getResources().getDimensionPixelOffset(R.dimen.dp_16)));
+                recyclerView.addItemDecoration(new SpacesItemDecoration(container.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_14),
+                        container.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_16),
+                        container.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_16)));
                 recyclerView.setAdapter(mCouponsAdapter);
-                swipeToRefresh[position] = view.findViewById(R.id.swipe_refresh_layout);
+                swipeToRefresh[position] = view.findViewById(com.tokopedia.abstraction.R.id.swipe_refresh_layout);
                 swipeToRefresh[position].setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {

@@ -1,7 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.feednew;
 
 import android.os.Build;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;

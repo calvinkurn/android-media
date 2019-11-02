@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.TextInputLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.google.android.material.textfield.TextInputLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/input_layout_budget_per_day"
@@ -17,4 +17,4 @@
         app:prefix="@string/title_currency_rp_space"
         android:text="@string/top_ads_detail_edit_default_lifetime_currency_value"/>
 
-</android.support.design.widget.TextInputLayout>
+</com.google.android.material.textfield.TextInputLayout>

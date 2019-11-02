@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -553,7 +553,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 break;
             case ShopStatusDef.NOT_ACTIVE:
                 shopWarningTickerView.setVisibility(View.GONE);
-                sellerDashboardPresenter.getProductList();
                 break;
             default:
                 shopWarningTickerView.setVisibility(View.GONE);
