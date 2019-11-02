@@ -21,7 +21,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
 
@@ -35,7 +34,7 @@ import kotlin.coroutines.CoroutineContext
  * To send message to server:
  * LogManager.log(serverSeverity, priority, message)
  */
-class LogManager(val application: Application) : CoroutineScope {
+class LogManager : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + handler
@@ -49,8 +48,6 @@ class LogManager(val application: Application) : CoroutineScope {
     }
 
     private suspend fun sendLogToDB(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
-        Timber.d("Sending Log to DB")
-        // Handle Message
         val truncatedMessage: String = if (message.length > Constants.MAX_BUFFER) {
             message.substring(0, Constants.MAX_BUFFER)
         } else {
@@ -76,7 +73,7 @@ class LogManager(val application: Application) : CoroutineScope {
 
         @JvmStatic
         fun init(application: Application) {
-            instance = LogManager(application)
+            instance = LogManager()
             val logsDao = LoggerRoomDatabase.getDatabase(application).logDao()
             val server = LoggerCloudDatasource()
             loggerRepository = LoggerRepository(logsDao, server)
@@ -114,24 +111,19 @@ class LogManager(val application: Application) : CoroutineScope {
             }
         }
 
-        // Functions Used in Service
-
         suspend fun sendLogToServer() {
-            val highPriorityLogs = 3
-            val lowPriorityLogs = 2
-
-            val highPriorityLoggers: List<Logger> = loggerRepository.getFirstHighPrio(highPriorityLogs)
-            val lowPriorityLoggers: List<Logger> = loggerRepository.getFirstLowPrio(lowPriorityLogs)
+            val highPriorityLoggers: List<Logger> = loggerRepository.getHighPostPrio(Constants.OFFLINE_LOGS)
+            val lowPriorityLoggers: List<Logger> = loggerRepository.getLowPostPrio(Constants.ONLINE_LOGS)
             val logs = highPriorityLoggers.toMutableList()
 
-            for (lowPriorityLog in lowPriorityLoggers) {
-                logs.add(lowPriorityLog)
+            for (lowPriorityLogger in lowPriorityLoggers) {
+                logs.add(lowPriorityLogger)
             }
 
             for (log in logs) {
                 val ts = log.timeStamp
                 val severity = getSeverity(log.serverChannel)
-                if (severity != TimberReportingTree.NO_SEVERITY) {
+                if (severity != Constants.NO_SEVERITY) {
                     val errorCode = loggerRepository.sendLogToServer(severity, TOKEN, log, secretKey)
                     if (errorCode == 204) {
                         loggerRepository.deleteEntry(ts)
@@ -140,11 +132,10 @@ class LogManager(val application: Application) : CoroutineScope {
             }
         }
 
-        suspend fun inspectLogs() {
-            // Threshold can be set
-            val currentTs = System.currentTimeMillis()
-            loggerRepository.deleteHighPrioBeforeTs(currentTs - Constants.OFFLINE_TAG_THRESHOLD)
-            loggerRepository.deleteLowPrioBeforeTs(currentTs - Constants.ONLINE_TAG_THRESHOLD)
+        suspend fun deleteExpiredLogs() {
+            val currentTimestamp = System.currentTimeMillis()
+            loggerRepository.deleteExpiredHighPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
+            loggerRepository.deleteExpiredLowPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
         }
 
         suspend fun getCount(): Int {
@@ -153,9 +144,9 @@ class LogManager(val application: Application) : CoroutineScope {
 
         private fun getSeverity(serverChannel: String): Int {
             return when (serverChannel) {
-                TimberReportingTree.P1 -> TimberReportingTree.SEVERITY_HIGH
-                TimberReportingTree.P2 -> TimberReportingTree.SEVERITY_MEDIUM
-                else -> TimberReportingTree.NO_SEVERITY
+                TimberReportingTree.P1 -> Constants.SEVERITY_HIGH
+                TimberReportingTree.P2 -> Constants.SEVERITY_MEDIUM
+                else -> Constants.NO_SEVERITY
             }
         }
     }

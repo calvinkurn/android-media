@@ -13,8 +13,8 @@ data class Logger (
     @ColumnInfo(name = "server_channel")
     var serverChannel: String,
 
-    @ColumnInfo(name = "priority")
-    var priority: Int,
+    @ColumnInfo(name = "post_priority")
+    var postPriority: Int,
 
     @ColumnInfo(name = "message", typeAffinity = ColumnInfo.TEXT)
     var message: String

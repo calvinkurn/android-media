@@ -10,31 +10,26 @@ import com.tokopedia.logger.LogManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import timber.log.Timber
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class ServerJobService : JobService() {
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        Timber.d("in JobService")
         runBlocking {
             launch(Dispatchers.IO) {
                 when {
                     // When there is network connection and there is data in DB then we send logs to server
                     isNetworkAvailable(application) and (LogManager.getCount() > 0) -> {
-                        Timber.d("Sending Logs")
-                        LogManager.inspectLogs()
+                        LogManager.deleteExpiredLogs()
                         LogManager.sendLogToServer()
                         jobFinished(params,false)
                     }
                     // When there is data in DB but no network connection, we check this data, if its old we delete it
                     LogManager.loggerRepository.getCount() > 0 -> {
-                        LogManager.inspectLogs()
-                        Timber.d("Delete old Data if exists")
+                        LogManager.deleteExpiredLogs()
                         jobFinished(params,false)
                     }
                     else -> {
-                        Timber.d("Do Nothing")
                         jobFinished(params,false)
                     }
                 }

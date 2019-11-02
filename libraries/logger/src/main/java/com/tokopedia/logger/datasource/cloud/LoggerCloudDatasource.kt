@@ -23,7 +23,9 @@ class LoggerCloudDatasource {
          }
          val token = TOKEN[serverSeverity - 1]
          runBlocking {
-            launchCatchError(block = {errCode = openURL(token,truncatedMessage)}){
+            launchCatchError(block = {
+                errCode = openURL(token,truncatedMessage)
+            }){
                 Timber.d("Error here")
             }
          }

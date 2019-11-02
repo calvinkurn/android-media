@@ -11,50 +11,55 @@ import java.util.*
  * Tree that used for Timber in release Version
  * If there is log, it might be sent to logging server
  */
-class TimberReportingTree(private val tags: List<String>?) : Timber.DebugTree() {
+class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
 
     var userId: String = ""
     var versionName: String = ""
     var versionCode: Int = 0
+    var tagMaps: HashMap<String, Tag> = hashMapOf()
+
+    init {
+        populateTagMaps(tags)
+    }
 
     override fun log(logPriority: Int, tag: String?, message: String, t: Throwable?) {
+        val timeStamp = System.currentTimeMillis()
         if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
             return
         }
-        // Only log the message starts with P
-        if (!message.startsWith(PREFIX) || tags == null || tags.isEmpty()) {
+        if (!message.startsWith(PREFIX) || tags.isEmpty()) {
             return
         }
-        val messageSplit = LinkedList(listOf(*message.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()))
-        if (messageSplit.size < MIN_ARRAY_SIZE_MESSAGE) {
+        val messageSplit = listOf(*message.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+        if (messageSplit.size != SIZE_MESSAGE) {
             return
         }
-        // Checking based on config
-        for (tagString in tags) {
-            val tagSplit = LinkedList(listOf(*tagString.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()))
-            if (tagSplit[0] == messageSplit[0] &&
-                    tagSplit[1] == messageSplit[1]) {
-                // Get time stamp the moment log is called
-                val timeStamp = System.currentTimeMillis()
-                val priority = getPriority(tagString)
-                val classLine = tag ?: ""
-                LogManager.log(getMessage(messageSplit[1], timeStamp, classLine, messageSplit[2]), timeStamp, priority, tagSplit[0])
-            }
+        val messageKey = StringBuilder().append(messageSplit[0])
+                .append("#")
+                .append(messageSplit[1])
+                .toString()
+        tagMaps[messageKey]?.let {
+            val priority = it.postPriority
+            val classLine = tag ?: ""
+            val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, messageSplit[2])
+            LogManager.log(processedMessage, timeStamp, priority, messageSplit.first())
         }
     }
 
     override fun createStackElementTag(element: StackTraceElement): String? {
-        return String.format("[%s:%s:%s]",
+        return String.format(
+                "[%s:%s:%s]",
                 super.createStackElementTag(element),
                 element.methodName,
-                element.lineNumber)
+                element.lineNumber
+        )
     }
 
-    private fun getReadableTimeStamp(timeStamp: Long?): String {
-        return SimpleDateFormat(Constants.TIMESTAMP_FORMAT).format(Date(timeStamp!!))
+    private fun getReadableTimeStamp(timeStamp: Long): String {
+        return SimpleDateFormat(Constants.TIMESTAMP_FORMAT, Locale.US).format(Date(timeStamp))
     }
 
-    private fun getMessage(tag: String, timeStamp:Long, classLine: String, message:String): String {
+    private fun getMessage(tag: String, timeStamp: Long, classLine: String, message: String): String {
         val stringBuilder = StringBuilder()
         stringBuilder.append("tag=")
                 .append(tag)
@@ -88,33 +93,48 @@ class TimberReportingTree(private val tags: List<String>?) : Timber.DebugTree() 
         return stringBuilder.toString()
     }
 
-    private fun getPriority(tag: String): Int {
-        val tagSplit = tag.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        if (tagSplit.size < 3) {
-            return PRIORITY_ONLINE
-        }
-        if (tagSplit[2] == TAG_OFFLINE) {
+    private fun getPriority(tagPriority: String): Int {
+        if (tagPriority == TAG_OFFLINE) {
             return PRIORITY_OFFLINE
         }
         return PRIORITY_ONLINE
     }
 
+    private fun populateTagMaps(tags: List<String>) {
+        for (tag in tags) {
+            val tagSplit = listOf(*tag.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+            if (tagSplit.size != SIZE_REMOTE_CONFIG_TAG) {
+                continue
+            }
+            tagSplit[2].toDoubleOrNull()?.let {
+                val randomNumber = Random().nextDouble() * MAX_RANDOM_NUMBER
+                Timber.d("${tagSplit[0]}#${tagSplit[1]} randomNumber = $randomNumber")
+                if (randomNumber < it) {
+                    val tagKey = StringBuilder()
+                            .append(tagSplit[0])
+                            .append("#")
+                            .append(tagSplit[1])
+                            .toString()
+                    tagMaps[tagKey] = Tag(getPriority(tagSplit[3]))
+                }
+            }
+        }
+    }
+
     companion object {
-        const val MIN_ARRAY_SIZE_MESSAGE = 3
-        const val MIN_ARRAY_SIZE_REMOTE_CONFIG_TAG = 3
+        const val MAX_RANDOM_NUMBER = 100
+
+        const val SIZE_MESSAGE = 3
+        const val SIZE_REMOTE_CONFIG_TAG = 4
 
         const val PREFIX = "P"
         const val P1 = "P1"
         const val P2 = "P2"
 
-        const val SEVERITY_HIGH = 1
-        const val SEVERITY_MEDIUM = 2
-        const val NO_SEVERITY = 0
-
         const val TAG_OFFLINE = "offline"
         const val TAG_ONLINE = "online"
 
-        const val PRIORITY_ONLINE = 0
+        const val PRIORITY_ONLINE = 2
         const val PRIORITY_OFFLINE = 1
     }
 
