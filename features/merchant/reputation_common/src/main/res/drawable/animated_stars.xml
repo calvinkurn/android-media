@@ -36,7 +36,6 @@
         <aapt:attr name="android:animation">
             <objectAnimator
                 android:propertyName="fillColor"
-                android:startOffset="100"
                 android:duration="100"
                 android:valueFrom="#9fa6b0"
                 android:valueTo="#ffc400"

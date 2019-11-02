@@ -25,6 +25,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.design.base.BaseToaster
@@ -35,6 +36,7 @@ import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.reputation.common.view.AnimatedReviewPicker
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
@@ -44,6 +46,7 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Success
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 import kotlinx.android.synthetic.main.fragment_create_review.*
@@ -77,7 +80,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var animatedReviewPicker: AnimatedReviewPicker
+    private lateinit var animatedReviewPicker: AnimatedReputationView
     private lateinit var createReviewViewModel: CreateReviewViewModel
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this::addImageClick)
@@ -168,28 +171,22 @@ class CreateReviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         reviewUserName = createReviewViewModel.userSessionInterface.name
-
-        createReviewViewModel.getProductReputation(productId, reviewId)
+        getReviewData()
+        anonymous_text.text = generateAnonymousText()
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
-        anonymous_text.text = generateAnonymousText()
-        animatedReviewPicker.setListener(object : AnimatedReviewPicker.AnimatedReviewPickerListener {
-            override fun onStarsClick(position: Int) {
+        animatedReviewPicker.init()
+        animatedReviewPicker.setListener(object : AnimatedReputationView.AnimatedReputationListener {
+            override fun onClick(position: Int) {
                 reviewClickAt = position
                 shouldPlayAnimation = true
                 playAnimation()
                 generateReviewBackground(position)
             }
         })
-        if (reviewClickAt != 0) {
-            stepper_review.progress = 1
-            animatedReviewPicker.renderInitialReviewWithData(reviewClickAt)
-            generateReviewBackground(reviewClickAt)
-        } else {
-            // Render background grey which is position 1 & 2
-            generateReviewBackground(1)
-            stepper_review.progress = 0
-        }
+        animatedReviewPicker.renderInitialReviewWithData(reviewClickAt)
+        generateReviewBackground(if (reviewClickAt != 0) reviewClickAt else 5)
+        stepper_review.progress = 1
 
         imgAnimationView.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
@@ -247,18 +244,22 @@ class CreateReviewFragment : BaseDaggerFragment() {
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
 
         btn_submit_review.setOnClickListener {
-            createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, "227938765", "330633484",
-                    "125919", edit_text_review.text.toString(), reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked)
+            submitReview()
         }
+    }
+
+    private fun getReviewData() {
+        createReviewViewModel.getProductReputation(productId, reviewId)
+    }
+
+    private fun submitReview() {
+        createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, "227938765", "330633484",
+                "125919", edit_text_review.text.toString(), reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked)
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
         ImageHandler.loadImage(context, img_review, data.productrevGetForm.productData.productImageURL, R.drawable.ic_loading_image)
         txt_create.text = data.productrevGetForm.productData.productName
-    }
-
-    private fun onErrorGetReviewForm(t: Throwable) {
-
     }
 
     private fun generateReviewBackground(position: Int) {
@@ -401,16 +402,20 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun showToasterError(message: String) {
-        ToasterError.make(view,
-                message,
-                BaseToaster.LENGTH_LONG
-        ).show()
+        view?.let {
+            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     private fun showToasterSuccess() {
-        ToasterNormal.make(view,
-                "Success",
-                BaseToaster.LENGTH_LONG
-        ).show()
+        view?.let {
+            Toaster.make(it, getString(R.string.txt_success_submit_review, createReviewViewModel.userSessionInterface.name), Toaster.LENGTH_LONG)
+        }
+    }
+
+    private fun onErrorGetReviewForm(t: Throwable) {
+//        NetworkErrorHelper.showEmptyState(context,review_root) {
+//            getReviewData()
+//        }
     }
 }

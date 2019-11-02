@@ -14,8 +14,10 @@ import kotlinx.android.synthetic.main.animated_review_layout.view.*
 
 
 /**
+ * This animated stars using lottie, for better performance use AnimatedReputationView
  * @property setListener call this first and populate with your onClick function
  * @property renderInitialReviewWithData If you want to animating the view without any trigger
+ *
  */
 class AnimatedReviewPicker @JvmOverloads constructor(
         context: Context, val attrs: AttributeSet? = null, defStyleAttr: Int = 0

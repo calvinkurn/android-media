@@ -22,7 +22,7 @@ class ReviewViewHolder(itemView: View, private val listener: HomeReviewListener)
             itemView.loading_review.visibility = View.VISIBLE
         } else {
             itemView.loading_review.visibility = View.GONE
-            itemView.review_title.text = element.suggestedProductReview.suggestedProductReview.title + " " + element.suggestedProductReview.suggestedProductReview.description
+            itemView.review_title.text = "${element.suggestedProductReview.suggestedProductReview.title} ${element.suggestedProductReview.suggestedProductReview.description}"
             ImageHandler.loadImage(itemView.context, itemView.img_review, element.suggestedProductReview.suggestedProductReview.imageUrl, R.drawable.ic_loading_image)
         }
 

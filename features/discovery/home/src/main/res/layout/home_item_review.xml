@@ -51,20 +51,6 @@ Yuk, berikan nilaimu di sini."
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6" />
 
-
-<!--        <com.tokopedia.reputation.common.view.AnimatedReviewPicker-->
-<!--            -->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0"-->
-<!--            app:layout_constraintVertical_bias="0"-->
-<!--            android:layout_marginTop="@dimen/dp_7"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintRight_toLeftOf="@+id/img_review"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/review_title"-->
-<!--            app:show_desc="false" />-->
-<!--        -->
         <com.tokopedia.reputation.common.view.AnimatedReputationView
             android:id="@+id/animated_review"
             android:layout_width="0dp"
@@ -75,8 +61,8 @@ Yuk, berikan nilaimu di sini."
             android:layout_marginTop="@dimen/dp_7"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/img_review"
-            app:layout_constraintTop_toBottomOf="@+id/review_title"/>
-
+            app:layout_constraintTop_toBottomOf="@+id/review_title"
+            app:show_desc="false"/>
 
         <include
             android:id="@+id/loading_review"

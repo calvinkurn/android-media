@@ -19,7 +19,6 @@
                 android:duration="100"
                 android:interpolator="@android:interpolator/fast_out_slow_in"
                 android:propertyName="fillColor"
-                android:startOffset="100"
                 android:valueFrom="#ffc400"
                 android:valueTo="#9fa6b0"
                 android:valueType="colorType" />

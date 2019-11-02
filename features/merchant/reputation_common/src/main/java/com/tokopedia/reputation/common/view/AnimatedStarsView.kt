@@ -10,25 +10,25 @@ class AnimatedStarsView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
-    private var sendToFavorite: AnimatedVectorDrawableCompat? = null
-    private var favoriteToSend: AnimatedVectorDrawableCompat? = null
-    private var showingFavorite: Boolean = false
+    private var reverseAnimation: AnimatedVectorDrawableCompat? = null
+    private var normalAnimation: AnimatedVectorDrawableCompat? = null
+    private var showingNormalAnim: Boolean = false
 
     init {
         init()
     }
 
     fun init() {
-        showingFavorite = true
-        favoriteToSend = AnimatedVectorDrawableCompat.create(context, R.drawable.animated_stars)
-        sendToFavorite = AnimatedVectorDrawableCompat.create(context, R.drawable.animated_reverse)
-        setImageDrawable(favoriteToSend)
+        showingNormalAnim = true
+        normalAnimation = AnimatedVectorDrawableCompat.create(context, R.drawable.animated_stars)
+        reverseAnimation = AnimatedVectorDrawableCompat.create(context, R.drawable.animated_reverse)
+        setImageDrawable(normalAnimation)
     }
 
     fun morph() {
-        val drawable = if (showingFavorite) favoriteToSend else sendToFavorite
+        val drawable = if (showingNormalAnim) normalAnimation else reverseAnimation
         setImageDrawable(drawable)
         drawable?.start()
-        showingFavorite = !showingFavorite
+        showingNormalAnim = !showingNormalAnim
     }
 }

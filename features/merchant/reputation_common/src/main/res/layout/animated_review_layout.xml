@@ -76,5 +76,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         app:typographyType="heading_5"
+        android:visibility="gone"
         tools:text="Memuaskan"/>
 </LinearLayout>

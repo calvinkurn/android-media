@@ -817,8 +817,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
             List<Visitable> itemAfterGeoloc;
 
+            // Remove review component if Geolocation showing
             if (needToShowGeolocationComponent()) {
-                // Remove review component when Geolocation showing
                 itemAfterGeoloc = removeReviewComponent(items);
             } else {
                 itemAfterGeoloc = removeGeolocationComponent(items);
@@ -997,8 +997,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         List<Visitable> itemAfterGeoloc;
 
+        // Remove review component if Geolocation showing
         if (needToShowGeolocationComponent()) {
-            // Remove review component when Geolocation showing
             itemAfterGeoloc = removeReviewComponent(visitables);
         } else {
             itemAfterGeoloc = removeGeolocationComponent(visitables);
