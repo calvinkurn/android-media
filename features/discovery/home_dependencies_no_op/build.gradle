@@ -32,7 +32,7 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'home'
+    artifactId = 'home-dependency'
     groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
     artifactName ="home-dependencies-no-op-release"
