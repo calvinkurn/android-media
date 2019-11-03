@@ -47,8 +47,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mPermissionChecker: PermissionCheckerHelper
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     lateinit var mLocationCallback: LocationCallback
+
     private var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
+    private var mNearbiesBehavior: BottomSheetBehavior<View>? = null
+    private var mDetailBehavior: BottomSheetBehavior<View>? = null
     private var mLastLocation: LatLng = LatLng(0.0, 0.0)
     private val mNearbyAdapter: NearbyStoreAdapter = NearbyStoreAdapter()
     private val mMarkerList: MutableList<Marker> = arrayListOf()
@@ -59,8 +62,6 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mNoPermissionsView: View
     lateinit var mButtonActivate: UnifyButton
     lateinit var mButtonGrant: UnifyButton
-    lateinit var mBehavior: BottomSheetBehavior<View>
-    var mDetailBehavior: BottomSheetBehavior<View>? = null
     lateinit var mStoreDetail: LocationDetailBottomSheet
 
     @Inject
@@ -109,8 +110,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             }
         })
 
-        mBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
-        mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        mNearbiesBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
+        mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         mDetailBehavior = BottomSheetBehavior.from(mStoreDetail)
         mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
@@ -156,7 +157,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun setDefaultMap() {
-        mBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         mMarkerList.forEach {
             it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green))
@@ -196,7 +197,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 is Success -> {
                     drawStoreLocations(result.data)
                     mNearbyAdapter.setData(result.data)
-                    mBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                    mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
                 }
             }
         })
@@ -264,8 +265,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             }
         }
         mStoreDetail.setStore(datum)
-        if (mBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
-            mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        if (mNearbiesBehavior?.state != BottomSheetBehavior.STATE_HIDDEN) {
+            mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         }
         mDetailBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
