@@ -59,7 +59,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mButtonActivate: UnifyButton
     lateinit var mButtonGrant: UnifyButton
     lateinit var mBehavior: BottomSheetBehavior<View>
-    lateinit var mDetailBehavior: BottomSheetBehavior<View>
+    var mDetailBehavior: BottomSheetBehavior<View>? = null
     lateinit var mStoreDetail: LocationDetailBottomSheet
 
     @Inject
@@ -94,6 +94,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mSearchText.isCursorVisible = false
         mSearchText.isFocusable = false
         mStoreDetail = findViewById(R.id.bottom_sheet_detail)
+        mStoreDetail.setOnCancelClickListener { mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN }
+        mStoreDetail.setOnOkClickListener { _, data ->
+            Toast.makeText(this@DropoffPickerActivity, data?.address1, Toast.LENGTH_SHORT).show()
+        }
 
         val rv = findViewById<RecyclerView>(R.id.rv_dropoff)
         rv.layoutManager = LinearLayoutManager(this)
@@ -109,7 +113,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
         mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         mDetailBehavior = BottomSheetBehavior.from(mStoreDetail)
-        mDetailBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -144,7 +148,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             val tag: Any? = it.tag
             if (tag is Data) {
                 mStoreDetail.setStore(tag)
-                mDetailBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                if (mBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+                    mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                }
+                mDetailBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
             }
             true
         }

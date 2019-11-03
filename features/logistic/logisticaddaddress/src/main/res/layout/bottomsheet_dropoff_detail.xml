@@ -33,6 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button_cancel"
         app:unifyButtonType="main"
+        app:unifyButtonSize="medium"
         app:unifyButtonVariant="filled" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -49,6 +50,7 @@
         app:layout_constraintEnd_toStartOf="@+id/button_choose"
         app:layout_constraintStart_toStartOf="parent"
         app:unifyButtonType="main"
+        app:unifyButtonSize="medium"
         app:unifyButtonVariant="ghost" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -70,6 +72,7 @@
         app:layout_constraintStart_toStartOf="@+id/tv_opening"
         app:layout_constraintTop_toBottomOf="@+id/tv_opening"
         app:typographyType="heading_4"
+        app:typographyWeight="bold"
         tools:text="Indomaret Kasih Mesra" />
 
     <com.tokopedia.unifyprinciples.Typography

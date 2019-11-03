@@ -14,8 +14,8 @@ class LocationDetailBottomSheet : ConstraintLayout {
     var tvOpening: Typography
     var tvTitle: Typography
     var tvDetail: Typography
-    var tvOkButton: UnifyButton
-    var tvCancelButton: UnifyButton
+    var buttonOk: UnifyButton
+    var buttonCancel: UnifyButton
     private var mData: Data? = null
 
     constructor(context: Context?) : super(context)
@@ -27,8 +27,8 @@ class LocationDetailBottomSheet : ConstraintLayout {
         tvOpening = findViewById(R.id.tv_opening)
         tvTitle = findViewById(R.id.tv_title)
         tvDetail = findViewById(R.id.tv_detail)
-        tvOkButton = findViewById(R.id.button_choose)
-        tvCancelButton = findViewById(R.id.button_cancel)
+        buttonOk = findViewById(R.id.button_choose)
+        buttonCancel = findViewById(R.id.button_cancel)
     }
 
     fun setStore(datum: Data) {
@@ -38,6 +38,14 @@ class LocationDetailBottomSheet : ConstraintLayout {
         tvDetail.text = datum.address1
         invalidate()
         requestLayout()
+    }
+
+    fun setOnOkClickListener(listener: (view: View, data: Data?) -> Unit) {
+        buttonOk.setOnClickListener { listener(it, mData) }
+    }
+
+    fun setOnCancelClickListener(listener: (view: View) -> Unit) {
+        buttonCancel.setOnClickListener(listener)
     }
 
 }
