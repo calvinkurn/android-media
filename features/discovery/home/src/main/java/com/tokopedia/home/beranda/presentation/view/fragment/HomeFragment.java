@@ -140,6 +140,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String BERANDA_TRACE = "gl_beranda";
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
+    private static final int REQUEST_CODE_REVIEW = 999;
     private static final int DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10;
     public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
     public static final String KEY_NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
@@ -759,6 +760,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     if (!TextUtils.isEmpty(message)) {
                         NetworkErrorHelper.showSnackbar(getActivity(), message);
                     }
+                }
+                break;
+            case REQUEST_CODE_REVIEW:
+                if (resultCode == Activity.RESULT_OK) {
+                    adapter.removeReviewViewModel();
                 }
                 break;
         }
@@ -1624,7 +1630,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         new Handler().postDelayed(() -> {
             Intent intent = RouteManager.getIntent(getContext(), applink);
             intent.putExtra(REVIEW_CLICK_AT, clickReviewAt);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_REVIEW);
         }, 500);
     }
 

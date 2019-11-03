@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.BaseImageReviewViewModel
@@ -40,11 +41,8 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm = reputationDataForm
 
-    private var sendReviewWithoutImageResponse = MutableLiveData<LoadingDataState<SendReviewValidateDomain>>()
-    val getSendReviewWithoutImageResponse = sendReviewWithoutImageResponse
-
-    private var sendReviewWithImageResponse = MutableLiveData<LoadingDataState<SendReviewDomain>>()
-    val getSendReviewWithImageResponse = sendReviewWithImageResponse
+    private var submitReviewResponse = MutableLiveData<LoadingDataState<SendReviewValidateDomain>>()
+    val getSubmitReviewResponse: LiveData<LoadingDataState<SendReviewValidateDomain>> = submitReviewResponse
 
     fun submitReview(reviewId: String, reputationId: String, productId: String, shopId: String, reviewDesc: String,
                      ratingCount: Float, listOfImages: List<String>, isAnonymous: Boolean) {
@@ -99,12 +97,12 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
 
     private fun sendReviewWithoutImage(reviewId: String, reputationId: String, productId: String, shopId: String,
                                        reviewDesc: String, ratingCount: Float, isAnonymous: Boolean) {
-        sendReviewWithoutImageResponse.value = LoadingView
+        submitReviewResponse.value = LoadingView
         sendReviewWithoutImage.execute(SendReviewValidateUseCase.getParam(reviewId, productId,
                 reputationId, shopId, ratingCount.toString(), reviewDesc, isAnonymous)
                 , object : Subscriber<SendReviewValidateDomain>() {
             override fun onNext(data: SendReviewValidateDomain) {
-                sendReviewWithoutImageResponse.value = Success(data)
+                submitReviewResponse.value = Success(data)
             }
 
             override fun onCompleted() {
@@ -112,8 +110,7 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
             }
 
             override fun onError(e: Throwable) {
-                sendReviewWithoutImageResponse.value = Fail(e)
-
+                submitReviewResponse.value = Fail(e)
             }
 
         })
@@ -121,18 +118,22 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
 
     private fun sendReviewWithImage(reviewId: String, reputationId: String, productId: String, shopId: String,
                                     reviewDesc: String, ratingCount: Float, isAnonymous: Boolean, listOfImages: List<String>) {
-        sendReviewWithImageResponse.value = LoadingView
+        submitReviewResponse.value = LoadingView
         sendReviewWithImage.execute(SendReviewUseCase.getParam(reviewId, productId, reputationId, shopId, ratingCount.toString(),
                 reviewDesc, mapImageToObjectUpload(listOfImages), listOf(), isAnonymous), object : Subscriber<SendReviewDomain>() {
             override fun onNext(data: SendReviewDomain) {
-                sendReviewWithImageResponse.value = Success(data)
+                if (data.isSuccess) {
+                    submitReviewResponse.value = Success(SendReviewValidateDomain("", 0, if (data.isSuccess) 1 else 0))
+                } else {
+                    onError(Throwable())
+                }
             }
 
             override fun onCompleted() {
             }
 
             override fun onError(e: Throwable) {
-                sendReviewWithImageResponse.value = Fail(e)
+                submitReviewResponse.value = Fail(e)
             }
 
         })
@@ -141,7 +142,7 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
     private fun mapImageToObjectUpload(listOfImages: List<String>): ArrayList<ImageUpload> {
         val imageUpload: ArrayList<ImageUpload> = arrayListOf()
         listOfImages.forEachIndexed { index, s ->
-            val imageUploadPojo: ImageUpload = ImageUpload()
+            val imageUploadPojo = ImageUpload()
             imageUploadPojo.fileLoc = s
             imageUploadPojo.description = ""
             imageUploadPojo.position = index

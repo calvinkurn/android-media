@@ -27,17 +27,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.base.di.component.AppComponent
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reputation.common.view.AnimatedReputationView
-import com.tokopedia.reputation.common.view.AnimatedReviewPicker
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
@@ -47,16 +45,16 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Success
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
-import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
+import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
 class CreateReviewFragment : BaseDaggerFragment() {
 
     companion object {
-        const val REQUEST_CODE_IMAGE = 111
+        private const val REQUEST_CODE_IMAGE = 111
         private const val WRITE_REVIEW_MIN_LENGTH = 30
         private const val DEFAULT_REVIEW_ID = "0"
         private const val PRODUCT_ID_REVIEW = "PRODUCT_ID"
@@ -139,7 +137,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             }
         })
 
-        createReviewViewModel.getSendReviewWithoutImageResponse.observe(this, Observer {
+        createReviewViewModel.getSubmitReviewResponse.observe(this, Observer {
             when (it) {
                 is LoadingView -> showLoading()
                 is Fail -> {
@@ -147,22 +145,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
                     showToasterError(it.fail.message ?: "")
                 }
                 is Success -> {
-                    showToasterSuccess()
                     stopLoading()
-                }
-            }
-        })
-
-        createReviewViewModel.getSendReviewWithImageResponse.observe(this, Observer {
-            when (it) {
-                is LoadingView -> showLoading()
-                is Fail -> {
-                    showToasterError(it.fail.message ?: "")
-                    stopLoading()
-                }
-                is Success -> {
-                    showToasterSuccess()
-                    stopLoading()
+                    onSuccessSubmitReview()
                 }
             }
         })
@@ -253,8 +237,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun submitReview() {
-        createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, "227938765", "330633484",
-                "125919", edit_text_review.text.toString(), reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked)
+        createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, reviewId.toString(), productId.toString(),
+                createReviewViewModel.userSessionInterface.shopId, edit_text_review.text.toString(), reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked)
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
@@ -393,6 +377,13 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun onSuccessSubmitReview() {
+        showToasterSuccess()
+        val intent = RouteManager.getIntent(context,ApplinkConst.HOME)
+        activity?.setResult(Activity.RESULT_OK,intent)
+        activity?.finish()
+    }
+
     private fun showLoading() {
         progressBarReview.show()
     }
@@ -414,8 +405,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetReviewForm(t: Throwable) {
-//        NetworkErrorHelper.showEmptyState(context,review_root) {
-//            getReviewData()
-//        }
+        NetworkErrorHelper.showEmptyState(context,review_root) {
+            getReviewData()
+        }
     }
 }
