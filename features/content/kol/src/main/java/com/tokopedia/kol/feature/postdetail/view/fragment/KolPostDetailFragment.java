@@ -319,7 +319,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                         dynamicPostViewModel.getTrackingPostModel());
             }
         }
-        onAffiliateTrackClicked(dynamicPostViewModel.getTracking(), false);
     }
 
     private boolean isOwner() {

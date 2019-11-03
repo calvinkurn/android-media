@@ -92,7 +92,7 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
     private void initDrawableResources() {
 
-        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_new_action_back);
+        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_new_action_back_tokopoints);
 
         leaderboardWhiteDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_leaderboard);
         leaderboardGreyDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_tp_leaderboard_grey);
@@ -193,7 +193,7 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
     public void applyAlphaToToolbarBackground(float alpha) {
         setBackgroundColor(
-                adjustAlpha(mContext.getResources().getColor(R.color.white), alpha));
+                adjustAlpha(mContext.getResources().getColor(com.tokopedia.design.R.color.white), alpha));
     }
 
     @ColorInt
