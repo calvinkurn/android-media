@@ -18,7 +18,7 @@ class FintechProductCheckout (
     var tierId: Int = 0,
     @SerializedName("user_id")
     @Expose
-    var userId: String? = null,
+    var userId: Int? = null,
     @SerializedName("fintech_amount")
     @Expose
     var fintechAmount: Long = 0,

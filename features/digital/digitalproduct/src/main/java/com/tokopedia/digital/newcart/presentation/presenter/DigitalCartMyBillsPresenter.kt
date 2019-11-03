@@ -68,7 +68,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                         fintechProduct = listOf(FintechProductCheckout(
                                 transactionType = transactionType,
                                 tierId = tierId,
-                                userId = identifier?.userId,
+                                userId = identifier?.userId?.toIntOrNull(),
                                 fintechAmount = fintechAmount,
                                 fintechPartnerAmount = fintechPartnerAmount
                         ))
