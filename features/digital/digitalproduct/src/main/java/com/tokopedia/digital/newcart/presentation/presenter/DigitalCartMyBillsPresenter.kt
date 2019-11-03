@@ -11,6 +11,7 @@ import com.tokopedia.digital.common.analytic.DigitalAnalytics
 import com.tokopedia.digital.common.router.DigitalModuleRouter
 import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.FintechProductCheckout
+import com.tokopedia.common_digital.cart.view.model.cart.FintechProduct
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
@@ -42,7 +43,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
 
     override fun onMyBillsViewCreated() {
         view.setCheckoutParameter(buildCheckoutData(view.cartInfoData, userSession?.accessToken))
-        renderBaseCart(view.cartInfoData)
+        renderBaseCartWithEgold()
         renderPostPaidPopUp(view.cartInfoData)
         view.renderCategoryInfo(view.cartInfoData.attributes!!.categoryName)
         view.cartInfoData.crossSellingConfig?.run {
@@ -55,6 +56,14 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         }
         view.cartInfoData.attributes?.fintechProduct?.get(0)?.run {
             view.renderMyBillsEgoldView(info?.title, info?.subtitle, checkBoxDisabled)
+        }
+    }
+
+    private fun renderBaseCartWithEgold() {
+        renderBaseCart(view.cartInfoData)
+        val egoldPrice = view.cartInfoData.attributes?.fintechProduct?.get(0)?.fintechAmount ?: 0
+        view.cartInfoData.attributes?.pricePlain?.let {
+            pricePlain -> view.renderCheckoutView(pricePlain + egoldPrice)
         }
     }
 
