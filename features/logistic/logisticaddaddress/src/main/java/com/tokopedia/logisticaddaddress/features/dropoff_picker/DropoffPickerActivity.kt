@@ -106,7 +106,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
         mBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
         mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        mDetailBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_shhet_detail))
+        mDetailBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet_detail))
         mDetailBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_shhet_detail"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bottom_sheet_rounded_top"
-    android:minHeight="200dp"
-    app:behavior_hideable="true"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    tools:layout_height="wrap_content"
+    tools:layout_width="match_parent"
+    tools:minHeight="200dp"
+    tools:parentTag="com.tokopedia.logisticaddaddress.features.dropoff_picker.LocationDetailBottomSheet">
 
     <Button
         android:id="@+id/button"
@@ -80,4 +77,4 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         tools:text="Karet Semanggi" />
 
-</android.support.constraint.ConstraintLayout>
+</merge>
