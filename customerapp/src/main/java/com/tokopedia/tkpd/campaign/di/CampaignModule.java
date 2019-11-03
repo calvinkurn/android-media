@@ -7,8 +7,11 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.graphql.coroutines.data.Interactor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.scanner.domain.usecase.ScannerUseCase;
 import com.tokopedia.tkpd.campaign.data.model.CampaignErrorResponse;
 import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 import com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase;
@@ -58,10 +61,19 @@ public class CampaignModule {
     }
 
     @Provides
+    GraphqlRepository provideRepository() {
+        return Interactor.getInstance().getGraphqlRepository();
+    }
+
+    @Provides
+    ScannerUseCase provideScannerUseCase(@ApplicationContext Context context, GraphqlRepository repository) {
+        return new ScannerUseCase(context.getResources(), repository);
+    }
+
+    @Provides
     CampaignDataRepository provideCampaignRideRepository(CampaignDataFactory campaignDataFactory) {
         return new CampaignData(campaignDataFactory);
     }
-
 
     @Provides
     CampaignDataFactory provideCampaignDataFactory(CampaignAPI campaignAPI) {
