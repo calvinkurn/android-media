@@ -67,8 +67,9 @@ public class AnalyticsMapper {
         if (isShare) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_SHARE);
         }
-        if(!viewModel.getProductSizeChart().getFilePath().isEmpty()){
-            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PRODUCT_SIZE_CHART);
+        if (null != viewModel.getProductSizeChart()) {
+            if (!viewModel.getProductSizeChart().getFilePath().isEmpty())
+                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PRODUCT_SIZE_CHART);
         }
         if (viewModel.hasVariant()) {
             boolean hasCustomVariantLv1 = false;
