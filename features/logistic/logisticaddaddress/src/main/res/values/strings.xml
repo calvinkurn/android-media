@@ -149,6 +149,9 @@
     <string name="no_permission_desc">Cari otomatis dengan izinkan lokasi atau masukkan kata kunci lokasi</string>
     <string name="no_permission_action">Izinkan Lokasi</string>
     <string name="title_bottom_sheet_dropoff">Titik Ambil Terdekat</string>
+    <string name="button_cancel">Batal</string>
+    <string name="button_choose">Pilih</string>
+    <string name="store_logo">Logo Tempat Ambil</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>
