@@ -104,9 +104,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         rv.adapter = mNearbyAdapter
         mNearbyAdapter.setActionListener(object : NearbyStoreAdapter.ActionListener {
             override fun onItemClicked(view: View) {
-                Toast.makeText(this@DropoffPickerActivity, "Item clicked!", Toast.LENGTH_SHORT).show()
-                val bs = DropoffDetailBottomsheet.newInstance()
-                bs.show(supportFragmentManager, "bottomsheep")
+                showStoreDetail(view.tag as Data)
             }
         })
 
@@ -147,11 +145,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mMap?.setOnMarkerClickListener {
             val tag: Any? = it.tag
             if (tag is Data) {
-                mStoreDetail.setStore(tag)
-                if (mBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
-                    mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                }
-                mDetailBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+                showStoreDetail(tag)
             }
             true
         }
@@ -244,6 +238,14 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         }
         mDisabledLocationView.visibility = View.GONE
         mNoPermissionsView.visibility = View.GONE
+    }
+
+    private fun showStoreDetail(datum: Data) {
+        mStoreDetail.setStore(datum)
+        if (mBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+            mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        mDetailBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     private fun checkForPermission() {

@@ -22,7 +22,9 @@ class NearbyStoreAdapter : RecyclerView.Adapter<NearbyStoreAdapter.NearbiesViewH
 
     override fun onBindViewHolder(holder: NearbiesViewHolder, position: Int) {
         holder.bind(mData[position])
-        holder.view.setOnClickListener { mListener?.onItemClicked(it) }
+        holder.view.setOnClickListener {
+            mListener?.onItemClicked(it)
+        }
     }
 
     fun setData(item: List<Data>) {
@@ -40,6 +42,7 @@ class NearbyStoreAdapter : RecyclerView.Adapter<NearbyStoreAdapter.NearbiesViewH
             view.tv_location_title.text = datum.addrName
             view.tv_location_desc.text = datum.districtName
             view.tv_distance.text = datum.storeDistance
+            view.tag = datum
         }
     }
 
