@@ -104,14 +104,6 @@ public class AnalyticsMapper {
                     listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_LEVEL2);
                 }
             }
-
-            List<ProductVariantCombinationViewModel> listProductVariantCombinationViewModel = viewModel.getProductVariant().getProductVariant();
-            for(ProductVariantCombinationViewModel productVariantCombinationViewModel : listProductVariantCombinationViewModel){
-                if(!productVariantCombinationViewModel.getSku().isEmpty()){
-                    listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_VARIANT_SKU_PRODUCT);
-                    break;
-                }
-            }
         }
 
         if (listOfFields.isEmpty()) {
