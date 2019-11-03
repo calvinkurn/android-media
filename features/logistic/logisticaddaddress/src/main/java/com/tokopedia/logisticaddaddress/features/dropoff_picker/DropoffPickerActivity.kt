@@ -51,6 +51,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private var mMapFragment: SupportMapFragment? = null
     private var mLastLocation: LatLng = LatLng(0.0, 0.0)
     private val mNearbyAdapter: NearbyStoreAdapter = NearbyStoreAdapter()
+    private val mMarkerList: MutableList<Marker> = arrayListOf()
 
     lateinit var mSearchInput: SearchInputView
     lateinit var mSearchText: EditText
@@ -283,11 +284,15 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun drawStoreLocations(data: List<Data>) {
+        mMarkerList.clear()
         for (datum in data) {
-            mMap?.addMarker(MarkerOptions()
+            val marker = mMap?.addMarker(MarkerOptions()
                     .position(LatLng(datum.latitude.toDouble(), datum.longitude.toDouble()))
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green)))
-                    ?.tag = datum
+            marker?.let {
+                it.tag = datum
+                mMarkerList.add(it)
+            }
         }
     }
 
