@@ -156,14 +156,6 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun setDefaultMap() {
-        mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-        mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-        mMarkerList.forEach {
-            it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green))
-        }
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -205,6 +197,48 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         viewModel.radius.observe(this, Observer {
             drawCircle(it ?: 0)
         })
+    }
+
+    private fun checkForPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mPermissionChecker.checkPermissions(this, getPermissions(),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            mPermissionChecker.onPermissionDenied(this@DropoffPickerActivity, permissionText)
+                            setNoPermissionsView()
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            mPermissionChecker.onNeverAskAgain(this@DropoffPickerActivity, permissionText)
+                            setNoPermissionsView()
+                        }
+
+                        override fun onPermissionGranted() {
+                            mFusedLocationClient.lastLocation
+                                    .addOnSuccessListener {
+                                        if (it != null) {
+                                            mLastLocation = LatLng(it.latitude, it.longitude)
+                                            moveCamera(mLastLocation)
+                                        } else {
+                                            // If it is null, either Google Play Service has just
+                                            // been restarted or the location service is deactivated
+                                            checkAndRequestLocation()
+                                        }
+                                    }
+                                    .addOnFailureListener { _ -> setLocationEmptyView() }
+                        }
+
+                    },
+                    "")
+        }
+    }
+
+    private fun setDefaultMap() {
+        mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        mMarkerList.forEach {
+            it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green))
+        }
     }
 
     private fun drawCircle(radius: Int) {
@@ -269,40 +303,6 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         }
         mDetailBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    private fun checkForPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mPermissionChecker.checkPermissions(this, getPermissions(),
-                    object : PermissionCheckerHelper.PermissionCheckListener {
-                        override fun onPermissionDenied(permissionText: String) {
-                            mPermissionChecker.onPermissionDenied(this@DropoffPickerActivity, permissionText)
-                            setNoPermissionsView()
-                        }
-
-                        override fun onNeverAskAgain(permissionText: String) {
-                            mPermissionChecker.onNeverAskAgain(this@DropoffPickerActivity, permissionText)
-                            setNoPermissionsView()
-                        }
-
-                        override fun onPermissionGranted() {
-                            mFusedLocationClient.lastLocation
-                                    .addOnSuccessListener {
-                                        if (it != null) {
-                                            mLastLocation = LatLng(it.latitude, it.longitude)
-                                            moveCamera(mLastLocation)
-                                        } else {
-                                            // If it is null, either Google Play Service has just
-                                            // been restarted or the location service is deactivated
-                                            checkAndRequestLocation()
-                                        }
-                                    }
-                                    .addOnFailureListener { _ -> setLocationEmptyView() }
-                        }
-
-                    },
-                    "")
-        }
     }
 
     private fun drawStoreLocations(data: List<Data>) {
