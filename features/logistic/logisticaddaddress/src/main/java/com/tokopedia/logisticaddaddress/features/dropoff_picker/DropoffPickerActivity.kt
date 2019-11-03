@@ -143,12 +143,23 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap?) {
         mMap = googleMap
+        mMap?.setOnMapClickListener {
+            setDefaultMap()
+        }
         mMap?.setOnMarkerClickListener {
             val tag: Any? = it.tag
             if (tag is Data) {
                 showStoreDetail(tag)
             }
             true
+        }
+    }
+
+    private fun setDefaultMap() {
+        mBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        mMarkerList.forEach {
+            it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green))
         }
     }
 
