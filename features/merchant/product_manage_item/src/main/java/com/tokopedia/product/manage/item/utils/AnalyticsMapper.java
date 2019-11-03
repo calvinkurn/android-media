@@ -49,20 +49,20 @@ public class AnalyticsMapper {
         if (viewModel.getProductVideo() != null && viewModel.getProductVideo().size() > 0) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PRODUCT_VIDEO);
         }
-        if( null != viewModel.getProductEtalase()){
+        if (viewModel.getProductEtalase().getEtalaseId() > 0) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_ETALASE);
         }
-        if(viewModel.isProductMustInsurance()){
+        if (viewModel.isProductMustInsurance()) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_INSURANCE);
         }
         if (viewModel.getProductPreorder().getPreorderStatus() > 0) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
-        }
-        if (viewModel.getProductPreorder().getPreorderProcessTime() > 0) {
-            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER_PROCESS_TIME);
-        }
-        if (viewModel.getProductPreorder().getPreorderTimeUnit() > 0) {
-            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER_TIME_UNIT);
+            if (viewModel.getProductPreorder().getPreorderProcessTime() > 0) {
+                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER_PROCESS_TIME);
+            }
+            if (viewModel.getProductPreorder().getPreorderTimeUnit() > 0) {
+                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER_TIME_UNIT);
+            }
         }
         if (isShare) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_SHARE);
