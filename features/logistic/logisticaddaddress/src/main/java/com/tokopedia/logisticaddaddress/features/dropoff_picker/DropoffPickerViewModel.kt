@@ -4,7 +4,8 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.Data
+import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
+import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffUiModel
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
 import com.tokopedia.logisticaddaddress.domain.query.LocationQuery
 import com.tokopedia.usecase.coroutines.Result
@@ -14,15 +15,12 @@ import javax.inject.Inject
 
 class DropoffPickerViewModel
 @Inject constructor(dispatcher: CoroutineDispatcher,
-                    private val getStoreUseCase: GraphqlUseCase<GetStoreResponse>) : BaseViewModel(dispatcher) {
+                    private val getStoreUseCase: GraphqlUseCase<GetStoreResponse>,
+                    private val mapper: GetStoreMapper) : BaseViewModel(dispatcher) {
 
-    private val mutableStoreResponse = MutableLiveData<Result<List<Data>>>()
-    val stores: LiveData<Result<List<Data>>>
-        get() = mutableStoreResponse
-
-    private val mutableRadius = MutableLiveData<Int>()
-    val radius: LiveData<Int>
-        get() = mutableRadius
+    private val mStoreResponse = MutableLiveData<Result<DropoffUiModel>>()
+    val stores: LiveData<Result<DropoffUiModel>>
+        get() = mStoreResponse
 
     fun getStores(latlng: String) {
 
@@ -33,15 +31,13 @@ class DropoffPickerViewModel
         getStoreUseCase.execute(
                 { response ->
                     if (response.keroAddressStoreLocation.data.isNotEmpty()) {
-                        mutableStoreResponse.value = Success(response.keroAddressStoreLocation.data)
-                        mutableRadius.value = response.keroAddressStoreLocation.globalRadius
+                        mStoreResponse.value = Success(mapper.map(response))
                     }
                 },
                 { _ ->
                     // todo: This is dummy implementation prior to live of production
-                    mutableStoreResponse.value = Success(
-                            LocationQuery.getStoreDummyObject.keroAddressStoreLocation.data)
-                    mutableRadius.value = LocationQuery.getStoreDummyObject.keroAddressStoreLocation.globalRadius
+                    mStoreResponse.value = Success(
+                            mapper.map(LocationQuery.getStoreDummyObject))
                 }
         )
     }

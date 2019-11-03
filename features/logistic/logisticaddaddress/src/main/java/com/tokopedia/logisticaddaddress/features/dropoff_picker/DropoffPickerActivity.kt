@@ -31,7 +31,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.DaggerDropoffPickerComponent
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.Data
+import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
@@ -106,7 +106,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         rv.adapter = mNearbyAdapter
         mNearbyAdapter.setActionListener(object : NearbyStoreAdapter.ActionListener {
             override fun onItemClicked(view: View) {
-                showStoreDetail(view.tag as Data)
+                showStoreDetail(view.tag as LocationDataModel)
             }
         })
 
@@ -149,7 +149,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         }
         mMap?.setOnMarkerClickListener {
             val tag: Any? = it.tag
-            if (tag is Data) {
+            if (tag is LocationDataModel) {
                 showStoreDetail(tag)
             }
             true
@@ -187,15 +187,12 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             when (result) {
                 is Fail -> Toast.makeText(this@DropoffPickerActivity, result.toString(), Toast.LENGTH_SHORT).show()
                 is Success -> {
-                    drawStoreLocations(result.data)
-                    mNearbyAdapter.setData(result.data)
+                    drawStoreLocations(result.data.nearbyStores)
+                    mNearbyAdapter.setData(result.data.nearbyStores)
                     mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                    drawCircle(result.data.radius)
                 }
             }
-        })
-
-        viewModel.radius.observe(this, Observer {
-            drawCircle(it ?: 0)
         })
     }
 
@@ -287,10 +284,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mNoPermissionsView.visibility = View.GONE
     }
 
-    private fun showStoreDetail(datum: Data) {
+    private fun showStoreDetail(datum: LocationDataModel) {
         mMarkerList.forEach {
             val tag = it.tag
-            if (tag is Data) {
+            if (tag is LocationDataModel) {
                 if (tag.addrId == datum.addrId) {
                     it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_white))
                 } else {
@@ -305,7 +302,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mDetailBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    private fun drawStoreLocations(data: List<Data>) {
+    private fun drawStoreLocations(data: List<LocationDataModel>) {
         mMarkerList.clear()
         for (datum in data) {
             val marker = mMap?.addMarker(MarkerOptions()

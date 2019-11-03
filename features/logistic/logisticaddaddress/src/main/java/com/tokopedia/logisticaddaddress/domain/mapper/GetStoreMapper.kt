@@ -4,8 +4,10 @@ import com.tokopedia.logisticaddaddress.domain.model.dropoff.Data
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffUiModel
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
+import javax.inject.Inject
 
-class GetStoreMapper {
+
+class GetStoreMapper @Inject constructor() {
     fun map(input: GetStoreResponse): DropoffUiModel {
         return DropoffUiModel(
                 input.keroAddressStoreLocation.data.map { it.toUiModel() },
