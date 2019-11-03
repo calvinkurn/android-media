@@ -242,6 +242,16 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun showStoreDetail(datum: Data) {
+        mMarkerList.forEach {
+            val tag = it.tag
+            if (tag is Data) {
+                if (tag.addrId == datum.addrId) {
+                    it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_white))
+                } else {
+                    it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green))
+                }
+            }
+        }
         mStoreDetail.setStore(datum)
         if (mBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
             mBehavior.state = BottomSheetBehavior.STATE_HIDDEN
