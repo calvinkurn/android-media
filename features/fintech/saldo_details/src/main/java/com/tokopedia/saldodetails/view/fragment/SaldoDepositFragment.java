@@ -105,9 +105,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private boolean isSellerEnabled;
     private SaldoTransactionHistoryFragment saldoHistoryFragment;
 
-    private float sellerSaldoBalance;
-    private float buyerSaldoBalance;
-    private float totalSaldoBalance;
+    private long sellerSaldoBalance;
+    private long buyerSaldoBalance;
+    private long totalSaldoBalance;
     private LinearLayout saldoTypeLL;
     private LinearLayout merchantDetailLL;
 
