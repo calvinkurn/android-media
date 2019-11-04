@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -223,7 +223,7 @@
                         android:id="@+id/copy_order_id"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        app:srcCompat="@drawable/ic_copy_order" />
+                        app:srcCompat="@drawable/flight_ic_copy_order" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -312,7 +312,7 @@
                     android:text="@string/flight_label_passenger_data"
                     android:textSize="18sp" />
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/image_expendable_passenger"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_20"
@@ -359,7 +359,7 @@
                 android:textColor="@color/green_nob"
                 android:textSize="@dimen/sp_18" />
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_8"
                 android:layout_height="@dimen/dp_8"
                 android:layout_gravity="center"
@@ -375,7 +375,7 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_insurance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -425,7 +425,7 @@
                         android:layout_height="15dp"
                         android:layout_gravity="top"
                         android:layout_marginRight="@dimen/dp_5"
-                        app:srcCompat="@drawable/ic_download_eticket" />
+                        app:srcCompat="@drawable/flight_ic_download_eticket" />
 
                     <TextView
                         style="@style/TextView.Micro.Green"
@@ -434,7 +434,7 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_detail_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -508,4 +508,4 @@
 
     </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>

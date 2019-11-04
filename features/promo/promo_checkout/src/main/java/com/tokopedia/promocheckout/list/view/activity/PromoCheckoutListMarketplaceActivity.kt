@@ -3,7 +3,7 @@ package com.tokopedia.promocheckout.list.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.constant.IRouterConstant
@@ -19,18 +19,14 @@ import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketpla
 
 class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutListComponent> {
 
-
-    lateinit var promocheckoutlistfragment:PromoCheckoutListMarketplaceFragment
-
     override fun getNewFragment(): Fragment {
-        promocheckoutlistfragment= PromoCheckoutListMarketplaceFragment.createInstance(
+        return PromoCheckoutListMarketplaceFragment.createInstance(
                 intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
                 intent?.extras?.getString(PROMO_CODE, ""),
                 intent?.extras?.getBoolean(ONE_CLICK_SHIPMENT, false),
                 intent?.extras?.getInt(PAGE_TRACKING, 1) ?: 1,
                 intent?.extras?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM) as Promo
         )
-        return promocheckoutlistfragment
     }
 
     override fun getComponent(): PromoCheckoutListComponent {
@@ -54,12 +50,16 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
 
     override fun onBackPressed() {
 
-        val hasFragment=promocheckoutlistfragment.childFragmentManager.backStackEntryCount>0
-        if(hasFragment){
-            promocheckoutlistfragment.childFragmentManager.popBackStack()
-        }
-        else {
+        val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
+        if (promocheckoutlistfragment != null) {
+            if (promocheckoutlistfragment.childFragmentManager.backStackEntryCount > 0) {
+                promocheckoutlistfragment.childFragmentManager.popBackStack()
+            } else
+                super.onBackPressed()
+        } else {
             super.onBackPressed()
+
         }
     }
 }
+

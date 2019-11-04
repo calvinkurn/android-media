@@ -1,7 +1,7 @@
 package com.tokopedia.tradein.view.viewcontrollers
 
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.design.component.BottomSheets

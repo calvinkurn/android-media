@@ -1,6 +1,6 @@
 package com.tokopedia.shop.product.view.adapter.scrolllistener;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 

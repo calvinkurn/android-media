@@ -2,8 +2,8 @@ package com.tokopedia.topads.keyword.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;

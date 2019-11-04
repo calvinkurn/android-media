@@ -15,7 +15,7 @@
         android:gravity="top|center_horizontal"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/card_view_margin"
@@ -29,7 +29,7 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 app:srcCompat="@drawable/loading_page" />
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:layout_width="match_parent"

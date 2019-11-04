@@ -72,8 +72,9 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         }
 
     fun getPopulateDashboardData(rawQuery: String) {
+        val shopId: Int = userSession.shopId.toIntOrNull() ?: 0
         topAdsGetPopulateDataAdUseCase.execute(TopAdsGetPopulateDataAdUseCase
-                .createRequestParams(rawQuery, Integer.parseInt(userSession.shopId)),
+                .createRequestParams(rawQuery, shopId),
                 object : Subscriber<DashboardPopulateResponse>() {
                     override fun onCompleted() {}
 
@@ -230,7 +231,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         val graphqlUseCase = GraphqlUseCase()
         val shopId: String = userSession.shopId
         val variables = mapOf<String, Any>(TopAdsDashboardConstant.SHOP_ID to shopId)
-        val graphqlRequest = GraphqlRequest(rawQuery, AutoTopUpData.Response::class.java, variables)
+        val graphqlRequest = GraphqlRequest(rawQuery, AutoTopUpData.Response::class.java, variables, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(object : Subscriber<GraphqlResponse>() {

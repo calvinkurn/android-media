@@ -15,6 +15,7 @@ import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import rx.Subscriber
 import android.content.Intent
 import android.net.Uri
+import androidx.core.content.ContextCompat.startActivity
 
 
 /**

@@ -90,8 +90,6 @@ public interface ProductListSectionContract {
 
         void launchLoginActivity(String productId);
 
-        void sendImpressionGuidedSearch();
-
         void showAdultRestriction();
 
         void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction);

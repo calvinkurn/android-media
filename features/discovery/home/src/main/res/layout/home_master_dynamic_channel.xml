@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/channel_title_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Hypebeast Banget Pokoknya" />
 
-    <android.support.constraint.Barrier
+    <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,11 +80,14 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
             app:unifyButtonVariant="ghost"
             app:unifyButtonType="alternate"
             app:unifyButtonSize="small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -71,19 +71,23 @@ public class TrackingPageMapper implements ITrackingPageMapper {
         }
         model.setHistoryList(trackingHistoryViewModels);
 
-        Page trackPage = trackingResponse.getPage();
-        List<AdditionalInfoUiModel> listAdditionalInfo = new ArrayList<>();
-        if (!trackPage.getListAdditionalInfo().isEmpty()) {
-            for (int i = 0; i < trackPage.getListAdditionalInfo().size(); i++) {
-                AdditionalInfoUiModel additionalInfoUiModel = new AdditionalInfoUiModel(
-                        trackPage.getListAdditionalInfo().get(i).getTitle(),
-                        trackPage.getListAdditionalInfo().get(i).getNotes(),
-                        trackPage.getListAdditionalInfo().get(i).getUrlDetail(),
-                        trackPage.getListAdditionalInfo().get(i).getUrlText());
-                listAdditionalInfo.add(additionalInfoUiModel);
+        if (trackingResponse.getPage() != null) {
+            Page trackPage = trackingResponse.getPage();
+            List<AdditionalInfoUiModel> listAdditionalInfo = new ArrayList<>();
+            if (trackPage.getListAdditionalInfo() != null) {
+                if (!trackPage.getListAdditionalInfo().isEmpty()) {
+                    for (int i = 0; i < trackPage.getListAdditionalInfo().size(); i++) {
+                        AdditionalInfoUiModel additionalInfoUiModel = new AdditionalInfoUiModel(
+                                trackPage.getListAdditionalInfo().get(i).getTitle(),
+                                trackPage.getListAdditionalInfo().get(i).getNotes(),
+                                trackPage.getListAdditionalInfo().get(i).getUrlDetail(),
+                                trackPage.getListAdditionalInfo().get(i).getUrlText());
+                        listAdditionalInfo.add(additionalInfoUiModel);
+                    }
+                }
+                model.setAdditionalInfoList(listAdditionalInfo);
             }
         }
-        model.setAdditionalInfoList(listAdditionalInfo);
 
         return model;
     }

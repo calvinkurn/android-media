@@ -2,9 +2,6 @@ package com.tokopedia.saldodetails.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -16,12 +13,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
+import com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity;
 
 public class SaldoIntroFragment extends TkpdBaseV4Fragment {
 
@@ -74,8 +75,7 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
             spannableString.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View view) {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                            SaldoDetailsConstants.SALDO_HELP_URL));
+                    startWebView(SaldoDetailsConstants.SALDO_HELP_URL);
                 }
 
                 @Override
@@ -95,6 +95,10 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
                 getActivity().finish();
             }
         });
+    }
+
+    private void startWebView(String url) {
+        startActivity(SaldoWebViewActivity.getWebViewIntent(context, url));
     }
 }
 

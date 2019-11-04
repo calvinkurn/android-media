@@ -1,6 +1,6 @@
 package com.tokopedia.permissionchecker
 
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.FragmentActivity
 
 /**
  * Created by isfaaghyth on 05/04/19.
