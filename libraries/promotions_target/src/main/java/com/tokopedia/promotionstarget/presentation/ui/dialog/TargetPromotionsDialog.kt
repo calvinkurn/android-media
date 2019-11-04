@@ -38,6 +38,7 @@ import com.tokopedia.promotionstarget.data.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.CouponGratificationParams.CAMPAIGN_SLUG
 import com.tokopedia.promotionstarget.data.CouponGratificationParams.POP_SLUG
 import com.tokopedia.promotionstarget.data.GratificationDataContract
+import com.tokopedia.promotionstarget.data.LiveDataResult
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
@@ -97,7 +98,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    var autoApplyObserver: Observer<Result<AutoApplyResponse>>? = null
+    var autoApplyObserver: Observer<LiveDataResult<AutoApplyResponse>>? = null
 
     private var originallyLoggedIn = false
     private val REQUEST_CODE = 29
@@ -325,9 +326,9 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         removeAutoApplyLiveDataObserver()
 
         autoApplyObserver = Observer { it ->
-            when (it) {
-                is Success -> {
-                    val messageList = it.data.tokopointsSetAutoApply?.resultStatus?.message
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS  -> {
+                    val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
                     if (messageList != null && messageList.isNotEmpty())
                         CustomToast.show(activityContext, messageList[0].toString())
                 }

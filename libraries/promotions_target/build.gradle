@@ -33,7 +33,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
 
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 
 }
 

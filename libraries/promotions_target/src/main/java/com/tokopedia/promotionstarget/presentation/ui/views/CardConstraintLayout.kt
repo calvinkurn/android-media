@@ -22,7 +22,7 @@ open class CardConstraintLayout : ConstraintLayout {
     private var rectBackgroundRectF = RectF()
     private var borderRectF = RectF()
 
-    private var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
+    private val porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
 
     private var shadowColor = Color.BLACK
 
