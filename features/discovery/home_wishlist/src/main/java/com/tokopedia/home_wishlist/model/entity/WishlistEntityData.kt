@@ -1,6 +1,6 @@
 package com.tokopedia.home_wishlist.model.entity
 
-data class WishlistData(
+data class WishlistEntityData(
         val hasNextPage: Boolean = false,
         val items: List<WishlistItem> = listOf(),
         val totalData: Integer = Integer(0),

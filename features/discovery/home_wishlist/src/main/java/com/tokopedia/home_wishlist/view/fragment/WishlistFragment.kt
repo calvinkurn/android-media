@@ -215,7 +215,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
      * It handling trigger loadWishlist primaryProduct and recommendationList from viewModel
      */
     private fun loadData(){
-        viewModel.wishlistData.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.wishlistLiveData.observe(viewLifecycleOwner, Observer { response ->
             if(response.isNotEmpty()) renderList(response)
         })
         viewModel.wishlistState.observe(viewLifecycleOwner, Observer { state ->
@@ -232,7 +232,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 menu?.findItem(R.id.manage)?.isVisible = true
             }
         })
-        viewModel.getWishlistData()
+        viewModel.getWishlistData(shouldShowInitialPage = true)
     }
 
     private fun observeAction(){
@@ -305,7 +305,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     override fun onTryAgainClick() {
-        viewModel.getWishlistData()
+        viewModel.getWishlistData(shouldShowInitialPage = true)
     }
 
     private fun onBulkDelete(){

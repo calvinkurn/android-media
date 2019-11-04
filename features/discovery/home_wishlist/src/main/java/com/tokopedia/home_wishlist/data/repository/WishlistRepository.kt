@@ -7,11 +7,9 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home_wishlist.model.entity.Wishlist
-import com.tokopedia.home_wishlist.model.entity.WishlistData
-import com.tokopedia.home_wishlist.model.entity.WishlistItem
+import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
 import com.tokopedia.home_wishlist.model.entity.WishlistResponse
 import com.tokopedia.recommendation_widget_common.domain.RecommendationDataSource
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -32,13 +30,13 @@ class WishlistRepository @Inject constructor(
         const val DEFAULT_START_PAGE = 1
     }
 
-    suspend fun getData(filter: String, page: Int) : WishlistData{
+    suspend fun getData(keyword: String, page: Int) : WishlistEntityData{
         val data = withContext(Dispatchers.IO){
             val cacheStrategy =
                     GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
             val params = mapOf(
-                    PARAM_QUERY to filter,
+                    PARAM_QUERY to keyword,
                     PARAM_PAGE to page,
                     PARAM_COUNT to DEFAULT_COUNT
             )
@@ -54,7 +52,7 @@ class WishlistRepository @Inject constructor(
         data.getError(WishlistResponse::class.java)?.let {
             if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it[0].message)){
-                    return WishlistData(isSuccess = false, errorMessage = it[0].message)
+                    return WishlistEntityData(isSuccess = false, errorMessage = it[0].message)
                 }
             }
         }
@@ -62,8 +60,8 @@ class WishlistRepository @Inject constructor(
         return mappingWishlistRepositoryItem(data.getSuccessData<WishlistResponse>().wishlist)
     }
 
-    fun mappingWishlistRepositoryItem(data: Wishlist): WishlistData {
-        return WishlistData(
+    fun mappingWishlistRepositoryItem(data: Wishlist): WishlistEntityData {
+        return WishlistEntityData(
                 isSuccess = true,
                 hasNextPage = data.hasNextPage,
                 items = data.items,
