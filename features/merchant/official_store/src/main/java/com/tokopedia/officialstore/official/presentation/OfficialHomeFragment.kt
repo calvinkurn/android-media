@@ -33,6 +33,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAda
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -140,6 +141,9 @@ class OfficialHomeFragment :
     }
 
     private fun refreshData() {
+        adapter?.getVisitables()?.removeAll {
+            it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+        }
         viewModel.loadFirstData(category)
     }
 

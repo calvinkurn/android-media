@@ -17,7 +17,7 @@ class OfficialHomeAdapter(adapterTypeFactory: OfficialHomeAdapterTypeFactory):
      * preparing space for banner, benefit, and featuredshop
      */
     fun resetState() {
-        visitables.add(OfficialHomeMapper.BANNER_POSITION, OfficialBannerViewModel(arrayListOf(), ""))
+        visitables.add(OfficialHomeMapper.BANNER_POSITION, OfficialBannerViewModel(mutableListOf(), ""))
         visitables.add(OfficialHomeMapper.BENEFIT_POSITION, OfficialBenefitViewModel(arrayListOf()))
         visitables.add(OfficialHomeMapper.FEATURE_SHOP_POSITION, OfficialFeaturedShopViewModel(arrayListOf(), null, ""))
     }
