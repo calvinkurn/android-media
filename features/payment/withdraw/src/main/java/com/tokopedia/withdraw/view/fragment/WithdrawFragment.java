@@ -62,6 +62,7 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.webview.TkpdWebView;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.constant.WithdrawConstant;
@@ -80,6 +81,7 @@ import com.tokopedia.withdraw.view.presenter.WithdrawPresenter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -156,6 +158,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private Group editableGroup;
     private Group emptyScreenGroup;
     private CheckEligible checkEligible;
+    private final String PARAM_HEADER_GC_TOKEN = "X-User-Token";
 
 
     private TextView tvEmptySaldo;
@@ -901,10 +904,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private void openTermsAndConditionBottomSheet() {
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View view = getLayoutInflater().inflate(R.layout.swd_layout_withdraw_tnc, null, true);
-        WebView webView = view.findViewById(R.id.swd_tnc_webview);
+        TkpdWebView webView = view.findViewById(R.id.swd_tnc_webview);
         ImageView closeBtn = view.findViewById(R.id.close_button);
         Typography titleView = view.findViewById(R.id.title_closeable);
-        webView.loadUrl(WithdrawConstant.WEB_TNC_URL);
+        webView.loadAuthUrl(WithdrawConstant.WEB_TNC_URL, userSession);
         closeBtn.setOnClickListener((v) -> bottomSheet.dismiss());
         titleView.setText(getString(R.string.saldo_withdraw_tnc_title));
         bottomSheet.setCustomContentView(view, getString(R.string.saldo_withdraw_tnc_title), false);
