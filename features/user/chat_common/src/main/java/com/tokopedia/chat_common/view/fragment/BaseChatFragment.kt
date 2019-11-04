@@ -255,7 +255,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun showChatMenu() {
-        if(bottomChatMenu.isAdded) {
+        if(!bottomChatMenu.isVisible) {
             bottomChatMenu.show(childFragmentManager, BottomChatMenuFragment.TAG)
         }
     }
