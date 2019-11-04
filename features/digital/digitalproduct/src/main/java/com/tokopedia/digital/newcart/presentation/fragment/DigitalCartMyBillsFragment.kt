@@ -161,6 +161,11 @@ class DigitalCartMyBillsFragment: DigitalBaseCartFragment<DigitalCartMyBillsCont
         mybillEgold.hasMoreInfo(true)
         headerTitle?.let { title -> mybillEgold.setHeaderTitle(title) }
         description?.let { desc -> mybillEgold.setDescription(desc) }
+        mybillEgold.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
+            run {
+                presenter.onEgoldCheckedListener(isChecked)
+            }
+        })
     }
 
     override fun onMoreInfoClicked() {

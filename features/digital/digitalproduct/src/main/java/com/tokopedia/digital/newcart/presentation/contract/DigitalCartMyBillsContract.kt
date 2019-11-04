@@ -28,6 +28,8 @@ interface DigitalCartMyBillsContract {
 
         fun onSubcriptionCheckedListener(checked: Boolean)
 
+        fun onEgoldCheckedListener(checked: Boolean)
+
         fun onEgoldMoreInfoClicked()
     }
 }

@@ -59,14 +59,14 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         }
     }
 
-    override fun renderCheckoutView(cartDigitalInfoData: CartDigitalInfoData?) {
-        if (view.isEgoldChecked()) {
-            val egoldPrice = cartDigitalInfoData?.attributes?.fintechProduct?.get(0)?.fintechAmount ?: 0
-            cartDigitalInfoData?.attributes?.pricePlain?.let {
-                pricePlain -> view.renderCheckoutView(pricePlain + egoldPrice)
+    override fun onEgoldCheckedListener(checked: Boolean) {
+        view.cartInfoData.attributes?.pricePlain?.let { pricePlain ->
+            var totalPrice = pricePlain
+            if (checked) {
+                val egoldPrice = view.cartInfoData.attributes?.fintechProduct?.get(0)?.fintechAmount ?: 0
+                totalPrice += egoldPrice
             }
-        } else {
-            super.renderCheckoutView(cartDigitalInfoData)
+            view.renderCheckoutView(totalPrice)
         }
     }
 
