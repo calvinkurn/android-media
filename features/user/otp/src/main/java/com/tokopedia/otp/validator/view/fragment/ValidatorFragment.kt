@@ -1,13 +1,13 @@
 package com.tokopedia.otp.validator.view.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.text.*
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater

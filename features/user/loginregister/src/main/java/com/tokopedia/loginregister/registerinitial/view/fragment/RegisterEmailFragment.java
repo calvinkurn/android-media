@@ -4,9 +4,9 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -270,6 +270,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
                 if(getActivity() != null){
                     Intent intent = new Intent();
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_ACTION, data.getAction());
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source);
                     getActivity().setResult(Activity.RESULT_OK, intent);
                     getActivity().finish();
                 }

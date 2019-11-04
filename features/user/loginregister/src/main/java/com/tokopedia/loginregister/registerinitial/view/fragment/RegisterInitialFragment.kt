@@ -2,9 +2,9 @@ package com.tokopedia.loginregister.registerinitial.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -492,7 +492,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         onErrorRegister(errorMessage)
     }
 
-    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo){
+    private fun     onSuccessGetUserInfo(profileInfo: ProfileInfo){
         val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         if (profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
