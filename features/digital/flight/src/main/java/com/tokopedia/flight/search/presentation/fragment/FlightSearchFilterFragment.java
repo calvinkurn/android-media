@@ -16,7 +16,6 @@ import com.tokopedia.design.label.selection.text.SelectionTextLabelView;
 import com.tokopedia.design.text.DecimalRangeInputView;
 import com.tokopedia.design.text.RangeInputView;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.view.FlightRadioLabelView;
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
@@ -70,7 +69,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_search_filter, container, false);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_search_filter, container, false);
         FlightFilterModel filterModel = onFilterFragmentListener.getFlightFilterModel();
         FlightSearchStatisticModel statModel = onFilterFragmentListener.getFlightSearchStatisticModel();
 
@@ -109,7 +108,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
     }
 
     private void populateDuration(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel) {
-        RangeInputView durationDecimalRangeInputView = (RangeInputView) view.findViewById(R.id.duration_range_input_view);
+        RangeInputView durationDecimalRangeInputView = (RangeInputView) view.findViewById(com.tokopedia.flight.R.id.duration_range_input_view);
         int statMinDur = statModel.getMinDuration();
         int statMaxDur = statModel.getMaxDuration();
         int filterMinDur = filterModel.getDurationMin();
@@ -149,7 +148,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
     }
 
     private void populatePrice(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel) {
-        RangeInputView priceRangeInputView = (RangeInputView) view.findViewById(R.id.price_range_input_view);
+        RangeInputView priceRangeInputView = (RangeInputView) view.findViewById(com.tokopedia.flight.R.id.price_range_input_view);
         int statMinPrice = statModel.getMinPrice();
         int statMaxPrice = statModel.getMaxPrice();
         int filterMinPrice = filterModel.getPriceMin();
@@ -190,7 +189,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
     }
 
     private void populateTransitLabel(View view, FlightFilterModel filterModel) {
-        SelectionTextLabelView transitSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_transit);
+        SelectionTextLabelView transitSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(com.tokopedia.flight.R.id.selection_text_label_layout_transit);
         final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
         if (filterModel.getTransitTypeList() != null) {
             for (int i = 0, sizei = filterModel.getTransitTypeList().size(); i < sizei; i++) {
@@ -217,7 +216,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
     }
 
     private void populateDepartureLabel(View view, FlightFilterModel filterModel) {
-        SelectionTextLabelView departureTimeSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_departure_time);
+        SelectionTextLabelView departureTimeSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(com.tokopedia.flight.R.id.selection_text_label_layout_departure_time);
 
         final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
         List<DepartureTimeEnum> departureTimeEnumList = filterModel.getDepartureTimeList();
@@ -247,7 +246,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
     }
 
     private void populateAirlineLabel(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel) {
-        SelectionTextLabelView airlineSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_airline);
+        SelectionTextLabelView airlineSelectionTextLabelView = (SelectionTextLabelView) view.findViewById(com.tokopedia.flight.R.id.selection_text_label_layout_airline);
 
         final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
         List<String> airlineList = filterModel.getAirlineList();
@@ -277,7 +276,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
     }
 
     private void populateRefundLabel(View view, FlightFilterModel filterModel) {
-        SelectionTextLabelView refundPolicySelectionTextLabelView = (SelectionTextLabelView) view.findViewById(R.id.selection_text_label_layout_refund_policy);
+        SelectionTextLabelView refundPolicySelectionTextLabelView = (SelectionTextLabelView) view.findViewById(com.tokopedia.flight.R.id.selection_text_label_layout_refund_policy);
 
         final List<SelectionItem<String>> selectionItemList = new ArrayList<>();
         List<RefundableEnum> refundableEnumList = filterModel.getRefundableTypeList();
@@ -308,7 +307,7 @@ public class FlightSearchFilterFragment extends BaseDaggerFragment implements On
 
 
     private void populateSpecialLabel(View view, FlightFilterModel filterModel, FlightSearchStatisticModel statModel) {
-        FlightRadioLabelView labelView = view.findViewById(R.id.swith_special_price);
+        FlightRadioLabelView labelView = view.findViewById(com.tokopedia.flight.R.id.swith_special_price);
         if (statModel.isHaveSpecialPrice()) {
             labelView.setVisibility(View.VISIBLE);
             labelView.setChecked(filterModel.isSpecialPrice());
