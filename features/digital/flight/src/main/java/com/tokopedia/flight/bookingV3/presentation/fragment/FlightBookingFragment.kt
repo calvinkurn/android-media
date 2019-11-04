@@ -23,6 +23,7 @@ import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
+import com.tokopedia.flight.bookingV3.presentation.adapter.FlightInsuranceAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -49,11 +50,12 @@ import javax.inject.Inject
 
 class FlightBookingFragment : BaseDaggerFragment() {
 
-    val uiScope = CoroutineScope(Dispatchers.Main)
+    private val uiScope = CoroutineScope(Dispatchers.Main)
     var isCouponChanged = false
     val cartId = ""
 
     lateinit var flightRouteAdapter: FlightJourneyAdapter
+    lateinit var flightInsuranceAdapter: FlightInsuranceAdapter
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -101,18 +103,28 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
     }
 
-    fun renderData(cart: FlightCartViewEntity) {
+    private fun renderData(cart: FlightCartViewEntity) {
         hideShimmering()
 
-        flightRouteAdapter = FlightJourneyAdapter()
+        if (!::flightRouteAdapter.isInitialized) flightRouteAdapter = FlightJourneyAdapter()
         val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_flight_booking_route_summary.layoutManager = layoutManager
         rv_flight_booking_route_summary.setHasFixedSize(true)
         rv_flight_booking_route_summary.adapter = flightRouteAdapter
         flightRouteAdapter.updateRoutes(cart.journeySummaries)
+
+
+        if (!::flightInsuranceAdapter.isInitialized) flightInsuranceAdapter = FlightInsuranceAdapter()
+        val layoutManager_ = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        rv_insurance_list.layoutManager = layoutManager_
+        rv_insurance_list.setHasFixedSize(true)
+        rv_insurance_list.adapter = flightInsuranceAdapter
+        flightInsuranceAdapter.updateList(cart.insurances)
+
+
     }
 
-    fun renderProfileData(profileInfo: ProfileInfo) {
+    private fun renderProfileData(profileInfo: ProfileInfo) {
         widget_traveller_info.setContactName(profileInfo.fullName)
         widget_traveller_info.setContactPhoneNum(profileInfo.phone)
         widget_traveller_info.setContactEmail(profileInfo.email)

@@ -36,6 +36,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     val profileResult = MutableLiveData<Result<ProfileInfo>>()
     val flightCancelVoucherSuccess = MutableLiveData<Boolean>()
 
+    var retryCount = 0
+
 
     fun getCart(rawQuery: String, cartId: String) {
         val params = mapOf(PARAM_CART_ID to cartId)
@@ -45,10 +47,20 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCart.Response>().flightCart
 
-            flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
-            flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
+            if (data.cartData.id.isNotBlank()) {
+                flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
+                flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
+            } else {
+                if (data.meta.needRefresh && data.meta.maxRetry >= retryCount) {
+                    retryCount++
+                    getCart(rawQuery, cartId)
+                } else {
+//                    flightCartResult.value = Fail()
+                }
+            }
         }) {
             //            flightCartResult.value = Fail(it)
+
             val gson = Gson()
             val data = gson.fromJson(rawQuery, FlightCart.Response::class.java).flightCart
             flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))

@@ -5,7 +5,8 @@ package com.tokopedia.flight.bookingV3.data
  */
 
 data class FlightCartViewEntity(
-        var journeySummaries: List<JourneySummary> = listOf()
+        var journeySummaries: List<JourneySummary> = listOf(),
+        var insurances: List<FlightCart.Insurance> = listOf()
 ) {
     data class JourneySummary(
             var airlineLogo: String = "",

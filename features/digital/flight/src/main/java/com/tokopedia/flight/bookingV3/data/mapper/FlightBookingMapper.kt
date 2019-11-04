@@ -63,7 +63,7 @@ class FlightBookingMapper {
                 journies.add(newJourney)
             }
 
-            return FlightCartViewEntity(journeySummaries = journies)
+            return FlightCartViewEntity(journeySummaries = journies, insurances = flightCart.cartData.flight.insuranceOptions)
         }
 
         fun mapToFlightPromoViewEntity(voucher: FlightCart.Voucher): FlightPromoViewEntity {
