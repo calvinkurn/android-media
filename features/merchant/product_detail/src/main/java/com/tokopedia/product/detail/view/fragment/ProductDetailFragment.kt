@@ -34,6 +34,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -467,6 +468,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             scrollToTradeInWidget()
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
+        if (GlobalConfig.isSellerApp()) {
+            val linearLayout = view.findViewById<ViewGroup>(R.id.layout_search)
+            linearLayout.hide()
+        }
+
         et_search.setOnClickListener {
             productDetailTracking.eventClickSearchBar()
             RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
