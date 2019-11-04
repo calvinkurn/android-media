@@ -348,7 +348,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onPause() {
         super.onPause();
-        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey(), SCREEN_IMAGE_SEARCH_TAB);
         trackingQueue.sendAll();
     }
 
