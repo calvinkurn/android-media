@@ -32,6 +32,7 @@ public class MainToolbar extends Toolbar {
     protected ImageView btnNotification;
     protected ImageView btnWishlist;
     protected ImageView btnInbox;
+    protected TextView editTextSearch;
     private BadgeView badgeViewInbox;
     private BadgeView badgeViewNotification;
 
@@ -41,6 +42,7 @@ public class MainToolbar extends Toolbar {
     protected RemoteConfig remoteConfig;
     protected NotifAnalytics notifAnalytics;
 
+    public String searchApplink = ApplinkConstInternalDiscovery.AUTOCOMPLETE;
     protected String screenName = "";
 
     public MainToolbar(Context context) {
@@ -102,7 +104,7 @@ public class MainToolbar extends Toolbar {
         btnNotification = findViewById(R.id.btn_notification);
         btnInbox = findViewById(R.id.btn_inbox);
         btnWishlist = findViewById(R.id.btn_wishlist);
-        TextView editTextSearch = findViewById(R.id.et_search);
+        editTextSearch = findViewById(R.id.et_search);
 
         remoteConfig = new FirebaseRemoteConfigImpl(context);
 
@@ -151,7 +153,7 @@ public class MainToolbar extends Toolbar {
 
         editTextSearch.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingSearchBar(screenName);
-            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
+            RouteManager.route(context, searchApplink);
         });
 
         btnNotification.setOnClickListener(v -> {
@@ -168,6 +170,12 @@ public class MainToolbar extends Toolbar {
                 RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
+    }
+
+    public void setQuerySearch(String querySearch) {
+        if (editTextSearch != null) {
+            editTextSearch.setHint(querySearch);
+        }
     }
 
     public void inflateResource(Context context) {
