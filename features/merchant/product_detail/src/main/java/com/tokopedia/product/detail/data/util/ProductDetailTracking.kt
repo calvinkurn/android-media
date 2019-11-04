@@ -452,7 +452,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ""
         )
         mapEvent[KEY_PRODUCT_ID] = productId
-        TrackApp.getInstance().gtm.pushGeneralGtmV5(mapEvent)
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
     fun eventPDPAddToWishlist(productId: String?) {
