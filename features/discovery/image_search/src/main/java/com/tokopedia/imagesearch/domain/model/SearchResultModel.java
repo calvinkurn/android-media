@@ -14,6 +14,7 @@ public class SearchResultModel {
     private CategoryFilterModel categoryFilterModel;
     private int totalData;
     private String query;
+    private String token;
     private String shareUrl;
     private String additionalParams;
 
@@ -39,6 +40,14 @@ public class SearchResultModel {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getShareUrl() {

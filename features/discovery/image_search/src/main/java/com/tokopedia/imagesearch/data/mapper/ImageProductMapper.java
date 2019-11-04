@@ -34,6 +34,7 @@ public class ImageProductMapper implements Func1<GraphqlResponse, SearchResultMo
         model.setProductList(mappingProduct(searchProductResponse.getData().getProducts()));
         model.setQuery(searchProductResponse.getData().getQuery());
         model.setShareUrl(searchProductResponse.getData().getShareUrl());
+        model.setToken(searchProductResponse.getData().getToken());
         model.setCategoryFilterModel(mappingCategoryFilterModel(searchProductResponse.getData().getCategories()));
 
         return model;

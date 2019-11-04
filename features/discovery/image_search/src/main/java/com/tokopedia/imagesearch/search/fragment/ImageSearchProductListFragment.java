@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +87,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
     private RedirectionListener redirectionListener;
+    private SwipeRefreshLayout refreshLayout;
 
     public int spanCount;
     private TrackingQueue trackingQueue;
@@ -174,6 +177,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         initTopAdsConfig();
         setupAdapter();
         setupListener();
+        initSwipeToRefresh(view);
     }
 
     private void initTopAdsConfig() {
@@ -199,7 +203,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)));
         recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
 
-        presenter.initData(initMappingProduct(), productViewModel.getCategoryFilterModel());
+        presenter.initData(initMappingProduct(), productViewModel.getCategoryFilterModel(), productViewModel.getToken());
         presenter.loadMoreData(0);
     }
 
@@ -239,6 +243,16 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         recyclerView = (RecyclerView) rootView.findViewById(R.id.image_search_recyclerview);
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(getSpanCount(), StaggeredGridLayoutManager.VERTICAL);
         staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+    }
+
+    private void initSwipeToRefresh(View view) {
+        refreshLayout = view.findViewById(R.id.image_search_swipe_refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.refreshData();
+            }
+        });
     }
 
     protected ImageProductListPresenter getPresenter() {
@@ -326,10 +340,16 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }
 
+    @Override
     public void reloadData() {
         adapter.clearAllElements();
         staggeredGridLayoutLoadMoreTriggerListener.resetState();
         presenter.loadMoreData(0);
+    }
+
+    @Override
+    public void displayErrorRefresh() {
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
     }
 
     private void sendImageTrackingData(List<Visitable> list) {

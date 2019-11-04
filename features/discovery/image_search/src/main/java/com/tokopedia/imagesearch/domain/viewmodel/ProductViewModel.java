@@ -18,6 +18,7 @@ public class ProductViewModel implements Parcelable {
     private List<ProductItem> productList = new ArrayList<>();
     private boolean hasCatalog;
     private String query;
+    private String token;
     private String shareUrl;
     private String additionalParams;
     private int totalData;
@@ -64,6 +65,14 @@ public class ProductViewModel implements Parcelable {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getShareUrl() {

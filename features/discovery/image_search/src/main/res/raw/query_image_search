@@ -7,6 +7,7 @@ query image_search($image: String!, $params: String!) {
       additional_params
     }
     data {
+      token
       source
       share_url
       q

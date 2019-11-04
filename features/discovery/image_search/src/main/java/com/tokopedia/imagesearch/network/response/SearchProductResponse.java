@@ -76,6 +76,8 @@ public class SearchProductResponse {
     }
 
     public static class Data {
+        @SerializedName("token")
+        private String token;
         @SerializedName("source")
         private String source;
         @SerializedName("share_url")
@@ -86,6 +88,14 @@ public class SearchProductResponse {
         private List<Products> products;
         @SerializedName("categories")
         private List<Categories> categories;
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
 
         public String getSource() {
             return source;

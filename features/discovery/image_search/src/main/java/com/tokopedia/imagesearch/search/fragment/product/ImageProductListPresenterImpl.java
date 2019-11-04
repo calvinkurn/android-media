@@ -1,18 +1,21 @@
 package com.tokopedia.imagesearch.search.fragment.product;
 
-import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
+import com.tokopedia.imagesearch.domain.model.SearchResultModel;
+import com.tokopedia.imagesearch.domain.usecase.RefreshImageSearchUseCase;
 import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
+import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
+import com.tokopedia.imagesearch.helper.ProductViewModelHelper;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -38,6 +41,8 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     private static final long LOAD_MORE_DELAY_MS = 1000;
 
     @Inject
+    RefreshImageSearchUseCase refreshImageSearchUseCase;
+    @Inject
     AddWishListUseCase addWishlistActionUseCase;
     @Inject
     RemoveWishListUseCase removeWishlistActionUseCase;
@@ -47,6 +52,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     private List<Visitable> presentedDataList = new ArrayList<>();
     private CategoryFilterModel categoryFilterModel;
     private String selectedCategoryId = "";
+    private String token;
 
     @Override
     public void attachView(ImageProductListFragmentView viewListener,
@@ -64,8 +70,9 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     }
 
     @Override
-    public void initData(List<Visitable> data, CategoryFilterModel categoryFilterModel) {
+    public void initData(List<Visitable> data, CategoryFilterModel categoryFilterModel, String token) {
         this.categoryFilterModel = categoryFilterModel;
+        this.token = token;
         originalDataList.clear();
         originalDataList.addAll(data);
         presentedDataList.clear();
@@ -96,6 +103,48 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
                 }
             }
         }
+    }
+
+    @Override
+    public void refreshData() {
+        refreshImageSearchUseCase.execute(
+                RefreshImageSearchUseCase.generateParams(token),
+                new Subscriber<SearchResultModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().displayErrorRefresh();
+                    }
+
+                    @Override
+                    public void onNext(SearchResultModel searchResultModel) {
+                        handleRefreshResult(searchResultModel);
+                    }
+                }
+        );
+    }
+
+    private void handleRefreshResult(SearchResultModel searchResultModel) {
+        ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(getView().getContext(), searchResultModel);
+        initData(new ArrayList<>(model.getProductList()), model.getCategoryFilterModel(), model.getToken());
+        if (!isSelectedCategoryValid(model.getCategoryFilterModel())) {
+            selectedCategoryId = "";
+        }
+        setFilterCategory(selectedCategoryId);
+        getView().reloadData();
+    }
+
+    private boolean isSelectedCategoryValid(CategoryFilterModel categoryFilterModel) {
+        for (CategoryFilterModel.Item item : categoryFilterModel.getItemList()) {
+            if (selectedCategoryId.equals(item.getCategoryId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

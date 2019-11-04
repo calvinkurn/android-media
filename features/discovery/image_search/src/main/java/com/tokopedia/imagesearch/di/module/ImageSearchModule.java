@@ -7,6 +7,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.imagesearch.data.mapper.ImageProductMapper;
 import com.tokopedia.imagesearch.di.scope.ImageSearchScope;
 import com.tokopedia.imagesearch.domain.usecase.GetImageSearchUseCase;
+import com.tokopedia.imagesearch.domain.usecase.RefreshImageSearchUseCase;
 import com.tokopedia.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
@@ -34,6 +35,15 @@ public class ImageSearchModule {
             GraphqlUseCase graphqlUseCase,
             ImageProductMapper imageProductMapper) {
         return new GetImageSearchUseCase(context, graphqlUseCase, imageProductMapper);
+    }
+
+    @ImageSearchScope
+    @Provides
+    RefreshImageSearchUseCase refreshImageSearchUseCase(
+            @ApplicationContext Context context,
+            GraphqlUseCase graphqlUseCase,
+            ImageProductMapper imageProductMapper) {
+        return new RefreshImageSearchUseCase(context, graphqlUseCase, imageProductMapper);
     }
 
     @ImageSearchScope
