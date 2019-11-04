@@ -87,13 +87,4 @@ public class ExploreModule {
     AffiliatePreference provideAffiliatePreference(@ApplicationContext Context context) {
         return new AffiliatePreference(context);
     }
-
-    @ExploreScope
-    @Provides
-    ContentExplorePresenter ContentExplorePresenter(GetExploreDataUseCase getExploreDataUseCase,
-                                                    TrackAffiliateClickUseCase trackAffiliateClickUseCase) {
-        return new ContentExplorePresenter(
-                getExploreDataUseCase, trackAffiliateClickUseCase
-        )
-    }
 }
