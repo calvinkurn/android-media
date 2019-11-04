@@ -11,10 +11,8 @@ class OfficialBannerViewModel(val banner: MutableList<Banner>, val categoryName:
     }
 
     fun getBannerImgUrl(): List<String> {
-        val arrayImgUrl = ArrayList<String>()
-        banner.forEach {
-            arrayImgUrl.add(it.imageUrl)
+        return banner.map {
+            it.imageUrl
         }
-        return arrayImgUrl
     }
 }

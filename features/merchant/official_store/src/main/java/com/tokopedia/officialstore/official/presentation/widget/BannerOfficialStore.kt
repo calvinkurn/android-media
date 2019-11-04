@@ -18,9 +18,9 @@ class BannerOfficialStore(@NonNull context: Context, @Nullable attrs: AttributeS
 
     override fun init() {
         val view = View.inflate(this.context, R.layout.widget_official_banner, this)
-        this.bannerRecyclerView = view.findViewById<View>(R.id.viewpager_banner_category) as RecyclerView
-        this.bannerIndicator = view.findViewById<View>(R.id.indicator_banner_container) as ViewGroup
-        this.bannerSeeAll = view.findViewById<View>(R.id.promo_link) as TextView
+        this.bannerRecyclerView = view.findViewById(R.id.viewpager_banner_category)
+        this.bannerIndicator = view.findViewById(R.id.indicator_banner_container)
+        this.bannerSeeAll = view.findViewById(R.id.promo_link)
         this.indicatorItems = ArrayList()
         this.impressionStatusList = ArrayList()
         this.promoImageUrls = ArrayList()

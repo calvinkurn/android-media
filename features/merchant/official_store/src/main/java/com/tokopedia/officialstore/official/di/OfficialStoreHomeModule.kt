@@ -61,16 +61,6 @@ class OfficialStoreHomeModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_product_recommendation)
     }
 
-//    @OfficialStoreHomeScope
-//    @Provides
-//    fun providesGetRecommendationUseCase(@Named(QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION) rawQueries: String,
-//                                         graphqlUseCase: GraphqlUseCase,
-//                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
-//        return GetRecommendationUseCase(rawQueries.toString() ?: "",
-//                graphqlUseCase,
-//                userSessionInterface)
-//    }
-
     @OfficialStoreHomeScope
     @Provides
     fun providesGetRecommendationUseCase(@Named(QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION) rawQueries: String,

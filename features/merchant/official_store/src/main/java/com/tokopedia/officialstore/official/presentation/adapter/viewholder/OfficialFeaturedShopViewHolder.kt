@@ -16,7 +16,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Offic
 import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdapter
 import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
 
-class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
+class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFeaturedShopViewModel>(view){
 
     private var context: Context? = null
     private var recyclerView: RecyclerView? = null
@@ -28,11 +28,11 @@ class OfficialFeaturedShopViewHolder(view: View?): AbstractViewHolder<OfficialFe
     private var officialStoreTracking: OfficialStoreTracking? = null
 
     init {
-        recyclerView = view?.findViewById(R.id.recycler_view_featured_shop)
-        link = view?.findViewById(R.id.link_featured_shop)
-        title = view?.findViewById(R.id.title_featured_shop)
+        recyclerView = view.findViewById(R.id.recycler_view_featured_shop)
+        link = view.findViewById(R.id.link_featured_shop)
+        title = view.findViewById(R.id.title_featured_shop)
 
-        view?.context?.let {
+        view.context?.let {
             context = it
             officialStoreTracking = OfficialStoreTracking(it)
             adapter = FeaturedShopAdapter(it)

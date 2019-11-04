@@ -14,7 +14,6 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl2"
-        android:src="@drawable/qc_launcher"
         android:layout_gravity="center"
         android:layout_marginEnd="@dimen/spacing_lvl2"/>
 
@@ -22,7 +21,6 @@
         android:id="@+id/title_benefit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pasti Ready"
         android:textColor="@color/Purple_P600"
         android:textSize="@dimen/fontSize_lvl2"
         android:layout_gravity="center"/>
