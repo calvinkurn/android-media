@@ -1481,7 +1481,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     }
                 }
 
+                if (label_min_wholesale.isVisible) {
+                    wholesale_divider.visible()
+                } else {
+                    wholesale_divider.gone()
+                }
+                base_view_wholesale.visible()
+
             } else {
+                base_view_wholesale.hide()
                 iv_ovo_installment_icon.hide()
                 iv_arrow_next.hide()
             }
@@ -1513,14 +1521,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             base_view_wholesale.visible()
         }*/
-
-        if (label_min_wholesale.isVisible) {
-            wholesale_divider.visible()
-        } else {
-            wholesale_divider.gone()
-        }
-        base_view_wholesale.visible()
-
 
         productShopView.renderShopFeature(productInfoP2.shopFeature)
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
