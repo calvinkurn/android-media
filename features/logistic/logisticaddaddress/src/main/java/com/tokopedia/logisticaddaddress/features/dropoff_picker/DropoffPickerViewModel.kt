@@ -19,19 +19,23 @@ class DropoffPickerViewModel
                     private val mapper: GetStoreMapper) : BaseViewModel(dispatcher) {
 
     private val mStoreResponse = MutableLiveData<Result<DropoffUiModel>>()
-    val stores: LiveData<Result<DropoffUiModel>>
+    val storeData: LiveData<Result<DropoffUiModel>>
         get() = mStoreResponse
 
     fun getStores(latlng: String) {
 
         getStoreUseCase.setTypeClass(GetStoreResponse::class.java)
-        getStoreUseCase.setRequestParams(mapOf("latlng" to latlng))
+        getStoreUseCase.setRequestParams(mapOf(
+                "latlng" to latlng,
+                "type" to 3
+        ))
         getStoreUseCase.setGraphqlQuery(LocationQuery.keroAddressStoreLocation)
 
         getStoreUseCase.execute(
                 { response ->
                     if (response.keroAddressStoreLocation.data.isNotEmpty()) {
-                        mStoreResponse.value = Success(mapper.map(response))
+                        val successResponse = mapper.map(response)
+                        mStoreResponse.value = Success(successResponse)
                     }
                 },
                 { _ ->

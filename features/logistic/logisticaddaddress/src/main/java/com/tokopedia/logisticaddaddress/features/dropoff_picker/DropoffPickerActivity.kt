@@ -187,7 +187,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun setObservers() {
-        viewModel.stores.observe(this, Observer { result ->
+        viewModel.storeData.observe(this, Observer { result ->
             when (result) {
                 is Fail -> Toast.makeText(this@DropoffPickerActivity, result.toString(), Toast.LENGTH_SHORT).show()
                 is Success -> {
