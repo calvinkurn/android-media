@@ -11,6 +11,10 @@ import com.tokopedia.scanner.R
 import com.tokopedia.scanner.domain.model.VerificationResponse
 import javax.inject.Inject
 
+/**
+ * Created by rival on 29/10/19.
+ */
+
 class ScannerUseCase @Inject constructor(
         resource: Resources,
         repository: GraphqlRepository
