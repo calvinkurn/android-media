@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FtCalculationPartnerData
 import com.tokopedia.product.detail.data.model.financing.FtTncData
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlin.math.roundToLong
 
 class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPrice: Float?,
@@ -83,7 +83,7 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
                                 CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.minimumAmount, false))
                     } else {
                         installmentData.maximumAmount.compareTo(monthlyProductPrice).let { result ->
-                            if(result < 0) {
+                            if (result < 0) {
                                 priceTv.text = "-"
                                 tvInstallmentMinimumPriceExt.show()
                                 tvInstallmentPriceExt.hide()
@@ -150,7 +150,7 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
         internal val llInstructionDetailContainer: LinearLayout = view.findViewById(R.id.instruction_detail_ll)
         internal val llInstallmentDetail: LinearLayout = view.findViewById(R.id.installment_detail_ll)
         internal val ivMainIcon: ImageView = view.findViewById(R.id.iv_installment_main_icon)
-        internal val flInstructionTickerView = view.findViewById<FrameLayout>(R.id.ft_installment_ticker_view)
+        internal val flInstructionTickerView = view.findViewById<Ticker>(R.id.ft_installment_ticker_view)
         internal val llTncDescription: LinearLayout = view.findViewById(R.id.ll_tnc_description)
 
         private var expandLayout = true
