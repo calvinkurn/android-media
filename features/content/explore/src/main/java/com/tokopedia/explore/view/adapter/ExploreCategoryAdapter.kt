@@ -36,9 +36,6 @@ constructor(val listener: ContentExploreContract.View) : RecyclerView.Adapter<Ex
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.tag.context
-        if (position == 0) {
-            list[position].id = CAT_ID_AFFILIATE
-        }
         holder.tag.text = list[position].name
         holder.tag.setOnClickListener { v ->
             listener.onCategoryClicked(
