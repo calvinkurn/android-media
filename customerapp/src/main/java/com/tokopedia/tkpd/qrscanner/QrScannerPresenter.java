@@ -191,9 +191,9 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             verificationResponse -> {
                 getView().hideProgressDialog();
 
-                if (!verificationResponse.getUrl().isEmpty()) {
-                    openActivity(verificationResponse.getUrl());
-                    CampaignTracking.eventScanQRCode("success", idCampaign, verificationResponse.getUrl());
+                if (!verificationResponse.getData().getUrl().isEmpty()) {
+                    openActivity(verificationResponse.getData().getUrl());
+                    CampaignTracking.eventScanQRCode("success", idCampaign, verificationResponse.getData().getUrl());
                     getView().finish();
                     return Unit.INSTANCE;
                 } else {
