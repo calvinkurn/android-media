@@ -881,8 +881,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return opponentName
     }
 
-    override fun trackChatMenuClicked(chatMenuEventtLabel: String) {
-        analytics.trackChatMenuClicked(chatMenuEventtLabel)
+    override fun trackChatMenuClicked(label: String) {
+        analytics.trackChatMenuClicked(label)
     }
 
     override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {
