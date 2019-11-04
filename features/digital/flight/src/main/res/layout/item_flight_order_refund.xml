@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/dp_10"
     android:paddingTop="@dimen/dp_2">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="3sp"
@@ -48,7 +48,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/dp_10">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"
                     app:srcCompat="@drawable/ic_flight_round" />
@@ -73,7 +73,7 @@
                 android:layout_marginTop="@dimen/dp_5"
                 android:background="@drawable/bg_line_separator" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_order_detail"
                 style="@style/TextView.Title"
                 android:layout_width="match_parent"
@@ -89,5 +89,5 @@
                 android:textColor="@color/black" />
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

@@ -17,7 +17,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.GetDistrictSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -77,21 +77,17 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         autofillUseCase.clearCache()
     }
 
-    fun loadAddEdit(isMismatchSolved: Boolean?, isChangesRequested: Boolean?) {
+    fun loadAddEdit(isMismatchSolved: Boolean, isChangesRequested: Boolean) {
         if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
             view.showFailedDialog()
 
             AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess()
             AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed()
         } else {
-            isChangesRequested?.let { isChanges ->
-                isMismatchSolved?.let { isSolved ->
-                    if (isChanges) {
-                        view.finishBackToAddEdit(false, isSolved)
-                    } else {
-                        view.goToAddEditActivity(false, isSolved, false)
-                    }
-                }
+            if (isChangesRequested) {
+                view.finishBackToAddEdit(false, isMismatchSolved)
+            } else {
+                view.goToAddEditActivity(false, isMismatchSolved, false)
             }
 
             AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess()

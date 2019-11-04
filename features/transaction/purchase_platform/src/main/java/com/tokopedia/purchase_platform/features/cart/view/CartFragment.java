@@ -6,17 +6,6 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +16,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
@@ -162,7 +163,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private LinearLayout llHeader;
     private CheckBox cbSelectAll;
     private CardView cardHeader;
-    private CardView cardFooter;
+    private LinearLayout bottomLayout;
+    private View bottomLayoutShadow;
     private LinearLayout llNetworkErrorView;
     private LinearLayout llCartContainer;
 
@@ -372,7 +374,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         rlContent = view.findViewById(R.id.rl_content);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         cardHeader = view.findViewById(R.id.card_header);
-        cardFooter = view.findViewById(R.id.card_footer);
+        bottomLayout = view.findViewById(R.id.bottom_layout);
+        bottomLayoutShadow = view.findViewById(R.id.bottom_layout_shadow);
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
         llCartContainer = view.findViewById(R.id.ll_cart_container);
@@ -401,7 +404,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     int cartSelectAllViewHolderPosition = cartAdapter.getCartSelectAllViewHolderPosition();
                     if (cartSelectAllViewHolderPosition > -1) {
                         if (((GridLayoutManager) layoutManager).findFirstVisibleItemPosition() >= cartSelectAllViewHolderPosition) {
-                            if (cardHeader != null && cardHeader.getVisibility() != View.VISIBLE && cardFooter.getVisibility() == View.VISIBLE) {
+                            if (cardHeader != null && cardHeader.getVisibility() != View.VISIBLE && bottomLayout.getVisibility() == View.VISIBLE) {
                                 cardHeader.setVisibility(View.VISIBLE);
                             }
                         } else {
@@ -1418,26 +1421,30 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void showMainContainerLoadingInitData() {
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
-        cardFooter.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        bottomLayoutShadow.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
     }
 
     public void showMainContainer() {
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
-        cardFooter.setVisibility(View.VISIBLE);
+        bottomLayout.setVisibility(View.VISIBLE);
+        bottomLayoutShadow.setVisibility(View.VISIBLE);
     }
 
     public void showErrorContainer() {
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
-        cardFooter.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        bottomLayoutShadow.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
     }
 
     public void showEmptyCartContainer() {
         llNetworkErrorView.setVisibility(View.GONE);
-        cardFooter.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        bottomLayoutShadow.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
         onContentAvailabilityChanged(false);
     }

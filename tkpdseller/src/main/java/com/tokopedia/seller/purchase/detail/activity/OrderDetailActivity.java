@@ -13,8 +13,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -72,7 +72,6 @@ import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
 import com.tokopedia.seller.purchase.detail.fragment.CancelShipmentFragment;
 import com.tokopedia.seller.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.seller.purchase.detail.fragment.RejectOrderFragment;
-import com.tokopedia.seller.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.seller.purchase.detail.model.detail.viewmodel.BookingCodeData;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
@@ -98,7 +97,6 @@ import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderBaseFragment.FRAGMENT_REJECT_ORDER_SUB_MENU_TAG;
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderFragment.REJECT_ORDER_MENU_FRAGMENT_TAG;
-import static com.tokopedia.seller.purchase.detail.fragment.RequestPickupFragment.INFO_FRAGMENT_TAG;
 import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.PARAM_CONFIRM_PICKUP_ORDER_ID;
 import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.PARAM_CONFIRM_PICKUP_ORIGIN_ADDRESS;
 
@@ -1082,9 +1080,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().findFragmentByTag(INFO_FRAGMENT_TAG) != null) {
-            removeFragmentOnBackPressed(INFO_FRAGMENT_TAG);
-        } else if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
             toolbar.setTitle(getString(R.string.title_detail_transaction));
             removeFragmentOnBackPressed(VALIDATION_FRAGMENT_TAG);
         } else if (getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
@@ -1155,26 +1151,6 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onConfirmWeightPrice(List<WrongProductPriceWeightEditable> listOfEditable) {
         presenter.rejectOrderChangeWeightPrice(this, listOfEditable);
-    }
-
-    @Override
-    public void onConfirmPickup(String orderId) {
-        presenter.processInstantCourierShipping(this, orderId);
-    }
-
-    @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-
     }
 
     @Override

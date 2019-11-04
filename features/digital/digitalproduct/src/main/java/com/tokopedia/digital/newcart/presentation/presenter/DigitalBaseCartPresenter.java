@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
@@ -28,8 +28,6 @@ import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
-import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity;
-import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
@@ -38,8 +36,8 @@ import com.tokopedia.digital.newcart.domain.model.VoucherAttributeDigital;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.track.TrackApp;
@@ -147,6 +145,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setShowSubscribeFlag(true);
         attributes.setThankyouNative(true);
         attributes.setThankyouNativeNew(true);
+        // Handle subscription params
+        DigitalSubscriptionParams subParams = getView().getDigitalSubscriptionParams();
+        if (subParams.getShowSubscribePopUp() != null) {
+            attributes.setShowSubscribePopUp(subParams.getShowSubscribePopUp());
+        }
+        if (subParams.getAutoSubscribe() != null) {
+            attributes.setAutoSubscribe(subParams.getAutoSubscribe());
+        }
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
         return requestBodyAtcDigital;
@@ -293,7 +299,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     public void renderPostPaidPopUp(CartDigitalInfoData cartDigitalInfoData) {
-        if (cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null) {
+        if (!getView().getDigitalSubscriptionParams().isSubscribed() && cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute() != null) {
             getView().showPostPaidDialog(
                     cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getTitle(),
                     cartDigitalInfoData.getAttributes().getPostPaidPopupAttribute().getContent(),

@@ -2,18 +2,18 @@ package com.tokopedia.shop.product.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SimpleItemAnimator
+import com.google.android.material.snackbar.Snackbar
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -47,8 +47,6 @@ import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPr
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -294,14 +292,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
-    fun displayProduct(shopInfo: ShopInfo) {
-        this.shopInfo = shopInfo
-        this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
-        this.isGoldMerchant = shopInfo.goldOS.isGold == 1
-        this.shopId = shopInfo.shopCore.shopID
-        loadInitialData()
-    }
-
     fun setShopInfo(shopInfo: ShopInfo) {
         this.shopInfo = shopInfo
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
@@ -311,7 +301,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     fun clearCache() {
         merchantVoucherListPresenter.clearCache()
-        viewModel.clearEtalaseCache()
+        viewModel.clearCache()
     }
 
     // load data promo/featured/etalase

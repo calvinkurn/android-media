@@ -1,7 +1,7 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
 import com.tokopedia.shop.R;

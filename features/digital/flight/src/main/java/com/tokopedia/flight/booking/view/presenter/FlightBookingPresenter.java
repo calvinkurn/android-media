@@ -1,7 +1,7 @@
 
 package com.tokopedia.flight.booking.view.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Patterns;
 
 import com.tokopedia.common.travel.domain.GetPhoneCodeUseCase;

@@ -2,8 +2,8 @@ package com.tokopedia.home.analytics;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
@@ -196,11 +196,11 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, slidesModel.getId(),
+                                                FIELD_ID, String.valueOf(slidesModel.getId()),
                                                 FIELD_NAME, VALUE_NAME_PROMO,
                                                 FIELD_CREATIVE, slidesModel.getCreativeName(),
                                                 FIELD_CREATIVE_URL, slidesModel.getImageUrl(),
-                                                FIELD_POSITION, slidesModel.getPosition(),
+                                                FIELD_POSITION, String.valueOf(slidesModel.getPosition()),
                                                 FIELD_PROMO_CODE, promoCode
                                         )
                                 )
@@ -219,11 +219,11 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, slidesModel.getId(),
+                                                FIELD_ID, String.valueOf(slidesModel.getId()),
                                                 FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
                                                 FIELD_CREATIVE, slidesModel.getCreativeName(),
                                                 FIELD_CREATIVE_URL, slidesModel.getImageUrl(),
-                                                FIELD_POSITION, slidesModel.getPosition(),
+                                                FIELD_POSITION, String.valueOf(slidesModel.getPosition()),
                                                 FIELD_PROMO_CODE, slidesModel.getPromoCode().isEmpty()?slidesModel.getPromoCode():NO_PROMO_CODE
                                         )
                                 )
@@ -1508,11 +1508,11 @@ public class HomePageTracking {
                 BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
                 list.add(
                         DataLayer.mapOf(
-                                FIELD_ID, bannerSlidesModel.getId(),
+                                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
                                 FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
                                 FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
                                 FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
-                                FIELD_POSITION, bannerSlidesModel.getPosition()
+                                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
                         )
                 );
             }
@@ -1527,11 +1527,11 @@ public class HomePageTracking {
                 BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
                 list.add(
                         DataLayer.mapOf(
-                                FIELD_ID, bannerSlidesModel.getId(),
+                                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
                                 FIELD_NAME, VALUE_NAME_PROMO,
                                 FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
                                 FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
-                                FIELD_POSITION, bannerSlidesModel.getPosition()
+                                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
                         )
                 );
             }

@@ -6,6 +6,7 @@ import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.twitter_share.view.activity.TwitterWebViewActivity
 import com.tokopedia.twitter_share.view.activity.TwitterWebViewActivityListener
 import com.tokopedia.webview.BaseSessionWebViewFragment
+import com.tokopedia.webview.KEY_URL
 
 class TwitterWebViewFragment : BaseSessionWebViewFragment() {
 
@@ -15,13 +16,13 @@ class TwitterWebViewFragment : BaseSessionWebViewFragment() {
         fun newInstance(url: String): TwitterWebViewFragment {
             val fragment = TwitterWebViewFragment()
             val args = Bundle()
-            args.putString(ARGS_URL, url)
+            args.putString(KEY_URL, url)
             fragment.arguments = args
             return fragment
         }
     }
 
-    override fun shouldOverrideUrlLoading(webView: WebView?, url: String?): Boolean {
+    override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
         return isCallbackUrl(url.orEmpty())
     }
 

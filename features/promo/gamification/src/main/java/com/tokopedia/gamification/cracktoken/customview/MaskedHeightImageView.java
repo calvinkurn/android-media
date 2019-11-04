@@ -14,7 +14,7 @@ import android.view.View;
  * Created by nakama on 23/03/18.
  */
 
-public class MaskedHeightImageView extends android.support.v7.widget.AppCompatImageView {
+public class MaskedHeightImageView extends androidx.appcompat.widget.AppCompatImageView {
     private int percentMasked;
     private Rect maskedRect;
     private Bitmap bitmap;

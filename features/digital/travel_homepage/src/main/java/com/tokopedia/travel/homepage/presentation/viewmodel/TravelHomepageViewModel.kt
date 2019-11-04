@@ -1,6 +1,6 @@
 package com.tokopedia.travel.homepage.presentation.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -28,12 +28,14 @@ class TravelHomepageViewModel @Inject constructor(
     : BaseViewModel(dispatcher) {
 
     val travelItemList = MutableLiveData<List<TravelHomepageItemModel>>()
+    val isAllError = MutableLiveData<Boolean>()
     private val mapper = TravelHomepageMapper()
 
     fun getIntialList(isLoadFromCloud: Boolean) {
         val list: List<TravelHomepageItemModel> = getEmptyViewModelsUseCase.requestEmptyViewModels(isLoadFromCloud)
 
         travelItemList.value = list
+        isAllError.value = false
     }
 
     fun getBanner(rawQuery: String, isFromCloud: Boolean) {
@@ -58,6 +60,7 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[BANNER_ORDER].isLoaded = true
                 updatedList[BANNER_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
         }
     }
@@ -84,6 +87,7 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[CATEGORIES_ORDER].isLoaded = true
                 updatedList[CATEGORIES_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
         }
     }
@@ -111,6 +115,7 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[ORDER_LIST_ORDER].isLoaded = true
                 updatedList[ORDER_LIST_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
         }
     }
@@ -137,6 +142,7 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[RECENT_SEARCHES_ORDER].isLoaded = true
                 updatedList[RECENT_SEARCHES_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
         }
     }
@@ -163,6 +169,7 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[RECOMMENDATION_ORDER].isLoaded = true
                 updatedList[RECOMMENDATION_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
         }
     }
@@ -189,7 +196,21 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[DESTINATION_ORDER].isLoaded = true
                 updatedList[DESTINATION_ORDER].isSuccess = false
                 travelItemList.value = updatedList
+                checkIfAllError()
             }
+        }
+    }
+
+    fun checkIfAllError() {
+        travelItemList.value?.let {
+            var isSuccess = false
+            for (item in it) {
+                if (item.isSuccess || !item.isLoaded) {
+                    isSuccess = true
+                    break
+                }
+            }
+            if (!isSuccess) isAllError.value = true
         }
     }
 

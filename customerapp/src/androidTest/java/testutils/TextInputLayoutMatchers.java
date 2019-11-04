@@ -16,8 +16,8 @@
 
 package testutils;
 
-import android.support.design.widget.CheckableImageButton;
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.internal.CheckableImageButton;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -44,7 +44,7 @@ public class TextInputLayoutMatchers {
                 TextInputLayout item = (TextInputLayout) view;
                 // Reach in and find the password toggle since we don't have a public API
                 // to get a reference to it
-                View passwordToggle = item.findViewById(android.support.design.R.id.text_input_password_toggle);
+                View passwordToggle = item.findViewById(com.google.android.material.R.id.text_input_password_toggle);
                 return !TextUtils.isEmpty(item.getPasswordVisibilityToggleContentDescription())
                         && !TextUtils.isEmpty(passwordToggle.getContentDescription());
             }
@@ -65,7 +65,7 @@ public class TextInputLayoutMatchers {
             protected boolean matchesSafely(View item) {
                 // Reach in and find the password toggle since we don't have a public API
                 // to get a reference to it
-                View passwordToggle = item.findViewById(android.support.design.R.id.text_input_password_toggle);
+                View passwordToggle = item.findViewById(com.google.android.material.R.id.text_input_password_toggle);
                 return passwordToggle.getVisibility() != View.VISIBLE;
             }
         };
@@ -85,7 +85,7 @@ public class TextInputLayoutMatchers {
             protected boolean matchesSafely(View item) {
                 // Reach in and find the password toggle since we don't have a public API
                 // to get a reference to it
-                CheckableImageButton passwordToggle = item.findViewById(android.support.design.R.id.text_input_password_toggle);
+                CheckableImageButton passwordToggle = item.findViewById(com.google.android.material.R.id.text_input_password_toggle);
                 return !passwordToggle.isChecked();
             }
         };

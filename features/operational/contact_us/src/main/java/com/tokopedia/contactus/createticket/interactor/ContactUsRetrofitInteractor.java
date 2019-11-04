@@ -1,7 +1,7 @@
 package com.tokopedia.contactus.createticket.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.contactus.createticket.model.ContactUsPass;
 import com.tokopedia.contactus.createticket.model.solution.SolutionResult;

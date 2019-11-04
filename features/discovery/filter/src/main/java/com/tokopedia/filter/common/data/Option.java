@@ -215,6 +215,20 @@ public final class Option implements Parcelable {
     public Option() {}
 
     @Override
+    public boolean equals(Object obj)
+    {
+        if(this == obj) return true;
+
+        if(obj == null || obj.getClass()!= this.getClass()) return false;
+
+        Option option = (Option) obj;
+
+        return this.key.equals(option.key)
+                && this.value.equals(option.value)
+                && this.name.equals(option.name);
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
