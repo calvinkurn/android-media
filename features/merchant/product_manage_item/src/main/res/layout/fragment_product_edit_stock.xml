@@ -16,6 +16,16 @@
         android:padding="@dimen/dp_16"
         app:ls_title="@string/product_stock_available_label" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/static_text_status"
+        style="@style/TextView.Nano"
+        android:text="@string/product_helper_product_stock_static"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_5"
+        tools:visibility="visible"
+        android:visibility="gone"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
@@ -39,6 +49,7 @@
         android:text="@string/product_helper_product_stock"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        tools:visibility="visible"
         android:visibility="gone"/>
 
     <androidx.appcompat.widget.AppCompatTextView

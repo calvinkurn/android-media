@@ -124,6 +124,7 @@
 
     <string name="product_helper_product_brand">Nama merek membantu pembeli mencari produk Anda</string>
     <string name="product_helper_product_stock">Stock akan berkurang otomatis jika produk terbeli</string>
+    <string name="product_helper_product_stock_static">Jika status aktif, produkmu dapat dicari oleh calon pembeli</string>
 
     <string name="product_draft_product_has_been_saved_as_draft">Produk berhasil disimpan dalam draft</string>
     <string name="label_exit">Keluar</string>
