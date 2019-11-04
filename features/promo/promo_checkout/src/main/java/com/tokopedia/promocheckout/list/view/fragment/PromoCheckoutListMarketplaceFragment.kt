@@ -39,7 +39,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
     override fun onClickRedeemCoupon(catalog_id: Int, slug: String?) {
-        childFragmentManager.beginTransaction().add(R.id.list_parent_container, CheckoutCatalogDetailFragment.newInstance(slug = slug!!, catalog_id = catalog_id, promoCode = promoCode, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo!!)).addToBackStack("kamal").commit()
+        childFragmentManager.beginTransaction().add(R.id.list_parent_container, CheckoutCatalogDetailFragment.newInstance(slug = slug!!, catalog_id = catalog_id, promoCode = promoCode, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo!!)).addToBackStack(CHECKOUT_CATALOG_DETAIL_FRAGMENT).commit()
     }
 
     override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
@@ -118,6 +118,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
+        val CHECKOUT_CATALOG_DETAIL_FRAGMENT = "CHECKOUT_CATALOG_DETAIL_FRAGMENT"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
                            promo: Promo): PromoCheckoutListMarketplaceFragment {

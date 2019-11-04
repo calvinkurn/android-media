@@ -16,11 +16,10 @@ import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
 import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
-import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
 import com.tokopedia.promocheckout.list.PromoCheckoutListComponentInstance
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
-import com.tokopedia.promocheckout.list.view.fragment.BasePromoCheckoutListFragment
 import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketplaceFragment
+import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketplaceFragment.Companion.CHECKOUT_CATALOG_DETAIL_FRAGMENT
 
 class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutListComponent> {
 
@@ -71,7 +70,7 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
         val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
         if (promocheckoutlistfragment != null) {
             if (promocheckoutlistfragment.childFragmentManager.backStackEntryCount > 0) {
-                promocheckoutlistfragment.childFragmentManager.findFragmentByTag("kamal")?.let { promocheckoutlistfragment.childFragmentManager.beginTransaction().remove(it).commit() }
+                promocheckoutlistfragment.childFragmentManager.findFragmentByTag(CHECKOUT_CATALOG_DETAIL_FRAGMENT)?.let { promocheckoutlistfragment.childFragmentManager.beginTransaction().remove(it).commit() }
                 promocheckoutlistfragment.childFragmentManager.popBackStack()
             }
         }

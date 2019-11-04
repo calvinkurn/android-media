@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.detail.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
 import android.os.Bundle
@@ -28,6 +29,7 @@ import com.tokopedia.promocheckout.widget.ImageUtil
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
+
 class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetailContract.View {
 
     private var mCouponName: String? = null
@@ -41,7 +43,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     private val couponRedemptionCode_QUOTA_LIMIT_REACHED = 42022
     private val couponRedemptionCode_PROFILE_INCOMPLETE = 42021
     private val couponRedemptionCode_SUCCESS = 200
-    lateinit var tukarSuccessListener:PromoTukarSuccessListener
 
     @Inject
     lateinit var mPresenter: CheckoutCatalogDetailPresenter
@@ -108,14 +109,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         return activity
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-    }
-
-    fun setter(variable:PromoTukarSuccessListener){
-        tukarSuccessListener=variable
-    }
-
     override fun initInjector() {
         DaggerPromoCheckoutDetailComponent.builder()
                 .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
@@ -128,10 +121,9 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     }
 
     override fun showCouponDetail(cta: String?, code: String?, title: String?) {
-       activity?.startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
+        activity?.startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
                 activity, code, oneClickShipment = false, pageTracking = 0, promo = promo), REQUEST_CODE_DETAIL_PROMO)
 
-       tukarSuccessListener.removeCheckOutFragment()
     }
 
     override fun showValidationMessageDialog(item: HachikoCatalogDetail, title: String, message: String, resCode: Int) {
@@ -320,9 +312,5 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             return checkoutcatalogfragment
 
         }
-    }
-
-    interface PromoTukarSuccessListener{
-        fun removeCheckOutFragment()
     }
 }
