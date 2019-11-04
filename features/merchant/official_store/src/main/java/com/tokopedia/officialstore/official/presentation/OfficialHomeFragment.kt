@@ -144,6 +144,7 @@ class OfficialHomeFragment :
         adapter?.getVisitables()?.removeAll {
             it is DynamicChannelViewModel || it is ProductRecommendationViewModel
         }
+        adapter?.notifyDataSetChanged()
         viewModel.loadFirstData(category)
     }
 
