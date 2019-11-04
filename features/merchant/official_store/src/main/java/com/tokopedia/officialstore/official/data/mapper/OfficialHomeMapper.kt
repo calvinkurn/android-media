@@ -60,7 +60,7 @@ class OfficialHomeMapper {
 
         fun mappingProductrecommendationTitle(title: String, adapter: OfficialHomeAdapter?) {
             adapter?.getVisitables()?.add(ProductRecommendationTitleViewModel(title))
-            adapter?.notifyItemInserted(adapter.lastIndex)
+            adapter?.notifyItemInserted(adapter.itemCount - 2)
         }
 
         fun mappingProductRecommendation(productRecommendation: RecommendationWidget, adapter: OfficialHomeAdapter?, listener: RecommendationListener) {
