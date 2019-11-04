@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
@@ -400,18 +401,19 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                         else ChatListActivity.BUYER_ANALYTICS_LABEL)
             }
 
-            val intent = TopChatRoomActivity.getCallingIntent(
-                    activity,
-                    element.msgId,
-                    element.attributes?.contact?.contactName,
-                    element.attributes?.contact?.tag,
-                    element.attributes?.contact?.contactId,
-                    element.attributes?.contact?.role,
-                    0,
-                    "",
-                    element.attributes?.contact?.thumbnail,
-                    itemPosition
-            )
+//            val intent = TopChatRoomActivity.getCallingIntent(
+//                    activity,
+//                    element.msgId,
+//                    element.attributes?.contact?.contactName,
+//                    element.attributes?.contact?.tag,
+//                    element.attributes?.contact?.contactId,
+//                    element.attributes?.contact?.role,
+//                    0,
+//                    "",
+//                    element.attributes?.contact?.thumbnail,
+//                    itemPosition
+//            )
+            val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             this@ChatListFragment.startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
             it.overridePendingTransition(0, 0)

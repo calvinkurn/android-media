@@ -28,6 +28,10 @@ fun String?.toEmptyStringIfNull(): String {
     return this ?: ""
 }
 
+fun String?.toZeroStringIfNull(): String {
+    return this ?: "0"
+}
+
 fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
 }
