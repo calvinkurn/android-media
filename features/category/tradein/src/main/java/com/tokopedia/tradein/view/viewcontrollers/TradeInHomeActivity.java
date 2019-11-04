@@ -419,6 +419,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
             mTvGoToProductDetails.setOnClickListener(v -> {
                 showPermissionDialog();
             });
+            if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
+                sendGeneralEvent(clickEvent,
+                        category,
+                        TradeInGTMConstants.ACTION_CLICK_BATAL_BUTTON,
+                        TradeInGTMConstants.BERI_IZIN_PENG_HP);
+            }
         } else {
         }
     }
