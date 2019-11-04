@@ -55,7 +55,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
             heightWrappingViewPager = view.findViewById(R.id.view_pager)
         }
         loadData()
-        configBottomSheetHeight()
+//        configBottomSheetHeight()
     }
 
     fun title(): String {
