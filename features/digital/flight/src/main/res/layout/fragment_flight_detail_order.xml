@@ -223,7 +223,7 @@
                         android:id="@+id/copy_order_id"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        app:srcCompat="@drawable/ic_copy_order" />
+                        app:srcCompat="@drawable/flight_ic_copy_order" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -425,7 +425,7 @@
                         android:layout_height="15dp"
                         android:layout_gravity="top"
                         android:layout_marginRight="@dimen/dp_5"
-                        app:srcCompat="@drawable/ic_download_eticket" />
+                        app:srcCompat="@drawable/flight_ic_download_eticket" />
 
                     <TextView
                         style="@style/TextView.Micro.Green"
