@@ -921,10 +921,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 builder.state(TickerPromoStackingCheckoutView.State.EMPTY);
             }
 
-            if (autoApplyStackData.getVoucherOrders() != null) {
-                if (autoApplyStackData.getVoucherOrders().size() > 0) {
-                    for (int i = 0; i < autoApplyStackData.getVoucherOrders().size(); i++) {
-                        VoucherOrdersItemData voucherOrdersItemData = autoApplyStackData.getVoucherOrders().get(i);
+            if (autoApplyStackData.getVoucherOrdersItemDataList() != null) {
+                if (autoApplyStackData.getVoucherOrdersItemDataList().size() > 0) {
+                    for (int i = 0; i < autoApplyStackData.getVoucherOrdersItemDataList().size(); i++) {
+                        VoucherOrdersItemData voucherOrdersItemData = autoApplyStackData.getVoucherOrdersItemDataList().get(i);
                         if (shipmentAdapter.getShipmentCartItemModelList() != null) {
                             for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
                                 if (shipmentCartItemModel.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {

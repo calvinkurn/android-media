@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.data.CoroutineThread;
@@ -22,8 +24,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import kotlinx.coroutines.CoroutineDispatcher;
-import kotlinx.coroutines.Dispatchers;
+import retrofit2.Retrofit;
 
 /**
  * @author by milhamj on 23/07/18.
@@ -35,9 +36,8 @@ public class ExploreModule {
 
     @ExploreScope
     @Provides
-    ContentExploreContract.Presenter provideContentExplorePresenter(GetExploreDataUseCase
-                                                                   getExploreDataUseCase) {
-        return new ContentExplorePresenter(getExploreDataUseCase);
+    ContentExploreContract.Presenter provideContentExplorePresenter(GetExploreDataUseCase getExploreDataUseCase, TrackAffiliateClickUseCase trackAffiliateClickUseCase) {
+        return new ContentExplorePresenter(getExploreDataUseCase, trackAffiliateClickUseCase);
     }
 
     @ExploreScope
@@ -74,6 +74,12 @@ public class ExploreModule {
         useCase.setGraphqlQuery(rawQuery);
         useCase.setTypeClass(GetExploreData.class);
         return useCase;
+    }
+
+    @ExploreScope
+    @Provides
+    TopAdsApi provideTopAdsApi(Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.build().create(TopAdsApi.class);
     }
 
     @ExploreScope

@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.common.feature.promo_suggestion
 import android.os.Parcel
 import android.os.Parcelable
 
-data class SimilarProduct (
+data class SimilarProductData (
         val text: String = "",
         val url: String = ""
 ) : Parcelable {
@@ -19,12 +19,12 @@ data class SimilarProduct (
 
     override fun describeContents(): Int = 0
 
-    companion object CREATOR : Parcelable.Creator<SimilarProduct> {
-        override fun createFromParcel(parcel: Parcel): SimilarProduct {
-            return SimilarProduct(parcel)
+    companion object CREATOR : Parcelable.Creator<SimilarProductData> {
+        override fun createFromParcel(parcel: Parcel): SimilarProductData {
+            return SimilarProductData(parcel)
         }
 
-        override fun newArray(size: Int): Array<SimilarProduct?> {
+        override fun newArray(size: Int): Array<SimilarProductData?> {
             return arrayOfNulls(size)
         }
     }
