@@ -82,49 +82,60 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
                         tvInstallmentMinimumPriceExt.text = String.format("Min Pembelanjaan %s",
                                 CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.minimumAmount, false))
                     } else {
-                        installmentData.maximumAmount.compareTo(monthlyProductPrice).let { result ->
-                            if (result < 0) {
-                                priceTv.text = "-"
-                                tvInstallmentMinimumPriceExt.show()
-                                tvInstallmentPriceExt.hide()
-                                tvInstallmentMinimumPriceExt.text = String.format("Maks Pembelanjaan %s",
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.maximumAmount, false))
-                            } else {
-                                tvInstallmentMinimumPriceExt.hide()
-                                tvInstallmentPriceExt.show()
-                                priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(monthlyProductPrice.roundToLong(), false)
+                        if(installmentData.maximumAmount == 0) {
+                            tvInstallmentMinimumPriceExt.hide()
+                            tvInstallmentPriceExt.show()
+                            priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(monthlyProductPrice.roundToLong(), false)
+                        } else {
+                            installmentData.maximumAmount.compareTo(monthlyProductPrice).let { result ->
+                                if (result < 0) {
+                                    priceTv.text = "-"
+                                    tvInstallmentMinimumPriceExt.show()
+                                    tvInstallmentPriceExt.hide()
+                                    tvInstallmentMinimumPriceExt.text = String.format("Maks Pembelanjaan %s",
+                                            CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.maximumAmount, false))
+                                } else {
+                                    tvInstallmentMinimumPriceExt.hide()
+                                    tvInstallmentPriceExt.show()
+                                    priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(monthlyProductPrice.roundToLong(), false)
+                                }
                             }
                         }
                     }
                 }
-
                 vHolder.llInstallmentDetail.addView(view)
             }
 
-            if (item.creditCardInstructionList.isEmpty()) {
-                vHolder.tvInstallmentDataHeading.hide()
-                vHolder.llInstructionDetailContainer.hide()
-            } else {
-                vHolder.tvInstallmentDataHeading.show()
-                vHolder.llInstructionDetailContainer.show()
-                vHolder.tvInstallmentDataHeading.text = String.format(mContext!!.getString(R.string.ft_installment_data_heading), item.partnerName)
-                vHolder.llInstructionDetailContainer.removeAllViews()
-                for (instructionData in item.creditCardInstructionList) {
-                    val view = LayoutInflater.from(mContext).inflate(R.layout.pdp_installment_instruction_data_layout, null, false)
+            inflateInstructionListData(vHolder, position)
+        }
+    }
 
-                    val instructionHeading = view.findViewById<TextView>(R.id.tv_instruction_heading)
-                    instructionHeading.text = String.format(mContext!!.getString(R.string.ft_instruction_heading), instructionData.order)
+    private fun inflateInstructionListData(vHolder: InstallmentItemViewHolder, position: Int) {
 
-                    val instructionDesc = view.findViewById<TextView>(R.id.tv_instruction_description)
-                    instructionDesc.text = instructionData.description
+        val item = data[position]
 
-                    val instructionIcon: ImageView = view.findViewById(R.id.iv_instruction_icon)
-                    ImageHandler.loadImage(mContext!!, instructionIcon, instructionData.insImageUrl, R.drawable.ic_loading_image)
+        if (item.creditCardInstructionList.isEmpty()) {
+            vHolder.tvInstallmentDataHeading.hide()
+            vHolder.llInstructionDetailContainer.hide()
+        } else {
+            vHolder.tvInstallmentDataHeading.show()
+            vHolder.llInstructionDetailContainer.show()
+            vHolder.tvInstallmentDataHeading.text = String.format(mContext!!.getString(R.string.ft_installment_data_heading), item.partnerName)
+            vHolder.llInstructionDetailContainer.removeAllViews()
+            for (instructionData in item.creditCardInstructionList) {
+                val view = LayoutInflater.from(mContext).inflate(R.layout.pdp_installment_instruction_data_layout, null, false)
 
-                    vHolder.llInstructionDetailContainer.addView(view)
-                }
+                val instructionHeading = view.findViewById<TextView>(R.id.tv_instruction_heading)
+                instructionHeading.text = String.format(mContext!!.getString(R.string.ft_instruction_heading), instructionData.order)
+
+                val instructionDesc = view.findViewById<TextView>(R.id.tv_instruction_description)
+                instructionDesc.text = instructionData.description
+
+                val instructionIcon: ImageView = view.findViewById(R.id.iv_instruction_icon)
+                ImageHandler.loadImage(mContext!!, instructionIcon, instructionData.insImageUrl, R.drawable.ic_loading_image)
+
+                vHolder.llInstructionDetailContainer.addView(view)
             }
-
         }
     }
 
