@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8"
-    android:layout_height="wrap_content">
+    android:paddingBottom="@dimen/dp_8">
 
 
     <ImageView
@@ -43,7 +43,7 @@
             android:id="@+id/tv_installment_detail_heading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/dp_5"
             android:text="@string/ft_installment_heading"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_installment_main_icon"
@@ -66,19 +66,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             app:closeButtonVisibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/installment_detail_ll"
             app:tickerShapeType="loose"
             app:tickerType="information"
-            tools:visibility="visible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/installment_detail_ll" >
+            tools:visibility="visible">
 
             <LinearLayout
                 android:id="@+id/ll_tnc_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8"
                 android:orientation="vertical"
+                android:paddingBottom="@dimen/dp_8"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_installment_data_heading" />
 
@@ -108,10 +108,10 @@
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/bg_line_separator"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintTop_toBottomOf="@+id/ll_row_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

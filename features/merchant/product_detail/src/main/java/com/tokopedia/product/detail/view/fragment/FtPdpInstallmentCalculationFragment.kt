@@ -19,7 +19,6 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
     private var productPrice: Float? = 0f
     private var isOfficialStore: Boolean = false
     private lateinit var ftRecyclerView: RecyclerView
-    private var mContext: Context? = null
     private lateinit var partnerDataItemList: ArrayList<FtCalculationPartnerData>
     private lateinit var tncDataList: ArrayList<FtInstallmentTnc>
     private var tncIdHashMap: HashMap<Int, ArrayList<FtTncData>> = HashMap()
@@ -81,15 +80,13 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
     }
 
     private fun initView(view: View) {
-        ftRecyclerView = view.findViewById(R.id.ft_recycler_view)
-        val linearLayoutManager = LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
-        ftRecyclerView.layoutManager = linearLayoutManager
-        ftRecyclerView.adapter = FtPDPInstallmentCalculationAdapter(context, productPrice,
-                isOfficialStore, partnerDataItemList, this)
+        context?.let {
+            ftRecyclerView = view.findViewById(R.id.ft_recycler_view)
+            val linearLayoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
+            ftRecyclerView.layoutManager = linearLayoutManager
+            ftRecyclerView.adapter = FtPDPInstallmentCalculationAdapter(it, productPrice,
+                    isOfficialStore, partnerDataItemList, this)
+        }
     }
 
-    override fun onAttachActivity(context: Context) {
-        this.mContext = context
-        super.onAttachActivity(context)
-    }
 }

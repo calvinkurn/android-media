@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.data.model.financing.FtTncData
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlin.math.roundToLong
 
-class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPrice: Float?,
+class FtPDPInstallmentCalculationAdapter(var mContext: Context, var productPrice: Float?,
                                          var isOfficialStore: Boolean,
                                          var data: ArrayList<FtCalculationPartnerData>,
                                          var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -79,7 +79,7 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
                         priceTv.text = "-"
                         tvInstallmentMinimumPriceExt.show()
                         tvInstallmentPriceExt.hide()
-                        tvInstallmentMinimumPriceExt.text = String.format("Min Pembelanjaan %s",
+                        tvInstallmentMinimumPriceExt.text = String.format(mContext.getString(R.string.ft_min_installment_amount),
                                 CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.minimumAmount, false))
                     } else {
                         if(installmentData.maximumAmount == 0) {
@@ -92,7 +92,7 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
                                     priceTv.text = "-"
                                     tvInstallmentMinimumPriceExt.show()
                                     tvInstallmentPriceExt.hide()
-                                    tvInstallmentMinimumPriceExt.text = String.format("Maks Pembelanjaan %s",
+                                    tvInstallmentMinimumPriceExt.text = String.format(mContext.getString(R.string.ft_max_installment_amount),
                                             CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.maximumAmount, false))
                                 } else {
                                     tvInstallmentMinimumPriceExt.hide()
