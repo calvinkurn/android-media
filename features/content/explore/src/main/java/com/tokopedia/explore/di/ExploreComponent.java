@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.explore.view.fragment.HashtagLandingPageFragment;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
 
