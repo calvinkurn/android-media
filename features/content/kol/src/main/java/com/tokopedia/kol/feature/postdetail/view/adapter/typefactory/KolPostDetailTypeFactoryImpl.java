@@ -195,7 +195,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                     feedMultipleImageViewListener, userSession
             );
         } else if (viewType == KolCommentViewHolder.LAYOUT) {
-            abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
+            abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener, false);
         } else if (viewType == SeeAllCommentsViewHolder.LAYOUT) {
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
         } else if (viewType == EmptyDetailViewHolder.Companion.getLAYOUT()) {
