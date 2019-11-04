@@ -269,6 +269,29 @@ public interface ApplinkConst {
     String DEALS_ALL_BRANDS = "tokopedia://deals/allbrands/{isVoucher}";
     String DEALS_CATEGORY = "tokopedia://deals/category/page";
 
+    interface TokoPoints {
+        String HOMEPAGE = "tokopedia://tokopoints";
+        String HOMEPAGE2 = "tokopedia://tokopoints/";
+        String CATALOG_LISTING = "tokopedia://tokopoints/tukar-point";
+        String CATALOG_LISTING2 = "tokopedia://tokopoints/tukar-point/";
+        String CATALOG_LISTING3 = "tokopedia://tokopoints/tukar-point//";
+        String CATALOG_LISTING4 = "tokopedia://tokopoints/tukar-point/{slug_category}/{slug_sub_category}";
+        String CATALOG_LISTING5 = "tokopedia://tokopoints/tukar-point/{slug_category}/{slug_sub_category}/";
+        String CATALOG_LISTING6 = "tokopedia://tokopoints/tukar-point/{slug_category}";
+        String CATALOG_LISTING7 = "tokopedia://tokopoints/tukar-point/{slug_category}/";
+        String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
+        String COUPON_LISTING2 = "tokopedia://tokopoints/kupon-saya/";
+        String COUPON_LISTING4 = "tokopedia://tokopoints/kupon-saya/{slug}/";
+        String COUPON_LISTING3 = "tokopedia://tokopoints/kupon-saya/{slug}";
+
+        //New applinks
+        String CATALOG_DETAIL3 = "tokopedia://tokopoints/tukar-point/detail/{catalog_code}";
+        String CATALOG_DETAIL4 = "tokopedia://tokopoints/tukar-point/detail/{catalog_code}/";
+
+        String COUPON_DETAIL3 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}";
+        String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
+    }
+
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
     }
@@ -376,6 +399,8 @@ public interface ApplinkConst {
         String TRACKER_LIST_NAME = "tracker_list_name";
         String EXTRA_REFERENCE = "reference";
         String EXTRA_IS_LEASING = "is_leasing";
+        String EXTRA_CUSTOM_EVENT_LABEL = "custom_event_label";
+        String EXTRA_CUSTOM_EVENT_ACTION = "custom_event_action";
 
         String EXTRA_CATEGORY_ID = "category_id";
         String EXTRA_CATEGORY_NAME = "category_name";
