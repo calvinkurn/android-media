@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.ImageView
-import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.component.TextViewCompat
@@ -17,7 +17,7 @@ import com.tokopedia.digital.R
 
 class DigitalCartMyBillsView : BaseCustomView {
 
-    private lateinit var titleContainer: RelativeLayout
+    private lateinit var titleContainer: ConstraintLayout
     private lateinit var headerTitleTextView: TextViewCompat
     private lateinit var subscriptionCheckbox: CheckBox
     private lateinit var descriptionTextView: TextViewCompat
