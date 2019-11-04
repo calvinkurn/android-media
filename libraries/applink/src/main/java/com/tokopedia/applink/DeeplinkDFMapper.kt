@@ -94,6 +94,7 @@ object DeeplinkDFMapper {
     private val DFM_SALDO_INTRO = "saldo_deposit"
     private val DFM_REFERRAL = "im_referral"
     private val DFM_WALLET = "fintech_wallet"
+    private val DFM_PROFILE = "profile"
 
 
     private var manager: SplitInstallManager? = null
@@ -136,6 +137,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(REFERRAL) }, DFM_REFERRAL, R.string.applink_title_im_referral))
             add(DFP({it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
             add(DFP({ it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
+            add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
         }
     }
 
