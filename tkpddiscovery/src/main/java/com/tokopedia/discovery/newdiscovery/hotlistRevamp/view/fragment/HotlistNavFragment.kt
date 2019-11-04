@@ -321,14 +321,14 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     private fun fetchProducts(start: Int) {
 
 
-        val param = hotlistParamBuilder.GenerateProductListParams(
-                hotlistDetail?.filterAttribute?.sc.toString(),
+        val param = hotlistParamBuilder.generateProductListParams(
+                hotlistDetail?.strFilterAttribute ?: "",
                 start,
                 getUniqueId(),
                 getSelectedSort(),
                 getSelectedFilter()
         )
-        hotlistnavViewModel.fetchProductListing(param)
+        hotlistnavViewModel.fetchProductListingWithTopAds(param)
 
     }
 

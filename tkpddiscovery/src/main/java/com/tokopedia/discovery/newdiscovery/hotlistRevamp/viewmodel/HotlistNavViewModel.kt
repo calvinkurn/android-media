@@ -53,7 +53,7 @@ class HotlistNavViewModel @Inject constructor(var hotlistDetailUseCase: HotlistD
     }
 
 
-    fun fetchProductListing(params: RequestParams) {
+    fun fetchProductListingWithTopAds(params: RequestParams) {
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
                 productListResponse?.let { productResponse ->

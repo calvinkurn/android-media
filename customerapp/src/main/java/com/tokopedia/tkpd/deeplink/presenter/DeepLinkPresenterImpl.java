@@ -46,6 +46,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
+import com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.activity.HotlistNavActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
@@ -650,8 +651,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (isHotBrowse(linkSegment, uriData)) {
             return;
         }
+        Intent intent;
+        if (HotlistNavActivity.isHotlistNavEnabled(context)) {
+            intent = BrowseProductRouter.getHotlistNavIntent(context, uriData.toString());
+        }else {
+            intent = BrowseProductRouter.getHotlistIntent(context, uriData.toString());
+        }
 
-        Intent intent = BrowseProductRouter.getHotlistIntent(context, uriData.toString());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

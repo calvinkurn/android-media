@@ -43,40 +43,23 @@ class HotlistParamBuilder {
         return requestParam
     }
 
-    fun GenerateProductListParams(hotId: String,
+    fun generateProductListParams(strFilterAttribute: String,
                                   start: Int,
                                   uniqueId: String,
                                   selectedSort: HashMap<String, String>,
                                   selectedFilter: HashMap<String, String>): RequestParams {
         val param = RequestParams.create()
-
-
-        val searchProductRequestParams = RequestParams.create()
-        searchProductRequestParams.putString(START, (start * 10).toString())
-        searchProductRequestParams.putString(SC, hotId)
-        searchProductRequestParams.putString(DEVICE, "android")
-        searchProductRequestParams.putString(UNIQUE_ID, uniqueId)
-        searchProductRequestParams.putString(KEY_SAFE_SEARCH, "false")
-        searchProductRequestParams.putString(ROWS, "10")
-        searchProductRequestParams.putString(SOURCE, "search_product")
-        searchProductRequestParams.putAllString(selectedSort)
-        searchProductRequestParams.putAllString(selectedFilter)
-        param.putString("product_params", createParametersForQuery(searchProductRequestParams.parameters))
-
-
-        val topAdsRequestParam = RequestParams.create()
-        topAdsRequestParam.putString(KEY_SAFE_SEARCH, "false")
-        topAdsRequestParam.putString(DEVICE, "android")
-        topAdsRequestParam.putString(KEY_SRC, "directory")
-        topAdsRequestParam.putString(KEY_PAGE, start.toString())
-        topAdsRequestParam.putString(KEY_EP, "product")
-        topAdsRequestParam.putString(KEY_ITEM, "2")
-        topAdsRequestParam.putString(KEY_F_SHOP, "1")
-        topAdsRequestParam.putString(KEY_DEPT_ID, hotId)
-
-        topAdsRequestParam.putAllString(selectedSort)
-
-        param.putString("top_params", createParametersForQuery(topAdsRequestParam.parameters))
+        param.putString("product_params", prepareProductListParams(strFilterAttribute,
+                start * 10,
+                10,
+                uniqueId,
+                createParametersForQuery(selectedSort),
+                createParametersForQuery(selectedFilter))
+        )
+        param.putString("top_params", preparetopAdsParams(strFilterAttribute,
+                start,
+                createParametersForQuery(selectedSort),
+                createParametersForQuery(selectedFilter)))
         return param
 
     }
@@ -116,8 +99,32 @@ class HotlistParamBuilder {
         return param
     }
 
-    fun prepareFirstProductListParams(strFilterAttribute: String, start: Int, rows: Int): String {
-        return strFilterAttribute + "device=android&start=$start&rows=$rows"
+    private fun prepareProductListParams(strFilterAttribute: String, start: Int, rows: Int, unique_id: String, sortParam: String, filterParam: String): String {
+        var param = "$strFilterAttribute&device=android&start=$start&rows=$rows&unique_id=$unique_id"
+        if (filterParam.isNotEmpty()) {
+            param = "$param&$filterParam"
+        }
+        if (sortParam.isNotEmpty()) {
+            param = "$param&$sortParam"
+        }
+        if (param.isNotEmpty()) {
+            param = "$param&safe_search=false"
+        }
+        return param
+    }
+
+    private fun preparetopAdsParams(strFilterAttribute: String, page: Int, sortParam: String, filterParam: String): String {
+        var param = "$strFilterAttribute&device=android&page=$page&item=2&ep=product&fshop=1&src=directory"
+        if (filterParam.isNotEmpty()) {
+            param = "$param&$filterParam"
+        }
+        if (sortParam.isNotEmpty()) {
+            param = "$param&$sortParam"
+        }
+        if (param.isNotEmpty()) {
+            param = "$param&safe_search=false"
+        }
+        return param
     }
 
     private fun createParametersForQuery(parameters: Map<String, Any>): String {

@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -34,7 +35,7 @@ class HotlistNavActivity : BaseActivity(),
         CategoryNavigationListener,
         BottomSheetListener,
         SearchNavigationView.SearchNavClickListener,
-        BaseCategorySectionFragment.SortAppliedListener{
+        BaseCategorySectionFragment.SortAppliedListener {
 
 
     private var bottomSheetFilterView: BottomSheetFilterView? = null
@@ -191,10 +192,10 @@ class HotlistNavActivity : BaseActivity(),
         action_up_btn.setOnClickListener {
             onBackPressed()
         }
-        et_search.text = alias
+        et_search.text = alias.replace("-", " ")
 
         layout_search.setOnClickListener {
-            moveToAutoCompleteActivity(alias)
+            moveToAutoCompleteActivity(alias.replace("-", " "))
         }
 
         image_button_close.setOnClickListener {
@@ -209,7 +210,11 @@ class HotlistNavActivity : BaseActivity(),
     private fun attachFragment() {
         intent.extras?.let {
             val url = it.getString(EXTRA_HOTLIST_PARAM_URL, "")
-            alias = it.getString(EXTRA_HOTLIST_PARAM_ALIAS, "")
+            alias = if (url.isEmpty()) {
+                it.getString(EXTRA_HOTLIST_PARAM_ALIAS, "")
+            } else {
+                generateAliasUsingURL(url)
+            }
             val searchQuery = it.getString(EXTRA_HOTLIST_PARAM_QUERY, "")
             val trackerAttribution = it.getString(EXTRA_HOTLIST_PARAM_TRACKER, "")
 
@@ -220,6 +225,12 @@ class HotlistNavActivity : BaseActivity(),
             hotlistFragment.setSortListener(this)
             initToolbar(alias)
         }
+    }
+
+
+    private fun generateAliasUsingURL(url: String): String {
+        val uri = Uri.parse(url)
+        return uri.pathSegments[1]
     }
 
 
@@ -236,7 +247,7 @@ class HotlistNavActivity : BaseActivity(),
                 }
             }
         }
-        if(filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))){
+        if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
             searchNavContainer?.onFilterSelected(true)
         } else {
             searchNavContainer?.onFilterSelected(false)
