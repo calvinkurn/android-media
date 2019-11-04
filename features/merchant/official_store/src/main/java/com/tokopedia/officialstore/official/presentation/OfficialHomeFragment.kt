@@ -141,10 +141,6 @@ class OfficialHomeFragment :
     }
 
     private fun refreshData() {
-        adapter?.getVisitables()?.removeAll {
-            it is DynamicChannelViewModel || it is ProductRecommendationViewModel
-        }
-        adapter?.notifyDataSetChanged()
         viewModel.loadFirstData(category)
     }
 
@@ -260,6 +256,10 @@ class OfficialHomeFragment :
         }
 
         swipeRefreshLayout?.setOnRefreshListener {
+            adapter?.getVisitables()?.removeAll {
+                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+            }
+            adapter?.notifyDataSetChanged()
             refreshData()
         }
 
@@ -381,6 +381,10 @@ class OfficialHomeFragment :
     }
 
     override fun onCountDownFinished() {
+        adapter?.getVisitables()?.removeAll {
+            it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+        }
+        adapter?.notifyDataSetChanged()
         refreshData()
     }
 
