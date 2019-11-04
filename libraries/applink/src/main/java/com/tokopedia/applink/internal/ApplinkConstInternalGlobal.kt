@@ -1,5 +1,6 @@
 package com.tokopedia.applink.internal
 
+import android.webkit.WebView
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
@@ -157,6 +158,10 @@ object ApplinkConstInternalGlobal {
     // Activity can have title by putting "title=.."
     @JvmField
     val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
+
+
+    @JvmField
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}&title={title}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification
