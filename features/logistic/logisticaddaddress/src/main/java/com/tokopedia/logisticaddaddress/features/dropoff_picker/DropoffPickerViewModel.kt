@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.dropoff_picker
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
