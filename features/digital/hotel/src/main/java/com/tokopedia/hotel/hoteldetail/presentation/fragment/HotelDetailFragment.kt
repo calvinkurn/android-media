@@ -430,11 +430,7 @@ class HotelDetailFragment : HotelBaseFragment() {
 
             tv_hotel_price.text = roomPrice
 
-            if (data[0].additionalPropertyInfo.isDirectPayment) {
-                btn_see_room.text = getString(R.string.hotel_detail_coming_soon_text)
-                btn_see_room.isEnabled = false
-                btn_see_room.buttonCompatType = ButtonCompat.DISABLE
-            } else {
+            if (data[0].additionalPropertyInfo.isEnabled) {
                 btn_see_room.setOnClickListener {
                     trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPriceAmount)
                     context?.run {
@@ -443,6 +439,10 @@ class HotelDetailFragment : HotelBaseFragment() {
                                 hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
                     }
                 }
+            } else {
+                btn_see_room.text = getString(R.string.hotel_detail_coming_soon_text)
+                btn_see_room.isEnabled = false
+                btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             }
         } else {
             trackingHotelUtil.hotelViewDetails(hotelName, hotelId, false, "0", false)
