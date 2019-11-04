@@ -29,7 +29,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     companion object {
         const val KEY_PDP_FINANCING_DATA = "keyPDPFinancingData"
         const val KEY_PDP_PRODUCT_PRICE = "keyPDPProductPrice"
-
+        const val KEY_PDP_IS_OFFICIAL = "kryPDPIsOfficial"
     }
 
     private var tabLayout: TabLayout? = null
@@ -39,6 +39,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private var installmentData: FinancingDataResponse = FinancingDataResponse()
     private var productPrice: Float = 0f
+    private var isOfficialStore: Boolean = false
 
     private fun getBaseLayoutResourceId(): Int {
         return R.layout.widget_bottomsheet_installment_calculation
@@ -153,13 +154,13 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private fun getNonCreditInstallmentFragment(): Fragment? {
         return FtPdpInstallmentCalculationFragment.createInstance(productPrice,
-                installmentData.ftInstallmentCalculation.data.tncDataList,
+                installmentData.ftInstallmentCalculation.data.tncDataList, isOfficialStore,
                 installmentData.ftInstallmentCalculation.data.nonCreditCardInstallmentData)
     }
 
     private fun getCreditInstallmentFragment(): Fragment? {
         return FtPdpInstallmentCalculationFragment.createInstance(productPrice,
-                installmentData.ftInstallmentCalculation.data.tncDataList,
+                installmentData.ftInstallmentCalculation.data.tncDataList, isOfficialStore,
                 installmentData.ftInstallmentCalculation.data.creditCardInstallmentData)
     }
 
@@ -188,6 +189,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
         arguments?.let {
             installmentData = it.getParcelable(KEY_PDP_FINANCING_DATA) ?: FinancingDataResponse()
             productPrice = it.getFloat(KEY_PDP_PRODUCT_PRICE)
+            isOfficialStore = it.getBoolean(KEY_PDP_IS_OFFICIAL)
         }
     }
 }

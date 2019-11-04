@@ -103,6 +103,7 @@ import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_ADDED_PRODUCT_DATA_MODEL
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_FINANCING_DATA
+import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_IS_OFFICIAL
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_PRODUCT_PRICE
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
@@ -1230,11 +1231,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FinancingDataResponse) {
-        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
 
+        productDetailTracking.eventClickPDPInstallmentSeeMore(productId)
+
+        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
         val bundleData = Bundle()
         bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
         bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price!!)
+        bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
         pdpInstallmentBottomSheet.arguments = bundleData
         pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
     }
@@ -1450,26 +1454,43 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             merchantVoucherListWidget.gone()
         }
 
-        if (/*remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_PDP_FINANCING) &&*/
-                productInfoP2.productFinancingRecommendationData.response.data.partnerCode.isNotBlank()) {
-            iv_ovo_installment_icon.show()
-            iv_arrow_next.show()
+        productInfoP2.productFinancingRecommendationData.let {
+            if (/*remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_PDP_FINANCING) &&*/
+                    it.response.data.partnerCode.isNotBlank()) {
+                iv_ovo_installment_icon.show()
+                iv_arrow_next.show()
 
-            iv_ovo_installment_icon.setOnClickListener {
-                openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
-            }
+                iv_ovo_installment_icon.setOnClickListener {
+                    openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+                }
 
-            iv_arrow_next.setOnClickListener {
-                openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+                iv_arrow_next.setOnClickListener {
+                    openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+                }
+
+                label_installment.visible()
+                label_installment.text = getString(R.string.new_installment_template,
+                        (if (shopInfo?.goldOS?.isOfficial == 1) it.response.data.osMonthlyPrice
+                        else it.response.data.monthlyPrice).getCurrencyFormatted())
+
+                label_desc_installment.text = "Lihat Semua Metode"
+                label_desc_installment.visible()
+
+                label_desc_installment.setOnClickListener {
+                    activity?.let {
+                        openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+                    }
+                }
+
+            } else {
+                iv_ovo_installment_icon.hide()
+                iv_arrow_next.hide()
             }
-        } else {
-            iv_ovo_installment_icon.hide()
-            iv_arrow_next.hide()
         }
 
-        productInfoP2.minInstallment?.let {
+        /*productInfoP2.minInstallment?.let {
             label_installment.visible()
-            label_desc_installment.text = getString(R.string.installment_template, it.interest.numberFormatted(),
+            label_installment.text = getString(R.string.new_installment_template,
                     (if (shopInfo?.goldOS?.isOfficial == 1) it.osMonthlyPrice else it.monthlyPrice).getCurrencyFormatted())
             label_desc_installment.visible()
             label_desc_installment.setOnClickListener {
@@ -1492,7 +1513,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 wholesale_divider.gone()
             }
             base_view_wholesale.visible()
+        }*/
+
+        if (label_min_wholesale.isVisible) {
+            wholesale_divider.visible()
+        } else {
+            wholesale_divider.gone()
         }
+        base_view_wholesale.visible()
+
+
         productShopView.renderShopFeature(productInfoP2.shopFeature)
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)

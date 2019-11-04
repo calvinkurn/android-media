@@ -19,6 +19,7 @@ import com.tokopedia.product.detail.data.model.financing.FtTncData
 import kotlin.math.roundToLong
 
 class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPrice: Float?,
+                                         var isOfficialStore: Boolean,
                                          var data: ArrayList<FtCalculationPartnerData>,
                                          var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -79,13 +80,22 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
 
                 val tvInstallmentPriceExt = view.findViewById<TextView>(R.id.tv_installment_price_ext)
                 val priceTv = view.findViewById<TextView>(R.id.tv_installment_price)
+                val tvInstallmentMinimumPriceExt = view.findViewById<TextView>(R.id.tv_installment_minimum_price_ext)
+                tvInstallmentMinimumPriceExt.hide()
                 productPrice?.compareTo(installmentData.minimumAmount)?.let {
                     if (it < 0) {
-                        tvInstallmentPriceExt.text = String.format("\nMin Pembelanjaan %s",
+
+                        tvInstallmentMinimumPriceExt.show()
+                        tvInstallmentPriceExt.hide()
+                        tvInstallmentMinimumPriceExt.text = String.format("\nMin Pembelanjaan %s",
                                 CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.monthlyPrice.roundToLong(), false))
                         priceTv.text = "-"
+
                     } else {
-                        priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.monthlyPrice.roundToLong(), false)
+                        tvInstallmentMinimumPriceExt.hide()
+                        tvInstallmentPriceExt.show()
+                        priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                (if (isOfficialStore) installmentData.osMonthlyPrice else installmentData.monthlyPrice).roundToLong(), false)
                     }
                 }
 
@@ -121,9 +131,11 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
 
     private fun prepareTncString(ftTncDataList: ArrayList<FtTncData>): String {
         var finalTNCString = ""
-        for (ftTncData in ftTncDataList) {
-            finalTNCString += getCompleteString(ftTncData)
-            finalTNCString += "\n"
+        for (index in 0 until  ftTncDataList.size) {
+            finalTNCString += getCompleteString(ftTncDataList[index])
+            if(index != ftTncDataList.size - 1) {
+                finalTNCString += "\n"
+            }
         }
         return finalTNCString
     }
@@ -133,6 +145,7 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
         for (i in 0 until ftTncData.tncOrder) {
             tncString += "*"
         }
+        tncString += " "
         tncString += ftTncData.tncDescription
         return tncString
     }

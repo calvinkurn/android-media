@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.view.adapter.FtPDPInstallmentCalculationAdap
 class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.GetTncDataFromFragment, TkpdBaseV4Fragment() {
 
     private var productPrice: Float? = 0f
+    private var isOfficialStore: Boolean = false
     private lateinit var ftRecyclerView: RecyclerView
     private var mContext: Context? = null
     private lateinit var partnerDataItemList: ArrayList<FtCalculationPartnerData>
@@ -27,10 +28,13 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
         const val KEY_INSTALLMENT_CALCULATION_DATA = "keyInstallmentData"
         const val KEY_INSTALLMENT_PRODUCT_PRICE = "keyInstallmentProductPrice"
         const val KEY_INSTALLMENT_TNC_LIST = "keyInstallmentTncList"
+        const val KEY_INSTALLMENT_IS_OFFICIAL_STORE = "keyInstallmentIsOfficialStore"
 
-        fun createInstance(productPrice: Float, tncList: ArrayList<FtInstallmentTnc>, dataList: ArrayList<FtCalculationPartnerData>): FtPdpInstallmentCalculationFragment {
+        fun createInstance(productPrice: Float, tncList: ArrayList<FtInstallmentTnc>, isOfficialStore: Boolean,
+                           dataList: ArrayList<FtCalculationPartnerData>): FtPdpInstallmentCalculationFragment {
             val bundle = Bundle()
             bundle.putFloat(KEY_INSTALLMENT_PRODUCT_PRICE, productPrice)
+            bundle.putBoolean(KEY_INSTALLMENT_IS_OFFICIAL_STORE, isOfficialStore)
             bundle.putParcelableArrayList(KEY_INSTALLMENT_CALCULATION_DATA, dataList)
             bundle.putParcelableArrayList(KEY_INSTALLMENT_TNC_LIST, tncList)
             val lendingPartnerFragment = FtPdpInstallmentCalculationFragment()
@@ -47,6 +51,7 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
         super.onCreate(savedInstanceState)
         arguments?.let {
             productPrice = it.getFloat(KEY_INSTALLMENT_PRODUCT_PRICE)
+            isOfficialStore = it.getBoolean(KEY_INSTALLMENT_IS_OFFICIAL_STORE)
             tncDataList = it.getParcelableArrayList<FtInstallmentTnc>(KEY_INSTALLMENT_TNC_LIST)
                     ?: ArrayList()
             partnerDataItemList = arguments?.getParcelableArrayList<FtCalculationPartnerData>(KEY_INSTALLMENT_CALCULATION_DATA)
@@ -79,7 +84,8 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
         ftRecyclerView = view.findViewById(R.id.ft_recycler_view)
         val linearLayoutManager = LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
         ftRecyclerView.layoutManager = linearLayoutManager
-        ftRecyclerView.adapter = FtPDPInstallmentCalculationAdapter(context, productPrice, partnerDataItemList, this)
+        ftRecyclerView.adapter = FtPDPInstallmentCalculationAdapter(context, productPrice,
+                isOfficialStore, partnerDataItemList, this)
     }
 
     override fun onAttachActivity(context: Context) {
