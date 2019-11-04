@@ -417,7 +417,7 @@ public class TopChatAnalytics {
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CLICK_INVOICE_ATTACHMENT,
-                ""
+                invoice.getInvoiceId()
         );
     }
 
