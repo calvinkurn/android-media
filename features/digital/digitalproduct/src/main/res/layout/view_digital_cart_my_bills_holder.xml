@@ -16,7 +16,7 @@
         android:padding="@dimen/dp_16"
         tools:ignore="MissingDefaultResource">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rl_title_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,9 +26,15 @@
                 android:id="@+id/tv_header_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
+                android:ellipsize="end"
+                android:maxLines="1"
                 app:fontSize="title"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toStartOf="@+id/ic_more_info"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:textViewTheme="lightPrimary"
                 app:weight="regular"
                 tools:text="Bayar Otomatis" />
@@ -37,18 +43,19 @@
                 android:id="@+id/ic_more_info"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@id/tv_header_title"
+                app:layout_constraintEnd_toStartOf="@+id/cb_subscription"
+                app:layout_constraintStart_toEndOf="@id/tv_header_title"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_coupon_info" />
 
             <CheckBox
                 android:id="@+id/cb_subscription"
                 android:layout_width="@dimen/dp_30"
                 android:layout_height="@dimen/dp_30"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:theme="@style/DigitalCheckboxAndRadioButton" />
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_description"
