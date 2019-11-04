@@ -12,6 +12,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
+import java.util.*
 
 class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchPropertyComponent> {
 
@@ -22,8 +23,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     var id = 0
     var name = ""
     var type = ""
-    var room = 0
-    var adult = 0
+    var room = 1
+    var adult = 1
     var lat = 0f
     var long = 0f
     var children = 0
@@ -75,6 +76,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
             checkOut = intent.getStringExtra(HotelSearchResultFragment.ARG_CHECK_OUT)
         }
 
+        checkParameter()
+
         super.onCreate(savedInstanceState)
 
         checkInString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkIn))
@@ -85,6 +88,35 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                 room,
                 adult)
         updateTitle(name, subtitle)
+
+    }
+
+    fun checkParameter() {
+        val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
+        val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
+        val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
+
+        if (checkIn.isBlank() && checkOut.isBlank()) {
+            checkIn = TravelDateUtil.dateToString(
+                    TravelDateUtil.YYYY_MM_DD, tomorrow)
+            checkInString = TravelDateUtil.dateToString(
+                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+            checkOut = TravelDateUtil.dateToString(
+                    TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
+            checkOutString = TravelDateUtil.dateToString(
+                    TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
+        } else if (checkIn.isBlank()) {
+            val checkout = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOut)
+            val dayBeforeCheckOut = TravelDateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
+            checkIn = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayBeforeCheckOut)
+            checkInString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayBeforeCheckOut)
+
+        } else if (checkOut.isBlank()) {
+            val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkIn)
+            val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
+            checkOut = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
+            checkOutString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterCheckIn)
+        }
 
     }
 
