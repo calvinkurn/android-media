@@ -1893,11 +1893,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getFavoritedShopFragment(String userId) {
-        return ShopFollowingListFragment.createInstance(userId);
-    }
-
-    @Override
     public String getAppsFlyerID() {
         return TrackingUtils.getAfUniqueId(this);
     }

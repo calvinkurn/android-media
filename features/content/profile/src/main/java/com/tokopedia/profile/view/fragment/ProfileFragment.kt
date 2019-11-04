@@ -82,7 +82,6 @@ import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
@@ -161,7 +160,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var linkerData: LinkerData? = null
     private var isShareProfile = false
 
-    override lateinit var profileRouter: ProfileModuleRouter
     lateinit var layoutManager: GridLayoutManager
 
     lateinit var remoteConfig: RemoteConfig
@@ -1114,13 +1112,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     arguments!!.getString(ProfileActivity.EXTRA_PARAM_SUCCESS_POST, ""),
                     ProfileActivity.TRUE
             )
-        }
-
-        if (context!!.applicationContext is ProfileModuleRouter) {
-            profileRouter = context!!.applicationContext as ProfileModuleRouter
-        } else {
-            throw IllegalStateException("Application must implement "
-                    .plus(ProfileModuleRouter::class.java.simpleName))
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
