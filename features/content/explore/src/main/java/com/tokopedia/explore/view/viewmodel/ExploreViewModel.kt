@@ -5,5 +5,5 @@ package com.tokopedia.explore.view.viewmodel
  */
 
 data class ExploreViewModel(
-        var exploreImageViewModelList: ArrayList<ExploreImageViewModel> = arrayListOf(),
-        var tagViewModelList: ArrayList<ExploreCategoryViewModel> = arrayListOf())
+        val exploreImageViewModelList: MutableList<ExploreImageViewModel> = arrayListOf(),
+        val tagViewModelList: MutableList<ExploreCategoryViewModel> = arrayListOf())

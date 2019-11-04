@@ -100,7 +100,7 @@ class ContentExploreFragment :
     private var canLoadMore: Boolean = false
     private var hasLoadedOnce: Boolean = false
     private var isTraceStopped: Boolean = false
-    private var coachMarkItemList: ArrayList<CoachMarkItem> = arrayListOf()
+    private var coachMarkItemList: MutableList<CoachMarkItem> = arrayListOf()
 
     override fun getScreenName(): String {
         return ContentExloreEventTracking.Screen.SCREEN_CONTENT_STREAM
@@ -467,8 +467,8 @@ class ContentExploreFragment :
         imageAdapter.addList(exploreImageViewModelList)
     }
 
-    private fun loadTagData(tagViewModelList: ArrayList<ExploreCategoryViewModel>) {
-        categoryAdapter.list = tagViewModelList
+    private fun loadTagData(tagViewModelList: MutableList<ExploreCategoryViewModel>) {
+        categoryAdapter.setList(tagViewModelList)
         appBarLayout.visibility = View.VISIBLE
     }
 
