@@ -10,6 +10,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerFeedViewModel;
@@ -1573,5 +1574,37 @@ public class HomePageTracking {
             }
         }
         return list;
+    }
+
+    public static void sendHomeReviewImpression(
+            TrackingQueue trackingQueue,
+            SuggestedProductReviewResponse reviewData,
+            int position,
+            String invoiceId,
+            String productId
+    ) {
+        List<Object> promotionBody = DataLayer.listOf(DataLayer.mapOf(
+                "id", invoiceId + " - " + productId,
+                "name", "product review notification - " + invoiceId + " - " + productId,
+                "creative", "product review notification - " + invoiceId + " - " + productId,
+                "creative_url", reviewData.getImageUrl(),
+                "position", String.valueOf(position + 1),
+                "category", "",
+                "promo_id", null,
+                "promo_code", null
+        ));
+
+
+        trackingQueue.putEETracking((HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, "promoView",
+                EVENT_CATEGORY, "homepage-pdp",
+                EVENT_ACTION, "view - product review notification",
+                EVENT_LABEL, invoiceId + " - " + productId,
+                ECOMMERCE, DataLayer.mapOf(
+                    "promoView", DataLayer.mapOf(
+                        "promotions", promotionBody
+                )
+            )
+        ));
     }
 }

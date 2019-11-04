@@ -203,7 +203,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             GeolocationPromptViewHolder.LAYOUT -> viewHolder = GeolocationPromptViewHolder(view, listener)
             BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener, countDownListener)
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener, countDownListener)
-            ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view,homeReviewListener)
+            ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

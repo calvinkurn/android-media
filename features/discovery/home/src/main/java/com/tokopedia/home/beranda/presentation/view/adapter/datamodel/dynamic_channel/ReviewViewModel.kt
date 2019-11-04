@@ -3,10 +3,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_c
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ReviewViewModel(
         var suggestedProductReview: SuggestedProductReview = SuggestedProductReview()
-) : HomeVisitable<HomeTypeFactory> {
+) : ImpressHolder(), HomeVisitable<HomeTypeFactory> {
 
     override fun setTrackingData(trackingData: MutableMap<String, Any>?) {
     }
