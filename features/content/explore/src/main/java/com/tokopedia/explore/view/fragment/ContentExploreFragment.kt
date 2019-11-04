@@ -387,7 +387,7 @@ class ContentExploreFragment :
 
     fun showCoachMark() {
         coachMark = CoachMarkBuilder().build()
-        coachMark.show(activity, String.format(AffiliatePreference.LABEL_TAG_COACHMARK_CATEGORY, userSession.userId), coachMarkItemList)
+        coachMark.show(activity, String.format(AffiliatePreference.LABEL_TAG_COACHMARK_CATEGORY, userSession.userId), ArrayList(coachMarkItemList))
         affiliatePreference.setCoachmarkExploreAsAffiliateShown(userSession.userId)
     }
 
