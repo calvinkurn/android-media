@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
@@ -17,7 +16,7 @@ import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_template_chat_layout;
+    public static final int LAYOUT = com.tokopedia.topchat.R.layout.item_template_chat_layout;
 
     ChatTemplateListener viewListener;
     TextView textHolder;
@@ -25,8 +24,8 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
 
     public TemplateChatViewHolder(View itemView, ChatTemplateListener viewListener) {
         super(itemView);
-        textHolder = itemView.findViewById(R.id.text);
-        icon = itemView.findViewById(R.id.setting);
+        textHolder = itemView.findViewById(com.tokopedia.design.R.id.text);
+        icon = itemView.findViewById(com.tokopedia.topchat.R.id.setting);
         this.viewListener = viewListener;
     }
 

@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
@@ -51,7 +50,7 @@ public class ChatSettingsPresenter extends BaseDaggerPresenter<ChatSettingsInter
         variables.put(InboxChatConstant.BLOKCED, !state);
 
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(getView().getQueryString(R.raw.chatsettings), ChatSettingsResponse.class, variables, false);
+                GraphqlRequest(getView().getQueryString(com.tokopedia.topchat.R.raw.chatsettings), ChatSettingsResponse.class, variables, false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

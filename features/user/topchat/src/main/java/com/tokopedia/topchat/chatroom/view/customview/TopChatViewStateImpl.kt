@@ -24,7 +24,6 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.AttachmentPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactoryImpl
@@ -56,11 +55,11 @@ class TopChatViewStateImpl(
         TopChatViewState,
         AttachmentPreviewAdapter.AttachmentPreviewListener {
 
-    private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
-    private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
-    private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
-    private var attachmentPreviewContainer: ConstraintLayout = view.findViewById(R.id.cl_attachment_preview)
-    private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_attachment_preview)
+    private var templateRecyclerView: RecyclerView = view.findViewById(com.tokopedia.chat_common.R.id.list_template)
+    private var headerMenuButton: ImageButton = toolbar.findViewById(com.tokopedia.chat_common.R.id.header_menu)
+    private var chatBlockLayout: View = view.findViewById(com.tokopedia.chat_common.R.id.chat_blocked_layout)
+    private var attachmentPreviewContainer: ConstraintLayout = view.findViewById(com.tokopedia.chat_common.R.id.cl_attachment_preview)
+    private var attachmentPreviewRecyclerView = view.findViewById<RecyclerView>(com.tokopedia.chat_common.R.id.rv_attachment_preview)
 
     lateinit var attachmentPreviewAdapter: AttachmentPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
@@ -158,8 +157,8 @@ class TopChatViewStateImpl(
     }
 
     private fun showLastTimeOnline(viewModel: ChatroomViewModel) {
-        val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
-        val onlineStats = toolbar.findViewById<View>(R.id.online_status)
+        val onlineDesc = toolbar.findViewById<TextView>(com.tokopedia.chat_common.R.id.subtitle)
+        val onlineStats = toolbar.findViewById<View>(com.tokopedia.chat_common.R.id.online_status)
         val lastOnlineTimeStamp = getShopLastTimeOnlineTimeStamp(viewModel)
 
         if (isOfficialStore(viewModel)) {
@@ -179,7 +178,7 @@ class TopChatViewStateImpl(
 
     private fun getOnlineDescStatus(context: Context, viewModel: ChatroomViewModel): String {
         return if (viewModel.headerModel.isOnline) {
-            context.getString(R.string.online)
+            context.getString(com.tokopedia.chat_common.R.string.online)
         } else {
             ChatTimeConverter.getRelativeDate(view.context, getShopLastTimeOnlineTimeStamp(viewModel))
         }
@@ -205,36 +204,36 @@ class TopChatViewStateImpl(
         if (chatroomViewModel.headerModel.role.toLowerCase()
                         .contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
             val profileText = if (isShopFollowed) {
-                view.context.getString(R.string.already_follow_store)
+                view.context.getString(com.tokopedia.topchat.R.string.already_follow_store)
             } else {
-                view.context.getString(R.string.follow_store)
+                view.context.getString(com.tokopedia.topchat.R.string.follow_store)
             }
-            listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_system_action_plus_normal_24))
+            listMenu.add(Menus.ItemMenus(profileText, com.tokopedia.resources.common.R.drawable.ic_system_action_plus_normal_24))
         }
 
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings))
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_report_user), R.drawable.ic_chat_report))
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash))
+        listMenu.add(Menus.ItemMenus(view.context.getString(com.tokopedia.topchat.R.string.chat_incoming_settings), com.tokopedia.topchat.R.drawable.ic_chat_settings))
+        listMenu.add(Menus.ItemMenus(view.context.getString(com.tokopedia.topchat.R.string.chat_report_user), com.tokopedia.topchat.R.drawable.ic_chat_report))
+        listMenu.add(Menus.ItemMenus(view.context.getString(com.tokopedia.topchat.R.string.delete_conversation), com.tokopedia.topchat.R.drawable.ic_trash))
 
         headerMenu.itemMenuList = listMenu
-        headerMenu.setActionText(view.context.getString(R.string.cancel_bottom_sheet))
+        headerMenu.setActionText(view.context.getString(com.tokopedia.topchat.R.string.cancel_bottom_sheet))
         headerMenu.setOnActionClickListener { headerMenu.dismiss() }
         headerMenu.setOnItemMenuClickListener { itemMenus, pos ->
             run {
                 when {
-                    itemMenus.title == view.context.getString(R.string.delete_conversation) -> {
+                    itemMenus.title == view.context.getString(com.tokopedia.topchat.R.string.delete_conversation) -> {
                         showDeleteChatDialog(headerMenuListener, alertDialog)
                     }
-                    itemMenus.title == view.context.getString(R.string.follow_store) -> {
+                    itemMenus.title == view.context.getString(com.tokopedia.topchat.R.string.follow_store) -> {
                         headerMenuListener.followUnfollowShop(true)
                     }
-                    itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
+                    itemMenus.title == view.context.getString(com.tokopedia.topchat.R.string.already_follow_store) -> {
                         headerMenuListener.followUnfollowShop(false)
                     }
-                    itemMenus.title == view.context.getString(R.string.chat_incoming_settings) -> {
+                    itemMenus.title == view.context.getString(com.tokopedia.topchat.R.string.chat_incoming_settings) -> {
                         headerMenuListener.onGoToChatSetting(chatroomViewModel.blockedStatus)
                     }
-                    itemMenus.title == view.context.getString(R.string.chat_report_user) -> {
+                    itemMenus.title == view.context.getString(com.tokopedia.topchat.R.string.chat_report_user) -> {
                         headerMenuListener.onGoToReportUser()
                     }
                     else -> {
@@ -310,7 +309,7 @@ class TopChatViewStateImpl(
 
         setChatBlockedText(chatBlockLayout, it, opponentRole, opponentName)
 
-        val unblockText = chatBlockLayout.findViewById<TextView>(R.id.enable_chat_textView)
+        val unblockText = chatBlockLayout.findViewById<TextView>(com.tokopedia.chat_common.R.id.enable_chat_textView)
         unblockText.setOnClickListener { onUnblockChatClicked() }
 
     }
@@ -325,7 +324,7 @@ class TopChatViewStateImpl(
         val CHAT_PERSONAL = "chat personal"
         val CHAT_BOTH = "semua chat"
 
-        val blockText = chatBlockLayout.findViewById<TextView>(R.id.blocked_text)
+        val blockText = chatBlockLayout.findViewById<TextView>(com.tokopedia.chat_common.R.id.blocked_text)
         val category = when {
             opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
             opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP) ->
@@ -337,7 +336,7 @@ class TopChatViewStateImpl(
             }
         }
         val blockString = String.format(
-                chatBlockLayout.context.getString(R.string.chat_blocked_text),
+                chatBlockLayout.context.getString(com.tokopedia.chat_common.R.string.chat_blocked_text),
                 category,
                 opponentName,
                 Utils.getDateTime(blockedStatus.blockedUntil))
@@ -359,23 +358,23 @@ class TopChatViewStateImpl(
     }
 
     private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener, myAlertDialog: Dialog) {
-        myAlertDialog.setTitle(view.context.getString(R.string.delete_chat_question))
-        myAlertDialog.setDesc(view.context.getString(R.string.delete_chat_warning_message))
-        myAlertDialog.setBtnOk(view.context.getString(R.string.delete))
+        myAlertDialog.setTitle(view.context.getString(com.tokopedia.topchat.R.string.delete_chat_question))
+        myAlertDialog.setDesc(view.context.getString(com.tokopedia.topchat.R.string.delete_chat_warning_message))
+        myAlertDialog.setBtnOk(view.context.getString(com.tokopedia.topchat.R.string.delete))
         myAlertDialog.setOnOkClickListener {
             headerMenuListener.onDeleteConversation()
         }
-        myAlertDialog.setBtnCancel(view.context.getString(R.string.cancel))
+        myAlertDialog.setBtnCancel(view.context.getString(com.tokopedia.imagepicker.R.string.cancel))
         myAlertDialog.setOnCancelClickListener { myAlertDialog.dismiss() }
         myAlertDialog.show()
     }
 
     override fun showErrorWebSocket(b: Boolean) {
         notifier.visibility = View.VISIBLE
-        val title = notifier.findViewById<TextView>(R.id.title)
-        val action = notifier.findViewById<View>(R.id.action)
+        val title = notifier.findViewById<TextView>(com.tokopedia.design.R.id.title)
+        val action = notifier.findViewById<View>(com.tokopedia.chat_common.R.id.action)
         if (b) {
-            title.setText(R.string.error_no_connection_retrying);
+            title.setText(com.tokopedia.chat_common.R.string.error_no_connection_retrying);
             action.visibility = View.VISIBLE
 
         } else {

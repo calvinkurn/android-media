@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.view.fragment.EditTemplateChatFragment;
 import com.tokopedia.topchat.common.InboxMessageConstant;
@@ -36,9 +35,9 @@ public class EditTemplateChatActivity extends BaseSimpleActivity {
 
     private void setToolbarTitle(boolean isAdd) {
         if (isAdd) {
-            toolbar.setTitle(getString(R.string.add_template_chat_title));
+            toolbar.setTitle(getString(com.tokopedia.topchat.R.string.add_template_chat_title));
         } else {
-            toolbar.setTitle(getString(R.string.edit_template_chat_title));
+            toolbar.setTitle(getString(com.tokopedia.topchat.R.string.edit_template_chat_title));
         }
     }
 

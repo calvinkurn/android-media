@@ -5,11 +5,9 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.Toolbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.fragment.ChatSearchFragment
 
 /**
@@ -20,12 +18,12 @@ class ChatSearchActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat_search)
+        setContentView(com.tokopedia.topchat.R.layout.activity_chat_search)
         setToolbar()
     }
 
     private fun setToolbar() {
-        val toolbar = findViewById<Toolbar>(R.id.chat_toolbar)
+        val toolbar = findViewById<Toolbar>(com.tokopedia.topchat.R.id.chat_toolbar)
         setSupportActionBar(toolbar)
 
         supportActionBar?.run {

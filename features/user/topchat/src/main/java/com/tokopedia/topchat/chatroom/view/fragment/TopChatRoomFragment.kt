@@ -49,7 +49,6 @@ import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -65,7 +64,6 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
-import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
@@ -185,7 +183,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessUnblockChat(): (BlockedStatus) -> Unit {
         return {
-            ToasterNormal.make(view, String.format(getString(R.string.chat_unblocked_text),
+            ToasterNormal.make(view, String.format(getString(com.tokopedia.chat_common.R.string.chat_unblocked_text),
                     opponentName), ToasterNormal.LENGTH_SHORT).show()
             getViewState().removeChatBlocked(it)
         }
@@ -333,7 +331,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_chatroom, container, false)
+        return inflater.inflate(com.tokopedia.chat_common.R.layout.fragment_chatroom, container, false)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -427,7 +425,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onSendButtonClicked() {
-        val sendMessage = view?.findViewById<EditText>(R.id.new_comment)?.text.toString()
+        val sendMessage = view?.findViewById<EditText>(com.tokopedia.chat_common.R.id.new_comment)?.text.toString()
         val startTime = SendableViewModel.generateStartTime()
 
         presenter.sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage
@@ -484,7 +482,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         val intent = TemplateChatActivity.createInstance(context, isSeller)
         activity?.let {
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
-            it.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
+            it.overridePendingTransition(com.tokopedia.topchat.R.anim.pull_up, android.R.anim.fade_out)
         }
     }
 
@@ -548,7 +546,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     it,
                     message,
                     Snackbar.LENGTH_LONG,
-                    getString(R.string.chat_check_cart),
+                    getString(com.tokopedia.topchat.R.string.chat_check_cart),
                     onClickSeeButtonOnAtcSuccessToaster()
             )
         }

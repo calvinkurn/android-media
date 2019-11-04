@@ -28,7 +28,6 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
-import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
 import com.tokopedia.topchat.common.InboxChatConstant;
@@ -82,18 +81,18 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_chat_settings, container, false);
+        View rootView = inflater.inflate(com.tokopedia.topchat.R.layout.activity_chat_settings, container, false);
 
-        chatPersonalSwitch = rootView.findViewById(R.id.chat_personal_switch);
-        chatPromotionSwitch = rootView.findViewById(R.id.chat_promotion_switch);
-        chatPromotionInfoView = rootView.findViewById(R.id.chat_promotion_layout);
-        chatPersonalInfoView = rootView.findViewById(R.id.chat_personal_layout);
-        chatPromotionInfoText = rootView.findViewById(R.id.chat_promotion_info);
-        chatPersonalInfoText = rootView.findViewById(R.id.chat_personal_info);
-        chatPersonalCardView = rootView.findViewById(R.id.chat_personal_cardview);
-        chatPromotionalcardView = rootView.findViewById(R.id.chat_promotional_cardview);
-        progressBarLayout = rootView.findViewById(R.id.progress_bar_layout);
-        promotionConstraintLayout = rootView.findViewById(R.id.cl_promotionView);
+        chatPersonalSwitch = rootView.findViewById(com.tokopedia.topchat.R.id.chat_personal_switch);
+        chatPromotionSwitch = rootView.findViewById(com.tokopedia.topchat.R.id.chat_promotion_switch);
+        chatPromotionInfoView = rootView.findViewById(com.tokopedia.topchat.R.id.chat_promotion_layout);
+        chatPersonalInfoView = rootView.findViewById(com.tokopedia.topchat.R.id.chat_personal_layout);
+        chatPromotionInfoText = rootView.findViewById(com.tokopedia.topchat.R.id.chat_promotion_info);
+        chatPersonalInfoText = rootView.findViewById(com.tokopedia.topchat.R.id.chat_personal_info);
+        chatPersonalCardView = rootView.findViewById(com.tokopedia.topchat.R.id.chat_personal_cardview);
+        chatPromotionalcardView = rootView.findViewById(com.tokopedia.topchat.R.id.chat_promotional_cardview);
+        progressBarLayout = rootView.findViewById(com.tokopedia.topchat.R.id.progress_bar_layout);
+        promotionConstraintLayout = rootView.findViewById(com.tokopedia.topchat.R.id.cl_promotionView);
         chatPersonalSwitch.setOnCheckedChangeListener(this);
         chatPromotionSwitch.setOnCheckedChangeListener(this);
 
@@ -207,7 +206,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
             chatPersonalSwitch.setChecked(false);
             chatPersonalInfoView.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())) {
-                SpannableString str = getInformationText(String.format(getString(R.string.chat_personal_blocked_validity), senderName, Utils.getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())), senderName);
+                SpannableString str = getInformationText(String.format(getString(com.tokopedia.topchat.R.string.chat_personal_blocked_validity), senderName, Utils.getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())), senderName);
                 chatPersonalInfoText.setText(str);
             }
         }
@@ -222,7 +221,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
             chatPromotionSwitch.setChecked(false);
             chatPromotionInfoView.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())) {
-                SpannableString str = getInformationText(String.format(getString(R.string.chat_promotion_blocked_validity), senderName, Utils.getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())), senderName);
+                SpannableString str = getInformationText(String.format(getString(com.tokopedia.topchat.R.string.chat_promotion_blocked_validity), senderName, Utils.getDateTime(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().getValidDate())), senderName);
                 chatPromotionInfoText.setText(str);
             }
 
@@ -238,7 +237,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
                 setPromotionalInfoViewVisibility(this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isPromoBlocked());
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
             } else if (chatRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)) {
-                layoutParams.setMargins(0, (int) getResources().getDimension(R.dimen.dp_24), 0, 0);
+                layoutParams.setMargins(0, (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_24), 0, 0);
                 chatPromotionalcardView.requestLayout();
                 chatPromotionalcardView.setVisibility(View.VISIBLE);
                 chatPersonalCardView.setVisibility(View.VISIBLE);
@@ -276,9 +275,9 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
             chatPromotionSwitch.setChecked(false);
         }
 
-        if (compoundButton.getId() == R.id.chat_personal_switch) {
+        if (compoundButton.getId() == com.tokopedia.topchat.R.id.chat_personal_switch) {
             chatSettingsPresenter.onPersonalChatSettingChange(messageId, isChecked, true, shopId);
-        } else if (compoundButton.getId() == R.id.chat_promotion_switch) {
+        } else if (compoundButton.getId() == com.tokopedia.topchat.R.id.chat_promotion_switch) {
             chatSettingsPresenter.onPromotionalChatSettingChange(messageId, isChecked, true, shopId);
         }
     }
@@ -296,9 +295,9 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     public void setPersonalToast(boolean enable) {
         if (shouldShowToast) {
             if (!enable) {
-                ToasterNormal.show(getActivity(), String.format(getString(R.string.enable_chat_personal_settings), senderName));
+                ToasterNormal.show(getActivity(), String.format(getString(com.tokopedia.topchat.R.string.enable_chat_personal_settings), senderName));
             } else {
-                ToasterNormal.show(getActivity(), String.format(getString(R.string.disable_chat_personal_settings), senderName));
+                ToasterNormal.show(getActivity(), String.format(getString(com.tokopedia.topchat.R.string.disable_chat_personal_settings), senderName));
             }
         }
     }
@@ -308,11 +307,11 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     public void setPromotionToast(boolean enable) {
         if (shouldShowToast) {
             if (enable && this.chatSettingsResponse.getChatBlockResponse().getChatBlockStatus().isBlocked()) {
-                ToasterError.make(getView(), getString(R.string.enable_chat_promotion_blocked_settings), BaseToaster.LENGTH_LONG).show();
+                ToasterError.make(getView(), getString(com.tokopedia.topchat.R.string.enable_chat_promotion_blocked_settings), BaseToaster.LENGTH_LONG).show();
             } else if (!enable) {
-                ToasterNormal.show(getActivity(), String.format(getString(R.string.enable_chat_promotion_settings), senderName));
+                ToasterNormal.show(getActivity(), String.format(getString(com.tokopedia.topchat.R.string.enable_chat_promotion_settings), senderName));
             } else {
-                ToasterNormal.show(getActivity(), String.format(getString(R.string.disable_chat_promotion_settings), senderName));
+                ToasterNormal.show(getActivity(), String.format(getString(com.tokopedia.topchat.R.string.disable_chat_promotion_settings), senderName));
             }
         }
     }
@@ -336,7 +335,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
     }
 
     private String getErrorChatMessage() {
-        return getResources().getString(R.string.error_chat_message);
+        return getResources().getString(com.tokopedia.topchat.R.string.error_chat_message);
     }
 
     @Override

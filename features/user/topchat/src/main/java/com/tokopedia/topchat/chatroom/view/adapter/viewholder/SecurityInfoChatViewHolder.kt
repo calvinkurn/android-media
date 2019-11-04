@@ -8,9 +8,8 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
 import com.tokopedia.topchat.chatroom.view.listener.SecurityInfoListener
+import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
 
 /**
  * @author by steven on 05/09/18.
@@ -18,13 +17,13 @@ import com.tokopedia.topchat.chatroom.view.listener.SecurityInfoListener
 
 class SecurityInfoChatViewHolder(itemView: View, private val viewListener: SecurityInfoListener)
     : AbstractViewHolder<SecurityInfoViewModel>(itemView) {
-    private val timeMachineText: TextView = itemView.findViewById<View>(R.id.time_machine_text) as TextView
+    private val timeMachineText: TextView = itemView.findViewById<View>(com.tokopedia.topchat.R.id.time_machine_text) as TextView
 
 
     init {
 
-        val securityInfo = itemView.context.getString(R.string.security_info_chat)
-        val securityInfoLink = itemView.context.getString(R.string.security_info_chat_link)
+        val securityInfo = itemView.context.getString(com.tokopedia.topchat.R.string.security_info_chat)
+        val securityInfoLink = itemView.context.getString(com.tokopedia.topchat.R.string.security_info_chat_link)
 
         val spannable = SpannableString(String.format("%s %s", securityInfo, securityInfoLink))
 
@@ -35,7 +34,7 @@ class SecurityInfoChatViewHolder(itemView: View, private val viewListener: Secur
 
             override fun updateDrawState(ds: TextPaint) {
                 ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(itemView.context, R.color.medium_green)
+                ds.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.medium_green)
             }
         }, securityInfo.length, spannable.length, 0)
 
@@ -49,6 +48,6 @@ class SecurityInfoChatViewHolder(itemView: View, private val viewListener: Secur
     companion object {
 
         @LayoutRes
-        val LAYOUT = R.layout.security_info_chatroom_layout
+        val LAYOUT = com.tokopedia.topchat.R.layout.security_info_chatroom_layout
     }
 }

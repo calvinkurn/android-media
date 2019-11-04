@@ -25,9 +25,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
-import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
@@ -94,13 +92,13 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.delete_template, menu);
+        inflater.inflate(com.tokopedia.topchat.R.menu.delete_template, menu);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(R.id.action_organize);
+        MenuItem item = menu.findItem(com.tokopedia.topchat.R.id.action_organize);
         if (getArguments().getInt(InboxMessageConstant.PARAM_NAV) == 1) {
             allowDelete = DISABLE_DELETE;
             item.getIcon().setAlpha(DISABLE_DELETE);
@@ -113,11 +111,11 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
-        if (i == R.id.action_organize) {
+        if (i == com.tokopedia.topchat.R.id.action_organize) {
             if (allowDelete == ENABLE_DELETE) {
                 showDialogDelete();
             } else {
-                showError(new MessageErrorException(getActivity().getString(R.string
+                showError(new MessageErrorException(getActivity().getString(com.tokopedia.topchat.R.string
                         .minimum_template_chat_warning)));
             }
 
@@ -129,9 +127,9 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     private void showDialogDelete() {
         new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.delete_chat_template)
-                .setMessage(R.string.forever_deleted_template)
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                .setTitle(com.tokopedia.topchat.R.string.delete_chat_template)
+                .setMessage(com.tokopedia.topchat.R.string.forever_deleted_template)
+                .setPositiveButton(com.tokopedia.topchat.R.string.delete, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         presenter.deleteTemplate(getArguments().getInt(InboxMessageConstant.PARAM_POSITION));
@@ -139,7 +137,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                     }
 
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(com.tokopedia.imagepicker.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
@@ -151,12 +149,12 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_edit_template_chat, container, false);
+        View rootView = inflater.inflate(com.tokopedia.topchat.R.layout.fragment_edit_template_chat, container, false);
 
-        counter = rootView.findViewById(R.id.counter);
-        error = rootView.findViewById(R.id.error);
-        submit = rootView.findViewById(R.id.submit);
-        editText = rootView.findViewById(R.id.edittext);
+        counter = rootView.findViewById(com.tokopedia.topchat.R.id.counter);
+        error = rootView.findViewById(com.tokopedia.core2.R.id.error);
+        submit = rootView.findViewById(com.tokopedia.core2.R.id.submit);
+        editText = rootView.findViewById(com.tokopedia.topchat.R.id.edittext);
 
         presenter.attachView(this);
         presenter.setMode(isSeller);
@@ -205,11 +203,11 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         if (integer == 0) {
             canProceed(false, proceed);
         } else if (integer > 0 && integer < 5) {
-            error.setText(getActivity().getString(R.string.minimal_char_template));
+            error.setText(getActivity().getString(com.tokopedia.topchat.R.string.minimal_char_template));
             error.setVisibility(View.VISIBLE);
             canProceed(false, proceed);
         } else if (integer > MAX_CHAR) {
-            error.setText(getActivity().getString(R.string.maximal_char_template, MAX_CHAR));
+            error.setText(getActivity().getString(com.tokopedia.topchat.R.string.maximal_char_template, MAX_CHAR));
             error.setVisibility(View.VISIBLE);
             canProceed(false, proceed);
         } else {
@@ -221,11 +219,11 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     public void canProceed(boolean can, TextView proceed) {
         proceed.setEnabled(can);
         if (can) {
-            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
-            proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.medium_green), PorterDuff.Mode.SRC_IN);
+            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.white));
         } else {
-            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.grey_300), PorterDuff.Mode.SRC_IN);
-            proceed.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+            proceed.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.grey_300), PorterDuff.Mode.SRC_IN);
+            proceed.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.grey_500));
         }
     }
 

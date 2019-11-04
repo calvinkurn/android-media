@@ -34,7 +34,6 @@ import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
@@ -288,7 +287,7 @@ class TopChatRoomPresenter @Inject constructor(
                             }
 
                             override fun onError(e: Throwable?) {
-                                view.showSnackbarError(view.getStringResource(R.string.error_compress_image))
+                                view.showSnackbarError(view.getStringResource(com.tokopedia.topchat.R.string.error_compress_image))
                             }
                         })
                 compressImageSubscription?.clear()
@@ -351,10 +350,10 @@ class TopChatRoomPresenter @Inject constructor(
         val fileSize = Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
 
         return if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
-            view.showSnackbarError(view.getStringResource(R.string.undersize_image))
+            view.showSnackbarError(view.getStringResource(com.tokopedia.topchat.R.string.undersize_image))
             false
         } else if (fileSize >= MAX_FILE_SIZE) {
-            view.showSnackbarError(view.getStringResource(R.string.oversize_image))
+            view.showSnackbarError(view.getStringResource(com.tokopedia.topchat.R.string.oversize_image))
             false
         } else {
             true
@@ -495,7 +494,7 @@ class TopChatRoomPresenter @Inject constructor(
             sendAttachments(messageId, opponentId)
             sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
         } else {
-            showErrorSnackbar(R.string.error_empty_product)
+            showErrorSnackbar(com.tokopedia.chat_common.R.string.error_empty_product)
         }
     }
 

@@ -29,7 +29,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
@@ -109,21 +108,21 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.chat_options_menu, menu)
+        inflater.inflate(com.tokopedia.topchat.R.menu.chat_options_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-//            R.id.menu_chat_search -> {
+//            com.tokopedia.topchat.R.id.menu_chat_search -> {
 //                RouteManager.route(activity, ApplinkConstInternalMarketplace.CHAT_SEARCH)
 //                true
 //            }
-            R.id.menu_chat_filter -> {
+            com.tokopedia.topchat.R.id.menu_chat_filter -> {
                 chatListAnalytics.eventClickFilterChat()
                 showFilterDialog()
                 true
             }
-//            R.id.menu_chat_setting -> {
+//            com.tokopedia.topchat.R.id.menu_chat_setting -> {
 //                true
 //            }
             else -> super.onOptionsItemSelected(item)
@@ -131,7 +130,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_chat_list, container, false)
+        return inflater.inflate(com.tokopedia.topchat.R.layout.fragment_chat_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -178,7 +177,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     private fun initView(view: View) {
         showLoading()
-        broadCastButton = view.findViewById(R.id.fab_broadcast)
+        broadCastButton = view.findViewById(com.tokopedia.topchat.R.id.fab_broadcast)
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -200,7 +199,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> adapter?.deleteItem(itemPositionLongClicked)
-                is Fail -> view?.showErrorToaster(getString(R.string.delete_chat_default_error_message))
+                is Fail -> view?.showErrorToaster(getString(com.tokopedia.topchat.R.string.delete_chat_default_error_message))
             }
         })
     }
@@ -356,9 +355,9 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         activity?.let {
             val itemMenus = ArrayList<Menus.ItemMenus>()
             val arrayFilterString = arrayListOf(
-                    it.getString(R.string.filter_chat_all),
-                    it.getString(R.string.filter_chat_unread),
-                    it.getString(R.string.filter_chat_unreplied)
+                    it.getString(com.tokopedia.topchat.R.string.filter_chat_all),
+                    it.getString(com.tokopedia.topchat.R.string.filter_chat_unread),
+                    it.getString(com.tokopedia.topchat.R.string.filter_chat_unreplied)
             )
 
             for ((index, title) in arrayFilterString.withIndex()) {
@@ -366,9 +365,9 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 else itemMenus.add(Menus.ItemMenus(title, false))
             }
 
-            Menus(it, R.style.BottomFilterDialogTheme).apply {
+            Menus(it, com.tokopedia.topchat.R.style.BottomFilterDialogTheme).apply {
                 window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                setTitle(getString(R.string.label_filter))
+                setTitle(getString(com.tokopedia.design.R.string.label_filter))
                 itemMenuList = itemMenus
                 setOnItemMenuClickListener { menus, pos ->
                     chatListAnalytics.eventClickListFilterChat(menus.title.toLowerCase())
@@ -526,21 +525,21 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         activity?.let {
             when (sightTag) {
                 PARAM_TAB_USER -> {
-                    title = it.getString(R.string.buyer_empty_chat_title)
-                    subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
+                    title = it.getString(com.tokopedia.topchat.R.string.buyer_empty_chat_title)
+                    subtitle = it.getString(com.tokopedia.topchat.R.string.buyer_empty_chat_subtitle)
                     image = CHAT_BUYER_EMPTY
                 }
 
                 PARAM_TAB_SELLER -> {
-                    title = it.getString(R.string.seller_empty_chat_title)
-                    subtitle = it.getString(R.string.seller_empty_chat_subtitle)
+                    title = it.getString(com.tokopedia.topchat.R.string.seller_empty_chat_title)
+                    subtitle = it.getString(com.tokopedia.topchat.R.string.seller_empty_chat_subtitle)
                     image = CHAT_SELLER_EMPTY
                 }
             }
 
             if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_UNREAD)) {
                 image = CHAT_BUYER_EMPTY
-                title = it.getString(R.string.empty_chat_read_all_title)
+                title = it.getString(com.tokopedia.topchat.R.string.empty_chat_read_all_title)
                 subtitle = ""
             }
         }

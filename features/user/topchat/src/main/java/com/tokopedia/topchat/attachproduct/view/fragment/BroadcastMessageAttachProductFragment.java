@@ -14,7 +14,6 @@ import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFact
 import com.tokopedia.attachproduct.view.fragment.AttachProductFragment;
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
-import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 
 import java.util.ArrayList;
@@ -67,7 +66,7 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        chooseButton = view.findViewById(R.id.send_button_attach_product);
+        chooseButton = view.findViewById(com.tokopedia.attachproduct.R.id.send_button_attach_product);
         updateButtonBasedOnChecked(productIds.size());
     }
 
@@ -82,7 +81,7 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
     public void updateButtonBasedOnChecked(int checkedCount) {
         super.updateButtonBasedOnChecked(checkedCount);
         if (chooseButton != null)
-            chooseButton.setText(getString(R.string.string_attach_product_choose_button_text,String.valueOf(checkedCount),
+            chooseButton.setText(getString(com.tokopedia.topchat.R.string.string_attach_product_choose_button_text,String.valueOf(checkedCount),
                 String.valueOf(MAX_CHECKED)));
     }
 }

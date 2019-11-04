@@ -23,10 +23,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity;
-import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
@@ -83,15 +81,15 @@ public class TemplateChatFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_template_chat, container, false);
+        View rootView = inflater.inflate(com.tokopedia.topchat.R.layout.fragment_template_chat, container, false);
         typeFactory = new TemplateChatSettingTypeFactoryImpl(this);
 
-        loading = rootView.findViewById(R.id.loading_search);
-        content = rootView.findViewById(R.id.content);
-        recyclerView = rootView.findViewById(R.id.recycler_view);
-        info = rootView.findViewById(R.id.template_list_info);
-        switchTemplate = rootView.findViewById(R.id.switch_chat_template);
-        templateContainer = rootView.findViewById(R.id.template_container);
+        loading = rootView.findViewById(com.tokopedia.topchat.R.id.loading_search);
+        content = rootView.findViewById(com.tokopedia.core2.R.id.content);
+        recyclerView = rootView.findViewById(com.tokopedia.design.R.id.recycler_view);
+        info = rootView.findViewById(com.tokopedia.topchat.R.id.template_list_info);
+        switchTemplate = rootView.findViewById(com.tokopedia.topchat.R.id.switch_chat_template);
+        templateContainer = rootView.findViewById(com.tokopedia.topchat.R.id.template_container);
         snackbarError = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_LONG);
         snackbarInfo = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_LONG);
 
@@ -106,13 +104,13 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     private void setBottomSheetDialog() {
         bottomSheetView = new BottomSheetView(getActivity());
-        bottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen.sp_14));
-        bottomSheetView.setBodyTextSize(getResources().getDimension(R.dimen.sp_14));
+        bottomSheetView.setTitleTextSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_14));
+        bottomSheetView.setBodyTextSize(getResources().getDimension(com.tokopedia.design.R.dimen.sp_14));
         bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
-                .setTitle(getActivity().getString(R.string.title_info_list_template))
-                .setBody(getActivity().getString(R.string.body_info_list_template))
-                .setImg(R.drawable.drag_edit)
+                .setTitle(getActivity().getString(com.tokopedia.topchat.R.string.title_info_list_template))
+                .setBody(getActivity().getString(com.tokopedia.topchat.R.string.body_info_list_template))
+                .setImg(com.tokopedia.topchat.R.drawable.drag_edit)
                 .build());
     }
 
@@ -197,7 +195,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
     @Override
     public void onEnter(String message, int position) {
         if (message == null && adapter.getList().size() > 5) {
-            snackbarError.setText(getActivity().getString(R.string.limited_template_chat_warning));
+            snackbarError.setText(getActivity().getString(com.tokopedia.topchat.R.string.limited_template_chat_warning));
             snackbarError.show();
         } else {
             Intent intent = EditTemplateChatActivity.createInstance(getActivity());
@@ -214,7 +212,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
             bundle.putBoolean(PARAM_IS_SELLER, isSeller);
             intent.putExtras(bundle);
             startActivityForResult(intent, 100);
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+            getActivity().overridePendingTransition(com.tokopedia.topchat.R.anim.pull_up, android.R.anim.fade_out);
         }
     }
 
@@ -284,7 +282,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     @Override
     public void successRearrange() {
-        String text = getActivity().getString(R.string.success_rearrange_template_chat);
+        String text = getActivity().getString(com.tokopedia.topchat.R.string.success_rearrange_template_chat);
         snackbarInfo.setText(text);
         snackbarInfo.show();
         prepareResult();
@@ -303,15 +301,15 @@ public class TemplateChatFragment extends BaseDaggerFragment
                     switch (data.getIntExtra(MODE_RESULT, 0)) {
                         case CREATE:
                             adapter.add(string);
-                            text = getActivity().getString(R.string.success_add_template_chat);
+                            text = getActivity().getString(com.tokopedia.topchat.R.string.success_add_template_chat);
                             break;
                         case EDIT:
                             adapter.edit(index, string);
-                            text = getActivity().getString(R.string.success_edit_template_chat);
+                            text = getActivity().getString(com.tokopedia.topchat.R.string.success_edit_template_chat);
                             break;
                         case DELETE:
                             adapter.delete(index);
-                            text = getActivity().getString(R.string.success_delete_template_chat);
+                            text = getActivity().getString(com.tokopedia.topchat.R.string.success_delete_template_chat);
                             break;
                         default:
                             break;

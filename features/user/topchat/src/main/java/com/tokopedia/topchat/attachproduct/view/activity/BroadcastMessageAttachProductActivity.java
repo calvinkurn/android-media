@@ -9,7 +9,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity;
-import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachproduct.view.fragment.BroadcastMessageAttachProductFragment;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class BroadcastMessageAttachProductActivity extends AttachProductActivity
         super.setupLayout(savedInstanceState);
         String subtitle = toolbar.getSubtitle().toString();
         if (!TextUtils.isEmpty(subtitle))
-            toolbar.setSubtitle(getString(R.string.template_subtitle_attach_product, subtitle));
+            toolbar.setSubtitle(getString(com.tokopedia.topchat.R.string.template_subtitle_attach_product, subtitle));
     }
 
     @Override

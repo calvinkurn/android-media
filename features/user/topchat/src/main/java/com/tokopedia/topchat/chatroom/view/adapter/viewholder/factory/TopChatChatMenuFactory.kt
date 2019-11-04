@@ -6,7 +6,6 @@ import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachImageVie
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.ProductLinkViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
-import com.tokopedia.topchat.R
 
 class TopChatChatMenuFactory : ChatMenuFactory {
     override fun create(listener: BaseChatMenuViewHolder.ChatMenuListener, view: View, position: Int): BaseChatMenuViewHolder {
@@ -19,8 +18,8 @@ class TopChatChatMenuFactory : ChatMenuFactory {
 
     override fun createChatMenuItems(): List<ChatMenu> {
         return listOf(
-                ChatMenu(icon = R.drawable.ic_attach_grey, title = "Link Produk"),
-                ChatMenu(icon = R.drawable.ic_image_picker_grey, title = "Gambar")
+                ChatMenu(icon = com.tokopedia.chat_common.R.drawable.ic_attach_grey, title = "Link Produk"),
+                ChatMenu(icon = com.tokopedia.chat_common.R.drawable.ic_image_picker_grey, title = "Gambar")
         )
     }
 

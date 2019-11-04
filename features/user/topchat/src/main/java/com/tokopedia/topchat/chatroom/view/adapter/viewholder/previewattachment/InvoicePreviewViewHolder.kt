@@ -5,7 +5,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.OrderStatusCode
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.unifycomponents.Label
 
@@ -14,13 +13,13 @@ class InvoicePreviewViewHolder(
         attachmentItemPreviewListener: AttachmentItemPreviewListener
 ) : AttachmentPreviewViewHolder<InvoicePreviewViewModel>(itemView, attachmentItemPreviewListener) {
 
-    private val thumbnail: ImageView? = itemView.findViewById(R.id.iv_thumbnail)
-    private val status: Label? = itemView.findViewById(R.id.tv_status)
-    private val invoiceId: TextView? = itemView.findViewById(R.id.tv_invoice_id)
-    private val price: TextView? = itemView.findViewById(R.id.tv_price)
+    private val thumbnail: ImageView? = itemView.findViewById(com.tokopedia.topchat.R.id.iv_thumbnail)
+    private val status: Label? = itemView.findViewById(com.tokopedia.topchat.R.id.tv_status)
+    private val invoiceId: TextView? = itemView.findViewById(com.tokopedia.topchat.R.id.tv_invoice_id)
+    private val price: TextView? = itemView.findViewById(com.tokopedia.topchat.R.id.tv_price)
 
     override fun getButtonView(itemView: View): ImageView? {
-        return itemView.findViewById(R.id.iv_close)
+        return itemView.findViewById(com.tokopedia.topchat.R.id.iv_close)
     }
 
     override fun bind(model: InvoicePreviewViewModel, position: Int) {
@@ -48,6 +47,6 @@ class InvoicePreviewViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_invoice_preview
+        val LAYOUT = com.tokopedia.topchat.R.layout.item_invoice_preview
     }
 }
