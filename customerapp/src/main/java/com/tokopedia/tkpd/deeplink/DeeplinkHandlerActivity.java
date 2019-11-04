@@ -290,10 +290,10 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             Bundle defaultBundle = new Bundle();
             defaultBundle.putBundle(RouteManager.QUERY_PARAM, queryParamBundle);
 
-            if (!TextUtils.isEmpty(mappedDeeplink)) {
-                routeApplink(deepLinkDelegate, mappedDeeplink, defaultBundle);
-            } else {
+            if (TextUtils.isEmpty(mappedDeeplink)) {
                 routeApplink(deepLinkDelegate, applinkString, defaultBundle);
+            } else {
+                routeApplink(deepLinkDelegate, mappedDeeplink, defaultBundle);
             }
 
             if (getIntent().getExtras() != null) {

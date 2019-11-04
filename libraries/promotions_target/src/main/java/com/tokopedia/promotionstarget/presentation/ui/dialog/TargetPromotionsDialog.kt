@@ -33,7 +33,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.promotionstarget.*
+import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.CouponGratificationParams.CAMPAIGN_SLUG
 import com.tokopedia.promotionstarget.data.CouponGratificationParams.POP_SLUG
@@ -44,9 +44,9 @@ import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
-import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.data.di.components.AppModule
 import com.tokopedia.promotionstarget.data.di.components.DaggerPromoTargetComponent
+import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApiResponseCallback
 import com.tokopedia.promotionstarget.presentation.loadImageGlide
@@ -327,7 +327,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         autoApplyObserver = Observer { it ->
             when (it.status) {
-                LiveDataResult.STATUS.SUCCESS  -> {
+                LiveDataResult.STATUS.SUCCESS -> {
                     val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
                     if (messageList != null && messageList.isNotEmpty())
                         CustomToast.show(activityContext, messageList[0].toString())
@@ -424,18 +424,17 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         if (userSession.isLoggedIn) {
 
             val applink = data.popGratification?.popGratificationActionButton?.appLink
-            if (!TextUtils.isEmpty(applink)) {
-                dropKeysFromBundle(applink, activityContext.intent)
-                RouteManager.route(btnAction.context, applink)
-                shouldCallAutoApply = false
-                bottomSheetDialog.dismiss()
-            } else {
-
+            if (TextUtils.isEmpty(applink)) {
                 val popGratificationBenefits = data.popGratification?.popGratificationBenefits
                 if (popGratificationBenefits != null && popGratificationBenefits.isNotEmpty()) {
                     val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
                     claimCouponApi.claimGratification(claimPayload, couponClaimResponseCallback)
                 }
+            } else {
+                dropKeysFromBundle(applink, activityContext.intent)
+                RouteManager.route(btnAction.context, applink)
+                shouldCallAutoApply = false
+                bottomSheetDialog.dismiss()
             }
         } else {
             val loginIntent = RouteManager.getIntent(activityContext, ApplinkConst.LOGIN)

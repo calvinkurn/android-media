@@ -649,10 +649,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (uri != null) {
             String queryToAppend = uri.getQuery();
             if (!TextUtils.isEmpty(queryToAppend)) {
-                if (!builder.toString().contains("?")) {
-                    builder.append("?");
-                } else {
+                if (builder.toString().contains("?")) {
                     builder.append("&");
+                } else {
+                    builder.append("?");
                 }
                 builder.append(queryToAppend);
             }
