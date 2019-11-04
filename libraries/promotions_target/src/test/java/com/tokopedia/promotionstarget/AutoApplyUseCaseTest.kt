@@ -1,4 +1,4 @@
-package com.tokopedia.promotions
+package com.tokopedia.promotionstarget
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.promotionstarget.data.AutoApplyParams
