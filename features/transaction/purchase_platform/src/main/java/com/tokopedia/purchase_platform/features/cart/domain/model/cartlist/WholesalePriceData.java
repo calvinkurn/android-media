@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author Irfan Khoirul on 23/05/18.
  */
 
-public class WholesalePrice implements Parcelable {
+public class WholesalePriceData implements Parcelable {
 
     private String qtyMinFmt;
     private String qtyMaxFmt;
@@ -16,10 +16,10 @@ public class WholesalePrice implements Parcelable {
     private int qtyMax;
     private int prdPrc;
 
-    public WholesalePrice() {
+    public WholesalePriceData() {
     }
 
-    protected WholesalePrice(Parcel in) {
+    protected WholesalePriceData(Parcel in) {
         qtyMinFmt = in.readString();
         qtyMaxFmt = in.readString();
         prdPrcFmt = in.readString();
@@ -43,15 +43,15 @@ public class WholesalePrice implements Parcelable {
         return 0;
     }
 
-    public static final Creator<WholesalePrice> CREATOR = new Creator<WholesalePrice>() {
+    public static final Creator<WholesalePriceData> CREATOR = new Creator<WholesalePriceData>() {
         @Override
-        public WholesalePrice createFromParcel(Parcel in) {
-            return new WholesalePrice(in);
+        public WholesalePriceData createFromParcel(Parcel in) {
+            return new WholesalePriceData(in);
         }
 
         @Override
-        public WholesalePrice[] newArray(int size) {
-            return new WholesalePrice[size];
+        public WholesalePriceData[] newArray(int size) {
+            return new WholesalePriceData[size];
         }
     };
 
