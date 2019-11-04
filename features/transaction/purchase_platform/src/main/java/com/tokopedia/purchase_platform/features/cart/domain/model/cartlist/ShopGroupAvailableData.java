@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Irfan Khoirul on 21/08/18.
  */
 
-public class ShopGroupData implements Parcelable {
+public class ShopGroupAvailableData implements Parcelable {
 
     private List<CartItemHolderData> cartItemHolderDataList = new ArrayList<>();
     private boolean isChecked;
@@ -41,10 +41,10 @@ public class ShopGroupData implements Parcelable {
     private long totalCashback;
     private int totalItem;
 
-    public ShopGroupData() {
+    public ShopGroupAvailableData() {
     }
 
-    protected ShopGroupData(Parcel in) {
+    protected ShopGroupAvailableData(Parcel in) {
         cartItemHolderDataList = in.createTypedArrayList(CartItemHolderData.CREATOR);
         isChecked = in.readByte() != 0;
         isError = in.readByte() != 0;
@@ -102,15 +102,15 @@ public class ShopGroupData implements Parcelable {
         return 0;
     }
 
-    public static final Creator<ShopGroupData> CREATOR = new Creator<ShopGroupData>() {
+    public static final Creator<ShopGroupAvailableData> CREATOR = new Creator<ShopGroupAvailableData>() {
         @Override
-        public ShopGroupData createFromParcel(Parcel in) {
-            return new ShopGroupData(in);
+        public ShopGroupAvailableData createFromParcel(Parcel in) {
+            return new ShopGroupAvailableData(in);
         }
 
         @Override
-        public ShopGroupData[] newArray(int size) {
-            return new ShopGroupData[size];
+        public ShopGroupAvailableData[] newArray(int size) {
+            return new ShopGroupAvailableData[size];
         }
     };
 
