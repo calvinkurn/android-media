@@ -1600,12 +1600,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsScreenName(String screenName) {
         checkoutAnalyticsCourierSelection.sendScreenName(getActivity(), screenName);
-        if (screenName.equalsIgnoreCase(ConstantTransactionAnalytics.ScreenName.ONE_CLICK_SHIPMENT) ||
-                screenName.equalsIgnoreCase(ConstantTransactionAnalytics.ScreenName.CHECKOUT)) {
-            Map<String, String> params = new HashMap<>();
-            params.put("deeplinkUrl", ApplinkConst.CHECKOUT);
-            checkoutAnalyticsCourierSelection.sendScreenNameV5(screenName, params);
-        }
     }
 
     @Override

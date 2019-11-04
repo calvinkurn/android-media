@@ -2059,10 +2059,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void sendAnalyticsScreenName(String screenName) {
         cartPageAnalytics.sendScreenName(getActivity(), screenName);
-        Map<String, String> params = new HashMap<>();
-        params.put("deeplinkUrl", ApplinkConst.CART);
-
-        cartPageAnalytics.sendScreenNameV5(screenName, params);
     }
 
     @Override
