@@ -1,12 +1,10 @@
-package com.tokopedia.profile.view.subscriber
+package com.tokopedia.feedcomponent.view.subscriber
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.profile.view.listener.ProfileContract
 import rx.Subscriber
 
 /**
- * @author by milhamj on 10/17/18.
+ * Created by jegul on 2019-11-04
  */
 class TrackPostClickSubscriber : Subscriber<Boolean>() {
     override fun onNext(isSuccess: Boolean?) {

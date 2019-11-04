@@ -294,7 +294,6 @@ dependencies {
     implementation project(rootProject.ext.features.homeRecom)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.digitalTopupBills)
