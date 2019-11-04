@@ -27,7 +27,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="1"
                 app:fontSize="title"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintEnd_toStartOf="@+id/ic_more_info"
