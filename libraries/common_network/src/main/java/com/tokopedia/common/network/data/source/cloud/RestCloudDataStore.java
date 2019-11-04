@@ -55,6 +55,8 @@ public class RestCloudDataStore implements RestDataStore {
     @Override
     public Observable<RestResponseIntermediate> getResponse(RestRequest request) {
         switch (request.getRequestType()) {
+            case PATCH:
+                return doPatch(request);
             case GET:
                 return doGet(request);
             case POST:
@@ -128,6 +130,41 @@ public class RestCloudDataStore implements RestDataStore {
             }
 
             return mApi.post(request.getUrl(),
+                    body,
+                    request.getQueryParams(),
+                    request.getHeaders()).map(response -> processData(request, response));
+        }
+    }
+
+    /**
+     * Helper method to Invoke HTTP patch request
+     *
+     * @param request - Request object
+     * @return Observable which represent server response
+     */
+    private Observable<RestResponseIntermediate> doPatch(RestRequest request) {
+        if (request.getBody() != null && request.getBody() instanceof Map) {
+            return mApi.patch(request.getUrl(),
+                    (Map<String, String>) request.getBody(),
+                    request.getQueryParams(),
+                    request.getHeaders()).map(response -> processData(request, response));
+        } else {
+            String body = null;
+            if (request.getBody() instanceof String) {
+                body = (String) request.getBody();
+            } else {
+                try {
+                    body = CommonUtil.toJson(request.getBody());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (body == null) {
+                throw new RuntimeException("Invalid json object provided");
+            }
+
+            return mApi.patch(request.getUrl(),
                     body,
                     request.getQueryParams(),
                     request.getHeaders()).map(response -> processData(request, response));
