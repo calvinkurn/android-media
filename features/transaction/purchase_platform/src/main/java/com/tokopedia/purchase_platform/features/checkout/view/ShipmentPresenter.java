@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.features.checkout.view;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -95,6 +96,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearNo
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearShipmentCacheAutoApplySubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.GetCourierRecommendationSubscriber;
+import com.tokopedia.purchase_platform.features.checkout.view.subscriber.GetCourierRecommendationTradeInSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.GetShipmentAddressFormReloadFromMultipleAddressSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.SaveShipmentStateSubscriber;
@@ -1714,8 +1716,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 ShipmentCartItemModel shipmentCartItemModel,
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad, ArrayList<Product> products,
-                                                String cartString) {
-        String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
+                                                String cartString, boolean isTradeInDropOff) {
+        String query = "";
+        if (isTradeInDropOff) {
+            query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_trade_in_query);
+        } else {
+            query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
+        }
         ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
@@ -1724,9 +1731,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             cornerId = getRecipientAddressModel().isCornerAddress();
         }
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
-        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentCartItemModel.getIsLeasingProduct(), pslCode, spId, 0, shopShipmentList, new GetCourierRecommendationSubscriber(
-                getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
-                shipmentCartItemModel, shopShipmentList, isInitialLoad), shippingParam
+        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentCartItemModel.getIsLeasingProduct(),
+                pslCode, spId, 0, shopShipmentList, shippingParam,
+                new GetCourierRecommendationSubscriber(getView(), this, shipperId, spId, itemPosition,
+                        shippingCourierConverter, shipmentCartItemModel, shopShipmentList, isInitialLoad, isTradeInDropOff)
         );
     }
 
@@ -1753,6 +1761,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setAddressId(shipmentDetailData.getAddressId());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
         shippingParam.setTradein(shipmentDetailData.isTradein());
+        shippingParam.setTradeInDropOff(shipmentDetailData.isTradeInDropOff());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
         return shippingParam;

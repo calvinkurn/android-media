@@ -31,13 +31,14 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
     private final ShipmentCartItemModel shipmentCartItemModel;
     private final List<ShopShipment> shopShipmentList;
     private final boolean isInitialLoad;
+    private final boolean isTradeInDropOff;
 
     public GetCourierRecommendationSubscriber(ShipmentContract.View view, ShipmentContract.Presenter presenter,
                                               int shipperId, int spId, int itemPosition,
                                               ShippingCourierConverter shippingCourierConverter,
                                               ShipmentCartItemModel shipmentCartItemModel,
                                               List<ShopShipment> shopShipmentList,
-                                              boolean isInitialLoad) {
+                                              boolean isInitialLoad, boolean isTradeInDropOff) {
         this.view = view;
         this.presenter = presenter;
         this.shipperId = shipperId;
@@ -47,6 +48,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
         this.shipmentCartItemModel = shipmentCartItemModel;
         this.shopShipmentList = shopShipmentList;
         this.isInitialLoad = isInitialLoad;
+        this.isTradeInDropOff = isTradeInDropOff;
     }
 
     @Override
@@ -104,7 +106,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                             courierItemData.setHideShipperName(shippingRecommendationData.getLogisticPromo().getHideShipperName());
                                         }
                                     }
-                                    view.renderCourierStateSuccess(courierItemData, itemPosition);
+                                    view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff);
                                     return;
                                 }
                             }

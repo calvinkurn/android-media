@@ -101,7 +101,7 @@ public interface ShipmentAdapterActionListener {
                              ShipmentDetailData shipmentDetailData,
                              ShipmentCartItemModel shipmentCartItemModel,
                              List<ShopShipment> shopShipmentList,
-                             boolean isCourierRecommendation);
+                             boolean isCourierRecommendation, boolean isTradeInDropOff);
 
     void onCourierPromoCanceled(String shipperName, String promoCode);
 
@@ -121,7 +121,7 @@ public interface ShipmentAdapterActionListener {
 
     void onProcessToPaymentCod();
 
-    void onChangeTradeInDopOffClicked();
+    void onChangeTradeInDropOffClicked();
 
     boolean isTradeInByDropOff();
 

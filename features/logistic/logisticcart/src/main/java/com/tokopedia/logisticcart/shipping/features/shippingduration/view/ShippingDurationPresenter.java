@@ -95,7 +95,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     }
 
     private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory, boolean isCorner, boolean isLeasing, List<ShopShipment> shopShipmentList, String query, ShippingParam shippingParam, String pslCode) {
-        getCourierRecommendationUseCase.execute(query, codHistory, isCorner, isLeasing, pslCode, selectedSpId, selectedServiceId, shopShipmentList, new Subscriber<ShippingRecommendationData>() {
+        getCourierRecommendationUseCase.execute(query, codHistory, isCorner, isLeasing, pslCode, selectedSpId, selectedServiceId, shopShipmentList, shippingParam, new Subscriber<ShippingRecommendationData>() {
                     @Override
                     public void onCompleted() {
 
@@ -136,7 +136,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                             }
                         }
                     }
-                }, shippingParam);
+                });
     }
 
     @NonNull

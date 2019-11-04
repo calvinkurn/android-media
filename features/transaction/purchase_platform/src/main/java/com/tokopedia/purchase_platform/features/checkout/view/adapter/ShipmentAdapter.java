@@ -3,8 +3,10 @@ package com.tokopedia.purchase_platform.features.checkout.view.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -483,7 +485,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return false;
     }
 
-    public void updateSelectedAddress(RecipientAddressModel newlySelectedAddress, boolean isUpdateAfterSelectTradeInPickup) {
+    public void updateSelectedAddress(RecipientAddressModel newlySelectedAddress, boolean isUpdateAfterSelectTradeInDropOff) {
         int addressIndex = 0;
         for (Object item : shipmentDataList) {
             if (item instanceof RecipientAddressModel) {
@@ -494,8 +496,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (addressIndex != 0) {
             shipmentDataList.set(addressIndex, newlySelectedAddress);
             this.recipientAddressModel = newlySelectedAddress;
-            if (isUpdateAfterSelectTradeInPickup) {
+            if (isUpdateAfterSelectTradeInDropOff) {
                 notifyItemChanged(addressIndex);
+                int invoiceTradeInIndex = 0;
+                for (Object item : shipmentDataList) {
+                    if (item instanceof ShipmentCartItemModel) {
+                        invoiceTradeInIndex = shipmentDataList.indexOf(item);
+                        ((ShipmentCartItemModel) item).setHasSetDropOffLocation(true);
+                        break;
+                    }
+                }
+                notifyItemChanged(invoiceTradeInIndex);
             } else {
                 resetCourier();
                 notifyDataSetChanged();

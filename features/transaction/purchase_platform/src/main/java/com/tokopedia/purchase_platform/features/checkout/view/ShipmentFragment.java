@@ -4,13 +4,17 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -1120,14 +1124,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition) {
-        if (courierItemData.getLogPromoCode() != null) {
-            String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).getCartString();
-            shipmentPresenter.processCheckPromoStackingLogisticPromo(itemPosition, cartString, courierItemData.getLogPromoCode());
-        }
-        checkCourierPromo(courierItemData, itemPosition);
+    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff) {
         shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
-        shipmentAdapter.setSelectedCourier(itemPosition, courierItemData);
+        if (isTradeInDropOff) {
+            shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData);
+        } else {
+            if (courierItemData.getLogPromoCode() != null) {
+                String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).getCartString();
+                shipmentPresenter.processCheckPromoStackingLogisticPromo(itemPosition, cartString, courierItemData.getLogPromoCode());
+            }
+            checkCourierPromo(courierItemData, itemPosition);
+            shipmentAdapter.setSelectedCourier(itemPosition, courierItemData);
+        }
         onNeedUpdateViewItem(itemPosition);
     }
 
@@ -1476,6 +1484,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentDetailData.setSelectedCourier(oldShipmentDetailData.getSelectedCourier());
         }
         shipmentDetailData.setTradein(isTradeIn());
+        shipmentDetailData.setTradeInDropOff(isTradeInByDropOff());
 
         return shipmentDetailData;
     }
@@ -2385,7 +2394,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         cartPosition,
                         shipmentCartItemModel.getSelectedShipmentDetailData(),
                         shipmentCartItemModel, shopShipmentList, false,
-                        getProductForRatesRequest(shipmentCartItemModel), shipmentCartItemModel.getCartString());
+                        getProductForRatesRequest(shipmentCartItemModel), shipmentCartItemModel.getCartString(),
+                        isTradeInByDropOff());
             }
         }
     }
@@ -2425,14 +2435,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                     ShipmentDetailData shipmentDetailData,
                                     ShipmentCartItemModel shipmentCartItemModel,
                                     List<ShopShipment> shopShipmentList,
-                                    boolean useCourierRecommendation) {
+                                    boolean useCourierRecommendation, boolean isTradeInDropOff) {
         if (shopShipmentList != null && shopShipmentList.size() > 0) {
             shipmentDetailData.setTradein(isTradeIn());
             shipmentPresenter.processGetCourierRecommendation(
                     shipperId, spId, itemPosition, shipmentDetailData,
                     shipmentCartItemModel, shopShipmentList, true,
                     getProductForRatesRequest(shipmentCartItemModel),
-                    shipmentCartItemModel.getCartString());
+                    shipmentCartItemModel.getCartString(), isTradeInDropOff);
         }
     }
 
@@ -2922,9 +2932,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onChangeTradeInDopOffClicked() {
-        // Todo : Intent to choose pinpoint
-        // Todo : and get 2 result : Address data & Shipping data
+    public void onChangeTradeInDropOffClicked() {
+        // Todo : Intent to choose pinpoint and get 1 result : Address data
         onResultFromSetTradeInPinpoint();
     }
 
@@ -2936,54 +2945,31 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updateSelectedAddress(recipientAddressModel, true);
 
         // Todo : Map shipping data to CourierItemData >> update adapter data
-        CourierItemData courierItemData = new CourierItemData();
-        courierItemData.setShipperId(11);
-        courierItemData.setServiceId(1003);
-        courierItemData.setShipperProductId(33);
-        courierItemData.setName("SiCepat");
-        courierItemData.setEstimatedTimeDelivery("Next Day (1 Hari)");
-        courierItemData.setMinEtd(86400);
-        courierItemData.setMaxEtd(86400);
-        courierItemData.setShipperPrice(13000);
-        courierItemData.setShipperFormattedPrice("Rp13.000");
-        courierItemData.setInsurancePrice(0);
-        courierItemData.setInsuranceType(3);
-        courierItemData.setInsuranceUsedType(2);
-        courierItemData.setInsuranceUsedInfo("Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya");
-        courierItemData.setInsuranceUsedDefault(2);
-        courierItemData.setUsePinPoint(false);
-//        if (shippingCourierViewModel.getServiceData().getOrderPriority() != null) {
-//            courierItemData.setNow(shippingCourierViewModel.getServiceData().getOrderPriority().getNow());
-//            courierItemData.setPriorityPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getPrice());
-//            courierItemData.setPriorityFormattedPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getFormattedPrice());
-//            courierItemData.setPriorityInnactiveMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getInactiveMessage());
-//            courierItemData.setPriorityDurationMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getDurationMessage());
-//            courierItemData.setPriorityFeeMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getFeeMessage());
-//            courierItemData.setPriorityWarningboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getWarningBoxMessage());
-//            courierItemData.setPriorityCheckboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getCheckboxMessage());
-//            courierItemData.setPriorityPdpMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getPdpMessage());
-//        }
-        courierItemData.setAllowDropshiper(true);
-        courierItemData.setAdditionalPrice(0);
-        courierItemData.setPromoCode("");
-        courierItemData.setChecksum("URBRPGtbz80x6kKDpBMT5NfZfzg%3D");
-        courierItemData.setUt("1571973648");
-        courierItemData.setBlackboxInfo("");
-        courierItemData.setSelected(true);
-//        if (shippingCourierViewModel.getProductData().getFeatures() != null &&
-//                shippingCourierViewModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
-//            OntimeDeliveryGuarantee otd_prev = shippingCourierViewModel.getProductData().getFeatures().getOntimeDeliveryGuarantee();
-//            OntimeDelivery otd = new OntimeDelivery(
-//                    otd_prev.getAvailable(),
-//                    otd_prev.getTextLabel(),
-//                    otd_prev.getTextDetail(),
-//                    otd_prev.getUrlDetail(),
-//                    otd_prev.getValue()
-//            );
-//            courierItemData.setOntimeDelivery(otd);
-//        }
-
-        shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData);
+//        CourierItemData courierItemData = new CourierItemData();
+//        courierItemData.setShipperId(11);
+//        courierItemData.setServiceId(1003);
+//        courierItemData.setShipperProductId(33);
+//        courierItemData.setName("SiCepat");
+//        courierItemData.setEstimatedTimeDelivery("Next Day (1 Hari)");
+//        courierItemData.setMinEtd(86400);
+//        courierItemData.setMaxEtd(86400);
+//        courierItemData.setShipperPrice(13000);
+//        courierItemData.setShipperFormattedPrice("Rp13.000");
+//        courierItemData.setInsurancePrice(0);
+//        courierItemData.setInsuranceType(3);
+//        courierItemData.setInsuranceUsedType(2);
+//        courierItemData.setInsuranceUsedInfo("Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya");
+//        courierItemData.setInsuranceUsedDefault(2);
+//        courierItemData.setUsePinPoint(false);
+//        courierItemData.setAllowDropshiper(true);
+//        courierItemData.setAdditionalPrice(0);
+//        courierItemData.setPromoCode("");
+//        courierItemData.setChecksum("URBRPGtbz80x6kKDpBMT5NfZfzg%3D");
+//        courierItemData.setUt("1571973648");
+//        courierItemData.setBlackboxInfo("");
+//        courierItemData.setSelected(true);
+//
+//        shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData);
     }
 
     @Override

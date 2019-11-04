@@ -5,6 +5,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+
 import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -12,6 +13,7 @@ import androidx.core.content.ContextCompat;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -186,12 +188,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout layoutWarningAndError;
     private LinearLayout llCourierStateLoading;
     private LinearLayout llCourierRecommendationStateLoading;
+    private LinearLayout llCourierRecommendationTradeInDropOffStateLoading;
     private TextView tvErrorShipmentItemTitle;
     private TextView tvErrorShipmentItemDescription;
     private RelativeLayout rlProductInfo;
     private FrameLayout flDisableContainer;
     private Ticker tickerOtd;
     private ConstraintLayout layoutTradeInShippingInfo;
+    private Typography tvTradeInShippingPriceTitle;
     private Typography tvTradeInShippingPriceDetail;
 
     // robinhood III
@@ -342,6 +346,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
         llCourierStateLoading = itemView.findViewById(R.id.ll_courier_state_loading);
         llCourierRecommendationStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_state_loading);
+        llCourierRecommendationTradeInDropOffStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_Trade_in_drop_off_state_loading);
         tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
         rlProductInfo = itemView.findViewById(R.id.rl_product_info);
@@ -349,6 +354,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tickerOtd = itemView.findViewById(R.id.ticker_otd);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
         layoutTradeInShippingInfo = itemView.findViewById(R.id.layout_trade_in_shipping_info);
+        tvTradeInShippingPriceTitle = itemView.findViewById(R.id.tv_trade_in_shipping_price_title);
         tvTradeInShippingPriceDetail = itemView.findViewById(R.id.tv_trade_in_shipping_price_detail);
 
         //priority
@@ -749,13 +755,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llShippingOptionsContainer.setVisibility(View.GONE);
             llShipmentRecommendationContainer.setVisibility(View.GONE);
             layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
+            llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
             boolean isCourierTradeInDropOffSelected = shipmentDetailData != null
                     && shipmentDetailData.getSelectedCourierTradeInDropOff() != null;
             if (isCourierTradeInDropOffSelected) {
                 tvTradeInShippingPriceDetail.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperPrice(), false));
             } else {
-                tvTradeInShippingPriceDetail.setText(R.string.label_trade_in_shipping_price);
+                if (shipmentCartItemModel.isHasSetDropOffLocation()) {
+                     loadCourierState(shipmentCartItemModel, shipmentDetailData, recipientAddressModel, ratesDataConverter, true);
+                } else {
+                    tvTradeInShippingPriceDetail.setText(R.string.label_trade_in_shipping_price);
+                }
             }
         } else {
             layoutTradeInShippingInfo.setVisibility(View.GONE);
@@ -904,38 +915,70 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 llShippingOptionsContainer.setVisibility(View.GONE);
                 tvLogTicker.setVisibility(View.GONE);
 
-                if (shipmentCartItemModel.isStateLoadingCourierState()) {
-                    llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
-                    llSelectShipmentRecommendation.setVisibility(View.GONE);
-                } else {
-                    llCourierRecommendationStateLoading.setVisibility(View.GONE);
-                    if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
-                        if (shipmentDetailData == null) {
-                            RecipientAddressModel tmpRecipientAddressModel;
-                            if (recipientAddressModel != null) {
-                                tmpRecipientAddressModel = recipientAddressModel;
-                            } else {
-                                tmpRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-                            }
-                            ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
-                                    shipmentCartItemModel, tmpRecipientAddressModel);
+                loadCourierState(shipmentCartItemModel, shipmentDetailData, recipientAddressModel, ratesDataConverter, false);
+            }
+        }
+    }
 
-                            if (!shipmentCartItemModel.isStateHasLoadCourierState()) {
-                                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                                    mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
-                                            shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                            shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), true);
-                                    shipmentCartItemModel.setStateLoadingCourierState(true);
-                                    shipmentCartItemModel.setStateHasLoadCourierState(true);
-                                    llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
-                                    llSelectShipmentRecommendation.setVisibility(View.GONE);
-                                }
+    private void loadCourierState(ShipmentCartItemModel shipmentCartItemModel,
+                                  ShipmentDetailData shipmentDetailData,
+                                  RecipientAddressModel recipientAddressModel,
+                                  RatesDataConverter ratesDataConverter,
+                                  boolean isTradeInDropOff) {
+        if (shipmentCartItemModel.isStateLoadingCourierState()) {
+            if (isTradeInDropOff) {
+                llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.VISIBLE);
+                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
+            } else {
+                llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
+                llSelectShipmentRecommendation.setVisibility(View.GONE);
+            }
+        } else {
+            if (isTradeInDropOff) {
+                llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
+            } else {
+                llCourierRecommendationStateLoading.setVisibility(View.GONE);
+            }
+
+            if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
+                if (shipmentDetailData == null) {
+                    RecipientAddressModel tmpRecipientAddressModel;
+                    if (recipientAddressModel != null) {
+                        tmpRecipientAddressModel = recipientAddressModel;
+                    } else {
+                        tmpRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+                    }
+                    ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
+                            shipmentCartItemModel, tmpRecipientAddressModel);
+
+                    if (!shipmentCartItemModel.isStateHasLoadCourierState() || !shipmentCartItemModel.isStateHasLoadCourierTradeInDropOffState()) {
+                        if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                            mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
+                                    shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
+                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), true, isTradeInDropOff);
+                            shipmentCartItemModel.setStateLoadingCourierState(true);
+                            if (isTradeInDropOff) {
+                                shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
+                                llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.VISIBLE);
+                                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+                                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
+                            } else {
+                                shipmentCartItemModel.setStateHasLoadCourierState(true);
+                                llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
+                                llSelectShipmentRecommendation.setVisibility(View.GONE);
                             }
                         }
-                    } else {
-                        llCourierRecommendationStateLoading.setVisibility(View.GONE);
-                        llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
                     }
+                }
+            } else {
+                if (isTradeInDropOff) {
+                    llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
+                    tvTradeInShippingPriceTitle.setVisibility(View.VISIBLE);
+                    tvTradeInShippingPriceDetail.setVisibility(View.VISIBLE);
+                } else {
+                    llCourierRecommendationStateLoading.setVisibility(View.GONE);
+                    llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -1809,7 +1852,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                             shipmentCartItemModel.setStateHasLoadCourierState(true);
                             mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
                                     shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), true);
+                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), true, false);
                             llCourierBlackboxStateLoading.setVisibility(View.VISIBLE);
                             llSelectShipmentBlackbox.setVisibility(View.GONE);
                         }

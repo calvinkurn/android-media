@@ -193,7 +193,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvChangeDropOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shipmentAdapterActionListener.onChangeTradeInDopOffClicked();
+                shipmentAdapterActionListener.onChangeTradeInDropOffClicked();
             }
         });
     }

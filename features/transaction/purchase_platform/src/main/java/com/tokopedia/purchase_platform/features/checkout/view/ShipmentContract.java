@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.view;
 
 import android.app.Activity;
+
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -107,7 +108,7 @@ public interface ShipmentContract {
 
         void renderCancelAutoApplyCouponSuccess(String variant);
 
-        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition);
+        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff);
 
         void renderCourierStateFailed(int itemPosition);
 
@@ -293,7 +294,7 @@ public interface ShipmentContract {
                                              ShipmentCartItemModel shipmentCartItemModel,
                                              List<ShopShipment> shopShipmentList,
                                              boolean isInitialLoad, ArrayList<Product> products,
-                                             String cartString);
+                                             String cartString, boolean isTradeInDropOff);
 
         RecipientAddressModel getRecipientAddressModel();
 
