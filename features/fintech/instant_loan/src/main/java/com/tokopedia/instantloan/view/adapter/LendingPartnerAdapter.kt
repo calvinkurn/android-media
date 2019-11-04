@@ -35,17 +35,12 @@ class LendingPartnerAdapter(lendingPartnerList: ArrayList<GqlLendingPartnerData>
     }
 
     class LePartnerViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-        var imageView: ImageView
-        var context: Context
-
-        init {
-            context = view.context
-            imageView = view.findViewById(com.tokopedia.instantloan.R.id.partner_image_view)
-        }
+        var imageView: ImageView = view.findViewById(com.tokopedia.instantloan.R.id.partner_image_view)
+        var context: Context = view.context
 
         fun bindData(partnerItem: GqlLendingPartnerData, position: Int) {
-            ImageHandler.LoadImage(imageView, partnerItem.partnerIconUrl)
             itemView.tag = partnerItem.partnerNameSlug
+            ImageHandler.LoadImage(imageView, partnerItem.partnerIconUrl)
             itemView.setOnClickListener(this)
         }
 
