@@ -1,6 +1,8 @@
 package com.tokopedia.flight.bookingV3.data.mapper
 
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.flight.booking.constant.FlightBookingPassenger
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
@@ -82,6 +84,50 @@ class FlightBookingMapper {
                 }
             }
             return FlightPromoViewEntity(voucher.enableVoucher, voucher.isCouponActive, promoData)
+        }
+
+        fun mapToFlightPassengerEntity(adult: Int, child: Int, infant: Int): List<FlightBookingPassengerViewModel> {
+
+            var passengerNumber = 1
+            val viewModels = arrayListOf<FlightBookingPassengerViewModel>()
+            for (i in 1..adult) {
+                val viewModel = FlightBookingPassengerViewModel()
+                viewModel.passengerLocalId = passengerNumber
+                viewModel.type = FlightBookingPassenger.ADULT
+                viewModel.headerTitle = String.format("Penumpang dewasa")
+                viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
+                viewModel.flightBookingMealMetaViewModels = arrayListOf()
+                viewModels.add(viewModel)
+                passengerNumber++
+            }
+
+            if (child > 0) {
+                for (i in 1..child) {
+                    val viewModel = FlightBookingPassengerViewModel()
+                    viewModel.passengerLocalId = passengerNumber
+                    viewModel.type = FlightBookingPassenger.CHILDREN
+                    viewModel.headerTitle = String.format("Penumpang anak")
+                    viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
+                    viewModel.flightBookingMealMetaViewModels = arrayListOf()
+                    viewModels.add(viewModel)
+                    passengerNumber++
+                }
+            }
+
+            if (infant > 0) {
+                for (i in 1..child) {
+                    val viewModel = FlightBookingPassengerViewModel()
+                    viewModel.passengerLocalId = passengerNumber
+                    viewModel.type = FlightBookingPassenger.INFANT
+                    viewModel.headerTitle = String.format("Penumpang bayi")
+                    viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
+                    viewModel.flightBookingMealMetaViewModels = arrayListOf()
+                    viewModels.add(viewModel)
+                    passengerNumber++
+                }
+            }
+
+            return viewModels
         }
     }
 }

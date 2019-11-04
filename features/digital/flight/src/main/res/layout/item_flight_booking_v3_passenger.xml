@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_16">
+
+    <View
+        android:id="@+id/ps_seperator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="#f3f4f5"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_passenger_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/ps_seperator"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Penumpang dewasa"
+        app:typographyType="heading_5"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintRight_toLeftOf="@id/tv_edit_passenger_info"
+        app:layout_constraintEnd_toStartOf="@id/tv_edit_passenger_info"
+        android:layout_marginRight="@dimen/dp_8"
+        android:lines="1"
+        android:maxLines="1"
+        android:ellipsize="end"
+        />
+    
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_edit_passenger"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        app:layout_constraintTop_toTopOf="@id/tv_passenger_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:background="@color/Green_G500"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_edit_passenger_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Isi Data"
+        app:layout_constraintTop_toTopOf="@id/iv_edit_passenger"
+        app:layout_constraintBottom_toBottomOf="@id/iv_edit_passenger"
+        app:layout_constraintEnd_toStartOf="@id/iv_edit_passenger"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        app:typographyType="body_2"
+        android:textColor="@color/Green_G500"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_passenger_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_passenger_name"
+        android:layout_marginTop="@dimen/dp_2"
+        app:layout_constraintRight_toLeftOf="@id/tv_edit_passenger_info"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="@dimen/dp_8"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

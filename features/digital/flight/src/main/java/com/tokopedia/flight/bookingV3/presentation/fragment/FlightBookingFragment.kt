@@ -21,8 +21,10 @@ import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragme
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.flight.booking.di.FlightBookingComponent
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
+import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPassengerAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightInsuranceAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
@@ -56,6 +58,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     lateinit var flightRouteAdapter: FlightJourneyAdapter
     lateinit var flightInsuranceAdapter: FlightInsuranceAdapter
+    lateinit var flightPassengerAdapter: FlightBookingPassengerAdapter
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -101,6 +104,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 }
             }
         })
+
+        bookingViewModel.flightPassengersData.observe(this, Observer {
+            renderPassengerData(it)
+        })
     }
 
     private fun renderData(cart: FlightCartViewEntity) {
@@ -122,6 +129,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flightInsuranceAdapter.updateList(cart.insurances)
 
 
+    }
+
+    private fun renderPassengerData(passengers: List<FlightBookingPassengerViewModel>) {
+        if (!::flightPassengerAdapter.isInitialized) flightPassengerAdapter = FlightBookingPassengerAdapter()
+        val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        rv_passengers_info.layoutManager = layoutManager
+        rv_passengers_info.adapter = flightPassengerAdapter
+        flightPassengerAdapter.updateList(passengers)
     }
 
     private fun renderProfileData(profileInfo: ProfileInfo) {

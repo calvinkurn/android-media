@@ -4,6 +4,7 @@ package com.tokopedia.flight.bookingV3.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
@@ -34,6 +35,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     val flightCartResult = MutableLiveData<Result<FlightCartViewEntity>>()
     val flightPromoResult = MutableLiveData<FlightPromoViewEntity>()
     val profileResult = MutableLiveData<Result<ProfileInfo>>()
+    val flightPassengersData = MutableLiveData<List<FlightBookingPassengerViewModel>>()
+//    val flightPriceData = MutableLiveData<List<>>
     val flightCancelVoucherSuccess = MutableLiveData<Boolean>()
 
     var retryCount = 0
@@ -50,6 +53,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             if (data.cartData.id.isNotBlank()) {
                 flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
                 flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
+                flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
+                        data.cartData.flight.child, data.cartData.flight.infant)
             } else {
                 if (data.meta.needRefresh && data.meta.maxRetry >= retryCount) {
                     retryCount++
@@ -65,6 +70,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             val data = gson.fromJson(rawQuery, FlightCart.Response::class.java).flightCart
             flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
             flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
+            flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
+                    data.cartData.flight.child, data.cartData.flight.infant)
         }
     }
 
