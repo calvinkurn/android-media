@@ -168,13 +168,8 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         counterInputViewStock.addTextChangedListener(new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                String sString = StringUtils.omitNonNumeric(s.toString());
-                int stock;
-                if (TextUtils.isEmpty(sString) || sString.equals("0")) {
-                    stock = 1;
-                } else {
-                    stock = (int) counterInputViewStock.getDoubleValue();
-                }
+                int stock = (int) counterInputViewStock.getDoubleValue();
+
                 checkStockValid(stock);
                 if (productVariantCombinationViewModel.getStock() == stock) {
                     return;

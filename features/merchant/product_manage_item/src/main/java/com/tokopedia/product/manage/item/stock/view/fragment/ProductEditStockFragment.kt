@@ -97,10 +97,23 @@ class ProductEditStockFragment : Fragment() {
     private fun getTotalStock() = decimalInputViewStock.doubleValue.toInt()
 
     private fun isTotalStockValid(): Boolean {
-        if (MIN_STOCK.removeCommaToInt() > getTotalStock() || getTotalStock() > MAX_STOCK.removeCommaToInt()) {
-            decimalInputViewStock.setError(getString(R.string.product_error_total_stock_not_valid, MIN_STOCK, MAX_STOCK))
+        // When add product, product stock cannot be 0
+        val minStock = if (isAddStatus) {
+            MIN_STOCK_IS_ADDED
+        } else {
+            MIN_STOCK
+        }
+
+        if (getTotalStock() < minStock.removeCommaToInt()) {
+            if (isAddStatus) {
+                decimalInputViewStock.setError(getString(R.string.global_product_stock_error_minimum))
+            }
+            return false
+        } else if (getTotalStock() > MAX_STOCK.removeCommaToInt()) {
+            decimalInputViewStock.setError(getString(R.string.global_product_stock_error_maximum, MAX_STOCK))
             return false
         }
+
         decimalInputViewStock.setError(null)
         return true
     }
@@ -138,6 +151,7 @@ class ProductEditStockFragment : Fragment() {
         const val SAVED_PRODUCT_STOCK = "SAVED_PRODUCT_STOCK"
         const val MIN_STOCK_VARIANT = "1"
         const val MIN_STOCK = "0"
+        const val MIN_STOCK_IS_ADDED = "1"
         const val MAX_STOCK = "999,999"
         fun createInstance() = ProductEditStockFragment()
     }
