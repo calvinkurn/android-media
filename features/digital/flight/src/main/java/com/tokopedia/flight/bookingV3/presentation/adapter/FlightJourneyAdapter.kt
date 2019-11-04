@@ -52,8 +52,6 @@ class FlightJourneyAdapter: RecyclerView.Adapter<FlightJourneyAdapter.ViewHolder
 
                 tv_transit_info.text = if (journey.transit == 0) "Langsung" else String.format("%d Transit", journey.transit)
             }
-
-
         }
 
         companion object {

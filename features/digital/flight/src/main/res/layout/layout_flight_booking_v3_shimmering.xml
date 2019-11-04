@@ -150,14 +150,14 @@
             android:layout_height="@dimen/dp_8"
             android:background="#f3f4f5" />
 
-        <include layout="@layout/item_flight_booking_insurance_list_shimmering" />
+        <include layout="@layout/item_flight_booking_insurance_shimmering" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_8"
             android:background="#f3f4f5" />
 
-        <include layout="@layout/item_flight_booking_insurance_list_shimmering" />
+        <include layout="@layout/item_flight_booking_insurance_shimmering" />
 
         <View
             android:layout_width="match_parent"
