@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.di
+package com.tokopedia.logisticaddaddress.di.dropoff_picker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

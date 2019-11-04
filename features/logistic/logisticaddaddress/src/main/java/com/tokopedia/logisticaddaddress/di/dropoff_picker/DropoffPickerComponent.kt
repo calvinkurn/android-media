@@ -1,6 +1,7 @@
-package com.tokopedia.logisticaddaddress.di
+package com.tokopedia.logisticaddaddress.di.dropoff_picker
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.logisticaddaddress.di.CoreModule
 import com.tokopedia.logisticaddaddress.features.dropoff_picker.DropoffPickerActivity
 import dagger.Component
 
