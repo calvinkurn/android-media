@@ -1500,7 +1500,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun createShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
                 .backgroundContentColorRes(R.color.profile_showcase_black)
-                .shadowColorRes(R.color.shadow)
+                .shadowColorRes(R.color.profile_showcase_shadow)
                 .titleTextColorRes(com.tokopedia.design.R.color.white)
                 .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
                 .textColorRes(com.tokopedia.design.R.color.white)
