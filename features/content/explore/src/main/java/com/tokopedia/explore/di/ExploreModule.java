@@ -36,11 +36,8 @@ public class ExploreModule {
 
     @ExploreScope
     @Provides
-    ContentExplorePresenter ContentExplorePresenter(GetExploreDataUseCase getExploreDataUseCase,
-                                                    TrackAffiliateClickUseCase trackAffiliateClickUseCase) {
-        return new ContentExplorePresenter(
-                getExploreDataUseCase, trackAffiliateClickUseCase
-        );
+    ContentExploreContract.Presenter provideContentExplorePresenter(GetExploreDataUseCase getExploreDataUseCase, TrackAffiliateClickUseCase trackAffiliateClickUseCase) {
+        return new ContentExplorePresenter(getExploreDataUseCase, trackAffiliateClickUseCase);
     }
 
     @ExploreScope
@@ -84,11 +81,4 @@ public class ExploreModule {
     TopAdsApi provideTopAdsApi(Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.build().create(TopAdsApi.class);
     }
-
-    @ExploreScope
-    @Provides
-    AffiliatePreference provideAffiliatePreference(@ApplicationContext Context context) {
-        return new AffiliatePreference(context);
-    }
-
 }

@@ -21,8 +21,9 @@ import javax.inject.Inject
  */
 
 class ExploreCategoryAdapter @Inject
-constructor(val listener: ContentExploreContract.View) : RecyclerView.Adapter<ExploreCategoryAdapter.ViewHolder>() {
+constructor() : RecyclerView.Adapter<ExploreCategoryAdapter.ViewHolder>() {
 
+    lateinit var listener: ContentExploreContract.View
     companion object {
         const val CAT_ID_AFFILIATE = 2000001
     }

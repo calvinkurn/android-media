@@ -154,7 +154,8 @@ class ContentExploreFragment :
                 LinearLayoutManager.HORIZONTAL,
                 false)
         exploreCategoryRv.layoutManager = linearLayoutManager
-        categoryAdapter = ExploreCategoryAdapter(this)
+        categoryAdapter = ExploreCategoryAdapter()
+        categoryAdapter.listener = this
         exploreCategoryRv.adapter = categoryAdapter
 
         val gridLayoutManager = GridLayoutManager(context,
