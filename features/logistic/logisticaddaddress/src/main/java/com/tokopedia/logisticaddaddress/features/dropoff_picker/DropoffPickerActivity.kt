@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.DaggerDropoffPickerComponent
+import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.UnifyButton
@@ -98,7 +99,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mStoreDetail = findViewById(R.id.bottom_sheet_detail)
         mStoreDetail.setOnCancelClickListener { mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN }
         mStoreDetail.setOnOkClickListener { _, data ->
-            Toast.makeText(this@DropoffPickerActivity, data?.address1, Toast.LENGTH_SHORT).show()
+            val resultIntent = Intent().apply {
+                putExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION, data) }
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
         }
 
         val rv = findViewById<RecyclerView>(R.id.rv_dropoff)
