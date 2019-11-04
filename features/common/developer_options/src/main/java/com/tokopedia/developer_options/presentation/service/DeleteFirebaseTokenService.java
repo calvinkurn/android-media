@@ -45,7 +45,6 @@ public class DeleteFirebaseTokenService extends IntentService {
 
         FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "New Token Requested");
-        stopSelf();
     }
 
     @Override
