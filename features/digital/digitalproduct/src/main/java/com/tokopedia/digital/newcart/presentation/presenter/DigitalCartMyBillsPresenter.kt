@@ -43,7 +43,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
 
     override fun onMyBillsViewCreated() {
         view.setCheckoutParameter(buildCheckoutData(view.cartInfoData, userSession?.accessToken))
-        renderBaseCartWithEgold()
+        renderBaseCart(view.cartInfoData)
         renderPostPaidPopUp(view.cartInfoData)
         view.renderCategoryInfo(view.cartInfoData.attributes!!.categoryName)
         view.cartInfoData.crossSellingConfig?.run {
@@ -59,11 +59,14 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
         }
     }
 
-    private fun renderBaseCartWithEgold() {
-        renderBaseCart(view.cartInfoData)
-        val egoldPrice = view.cartInfoData.attributes?.fintechProduct?.get(0)?.fintechAmount ?: 0
-        view.cartInfoData.attributes?.pricePlain?.let {
-            pricePlain -> view.renderCheckoutView(pricePlain + egoldPrice)
+    override fun renderCheckoutView(cartDigitalInfoData: CartDigitalInfoData?) {
+        if (view.isEgoldChecked()) {
+            val egoldPrice = cartDigitalInfoData?.attributes?.fintechProduct?.get(0)?.fintechAmount ?: 0
+            cartDigitalInfoData?.attributes?.pricePlain?.let {
+                pricePlain -> view.renderCheckoutView(pricePlain + egoldPrice)
+            }
+        } else {
+            super.renderCheckoutView(cartDigitalInfoData)
         }
     }
 

@@ -250,13 +250,17 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 cartDigitalInfoData.getAttributes().getUserInputPrice()
         );
 
-        getView().renderCheckoutView(
-                cartDigitalInfoData.getAttributes().getPricePlain()
-        );
+        renderCheckoutView(cartDigitalInfoData);
 
         renderAutoApplyPromo(cartDigitalInfoData);
 
         branchAutoApplyCouponIfAvailable();
+    }
+
+    protected void renderCheckoutView(CartDigitalInfoData cartDigitalInfoData) {
+        getView().renderCheckoutView(
+                cartDigitalInfoData.getAttributes().getPricePlain()
+        );
     }
 
     private void renderAutoApplyPromo(CartDigitalInfoData cartDigitalInfoData) {
