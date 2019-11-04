@@ -43,9 +43,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
-        android:text="@string/pdp_installment_price_ext"
+        android:textColor="@color/grey_500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_installment_price"
-        app:typographyType="body_2"/>
+        app:typographyType="body_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

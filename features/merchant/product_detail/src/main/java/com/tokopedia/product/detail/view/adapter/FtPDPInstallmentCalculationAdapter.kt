@@ -42,37 +42,29 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
 
         val item = data[position]
         val ftTncData = getDataFromFragment.getTncData(item.tncId)
-        var finalTncString = ""
-        ftTncData?.let {
-            finalTncString = prepareTncString(it)
-        }
-
 
         if (vHolder is InstallmentItemViewHolder) {
-
-            if (finalTncString.isEmpty()) {
+            if (ftTncData.isNullOrEmpty()) {
                 vHolder.flInstructionTickerView.hide()
             } else {
                 vHolder.flInstructionTickerView.show()
-                vHolder.tvTncDescription.text = finalTncString
+                vHolder.llTncDescription.removeAllViews()
+                for (tncData in ftTncData) {
+                    val view = LayoutInflater.from(mContext).inflate(R.layout.pdp_installment_tnc_desc, null, false)
+                    val tvTncDesc = view.findViewById<TextView>(R.id.tv_tnc_description)
+                    tvTncDesc.text = getCompleteString(tncData)
+                    vHolder.llTncDescription.addView(view)
+                }
             }
 
             ImageHandler.loadImage(mContext!!, vHolder.ivMainIcon, item.partnerIcon, R.drawable.ic_loading_image)
-
             vHolder.tvInstallmentTitle.text = String.format(mContext!!.getString(R.string.ft_installment_heading), item.partnerName)
-
             vHolder.llInstallmentContainer.hide()
-            /*vHolder.ivInstallmentToggle.setOnClickListener {
-                if (expandLayout) {
-                    vHolder.llInstallmentContainer.show()
-                } else {
-                    vHolder.llInstallmentContainer.hide()
-                }
-                expandLayout = !expandLayout
-            }*/
 
             vHolder.llInstallmentDetail.removeAllViews()
             for (installmentData in item.creditCardInstallmentList) {
+
+                val monthlyProductPrice = (if (isOfficialStore) installmentData.osMonthlyPrice else installmentData.monthlyPrice)
                 val view = LayoutInflater.from(mContext).inflate(R.layout.pdp_installment_data_detail_layout, null, false)
 
                 val monthCountTv = view.findViewById<TextView>(R.id.tv_month_count)
@@ -84,18 +76,25 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
                 tvInstallmentMinimumPriceExt.hide()
                 productPrice?.compareTo(installmentData.minimumAmount)?.let {
                     if (it < 0) {
-
+                        priceTv.text = "-"
                         tvInstallmentMinimumPriceExt.show()
                         tvInstallmentPriceExt.hide()
-                        tvInstallmentMinimumPriceExt.text = String.format("\nMin Pembelanjaan %s",
-                                CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.monthlyPrice.roundToLong(), false))
-                        priceTv.text = "-"
-
+                        tvInstallmentMinimumPriceExt.text = String.format("Min Pembelanjaan %s",
+                                CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.minimumAmount, false))
                     } else {
-                        tvInstallmentMinimumPriceExt.hide()
-                        tvInstallmentPriceExt.show()
-                        priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                (if (isOfficialStore) installmentData.osMonthlyPrice else installmentData.monthlyPrice).roundToLong(), false)
+                        installmentData.maximumAmount.compareTo(monthlyProductPrice).let { result ->
+                            if(result < 0) {
+                                priceTv.text = "-"
+                                tvInstallmentMinimumPriceExt.show()
+                                tvInstallmentPriceExt.hide()
+                                tvInstallmentMinimumPriceExt.text = String.format("Maks Pembelanjaan %s",
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.maximumAmount, false))
+                            } else {
+                                tvInstallmentMinimumPriceExt.hide()
+                                tvInstallmentPriceExt.show()
+                                priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(monthlyProductPrice.roundToLong(), false)
+                            }
+                        }
                     }
                 }
 
@@ -129,17 +128,6 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
         }
     }
 
-    private fun prepareTncString(ftTncDataList: ArrayList<FtTncData>): String {
-        var finalTNCString = ""
-        for (index in 0 until  ftTncDataList.size) {
-            finalTNCString += getCompleteString(ftTncDataList[index])
-            if(index != ftTncDataList.size - 1) {
-                finalTNCString += "\n"
-            }
-        }
-        return finalTNCString
-    }
-
     private fun getCompleteString(ftTncData: FtTncData): String {
         var tncString = ""
         for (i in 0 until ftTncData.tncOrder) {
@@ -163,15 +151,17 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
         internal val llInstallmentDetail: LinearLayout = view.findViewById(R.id.installment_detail_ll)
         internal val ivMainIcon: ImageView = view.findViewById(R.id.iv_installment_main_icon)
         internal val flInstructionTickerView = view.findViewById<FrameLayout>(R.id.ft_installment_ticker_view)
-        internal val tvTncDescription: TextView = view.findViewById(R.id.tv_tnc_description)
+        internal val llTncDescription: LinearLayout = view.findViewById(R.id.ll_tnc_description)
 
         private var expandLayout = true
 
         init {
             ivInstallmentToggle.setOnClickListener {
                 if (expandLayout) {
+                    ivInstallmentToggle.animate().rotation(180f).duration = 300
                     llInstallmentContainer.show()
                 } else {
+                    ivInstallmentToggle.animate().rotation(0f).duration = 300
                     llInstallmentContainer.hide()
                 }
                 expandLayout = !expandLayout

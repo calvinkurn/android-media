@@ -54,6 +54,7 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -160,6 +161,7 @@ import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
@@ -1469,9 +1471,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
 
                 label_installment.visible()
-                label_installment.text = getString(R.string.new_installment_template,
+                label_installment.text = String.format(getString(R.string.new_installment_template),
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         (if (shopInfo?.goldOS?.isOfficial == 1) it.response.data.osMonthlyPrice
-                        else it.response.data.monthlyPrice).getCurrencyFormatted())
+                        else it.response.data.monthlyPrice).roundToLong(), false))
 
                 label_desc_installment.text = "Lihat Semua Metode"
                 label_desc_installment.visible()

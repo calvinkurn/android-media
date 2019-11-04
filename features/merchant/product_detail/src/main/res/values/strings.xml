@@ -144,7 +144,7 @@
     <string name="pdp_installment_price_heading">Cicilan %sx</string>
     <string name="ft_installment_data_heading">Berminat menggunakan %s? Ini caranya</string>
     <string name="ft_instruction_heading">Langkah %s</string>
-    <string name="pdp_installment_price_ext">/bulan</string>
+    <string name="pdp_installment_price_ext"> /bulan</string>
 
     <string-array name="ft_installment_type_title">
         <item>@string/ft_label_without_credit_card</item>

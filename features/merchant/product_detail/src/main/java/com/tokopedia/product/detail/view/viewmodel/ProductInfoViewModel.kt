@@ -335,12 +335,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val productCatalogRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_CATALOG],
                     ProductSpecificationResponse::class.java, productCatalogParams)
 
-            val pdpFinancingRecommendationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to 250000,
+            val pdpFinancingRecommendationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
                     ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minProductQuantity)
             val pdpFinancingRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_RECOMMENDATION],
                     PDPInstallmentRecommendationResponse::class.java, pdpFinancingRecommendationParam)
 
-            val pdpFinancingCalculationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to 250000,
+            val pdpFinancingCalculationParam = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_PRICE to productPrice,
                     ProductDetailCommonConstant.PARAM_PRODUCT_QUANTITY to minProductQuantity)
             val pdpFinancingCalculationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION],
                     FinancingDataResponse::class.java, pdpFinancingCalculationParam)
