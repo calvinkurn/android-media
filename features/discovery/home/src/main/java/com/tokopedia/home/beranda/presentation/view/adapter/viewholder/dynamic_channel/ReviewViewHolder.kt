@@ -62,6 +62,7 @@ class ReviewViewHolder(
         })
 
         itemView.ic_close_review.setOnClickListener{
+            HomePageTracking.sendHomeReviewOnCloseTracker("", "")
             reviewListener.onCloseClick()
         }
     }
