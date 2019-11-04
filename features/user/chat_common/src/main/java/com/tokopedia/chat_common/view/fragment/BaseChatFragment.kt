@@ -263,4 +263,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onClickAttachProduct() {}
 
     override fun onClickImagePicker() {}
+
+    override fun trackChatMenuClicked(label: String) {}
 }

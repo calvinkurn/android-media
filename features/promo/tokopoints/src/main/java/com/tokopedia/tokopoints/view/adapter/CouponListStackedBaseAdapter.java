@@ -233,7 +233,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
 
         if (TextUtils.isEmpty(item.getMinimumUsage())) {
             holder.tvMinTxnValue.setVisibility(View.GONE);
-            holder.tvMinTxnLabel.setPadding(0, holder.imgBanner.getResources().getDimensionPixelOffset(R.dimen.dp_5), 0, 0);
+            holder.tvMinTxnLabel.setPadding(0, holder.imgBanner.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_5), 0, 0);
         } else {
             holder.tvMinTxnLabel.setPadding(0, 0, 0, 0);
             holder.tvMinTxnValue.setVisibility(View.VISIBLE);
@@ -243,12 +243,12 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
         ConstraintLayout.LayoutParams layoutParamsCv1 = (ConstraintLayout.LayoutParams) holder.cvShadow1.getLayoutParams();
         ConstraintLayout.LayoutParams layoutParamsCvData = (ConstraintLayout.LayoutParams) holder.cvData.getLayoutParams();
         if (item.isStacked()) {
-            layoutParamsCv1.setMargins(holder.cvShadow1.getResources().getDimensionPixelOffset(R.dimen.dp_12),
+            layoutParamsCv1.setMargins(holder.cvShadow1.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12),
                     0,
-                    holder.cvShadow1.getResources().getDimensionPixelOffset(R.dimen.dp_12),
-                    holder.cvShadow1.getResources().getDimensionPixelOffset(R.dimen.dp_5));
+                    holder.cvShadow1.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_12),
+                    holder.cvShadow1.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_5));
             layoutParamsCvData.setMargins(0, 0, 0,
-                    holder.cvShadow1.getResources().getDimensionPixelOffset(R.dimen.dp_10));
+                    holder.cvShadow1.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10));
             holder.cvShadow1.setVisibility(View.VISIBLE);
             holder.cvShadow2.setVisibility(View.VISIBLE);
             holder.cvShadow1.setLayoutParams(layoutParamsCv1);
@@ -279,12 +279,12 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
             }
 
             if (TextUtils.isEmpty(item.getUpperLeftSection().getTextAttributes().get(0).getColor())) {
-                holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.getContext(), R.color.medium_green));
+                holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.getContext(), com.tokopedia.design.R.color.medium_green));
             } else {
                 try {
                     holder.tvStackCount.setTextColor(Color.parseColor(item.getUpperLeftSection().getTextAttributes().get(0).getColor()));
                 } catch (IllegalArgumentException iae) {
-                    holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.getContext(), R.color.medium_green));
+                    holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.getContext(),com.tokopedia.design.R.color.medium_green));
                 }
             }
 
@@ -316,7 +316,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                             int minutes = (int) ((l / (1000 * 60)) % 60);
                             int hours = (int) ((l / (1000 * 60 * 60)) % 24);
                             holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
+                            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.medium_green));
                             holder.progressTimer.setProgress((int) l / 1000);
                             holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
                                     holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
@@ -332,11 +332,11 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                 } else {
                     holder.progressTimer.setVisibility(View.GONE);
                     holder.value.setPadding(0, 0, 0, 0);
-                    holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+                    holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.black_70));
                 }
             } else {
                 holder.progressTimer.setVisibility(View.GONE);
-                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.black_70));
             }
             if (holder.itemView != null) {
                 holder.itemView.setOnClickListener(v -> {
@@ -372,24 +372,24 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
     }
 
     private void enableImages(ViewHolder holder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), com.tokopedia.design.R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), com.tokopedia.design.R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     private GradientDrawable getShape(String hex, Context context) {
         try {
             GradientDrawable shape = new GradientDrawable();
             shape.setShape(GradientDrawable.RECTANGLE);
-            shape.setCornerRadii(new float[]{context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
-                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
-                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
-                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
-                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
-                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
-                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4),
-                    context.getResources().getDimensionPixelOffset(R.dimen.dp_4)});
+            shape.setCornerRadii(new float[]{context.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4),
+                    context.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4)});
             shape.setColor(Color.parseColor(hex));
-            shape.setStroke(context.getResources().getDimensionPixelOffset(R.dimen.dp_2), Color.parseColor(hex));
+            shape.setStroke(context.getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_2), Color.parseColor(hex));
             return shape;
         } catch (Exception e) {
             e.printStackTrace();

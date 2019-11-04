@@ -176,7 +176,7 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
-import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
+import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
@@ -249,7 +249,6 @@ import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
@@ -323,7 +322,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ITransactionOrderDetailRouter,
         NetworkRouter,
         TopChatRouter,
-        TokopointRouter,
         SearchBarRouter,
         GlobalNavRouter,
         AccountHomeRouter,
@@ -1347,10 +1345,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(TokoPointWebviewActivity.getIntent(context, url));
     }
 
-    @Override
-    public void openTokopointWebview(Context context, String url, String title) {
-        context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, url, title));
-    }
+
 
     @Override
     public boolean isIndicatorVisible() {
@@ -1595,7 +1590,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
-        return ReactNativeOfficialStoreFragment.createInstance();
+        return OfficialHomeContainerFragment.newInstance(bundle);
     }
 
     @Override

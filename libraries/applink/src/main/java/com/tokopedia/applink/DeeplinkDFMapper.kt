@@ -33,6 +33,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL
@@ -86,6 +87,7 @@ object DeeplinkDFMapper {
     private val DFM_CUSTOMER_REPORT_PRODUCT = "customer_report_product"
     private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
     private val DFM_AGE_RESTRICTION = "age_restriction"
+    private val DFM_TOKOPOINTS = "tokopoints"
     private var DFM_MODULE_FINTECH_INSTANT_LOAN = "instantloan"
     private val DFM_CONTACT_US = "contact_us"
     private val DFM_SALDO_DEPOSIT = "saldo_deposit"
@@ -124,6 +126,9 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(AUTOCOMPLETE) }, DFM_AUTOCOMPLETE, R.string.title_autocomplete))
             add(DFP({ it.startsWith(SEARCH_RESULT) }, DFM_SEARCH_RESULT, R.string.title_search_result))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
+            add(DFP({it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
+            add(DFP({it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
+            add(DFP({it.startsWith(SALDO_INTRO)}, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
             add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DFM_OVOP2P, R.string.title_ovop2p))
             add(DFP({ it.startsWith(SALDO_DEPOSIT) }, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
             add(DFP({ it.startsWith(SALDO_INTRO) }, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
