@@ -38,6 +38,7 @@ ext {
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
 //            flight                          : ":features:digital:flight_no_op",
+            flightOrderList                 : ":features:digital:flight_orderlist",
             hotel                           : ":features:digital:hotel",
             travelHomepage                  : ":features:digital:travel_homepage",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",

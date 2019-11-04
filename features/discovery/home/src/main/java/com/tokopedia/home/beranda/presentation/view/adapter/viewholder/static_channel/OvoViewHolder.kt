@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.gamification.util.HexValidator
 import com.tokopedia.home.R
@@ -81,7 +82,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
         container.setOnClickListener {
             HomePageTracking.eventTokopointNonLogin(itemView.context)
-            listener.onTokopointCheckNowClicked(ApplinkConst.TOKOPOINTS)
+            listener.onTokopointCheckNowClicked(ApplinkConstInternalPromo.TOKOPOINTS_HOME)
         }
         scanHolder.setOnClickListener { goToScanner() }
     }

@@ -1,20 +1,21 @@
 package com.tokopedia.travel.homepage.presentation.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingUtil
@@ -197,8 +198,14 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     }
 
     override fun onItemClick(appUrl: String, webUrl: String) {
-        if (RouteManager.isSupportApplink(context, appUrl)) RouteManager.route(context, appUrl)
-        else if (webUrl.isNotEmpty()) RouteManager.route(context, webUrl)
+        context?.run {
+            when {
+                RouteManager.isSupportApplink(this, appUrl) -> RouteManager.route(this, appUrl)
+                DeeplinkMapper.getRegisteredNavigation(this, appUrl).isNotEmpty() -> RouteManager.route(this, DeeplinkMapper.getRegisteredNavigation(this, appUrl))
+                webUrl.isNotEmpty() -> RouteManager.route(this, webUrl)
+                else -> { /* do nothing */ }
+            }
+        }
     }
 
     override fun onTrackEventClick(type: Int, position: Int, categoryName: String) {
