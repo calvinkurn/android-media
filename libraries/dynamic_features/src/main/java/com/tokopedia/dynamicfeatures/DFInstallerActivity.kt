@@ -16,9 +16,10 @@ import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -62,6 +63,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         private const val EXTRA_IMAGE = "dfimage"
         private const val defaultImageUrl = "https://ecs7.tokopedia.net/img/android/empty_profile/drawable-xxxhdpi/product_image_48_x_48.png"
         private const val CONFIRMATION_REQUEST_CODE = 1
+        private const val SETTING_REQUEST_CODE = 2
         private const val ONE_KB = 1024
     }
 
@@ -93,8 +95,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
-                downloadTimes++
-                loadAndLaunchModule(moduleName)
+                downloadFeature()
             } else {
                 hideProgress()
             }
@@ -108,6 +109,8 @@ class DFInstallerActivity : BaseSimpleActivity() {
             if (resultCode == Activity.RESULT_CANCELED) {
                 hideProgress()
             }
+        } else if(requestCode == SETTING_REQUEST_CODE){
+            downloadFeature()
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
@@ -128,17 +131,11 @@ class DFInstallerActivity : BaseSimpleActivity() {
         buttonDownload = findViewById(R.id.button_download)
 
         buttonDownload.setOnClickListener {
-            downloadTimes++
-            loadAndLaunchModule(moduleName)
+            downloadFeature()
         }
         progressGroup = findViewById(R.id.progress_group)
-
-        if (imageUrl?.isEmpty() == true) {
-            imageView.visibility = View.GONE
-        } else {
-            ImageHandler.LoadImage(imageView, imageUrl)
-            imageView.visibility = View.VISIBLE
-        }
+        title_txt.setText(String.format(getString(R.string.feature_download_title), moduleNameTranslated))
+        subtitle_txt.setText(String.format(getString(R.string.feature_download_subtitle), moduleNameTranslated))
     }
 
     private fun loadAndLaunchModule(name: String) {
@@ -237,18 +234,39 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     private fun showFailedMessage(message: String, errorCode: String = "") {
         errorList.add(errorCode)
-        val userMessage: String
+        button_download.visibility = View.VISIBLE
         if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
-            userMessage = getString(R.string.error_install_df_insufficient_storate)
+            image.setImageResource(R.drawable.ic_ill_insuficient_memory)
+            title_txt.setText(getString(R.string.download_error_insuficient_memory_title))
+            subtitle_txt.setText(String.format(getString(R.string.download_error_insuficient_memory_subtitle), (moduleSize.toFloat() / ONE_KB)))
+            button_download.setText(getString(R.string.goto_seting))
+            button_download.setOnClickListener {
+                startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
+            }
         } else if (SplitInstallErrorCode.NETWORK_ERROR.toString() == errorCode) {
-            userMessage = getString(R.string.msg_no_connection)
+            image.setImageResource(R.drawable.ic_ill_no_connection)
+            title_txt.setText(getString(R.string.download_error_connection_title))
+            subtitle_txt.setText(getString(R.string.download_error_connection_subtitle))
+            button_download.setText(getString(R.string.try_again))
+            button_download.setOnClickListener {
+                downloadFeature()
+            }
         } else {
-            userMessage = message
+            image.setImageResource(R.drawable.ic_ill_general_error)
+            title_txt.setText(getString(R.string.download_error_general_title))
+            subtitle_txt.setText(getString(R.string.download_error_general_subtitle))
+            button_download.setOnClickListener {
+                downloadFeature()
+            }
         }
-        Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
-            userMessage,
-            Snackbar.LENGTH_INDEFINITE,
-            getString(R.string.general_label_ok), View.OnClickListener { })
+    }
+
+    private fun downloadFeature() {
+        title_txt.setText(getString(R.string.dowload_on_process))
+        subtitle_txt.setText(getString(R.string.wording_download_waiting))
+        image.setImageResource(R.drawable.ic_ill_downloading)
+        downloadTimes++
+        loadAndLaunchModule(moduleName)
     }
 
     private fun updateProgressMessage(message: String) {
@@ -264,6 +282,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressText.text = String.format("%.2f KB / %.2f KB",
             (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
+        button_download.visibility = View.INVISIBLE
     }
 
     private fun displayProgress() {
