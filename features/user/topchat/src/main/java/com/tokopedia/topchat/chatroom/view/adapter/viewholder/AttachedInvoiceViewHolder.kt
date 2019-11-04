@@ -27,6 +27,7 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
 
     interface InvoiceThumbnailListener {
         fun onClickInvoiceThumbnail(url: String, id: String)
+        fun trackClickInvoice(viewModel: AttachInvoiceSentViewModel)
     }
 
     override fun bind(viewModel: AttachInvoiceSentViewModel?) {
@@ -80,6 +81,7 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
 
     private fun assignInteraction(viewModel: AttachInvoiceSentViewModel) {
         itemView.setOnClickListener {
+            invoiceThumbnailListener.trackClickInvoice(viewModel)
             viewModel.invoiceUrl?.let {
                 invoiceThumbnailListener.onClickInvoiceThumbnail(it, it)
             }

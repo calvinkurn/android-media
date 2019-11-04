@@ -5,7 +5,12 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * @author by milhamj on 20/07/18.
@@ -51,6 +56,8 @@ public interface ContentExploreContract {
         void resetDataParam();
 
         void stopTrace();
+
+        void onAffiliateTrack(List<TrackingViewModel> trackingList, boolean isClick);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -61,5 +68,9 @@ public interface ContentExploreContract {
         void updateCategoryId(int categoryId);
 
         void updateSearch(String search);
+
+        void trackAffiliate(String url);
+
+        void appendImpressionTracking(@NotNull String url);
     }
 }

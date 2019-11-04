@@ -11,7 +11,7 @@
         android:id="@+id/icon_default"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        app:srcCompat="@drawable/image_circle"
+        app:srcCompat="@drawable/flight_image_circle"
         android:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatImageView
