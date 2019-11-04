@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -39,9 +40,21 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
         }
 
         val item = data[position]
-        var ftTncData = getDataFromFragment.getTncData(item.tncId)
+        val ftTncData = getDataFromFragment.getTncData(item.tncId)
+        var finalTncString = ""
+        ftTncData?.let {
+            finalTncString = prepareTncString(it)
+        }
+
 
         if (vHolder is InstallmentItemViewHolder) {
+
+            if (finalTncString.isEmpty()) {
+                vHolder.flInstructionTickerView.hide()
+            } else {
+                vHolder.flInstructionTickerView.show()
+                vHolder.tvTncDescription.text = finalTncString
+            }
 
             ImageHandler.loadImage(mContext!!, vHolder.ivMainIcon, item.partnerIcon, R.drawable.ic_loading_image)
 
@@ -106,6 +119,24 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
         }
     }
 
+    private fun prepareTncString(ftTncDataList: ArrayList<FtTncData>): String {
+        var finalTNCString = ""
+        for (ftTncData in ftTncDataList) {
+            finalTNCString += getCompleteString(ftTncData)
+            finalTNCString += "\n"
+        }
+        return finalTNCString
+    }
+
+    private fun getCompleteString(ftTncData: FtTncData): String {
+        var tncString = ""
+        for (i in 0 until ftTncData.tncOrder) {
+            tncString += "*"
+        }
+        tncString += ftTncData.tncDescription
+        return tncString
+    }
+
     interface GetTncDataFromFragment {
         fun getTncData(id: Int): ArrayList<FtTncData>?
     }
@@ -118,7 +149,8 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context?, var productPric
         internal val llInstructionDetailContainer: LinearLayout = view.findViewById(R.id.instruction_detail_ll)
         internal val llInstallmentDetail: LinearLayout = view.findViewById(R.id.installment_detail_ll)
         internal val ivMainIcon: ImageView = view.findViewById(R.id.iv_installment_main_icon)
-
+        internal val flInstructionTickerView = view.findViewById<FrameLayout>(R.id.ft_installment_ticker_view)
+        internal val tvTncDescription: TextView = view.findViewById(R.id.tv_tnc_description)
 
         private var expandLayout = true
 
