@@ -18,31 +18,31 @@ data class HomeData(
     @Expose
     @ColumnInfo(name = "dynamicHomeChannel")
     @SerializedName("dynamicHomeChannel")
-    val dynamicHomeChannel: DynamicHomeChannel,
+    val dynamicHomeChannel: DynamicHomeChannel?,
 
     @Expose
     @ColumnInfo(name = "slides")
     @SerializedName("slides")
-    val slides: BannerDataModel,
+    val slides: BannerDataModel?,
 
     @Expose
     @ColumnInfo(name = "ticker")
     @SerializedName("ticker")
-    val ticker: Ticker,
+    val ticker: Ticker?,
 
     @Expose
     @ColumnInfo(name = "dynamicHomeIcon")
     @SerializedName("dynamicHomeIcon")
-    val dynamicHomeIcon: DynamicHomeIcon,
+    val dynamicHomeIcon: DynamicHomeIcon?,
 
     @Expose
     @ColumnInfo(name = "spotlight")
     @SerializedName("spotlight")
-    val spotlight: Spotlight,
+    val spotlight: Spotlight?,
 
     @Expose
     @ColumnInfo(name = "homeFlag")
     @SerializedName("homeFlag")
-    var homeFlag: HomeFlag
+    var homeFlag: HomeFlag?
 )
 
