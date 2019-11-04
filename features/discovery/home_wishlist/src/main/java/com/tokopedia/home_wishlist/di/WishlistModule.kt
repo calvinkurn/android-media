@@ -44,8 +44,9 @@ class WishlistModule {
     @Provides
     @WishlistScope
     fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
+                                        @Named("singleProductRecommendation") singleRecomQuery: String,
                                         graphqlRepository: GraphqlRepository,
-                                        userSessionInterface: UserSessionInterface): RecommendationDataSource = RecommendationDataSource(recomQuery, graphqlRepository, userSessionInterface)
+                                        userSessionInterface: UserSessionInterface): RecommendationDataSource = RecommendationDataSource(recomQuery, singleRecomQuery, graphqlRepository, userSessionInterface)
     @Provides
     @WishlistScope
     fun provideGetSingleRecommendationUseCase(@Named("singleProductRecommendation") recomQuery: String,
@@ -76,7 +77,7 @@ class WishlistModule {
     @Named("singleProductRecommendation")
     fun provideSingleProductRecommendationRawQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
-                    R.raw.query_recommendation_widget)
+                    R.raw.query_single_recommendation_widget)
 
     @Provides
     @WishlistScope

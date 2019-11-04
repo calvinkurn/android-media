@@ -1,6 +1,8 @@
 package com.tokopedia.home_wishlist.view.viewholder
 
+import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.base.SmartListener
@@ -46,10 +48,12 @@ class WishlistItemViewHolder(
                 else enableAddToCartButton()
             }
 
+            checkBox.isChecked = element.isOnChecked
+            checkBox.visibility = if(element.isOnBulkRemoveProgress) View.VISIBLE else View.GONE
+
             checkBox.setOnClickListener {
                 (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
             }
-            checkBox.visibility = if(element.isOnBulkRemoveProgress) View.VISIBLE else View.GONE
 
             view.setOnClickListener {
                 if(element.isOnBulkRemoveProgress) {
@@ -58,9 +62,7 @@ class WishlistItemViewHolder(
             }
 
             setOnClickListener {
-                if(element.isOnBulkRemoveProgress) {
-                    (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
-                }
+                if(element.isOnBulkRemoveProgress) (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
                 else (listener as WishlistListener).onProductClick(element, adapterPosition)
             }
 
@@ -71,6 +73,27 @@ class WishlistItemViewHolder(
             setDeleteButtonOnClickListener(View.OnClickListener {
                 (listener as WishlistListener).onDeleteClick(element, adapterPosition)
             })
+        }
+    }
+
+    override fun bind(element: WishlistItemDataModel, listener: SmartListener, payloads: List<Any>) {
+        if(payloads.isNotEmpty()){
+            val bundle = payloads[0] as Bundle
+            if(bundle.containsKey("isOnChecked")){
+                checkBox.isChecked = bundle.getBoolean("isOnChecked")
+            }
+            if(bundle.containsKey("isOnAddToCartProgress")){
+                if(bundle.getBoolean("isOnAddToCartProgress")){
+                    productCardView.disableAddToCartButton()
+                } else {
+                    productCardView.enableAddToCartButton()
+                }
+
+            }
+            if(bundle.containsKey("isOnBulkRemoveProgress")){
+                checkBox.visibility = if(bundle.getBoolean("isOnBulkRemoveProgress")) View.VISIBLE else View.GONE
+            }
+
         }
     }
 }

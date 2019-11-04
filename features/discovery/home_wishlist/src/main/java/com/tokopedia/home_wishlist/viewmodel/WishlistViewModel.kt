@@ -1,6 +1,5 @@
 package com.tokopedia.home_wishlist.viewmodel
 
-import androidx.lifecycle.MediatorLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -8,6 +7,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
+import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.util.*
@@ -41,23 +41,21 @@ open class WishlistViewModel @Inject constructor(
         private val bulkRemoveWishlistUseCase: BulkRemoveWishlistUseCase
 ) : BaseViewModel(wishlistCoroutineDispatcherProvider.ui()){
 
-    private val listVisitableMarked = mutableListOf<Visitable<*>>()
+    private val listVisitableMarked = mutableListOf<WishlistDataModel>()
     var keywordSearch = ""
     var currentPage = 0
-    val wishlistData = MediatorLiveData<List<Visitable<*>>>()
-
-    @Deprecated("lukas please remove this later")
-    val action = SingleObserverLiveEvent<Event<WishlistAction>>()
+    val wishlistData = WishlistLiveData<List<WishlistDataModel>>(listOf())
+    val wishlistState = WishlistLiveData(Status.LOADING)
 
     val addToCartActionData = SingleObserverLiveEvent<Event<AddToCartActionData>>()
     val removeWishlistActionData = SingleObserverLiveEvent<Event<RemoveWishlistActionData>>()
-    val bulkRemovewishlistActionData = SingleObserverLiveEvent<Event<BulkRemoveWishlistActionData>>()
+    val bulkRemoveWishlistActionData = SingleObserverLiveEvent<Event<BulkRemoveWishlistActionData>>()
     val loadMoreWishlistAction = SingleObserverLiveEvent<Event<LoadMoreWishlistActionData>>()
     val addWishlistRecommendationActionData = SingleObserverLiveEvent<Event<AddWishlistRecommendationData>>()
     val removeWishlistRecommendationActionData = SingleObserverLiveEvent<Event<RemoveWishlistRecommendationData>>()
 
     private fun loadInitialPage(keyword: String = ""){
-        wishlistData.setValue(listOf(LoadingDataModel()))
+        wishlistData.value = listOf(LoadingDataModel())
         keywordSearch = keyword
         currentPage = 0
     }
@@ -72,7 +70,7 @@ open class WishlistViewModel @Inject constructor(
     fun getWishlistData(keyword: String = ""){
         loadInitialPage(keyword)
         currentPage++
-
+        wishlistState.value = Status.LOADING
         launchCatchError(block = {
             val data = wishlistRepository.getData(keyword, currentPage)
             if (!data.isSuccess) {
@@ -82,8 +80,11 @@ open class WishlistViewModel @Inject constructor(
             }
 
             if(data.items.isEmpty()){
+                wishlistState.value = Status.EMPTY
                 wishlistData.value = listOf(EmptyWishlistDataModel())
+                getRecommendationOnEmptyWishlist(0)
             } else {
+                wishlistState.value = Status.SUCCESS
                 var visitableWishlist = mappingWishlistToVisitable(data.items)
 
                 wishlistData.value = visitableWishlist
@@ -101,6 +102,7 @@ open class WishlistViewModel @Inject constructor(
         }){
             it.printStackTrace()
             wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
+            wishlistState.value = Status.ERROR
             currentPage--
         }
     }
@@ -111,7 +113,7 @@ open class WishlistViewModel @Inject constructor(
      * Calls this function to get next page data of existing product request params
      */
     fun getNextPageWishlistData(){
-        var newPageVisitableData = wishlistData.value?.copy()?.toMutableList()?: listOf<Visitable<*>>()
+        var newPageVisitableData = wishlistData.value.copy().toMutableList()
         wishlistData.value = combineVisitable(newPageVisitableData.copy(), listOf(LoadMoreDataModel()))
         currentPage++
 
@@ -120,7 +122,7 @@ open class WishlistViewModel @Inject constructor(
             if (!data.isSuccess) {
                 wishlistData.value = newPageVisitableData
                 currentPage--
-                loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(isSuccess = false, message = data.errorMessage?:""))
+                loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(isSuccess = false, message = data.errorMessage))
                 return@launchCatchError
             }
             if (data.items.isEmpty()) {
@@ -137,23 +139,38 @@ open class WishlistViewModel @Inject constructor(
             }
         }){
             wishlistData.value = newPageVisitableData
-            loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(isSuccess = false, message = it.message?:""))
+            loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(isSuccess = false, message = it.message
+                    ?: ""))
             currentPage--
+        }
+    }
+
+    fun getRecommendationOnEmptyWishlist(page: Int){
+        val emptyDataVisitable = wishlistData.value
+        wishlistData.value = wishlistData.value.plus(LoadMoreDataModel())
+        launchCatchError(block = {
+            val widget = wishlistRepository.getSingleRecommendationData(page)
+            val newList = ArrayList(emptyDataVisitable)
+            if(page == 0) newList.add(RecommendationTitleDataModel(widget.title, ""))
+            newList.addAll(widget.recommendationItemList.map { RecommendationItemDataModel(it) })
+            wishlistData.value = newList
+        }){
+
         }
     }
 
     /**
      * Void [addToCartProduct]
-     * @param productPosition product wishlist data position in root recyclerview
+     * @param productPosition product wishlist data position in root recyclerView
      *
      * Send request to add to cart, result will be notified to addToCartActionData
      */
     fun addToCartProduct(productPosition: Int) {
-        val visitableItem = wishlistData.value?.get(productPosition)
+        val visitableItem = wishlistData.value[productPosition]
         if (visitableItem is WishlistItemDataModel) {
             val wishlistItemCandidateToAddToCart = visitableItem.productItem
             val tempWishlist = visitableItem.copy(isOnAddToCartProgress = true)
-            val tempListVisitable = wishlistData.value?.copy()?.toMutableList()?: mutableListOf()
+            val tempListVisitable = wishlistData.value.copy().toMutableList()
 
             tempListVisitable[productPosition] = tempWishlist
             wishlistData.value = tempListVisitable
@@ -211,7 +228,7 @@ open class WishlistViewModel @Inject constructor(
                                 AddToCartActionData(
                                         position = productPosition,
                                         isSuccess = false,
-                                        message = e.message?:""
+                                        message = e.message ?: ""
                                 )
                         )
                     }
@@ -223,14 +240,14 @@ open class WishlistViewModel @Inject constructor(
 
     /**
      * Void [updateRecommendationItemWishlist]
-     * @param parentPosition recommendation carousel data position in root recyclerview
-     * @param childPosition recommendation item data position in recommendation carousel recyclerview
+     * @param parentPosition recommendation carousel data position in root recyclerView
+     * @param childPosition recommendation item data position in recommendation carousel recyclerView
      * @param newWishlistState new wishlist state to update wishlist status
      *
      * This function will update selected recommendation item with new wishlist state
      */
-    fun updateRecommendationItemWishlist(parentPosition: Int, childPosition: Int, newWishlistState: Boolean){
-        val newWishlistData: MutableList<Visitable<*>> = (wishlistData.value?:listOf()).toMutableList()
+    open fun updateRecommendationItemWishlist(parentPosition: Int, childPosition: Int, newWishlistState: Boolean){
+        val newWishlistData: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
         val newCarouselDataModel = newWishlistData[parentPosition]
         if (newCarouselDataModel is RecommendationCarouselDataModel) {
             val oldRecomItemDataModel = newCarouselDataModel.list[childPosition]
@@ -259,7 +276,7 @@ open class WishlistViewModel @Inject constructor(
      * result will be notified to addWishlistRecommendationActionData or removeWishlistRecommendationActionData
      */
     fun setRecommendationItemWishlist(parentPosition: Int, childPosition: Int, currentWishlistState: Boolean){
-        val newWishlistData: MutableList<Visitable<*>> = (wishlistData.value?:listOf()).toMutableList()
+        val newWishlistData: MutableList<Visitable<*>> = wishlistData.value.toMutableList()
         val parentVisitable = newWishlistData[parentPosition]
 
         if(parentVisitable is RecommendationCarouselDataModel
@@ -326,7 +343,7 @@ open class WishlistViewModel @Inject constructor(
      * @param positions list of position to removed from wishlist
      *
      * This function will bulk remove selected wishlist data
-     * result will be notified to bulkRemovewishlistActionData
+     * result will be notified to bulkRemoveWishlistActionData
      * result can be partially failed, since we use zip observable between single remove usecase
      */
     fun bulkRemoveWishlist(positions: List<Int> = listOf()) {
@@ -339,9 +356,9 @@ open class WishlistViewModel @Inject constructor(
         val productRequest = mutableListOf<Pair<String, Int>>()
         val arrayForBulkRemoveCandidate = arrayOfNulls<WishlistItemDataModel>(listOfPosition.size)
 
-        if (listOfPosition.size <= wishlistData.value?.size?:0) {
+        if (listOfPosition.size <= wishlistData.value.size) {
             listOfPosition.forEachIndexed { index, it ->
-                wishlistData.value?.get(it)?.run {
+                wishlistData.value[it].run {
                     if (this is WishlistItemDataModel) {
                         arrayForBulkRemoveCandidate[index] = this
                         productRequest.add(Pair(this.productItem.id, index))
@@ -356,16 +373,16 @@ open class WishlistViewModel @Inject constructor(
                     requestParams,
                     object: Subscriber<List<WishlistActionData>>() {
                         override fun onNext(responselist: List<WishlistActionData>) {
-                            val updatedList = wishlistData.value?.toMutableList()
+                            val updatedList = wishlistData.value.toMutableList()
 
                             var isPartiallyFailed = false
                             responselist.forEach {
                                 if (it.isSuccess) {
-                                    updatedList?.remove(arrayForBulkRemoveCandidate[it.position] as Visitable<*>)
+                                    updatedList.remove(arrayForBulkRemoveCandidate[it.position] as Visitable<*>)
                                 } else if (!isPartiallyFailed) isPartiallyFailed = !it.isSuccess
                             }
 
-                            bulkRemovewishlistActionData.value = Event(
+                            bulkRemoveWishlistActionData.value = Event(
                                     BulkRemoveWishlistActionData(
                                             message = "",
                                             isSuccess = true,
@@ -380,9 +397,9 @@ open class WishlistViewModel @Inject constructor(
                         }
 
                         override fun onError(e: Throwable) {
-                            bulkRemovewishlistActionData.value = Event(
+                            bulkRemoveWishlistActionData.value = Event(
                                     BulkRemoveWishlistActionData(
-                                            message = e.message?:"",
+                                            message = e.message ?: "",
                                             isSuccess = false,
                                             isPartiallyFailed = false
                                     )
@@ -392,7 +409,7 @@ open class WishlistViewModel @Inject constructor(
                     }
             )
         } else {
-            bulkRemovewishlistActionData.value = Event(
+            bulkRemoveWishlistActionData.value = Event(
                     BulkRemoveWishlistActionData(
                             message = "Requested position is out of bounds of wishlist data",
                             isSuccess = false,
@@ -409,8 +426,8 @@ open class WishlistViewModel @Inject constructor(
      * This function will remove selected wishlist data based on selected position
      */
     fun removeWishlistedProduct(position: Int) {
-        val selectedVisitable = wishlistData.value?.get(position)
-        selectedVisitable?.let {
+        val selectedVisitable = wishlistData.value[position]
+        selectedVisitable.let {
             if (it is WishlistItemDataModel) {
                 val productId = it.productItem.id
                 removeWishListUseCase.createObservable(
@@ -428,29 +445,29 @@ open class WishlistViewModel @Inject constructor(
                             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
                                 removeWishlistActionData.value = Event(
                                         RemoveWishlistActionData(
-                                                message = errorMessage?:"",
+                                                message = errorMessage ?: "",
                                                 isSuccess = false,
-                                                productId = productId?.toInt()?:0
+                                                productId = productId?.toInt() ?: 0
                                         )
                                 )
                             }
 
                             override fun onSuccessRemoveWishlist(productId: String?) {
-                                val updatedList = mutableListOf<Visitable<*>>()
-                                wishlistData.value?.forEach {
-                                    if (it is WishlistItemDataModel) {
-                                        if (it.productItem.id != productId) {
-                                            updatedList.add(it)
+                                val updatedList = mutableListOf<WishlistDataModel>()
+                                wishlistData.value.forEach { dataModel ->
+                                    if (dataModel is WishlistItemDataModel) {
+                                        if (dataModel.productItem.id != productId) {
+                                            updatedList.add(dataModel)
                                         }
                                     } else {
-                                        updatedList.add(it)
+                                        updatedList.add(dataModel)
                                     }
                                 }
                                 removeWishlistActionData.value = Event(
                                         RemoveWishlistActionData(
                                                 message = "",
                                                 isSuccess = true,
-                                                productId = productId?.toInt()?:0
+                                                productId = productId?.toInt() ?: 0
                                         )
                                 )
                                 wishlistData.value = updatedList
@@ -469,7 +486,7 @@ open class WishlistViewModel @Inject constructor(
      * This function will set bulk mode status of all data in wishlist data
      */
     fun updateBulkMode(isBulkMode: Boolean){
-        val newVisitable: MutableList<Visitable<*>> = wishlistData.value?.toMutableList()?: mutableListOf()
+        val newVisitable: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
         for (i in 0 until newVisitable.size){
             when (val dataModel = newVisitable[i]) {
                 is WishlistItemDataModel -> {
@@ -480,6 +497,7 @@ open class WishlistViewModel @Inject constructor(
                 }
             }
         }
+        if(!isBulkMode) listVisitableMarked.clear()
         wishlistData.postValue(newVisitable.copy())
     }
 
@@ -491,41 +509,52 @@ open class WishlistViewModel @Inject constructor(
      * This function will set isOnChecked status of selected product
      */
     fun setWishlistOnMarkDelete(productPosition: Int, isChecked: Boolean){
-        val wishslistDataTemp: MutableList<Visitable<*>> = wishlistData.value?.toMutableList()?: mutableListOf()
-        if(productPosition < wishslistDataTemp.size && wishslistDataTemp[productPosition] is WishlistItemDataModel){
-            wishslistDataTemp[productPosition] = (wishslistDataTemp[productPosition] as WishlistItemDataModel).copy(
+        val wishlistDataTemp: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
+        if(productPosition < wishlistDataTemp.size && wishlistDataTemp[productPosition] is WishlistItemDataModel){
+            wishlistDataTemp[productPosition] = (wishlistDataTemp[productPosition] as WishlistItemDataModel).copy(
                     isOnChecked = isChecked
             )
-            wishlistData.value = wishslistDataTemp
+            if(isChecked) listVisitableMarked.add(wishlistDataTemp[productPosition])
+            else {
+                listVisitableMarked.forEach {
+                    if(it is WishlistItemDataModel &&
+                            it.productItem.id == (wishlistDataTemp[productPosition] as WishlistItemDataModel).productItem.id) {
+                        listVisitableMarked.remove(it)
+                        return@forEach
+                    }
+                }
+            }
+            wishlistData.value = wishlistDataTemp
         }
-        listVisitableMarked.plus(listOf())
     }
 
     private fun getWishlistPositionOnMark() = listVisitableMarked.withIndex().filter { (_, visitable) ->  visitable is WishlistItemDataModel && visitable.isOnChecked }.map{ (index, _) -> index }
 
-    private fun mappingWishlistToVisitable(list: List<WishlistItem>): MutableList<Visitable<*>>{
+    private fun mappingWishlistToVisitable(list: List<WishlistItem>): MutableList<WishlistDataModel>{
         return list.map{ WishlistItemDataModel(it) }.toMutableList()
     }
 
-    private fun mappingLoadingRecommendation(list: List<Visitable<*>>): List<Visitable<*>>{
+    private fun mappingLoadingRecommendation(list: List<WishlistDataModel>): List<WishlistDataModel>{
         val newMappingList = ArrayList(list)
         newMappingList.add(list.size, LoadMoreDataModel())
         return newMappingList
     }
 
-    private fun mappingRecommendationToWishlist(wishlistVisitable: List<Visitable<*>>, recommendationList: List<RecommendationWidget>): List<Visitable<*>>{
-        val list = mutableListOf<Visitable<*>>()
+    private fun mappingRecommendationToWishlist(
+            wishlistVisitable: List<WishlistDataModel>,
+            recommendationList: List<RecommendationWidget>): List<WishlistDataModel>{
+        val list = mutableListOf<WishlistDataModel>()
         list.addAll(wishlistVisitable)
         list.add(4,
                 RecommendationCarouselDataModel(
                         id = recommendationList.first().tid,
                         title = recommendationList.first().title,
-                        list = recommendationList.first().recommendationItemList.map { RecommendationCarouselItemDataModel(it) },
+                        list = recommendationList.first().recommendationItemList.map { RecommendationCarouselItemDataModel(it, (currentPage - 1) * 20 + 4) } as MutableList<RecommendationCarouselItemDataModel>,
                         seeMoreAppLink = recommendationList.first().seeMoreAppLink))
         return list
     }
 
-    private fun combineVisitable(firstList: List<Visitable<*>>, secondList: List<Visitable<*>>): MutableList<Visitable<*>>{
+    private fun combineVisitable(firstList: List<WishlistDataModel>, secondList: List<WishlistDataModel>): MutableList<WishlistDataModel>{
         val newList = ArrayList(firstList)
         newList.addAll(secondList)
         return newList

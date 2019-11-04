@@ -17,16 +17,14 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
  *
  * A class for holder view Recommendation Carousel Item
  */
-class RecommendationCarouselItemViewHolder (
-        private val view: View,
-        private val parentPosition: Int
+class RecommendationCarouselItemViewHolder(
+        private val view: View
 ) : SmartAbstractViewHolder<RecommendationCarouselItemDataModel>(view){
 
     private val productCardView: ProductCardView by lazy { view.findViewById<ProductCardView>(R.id.product_item) }
 
     override fun bind(element: RecommendationCarouselItemDataModel, listener: SmartListener) {
-        productCardView.run {
-
+        productCardView.apply {
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.recommendationItem.slashedPrice,
@@ -34,7 +32,7 @@ class RecommendationCarouselItemViewHolder (
                             formattedPrice = element.recommendationItem.price,
                             productImageUrl = element.recommendationItem.imageUrl,
                             isTopAds = element.recommendationItem.isTopAds,
-                            discountPercentage = element.recommendationItem.discountPercentage.toString(),
+                            discountPercentage = element.recommendationItem.discountPercentage,
                             reviewCount = element.recommendationItem.countReview,
                             ratingCount = element.recommendationItem.rating,
                             shopLocation = element.recommendationItem.location,
@@ -71,9 +69,13 @@ class RecommendationCarouselItemViewHolder (
             }
 
             setButtonWishlistOnClickListener {
-                (listener as WishlistListener).onWishlistClick(parentPosition, adapterPosition, element.recommendationItem.isWishlist)
+                (listener as WishlistListener).onWishlistClick(element.parentPosition, adapterPosition, element.recommendationItem.isWishlist)
             }
         }
+    }
+
+    fun updateWishlist(isWishlist: Boolean){
+        productCardView.setButtonWishlistImage(isWishlist)
     }
 
     companion object{

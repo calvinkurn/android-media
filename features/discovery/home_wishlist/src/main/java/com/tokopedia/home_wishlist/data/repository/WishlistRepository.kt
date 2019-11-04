@@ -11,6 +11,7 @@ import com.tokopedia.home_wishlist.model.entity.WishlistData
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.model.entity.WishlistResponse
 import com.tokopedia.recommendation_widget_common.domain.RecommendationDataSource
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -81,5 +82,9 @@ class WishlistRepository @Inject constructor(
             list.add(widget[0])
         }
         return list
+    }
+
+    suspend fun getSingleRecommendationData(page: Int): RecommendationWidget{
+        return recommendationDataSource.loadSingleWidget(pageName = "wishlist", pageNumber = page)
     }
 }
