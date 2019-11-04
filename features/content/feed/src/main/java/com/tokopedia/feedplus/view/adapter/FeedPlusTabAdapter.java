@@ -9,6 +9,7 @@ import androidx.collection.SparseArrayCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import android.view.ViewGroup;
 
+import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.data.pojo.FeedTabs;
 import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
