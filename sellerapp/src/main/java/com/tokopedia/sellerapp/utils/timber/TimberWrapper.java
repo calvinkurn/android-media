@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.timber;
+package com.tokopedia.sellerapp.utils.timber;
 
 import android.app.Application;
 import android.text.TextUtils;
@@ -24,11 +24,11 @@ import timber.log.Timber;
 public class TimberWrapper {
 
     public static final String[] LOGENTRIES_TOKEN = new String[]{
-            "08fcd148-14aa-4d89-ac67-4f70fefd2f37",
-            "60664ea7-4d61-4df1-b39c-365dc647aced"
+            "d9acb40d-275d-4281-90ee-fcd69bdf4a91",
+            "df93093a-5b2a-4022-b0e3-db67e79b3a33"
     };
 
-    private static final String ANDROID_CUSTOMER_APP_LOG_CONFIG = "android_customer_app_log_config";
+    private static final String REMOTE_CONFIG_KEY_LOG = "android_seller_app_log_config";
     
     public static void init(@NonNull Application application){
         initByConfig(application, new FirebaseRemoteConfigImpl(application));
@@ -40,7 +40,7 @@ public class TimberWrapper {
         if (isDebug) {
             Timber.plant(new TimberDebugTree());
         } else {
-            String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
+            String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
             if (!TextUtils.isEmpty(logConfigString)) {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
                 if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()) {
