@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.domain.model;
 
+import androidx.room.Entity;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel;

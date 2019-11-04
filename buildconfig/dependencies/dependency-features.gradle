@@ -50,6 +50,7 @@ ext {
 //            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
+            homeDependencyNoOp              : ":features:discovery:home_dependencies_no_op",
             homeRecom                       : ":features:discovery:home_recom",
 //            home                          : ":features:discovery:home_no_op",
             recentview                      : ":features:discovery:recentview",

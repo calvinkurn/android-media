@@ -2,13 +2,16 @@ package com.tokopedia.home.beranda.data.source;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel;
 import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.constant.ConstantKey;
@@ -24,6 +27,8 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
+import static com.tokopedia.home.util.ErrorMessageUtils.getErrorMessage;
+
 /**
  * Created by henrypriyono on 26/01/18.
  */
@@ -34,6 +39,7 @@ public class HomeDataSource {
     private HomeDataApi homeDataApi;
     private HomeMapper homeMapper;
     private Context context;
+    private Gson gson = new Gson();
     private PersistentCacheManager persistentCacheManager;
 
     public HomeDataSource(HomeDataApi homeDataApi,
@@ -47,27 +53,47 @@ public class HomeDataSource {
         this.persistentCacheManager = PersistentCacheManager.instance;
     }
 
-    public Observable<List<HomeVisitable>> getCache() {
-        return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<HomeData>>>() {
-            @Override
-            public Response<GraphqlResponse<HomeData>> call(Boolean aBoolean) {
-                HomeData homeData = persistentCacheManager.get(ConstantKey.TkpdCache.HOME_DATA_CACHE, HomeData.class);
-                if (homeData != null) {
-                    homeData.setCache(true);
-                    GraphqlResponse<HomeData> graphqlResponse = new GraphqlResponse<>();
-                    graphqlResponse.setData(homeData);
-                    return Response.success(graphqlResponse);
+    public Observable<HomeViewModel> getCache() {
+        return Observable.just(true).map(aBoolean -> {
+            String cache = persistentCacheManager.get(ConstantKey.TkpdCache.HOME_DATA_CACHE, HomeData.class);
+            if (cache != null) {
+                HomeData homeData = gson.fromJson(cache, HomeData.class);
+                homeData.setCache(true);
+                GraphqlResponse<HomeData> graphqlResponse = new GraphqlResponse<>();
+                graphqlResponse.setData(homeData);
+                return Response.success(graphqlResponse);
+            }
+            throw new RuntimeException("Cache is empty!!");
+        }).map(response -> {
+            if(response.isSuccessful() && response.body() != null){
+                return response.body().getData();
+            }else {
+                String messageError = getErrorMessage(response);
+                if (!TextUtils.isEmpty(messageError)) {
+                    throw new RuntimeException(messageError);
+                } else {
+                    throw new RuntimeException(String.valueOf(response.code()));
                 }
-                throw new RuntimeException("Cache is empty!!");
             }
         }).map(homeMapper);
     }
 
-    public Observable<List<HomeVisitable>> getHomeData() {
+    public Observable<HomeViewModel> getHomeData() {
         return homeDataApi.getHomeData(getRequestPayload())
                 .debounce(200, TimeUnit.MILLISECONDS)
                 .map(saveToCache())
-                .map(homeMapper);
+                .map(response -> {
+                    if(response.isSuccessful() && response.body() != null){
+                        return response.body().getData();
+                    }else {
+                        String messageError = getErrorMessage(response);
+                        if (!TextUtils.isEmpty(messageError)) {
+                            throw new RuntimeException(messageError);
+                        } else {
+                            throw new RuntimeException(String.valueOf(response.code()));
+                        }
+                    }
+                }).map(homeMapper);
     }
 
     public Observable<Response<String>> sendGeolocationInfo() {

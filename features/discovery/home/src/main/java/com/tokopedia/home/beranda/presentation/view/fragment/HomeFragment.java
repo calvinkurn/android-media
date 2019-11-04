@@ -24,6 +24,8 @@ import androidx.annotation.RestrictTo;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -108,6 +110,10 @@ import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.v2.home.model.pojo.DynamicHomeChannel;
+import com.tokopedia.v2.home.model.pojo.HomeData;
+import com.tokopedia.v2.home.model.vo.Resource;
+import com.tokopedia.v2.home.viewModel.HomePageViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -156,6 +162,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Inject
     PermissionCheckerHelper permissionCheckerHelper;
 
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+
+    HomePageViewModel homePageViewModel;
+
     RemoteConfig remoteConfig;
 
     private UserSessionInterface userSession;
@@ -194,6 +205,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Snackbar homeSnackbar;
     private SharedPreferences sharedPrefs;
 
+
     private int[] positionSticky = new int[2];
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
 
@@ -216,6 +228,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 4;
+        homePageViewModel = ViewModelProviders.of(this, viewModelFactory).get(HomePageViewModel.class);
     }
 
     @Override
@@ -342,7 +355,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             statusBarBackground.setVisibility(View.GONE);
         }
 
-        initEggDragListener();
+//        initEggDragListener();
 
         presenter.attachView(this);
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
@@ -352,6 +365,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        homePageViewModel.getHomeData().observe(getViewLifecycleOwner(), homeDataResource -> {
+            if(homeDataResource.getStatus() == Resource.Status.SUCCESS){
+                HomeData homeData = homeDataResource.getData();
+                DynamicHomeChannel channel = homeData.getDynamicHomeChannel();
+            }
+        });
+
+        homePageViewModel.getData();
     }
 
     @Override
@@ -538,9 +559,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private FloatingEggButtonFragment getFloatingEggButtonFragment() {
         // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
-        if (getActivity() != null && isAdded() && getChildFragmentManager() != null) {
-            return (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
-        }
+//        if (getActivity() != null && isAdded() && getChildFragmentManager() != null) {
+//            return (FloatingEggButtonFragment) getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment);
+//        }
         return null;
     }
 

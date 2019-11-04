@@ -46,7 +46,7 @@ import javax.inject.Named;
  * @author by errysuprayogi on 11/28/17.
  */
 
-@Module(includes = TopAdsWishlistModule.class)
+@Module(includes = { TopAdsWishlistModule.class})
 public class HomeModule {
 
     @HomeScope

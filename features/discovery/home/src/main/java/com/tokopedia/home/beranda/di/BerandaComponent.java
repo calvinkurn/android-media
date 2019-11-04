@@ -22,6 +22,7 @@ import dagger.Component;
         ApiModule.class,
         HomeModule.class,
         ShopModule.class,
+        com.tokopedia.v2.home.di.HomeModule.class,
         ViewModelModule.class
 }, dependencies = BaseAppComponent.class)
 public interface BerandaComponent {
