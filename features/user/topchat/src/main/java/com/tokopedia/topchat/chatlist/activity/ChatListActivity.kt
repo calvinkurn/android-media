@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
 import androidx.core.graphics.drawable.DrawableCompat
@@ -306,6 +307,9 @@ class ChatListActivity : BaseTabActivity()
             }
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tabLayout.elevation = 0f
+        }
         tabLayout.setBackgroundResource(R.color.white)
         tabLayout.tabMode = TabLayout.MODE_FIXED
 
