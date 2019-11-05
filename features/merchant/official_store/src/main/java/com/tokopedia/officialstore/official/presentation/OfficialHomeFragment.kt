@@ -31,6 +31,7 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
@@ -223,9 +224,8 @@ class OfficialHomeFragment :
                     OfficialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG) {
-                        it.throwable.printStackTrace()
-                    }
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
                 }
             }
         })
@@ -257,8 +257,9 @@ class OfficialHomeFragment :
 
         swipeRefreshLayout?.setOnRefreshListener {
             adapter?.getVisitables()?.removeAll {
-                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+                it is DynamicChannelViewModel || it is ProductRecommendationViewModel || it is ProductRecommendationTitleViewModel
             }
+            counterTitleShouldBeRendered = 0
             adapter?.notifyDataSetChanged()
             refreshData()
         }
