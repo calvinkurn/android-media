@@ -124,8 +124,6 @@ import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
 import com.tokopedia.tokopoints.TokopointApplinkModule;
 import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
@@ -177,7 +175,6 @@ import rx.schedulers.Schedulers;
         InterestPickApplinkModule.class,
         TrackingAppLinkModule.class,
         HowtopayApplinkModule.class,
-        TopChatAppLinkModule.class,
         TokopointApplinkModule.class,
         NotifCenterApplinkModule.class,
         HomeNavigationApplinkModule.class,
@@ -241,7 +238,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new InterestPickApplinkModuleLoader(),
                     new TrackingAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
-                    new TopChatAppLinkModuleLoader(),
                     new TokopointApplinkModuleLoader(),
                     new NotifCenterApplinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),

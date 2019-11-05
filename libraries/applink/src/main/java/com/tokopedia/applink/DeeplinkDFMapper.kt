@@ -79,6 +79,7 @@ object DeeplinkDFMapper {
     private val DFM_OVOP2P = "ovop2p"
     private val DFM_SALDO_INTRO = "saldo_deposit"
     private val DFM_WALLET = "fintech_wallet"
+    private val DFM_TOPCHAT = "topchat"
 
 
     private var manager: SplitInstallManager? = null
@@ -108,6 +109,7 @@ object DeeplinkDFMapper {
                     || it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
             add(DFP({it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
             add(DFP({ it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
+            add(DFP({it.startsWith(TOPCHAT_IDLESS)}, DFM_TOPCHAT, R.string.path_chat))
         }
     }
 

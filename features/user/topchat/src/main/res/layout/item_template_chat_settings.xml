@@ -53,7 +53,7 @@
         android:paddingBottom="@dimen/dp_24"
         android:paddingRight="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
-        app:srcCompat="@drawable/ic_edit" />
+        app:srcCompat="@drawable/ic_edit_topchat" />
 
     <View
         android:id="@+id/divider"

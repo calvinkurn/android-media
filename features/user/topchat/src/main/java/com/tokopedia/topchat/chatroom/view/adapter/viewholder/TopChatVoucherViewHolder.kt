@@ -28,8 +28,8 @@ class TopChatVoucherViewHolder(itemView: View, var voucherListener: TopChatVouch
         val element = viewModel.voucherModel
         val data = MerchantVoucherViewModel(element)
         isOwner = viewModel.isSender
-        itemView.findViewById<MerchantVoucherView>(com.tokopedia.merchantvoucher.R.id.merchantVoucherView).onMerchantVoucherViewListener = this
-        itemView.findViewById<MerchantVoucherView>(com.tokopedia.merchantvoucher.R.id.merchantVoucherView).setData(data)
+        itemView.findViewById<MerchantVoucherView>(com.tokopedia.topchat.R.id.merchantVoucherView).onMerchantVoucherViewListener = this
+        itemView.findViewById<MerchantVoucherView>(com.tokopedia.topchat.R.id.merchantVoucherView).setData(data)
 
         setupChatBubbleAlignment(isOwner, viewModel)
 

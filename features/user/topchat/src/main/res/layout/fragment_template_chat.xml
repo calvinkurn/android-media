@@ -37,7 +37,7 @@
                 android:paddingBottom="@dimen/dp_24"
                 android:paddingRight="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"
-                android:background="@drawable/shadow_background">
+                android:background="@drawable/shadow_background_topchat">
 
                 <TextView
                     android:id="@+id/title_template"
@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/shadow_background"
+            android:background="@drawable/shadow_background_topchat"
             android:visibility="gone"
                 tools:visibility="visible"
                 android:paddingTop="@dimen/dp_16">

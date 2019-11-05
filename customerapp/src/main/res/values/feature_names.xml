@@ -96,4 +96,10 @@
     <string name="wallet_title">Ovo</string>
     <string name="wallet_title_header_ovo">TokoCash to OVO</string>
     <string name="wallet_title_header_activation_ovo">Aktivasi OVO</string>
+
+
+    <!--Topchat-->
+    <string name="topchat_title">Chat</string>
+    <string name="title_inbox_chat">Chat</string>
+    <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
 </resources>
