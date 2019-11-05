@@ -17,6 +17,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.ovo.model.Errors;
+import com.tokopedia.scanner.domain.usecase.ScannerUseCase;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
@@ -35,6 +36,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -60,7 +62,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private static final String OVO_TEXT = "ovo";
     private static final String GPNR_TEXT = "gpnqr";
 
-    private PostBarCodeDataUseCase postBarCodeDataUseCase;
+    private ScannerUseCase scannerUseCase;
     private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
     private Context context;
     private UserSessionInterface userSession;
@@ -69,13 +71,13 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private GetWalletBalanceUseCase getWalletBalanceUseCase;
 
     @Inject
-    public QrScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase,
+    public QrScannerPresenter(ScannerUseCase scannerUseCase,
                               BranchIODeeplinkUseCase branchIODeeplinkUseCase,
                               GetWalletBalanceUseCase getWalletBalanceUseCase,
                               @ApplicationContext Context context,
                               @IdentifierWalletQualifier LocalCacheHandler localCacheHandler
     ) {
-        this.postBarCodeDataUseCase = postBarCodeDataUseCase;
+        this.scannerUseCase = scannerUseCase;
         this.context = context;
         this.userSession = new UserSession(context);
         this.localCacheHandler = localCacheHandler;
@@ -184,32 +186,29 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
     private void onScanCompleteGetInfoQrCampaign(final String idCampaign) {
         getView().showProgressDialog();
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(CAMPAIGN_ID, idCampaign);
-        postBarCodeDataUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
-            @Override
-            public void onCompleted() {
+        scannerUseCase.setParams(idCampaign, false);
+        scannerUseCase.execute(
+            verificationResponse -> {
                 getView().hideProgressDialog();
-                getView().finish();
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                getView().hideProgressDialog();
-                if (e instanceof CampaignException) {
-                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                if (!verificationResponse.getData().getUrl().isEmpty()) {
+                    openActivity(verificationResponse.getData().getUrl());
+                    CampaignTracking.eventScanQRCode("success", idCampaign, verificationResponse.getData().getUrl());
+                    getView().finish();
+                    return Unit.INSTANCE;
                 } else {
-                    getView().showErrorNetwork(e);
+                    getView().showErrorGetInfo(context.getString(R.string.msg_dialog_wrong_scan));
+                    CampaignTracking.eventScanQRCode("fail", idCampaign, "");
+                    return Unit.INSTANCE;
                 }
+            },
+            throwable -> {
+                getView().showErrorNetwork(throwable);
                 CampaignTracking.eventScanQRCode("fail", idCampaign, "");
+                getView().hideProgressDialog();
+                return Unit.INSTANCE;
             }
-
-            @Override
-            public void onNext(CampaignResponseEntity s) {
-                openActivity(s.getUrl());
-                CampaignTracking.eventScanQRCode("success", idCampaign, s.getUrl());
-            }
-        });
+        );
     }
 
     public void openActivity(String url) {
@@ -268,6 +267,9 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         if (compositeSubscription != null & compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
-        if (postBarCodeDataUseCase != null) postBarCodeDataUseCase.unsubscribe();
+        if (scannerUseCase != null) {
+            scannerUseCase.cancelJobs();
+            scannerUseCase.clearCache();
+        }
     }
 }

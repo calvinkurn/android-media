@@ -2,6 +2,7 @@ package com.tokopedia.tkpdreactnative.react.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
@@ -14,6 +15,7 @@ import com.tokopedia.tkpdreactnative.react.common.data.interceptor.DigitalHmacAu
 import com.tokopedia.tkpdreactnative.react.common.data.interceptor.DynamicTkpdAuthInterceptor;
 import com.tokopedia.tkpdreactnative.react.common.data.service.CommonService;
 import com.tokopedia.tkpdreactnative.react.data.ReactNetworkRepositoryImpl;
+import com.tokopedia.tkpdreactnative.react.data.StringResponseConverter;
 import com.tokopedia.tkpdreactnative.react.data.UnifyReactNetworkRepositoryImpl;
 import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkAuthDataSource;
 import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkBearerDataSource;
@@ -35,6 +37,8 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by alvarisi on 9/14/17.
@@ -107,7 +111,7 @@ public class ReactNativeNetworkModule {
     @ReactNoAuthQualifier
     @Provides
     @ReactNativeNetworkScope
-    Retrofit provideRetrofitNoAuth(@ReactNoAuthQualifier OkHttpClient okHttpClient, Retrofit.Builder retrofitBuilder) {
+    Retrofit provideRetrofitNoAuth(@ReactNoAuthQualifier OkHttpClient okHttpClient,  Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS())
                 .client(okHttpClient)
                 .build();
@@ -172,14 +176,14 @@ public class ReactNativeNetworkModule {
 
     @Provides
     @ReactNativeNetworkScope
-    UnifyReactNetworkDataSource provideUnifyReactNetworkDataSource(Retrofit.Builder retrofitBuilder,
+    UnifyReactNetworkDataSource provideUnifyReactNetworkDataSource(@ReactNoAuthQualifier Retrofit.Builder retrofitBuilder,
                                                                    @ReactNoAuthQualifier OkHttpClient okHttpClient) {
         return new UnifyReactNetworkDataSource(retrofitBuilder, okHttpClient);
     }
 
     @Provides
     @ReactNativeNetworkScope
-    UnifyReactNetworkAuthDataSource provideUnifyReactNetworkAuthDataSource(Retrofit.Builder retrofitBuilder,
+    UnifyReactNetworkAuthDataSource provideUnifyReactNetworkAuthDataSource(@ReactNoAuthQualifier Retrofit.Builder retrofitBuilder,
                                                                            @ReactNoAuthQualifier OkHttpClient okHttpClient,
                                                                            DigitalHmacAuthInterceptor digitalHmacAuthInterceptor,
                                                                            DynamicTkpdAuthInterceptor dynamicTkpdAuthInterceptor) {
@@ -222,5 +226,16 @@ public class ReactNativeNetworkModule {
                 reactNetworkFactory,
                 reactNetworkDefaultAuthFactory,
                 userSessionInterface);
+    }
+
+
+    @ReactNoAuthQualifier
+    @Provides
+    @ReactNativeNetworkScope
+    public Retrofit.Builder provideRetrofitBuilder(Gson gson) {
+        return new Retrofit.Builder()
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
 }
