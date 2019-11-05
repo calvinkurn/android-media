@@ -3,7 +3,7 @@ package com.tokopedia.shop.favourite.domain.interactor
 import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.favourite.data.pojo.shopfollowinglist.GetShopFollowerListData
+import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.GetShopFollowerListData
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.withContext
 

@@ -5,10 +5,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.di.ShopQualifier;
-import com.tokopedia.shop.common.di.ShopWSQualifier;
 import com.tokopedia.shop.common.di.scope.ShopScope;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase;
@@ -30,12 +28,6 @@ public class ShopModule {
     @Provides
     public ShopApi provideShopApi(@ShopQualifier Retrofit retrofit) {
         return retrofit.create(ShopApi.class);
-    }
-
-    @ShopScope
-    @Provides
-    public ShopWSApi provideShopWsApi(@ShopWSQualifier Retrofit retrofit) {
-        return retrofit.create(ShopWSApi.class);
     }
 
     @Provides

@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
-import com.tokopedia.shop.favourite.data.pojo.shopfollowinglist.GetShopFollowerListData
-import com.tokopedia.shop.favourite.data.pojo.shopfollowinglist.ShopFollowerData
+import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.GetShopFollowerListData
+import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.ShopFollowerData
 import com.tokopedia.shop.favourite.domain.interactor.GetShopFollowerListUseCase
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView
 import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.favourite.data.pojo.shopfollowinglist
+package com.tokopedia.shop.favourite.data.pojo.shopfollowerlist
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
