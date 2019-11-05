@@ -354,8 +354,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun generateAnonymousText(): String {
-        val firstName = reviewUserName.substringBefore(" ")
-        return firstName.replaceRange(1, firstName.length - 1, "***")
+        if (reviewUserName.isNotEmpty()) {
+            val firstName = reviewUserName.substringBefore(" ")
+            return firstName.replaceRange(1, firstName.length - 1, "***")
+        }
+
+        return ""
     }
 
     private fun addImageClick() {
