@@ -23,12 +23,14 @@ class DropoffPickerViewModel
         get() = mStoreResponse
 
     fun getStores(latlng: String) {
-
         getStoreUseCase.setTypeClass(GetStoreResponse::class.java)
-        getStoreUseCase.setRequestParams(mapOf(
-                "latlng" to latlng,
-                "type" to 3
-        ))
+        getStoreUseCase.setRequestParams(
+                mapOf(
+                        "query" to mapOf(
+                                "latlng" to latlng,
+                                "type" to 3
+                        )
+                ))
         getStoreUseCase.setGraphqlQuery(LocationQuery.keroAddressStoreLocation)
 
         getStoreUseCase.execute(

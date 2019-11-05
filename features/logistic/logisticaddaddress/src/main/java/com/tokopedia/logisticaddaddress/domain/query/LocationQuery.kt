@@ -6,7 +6,7 @@ import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
 object LocationQuery {
     val keroAddressStoreLocation = """
         query KeroAddressStoreLocation(${'$'}query: KeroAddressStoreLocationInput) {
-          keroAddressStoreLocation(input: (${'$'}query) {
+          keroAddressStoreLocation(input: ${'$'}query) {
             status
             config
             server_process_time

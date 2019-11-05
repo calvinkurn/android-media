@@ -30,7 +30,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.di.DaggerDropoffPickerComponent
+import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
