@@ -2322,7 +2322,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
                         recipientAddressModel, cartPosition, codHistory,
-                        shipmentCartItemModel.getIsLeasingProduct(), pslCode, products, shipmentCartItemModel.getCartString());
+                        shipmentCartItemModel.getIsLeasingProduct(), pslCode, products,
+                        shipmentCartItemModel.getCartString(), isTradeInByDropOff());
                 shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
                 if (getActivity() != null) {
@@ -2391,7 +2392,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentCartItemModel.getSelectedShipmentDetailData(),
                         shipmentCartItemModel, shopShipmentList, false,
                         getProductForRatesRequest(shipmentCartItemModel), shipmentCartItemModel.getCartString(),
-                        isTradeInByDropOff());
+                        isTradeInByDropOff(), shipmentAdapter.getAddressShipmentData());
             }
         }
     }
@@ -2438,7 +2439,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipperId, spId, itemPosition, shipmentDetailData,
                     shipmentCartItemModel, shopShipmentList, true,
                     getProductForRatesRequest(shipmentCartItemModel),
-                    shipmentCartItemModel.getCartString(), isTradeInDropOff);
+                    shipmentCartItemModel.getCartString(), isTradeInDropOff,
+                    shipmentAdapter.getAddressShipmentData());
         }
     }
 

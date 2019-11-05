@@ -293,7 +293,8 @@ public interface ShipmentContract {
                                              ShipmentCartItemModel shipmentCartItemModel,
                                              List<ShopShipment> shopShipmentList,
                                              boolean isInitialLoad, ArrayList<Product> products,
-                                             String cartString, boolean isTradeInDropOff);
+                                             String cartString, boolean isTradeInDropOff,
+                                             RecipientAddressModel recipientAddressModel);
 
         RecipientAddressModel getRecipientAddressModel();
 
