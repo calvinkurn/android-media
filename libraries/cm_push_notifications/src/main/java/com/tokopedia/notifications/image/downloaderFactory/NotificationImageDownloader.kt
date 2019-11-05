@@ -31,12 +31,12 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
 
     private fun downloadImage(context: Context, url: String, imageSizeAndTimeout: ImageSizeAndTimeout): Bitmap? {
         try {
-            /*return Glide.with(context)
-                    .load(url)
+            return Glide.with(context)
                     .asBitmap()
+                    .load(url)
                     .override(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
                     .into(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
-                    .get(imageSizeAndTimeout.seconds, TimeUnit.SECONDS)*/
+                    .get(imageSizeAndTimeout.seconds, TimeUnit.SECONDS)
         } catch (e: CancellationException) {
         } catch (e: ExecutionException) {
         } catch (e: InterruptedException) {
