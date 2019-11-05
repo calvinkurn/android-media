@@ -932,16 +932,6 @@ public class GTMAnalytics extends ContextAnalytics {
         return this;
     }
 
-    public void pushClickEECommerce(Bundle bundle) {
-        // replace list
-        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
-                && !TextUtils.isEmpty(bundle.getString("list"))) {
-            bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
-            bundle.remove("list");
-        }
-        logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle, context);
-    }
-
     private static final String TRANSACTION = "transaction";
     private static final String PRODUCTVIEW = "productview";
     private static final String PRODUCTCLICK = "productclick";

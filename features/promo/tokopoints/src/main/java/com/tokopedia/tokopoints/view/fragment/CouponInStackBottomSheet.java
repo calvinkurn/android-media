@@ -14,7 +14,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.view.adapter.CouponInStackBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.CouponListStackedBaseAdapter;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
