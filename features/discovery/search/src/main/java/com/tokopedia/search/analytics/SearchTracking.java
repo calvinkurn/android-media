@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.track.TrackApp;

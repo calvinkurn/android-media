@@ -31,6 +31,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -44,7 +45,6 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.RecommendationTracking;
 import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
-import com.tokopedia.search.analytics.WishlistTrackingModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -596,8 +596,11 @@ public class ProductListFragment
         startSimilarSearch(item.getProductID());
     }
 
-    public void startSimilarSearch(String productId) {
-        RouteManager.route(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
+    private void startSimilarSearch(String productId) {
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
+        intent.putExtra(SearchConstant.SimilarSearch.QUERY, getQueryKey());
+
+        startActivity(intent);
     }
 
     private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {

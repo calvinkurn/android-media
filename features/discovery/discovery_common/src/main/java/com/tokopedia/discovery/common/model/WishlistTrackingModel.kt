@@ -1,6 +1,6 @@
-package com.tokopedia.search.analytics
+package com.tokopedia.discovery.common.model
 
-class WishlistTrackingModel(
+data class WishlistTrackingModel(
         var isAddWishlist: Boolean = false,
         var productId: String = "",
         var isTopAds: Boolean = false,
