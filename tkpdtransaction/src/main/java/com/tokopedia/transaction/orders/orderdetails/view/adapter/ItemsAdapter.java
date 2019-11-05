@@ -40,6 +40,7 @@ import java.util.List;
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface, RedeemVoucherView.SetTapActionDeals {
 
     public static final String KEY_BUTTON = "button";
+    public static final String KEY_REFRESH = "refresh";
     public static final String KEY_TEXT = "text";
     public static final String KEY_REDIRECT = "redirect";
     public static final String CONTENT_TYPE = "application/pdf";
@@ -62,7 +63,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private int position;
     private String orderId;
     private PermissionCheckerHelper permissionCheckerHelper;
-
 
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId) {
         this.context = context;
@@ -160,6 +160,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void tapActionClicked(TextView view, ActionButton actionButton, Items item) {
         if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
             presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, position, true);
+        } else if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
+            presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, position, true);
         } else {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
@@ -195,6 +197,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private LinearLayout actionLayout;
         private LinearLayout voucherCodeLayout;
         private CustomTicketView customTicketView;
+        private CustomTicketView customTicketView1;
         private View clCard;
         private View llValid;
         private View llTanggalEvent;
@@ -221,6 +224,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 eventAddress = itemView.findViewById(R.id.address_event);
                 voucherCodeLayout = itemView.findViewById(R.id.voucerCodeLayout);
                 customTicketView = itemView.findViewById(R.id.customView2);
+                customTicketView1 = itemView.findViewById(R.id.customView1);
             }
 
             if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
@@ -271,7 +275,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                     brandName.setText(metaDataInfo.getEntityBrandName());
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label));
-                    dealImage.setOnClickListener(new View.OnClickListener() {
+                    customTicketView1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             RouteManager.route(context, ApplinkOMSConstant.INTERNAL_DEALS + metaDataInfo1.getSeoUrl());
