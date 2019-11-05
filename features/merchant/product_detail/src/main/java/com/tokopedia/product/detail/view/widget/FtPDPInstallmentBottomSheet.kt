@@ -57,7 +57,6 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
             heightWrappingViewPager = view.findViewById(R.id.view_pager)
         }
         loadData()
-//        configBottomSheetHeight()
     }
 
     fun title(): String {
@@ -72,23 +71,6 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
         tabLayout?.setupWithViewPager(heightWrappingViewPager)
         heightWrappingViewPager?.currentItem = 0
         tabLayout?.getTabAt(0)?.select()
-    }
-
-    private fun configBottomSheetHeight() {
-        dialog?.run {
-            val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
-            val displaymetrics = DisplayMetrics()
-            activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
-            val screenHeight = displaymetrics.heightPixels
-            val maxHeight = (screenHeight * 0.9f).toInt()
-            parent.measure(
-                    View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.AT_MOST)
-            )
-            val params = parent.layoutParams
-            params.height = parent.measuredHeight
-            parent.layoutParams = params
-        }
     }
 
     protected fun configView(parentView: View) {
@@ -126,7 +108,6 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
         try {
             val params = (inflatedView.getParent() as View).layoutParams
-
             inflatedView.measure(0, 0)
             val displayMetrics = DisplayMetrics()
             activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -134,11 +115,8 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
             if (bottomSheetBehavior != null)
                 bottomSheetBehavior?.peekHeight = height
-
             params.height = screenHeight
-//            parent.layoutParams = params
         } catch (illegalEx: IllegalArgumentException) {
-            Log.d(BottomSheets::class.java.name, illegalEx.message)
         } catch (ignored: Exception) {
         }
 
@@ -164,14 +142,6 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
                 installmentData.ftInstallmentCalculation.data.tncDataList, isOfficialStore,
                 installmentData.ftInstallmentCalculation.data.creditCardInstallmentData)
     }
-
-    /* override fun setupDialog(dialog: Dialog?, style: Int) {
-         super.setupDialog(dialog, style)
-         dialog?.run {
-             findViewById<FrameLayout>(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent)
-         }
-     }*/
-
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
