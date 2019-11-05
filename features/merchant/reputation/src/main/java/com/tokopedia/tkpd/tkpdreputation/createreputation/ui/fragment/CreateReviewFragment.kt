@@ -93,6 +93,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private var productId: Int = 0
     private var currentBackground: Drawable? = null
     private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
+    private var shopId: String = ""
 
     private var reviewUserName: String = ""
     lateinit var imgAnimationView: LottieAnimationView
@@ -143,6 +144,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 is Fail -> {
                     stopLoading()
                     showToasterError(it.fail.message ?: "")
+                    onSuccessSubmitReview()
                 }
                 is Success -> {
                     stopLoading()
@@ -238,11 +240,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     private fun submitReview() {
         createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, reviewId.toString(), productId.toString(),
-                createReviewViewModel.userSessionInterface.shopId, edit_text_review.text.toString(), reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked)
+                shopId, edit_text_review.text.toString(), reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked)
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
         ImageHandler.loadImage(context, img_review, data.productrevGetForm.productData.productImageURL, R.drawable.ic_loading_image)
+        shopId = data.productrevGetForm.shopData.shopID.toString(10)
         txt_create.text = data.productrevGetForm.productData.productName
     }
 
@@ -382,10 +385,14 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSubmitReview() {
-        showToasterSuccess()
+//        showToasterSuccess()
         val intent = RouteManager.getIntent(context,ApplinkConst.HOME)
-        activity?.setResult(Activity.RESULT_OK,intent)
-        activity?.finish()
+
+        activity?.run {
+            setResult(Activity.RESULT_OK,intent)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun showLoading() {
@@ -409,8 +416,8 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetReviewForm(t: Throwable) {
-        NetworkErrorHelper.showEmptyState(context,review_root) {
-            getReviewData()
-        }
+//        NetworkErrorHelper.showEmptyState(context,review_root) {
+//            getReviewData()
+//        }
     }
 }

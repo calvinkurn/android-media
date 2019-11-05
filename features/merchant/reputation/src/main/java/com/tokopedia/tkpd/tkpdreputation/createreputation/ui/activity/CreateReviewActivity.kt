@@ -10,13 +10,23 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
 
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
     companion object {
-        fun newInstance(context: Context): Intent {
-            return Intent(context, CreateReviewActivity::class.java)
+        fun newInstance(
+                context: Context,
+                productId: String,
+                shopId: String,
+                reputationId: String
+        ): Intent {
+            return Intent(context, CreateReviewActivity::class.java).apply {
+                putExtra(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId)
+                putExtra(InboxReputationFormActivity.ARGS_SHOP_ID, shopId)
+                putExtra(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId)
+            }
         }
     }
 
@@ -27,17 +37,18 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
         val bundle = intent.extras
         val uri = intent.data
 
-        bundle?.let {
-            reviewClickAt = it.getInt("REVIEW_CLICK_AT", 0)
+        if (uri != null && uri.pathSegments.size > 0) {
+            val uriSegment = uri.pathSegments
+            productId = uri.lastPathSegment ?: ""
+            reputationId = uriSegment[uriSegment.size - 2]
+        } else {
+            productId = bundle?.getString(InboxReputationFormActivity.ARGS_PRODUCT_ID) ?: ""
+            reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
         }
 
-        uri?.let {
-            val uriSegment = it.pathSegments
-            productId = it.lastPathSegment ?: ""
-            reputationId = uriSegment[uriSegment.size - 1]
-        }
+        reviewClickAt = bundle?.getInt("REVIEW_CLICK_AT", 0) ?: 0
 
-        return CreateReviewFragment.createInstance(productId, reputationId, reviewClickAt)
+        return CreateReviewFragment.createInstance(productId, reputationId,  reviewClickAt)
 
     }
 

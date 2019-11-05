@@ -23,6 +23,8 @@ class ReviewViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_item_review
+
+        private const val cardBg = "https://ecs7.tokopedia.net/android/others/review_home_bg.png"
     }
 
     override fun bind(element: ReviewViewModel) {
@@ -54,6 +56,7 @@ class ReviewViewHolder(
             }
         })
 
+        ImageHandler.LoadImage(itemView.review_card_bg, cardBg)
         itemView.review_card_content_container.setOnClickListener{
             HomePageTracking.homeReviewOnBlankSpaceClickTracker("", "")
         }

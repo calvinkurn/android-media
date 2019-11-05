@@ -129,7 +129,7 @@ class AnimatedReputationView @JvmOverloads constructor(
     fun renderInitialReviewWithData(reviewClickAt: Int) {
         this.clickAt = reviewClickAt
         handle.post(normalAnimation)
-        generateReviewText(reviewClickAt + 1)
+        generateReviewText(reviewClickAt)
         listener?.onClick(reviewClickAt)
     }
 
