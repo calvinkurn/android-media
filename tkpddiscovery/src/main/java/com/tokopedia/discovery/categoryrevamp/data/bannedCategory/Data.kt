@@ -20,6 +20,10 @@ class Data {
     @SerializedName("appRedirection")
     var appRedirection: String? = null
 
+    @SerializedName("displayButton")
+    var displayButton: Boolean = true
+
+
     @SerializedName("isBanned")
     var isBanned: Int = 0
 

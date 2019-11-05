@@ -244,7 +244,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     private fun setBannedPage(data :Data?){
         layout_banned_screen.visibility = View.VISIBLE
-        if (isBannedNavigationEnabled(this))  {
+        if (data != null && data.displayButton && isBannedNavigationEnabled(this))  {
             category_btn_banned_navigation.visibility = View.VISIBLE
             category_btn_banned_navigation.setOnClickListener() {
                 var browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data?.appRedirection))
