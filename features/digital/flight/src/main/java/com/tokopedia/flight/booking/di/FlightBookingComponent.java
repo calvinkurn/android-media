@@ -1,7 +1,6 @@
 package com.tokopedia.flight.booking.di;
 
 import com.tokopedia.common.travel.di.CommonTravelModule;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
@@ -20,7 +19,6 @@ import dagger.Component;
 @FlightBookingScope
 @Component(modules = {FlightBookingModule.class, CommonTravelModule.class}, dependencies = FlightComponent.class)
 public interface FlightBookingComponent {
-    FlightModuleRouter flightModuleRouter();
 
     void inject(FlightBookingFragment flightBookingFragment);
 

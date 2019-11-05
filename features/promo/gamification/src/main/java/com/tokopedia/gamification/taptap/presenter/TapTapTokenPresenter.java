@@ -421,7 +421,6 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
         void onAllResourceDownloaded() {
             if (isViewAttached()) {
-                getView().hideLoading();
                 getView().onSuccessDownloadAllAsset();
             }
         }

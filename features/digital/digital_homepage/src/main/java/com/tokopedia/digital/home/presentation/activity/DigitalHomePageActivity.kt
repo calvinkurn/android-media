@@ -24,6 +24,10 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
 
     override fun getNewFragment(): Fragment = DigitalHomePageFragment.getInstance()
 
+    override fun getScreenName(): String {
+        return DIGITAL_HOMEPAGE_SCREEN_NAME
+    }
+
     override fun getComponent(): DigitalHomePageComponent {
         if (!::travelHomepageComponent.isInitialized) {
             travelHomepageComponent = DigitalHomePageComponentInstance.getTravelHomepageComponent(application)
@@ -32,6 +36,8 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     }
 
     companion object {
+        const val DIGITAL_HOMEPAGE_SCREEN_NAME = "/digital/subhomepage/topup"
+
         fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageActivity::class.java)
     }
 }

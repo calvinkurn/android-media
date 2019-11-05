@@ -1181,7 +1181,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         this.profileHeader = element
         app_bar_layout.visibility = View.VISIBLE
         app_bar_layout.setExpanded(true)
-        iv_image_collapse.loadImageRounded(element.avatar)
+        iv_image_collapse.loadImageWithoutPlaceholder(element.avatar)
         iv_profile.loadImageCircle(element.avatar)
         tv_name.text = element.name
         val affName = if (element.affiliateName.isNotBlank()) {
@@ -1422,8 +1422,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             )
                         }
                     }
-
-                    onAffiliateTrackClicked(model.tracking, false)
                 }
             }
         }
