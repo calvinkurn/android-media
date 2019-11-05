@@ -39,8 +39,7 @@ internal class CarouselProductCardAdapter(
     }
 
     override fun onBindViewHolder(carouselProductCardViewHolder: CarouselProductCardViewHolder, position: Int) {
-        carouselProductCardViewHolder.bind(this.productCardModelList[position],
-                carouselProductCardListenerInfo.onItemImpressedListener?.getImpressHolder(position))
+        carouselProductCardViewHolder.bind(this.productCardModelList[position])
     }
 
     fun updateWishlist(position: Int, wishlist: Boolean) {
