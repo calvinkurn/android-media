@@ -21,7 +21,7 @@
         app:scallopRadius="@dimen/dp_8"
         app:showborder="true" />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
