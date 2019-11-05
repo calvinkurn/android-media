@@ -15,6 +15,9 @@ import java.util.List;
 
 public class CheckoutRequest implements Parcelable {
 
+    @SerializedName("promos")
+    @Expose
+    public List<PromoRequest> promos;
     @SerializedName("promo_code")
     @Expose
     public String promoCode;
@@ -47,6 +50,7 @@ public class CheckoutRequest implements Parcelable {
     }
 
     protected CheckoutRequest(Parcel in) {
+        promos = in.createTypedArrayList(PromoRequest.CREATOR);
         promoCode = in.readString();
         isDonation = in.readInt();
         egoldData = in.readParcelable(EgoldData.class.getClassLoader());
@@ -60,6 +64,7 @@ public class CheckoutRequest implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(promos);
         dest.writeString(promoCode);
         dest.writeInt(isDonation);
         dest.writeParcelable(egoldData, flags);
@@ -102,6 +107,7 @@ public class CheckoutRequest implements Parcelable {
     }
 
     private CheckoutRequest(Builder builder) {
+        promos = builder.promoRequests;
         promoCode = builder.promoCode;
         isDonation = builder.isDonation;
         data = builder.data;
@@ -115,6 +121,7 @@ public class CheckoutRequest implements Parcelable {
 
 
     public static final class Builder {
+        private List<PromoRequest> promoRequests;
         private String promoCode;
         private int isDonation;
         private boolean hasInsurance;
@@ -126,6 +133,11 @@ public class CheckoutRequest implements Parcelable {
         private int leasingId;
 
         public Builder() {
+        }
+
+        public Builder promos(List<PromoRequest> val) {
+            promoRequests = val;
+            return this;
         }
 
         public Builder promoCode(String val) {
@@ -163,7 +175,7 @@ public class CheckoutRequest implements Parcelable {
             return this;
         }
 
-        public Builder promoCodes(ArrayList<String> val){
+        public Builder promoCodes(ArrayList<String> val) {
             promoCodes = val;
             return this;
         }

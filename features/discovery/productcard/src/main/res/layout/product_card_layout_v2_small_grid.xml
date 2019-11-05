@@ -300,7 +300,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:gravity="center"
-            android:scaleType="fitXY"
+            android:scaleType="fitStart"
             android:adjustViewBounds="true"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageProduct"

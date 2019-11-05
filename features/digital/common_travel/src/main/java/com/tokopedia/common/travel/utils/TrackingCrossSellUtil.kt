@@ -32,7 +32,7 @@ class TrackingCrossSellUtil {
         map[EVENT_ACTION] = WIDGET_CLICK
         map[EVENT_LABEL] = String.format("%s - %s", position + 1, item.product)
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
-                PROMO_VIEW, DataLayer.mapOf(
+                PROMO_CLICK, DataLayer.mapOf(
                 PROMOTIONS_LABEL, getPromoList(listOf(item), position, position)
         )
         )
@@ -62,7 +62,7 @@ class TrackingCrossSellUtil {
         val CROSS_SELL_WIDGET_NATIVE = "digital - cross sell widget"
         val WIDGET_IMPRESSION = "view widget"
         val WIDGET_CLICK = "click widget"
-        val LENGKAPI_PERJALANANMU_LABEL = "view lengkapi perjalananu"
+        val LENGKAPI_PERJALANANMU_LABEL = "view lengkapi perjalananmu"
         val PROMOTIONS_LABEL = "promotions"
 
         val ID_LABEL = "id"
