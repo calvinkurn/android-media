@@ -84,7 +84,7 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
             ftRecyclerView = view.findViewById(R.id.ft_recycler_view)
             val linearLayoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
             ftRecyclerView.layoutManager = linearLayoutManager
-            ftRecyclerView.adapter = FtPDPInstallmentCalculationAdapter(it, productPrice,
+            ftRecyclerView.adapter = FtPDPInstallmentCalculationAdapter(productPrice,
                     isOfficialStore, partnerDataItemList, this)
         }
     }
