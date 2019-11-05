@@ -88,7 +88,7 @@
             android:paddingBottom="@dimen/padding_small"
             android:textSize="@dimen/fonts" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/image_upload_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/img_thumb_m"

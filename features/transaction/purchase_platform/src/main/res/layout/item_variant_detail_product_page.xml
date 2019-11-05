@@ -45,7 +45,7 @@
         tools:visibility="visible"
         android:text="@string/sizechart_guideline" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_variant_options"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

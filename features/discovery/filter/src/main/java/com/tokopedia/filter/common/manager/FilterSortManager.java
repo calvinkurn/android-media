@@ -2,7 +2,7 @@ package com.tokopedia.filter.common.manager;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -22,6 +22,7 @@ import static com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivit
 import static com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity.EXTRA_QUERY_PARAMETERS;
 import static com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS;
 import static com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity.EXTRA_SELECTED_OPTIONS;
+import static com.tokopedia.filter.newdynamicfilter.SortProductActivity.EXTRA_AUTO_APPLY_FILTER;
 import static com.tokopedia.filter.newdynamicfilter.SortProductActivity.EXTRA_SORT_DATA;
 import static com.tokopedia.filter.newdynamicfilter.SortProductActivity.EXTRA_SELECTED_SORT_NAME;
 import static com.tokopedia.filter.newdynamicfilter.SortProductActivity.EXTRA_SELECTED_SORT;
@@ -74,7 +75,8 @@ public class FilterSortManager {
             if (requestCode == SORT_REQUEST_CODE) {
                 Map<String, String> selectedSort = getMapFromIntent(data, EXTRA_SELECTED_SORT);
                 String selectedSortName = data.getStringExtra(EXTRA_SELECTED_SORT_NAME);
-                callback.onSortResult(selectedSort, selectedSortName);
+                String autoApplyFilterParams = data.getStringExtra(EXTRA_AUTO_APPLY_FILTER);
+                callback.onSortResult(selectedSort, selectedSortName, autoApplyFilterParams);
 
             } else if (requestCode == FILTER_REQUEST_CODE) {
                 Map<String, String> queryParams = getMapFromIntent(data, EXTRA_QUERY_PARAMETERS);
@@ -103,6 +105,6 @@ public class FilterSortManager {
 
     public interface Callback {
         void onFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters, List<Option> selectedOptions);
-        void onSortResult(Map<String, String> selectedSort, String selectedSortName);
+        void onSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter);
     }
 }

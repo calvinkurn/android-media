@@ -1,12 +1,11 @@
 package com.tokopedia.flight.cancellation.view.adapter
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationTitleContentEntity
 import com.tokopedia.flight.orderlist.data.cloud.entity.KeyValueEntity
@@ -17,7 +16,7 @@ import com.tokopedia.flight.orderlist.data.cloud.entity.KeyValueEntity
 class FlightCancellationRefundDetailMiddleAdapter(var items: MutableList<CancellationTitleContentEntity>) : RecyclerView.Adapter<FlightCancellationRefundDetailMiddleAdapter.CancellationRefundDetailMiddleViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CancellationRefundDetailMiddleViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_flight_cancellation_refund_detail_middle, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(com.tokopedia.flight.R.layout.item_flight_cancellation_refund_detail_middle, parent, false)
 
         return CancellationRefundDetailMiddleViewHolder(view)
     }
@@ -32,8 +31,8 @@ class FlightCancellationRefundDetailMiddleAdapter(var items: MutableList<Cancell
 
     class CancellationRefundDetailMiddleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val title: TextView = itemView.findViewById(R.id.tv_title)
-        private val rvItems: RecyclerView = itemView.findViewById(R.id.rv_item)
+        private val title: TextView = itemView.findViewById(com.tokopedia.design.R.id.tv_title)
+        private val rvItems: RecyclerView = itemView.findViewById(com.tokopedia.flight.R.id.rv_item)
 
         fun bindData(info: CancellationTitleContentEntity) {
             title.text = info.title

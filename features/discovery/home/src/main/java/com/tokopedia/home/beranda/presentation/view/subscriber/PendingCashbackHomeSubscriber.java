@@ -1,9 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
-import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
 import rx.Subscriber;
 

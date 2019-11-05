@@ -1,7 +1,7 @@
 package com.tokopedia.filter.newdynamicfilter.database;
 
 import android.content.Context;
-import android.arch.persistence.room.Room;
+import androidx.room.Room;
 
 public class FilterDatabaseClient {
     private static FilterDatabaseClient mInstance;

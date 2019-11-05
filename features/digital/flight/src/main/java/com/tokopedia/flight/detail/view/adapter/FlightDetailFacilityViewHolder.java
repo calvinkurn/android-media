@@ -1,14 +1,15 @@
 package com.tokopedia.flight.detail.view.adapter;
 
-import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -26,7 +27,7 @@ import java.util.List;
 
 public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDetailRouteViewModel> {
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_detail_facility;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_detail_facility;
 
     private final ListInfoAdapter adapterInfo;
     private final RecyclerView listInfo;
@@ -35,7 +36,6 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
     private final AppCompatImageView imageAirline;
     private final TextView airlineName;
     private final TextView airlineCode;
-    private TextView refundableInfo;
     private View separatorInfoView;
     private TextView facilityInfoTextView;
     private TextView facilitySeparatorTextView;
@@ -45,7 +45,6 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         listInfo = (RecyclerView) itemView.findViewById(R.id.recycler_view_info);
         gridAmenity = (RecyclerView) itemView.findViewById(R.id.recycler_view_amenity);
         imageAirline = (AppCompatImageView) itemView.findViewById(R.id.airline_icon);
-        refundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
         airlineName = (TextView) itemView.findViewById(R.id.airline_name);
         airlineCode = (TextView) itemView.findViewById(R.id.airline_code);
         separatorInfoView = (View) itemView.findViewById(R.id.separator_info);
@@ -57,7 +56,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         listInfo.setAdapter(adapterInfo);
         adapterAmenity = new AmenityAdapter();
         gridAmenity.setAdapter(adapterAmenity);
-        gridAmenity.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false));
+        gridAmenity.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.VERTICAL, false));
     }
 
     @Override
@@ -67,19 +66,8 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         airlineName.setText(route.getAirlineName());
         airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),
-                ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_airline_default)
+                ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.flight.R.drawable.flight_ic_airline_default)
         );
-        setRefundableInfo(route);
-    }
-
-    private void setRefundableInfo(FlightDetailRouteViewModel route) {
-        if (route.isRefundable()) {
-            refundableInfo.setText(R.string.flight_label_refundable_info);
-            refundableInfo.setVisibility(View.VISIBLE);
-        } else {
-            refundableInfo.setText(R.string.flight_label_non_refundable_info);
-            refundableInfo.setVisibility(View.GONE);
-        }
     }
 
     public void setDefaultAmenities(FlightDetailRouteViewModel flightDetailRouteViewModel) {
@@ -106,7 +94,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
 
         @Override
         public FlightDetailFacilityInfoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_flight_detail_facility_info, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(com.tokopedia.flight.R.layout.item_flight_detail_facility_info, parent, false);
             return new FlightDetailFacilityInfoViewHolder(view);
         }
 
@@ -137,7 +125,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
 
         @Override
         public FlightDetailFacilityAmenityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_flight_detail_facility_amenity, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(com.tokopedia.flight.R.layout.item_flight_detail_facility_amenity, parent, false);
             return new FlightDetailFacilityAmenityViewHolder(view);
         }
 

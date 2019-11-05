@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.view;
 
 import android.app.Activity;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -230,7 +230,7 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(String courier);
 
-        void sendAnalyticsOnClickChangeCourierShipmentRecommendation();
+        void sendAnalyticsOnClickChangeCourierShipmentRecommendation(ShipmentCartItemModel shipmentCartItemModel);
 
         void sendAnalyticsOnClickSelectedCourierShipmentRecommendation(String courierName);
 

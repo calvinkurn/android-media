@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -41,6 +41,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
@@ -365,7 +366,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
-
+        analytics.trackClickImageUpload()
         activity?.let {
             val strings: ArrayList<String> = ArrayList()
             strings.add(imageUrl)
@@ -848,8 +849,16 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         onGoToWebView(url, id)
     }
 
+    override fun trackClickInvoice(viewModel: AttachInvoiceSentViewModel) {
+        analytics.trackClickInvoice(viewModel)
+    }
+
     override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
         return getParamString(key, arguments, savedInstanceState)
+    }
+
+    override fun getBooleanArgument(key: String, savedInstanceState: Bundle?): Boolean {
+        return getParamBoolean(key, arguments, savedInstanceState, false)
     }
 
     override fun focusOnReply() {
@@ -870,6 +879,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun getShopName(): String {
         return opponentName
+    }
+
+    override fun trackChatMenuClicked(label: String) {
+        analytics.trackChatMenuClicked(label)
     }
 
     override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {

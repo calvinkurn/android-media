@@ -1,6 +1,6 @@
 package com.tokopedia.hotel.hoteldetail.presentation.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityItem

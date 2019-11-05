@@ -1,23 +1,22 @@
 package com.tokopedia.seller.purchase.detail.activity;
 
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.seller.purchase.detail.dialog.AcceptOrderDialog;
 import com.tokopedia.seller.purchase.detail.dialog.AcceptPartialOrderDialog;
 import com.tokopedia.seller.purchase.detail.dialog.ComplaintDialog;
 import com.tokopedia.seller.purchase.detail.dialog.FinishOrderDialog;
 import com.tokopedia.seller.purchase.detail.fragment.CancelOrderFragment;
-import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
 import com.tokopedia.seller.purchase.detail.fragment.CancelShipmentFragment;
 import com.tokopedia.seller.purchase.detail.fragment.ChangeAwbFragment;
-import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
+import com.tokopedia.seller.purchase.detail.fragment.ConfirmRequestPickupFragment;
 import com.tokopedia.seller.purchase.detail.fragment.RejectOrderCourierProblemFragment;
 import com.tokopedia.seller.purchase.detail.fragment.RejectOrderEmptyProductFragment;
 import com.tokopedia.seller.purchase.detail.fragment.RejectOrderEmptyVarianFragment;
 import com.tokopedia.seller.purchase.detail.fragment.RejectOrderShopClosedFragment;
 import com.tokopedia.seller.purchase.detail.fragment.RejectOrderWeightPriceFragment;
-import com.tokopedia.seller.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
+import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
 import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 
 /**
@@ -38,9 +37,8 @@ public interface OrderDetailView extends FinishOrderDialog.FinishOrderDialogList
         RejectOrderShopClosedFragment.RejectOrderShopClosedListener,
         RejectOrderEmptyVarianFragment.RejectOrderEmptyVarianFragmentListener,
         RejectOrderWeightPriceFragment.RejectOrderChangeWeightPriceListener,
-        RequestPickupFragment.ConfirmRequestPickupListener,
-        FragmentGeneralWebView.OnFragmentInteractionListener,
-        ToolbarChangeListener {
+        ToolbarChangeListener,
+        ConfirmRequestPickupFragment.ActionListener {
 
     void onReceiveDetailData(OrderDetailData data);
 

@@ -6,7 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.support.v7.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatButton;
 import android.util.AttributeSet;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -46,14 +46,14 @@ public class RoundButton extends AppCompatButton {
             TypedArray array = getContext().getTheme()
                     .obtainStyledAttributes(attrs, R.styleable.RoundButton, 0, 0);
             cornerRadius = array.getDimension(R.styleable.RoundButton_cornerRadius, 0);
-            buttonColor = array.getColor(R.styleable.RoundButton_buttonColor, MethodChecker.getColor(getContext(), R.color.white));
+            buttonColor = array.getColor(R.styleable.RoundButton_buttonColor, MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.white));
             array.recycle();
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        setBackgroundColor(MethodChecker.getColor(getContext(), R.color.transparent));
+        setBackgroundColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.transparent));
         drawRoundBackground(canvas);
         super.onDraw(canvas);
     }

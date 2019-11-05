@@ -2,14 +2,24 @@ package com.tokopedia.tkpdreactnative.react.di;
 
 import android.content.Context;
 
-import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.core.base.common.service.CommonService;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.util.SessionHandler;
+import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
+import com.tokopedia.network.utils.TkpdOkHttpBuilder;
+import com.tokopedia.tkpdreactnative.react.common.data.interceptor.DigitalHmacAuthInterceptor;
+import com.tokopedia.tkpdreactnative.react.common.data.interceptor.DynamicTkpdAuthInterceptor;
+import com.tokopedia.tkpdreactnative.react.common.data.service.CommonService;
 import com.tokopedia.tkpdreactnative.react.data.ReactNetworkRepositoryImpl;
+import com.tokopedia.tkpdreactnative.react.data.StringResponseConverter;
+import com.tokopedia.tkpdreactnative.react.data.UnifyReactNetworkRepositoryImpl;
 import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkAuthDataSource;
+import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkBearerDataSource;
+import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkDataSource;
 import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkWsV4AuthDataSource;
 import com.tokopedia.tkpdreactnative.react.data.factory.ReactNetworkAuthFactory;
 import com.tokopedia.tkpdreactnative.react.data.factory.ReactNetworkDefaultAuthFactory;
@@ -18,15 +28,17 @@ import com.tokopedia.tkpdreactnative.react.di.qualifier.ReactDefaultAuthQualifie
 import com.tokopedia.tkpdreactnative.react.di.qualifier.ReactDynamicAuthQualifier;
 import com.tokopedia.tkpdreactnative.react.di.qualifier.ReactNoAuthQualifier;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
-import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkBearerDataSource;
-import com.tokopedia.tkpdreactnative.react.data.datasource.UnifyReactNetworkDataSource;
 import com.tokopedia.tkpdreactnative.react.domain.UnifyReactNetworkRepository;
-import com.tokopedia.tkpdreactnative.react.data.UnifyReactNetworkRepositoryImpl;
+import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by alvarisi on 9/14/17.
@@ -34,38 +46,72 @@ import retrofit2.Retrofit;
 @Module
 public class ReactNativeNetworkModule {
 
+    @Provides
+    @ReactNativeNetworkScope
+    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
+    DigitalHmacAuthInterceptor provideDigitalHmacAuthInterceptor(@ApplicationContext Context context,
+                                                                 UserSessionInterface userSessionInterface){
+        return new DigitalHmacAuthInterceptor(context,
+                (NetworkRouter) context.getApplicationContext(),
+                userSessionInterface,
+                TkpdBaseURL.DigitalApi.HMAC_KEY);
+    }
+
+    @Provides
+    @ReactNativeNetworkScope
+    DynamicTkpdAuthInterceptor provideDynamicTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                                 UserSessionInterface userSessionInterface){
+        return new DynamicTkpdAuthInterceptor(context,
+                (NetworkRouter) context.getApplicationContext(),
+                userSessionInterface);
+    }
+
     @ReactNoAuthQualifier
     @Provides
     @ReactNativeNetworkScope
-    OkHttpClient provideOkhttpNoAuth(OkHttpRetryPolicy okHttpRetryPolicy) {
-        return OkHttpFactory.create()
-                .addOkHttpRetryPolicy(okHttpRetryPolicy)
-                .buildClientNoAuth();
+    OkHttpClient provideOkhttpNoAuth(@ApplicationContext Context context, UserSessionInterface userSessionInterface) {
+        return new TkpdOkHttpBuilder(context, new OkHttpClient.Builder())
+                .addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSessionInterface))
+                .addInterceptor(new TkpdBaseInterceptor())
+                .build();
     }
 
     @ReactDefaultAuthQualifier
     @Provides
     @ReactNativeNetworkScope
-    OkHttpClient provideOkhttpDefaultAuth(OkHttpRetryPolicy okHttpRetryPolicy) {
-        return OkHttpFactory.create()
-                .addOkHttpRetryPolicy(okHttpRetryPolicy)
-                .buildClientDefaultAuth();
+    OkHttpClient provideOkhttpDefaultAuth(@ApplicationContext Context context,
+                                          UserSessionInterface userSessionInterface) {
+        return new TkpdOkHttpBuilder(context, new OkHttpClient.Builder())
+                .addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSessionInterface))
+                .addInterceptor(new CacheApiInterceptor(context))
+                .addInterceptor(new TkpdAuthInterceptor(context,
+                        (NetworkRouter)context.getApplicationContext(),
+                        userSessionInterface))
+                .build();
     }
 
     @ReactDynamicAuthQualifier
     @Provides
     @ReactNativeNetworkScope
-    OkHttpClient provideOkhttpDynamicAuth(OkHttpRetryPolicy okHttpRetryPolicy) {
-        return OkHttpFactory.create()
-                .addOkHttpRetryPolicy(okHttpRetryPolicy)
-                .buildClientDynamicAuth();
+    OkHttpClient provideOkhttpDynamicAuth(@ApplicationContext Context context,
+                                          UserSessionInterface userSessionInterface,
+                                          DynamicTkpdAuthInterceptor dynamicTkpdAuthInterceptor) {
+        return new TkpdOkHttpBuilder(context, new OkHttpClient.Builder())
+                .addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(),
+                        userSessionInterface))
+                .addInterceptor(dynamicTkpdAuthInterceptor)
+                .build();
     }
-
 
     @ReactNoAuthQualifier
     @Provides
     @ReactNativeNetworkScope
-    Retrofit provideRetrofitNoAuth(@ReactNoAuthQualifier OkHttpClient okHttpClient, Retrofit.Builder retrofitBuilder) {
+    Retrofit provideRetrofitNoAuth(@ReactNoAuthQualifier OkHttpClient okHttpClient,  Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS())
                 .client(okHttpClient)
                 .build();
@@ -130,28 +176,34 @@ public class ReactNativeNetworkModule {
 
     @Provides
     @ReactNativeNetworkScope
-    UnifyReactNetworkDataSource provideUnifyReactNetworkDataSource(Retrofit.Builder retrofitBuilder) {
-        return new UnifyReactNetworkDataSource(retrofitBuilder);
+    UnifyReactNetworkDataSource provideUnifyReactNetworkDataSource(@ReactNoAuthQualifier Retrofit.Builder retrofitBuilder,
+                                                                   @ReactNoAuthQualifier OkHttpClient okHttpClient) {
+        return new UnifyReactNetworkDataSource(retrofitBuilder, okHttpClient);
     }
 
     @Provides
     @ReactNativeNetworkScope
-    UnifyReactNetworkAuthDataSource provideUnifyReactNetworkAuthDataSource(Retrofit.Builder retrofitBuilder) {
-        return new UnifyReactNetworkAuthDataSource(retrofitBuilder);
+    UnifyReactNetworkAuthDataSource provideUnifyReactNetworkAuthDataSource(@ReactNoAuthQualifier Retrofit.Builder retrofitBuilder,
+                                                                           @ReactNoAuthQualifier OkHttpClient okHttpClient,
+                                                                           DigitalHmacAuthInterceptor digitalHmacAuthInterceptor,
+                                                                           DynamicTkpdAuthInterceptor dynamicTkpdAuthInterceptor) {
+        return new UnifyReactNetworkAuthDataSource(retrofitBuilder, okHttpClient, digitalHmacAuthInterceptor, dynamicTkpdAuthInterceptor);
     }
 
     @Provides
     @ReactNativeNetworkScope
     UnifyReactNetworkWsV4AuthDataSource provideUnifyReactNetworkWsV4AuthDataSource(Retrofit.Builder retrofitBuilder,
-                                                                               @ApplicationContext Context context) {
-        return new UnifyReactNetworkWsV4AuthDataSource(retrofitBuilder, context);
+                                                                                   @ReactDefaultAuthQualifier OkHttpClient okHttpClient,
+                                                                                   UserSessionInterface userSessionInterface) {
+        return new UnifyReactNetworkWsV4AuthDataSource(retrofitBuilder, okHttpClient, userSessionInterface);
     }
 
     @Provides
     @ReactNativeNetworkScope
     UnifyReactNetworkBearerDataSource provideUnifyReactNetworkBearerDataSource(Retrofit.Builder retrofitBuilder,
-                                                                               SessionHandler sessionHandler) {
-        return new UnifyReactNetworkBearerDataSource(retrofitBuilder, sessionHandler);
+                                                                               @ReactDynamicAuthQualifier OkHttpClient okHttpClient,
+                                                                               UserSessionInterface userSessionInterface) {
+        return new UnifyReactNetworkBearerDataSource(retrofitBuilder, okHttpClient, userSessionInterface);
     }
 
     @Provides
@@ -165,9 +217,25 @@ public class ReactNativeNetworkModule {
 
     @Provides
     @ReactNativeNetworkScope
-    ReactNetworkRepository provideReactNetworkRepository(@ApplicationContext Context context, ReactNetworkAuthFactory reactNetworkAuthFactory,
+    ReactNetworkRepository provideReactNetworkRepository(ReactNetworkAuthFactory reactNetworkAuthFactory,
                                                          ReactNetworkFactory reactNetworkFactory,
-                                                         ReactNetworkDefaultAuthFactory reactNetworkDefaultAuthFactory) {
-        return new ReactNetworkRepositoryImpl(context, reactNetworkAuthFactory, reactNetworkFactory, reactNetworkDefaultAuthFactory);
+                                                         ReactNetworkDefaultAuthFactory reactNetworkDefaultAuthFactory,
+                                                         UserSessionInterface userSessionInterface) {
+        return new ReactNetworkRepositoryImpl(
+                reactNetworkAuthFactory,
+                reactNetworkFactory,
+                reactNetworkDefaultAuthFactory,
+                userSessionInterface);
+    }
+
+
+    @ReactNoAuthQualifier
+    @Provides
+    @ReactNativeNetworkScope
+    public Retrofit.Builder provideRetrofitBuilder(Gson gson) {
+        return new Retrofit.Builder()
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
 }

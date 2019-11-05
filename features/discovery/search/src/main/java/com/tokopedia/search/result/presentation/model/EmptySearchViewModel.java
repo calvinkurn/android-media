@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.model;
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory;

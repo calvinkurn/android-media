@@ -1,21 +1,16 @@
 package com.tokopedia.filter.newdynamicfilter.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.filter.R;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.common.helper.NumberParseHelper;
-import com.tokopedia.filter.newdynamicfilter.helper.RatingHelper;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +66,8 @@ public class PricePillsAdapter extends
         }
 
         public void bind(final Option pricePillOption, final int position) {
-            if (isValueRangeMatch(pricePillOption)) {
+            boolean isPricePillSelected = isValueRangeMatch(pricePillOption);
+            if (isPricePillSelected) {
                 pricePillItem.setTextColor(context.getResources().getColor(com.tokopedia.design.R.color.unify_G500));
                 pricePillItem.setBackground(context.getResources().getDrawable(R.drawable.filter_price_pill_item_background_selected));
             } else {
@@ -83,10 +79,14 @@ public class PricePillsAdapter extends
                 @Override
                 public void onClick(View v) {
                     if (callback != null) {
-                        callback.onPriceRangeClicked(
-                                NumberParseHelper.safeParseInt(pricePillOption.getValMin()),
-                                NumberParseHelper.safeParseInt(pricePillOption.getValMax())
-                        );
+                        if (!isPricePillSelected) {
+                            callback.onPriceRangeSelected(
+                                    NumberParseHelper.safeParseInt(pricePillOption.getValMin()),
+                                    NumberParseHelper.safeParseInt(pricePillOption.getValMax())
+                            );
+                        } else {
+                            callback.onPriceRangeRemoved();
+                        }
                     }
                 }
             });
@@ -106,7 +106,8 @@ public class PricePillsAdapter extends
     }
 
     public interface Callback {
-        void onPriceRangeClicked(int minValue, int maxValue);
+        void onPriceRangeSelected(int minValue, int maxValue);
+        void onPriceRangeRemoved();
         int getCurrentPriceMin();
         int getCurrentPriceMax();
     }

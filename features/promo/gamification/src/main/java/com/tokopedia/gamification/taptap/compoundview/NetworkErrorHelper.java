@@ -2,7 +2,7 @@ package com.tokopedia.gamification.taptap.compoundview;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,7 +76,7 @@ public class NetworkErrorHelper {
         final Snackbar snackbar = Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-        TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
         LayoutInflater inflater = LayoutInflater.from(context);
         View snackView = inflater.inflate(R.layout.gf_tap_tap_custom_snackbar, null);

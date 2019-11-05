@@ -3,9 +3,9 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -41,6 +41,7 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartChecko
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView;
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
@@ -64,6 +65,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         DigitalCartCheckoutHolderView.ActionListener {
     protected static final String ARG_PASS_DATA = "ARG_PASS_DATA";
     protected static final String ARG_CART_INFO = "ARG_CART_INFO";
+    protected static final String ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS";
     private static final int REQUEST_CODE_OTP = 1001;
 
     protected CartDigitalInfoData cartDigitalInfoData;
@@ -80,6 +82,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private SaveInstanceCacheManager saveInstanceCacheManager;
     private DigitalAnalytics digitalAnalytics;
     protected PromoData promoData = new PromoData();
+
+    private DigitalSubscriptionParams digitalSubscriptionParams = new DigitalSubscriptionParams();
 
     private static final String EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER";
     private static final String EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA";
@@ -101,6 +105,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         });
         super.onCreate(savedInstanceState);
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
+        DigitalSubscriptionParams subParams = getArguments().getParcelable(ARG_SUBSCRIPTION_PARAMS);
+        if (subParams != null) {
+            digitalSubscriptionParams = subParams;
+        }
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         digitalAnalytics = new DigitalAnalytics();
         if (savedInstanceState != null) {
@@ -416,7 +424,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public int getProductId() {
         String productIdString = cartPassData.getProductId();
-        return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
+        try {
+            return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override
@@ -503,6 +515,15 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         if (!traceStop) {
             performanceMonitoring.stopTrace();
             traceStop = true;
+        }
+    }
+
+    @Override
+    public DigitalSubscriptionParams getDigitalSubscriptionParams() {
+        if (digitalSubscriptionParams != null) {
+            return digitalSubscriptionParams;
+        } else {
+            return new DigitalSubscriptionParams();
         }
     }
 

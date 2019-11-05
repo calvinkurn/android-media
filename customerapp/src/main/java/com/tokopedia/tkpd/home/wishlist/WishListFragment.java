@@ -7,13 +7,13 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -267,7 +267,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 "url", dataDetail.getUrl(),
                 "categoryId", DEFAULT_VALUE_NONE_OTHER,
                 "dimension45", addToCartResult.getData().getCartId(),
-                "dimension38", DEFAULT_VALUE_NONE_OTHER
+                "dimension38", DEFAULT_VALUE_NONE_OTHER,
+                "dimension83", dataDetail.getFreeOngkir().getActive() ? "bebas ongkir" : "none/other"
         );
         wishlistAnalytics.trackEventAddToCardProductWishlist(object);
     }
@@ -302,7 +303,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         searchEditText.setFocusable(false);
         searchEditText.clearFocus();
         searchEditText.requestFocusFromTouch();
-        TextView searchText = (TextView) searchEditText.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        TextView searchText = (TextView) searchEditText.findViewById(androidx.appcompat.R.id.search_src_text);
         searchText.setHintTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
         setAdapter();
     }
@@ -617,7 +618,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                     "category", DEFAULT_VALUE_NONE_OTHER,
                     "variant", DEFAULT_VALUE_NONE_OTHER,
                     "list", "/wishlist",
-                    "position", Integer.toString(position++)
+                    "position", Integer.toString(position++),
+                    "dimension83", wishlist.getFreeOngkir().getActive() ? "bebas ongkir" : "none/other"
             ));
         }
         return objects;

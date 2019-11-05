@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.utils;
 
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

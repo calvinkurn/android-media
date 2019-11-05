@@ -4,15 +4,14 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragment;
 import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragmentCallback;
 
@@ -20,7 +19,7 @@ import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragmentCallb
  * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreDetailActivity extends BasePresenterActivity implements ShopScoreDetailFragmentCallback {
-    private static final String SELLER_CENTER_LINK = "https://seller.tokopedia.com/";
+    private static final String SELLER_CENTER_LINK = "https://seller.tokopedia.com/edu/skor-toko";
     private static final String SHOP_SCORE_INFORMATION = "https://help.tokopedia.com/hc/en-us/articles/115000854466-Performa-Toko";
     private FragmentManager fragmentManager;
 
@@ -85,13 +84,6 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
             ft.addToBackStack(null);
         }
         ft.commit();
-    }
-
-    @Override
-    public void goToGmSubscribe() {
-        if (getApplication() instanceof SellerModuleRouter) {
-            ((SellerModuleRouter) getApplication()).goToGMSubscribe(this);
-        }
     }
 
     @Override
