@@ -1,31 +1,27 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.view.inputmethod.InputMethodManager.SHOW_FORCED
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import javax.inject.Inject
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 
 /**
  * Created by fwidjaja on 2019-05-13.
@@ -47,44 +43,16 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private lateinit var actionListener: ActionListener
     private lateinit var icCloseBtn: ImageView
-    val handler = Handler()
 
     @Inject
     lateinit var presenter: AutocompleteBottomSheetPresenter
 
-    interface ActionListener {
-        fun onGetPlaceId(placeId: String)
-        fun useCurrentLocation()
-    }
-
-    companion object {
-        private const val CURRENT_LAT = "CURRENT_LAT"
-        private const val CURRENT_LONG = "CURRENT_LONG"
-        private const val CURRENT_SEARCH = "CURRENT_SEARCH"
-
-        @JvmStatic
-        fun newInstance(currentLat: Double?, currentLong: Double?, currentSearch: String?): AutocompleteBottomSheetFragment {
-            return AutocompleteBottomSheetFragment().apply {
-                arguments = Bundle().apply {
-                    currentLat?.let { putDouble(CURRENT_LAT, it) }
-                    currentLong?.let { putDouble(CURRENT_LONG, it) }
-                    currentSearch?.let { putString(CURRENT_SEARCH, it) }
-                }
-            }
-        }
-
-        @JvmStatic
-        fun newInstance(): AutocompleteBottomSheetFragment {
-            return AutocompleteBottomSheetFragment()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            currentLat = arguments?.getDouble("CURRENT_LAT")
-            currentLong = arguments?.getDouble("CURRENT_LONG")
-            currentSearch = arguments?.getString("CURRENT_SEARCH")
+        arguments?.let {
+            currentLat = it.getDouble(CURRENT_LAT)
+            currentLong = it.getDouble(CURRENT_LONG)
+            currentSearch = it.getString(CURRENT_SEARCH)
         }
     }
 
@@ -96,8 +64,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         return getString(R.string.title_bottomsheet_search_location)
     }
 
-    override fun state(): BottomSheetsState {
-        return BottomSheetsState.FULL
+    override fun state(): BottomSheets.BottomSheetsState {
+        return BottomSheets.BottomSheetsState.FULL
     }
 
     override fun initView(view: View) {
@@ -307,8 +275,33 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         dismiss()
     }
 
-    private fun showGpsDisabledNotification()  {
+    private fun showGpsDisabledNotification() {
         mDisabledGps.visibility = View.VISIBLE
         rvPoiList.visibility = View.GONE
+    }
+
+    interface ActionListener {
+        fun onGetPlaceId(placeId: String)
+        fun useCurrentLocation()
+    }
+
+    companion object {
+        private const val CURRENT_LAT = "CURRENT_LAT"
+        private const val CURRENT_LONG = "CURRENT_LONG"
+        private const val CURRENT_SEARCH = "CURRENT_SEARCH"
+
+        fun newInstance(currentLat: Double, currentLong: Double, currentSearch: String): AutocompleteBottomSheetFragment {
+            return AutocompleteBottomSheetFragment().apply {
+                arguments = Bundle().apply {
+                    putDouble(CURRENT_LAT, currentLat)
+                    putDouble(CURRENT_LONG, currentLong)
+                    putString(CURRENT_SEARCH, currentSearch)
+                }
+            }
+        }
+
+        fun newInstance(): AutocompleteBottomSheetFragment {
+            return AutocompleteBottomSheetFragment()
+        }
     }
 }
