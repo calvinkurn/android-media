@@ -12,6 +12,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.topads.sdk.utils.ImpresionTask
@@ -52,6 +53,10 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
+                        return products[adapterPosition].productItem
+                    }
+
                     override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
                         val productRecommendation = products[adapterPosition]
                         if(productRecommendation.productItem.isTopAds){

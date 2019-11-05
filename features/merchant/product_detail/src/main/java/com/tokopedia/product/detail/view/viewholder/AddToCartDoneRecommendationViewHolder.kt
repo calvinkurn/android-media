@@ -7,6 +7,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
@@ -53,6 +54,10 @@ class AddToCartDoneRecommendationViewHolder(
                         }
                     },
                     carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                        override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
+                            return products[adapterPosition]
+                        }
+
                         override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
                             val productRecommendation = products[adapterPosition]
                             recommendationListener.onProductImpression(productRecommendation)

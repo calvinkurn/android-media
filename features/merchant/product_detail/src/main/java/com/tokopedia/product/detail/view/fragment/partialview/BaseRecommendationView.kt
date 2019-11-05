@@ -68,11 +68,6 @@ abstract class BaseRecommendationView(context: Context,
                 activity = activity,
                 parentView = getView(),
                 isScrollable = true,
-                getImpressHolderListener = object: CarouselProductCardListener.GetImpressHolderListener {
-                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
-                        return product.recommendationItemList[adapterPosition]
-                    }
-                },
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
                         val productRecommendation = product.recommendationItemList[adapterPosition]
@@ -94,6 +89,10 @@ abstract class BaseRecommendationView(context: Context,
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
+                        return product.recommendationItemList[adapterPosition]
+                    }
+
                     override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
                         val productRecommendation = product.recommendationItemList[adapterPosition]
                         val topAdsImageUrl = productRecommendation.trackerImageUrl

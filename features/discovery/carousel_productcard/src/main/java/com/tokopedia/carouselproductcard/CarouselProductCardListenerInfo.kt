@@ -7,5 +7,4 @@ internal class CarouselProductCardListenerInfo {
      var onItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null
      var onItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null
      var onWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null
-     var getImpressHolder: CarouselProductCardListener.GetImpressHolderListener? = null
 }

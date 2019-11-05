@@ -15,6 +15,7 @@ interface CarouselProductCardListener {
 
     interface OnItemImpressedListener {
         fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int)
+        fun getImpressHolder(adapterPosition: Int): ImpressHolder
     }
 
     interface OnItemAddToCartListener {
@@ -23,9 +24,5 @@ interface CarouselProductCardListener {
 
     interface OnWishlistItemClickListener {
         fun onWishlistItemClick(productCardModel: ProductCardModel, adapterPosition: Int)
-    }
-
-    interface GetImpressHolderListener {
-        fun getImpressHolder(adapterPosition: Int): ImpressHolder
     }
 }
