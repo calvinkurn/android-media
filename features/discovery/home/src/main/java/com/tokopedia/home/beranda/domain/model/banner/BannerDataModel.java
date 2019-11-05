@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author by errysuprayogi on 11/28/17.
  */
-public class BannerDataModel {
+public class BannerDataModel{
     @SerializedName("slides")
     private List<BannerSlidesModel> slides;
 

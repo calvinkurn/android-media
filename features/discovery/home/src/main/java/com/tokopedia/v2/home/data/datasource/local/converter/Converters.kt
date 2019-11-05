@@ -18,12 +18,12 @@ class Converters {
     }
 
     @TypeConverter
-    fun convertBannerDataModel(data: String): BannerDataModel {
-        return gson.fromJson(data, BannerDataModel::class.java)
+    fun convertBannerDataModel(data: String): Banner {
+        return gson.fromJson(data, Banner::class.java)
     }
 
     @TypeConverter
-    fun convertBannerDataModel(bannerDataModel: BannerDataModel): String{
+    fun convertBannerDataModel(bannerDataModel: Banner): String{
         return gson.toJson(bannerDataModel)
     }
 

@@ -1,4 +1,4 @@
-query homeData {
+{
   ticker {
     meta {
       total_data

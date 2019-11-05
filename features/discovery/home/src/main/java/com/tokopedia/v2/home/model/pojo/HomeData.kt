@@ -10,39 +10,33 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.v2.home.data.datasource.local.converter.*
 
 @Entity
-data class HomeData(
+class HomeData(
     @PrimaryKey
     @NonNull
     val id: Int = 1,
 
     @Expose
-    @ColumnInfo(name = "dynamicHomeChannel")
     @SerializedName("dynamicHomeChannel")
-    val dynamicHomeChannel: DynamicHomeChannel?,
+    val dynamicHomeChannel: DynamicHomeChannel,
 
     @Expose
-    @ColumnInfo(name = "slides")
     @SerializedName("slides")
-    val slides: BannerDataModel?,
+    val banner: Banner,
 
     @Expose
-    @ColumnInfo(name = "ticker")
     @SerializedName("ticker")
-    val ticker: Ticker?,
+    val ticker: Ticker,
 
     @Expose
-    @ColumnInfo(name = "dynamicHomeIcon")
     @SerializedName("dynamicHomeIcon")
-    val dynamicHomeIcon: DynamicHomeIcon?,
+    val dynamicHomeIcon: DynamicHomeIcon,
 
     @Expose
-    @ColumnInfo(name = "spotlight")
     @SerializedName("spotlight")
-    val spotlight: Spotlight?,
+    val spotlight: Spotlight,
 
     @Expose
-    @ColumnInfo(name = "homeFlag")
     @SerializedName("homeFlag")
-    var homeFlag: HomeFlag?
+    var homeFlag: HomeFlag
 )
 

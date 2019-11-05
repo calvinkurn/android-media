@@ -31,6 +31,8 @@ public interface BerandaComponent {
 
     void inject(HomeFeedFragment homeFeedFragment);
 
+    void inject(com.tokopedia.v2.home.ui.fragment.HomeFragment homeFeedFragment);
+
     void inject(HomePresenter homePresenter);
 
     void inject(HomeFeedPresenter homeFeedPresenter);
