@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 
 import java.net.ContentHandler;
 import java.util.List;
@@ -52,4 +53,6 @@ public interface ImageProductListFragmentView extends CustomerView {
     void reloadData();
 
     void displayErrorRefresh();
+
+    void renderDynamicFilter(DynamicFilterModel pojo);
 }

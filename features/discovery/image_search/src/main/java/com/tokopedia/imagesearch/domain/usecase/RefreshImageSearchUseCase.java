@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.imagesearch.R;
@@ -70,13 +71,14 @@ public class RefreshImageSearchUseCase extends UseCase<SearchResultModel> {
         return variables;
     }
 
-    public static RequestParams generateParams(String token) {
+    public static RequestParams generateParams(String token, SearchParameter searchParameter) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_PAGE, DEFAULT_PAGE);
         params.putString(PARAM_PAGE_SIZE, DEFAULT_PAGE_SIZE);
         params.putString(PARAM_DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         params.putString(PARAM_SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         params.putString(PARAM_TOKEN, token);
+        params.putAll(searchParameter.getSearchParameterMap());
 
         return params;
     }

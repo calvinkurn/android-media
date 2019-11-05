@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
@@ -27,6 +28,7 @@ public class ProductViewModel implements Parcelable {
     private CpmModel cpmModel;
     private SearchParameter searchParameter;
     private CategoryFilterModel categoryFilterModel;
+    private DynamicFilterModel dynamicFilterModel;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -105,6 +107,14 @@ public class ProductViewModel implements Parcelable {
 
     public void setCategoryFilterModel(CategoryFilterModel categoryFilterModel) {
         this.categoryFilterModel = categoryFilterModel;
+    }
+
+    public DynamicFilterModel getDynamicFilterModel() {
+        return dynamicFilterModel;
+    }
+
+    public void setDynamicFilterModel(DynamicFilterModel dynamicFilterModel) {
+        this.dynamicFilterModel = dynamicFilterModel;
     }
 
     public int getTotalItem() {

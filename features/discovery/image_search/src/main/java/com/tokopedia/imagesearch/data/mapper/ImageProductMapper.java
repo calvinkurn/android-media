@@ -23,10 +23,13 @@ public class ImageProductMapper implements Func1<GraphqlResponse, SearchResultMo
     @Override
     public SearchResultModel call(GraphqlResponse response) {
         ImageSearchProductResponse searchProductResponse = response.getData(ImageSearchProductResponse.class);
-        return mappingPojoIntoDomain(searchProductResponse.getSearchProductResponse());
+        return mappingPojoIntoDomain(searchProductResponse);
     }
 
-    public SearchResultModel mappingPojoIntoDomain(SearchProductResponse searchProductResponse) {
+    public SearchResultModel mappingPojoIntoDomain(ImageSearchProductResponse imageSearchProductResponse) {
+
+        SearchProductResponse searchProductResponse = imageSearchProductResponse.getSearchProductResponse();
+
         SearchResultModel model = new SearchResultModel();
         model.setTotalData(searchProductResponse.getHeader().getTotalData());
         model.setAdditionalParams(searchProductResponse.getHeader().getAdditionalParams());
@@ -36,6 +39,7 @@ public class ImageProductMapper implements Func1<GraphqlResponse, SearchResultMo
         model.setShareUrl(searchProductResponse.getData().getShareUrl());
         model.setToken(searchProductResponse.getData().getToken());
         model.setCategoryFilterModel(mappingCategoryFilterModel(searchProductResponse.getData().getCategories()));
+        model.setDynamicFilterModel(imageSearchProductResponse.getDynamicFilterModel());
 
         return model;
     }

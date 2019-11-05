@@ -17,6 +17,18 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.common.data.Sort;
+import com.tokopedia.filter.common.manager.FilterSortManager;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
+import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper;
+import com.tokopedia.filter.newdynamicfilter.helper.SortHelper;
+import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -31,10 +43,12 @@ import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
 import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
+import com.tokopedia.imagesearch.helper.UrlParamUtils;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListAdapter;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.decoration.ProductItemDecoration;
+import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.ImageSearchNavigationListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.CategoryFilterListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.RedirectionListener;
@@ -48,7 +62,9 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -83,7 +99,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private ImageProductListAdapter adapter;
     private ProductViewModel productViewModel;
     private ImageProductListTypeFactory imageProductListTypeFactory;
-    private SearchParameter searchParameter;
+    private SearchParameter searchParameter = new SearchParameter();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
     private RedirectionListener redirectionListener;
@@ -92,6 +108,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     public int spanCount;
     private TrackingQueue trackingQueue;
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
+    private ImageSearchNavigationListener imageSearchNavigationListener;
+    private BottomSheetListener bottomSheetListener;
+    private FilterTrackingData filterTrackingData;
+    private ArrayList<Sort> sort;
+    private ArrayList<Filter> filters;
+    private HashMap<String, String> selectedSort;
 
 
     public static ImageSearchProductListFragment newInstance(ProductViewModel productViewModel) {
@@ -118,6 +140,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         super.onAttach(context);
         if (context instanceof RedirectionListener) {
             this.redirectionListener = (RedirectionListener) context;
+        }
+        if (context instanceof ImageSearchNavigationListener) {
+            this.imageSearchNavigationListener = (ImageSearchNavigationListener) context;
+        }
+        if (context instanceof BottomSheetListener) {
+            this.bottomSheetListener = (BottomSheetListener) context;
         }
     }
 
@@ -175,6 +203,165 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         initSwipeToRefresh(view);
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && getView() != null) {
+            setupSearchNavigation();
+        }
+    }
+
+    protected void setupSearchNavigation() {
+        imageSearchNavigationListener
+                .setupSearchNavigation(new ImageSearchNavigationListener.ClickListener() {
+                    @Override
+                    public void onFilterClick() {
+                        openFilterPage();
+                    }
+
+                    @Override
+                    public void onSortClick() {
+                        openSortActivity();
+                    }
+                });
+    }
+
+    private void openFilterPage() {
+        if (!isFilterDataAvailable() && getActivity() != null) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_filter_data_not_ready));
+            return;
+        }
+
+        if (bottomSheetListener != null) {
+            openBottomSheetFilter();
+        }
+    }
+
+    private boolean isFilterDataAvailable() {
+        return filters != null && !filters.isEmpty();
+    }
+
+    private void openBottomSheetFilter() {
+        if(searchParameter == null || getFilters() == null) return;
+
+        FilterTracking.eventOpenFilterPage(getFilterTrackingData());
+
+        bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
+        bottomSheetListener.launchFilterBottomSheet();
+    }
+
+    private FilterTrackingData getFilterTrackingData() {
+        if (filterTrackingData == null) {
+            filterTrackingData = new FilterTrackingData(FilterEventTracking.Event.CLICK_IMAGE_SEARCH_RESULT,
+                    FilterEventTracking.Category.FILTER_PRODUCT,
+                    "",
+                    FilterEventTracking.Category.PREFIX_IMAGE_SEARCH_RESULT_PAGE
+            );
+        }
+        return filterTrackingData;
+    }
+
+    protected void openSortActivity() {
+        if(getActivity() == null) return;
+
+        if (!FilterSortManager.openSortActivity(this, sort, getSelectedSort())) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_sort_data_not_ready));
+        }
+    }
+
+    private void handleSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
+        setSelectedSort(new HashMap<>(selectedSort));
+        if(searchParameter != null) {
+            searchParameter.getSearchParameterHashMap().put(SearchApiConst.ORIGIN_FILTER,
+                    SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE);
+
+            searchParameter.getSearchParameterHashMap().putAll(UrlParamUtils.getParamMap(autoApplyFilter));
+
+            searchParameter.getSearchParameterHashMap().putAll(getSelectedSort());
+        }
+        clearDataFilterSort();
+        refreshData();
+    }
+
+    private void setFilterData(List<Filter> filters) {
+        this.filters = new ArrayList<>();
+        if (filters == null) {
+            return;
+        }
+
+        this.filters.addAll(filters);
+    }
+
+    protected ArrayList<Filter> getFilters() {
+        return filters;
+    }
+
+    protected void setSortData(List<Sort> sorts) {
+        this.sort = new ArrayList<>();
+        if (sorts == null) {
+            return;
+        }
+
+        this.sort.addAll(sorts);
+    }
+
+    private ArrayList<Sort> getSort() {
+        return sort;
+    }
+
+    private HashMap<String, String> getSelectedSort() {
+        return selectedSort;
+    }
+
+    private void setSelectedSort(HashMap<String, String> selectedSort) {
+        this.selectedSort = selectedSort;
+    }
+
+    public void clearDataFilterSort() {
+        if (filters != null) {
+            this.filters.clear();
+        }
+        if (sort != null) {
+            this.sort.clear();
+        }
+    }
+
+    @Override
+    public void renderDynamicFilter(DynamicFilterModel pojo) {
+        setFilterData(pojo.getData().getFilter());
+        setSortData(pojo.getData().getSort());
+
+        if(searchParameter == null
+                || getFilters() == null || getSort() == null) return;
+
+        initSelectedSort();
+    }
+
+    private void initSelectedSort() {
+        if(getSort() == null) return;
+
+        HashMap<String, String> selectedSort = new HashMap<>(
+                SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
+        );
+        addDefaultSelectedSort(selectedSort);
+        setSelectedSort(selectedSort);
+    }
+
+    private void addDefaultSelectedSort(HashMap<String, String> selectedSort) {
+        if (selectedSort.isEmpty()) {
+            selectedSort.put(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT);
+        }
+    }
+
+    public void refreshSearchParameter(Map<String, String> queryParams) {
+        if(searchParameter == null) return;
+
+        this.searchParameter.getSearchParameterHashMap().clear();
+        this.searchParameter.getSearchParameterHashMap().putAll(queryParams);
+        this.searchParameter.getSearchParameterHashMap().put(SearchApiConst.ORIGIN_FILTER,
+                SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE);
+    }
+
     private void initTopAdsConfig() {
         topAdsConfig = new Config.Builder()
                 .setSessionId(userSession.getDeviceId())
@@ -199,6 +386,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
 
         presenter.initData(initMappingProduct(), productViewModel.getCategoryFilterModel(), productViewModel.getToken());
+        renderDynamicFilter(productViewModel.getDynamicFilterModel());
         presenter.loadMoreData(0);
     }
 
@@ -250,7 +438,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         });
     }
 
-    private void refreshData() {
+    public void refreshData() {
         adapter.clearAllElements();
         staggeredGridLayoutLoadMoreTriggerListener.resetState();
         presenter.refreshData();
@@ -272,6 +460,19 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
             updateWishlistFromPDP(position, isWishlist);
         }
+
+        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, new FilterSortManager.Callback() {
+            @Override
+            public void onFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                       List<Option> selectedOptions) {
+                //not handling this, because using bottom sheet
+            }
+
+            @Override
+            public void onSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
+                handleSortResult(selectedSort, selectedSortName, autoApplyFilter);
+            }
+        });
     }
 
     private void updateWishlistFromPDP(int position, boolean isWishlist) {

@@ -42,6 +42,7 @@ public class ProductViewModelHelper {
         productViewModel.setShareUrl(searchResultModel.getShareUrl());
         productViewModel.setHasCatalog(false);
         productViewModel.setToken(searchResultModel.getToken());
+        productViewModel.setDynamicFilterModel(searchResultModel.getDynamicFilterModel());
         productViewModel.setTotalData(searchResultModel.getTotalData());
         productViewModel.setAdditionalParams(searchResultModel.getAdditionalParams());
         return productViewModel;

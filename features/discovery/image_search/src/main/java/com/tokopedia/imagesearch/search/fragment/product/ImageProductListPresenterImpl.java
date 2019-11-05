@@ -108,7 +108,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     @Override
     public void refreshData() {
         refreshImageSearchUseCase.execute(
-                RefreshImageSearchUseCase.generateParams(token),
+                RefreshImageSearchUseCase.generateParams(token, getView().getSearchParameter()),
                 new Subscriber<SearchResultModel>() {
 
                     @Override
@@ -143,6 +143,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
             selectedCategoryId = "";
         }
         setFilterCategory(selectedCategoryId);
+        getView().renderDynamicFilter(searchResultModel.getDynamicFilterModel());
         getView().reloadData();
     }
 

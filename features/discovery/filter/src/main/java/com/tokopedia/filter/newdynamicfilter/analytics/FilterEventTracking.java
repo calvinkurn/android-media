@@ -3,6 +3,7 @@ package com.tokopedia.filter.newdynamicfilter.analytics;
 public interface FilterEventTracking {
 
     interface Event {
+        String CLICK_IMAGE_SEARCH_RESULT = "clickImageSearchResult";
         String CLICK_SEARCH_RESULT = "clickSearchResult";
         String CLICK_CATEGORY = "clickCategory";
         String CLICK_CATALOG_DETAIL = "clickCatalogDetail";
@@ -17,6 +18,7 @@ public interface FilterEventTracking {
         String FILTER_CATEGORY = "filter category";
         String FILTER_CATALOG_DETAIL = "filter catalog detail";
         String PREFIX_SEARCH_RESULT_PAGE = "search result page";
+        String PREFIX_IMAGE_SEARCH_RESULT_PAGE = "image search result page";
         String PREFIX_CATEGORY_PAGE = "category page";
         String PREFIX_CATALOG_PAGE = "catalog page";
     }

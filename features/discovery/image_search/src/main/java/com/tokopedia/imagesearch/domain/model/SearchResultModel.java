@@ -1,5 +1,6 @@
 package com.tokopedia.imagesearch.domain.model;
 
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class SearchResultModel {
     private String token;
     private String shareUrl;
     private String additionalParams;
+    private DynamicFilterModel dynamicFilterModel;
 
     public void setProductList(List<ProductModel> productList) {
         this.productList = productList;
@@ -72,5 +74,13 @@ public class SearchResultModel {
 
     public void setCategoryFilterModel(CategoryFilterModel categoryFilterModel) {
         this.categoryFilterModel = categoryFilterModel;
+    }
+
+    public void setDynamicFilterModel(DynamicFilterModel dynamicFilterModel) {
+        this.dynamicFilterModel = dynamicFilterModel;
+    }
+
+    public DynamicFilterModel getDynamicFilterModel() {
+        return dynamicFilterModel;
     }
 }

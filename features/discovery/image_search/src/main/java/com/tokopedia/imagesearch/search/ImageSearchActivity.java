@@ -9,7 +9,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
@@ -30,6 +32,11 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
+import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
+import com.tokopedia.filter.widget.BottomSheetFilterView;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -42,6 +49,7 @@ import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
 import com.tokopedia.imagesearch.search.fragment.ImageSearchProductListFragment;
+import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.ImageSearchNavigationListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.RedirectionListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -70,6 +78,8 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 public class ImageSearchActivity extends BaseActivity
         implements ImageSearchContract.View,
         RedirectionListener,
+        BottomSheetListener,
+        ImageSearchNavigationListener,
         PermissionCheckerHelper.PermissionCheckListener {
 
     private static final int REQUEST_CODE_IMAGE = 2390;
@@ -83,11 +93,19 @@ public class ImageSearchActivity extends BaseActivity
     private ImageView thumbnailImage;
     private FrameLayout container;
     protected ProgressBar loadingView;
+    private BottomSheetFilterView bottomSheetFilterView;
+    private View buttonFilter;
+    private View buttonSort;
+    private View searchNavDivider;
+    private View searchNavContainer;
 
     protected View root;
 
     private String imagePath = "";
     private boolean isFromCamera = false;
+
+    private ImageSearchProductListFragment imageSearchProducListFragment;
+    private ImageSearchNavigationListener.ClickListener searchNavigationClickListener;
 
     @Inject
     ImageSearchPresenter searchPresenter;
@@ -129,13 +147,112 @@ public class ImageSearchActivity extends BaseActivity
         thumbnailImage = findViewById(R.id.imageSearchThumbnail);
         container = (FrameLayout) findViewById(R.id.image_search_container);
         loadingView = findViewById(R.id.image_search_progressBar);
+        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter);
+        buttonFilter = findViewById(R.id.button_filter);
+        buttonSort = findViewById(R.id.button_sort);
+        searchNavDivider = findViewById(R.id.search_nav_divider);
+        searchNavContainer = findViewById(R.id.search_nav_container);
         root = findViewById(R.id.image_search_root);
     }
 
     protected void prepareView() {
         initToolbar();
+        initBottomSheetListener();
+        initSearchNavigationListener();
+        bottomSheetFilterView.initFilterBottomSheet(new FilterTrackingData(
+                FilterEventTracking.Event.CLICK_IMAGE_SEARCH_RESULT,
+                FilterEventTracking.Category.FILTER_PRODUCT,
+                "",
+                FilterEventTracking.Category.PREFIX_IMAGE_SEARCH_RESULT_PAGE));
         showLoadingView(false);
     }
+
+    private void initBottomSheetListener() {
+        bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
+            @Override
+            public void onApplyFilter(Map<String, String> queryParams) {
+                applyFilter(queryParams);
+            }
+
+            @Override
+            public void onShow() {
+                hideBottomNavigation();
+            }
+
+            @Override
+            public void onHide() {
+                showBottomNavigation();
+            }
+
+            @Override
+            public AppCompatActivity getActivity() {
+                return ImageSearchActivity.this;
+            }
+        });
+    }
+
+    private void applyFilter(Map<String, String> queryParams) {
+        imageSearchProducListFragment.refreshSearchParameter(queryParams);
+        imageSearchProducListFragment.clearDataFilterSort();
+        imageSearchProducListFragment.refreshData();
+    }
+
+    private void hideBottomNavigation() {
+        searchNavContainer.setVisibility(View.GONE);
+    }
+
+    private void showBottomNavigation() {
+        searchNavContainer.setVisibility(View.VISIBLE);
+    }
+
+    private void initSearchNavigationListener() {
+        buttonFilter.setOnClickListener(view -> {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onFilterClick();
+            }
+        });
+        buttonSort.setOnClickListener(view -> {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onSortClick();
+            }
+        });
+    }
+
+    private void onActivityResultBottomSheet(int requestCode, int resultCode, Intent data) {
+        bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!bottomSheetFilterView.onBackPressed()) {
+            finish();
+        }
+    }
+
+    @Override
+    public void loadFilterItems(ArrayList<Filter> filters, Map<String, String> searchParameter) {
+        bottomSheetFilterView.loadFilterItems(filters, searchParameter);
+    }
+
+    @Override
+    public void setFilterResultCount(String formattedResultCount) {
+        bottomSheetFilterView.setFilterResultCount(formattedResultCount);
+    }
+
+    @Override
+    public void launchFilterBottomSheet() {
+        bottomSheetFilterView.launchFilterBottomSheet();
+    }
+
+    @Override
+    public void setupSearchNavigation(ClickListener clickListener) {
+        if (loadingView.getVisibility() != View.VISIBLE) {
+            showBottomNavigation();
+        }
+
+        this.searchNavigationClickListener = clickListener;
+    }
+
 
     protected void showLoadingView(boolean visible) {
         loadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
@@ -544,7 +661,8 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     private void loadSection(ProductViewModel productViewModel) {
-        addFragment(R.id.image_search_container, ImageSearchProductListFragment.newInstance(productViewModel));
+        imageSearchProducListFragment = ImageSearchProductListFragment.newInstance(productViewModel);
+        addFragment(R.id.image_search_container, imageSearchProducListFragment);
 
         showContainer(true);
     }
