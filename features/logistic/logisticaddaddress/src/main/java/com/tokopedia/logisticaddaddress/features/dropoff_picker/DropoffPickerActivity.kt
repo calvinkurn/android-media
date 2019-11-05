@@ -69,10 +69,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mStoreDetail: LocationDetailBottomSheet
 
     @Inject
+    lateinit var dropoffMapper: GetStoreMapper
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-
     private val viewModel by lazy { viewModelProvider.get(DropoffPickerViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,7 +104,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mStoreDetail.setOnCancelClickListener { mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN }
         mStoreDetail.setOnOkClickListener { _, data ->
             val resultIntent = Intent().apply {
-                val intentData = data?.let { GetStoreMapper().mapToIntentModel(it) }
+                val intentData = data?.let { dropoffMapper.mapToIntentModel(it) }
                 putExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION, intentData) }
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
