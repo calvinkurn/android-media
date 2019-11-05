@@ -24,7 +24,7 @@
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/digital_ic_squircle" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon_operator"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"

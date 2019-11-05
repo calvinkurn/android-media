@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Parcelable
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -259,9 +259,9 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     override fun onLimitOTPReached(errorMessage: String) {
-        textMessageVerify.visibility = View.VISIBLE
-        textMessageVerify.text = errorMessage
-        textMessageVerify.setTextColor(MethodChecker.getColor(activity, R.color.red_500))
+        textMessageVerify?.visibility = View.VISIBLE
+        textMessageVerify?.text = errorMessage
+        textMessageVerify?.setTextColor(MethodChecker.getColor(activity, R.color.red_500))
         setLimitReachedCountdownText()
 
     }
@@ -281,10 +281,10 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
         textInputOtp?.text?.clear()
         textInputOtp?.isError = true
-        textErrorVerify.visibility = View.VISIBLE
+        textErrorVerify?.visibility = View.VISIBLE
 
         if (errorMessage.contains(PIN_ERR_MSG) && errorMessage.isNotEmpty()) {
-            textErrorVerify.text = errorMessage.substring(0, errorMessage.indexOf("("))
+            textErrorVerify?.text = errorMessage.substring(0, errorMessage.indexOf("("))
 
             if (errorMessage.contains(LIMIT_ERR_MSG)) {
                 buttonVerify?.visibility = View.VISIBLE
@@ -340,6 +340,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             cacheHandler.applyEditor()
         }
 
+        textResend?.visibility = View.GONE
         if (!isRunningTimer) {
             countDownTimer = object : CountDownTimer((cacheHandler.remainingTime * INTERVAL).toLong(), INTERVAL.toLong()) {
                 override fun onTick(millisUntilFinished: Long) {
@@ -360,13 +361,13 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     private fun setFinishedCountdownText() {
-        textMessageVerify.visibility = View.VISIBLE
-        textMessageVerify.text = MethodChecker.fromHtml(getString(R.string.not_received_code))
+        textMessageVerify?.visibility = View.VISIBLE
+        textMessageVerify?.text = MethodChecker.fromHtml(getString(R.string.not_received_code))
 
-        textOr.visibility = View.VISIBLE
-        textResend.visibility = View.VISIBLE
-        textResend.text = MethodChecker.fromHtml(getString(R.string.cotp_miscall_verification_resend))
-        textResend.setOnClickListener {
+        textOr?.visibility = View.VISIBLE
+        textResend?.visibility = View.VISIBLE
+        textResend?.text = MethodChecker.fromHtml(getString(R.string.cotp_miscall_verification_resend))
+        textResend?.setOnClickListener {
             analytics.eventClickResendOtp(viewModel.otpType)
             if (viewModel.otpType == OTP_TYPE_REGISTER_PHONE_NUMBER) {
                 analytics.eventClickResendPhoneOtpButton()
@@ -378,10 +379,10 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         }
 
         if (viewModel.canUseOtherMethod()) {
-            textUseOtherMethod.visibility = View.VISIBLE
-            textUseOtherMethod.setOnClickListener { onOtherMethodClick() }
+            textUseOtherMethod?.visibility = View.VISIBLE
+            textUseOtherMethod?.setOnClickListener { onOtherMethodClick() }
         } else {
-            textUseOtherMethod.visibility = View.GONE
+            textUseOtherMethod?.visibility = View.GONE
         }
     }
 
@@ -393,7 +394,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
     private fun removeErrorOtp() {
         textInputOtp?.isError = false
-        textErrorVerify.visibility = View.INVISIBLE
+        textErrorVerify?.visibility = View.INVISIBLE
     }
 
     private fun setLimitReachedCountdownText() {
@@ -404,17 +405,17 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             textOr?.visibility = View.GONE
             textUseOtherMethod?.visibility = View.GONE
 
-            buttonVerify.text = getString(R.string.cotp_miscall_verification_with_other_method)
-            buttonVerify.isEnabled = true
-            buttonVerify.setOnClickListener { goToOtherVerificationMethod() }
+            buttonVerify?.text = getString(R.string.cotp_miscall_verification_with_other_method)
+            buttonVerify?.isEnabled = true
+            buttonVerify?.setOnClickListener { goToOtherVerificationMethod() }
         } else {
             textMessageVerify?.text = MethodChecker.fromHtml(getString(R.string.cotp_miscall_verification_not_received_code))
         }
     }
 
     private fun setRunningCountdownText(countdown: String) {
-        textMessageVerify.visibility = View.VISIBLE
-        textMessageVerify.setOnClickListener(null)
+        textMessageVerify?.visibility = View.VISIBLE
+        textMessageVerify?.setOnClickListener(null)
 
         val text = String.format("%s <b> %s %s</b> %s",
                 getString(R.string.please_wait_in),
@@ -422,7 +423,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
                 getString(R.string.second),
                 getString(R.string.to_resend_otp))
 
-        textMessageVerify.text = MethodChecker.fromHtml(text)
+        textMessageVerify?.text = MethodChecker.fromHtml(text)
     }
 
     private fun goToOtherVerificationMethod() {

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;

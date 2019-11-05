@@ -2,11 +2,11 @@ package com.tokopedia.design.quickfilter;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -115,7 +115,12 @@ public class QuickSingleFilterView extends BaseCustomView {
                     }
                 } else {
                     setSelectedFilter(getDefaultSelectedFilterType(quickFilterItem));
-                    setSelectedFilterName(getselectedFilterName(quickFilterItem.getName()));
+                    String name = "";
+                    if (quickFilterItem.getName() != null) {
+                        name = getselectedFilterName(quickFilterItem.getName());
+                    }
+                    setSelectedFilterName(name);
+
                 }
                 adapterFilter.notifyDataSetChanged();
             }
@@ -123,7 +128,7 @@ public class QuickSingleFilterView extends BaseCustomView {
     }
 
     private String getselectedFilterName(String filterName) {
-        if (filterName.contains("(")) {
+        if (filterName != null && filterName.contains("(")) {
             int i = filterName.indexOf("(");
             filterName = filterName.substring(0, i - 1);
         }

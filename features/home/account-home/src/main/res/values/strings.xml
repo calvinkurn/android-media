@@ -225,4 +225,16 @@
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
 
+    <string name="title_app_advanced_setting">Pengaturan Tambahan</string>
+    <string name="title_app_advanced_clear_cache">Bersihkan Cache</string>
+    <string name="title_app_advanced_push_notification">Push Notification Troubleshooter</string>
+
+    <string name="account_home_clear_cache_warning">Peringatan</string>
+    <string name="account_home_clear_cache_message">Dengan membersihkan cache, berarti Anda juga setuju untuk <b>keluar</b> dan <b>menutup aplikasi</b>.</string>
+    <string name="account_home_label_clear_cache_ok">Lakukan</string>
+    <string name="account_home_label_clear_cache_cancel">Batal</string>
+
+    <string name="account_home_add_phone_title">Tambah Nomor Ponsel</string>
+    <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
+
 </resources>

@@ -1,8 +1,8 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
-import android.support.v4.app.FragmentActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace

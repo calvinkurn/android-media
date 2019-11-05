@@ -22,6 +22,7 @@ class CampaignInfoCategoryViewHolder(val view: View): AbstractViewHolder<Campaig
             rating.text = context.getString(R.string.range_format, "0", criteria.maxRating.toString())
             limit_request.text = context.getString(R.string.submission_count_format, criteria.maxSubmission)
             min_stock.text = criteria.minStock.toString()
+            max_stock.text = criteria.maxCustomStock.toString()
             min_cashback.text = if (criteria.minCashback == 0) "-" else criteria.minCashback.toString()
 
             val noteItems = mutableListOf<String>()

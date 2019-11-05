@@ -1,4 +1,4 @@
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                     xmlns:tools="http://schemas.android.com/tools"
                                     xmlns:app="http://schemas.android.com/apk/res-auto"
                                     android:id="@+id/cardViewProductCard"
@@ -6,11 +6,12 @@
                                     app:cardElevation="@dimen/dp_4"
                                     app:cardPreventCornerOverlap="false"
                                     app:cardUseCompatPadding="true"
+                                    android:foreground="?attr/selectableItemBackground"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     tools:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayoutProductCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -276,6 +277,24 @@
                 tools:visibility="gone"
                 tools:text="Credibility Label" />
 
-    </android.support.constraint.ConstraintLayout>
+        <ImageView
+                android:id="@+id/imageFreeOngkirPromo"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:gravity="center"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:visibility="gone"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/imageProduct"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
+                tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

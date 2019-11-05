@@ -49,10 +49,11 @@ import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
@@ -486,6 +487,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterGoogle(throwable: Throwable){
+        logoutGoogleAccountIfExist()
         val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
         onErrorRegister(errorMessage)
     }
@@ -1090,6 +1092,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         context?.let {
             permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
         }
+    }
+
+    private fun logoutGoogleAccountIfExist() {
+        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
+        if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 
     companion object {

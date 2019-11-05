@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.feeddetail;
 
 import android.graphics.Typeface;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;

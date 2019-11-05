@@ -7,7 +7,6 @@ package com.tokopedia.shop.common.constant;
 public class ShopParamConstant {
 
     public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
-    public static final String EXTRA_SHOP_DOMAIN = "EXTRA_SHOP_DOMAIN";
     public static final String EXTRA_ATTRIBUTION = "EXTRA_ATTRIBUTION";
 
     public static final String EXTRA_PRODUCT_KEYWORD = "EXTRA_PRODUCT_KEYWORD";

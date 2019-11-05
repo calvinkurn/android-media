@@ -1,7 +1,7 @@
 package com.tokopedia.core.drawer2.di;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -63,7 +63,7 @@ public class DrawerInjector {
         GetSellerUserAttributesUseCase getSellerrAttributesUseCase = new GetSellerUserAttributesUseCase(jobExecutor,
                 new UIThread(), userAttributesRepository);
 
-        Observable<TokoCashData> tokoCashModelObservable = ((TkpdCoreRouter) context.getApplicationContext()).getTokoCashBalance();
+        Observable<TokoCashData> tokoCashModelObservable = Observable.just(new TokoCashData());
         TokoCashUseCase tokoCashUseCase = new TokoCashUseCase(
                 jobExecutor,
                 uiThread,

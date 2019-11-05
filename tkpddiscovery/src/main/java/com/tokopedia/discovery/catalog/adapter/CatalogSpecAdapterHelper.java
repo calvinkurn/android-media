@@ -1,8 +1,8 @@
 package com.tokopedia.discovery.catalog.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.discovery.catalog.listener.ICatalogSpecSectionChanged;
 import com.tokopedia.discovery.catalog.model.SpecChild;

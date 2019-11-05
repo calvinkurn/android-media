@@ -1,9 +1,9 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
-import android.support.annotation.DrawableRes
-import android.support.annotation.LayoutRes
-import android.support.constraint.ConstraintLayout
-import android.support.v4.content.ContextCompat
+import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -27,6 +27,7 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
 
     interface InvoiceThumbnailListener {
         fun onClickInvoiceThumbnail(url: String, id: String)
+        fun trackClickInvoice(viewModel: AttachInvoiceSentViewModel)
     }
 
     override fun bind(viewModel: AttachInvoiceSentViewModel?) {
@@ -80,6 +81,7 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
 
     private fun assignInteraction(viewModel: AttachInvoiceSentViewModel) {
         itemView.setOnClickListener {
+            invoiceThumbnailListener.trackClickInvoice(viewModel)
             viewModel.invoiceUrl?.let {
                 invoiceThumbnailListener.onClickInvoiceThumbnail(it, it)
             }

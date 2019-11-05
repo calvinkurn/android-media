@@ -1,6 +1,6 @@
 package com.tokopedia.abstraction.common.data.model.response;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

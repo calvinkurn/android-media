@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid
 
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel

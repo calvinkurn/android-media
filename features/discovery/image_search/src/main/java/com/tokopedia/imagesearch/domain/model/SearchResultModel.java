@@ -1,5 +1,7 @@
 package com.tokopedia.imagesearch.domain.model;
 
+import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
+
 import java.util.List;
 
 /**
@@ -9,6 +11,7 @@ import java.util.List;
 public class SearchResultModel {
 
     private List<ProductModel> productList;
+    private CategoryFilterModel categoryFilterModel;
     private int totalData;
     private String query;
     private String shareUrl;
@@ -52,5 +55,13 @@ public class SearchResultModel {
 
     public void setAdditionalParams(String additionalParams) {
         this.additionalParams = additionalParams;
+    }
+
+    public CategoryFilterModel getCategoryFilterModel() {
+        return categoryFilterModel;
+    }
+
+    public void setCategoryFilterModel(CategoryFilterModel categoryFilterModel) {
+        this.categoryFilterModel = categoryFilterModel;
     }
 }

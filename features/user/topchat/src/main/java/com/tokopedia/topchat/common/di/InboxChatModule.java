@@ -15,18 +15,10 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.chat_common.network.ChatUrl;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
-import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
-import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory;
 import com.tokopedia.topchat.chatlist.data.factory.SearchFactory;
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper;
@@ -48,6 +40,7 @@ import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitTomeDomainQualifier;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitWsDomainQualifier;
 import com.tokopedia.topchat.common.network.XUserIdInterceptor;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -124,44 +117,37 @@ public class InboxChatModule {
         return new TemplateRepositoryImpl(templateChatFactory);
     }
 
-    @InboxChatScope
-    @Provides
-    public ShopCommonWSApi provideShopCommonWsApi(@RetrofitWsDomainQualifier Retrofit retrofit) {
-        return retrofit.create(ShopCommonWSApi.class);
-    }
-
-    @InboxChatScope
-    @Provides
-    public ShopCommonApi provideShopCommonApi(@RetrofitTomeDomainQualifier Retrofit retrofit) {
-        return retrofit.create(ShopCommonApi.class);
-    }
+//    @InboxChatScope
+//    @Provides
+//    public ShopCommonApi provideShopCommonApi(@RetrofitTomeDomainQualifier Retrofit retrofit) {
+//        return retrofit.create(ShopCommonApi.class);
+//    }
 
 
-    @InboxChatScope
-    @Provides
-    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi,
-                                                                      ShopCommonWSApi shopCommonWS4Api,
-                                                                      UserSessionInterface userSession) {
-        return new ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession);
-    }
+//    @InboxChatScope
+//    @Provides
+//    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi,
+//                                                                      UserSessionInterface userSession) {
+//        return new ShopCommonCloudDataSource(shopCommonApi, userSession);
+//    }
 
-    @InboxChatScope
-    @Provides
-    public ShopCommonDataSource provideShopCommonDataSource(ShopCommonCloudDataSource shopInfoCloudDataSource) {
-        return new ShopCommonDataSource(shopInfoCloudDataSource);
-    }
+//    @InboxChatScope
+//    @Provides
+//    public ShopCommonDataSource provideShopCommonDataSource(ShopCommonCloudDataSource shopInfoCloudDataSource) {
+//        return new ShopCommonDataSource(shopInfoCloudDataSource);
+//    }
 
-    @InboxChatScope
-    @Provides
-    public ShopCommonRepository provideShopCommonRepository(ShopCommonDataSource shopInfoDataSource) {
-        return new ShopCommonRepositoryImpl(shopInfoDataSource);
-    }
-
-    @InboxChatScope
-    @Provides
-    GetShopInfoUseCase provideGetShopInfoUseCase(ShopCommonRepository shopCommonRepository) {
-        return new GetShopInfoUseCase(shopCommonRepository);
-    }
+//    @InboxChatScope
+//    @Provides
+//    public ShopCommonRepository provideShopCommonRepository(ShopCommonDataSource shopInfoDataSource) {
+//        return new ShopCommonRepositoryImpl(shopInfoDataSource);
+//    }
+//
+//    @InboxChatScope
+//    @Provides
+//    GetShopInfoUseCase provideGetShopInfoUseCase(ShopCommonRepository shopCommonRepository) {
+//        return new GetShopInfoUseCase(shopCommonRepository);
+//    }
 
 //    @InboxChatScope
 //    @Provides

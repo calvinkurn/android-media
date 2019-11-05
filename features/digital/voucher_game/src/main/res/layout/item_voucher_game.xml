@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:layout_marginBottom="@dimen/dp_4">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/item_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -49,9 +49,9 @@
                 app:textAllCaps="true"
                 tools:labelTitle="test" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_title"

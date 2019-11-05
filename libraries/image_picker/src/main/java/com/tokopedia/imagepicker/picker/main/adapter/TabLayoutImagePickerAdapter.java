@@ -1,8 +1,8 @@
 package com.tokopedia.imagepicker.picker.main.adapter;
 
 import android.content.Context;
-import android.support.annotation.ColorRes;
-import android.support.design.widget.TabLayout;
+import androidx.annotation.ColorRes;
+import com.google.android.material.tabs.TabLayout;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;

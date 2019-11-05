@@ -2,7 +2,7 @@ package com.tokopedia.kol.feature.createpost.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.webkit.WebView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;

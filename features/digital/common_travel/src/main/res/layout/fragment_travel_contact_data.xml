@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24">
 
-            <android.support.v7.widget.AppCompatAutoCompleteTextView
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/travel_contact_data_email_hint"
@@ -55,7 +55,7 @@
             app:layout_constraintTop_toBottomOf="@id/til_contact_email"
             app:textViewTheme="lightDisabled" />
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24"
@@ -80,7 +80,7 @@
                 android:layout_marginTop="@dimen/dp_4"
                 >
 
-                <android.support.v7.widget.AppCompatAutoCompleteTextView
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/travel_contact_data_phone_number_hint"
@@ -88,7 +88,7 @@
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/contact_data_info_ticker"

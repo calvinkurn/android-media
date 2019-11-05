@@ -1,9 +1,9 @@
 package com.tokopedia.flashsale.management.view.fragment
 
 import android.os.Bundle
-import android.support.annotation.Px
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
+import androidx.annotation.Px
+import com.google.android.material.appbar.AppBarLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

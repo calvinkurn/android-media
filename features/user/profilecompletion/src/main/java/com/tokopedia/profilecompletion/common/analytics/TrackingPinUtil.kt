@@ -1,7 +1,7 @@
 package com.tokopedia.profilecompletion.common.analytics
 
-import android.app.Activity
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant.Action.ACTION_CLICK_ON_BUTTON_BACK_PIN_TOKOPEDIA
+import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant.Action.ACTION_CLICK_ON_BUTTON_CREATE_PIN_TOKOPEDIA
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant.Action.ACTION_CLICK_ON_BUTTON_NANTI_SAJA_PIN_TOKOPEDIA
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant.Action.ACTION_CLICK_ON_BUTTON_SELESAI
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant.Action.ACTION_INPUT_CONFIRMATION_PIN_TOKOPEDIA
@@ -22,6 +22,15 @@ class TrackingPinUtil{
 
     fun trackScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    fun trackClickCreateButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                EVENT_CLICK_PIN,
+                CATEGORY_PIN_TOKOPEDIA,
+                ACTION_CLICK_ON_BUTTON_CREATE_PIN_TOKOPEDIA,
+                LABEL_EMPTY
+        )
     }
 
     fun trackClickLaterButton() {

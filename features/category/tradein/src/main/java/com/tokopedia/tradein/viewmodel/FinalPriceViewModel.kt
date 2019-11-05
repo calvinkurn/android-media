@@ -1,10 +1,10 @@
 package com.tokopedia.tradein.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
 import android.content.Intent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory

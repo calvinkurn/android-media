@@ -2,7 +2,7 @@ package com.tokopedia.kelontongapp.notification
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.NotificationManagerCompat
+import androidx.core.app.NotificationManagerCompat
 
 import com.tokopedia.kelontongapp.*
 

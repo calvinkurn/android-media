@@ -2,11 +2,9 @@ package com.tokopedia.flight.common.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
-
-import com.tokopedia.flight.R;
 
 public class ArrowFlightView extends FrameLayout {
     public ArrowFlightView(Context context) {
@@ -31,7 +29,7 @@ public class ArrowFlightView extends FrameLayout {
     }
 
     private void init(){
-        inflate(getContext(), R.layout.include_arrow_flight, this);
+        inflate(getContext(), com.tokopedia.flight.R.layout.include_arrow_flight, this);
     }
 
 }

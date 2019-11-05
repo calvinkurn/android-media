@@ -1,0 +1,5 @@
+query triggerVerifyQR($campaignId: String!, $isNotApp: Boolean) {
+    triggerVerifyQR(campaign_id: $campaignId, is_not_app: $isNotApp) {
+        url
+    }
+}
