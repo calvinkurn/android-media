@@ -1,5 +1,6 @@
 package com.tokopedia.carouselproductcard
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.v2.ProductCardModel
 
 interface CarouselProductCardListener {
@@ -22,5 +23,9 @@ interface CarouselProductCardListener {
 
     interface OnWishlistItemClickListener {
         fun onWishlistItemClick(productCardModel: ProductCardModel, adapterPosition: Int)
+    }
+
+    interface GetImpressHolderListener {
+        fun getImpressHolder(adapterPosition: Int): ImpressHolder
     }
 }

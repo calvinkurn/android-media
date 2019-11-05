@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
@@ -14,9 +15,6 @@ internal class CarouselProductCardAdapter(
         private val carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
         private val productCardHeight: Int = 0
 ): RecyclerView.Adapter<CarouselProductCardViewHolder>() {
-
-    private var recyclerView: RecyclerView? = null
-
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): CarouselProductCardViewHolder {
         val view = LayoutInflater
@@ -41,12 +39,8 @@ internal class CarouselProductCardAdapter(
     }
 
     override fun onBindViewHolder(carouselProductCardViewHolder: CarouselProductCardViewHolder, position: Int) {
-        carouselProductCardViewHolder.bind(this.productCardModelList[position])
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
+        carouselProductCardViewHolder.bind(this.productCardModelList[position],
+                carouselProductCardListenerInfo.getImpressHolder?.getImpressHolder(position))
     }
 
     fun updateWishlist(position: Int, wishlist: Boolean) {

@@ -59,7 +59,8 @@ class CarouselProductCardView: BaseCustomView {
             carouselProductCardOnItemLongClickListener: CarouselProductCardListener.OnItemLongClickListener? = null,
             carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
-            carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null) {
+            carouselProductCardOnWishlistItemClickListener: CarouselProductCardListener.OnWishlistItemClickListener? = null,
+            getImpressHolderListener: CarouselProductCardListener.GetImpressHolderListener? = null) {
 
         val carouselProductCardListenerInfo = CarouselProductCardListenerInfo().also {
             it.onItemClickListener = carouselProductCardOnItemClickListener
@@ -67,6 +68,7 @@ class CarouselProductCardView: BaseCustomView {
             it.onItemImpressedListener = carouselProductCardOnItemImpressedListener
             it.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
             it.onWishlistItemClickListener = carouselProductCardOnWishlistItemClickListener
+            it.getImpressHolder = getImpressHolderListener
         }
 
         parentView?.run {

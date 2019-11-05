@@ -54,10 +54,4 @@ class ProductCardViewSmallGrid: ProductCardView {
     fun setAddToCartOnClickListener(onClickListener: (view: View) -> Unit) {
         textViewAddToCart?.setOnClickListener(onClickListener)
     }
-
-    fun setCardHeight(height: Int) {
-        val layoutParams = cardViewProductCard?.layoutParams
-        layoutParams?.height = height
-        cardViewProductCard?.layoutParams = layoutParams
-    }
 }

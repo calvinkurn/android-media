@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_1
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_2
@@ -67,6 +68,11 @@ abstract class BaseRecommendationView(context: Context,
                 activity = activity,
                 parentView = getView(),
                 isScrollable = true,
+                getImpressHolderListener = object: CarouselProductCardListener.GetImpressHolderListener {
+                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
+                        return product.recommendationItemList[adapterPosition]
+                    }
+                },
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
                         val productRecommendation = product.recommendationItemList[adapterPosition]
