@@ -84,6 +84,8 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
+def hermesPath = "../reactnative-apps/node_modules/hermesvm/android/";
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -118,6 +120,12 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/rxjava.properties'
+        pickFirst '**/armeabi-v7a/libc++_shared.so'
+        pickFirst '**/x86/libc++_shared.so'
+        pickFirst '**/arm64-v8a/libc++_shared.so'
+        pickFirst '**/x86_64/libc++_shared.so'
+        pickFirst '**/x86/libjsc.so'
+        pickFirst '**/armeabi-v7a/libjsc.so'
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -249,6 +257,8 @@ android {
     dynamicFeatures = getDynamicFeatureIfEnabled(project)
     generateAssetFile(project, dynamicFeatures)
 }
+
+
 
 dependencies {
 
@@ -579,6 +589,9 @@ dependencies {
     }
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
+
+    debugImplementation files(hermesPath + "hermes-debug.aar")
+    releaseImplementation files(hermesPath + "hermes-release.aar")
 }
 
 
