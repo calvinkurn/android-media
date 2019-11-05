@@ -33,7 +33,7 @@ class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<Recommen
     private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel){
         list.clear()
         list.addAll(dataModel.products)
-        recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = object : RecyclerView.Adapter<RecommendationCarouselItemViewHolder>() {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationCarouselItemViewHolder {
                 val view = LayoutInflater.from(parent.context).inflate(RecommendationCarouselItemDataModel.LAYOUT, parent, false)
