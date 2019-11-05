@@ -110,7 +110,7 @@ public interface ShipmentContract {
 
         void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff);
 
-        void renderCourierStateFailed(int itemPosition);
+        void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff);
 
         void cancelAllCourierPromo();
 

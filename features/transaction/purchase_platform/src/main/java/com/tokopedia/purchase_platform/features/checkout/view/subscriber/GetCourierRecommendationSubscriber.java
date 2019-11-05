@@ -60,7 +60,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
     public void onError(Throwable e) {
         e.printStackTrace();
         if (isInitialLoad) {
-            view.renderCourierStateFailed(itemPosition);
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
         } else {
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel, shopShipmentList);
         }
@@ -83,7 +83,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                     shippingCourierViewModel.getProductData().getShipperId() == shipperId) {
                                 if (shippingCourierViewModel.getProductData().getError() != null &&
                                         !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getError().getErrorMessage())) {
-                                    view.renderCourierStateFailed(itemPosition);
+                                    view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
                                     return;
                                 } else {
                                     shippingCourierViewModel.setSelected(true);
@@ -114,7 +114,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                     }
                 }
             }
-            view.renderCourierStateFailed(itemPosition);
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
         } else {
             if (shippingRecommendationData != null &&
                     shippingRecommendationData.getShippingDurationViewModels() != null &&

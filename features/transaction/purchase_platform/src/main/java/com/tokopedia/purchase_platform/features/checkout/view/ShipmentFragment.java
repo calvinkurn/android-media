@@ -1140,7 +1140,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCourierStateFailed(int itemPosition) {
+    public void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff) {
         shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
         onNeedUpdateViewItem(itemPosition);
     }

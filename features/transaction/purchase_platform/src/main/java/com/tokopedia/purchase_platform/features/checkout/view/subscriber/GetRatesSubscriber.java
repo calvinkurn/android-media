@@ -33,7 +33,7 @@ public class GetRatesSubscriber extends Subscriber<ShipmentDetailData> {
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        view.renderCourierStateFailed(itemPosition);
+        view.renderCourierStateFailed(itemPosition, false);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class GetRatesSubscriber extends Subscriber<ShipmentDetailData> {
                 }
             }
         }
-        view.renderCourierStateFailed(itemPosition);
+        view.renderCourierStateFailed(itemPosition, false);
     }
 
 }
