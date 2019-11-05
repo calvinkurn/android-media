@@ -30,6 +30,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
         const val KEY_PDP_FINANCING_DATA = "keyPDPFinancingData"
         const val KEY_PDP_PRODUCT_PRICE = "keyPDPProductPrice"
         const val KEY_PDP_IS_OFFICIAL = "kryPDPIsOfficial"
+        const val PDP_INSTALLMENT_SCREEN_NAME = "Simulasi Cicilan"
     }
 
     private var tabLayout: TabLayout? = null
@@ -60,7 +61,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     fun title(): String {
-        return "Simulasi Cicilan"
+        return PDP_INSTALLMENT_SCREEN_NAME
     }
 
     private fun loadData() {

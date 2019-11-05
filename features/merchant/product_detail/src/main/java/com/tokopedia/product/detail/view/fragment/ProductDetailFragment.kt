@@ -1453,8 +1453,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
         productInfoP2.productFinancingRecommendationData.let {
-            if (/*remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_PDP_FINANCING) &&*/
-                    it.response.data.partnerCode.isNotBlank()) {
+            if (it.response.data.partnerCode.isNotBlank()) {
                 iv_ovo_installment_icon.show()
                 iv_arrow_next.show()
 
@@ -1472,7 +1471,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         (if (shopInfo?.goldOS?.isOfficial == 1) it.response.data.osMonthlyPrice
                         else it.response.data.monthlyPrice).roundToLong(), false))
 
-                label_desc_installment.text = "Lihat Semua Metode"
+                label_desc_installment.text = getString(R.string.pdp_installment_desc)
                 label_desc_installment.visible()
 
                 label_desc_installment.setOnClickListener {

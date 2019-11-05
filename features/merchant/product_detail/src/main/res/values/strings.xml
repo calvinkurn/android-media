@@ -147,6 +147,7 @@
     <string name="pdp_installment_price_ext"> /bulan</string>
     <string name="ft_min_installment_amount">Min Pembelanjaan %s</string>
     <string name="ft_max_installment_amount">Maks Pembelanjaan %s</string>
+    <string name="pdp_installment_desc">Lihat Semua Metode</string>
 
     <string-array name="ft_installment_type_title">
         <item>@string/ft_label_without_credit_card</item>

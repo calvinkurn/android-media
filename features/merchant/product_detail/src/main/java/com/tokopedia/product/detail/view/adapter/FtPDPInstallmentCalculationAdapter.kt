@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.data.model.financing.FtTncData
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlin.math.roundToLong
 
-class FtPDPInstallmentCalculationAdapter(var mContext: Context, var productPrice: Float?,
+class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                                          var isOfficialStore: Boolean,
                                          var data: ArrayList<FtCalculationPartnerData>,
                                          var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -36,9 +36,7 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context, var productPrice
 
     override fun onBindViewHolder(vHolder: RecyclerView.ViewHolder, position: Int) {
 
-        if (mContext == null) {
-            return
-        }
+        val mContext = vHolder.itemView.context ?: return
 
         val item = data[position]
         val ftTncData = getDataFromFragment.getTncData(item.tncId)
@@ -57,7 +55,7 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context, var productPrice
                 }
             }
 
-            ImageHandler.loadImage(mContext!!, vHolder.ivMainIcon, item.partnerIcon, R.drawable.ic_loading_image)
+            ImageHandler.loadImage(mContext, vHolder.ivMainIcon, item.partnerIcon, R.drawable.ic_loading_image)
             vHolder.tvInstallmentTitle.text = String.format(mContext!!.getString(R.string.ft_installment_heading), item.partnerName)
             vHolder.llInstallmentContainer.hide()
 
@@ -106,11 +104,11 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context, var productPrice
                 vHolder.llInstallmentDetail.addView(view)
             }
 
-            inflateInstructionListData(vHolder, position)
+            inflateInstructionListData(vHolder, position, mContext)
         }
     }
 
-    private fun inflateInstructionListData(vHolder: InstallmentItemViewHolder, position: Int) {
+    private fun inflateInstructionListData(vHolder: InstallmentItemViewHolder, position: Int, context: Context) {
 
         val item = data[position]
 
@@ -120,19 +118,19 @@ class FtPDPInstallmentCalculationAdapter(var mContext: Context, var productPrice
         } else {
             vHolder.tvInstallmentDataHeading.show()
             vHolder.llInstructionDetailContainer.show()
-            vHolder.tvInstallmentDataHeading.text = String.format(mContext!!.getString(R.string.ft_installment_data_heading), item.partnerName)
+            vHolder.tvInstallmentDataHeading.text = String.format(context.getString(R.string.ft_installment_data_heading), item.partnerName)
             vHolder.llInstructionDetailContainer.removeAllViews()
             for (instructionData in item.creditCardInstructionList) {
-                val view = LayoutInflater.from(mContext).inflate(R.layout.pdp_installment_instruction_data_layout, null, false)
+                val view = LayoutInflater.from(context).inflate(R.layout.pdp_installment_instruction_data_layout, null, false)
 
                 val instructionHeading = view.findViewById<TextView>(R.id.tv_instruction_heading)
-                instructionHeading.text = String.format(mContext!!.getString(R.string.ft_instruction_heading), instructionData.order)
+                instructionHeading.text = String.format(context.getString(R.string.ft_instruction_heading), instructionData.order)
 
                 val instructionDesc = view.findViewById<TextView>(R.id.tv_instruction_description)
                 instructionDesc.text = instructionData.description
 
                 val instructionIcon: ImageView = view.findViewById(R.id.iv_instruction_icon)
-                ImageHandler.loadImage(mContext!!, instructionIcon, instructionData.insImageUrl, R.drawable.ic_loading_image)
+                ImageHandler.loadImage(context, instructionIcon, instructionData.insImageUrl, R.drawable.ic_loading_image)
 
                 vHolder.llInstructionDetailContainer.addView(view)
             }
