@@ -2,7 +2,6 @@ package com.tokopedia.kol.feature.post.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.kol.feature.post.data.pojo.likekolpost.DoLikeKolPost
 import com.tokopedia.kol.feature.post.data.pojo.likekolpost.LikeKolPostData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
