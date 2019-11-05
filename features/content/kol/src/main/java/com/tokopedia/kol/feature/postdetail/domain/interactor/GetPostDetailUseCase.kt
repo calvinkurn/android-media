@@ -53,17 +53,14 @@ class GetPostDetailUseCase @Inject constructor(
         )
     }
 
-    private fun getPostDetail(domain: PostDetailViewModel, requestParams: RequestParams?):
+    private fun getPostDetail(domain: PostDetailViewModel, requestParams: RequestParams):
             Observable<PostDetailViewModel> {
-        return getDynamicFeedUseCase.createObservable(requestParams)
-                .flatMap {
-                    domain.dynamicPostViewModel.cursor = it.cursor
-                    domain.dynamicPostViewModel.hasNext = it.hasNext
-                    domain.dynamicPostViewModel.postList = it.postList
-                    Observable.just(domain)
-                }
-                .flatMap { addFooter(domain) }
-
+        return getDynamicFeedUseCase.createObservable(requestParams).flatMap { dynamicFeed ->
+            domain.dynamicPostViewModel.cursor = dynamicFeed.cursor
+            domain.dynamicPostViewModel.hasNext = dynamicFeed.hasNext
+            domain.dynamicPostViewModel.postList = dynamicFeed.postList
+            Observable.just(domain)
+        }.flatMap { addFooter(domain) }
     }
 
     private fun addFooter(domain: PostDetailViewModel): Observable<PostDetailViewModel> {

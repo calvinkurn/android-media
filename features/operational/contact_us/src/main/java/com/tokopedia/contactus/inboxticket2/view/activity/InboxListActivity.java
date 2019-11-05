@@ -3,9 +3,9 @@ package com.tokopedia.contactus.inboxticket2.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.app.TaskStackBuilder;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -116,6 +116,11 @@ public class InboxListActivity extends InboxBaseActivity
     @Override
     public InboxBaseContract.InboxBasePresenter getPresenter() {
         return component.getTicketListPresenter();
+    }
+
+    @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
     }
 
     @Override

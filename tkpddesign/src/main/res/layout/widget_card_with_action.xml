@@ -24,12 +24,12 @@
             android:orientation="horizontal">
 
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_content_message"
                 style="@style/TextView.Small.Bold"
                 tools:text="Jakarta - Surabaya" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_content_info"
                 style="@style/TextView.Micro"
                 android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_subcontent_message"
                 style="@style/TextView.Micro.Bold"
                 android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                 android:layout_below="@+id/content_layout"
                 tools:text="Air Asia" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_subcontent_info"
                 style="@style/TextView.Micro"
                 android:layout_marginLeft="@dimen/dp_3"
@@ -84,7 +84,7 @@
         android:layout_weight="0.25"
         android:gravity="center">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_action"
             style="@style/TextView.Small.Bold"
             android:layout_width="match_parent"

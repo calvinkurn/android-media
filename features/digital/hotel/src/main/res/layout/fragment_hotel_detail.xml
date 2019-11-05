@@ -6,17 +6,17 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:theme="@style/ThemeOverlay.AppCompat.Light">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.6">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_main_photo_preview"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_160"
@@ -46,7 +46,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_first_photo_preview"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/dp_76"
@@ -54,7 +54,7 @@
                             android:scaleType="centerCrop"
                             app:srcCompat="@color/grey_no_image" />
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_second_photo_preview"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/dp_76"
@@ -69,14 +69,14 @@
                             android:layout_height="@dimen/dp_76"
                             android:layout_weight="1">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/iv_third_photo_preview"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_76"
                                 android:scaleType="centerCrop"
                                 app:srcCompat="@color/grey_no_image" />
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/iv_third_photo_preview_black_layer"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/detail_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
@@ -118,8 +118,8 @@
                     app:subtitleTextAppearance="@style/TitleTextAppearance.White"
                     app:titleTextAppearance="@style/SubTitleTextAppearance" />
 
-            </android.support.design.widget.CollapsingToolbarLayout>
-        </android.support.design.widget.AppBarLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <include
             android:id="@+id/container_hotel_detail_shimmering"
@@ -136,7 +136,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:visibility="visible">
 
-            <android.support.v4.widget.NestedScrollView
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
@@ -208,10 +208,12 @@
                             android:layout_marginTop="@dimen/dp_16"
                             android:layout_marginRight="@dimen/dp_16">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/iv_booking_logo"
                                 android:layout_width="@dimen/dp_20"
                                 android:layout_height="@dimen/dp_20"
+                                android:layout_alignTop="@+id/tv_hotel_rating_number"
+                                android:layout_alignBottom="@+id/tv_hotel_rating_number"
                                 android:layout_marginEnd="@dimen/dp_4"
                                 android:layout_marginRight="@dimen/dp_4"
                                 app:srcCompat="@drawable/ic_booking_logo" />
@@ -233,9 +235,12 @@
                                 android:id="@+id/tv_hotel_rating_detail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignTop="@+id/tv_hotel_rating_number"
                                 android:layout_alignBottom="@+id/tv_hotel_rating_number"
+                                android:layout_marginTop="@dimen/dp_2"
                                 android:layout_toEndOf="@+id/tv_hotel_rating_number"
                                 android:layout_toRightOf="@+id/tv_hotel_rating_number"
+                                android:gravity="center"
                                 app:fontSize="micro"
                                 app:textViewTheme="lightPrimary"
                                 tools:text="Mengesankan" />
@@ -264,7 +269,7 @@
 
                         </RelativeLayout>
 
-                        <android.support.v7.widget.RecyclerView
+                        <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_best_review"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -298,7 +303,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_8">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/iv_hotel_detail_location"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_100"
@@ -335,7 +340,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_12">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/hotel_icon"
                                 android:layout_width="@dimen/dp_24"
                                 android:layout_height="@dimen/dp_24"
@@ -393,7 +398,7 @@
 
                         </LinearLayout>
 
-                        <android.support.v7.widget.RecyclerView
+                        <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_hotel_facilities"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -518,9 +523,9 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </android.support.v4.widget.NestedScrollView>
+            </androidx.core.widget.NestedScrollView>
         </RelativeLayout>
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <LinearLayout
         android:id="@+id/container_bottom"

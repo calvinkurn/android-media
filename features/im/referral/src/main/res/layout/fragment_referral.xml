@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nested_scroll_view"
     android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/padding_med"
@@ -151,7 +151,7 @@
                     android:textColor="@color/green_btn"
                     android:textSize="@dimen/fontvs" />
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <View
             android:layout_width="match_parent"
@@ -225,7 +225,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.design.widget.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_referral_guide"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -235,20 +235,20 @@
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/tkpd_main_green">
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:text="@string/cara_kerja"
                     android:textAlignment="textStart" />
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:text="@string/ketentuan"
                     android:textAlignment="textStart" />
-            </android.support.design.widget.TabLayout>
+            </com.google.android.material.tabs.TabLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -266,4 +266,4 @@
 
     </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>

@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.common
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 
 open class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Observer<Event<T>> {
 

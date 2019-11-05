@@ -2,10 +2,11 @@ package com.tokopedia.tkpdreactnative.react.data.datasource;
 
 import android.net.Uri;
 
-import com.tokopedia.core.base.common.service.CommonService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.common.data.interceptor.DigitalHmacAuthInterceptor;
+import com.tokopedia.tkpdreactnative.react.common.data.interceptor.DynamicTkpdAuthInterceptor;
+import com.tokopedia.tkpdreactnative.react.common.data.interceptor.ReactNativeInterceptor;
+import com.tokopedia.tkpdreactnative.react.common.data.service.CommonService;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
 
 import okhttp3.OkHttpClient;
@@ -18,10 +19,18 @@ import rx.Observable;
 
 public class UnifyReactNetworkAuthDataSource {
     private Retrofit.Builder retrofit;
-    private String token;
+    private OkHttpClient okHttpClient;
+    private DigitalHmacAuthInterceptor digitalHmacAuthInterceptor;
+    private DynamicTkpdAuthInterceptor dynamicTkpdAuthInterceptor;
 
-    public UnifyReactNetworkAuthDataSource(Retrofit.Builder retrofit) {
+    public UnifyReactNetworkAuthDataSource(Retrofit.Builder retrofit,
+                                           OkHttpClient okHttpClient,
+                                           DigitalHmacAuthInterceptor digitalHmacAuthInterceptor,
+                                           DynamicTkpdAuthInterceptor dynamicTkpdAuthInterceptor) {
         this.retrofit = retrofit;
+        this.okHttpClient = okHttpClient;
+        this.digitalHmacAuthInterceptor = digitalHmacAuthInterceptor;
+        this.dynamicTkpdAuthInterceptor = dynamicTkpdAuthInterceptor;
     }
 
     public Observable<String> request(ReactNetworkingConfiguration configuration) {
@@ -35,9 +44,11 @@ public class UnifyReactNetworkAuthDataSource {
 
     private OkHttpClient getOkHttpClient(ReactNetworkingConfiguration configuration) {
         if(configuration.getUrl().contains("pulsa-api")) {
-            return OkHttpFactory.create().buildClientDigitalAuth(TkpdBaseURL.DigitalApi.HMAC_KEY).newBuilder().build();
+            return okHttpClient.newBuilder().addInterceptor(digitalHmacAuthInterceptor).build();
         }
-        return OkHttpFactory.create().buildClientReactNativeAuth(configuration.getHeaders()).newBuilder().build();
+        return okHttpClient.newBuilder().addInterceptor(new ReactNativeInterceptor(configuration.getHeaders()))
+                .addInterceptor(dynamicTkpdAuthInterceptor)
+                .build();
     }
 
     private Observable<String> requestToNetwork(ReactNetworkingConfiguration configuration, CommonService commonService) {

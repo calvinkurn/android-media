@@ -2,7 +2,7 @@ package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
@@ -26,8 +25,6 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<Brand> brandItems;
     private List<Brand> itemsForGA = new ArrayList<>();
     private Context context;
-    private int MAX_BRANDS = 8;
-
     public static final int ITEM_BRAND_HOME = 1;
     public static final int ITEM_BRAND_SHORT = 2;
     public static final int ITEM_BRAND_NORMAL = 3;
@@ -107,13 +104,13 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public BrandViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            imageViewBrandItem = itemView.findViewById(R.id.iv_brand);
-            brandName = itemView.findViewById(R.id.brandName);
+            imageViewBrandItem = itemView.findViewById(com.tokopedia.digital_deals.R.id.iv_brand);
+            brandName = itemView.findViewById(com.tokopedia.digital_deals.R.id.brandName);
         }
 
         public void bindData(final Brand brand, int position) {
             brandName.setText(brand.getTitle());
-            ImageHandler.loadImage(context, imageViewBrandItem, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, imageViewBrandItem, brand.getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             itemView.setOnClickListener(this);
         }
 
@@ -157,7 +154,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         private FooterViewHolder(View itemView) {
             super(itemView);
-            loadingLayout = itemView.findViewById(R.id.loading_fl);
+            loadingLayout = itemView.findViewById(com.tokopedia.digital_deals.R.id.loading_fl);
         }
     }
 
@@ -226,16 +223,16 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         View view = null;
         switch (viewType) {
             case ITEM_BRAND_HOME:
-                view = inflater.inflate(R.layout.item_brand_home, parent, false);
+                view = inflater.inflate(com.tokopedia.digital_deals.R.layout.item_brand_home, parent, false);
                 break;
             case ITEM_BRAND_SHORT:
-                view = inflater.inflate(R.layout.item_brand_short, parent, false);
+                view = inflater.inflate(com.tokopedia.digital_deals.R.layout.item_brand_short, parent, false);
                 break;
             case ITEM_BRAND_NORMAL:
-                view = inflater.inflate(R.layout.item_brand_normal, parent, false);
+                view = inflater.inflate(com.tokopedia.digital_deals.R.layout.item_brand_normal, parent, false);
                 break;
             case ITEM_FOOTER:
-                view = inflater.inflate(R.layout.footer_layout, parent, false);
+                view = inflater.inflate(com.tokopedia.digital_deals.R.layout.deals_footer_layout, parent, false);
                 break;
         }
         return new DealsBrandAdapter.BrandViewHolder(view);

@@ -4,9 +4,9 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -18,13 +18,13 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import com.google.android.material.appbar.AppBarLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.*
@@ -1405,11 +1405,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     shopInfo.shopCore.shopID,
                     shopInfo.goldOS.shopTypeString,
                     productId ?: "")
-            productDetailTracking.sendScreenV5(
-                    shopInfo.shopCore.shopID,
-                    shopInfo.goldOS.shopTypeString,
-                    productId ?: "",
-                    productInfo?.category?.detail?.firstOrNull()?.id ?: "")
+
 
             if (delegateTradeInTracking) {
                 trackProductView(tradeInParams.isEligible == 1)

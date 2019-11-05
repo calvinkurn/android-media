@@ -7,10 +7,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +37,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST;
-import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT;
 import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TRAIN_STRING;
 
 
@@ -446,9 +444,6 @@ public class PromoCouponFragment extends BaseDaggerFragment
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DEALS_STRING)) {
             String jsonbody = getActivity().getIntent().getStringExtra(CHECKOUT);
             dPresenter.parseAndSubmitEventVoucher(jsonbody, data, getArguments().getString(PLATFORM_KEY));
-        } else if (platformString.equalsIgnoreCase(
-                IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
-            dPresenter.submitFlightVoucher(data, getArguments().getString(CART_ID_KEY));
         } else {
             dPresenter.processCheckMarketPlaceCartListPromoCode(
                     getActivity(), data, getArguments().getString(ADDITIONAL_DATA_KEY, "")

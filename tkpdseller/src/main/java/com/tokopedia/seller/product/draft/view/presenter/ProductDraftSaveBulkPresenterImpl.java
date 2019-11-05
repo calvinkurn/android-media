@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.draft.view.presenter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 

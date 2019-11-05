@@ -212,9 +212,9 @@ class CategoryPageAnalytics {
                 KEY_EVENT_LABEL, product_id,
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
-                KEY_CLICK, DataLayer.mapOf(
+                KEY_CLICK, DataLayer.mapOf( 
                 KEY_ACTIONFIELD, DataLayer.mapOf(
-                KEY_LIST, pathList)),
+                KEY_LIST, pathList),
                 KEY_PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
                 KEY_NAME, productName,
                 KEY_ID, product_id,
@@ -224,7 +224,7 @@ class CategoryPageAnalytics {
                 KEY_VARIANT, "",
                 KEY_LIST, pathList,
                 KEY_POSITION, position,
-                KEY_ATTRIBUTION, "")))
+                KEY_ATTRIBUTION, ""))))
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }

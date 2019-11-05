@@ -2,9 +2,9 @@ package com.tokopedia.events.view.activity;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -277,7 +277,7 @@ public class EventBookTicketActivity
         if (v.getId() == R.id.pay_tickets) {
             bookTicketPresenter.payTicketsClick(title, tvDate.getText().toString(), tvLocation.getText().toString());
         } else if (v.getId() == R.id.tv_ubah_jadwal) {
-            if (eventsDetailsViewModel.getCustomText1() == Utils.getSingletonInstance().SHOW_DATE_PICKER && bookTicketPresenter.getLocationDateModels() != null && bookTicketPresenter.getLocationDateModels().size() > 0) {
+            if (eventsDetailsViewModel.getCustomText1() >= Utils.getSingletonInstance().SHOW_DATE_PICKER && bookTicketPresenter.getLocationDateModels() != null && bookTicketPresenter.getLocationDateModels().size() > 0) {
                 openCalender(bookTicketPresenter.getLocationDateModels());
             } else {
                 if (locationFragment == null)
