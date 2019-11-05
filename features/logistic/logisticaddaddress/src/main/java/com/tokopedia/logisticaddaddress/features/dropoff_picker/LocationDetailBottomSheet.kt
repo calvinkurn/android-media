@@ -7,12 +7,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class LocationDetailBottomSheet : ConstraintLayout {
 
-    var tvOpening: Typography
+    var tvOpening: Label
     var tvTitle: Typography
     var tvDetail: Typography
     var buttonOk: UnifyButton
