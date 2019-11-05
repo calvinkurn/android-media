@@ -2651,7 +2651,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 dataCheckoutRequests,
                 hasInsurance,
                 EnhancedECommerceActionField.STEP_4,
-                isTradeIn() ? ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN : ConstantTransactionAnalytics.EventAction.CLICK_BAYAR,
+                isTradeIn() ? ConstantTransactionAnalytics.EventAction.CLICK_BAYAR : ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
 
