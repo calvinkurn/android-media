@@ -109,7 +109,13 @@ public class ShipmentDataConverter {
         recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
         recipientAddress.setCornerId(String.valueOf(userAddress.getCornerId()));
         recipientAddress.setTradeIn(isTradeIn);
+        recipientAddress.setTradeInDropOffEnable(isTradeInDropOffEnable);
         recipientAddress.setCornerAddress(userAddress.isCorner());
+
+        // Todo : Remove this mock data
+        recipientAddress.setTradeIn(true);
+        recipientAddress.setDisableMultipleAddress(true);
+        recipientAddress.setTradeInDropOffEnable(true);
 
         return recipientAddress;
     }

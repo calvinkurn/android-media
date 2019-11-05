@@ -3,6 +3,8 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.logisticdata.data.entity.address.LocationDataModel;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -46,11 +48,13 @@ public class RecipientAddressModel implements Parcelable {
     private boolean isHeader;
     private boolean isFooter;
 
+    // TradeIn DropOff
     private boolean isTradeIn;
     private boolean isTradeInDropOffEnable;
     private int selectedTabIndex;
     private String dropOffAddressName;
     private String dropOffAddressDetail;
+    private LocationDataModel locationDataModel;
 
     public RecipientAddressModel() {
     }
@@ -319,6 +323,14 @@ public class RecipientAddressModel implements Parcelable {
         this.dropOffAddressDetail = dropOffAddressDetail;
     }
 
+    public LocationDataModel getLocationDataModel() {
+        return locationDataModel;
+    }
+
+    public void setLocationDataModel(LocationDataModel locationDataModel) {
+        this.locationDataModel = locationDataModel;
+    }
+
     public boolean equalCorner(RecipientAddressModel that) {
         return getCityId().equals(that.getCityId()) &&
                 getDestinationDistrictId().equals(that.getDestinationDistrictId()) &&
@@ -432,6 +444,7 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeInt(this.selectedTabIndex);
         dest.writeString(this.dropOffAddressName);
         dest.writeString(this.dropOffAddressDetail);
+        dest.writeParcelable(this.locationDataModel, flags);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -468,6 +481,7 @@ public class RecipientAddressModel implements Parcelable {
         this.selectedTabIndex = in.readInt();
         this.dropOffAddressName = in.readString();
         this.dropOffAddressDetail = in.readString();
+        this.locationDataModel = in.readParcelable(LocationDataModel.class.getClassLoader());
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {

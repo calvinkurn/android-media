@@ -4,17 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -32,6 +29,7 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -61,6 +59,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
+import com.tokopedia.logisticdata.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
@@ -112,7 +111,6 @@ import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
-import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
@@ -139,7 +137,6 @@ import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -1242,8 +1239,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public List<DataCheckoutRequest> generateNewCheckoutRequest
-            (List<ShipmentCartItemModel> shipmentCartItemModelList, boolean isAnalyticsPurpose) {
+    public List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList,
+                                                                boolean isAnalyticsPurpose) {
         ShipmentAdapter.RequestData requestData = shipmentAdapter.getRequestData(null, shipmentCartItemModelList, isAnalyticsPurpose);
         return requestData.getCheckoutRequestData();
     }
@@ -1281,6 +1278,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onResultFromMultipleAddress(resultCode, data);
         } else if (requestCode == REQUEST_CODE_EDIT_ADDRESS) {
             onResultFromEditAddress();
+        } else if (requestCode == LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN) {
+            onResultFromSetTradeInPinpoint(data);
         }
     }
 
@@ -1679,16 +1678,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData) {
-        shipmentPresenter.setPromoCodeCartShipmentRequestData(promoRequestData);
-
+    public void onFinishChoosingShipment() {
         if (shipmentAdapter.hasAppliedPromoStackCode()) {
             Promo promo = generateCheckPromoFirstStepParam();
             shipmentPresenter.checkPromoFinalStackShipment(promo);
         } else {
             sendEEStep3();
         }
-
     }
 
     private void sendEEStep3() {
@@ -2933,43 +2929,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChangeTradeInDropOffClicked() {
-        // Todo : Intent to choose pinpoint and get 1 result : Address data
-        onResultFromSetTradeInPinpoint();
+        startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.DROPOFF_PICKER),
+                LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN);
     }
 
-    private void onResultFromSetTradeInPinpoint() {
-        // Todo : Map address data to RecipientAddressModel >> update adapter data
-        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-        recipientAddressModel.setDropOffAddressName("Indomaret Serang 1011");
-        recipientAddressModel.setDropOffAddressDetail("jl. Raya Banten KM 117, Serang, Banten");
-        shipmentAdapter.updateSelectedAddress(recipientAddressModel, true);
-
-        // Todo : Map shipping data to CourierItemData >> update adapter data
-//        CourierItemData courierItemData = new CourierItemData();
-//        courierItemData.setShipperId(11);
-//        courierItemData.setServiceId(1003);
-//        courierItemData.setShipperProductId(33);
-//        courierItemData.setName("SiCepat");
-//        courierItemData.setEstimatedTimeDelivery("Next Day (1 Hari)");
-//        courierItemData.setMinEtd(86400);
-//        courierItemData.setMaxEtd(86400);
-//        courierItemData.setShipperPrice(13000);
-//        courierItemData.setShipperFormattedPrice("Rp13.000");
-//        courierItemData.setInsurancePrice(0);
-//        courierItemData.setInsuranceType(3);
-//        courierItemData.setInsuranceUsedType(2);
-//        courierItemData.setInsuranceUsedInfo("Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya");
-//        courierItemData.setInsuranceUsedDefault(2);
-//        courierItemData.setUsePinPoint(false);
-//        courierItemData.setAllowDropshiper(true);
-//        courierItemData.setAdditionalPrice(0);
-//        courierItemData.setPromoCode("");
-//        courierItemData.setChecksum("URBRPGtbz80x6kKDpBMT5NfZfzg%3D");
-//        courierItemData.setUt("1571973648");
-//        courierItemData.setBlackboxInfo("");
-//        courierItemData.setSelected(true);
-//
-//        shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData);
+    private void onResultFromSetTradeInPinpoint(Intent data) {
+        if (data != null) {
+            LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
+            RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+            recipientAddressModel.setLocationDataModel(locationDataModel);
+            recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
+            recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
+            shipmentAdapter.updateSelectedAddress(recipientAddressModel, true);
+        }
     }
 
     @Override

@@ -1,9 +1,5 @@
 package com.tokopedia.purchase_platform.features.checkout.view.viewholder;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -18,10 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.tabs.TabLayout;
-import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.purchase_platform.R;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -91,13 +92,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList,
                                String cartIds) {
-        // Todo : Remove this
-        recipientAddress.setTradeIn(true);
-        recipientAddress.setDisableMultipleAddress(true);
-        recipientAddress.setTradeInDropOffEnable(true);
-//        recipientAddress.setDropOffAddressName("A Indomaret Karet Semanggi");
-//        recipientAddress.setDropOffAddressDetail("A Karet Semanggi, Setiabudi, Kota Administrasi Jakarta Selatan, DKI Jakarta");
-
         renderBaseAddress(recipientAddress, cartIds);
         if (recipientAddress.isTradeIn()) {
             renderTradeInAddress(recipientAddress);

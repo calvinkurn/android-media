@@ -3,14 +3,13 @@ package com.tokopedia.purchase_platform.features.checkout.view.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -43,7 +42,6 @@ import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.InsuranceCartShopViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.TickerAnnouncementViewHolder;
-import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
@@ -837,7 +835,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 RequestData requestData = getRequestData(null, null, false);
                 if (!passCheckShipmentFromPaymentClick) {
-                    shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData());
+                    shipmentAdapterActionListener.onFinishChoosingShipment();
                 }
                 shipmentAdapterActionListener.updateCheckoutRequest(requestData.getCheckoutRequestData());
                 return true;
@@ -1360,23 +1358,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static class RequestData {
 
-        private List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData;
         private List<DataCheckoutRequest> checkoutRequestData;
         private List<DataChangeAddressRequest> changeAddressRequestData;
 
         @Inject
         public RequestData() {
-            promoRequestData = new ArrayList<>();
             checkoutRequestData = new ArrayList<>();
             changeAddressRequestData = new ArrayList<>();
-        }
-
-        public List<CheckPromoCodeCartShipmentRequest.Data> getPromoRequestData() {
-            return promoRequestData;
-        }
-
-        public void setPromoRequestData(List<CheckPromoCodeCartShipmentRequest.Data> promoRequestData) {
-            this.promoRequestData = promoRequestData;
         }
 
         public List<DataCheckoutRequest> getCheckoutRequestData() {
