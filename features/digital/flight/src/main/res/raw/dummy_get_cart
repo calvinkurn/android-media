@@ -66,7 +66,39 @@
           "child": 1,
           "infant": 1,
           "class": 1,
-          "amenityOptions": [],
+          "priceDetail": [{
+            "label": "CGK - DPS",
+            "price": "Rp150.000",
+            "priceNumeric": 150000
+          },
+          {
+             "label": "DPS - CGK",
+             "price": "Rp150.000",
+             "priceNumeric": 150000
+          }
+          ],
+          "amenityOptions": [
+          {
+            "departureAirportID" : "CGK",
+            "arrivalAirportID" : "DPS",
+            "type" : 1,
+            "price": "Rp. 20.000",
+            "priceNumeric": 20000,
+            "detail": "CGK-DPS",
+            "journeyId": "33398866fbc21f3f6b1b896e8ba5df11-1",
+            "itemId": "1",
+            "key": "lalala",
+            "items": [
+            {
+                "id": "lalala",
+                "price": "Rp. 20.000",
+                "priceNumeric": 20000,
+                "description": "Bagasi Hemat",
+                "currency" : "Rp"
+            }
+            ]
+          }
+          ],
           "insuranceOptions": [
             {
               "id": "1",

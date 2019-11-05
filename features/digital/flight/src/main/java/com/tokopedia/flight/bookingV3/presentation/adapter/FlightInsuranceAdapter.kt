@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.item_flight_booking_insurance.view.*
 class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHolder>() {
 
     var insuranceList: List<FlightCart.Insurance> = listOf()
+    lateinit var listener: ViewHolder.ActionListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
             LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false))
@@ -27,7 +28,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
     override fun getItemCount(): Int = insuranceList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(insuranceList[position])
+        holder.bind(insuranceList[position], listener)
     }
 
     fun updateList(list: List<FlightCart.Insurance>) {
@@ -37,7 +38,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
-        fun bind(insurance: FlightCart.Insurance) {
+        fun bind(insurance: FlightCart.Insurance, listener: ActionListener?) {
             with(view) {
                 tv_insurance_title.text = insurance.name
                 tv_insurance_subtitle.text = insurance.description
@@ -45,6 +46,9 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
 
                 if (insurance.benefits.isEmpty()) insurance_highlight_benefit_container.hide()
                 else renderHighlightBenefit(insurance.benefits)
+
+                listener?.onInsuranceChecked(insurance, insurance.defaultChecked)
+                cb_insurance.setOnCheckedChangeListener { _, checked -> listener?.onInsuranceChecked(insurance, checked) }
             }
         }
 
@@ -81,6 +85,10 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
                     }
                 }
             }
+        }
+
+        interface ActionListener {
+            fun onInsuranceChecked(insurance: FlightCart.Insurance, checked: Boolean)
         }
 
         companion object {

@@ -121,7 +121,6 @@
                 android:id="@+id/rv_insurance_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
                 app:layout_constraintTop_toBottomOf="@id/rv_passengers_info" />
 
             <View
@@ -195,7 +194,7 @@
                 android:id="@+id/rv_flight_price_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_6"
                 android:paddingStart="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingEnd="@dimen/dp_16"

@@ -4,11 +4,15 @@ package com.tokopedia.flight.bookingV3.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
+import com.tokopedia.flight.bookingV3.data.FlightBookingParam
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -36,8 +40,11 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     val flightPromoResult = MutableLiveData<FlightPromoViewEntity>()
     val profileResult = MutableLiveData<Result<ProfileInfo>>()
     val flightPassengersData = MutableLiveData<List<FlightBookingPassengerViewModel>>()
-//    val flightPriceData = MutableLiveData<List<>>
+    val flightPriceData = MutableLiveData<List<FlightCart.PriceDetail>>()
+    val flightOtherPriceData = MutableLiveData<List<FlightCart.PriceDetail>>()
     val flightCancelVoucherSuccess = MutableLiveData<Boolean>()
+
+    val flightBookingParam = FlightBookingParam()
 
     var retryCount = 0
 
@@ -55,6 +62,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
                 flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
                         data.cartData.flight.child, data.cartData.flight.infant)
+                flightPriceData.value = data.cartData.flight.priceDetail
             } else {
                 if (data.meta.needRefresh && data.meta.maxRetry >= retryCount) {
                     retryCount++
@@ -65,13 +73,13 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             }
         }) {
             //            flightCartResult.value = Fail(it)
-
             val gson = Gson()
             val data = gson.fromJson(rawQuery, FlightCart.Response::class.java).flightCart
             flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
             flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
             flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
                     data.cartData.flight.child, data.cartData.flight.infant)
+            flightPriceData.value = data.cartData.flight.priceDetail
         }
     }
 
@@ -82,6 +90,19 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
+    fun onPassengerResultReceived(passengerViewModel: FlightBookingPassengerViewModel) {
+        val passengerViewModels = flightPassengersData.value?.toMutableList()
+        val indexPassenger = passengerViewModels?.indexOf(passengerViewModel) ?: -1
+        if (indexPassenger != -1) {
+            passengerViewModels?.set(indexPassenger, passengerViewModel)
+            flightPassengersData.value = passengerViewModels
+        }
+        //calculatePriceHere
+    }
+
+    fun updateOtherPriceData(priceDetail: List<FlightCart.PriceDetail>) {
+        flightOtherPriceData.value = priceDetail
+    }
 
     fun getProfile(rawQuery: String) {
         launchCatchError(block = {
@@ -110,6 +131,42 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         {
             flightCancelVoucherSuccess.value = false
         }
+    }
+
+    fun getLuggageViewModels(): List<FlightBookingAmenityMetaViewModel> {
+        return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.luggageModels
+         else listOf()
+    }
+
+    fun getMealViewModels(): List<FlightBookingAmenityMetaViewModel> {
+        return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.mealModels
+        else listOf()
+    }
+
+    fun onInsuranceChanges(insurance: FlightCart.Insurance, checked: Boolean) {
+
+        val otherPrices = flightOtherPriceData.value?.toMutableList() ?: mutableListOf()
+        if (checked) {
+            val index = flightBookingParam.insurances.indexOf(insurance)
+            if (index == -1) {
+                flightBookingParam.insurances.add(insurance)
+                otherPrices.add(FlightCart.PriceDetail(label = String.format("%s (x%d)", insurance.name, flightBookingParam.totalPassenger),
+                        priceNumeric = insurance.totalPriceNumeric, price = FlightCurrencyFormatUtil.convertToIdrPrice(insurance.totalPriceNumeric),
+                        priceDetailId = insurance.id))
+            }
+        } else {
+            val index = flightBookingParam.insurances.indexOf(insurance)
+            if (index != -1) {
+                flightBookingParam.insurances.removeAt(index)
+                for ((index, price) in otherPrices.withIndex()) {
+                    if (price.priceDetailId.equals(insurance.id)) {
+                        otherPrices.removeAt(index)
+                        break
+                    }
+                }
+            }
+        }
+        flightOtherPriceData.value = otherPrices
     }
 
     private fun transformPhoneNum(phoneRawString: String): String {

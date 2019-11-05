@@ -183,6 +183,10 @@ data class FlightCart(
             @Expose
             val flightClass: Int = 0,
 
+            @SerializedName("priceDetail")
+            @Expose
+            val priceDetail: List<PriceDetail> = listOf(),
+
             @SerializedName("amenityOptions")
             @Expose
             val amenityOptions: List<Amenity> = listOf(),
@@ -197,6 +201,22 @@ data class FlightCart(
 
     )
 
+    data class PriceDetail(
+            @SerializedName("label")
+            @Expose
+            val label: String = "",
+
+            @SerializedName("price")
+            @Expose
+            val price: String = "",
+
+            @SerializedName("priceNumeric")
+            @Expose
+            val priceNumeric: Int = 0,
+
+            val priceDetailId: String = ""
+    )
+
     data class Amenity(
             @SerializedName("departureAirportID")
             @Expose
@@ -208,7 +228,7 @@ data class FlightCart(
 
             @SerializedName("type")
             @Expose
-            val type: String = "",
+            val type: Int = 0,
 
             @SerializedName("price")
             @Expose
@@ -232,7 +252,33 @@ data class FlightCart(
 
             @SerializedName("key")
             @Expose
-            val key: String = ""
+            val key: String = "",
+
+            @SerializedName("items")
+            @Expose
+            val items: List<AmenityItem> = listOf()
+    )
+
+    data class AmenityItem(
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
+
+            @SerializedName("price")
+            @Expose
+            val price: String = "",
+
+            @SerializedName("priceNumeric")
+            @Expose
+            val priceNumeric: Int = 0,
+
+            @SerializedName("description")
+            @Expose
+            val description: String = "",
+
+            @SerializedName("currency")
+            @Expose
+            val currency: String = ""
     )
 
     data class Insurance(
@@ -267,7 +313,7 @@ data class FlightCart(
             @SerializedName("benefits")
             @Expose
             val benefits: List<Benefit>
-    )
+    ) { override fun equals(other: Any?): Boolean = other is Insurance && (other as Insurance).id == id }
 
     data class Voucher(
             @SerializedName("enableVoucher")

@@ -19,13 +19,15 @@ import kotlinx.android.synthetic.main.item_flight_booking_v3_passenger.view.*
 class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassengerAdapter.ViewHolder>() {
 
     var list: List<FlightBookingPassengerViewModel> = listOf()
+    lateinit var listener: PassengerViewHolderListener
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+            ViewHolder(LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false))
 
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(list[position], listener)
     }
 
     fun updateList(list: List<FlightBookingPassengerViewModel>) {
@@ -35,7 +37,7 @@ class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassenger
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
-        fun bind(passenger: FlightBookingPassengerViewModel) {
+        fun bind(passenger: FlightBookingPassengerViewModel, listener: PassengerViewHolderListener) {
             with(view) {
                 tv_passenger_name.text = passenger.headerTitle
                 if (passenger.passengerFirstName != null) renderPassengerInfo(passenger)
@@ -43,13 +45,15 @@ class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassenger
                     rv_passenger_info.hide()
                     tv_edit_passenger_info.text = "Isi Data"
                 }
+
+                iv_edit_passenger.setOnClickListener { listener?.onClickEditPassengerListener(passenger) }
             }
         }
 
         fun renderPassengerInfo(passenger: FlightBookingPassengerViewModel) {
             with(view) {
                 rv_passenger_info.show()
-                tv_edit_passenger_info.text = String.format("%s %s %s", passenger.passengerTitle, passenger.passengerFirstName, passenger.passengerLastName)
+                tv_passenger_name.text = String.format("%s %s %s", passenger.passengerTitle, passenger.passengerFirstName, passenger.passengerLastName)
 
                 //initiate passenger detail like passport num, birthdate, luggage and amenities
                 var simpleViewModels = listOf<SimpleViewModel>().toMutableList()
@@ -83,6 +87,10 @@ class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassenger
         companion object {
             val LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_v3_passenger
         }
+    }
+
+    interface PassengerViewHolderListener{
+        fun onClickEditPassengerListener(passenger: FlightBookingPassengerViewModel)
     }
 
 }

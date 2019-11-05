@@ -2,6 +2,9 @@ package com.tokopedia.flight.bookingV3.data.mapper
 
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
+import com.tokopedia.flight.booking.data.cloud.entity.Amenity
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
@@ -10,6 +13,7 @@ import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEF
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import java.util.ArrayList
 
 /**
  * @author by jessica on 2019-10-29
@@ -65,7 +69,22 @@ class FlightBookingMapper {
                 journies.add(newJourney)
             }
 
-            return FlightCartViewEntity(journeySummaries = journies, insurances = flightCart.cartData.flight.insuranceOptions)
+            var luggageMetaModels = arrayListOf<FlightBookingAmenityMetaViewModel>()
+            var mealMetaModels = arrayListOf<FlightBookingAmenityMetaViewModel>()
+            for (amenity in flightCart.cartData.flight.amenityOptions) {
+                var amenityMetaViewModel = FlightBookingAmenityMetaViewModel()
+                amenityMetaViewModel.arrivalId = amenity.arrivalAirportId
+                amenityMetaViewModel.departureId = amenity.arrivalAirportId
+                amenityMetaViewModel.key = amenity.key
+                amenityMetaViewModel.journeyId = amenity.journeyId
+                amenityMetaViewModel.description = amenity.detail
+                amenityMetaViewModel.amenities = mapToFlightBookingAmenityViewModels(amenity)
+                if (amenity.type == Amenity.MEAL) mealMetaModels.add(amenityMetaViewModel)
+                else if (amenity.type == Amenity.LUGGAGE) luggageMetaModels.add(amenityMetaViewModel)
+            }
+
+            return FlightCartViewEntity(journeySummaries = journies, insurances = flightCart.cartData.flight.insuranceOptions,
+                    luggageModels = luggageMetaModels, mealModels = mealMetaModels)
         }
 
         fun mapToFlightPromoViewEntity(voucher: FlightCart.Voucher): FlightPromoViewEntity {
@@ -128,6 +147,33 @@ class FlightBookingMapper {
             }
 
             return viewModels
+        }
+
+        private fun mapToFlightBookingAmenityViewModels(entity: FlightCart.Amenity): List<FlightBookingAmenityViewModel> {
+            val viewModels = ArrayList<FlightBookingAmenityViewModel>()
+            var data: FlightBookingAmenityViewModel? = null
+            if (entity != null) {
+                for (item in entity.items) {
+                    data = mapToFlightBookingAmenityViewModel(entity.type, item)
+                    if (data != null) {
+                        viewModels.add(data)
+                    }
+                }
+            }
+            return viewModels
+        }
+
+        private fun mapToFlightBookingAmenityViewModel(type: Int, item: FlightCart.AmenityItem?): FlightBookingAmenityViewModel? {
+            var viewModel: FlightBookingAmenityViewModel? = null
+            if (item != null) {
+                viewModel = FlightBookingAmenityViewModel()
+                viewModel.id = item.id
+                viewModel.price = item.price
+                viewModel.priceNumeric = item.priceNumeric
+                viewModel.title = item.description
+                viewModel.amenityType = type
+            }
+            return viewModel
         }
     }
 }
