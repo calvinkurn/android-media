@@ -31,14 +31,14 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
     }
 
     override fun getNewFragment(): Fragment {
-        var productId = ""
-        var reputationId = ""
-        var reviewClickAt = 0
+        val productId: String
+        val reputationId: String
         val bundle = intent.extras
         val uri = intent.data
 
         if (uri != null && uri.pathSegments.size > 0) {
             val uriSegment = uri.pathSegments
+
             productId = uri.lastPathSegment ?: ""
             reputationId = uriSegment[uriSegment.size - 2]
         } else {
@@ -46,9 +46,9 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
             reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
         }
 
-        reviewClickAt = bundle?.getInt("REVIEW_CLICK_AT", 0) ?: 0
+        val reviewClickAt = bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, 0) ?: 0
 
-        return CreateReviewFragment.createInstance(productId, reputationId,  reviewClickAt)
+        return CreateReviewFragment.createInstance(productId, reputationId, reviewClickAt)
 
     }
 

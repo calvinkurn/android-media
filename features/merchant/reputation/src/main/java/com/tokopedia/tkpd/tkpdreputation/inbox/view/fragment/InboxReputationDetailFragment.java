@@ -265,14 +265,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToGiveReview(String reviewId, String productId,
-                                 int shopId, boolean reviewIsSkippable, String productAvatar,
-                                 String productName, String productUrl, String revieweeName, int
-                                         productStatus) {
-        startActivityForResult(
-                CreateReviewActivity.Companion.newInstance(getContext(), productId, String.valueOf(shopId), reputationId),
-                REQUEST_GIVE_REVIEW
-        );
+    public void onGoToGiveReview(String productId, int shopId) {
+        if (getContext() != null) {
+            startActivityForResult(
+                    CreateReviewActivity.Companion.newInstance(getContext(), productId, Integer.toString(shopId, 10), reputationId),
+                    REQUEST_GIVE_REVIEW
+            );
+        }
     }
 
     @Override

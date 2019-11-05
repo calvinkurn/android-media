@@ -11,6 +11,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -59,7 +61,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val DEFAULT_REVIEW_ID = "0"
         private const val PRODUCT_ID_REVIEW = "PRODUCT_ID"
         private const val REVIEW_ID = "REVIEW_ID"
-        private const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
+        const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
 
         private const val IMAGE_REVIEW_GREY_BG = "https://ecs7.tokopedia.net/android/others/1_2reviewbg.png"
         private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
@@ -148,6 +150,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 }
                 is Success -> {
                     stopLoading()
+                    showToasterSuccess()
                     onSuccessSubmitReview()
                 }
             }
@@ -385,14 +388,15 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSubmitReview() {
-//        showToasterSuccess()
         val intent = RouteManager.getIntent(context,ApplinkConst.HOME)
 
-        activity?.run {
-            setResult(Activity.RESULT_OK,intent)
-            startActivity(intent)
-            finish()
-        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            activity?.run {
+                setResult(Activity.RESULT_OK,intent)
+                startActivity(intent)
+                finish()
+            }
+        }, 700)
     }
 
     private fun showLoading() {
