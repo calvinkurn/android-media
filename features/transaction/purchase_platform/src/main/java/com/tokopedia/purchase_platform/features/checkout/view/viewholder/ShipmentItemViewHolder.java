@@ -627,12 +627,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() ? View.VISIBLE : View.GONE);
         if (cartItemModel.isProtectionAvailable()) {
             tvPPPMore.setText(cartItemModel.getProtectionLinkText());
-            tvPPPMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl());
-                }
-            });
+            tvPPPMore.setOnClickListener(view -> mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl()));
             tvPPPLinkText.setText(cartItemModel.getProtectionTitle());
             tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
 
@@ -723,23 +718,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llShipmentContainer.setVisibility(View.GONE);
         llShipmentBlackboxContainer.setVisibility(View.GONE);
         llShipmentRecommendationContainer.setVisibility(View.VISIBLE);
-        tvChooseDuration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                    mActionListener.onChooseShipmentDuration(
-                            shipmentCartItemModel, currentAddress, shopShipmentList, getAdapterPosition()
-                    );
-                }
+        tvChooseDuration.setOnClickListener(v -> {
+            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                mActionListener.onChooseShipmentDuration(
+                        shipmentCartItemModel, currentAddress, shopShipmentList, getAdapterPosition()
+                );
             }
         });
-        tvChangeSelectedDuration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                    mActionListener.onChangeShippingDuration(shipmentCartItemModel, currentAddress,
-                            shopShipmentList, getAdapterPosition());
-                }
+        tvChangeSelectedDuration.setOnClickListener(v -> {
+            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                mActionListener.onChangeShippingDuration(shipmentCartItemModel, currentAddress,
+                        shopShipmentList, getAdapterPosition());
             }
         });
         llCourierContainer.setVisibility(View.VISIBLE);
@@ -756,14 +745,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
         if (isTradeInDropOff) {
-            tvChooseDurationTradeIn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                        mActionListener.onChooseShipmentDuration(
-                                shipmentCartItemModel, currentAddress, shopShipmentList, getAdapterPosition()
-                        );
-                    }
+            tvChooseDurationTradeIn.setOnClickListener(view -> {
+                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    mActionListener.onChooseShipmentDuration(
+                            shipmentCartItemModel, currentAddress, shopShipmentList, getAdapterPosition()
+                    );
                 }
             });
             llShippingOptionsContainer.setVisibility(View.GONE);
@@ -1393,12 +1379,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
 
         }
-        imgPriorityTnc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mActionListener.onPriorityTncClicker();
-            }
-        });
+        imgPriorityTnc.setOnClickListener(v -> mActionListener.onPriorityTncClicker());
     }
 
     private void hideAllTicker() {
@@ -1480,15 +1461,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     imgInsuranceInfo.setVisibility(View.GONE);
                 } else {
                     imgInsuranceInfo.setVisibility(View.VISIBLE);
-                    imgInsuranceInfo.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            showBottomSheet(imgInsuranceInfo.getContext(),
-                                    imgInsuranceInfo.getContext().getString(R.string.title_bottomsheet_insurance),
-                                    courierItemData.getInsuranceUsedInfo(),
-                                    R.drawable.ic_insurance);
-                        }
-                    });
+                    imgInsuranceInfo.setOnClickListener(view -> showBottomSheet(imgInsuranceInfo.getContext(),
+                            imgInsuranceInfo.getContext().getString(R.string.title_bottomsheet_insurance),
+                            courierItemData.getInsuranceUsedInfo(),
+                            R.drawable.ic_insurance));
                 }
             }
 
@@ -1636,12 +1612,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tooltip.setDesc(message);
         tooltip.setTextButton(context.getString(R.string.label_button_bottomsheet_close));
         tooltip.setIcon(image);
-        tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tooltip.dismiss();
-            }
-        });
+        tooltip.getBtnAction().setOnClickListener(v -> tooltip.dismiss());
         tooltip.show();
     }
 
@@ -1658,37 +1629,26 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private View.OnClickListener getCostDetailOptionListener(final ShipmentCartItemModel shipmentCartItemModel) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                    shipmentCartItemModel.setStateDetailSubtotalViewExpanded(!shipmentCartItemModel.isStateDetailSubtotalViewExpanded());
-                    mActionListener.onNeedUpdateViewItem(getAdapterPosition());
-                    mActionListener.onSubTotalItemClicked(getAdapterPosition());
-                }
+        return view -> {
+            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                shipmentCartItemModel.setStateDetailSubtotalViewExpanded(!shipmentCartItemModel.isStateDetailSubtotalViewExpanded());
+                mActionListener.onNeedUpdateViewItem(getAdapterPosition());
+                mActionListener.onSubTotalItemClicked(getAdapterPosition());
             }
         };
     }
 
     private View.OnClickListener getInsuranceClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                    cbInsurance.setChecked(!cbInsurance.isChecked());
-                    mActionListener.onInsuranceChecked(getAdapterPosition());
-                }
+        return view -> {
+            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                cbInsurance.setChecked(!cbInsurance.isChecked());
+                mActionListener.onInsuranceChecked(getAdapterPosition());
             }
         };
     }
 
     private View.OnClickListener getDropshipperClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cbDropshipper.setChecked(!cbDropshipper.isChecked());
-            }
-        };
+        return view -> cbDropshipper.setChecked(!cbDropshipper.isChecked());
     }
 
     private void initInnerRecyclerView(List<CartItemModel> cartItemList) {
@@ -1703,13 +1663,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private View.OnClickListener showAllProductListener(final ShipmentCartItemModel shipmentCartItemModel) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                    shipmentCartItemModel.setStateAllItemViewExpanded(!shipmentCartItemModel.isStateAllItemViewExpanded());
-                    mActionListener.onNeedUpdateViewItem(getAdapterPosition());
-                }
+        return view -> {
+            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                shipmentCartItemModel.setStateAllItemViewExpanded(!shipmentCartItemModel.isStateAllItemViewExpanded());
+                mActionListener.onNeedUpdateViewItem(getAdapterPosition());
             }
         };
     }
