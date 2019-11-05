@@ -28,4 +28,6 @@ public class LogisticConstant {
     public static final String INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT = "21";
     public static final String INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT = "22";
 
+    public static final String RESULT_DATA_STORE_LOCATION = "RESULT_DATA_STORE_LOCATION";
+
 }

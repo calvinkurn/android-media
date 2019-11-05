@@ -62,7 +62,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private val FINISH_FLAG = 1212
     private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
-    private var fusedLocationClient: FusedLocationProviderClient? = null
     private var token: Token? = null
     private var isPolygon: Boolean = false
     private var districtId: Int? = null
@@ -141,7 +140,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
-        presenter.autofill(currentLat ?: 0.0, currentLong ?: 0.0)
+        presenter.autofill(currentLat, currentLong)
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
