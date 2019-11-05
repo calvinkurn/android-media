@@ -2,9 +2,9 @@ package com.tokopedia.transaction.orders.orderdetails.view.adapter
 
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatImageView
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View

@@ -2,7 +2,7 @@ package com.tokopedia.train.search.presentation.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.search.presentation.fragment.TrainSearchDepartureFragment;

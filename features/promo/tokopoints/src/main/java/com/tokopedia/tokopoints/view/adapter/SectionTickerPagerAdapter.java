@@ -2,8 +2,8 @@ package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.TextView;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TickerMetadata;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
@@ -81,7 +81,7 @@ public class SectionTickerPagerAdapter extends PagerAdapter {
                         if (uri.startsWith(CommonConstant.TickerMapKeys.TOKOPEDIA)) {
                             RouteManager.route(context, uri);
                         } else {
-                            ((TokopointRouter) mContext.getApplicationContext()).openTokoPoint(mContext, uri);
+                            RouteManager.route(mContext,String.format("%s?url=%", ApplinkConst.WEBVIEW,uri));
                         }
 
                         AnalyticsTrackerUtil.sendEvent(mContext,
@@ -95,7 +95,7 @@ public class SectionTickerPagerAdapter extends PagerAdapter {
                     public void updateDrawState(TextPaint ds) {
                         super.updateDrawState(ds);
                         ds.setUnderlineText(false);
-                        ds.setColor(context.getResources().getColor(R.color.tkpd_main_green));
+                        ds.setColor(context.getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green));
                     }
                 });
             } else {

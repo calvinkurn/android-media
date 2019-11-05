@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatlist.di
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
 import dagger.Binds

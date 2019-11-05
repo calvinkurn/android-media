@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -365,7 +365,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
-
+        analytics.trackClickImageUpload()
         activity?.let {
             val strings: ArrayList<String> = ArrayList()
             strings.add(imageUrl)
@@ -843,6 +843,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         onGoToWebView(url, id)
     }
 
+    override fun trackClickInvoice(viewModel: AttachInvoiceSentViewModel) {
+        analytics.trackClickInvoice(viewModel)
+    }
+
     override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
         return getParamString(key, arguments, savedInstanceState)
     }
@@ -869,6 +873,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun getShopName(): String {
         return opponentName
+    }
+
+    override fun trackChatMenuClicked(label: String) {
+        analytics.trackChatMenuClicked(label)
     }
 
     override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {

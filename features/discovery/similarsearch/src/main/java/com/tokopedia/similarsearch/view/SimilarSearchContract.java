@@ -2,7 +2,7 @@ package com.tokopedia.similarsearch.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.similarsearch.model.ProductsItem;

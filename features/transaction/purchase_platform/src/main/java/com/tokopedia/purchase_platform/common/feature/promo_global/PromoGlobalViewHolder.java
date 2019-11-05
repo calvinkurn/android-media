@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.promo_global;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.purchase_platform.R;

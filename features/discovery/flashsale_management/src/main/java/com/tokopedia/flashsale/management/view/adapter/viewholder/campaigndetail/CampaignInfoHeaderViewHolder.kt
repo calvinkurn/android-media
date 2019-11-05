@@ -2,7 +2,7 @@ package com.tokopedia.flashsale.management.view.adapter.viewholder.campaigndetai
 
 import android.animation.ObjectAnimator
 import android.graphics.drawable.GradientDrawable
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.view.animation.LinearInterpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

@@ -9,8 +9,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -24,6 +24,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
@@ -325,13 +328,13 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
     public void onClick(View v) {
         int id = v.getId();
         if(id == R.id.rl_points || id == R.id.rl_loyalty) {
-            ApplinkUtil.navigateToAssociatedPage((Activity) getContext(), ApplinkConst.TOKOPOINTS, null, CrackTokenActivity.class);
+            RouteManager.route(getContext(), ApplinkConstInternalPromo.TOKOPOINTS_HOME);
             if(id == R.id.rl_points)
                 trackPointsIconClick();
             else
                 trackLoyaltyIconClick();
         } else if(id == R.id. rl_coupons) {
-            ApplinkUtil.navigateToAssociatedPage((Activity) getContext(), ApplinkConst.COUPON_LISTING, null, CrackTokenActivity.class);
+            RouteManager.route(getContext(),ApplinkConstInternalPromo.TOKOPOINTS_COUPON);
             trackKuponIconClick();
         }
     }

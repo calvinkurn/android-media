@@ -11,8 +11,8 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

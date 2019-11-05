@@ -2,8 +2,8 @@ package com.tokopedia.nps.presentation.view.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.AppCompatRatingBar;
+import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.widget.AppCompatRatingBar;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RatingBar;

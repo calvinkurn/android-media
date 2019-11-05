@@ -18,9 +18,8 @@ class TopChatChatMenuFactory : ChatMenuFactory {
 
     override fun createChatMenuItems(): List<ChatMenu> {
         return listOf(
-                ChatMenu(icon = com.tokopedia.chat_common.R.drawable.ic_attach_grey, title = "Link Produk"),
-                ChatMenu(icon = com.tokopedia.chat_common.R.drawable.ic_image_picker_grey, title = "Gambar")
+                ChatMenu(icon = com.tokopedia.chat_common.R.drawable.ic_attach_grey, title = "Link Produk", label = "product"),
+                ChatMenu(icon = com.tokopedia.chat_common.R.drawable.ic_image_picker_grey, title = "Gambar", label = "image")
         )
     }
-
 }

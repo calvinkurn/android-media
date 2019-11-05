@@ -3,8 +3,8 @@ package com.tokopedia.topads.dashboard.view.widget;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 

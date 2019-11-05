@@ -1,8 +1,8 @@
 package com.tokopedia.gm.featured.view.adapter.viewholder;
 
-import android.support.v4.view.MotionEventCompat;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.core.view.MotionEventCompat;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;

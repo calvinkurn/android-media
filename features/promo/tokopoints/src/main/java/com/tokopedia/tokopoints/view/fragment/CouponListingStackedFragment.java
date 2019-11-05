@@ -2,12 +2,12 @@ package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +18,12 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CouponInStackBaseAdapter;
@@ -88,7 +90,7 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getContext();
     }
 
     @Override
@@ -142,8 +144,8 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
         mSwipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         mItemDecoration = new SpacesItemDecoration(0,
-                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
-                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10));
+                getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
+                getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10));
     }
 
     private void initListener() {
@@ -158,7 +160,7 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
             startActivity(CatalogListingActivity.getCallingIntent(getActivityContext(), bundle));
         });
         getView().findViewById(R.id.text_empty_action).setOnClickListener(v ->
-                ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), CommonConstant.WebLink.INFO));
+                RouteManager.route(getActivityContext(), ApplinkConstInternalGlobal.WEBVIEW,CommonConstant.WebLink.INFO));
 
         mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -170,7 +172,7 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+       RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW,url);
     }
 
     @Override
@@ -242,14 +244,14 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
 
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.grey_warm));
+                    com.tokopedia.design.R.color.grey_warm));
         }
     }
 

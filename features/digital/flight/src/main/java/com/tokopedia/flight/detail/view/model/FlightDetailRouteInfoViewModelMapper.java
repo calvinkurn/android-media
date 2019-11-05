@@ -1,6 +1,8 @@
 package com.tokopedia.flight.detail.view.model;
 
 import com.tokopedia.flight.orderlist.data.cloud.entity.AmenityEntity;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteInfoViewModel;
+import com.tokopedia.flight.search.data.api.single.response.Amenity;
 import com.tokopedia.flight.search.data.api.single.response.Info;
 
 import java.util.ArrayList;
@@ -28,11 +30,35 @@ public class FlightDetailRouteInfoViewModelMapper {
         return viewModel;
     }
 
+    public FlightDetailRouteInfoViewModel transform(FlightOrderDetailRouteInfoViewModel info) {
+        FlightDetailRouteInfoViewModel viewModel = null;
+        if (info != null) {
+            viewModel = new FlightDetailRouteInfoViewModel();
+            viewModel.setLabel(info.getLabel());
+            viewModel.setValue(info.getValue());
+        }
+        return viewModel;
+    }
+
     public List<FlightDetailRouteInfoViewModel> transform(List<Info> infos) {
         List<FlightDetailRouteInfoViewModel> viewModels = new ArrayList<>();
         FlightDetailRouteInfoViewModel viewModel;
         if (infos != null) {
             for (Info info : infos) {
+                viewModel = transform(info);
+                if (viewModel != null) {
+                    viewModels.add(viewModel);
+                }
+            }
+        }
+        return viewModels;
+    }
+
+    public List<FlightDetailRouteInfoViewModel> transformOrderInfo(List<FlightOrderDetailRouteInfoViewModel> infos) {
+        List<FlightDetailRouteInfoViewModel> viewModels = new ArrayList<>();
+        FlightDetailRouteInfoViewModel viewModel;
+        if (infos != null) {
+            for (FlightOrderDetailRouteInfoViewModel info : infos) {
                 viewModel = transform(info);
                 if (viewModel != null) {
                     viewModels.add(viewModel);
@@ -77,5 +103,24 @@ public class FlightDetailRouteInfoViewModelMapper {
             }
         }
         return routeInfoViewModels;
+    }
+
+    public List<Amenity> transformOrderAmenities(List<com.tokopedia.flight.orderlist.data.cloud.entity.Amenity> amenities) {
+        List<Amenity> dataList = new ArrayList<>();
+
+        if (amenities != null) {
+            for (com.tokopedia.flight.orderlist.data.cloud.entity.Amenity item : amenities) {
+                dataList.add(transform(item));
+            }
+        }
+
+        return dataList;
+    }
+
+    public Amenity transform(com.tokopedia.flight.orderlist.data.cloud.entity.Amenity amenity) {
+        Amenity data = new Amenity();
+        data.setIcon(amenity.getIcon());
+        data.setLabel(amenity.getLabel());
+        return data;
     }
 }

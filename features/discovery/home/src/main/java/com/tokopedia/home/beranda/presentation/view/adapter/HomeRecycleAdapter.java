@@ -100,13 +100,8 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     }
 
     public void updateHomeQueryItems(List<Visitable> newVisitable) {
-        int headerHomePosition = hasHomeHeaderViewModel();
-        if (headerHomePosition != POSITION_UNDEFINED) {
-            newVisitable.add(headerHomePosition, getItems().get(headerHomePosition));
-        }
         clearItems();
         this.visitables = newVisitable;
-
         notifyDataSetChanged();
     }
 
