@@ -8,6 +8,7 @@ import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffUiModel
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
 import com.tokopedia.logisticaddaddress.domain.query.LocationQuery
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
@@ -40,10 +41,8 @@ class DropoffPickerViewModel
                         mStoreResponse.value = Success(successResponse)
                     }
                 },
-                { _ ->
-                    // todo: This is dummy implementation prior to live of production
-                    mStoreResponse.value = Success(
-                            mapper.map(LocationQuery.getStoreDummyObject))
+                { error ->
+                    mStoreResponse.value = Fail(error)
                 }
         )
     }
