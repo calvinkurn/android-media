@@ -11,8 +11,8 @@ import kotlinx.android.synthetic.main.item_nearby_location.view.*
 
 class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    val mData: MutableList<DropoffVisitable> = mutableListOf()
-    var mListener: ActionListener? = null
+    private val mData: MutableList<DropoffVisitable> = mutableListOf()
+    private var mListener: ActionListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -66,6 +66,10 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         mListener = listener
     }
 
+    interface ActionListener {
+        fun onItemClicked(view: View)
+    }
+
     class NearbiesViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(datum: DropoffNearbyModel) {
             view.tv_location_title.text = datum.addrName
@@ -73,15 +77,11 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             view.tv_distance.text = datum.storeDistance
             view.tag = datum
         }
-    }
 
+    }
     class EmptyViewHolder(val view: View): RecyclerView.ViewHolder(view)
     class LoadingViewHolder(val view: View): RecyclerView.ViewHolder(view)
     class HeaderViewHolder(val view: View): RecyclerView.ViewHolder(view)
-
-    interface ActionListener {
-        fun onItemClicked(view: View)
-    }
 
     interface DropoffVisitable
     data class HeaderType(var text: String = ""): DropoffVisitable
