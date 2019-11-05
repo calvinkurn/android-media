@@ -22,8 +22,9 @@
         </activity>
         <activity
             android:name=".view.QrOvoPayTxDetailActivity"
+            android:label="@string/oqr_payment_summary"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -37,6 +38,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.OvoWebViewActivity"
+            android:label="@string/oqr_payment_summary"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
     </application>

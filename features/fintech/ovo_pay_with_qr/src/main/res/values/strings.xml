@@ -31,5 +31,6 @@
     <string name="oqr_powered_by">Powered by</string>
     <string name="oqr_pin_page_title">Verifikasi PIN OVO</string>
     <string name="oqr_contact_us">Contact Us</string>
+    <string name="oqr_payment_summary">Pembayaran</string>
 
 </resources>
