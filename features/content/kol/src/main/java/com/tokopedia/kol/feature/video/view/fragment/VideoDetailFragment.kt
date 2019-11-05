@@ -32,6 +32,7 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
@@ -147,7 +148,7 @@ class VideoDetailFragment:
         return activity!!
     }
 
-    override fun onLikeKolSuccess(rowNumber: Int, action: Int) {
+    override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
 
         val like = dynamicPostViewModel.footer.like
         like.isChecked = !like.isChecked

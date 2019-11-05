@@ -16,7 +16,6 @@ import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedplus.FeedPlusConstantKt;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel;
-import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.subscriber.FeedPlusDeletePostSubscriber;
@@ -24,7 +23,6 @@ import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSub
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
-import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.profile.view.subscriber.TrackPostClickSubscriber;
@@ -190,7 +188,7 @@ public class FeedPlusPresenter
 
     @Override
     public void likeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
-        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+        likeKolPostUseCase.execute(LikeKolPostUseCase.Companion.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
                 new LikeKolPostSubscriber
                         (rowNumber, getView(), kolListener));
 
@@ -199,7 +197,7 @@ public class FeedPlusPresenter
     @Override
     public void unlikeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
+                LikeKolPostUseCase.Companion.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 new LikeKolPostSubscriber(rowNumber, getView(), kolListener));
     }
 

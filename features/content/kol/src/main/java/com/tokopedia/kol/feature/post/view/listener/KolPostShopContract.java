@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface KolPostShopContract {
         interface Like {
             Context getContext();
 
-            void onLikeKolSuccess(int rowNumber, int action);
+            void onLikeKolSuccess(int rowNumber, LikeKolPostUseCase.LikeKolPostAction action);
 
             void onLikeKolError(String message);
         }

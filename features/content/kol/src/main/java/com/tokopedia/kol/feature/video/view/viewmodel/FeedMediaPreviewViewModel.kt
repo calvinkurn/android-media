@@ -90,7 +90,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
 
     fun doLikePost(isLikeAction: Boolean, onFail: (Throwable) -> Unit) {
         likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(postId.toInt(),
-                if (isLikeAction) LikeKolPostUseCase.ACTION_LIKE else LikeKolPostUseCase.ACTION_UNLIKE),
+                if (isLikeAction) LikeKolPostUseCase.LikeKolPostAction.Like else LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
                         if (t == true){

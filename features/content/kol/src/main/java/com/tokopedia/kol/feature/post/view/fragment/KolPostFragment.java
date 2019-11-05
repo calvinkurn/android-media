@@ -31,6 +31,7 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
@@ -392,7 +393,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onLikeKolSuccess(int rowNumber, int action) {
+    public void onLikeKolSuccess(int rowNumber, LikeKolPostUseCase.LikeKolPostAction action) {
         if (adapter.getList().get(rowNumber) != null
                 && adapter.getList().get(rowNumber) instanceof KolPostViewModel) {
             KolPostViewModel kolPostViewModel =

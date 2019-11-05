@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.feedcomponent.di.FeedComponentModule
+import com.tokopedia.kol.feature.post.data.query.LikeKolPostQueryProvider
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase.Companion.MUTATION_LIKE_KOL_POST
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
@@ -35,6 +37,13 @@ class ProfileModule {
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+    }
+
+    @ProfileScope
+    @Provides
+    @Named(MUTATION_LIKE_KOL_POST)
+    fun provideLikeKolPostMutation(): String {
+        return LikeKolPostQueryProvider.getQuery()
     }
 
 }

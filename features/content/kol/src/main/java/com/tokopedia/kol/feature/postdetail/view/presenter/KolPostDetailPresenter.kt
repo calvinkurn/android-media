@@ -117,15 +117,15 @@ class KolPostDetailPresenter @Inject constructor(
 
     override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
-                LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
+                LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
         )
     }
 
     override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-                LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_UNLIKE)
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
+                LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)
         )
     }
 

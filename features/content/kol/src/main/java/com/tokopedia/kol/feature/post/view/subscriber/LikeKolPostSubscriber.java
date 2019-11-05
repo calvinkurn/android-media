@@ -2,6 +2,7 @@ package com.tokopedia.kol.feature.post.view.subscriber;
 
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.kol.common.network.GraphqlErrorHandler;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 
 import rx.Subscriber;
@@ -13,9 +14,9 @@ import rx.Subscriber;
 public class LikeKolPostSubscriber extends Subscriber<Boolean> {
     private final KolPostListener.View.Like  view;
     private final int rowNumber;
-    private final int action;
+    private final LikeKolPostUseCase.LikeKolPostAction action;
 
-    public LikeKolPostSubscriber(KolPostListener.View.Like view, int rowNumber, int action) {
+    public LikeKolPostSubscriber(KolPostListener.View.Like view, int rowNumber, LikeKolPostUseCase.LikeKolPostAction action) {
         this.view = view;
         this.rowNumber = rowNumber;
         this.action = action;

@@ -62,15 +62,15 @@ class VideoDetailPresenter
 
     override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
-                LikeSubscriber(likeListener, rowNumber)
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
+                LikeSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
         )
     }
 
     override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-                LikeSubscriber(likeListener, rowNumber)
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
+                LikeSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)
         )
     }
     private fun getUserId(): String {

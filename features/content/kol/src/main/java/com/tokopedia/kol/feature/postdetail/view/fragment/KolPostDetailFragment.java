@@ -64,6 +64,7 @@ import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
@@ -344,7 +345,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeKolSuccess(int rowNumber, int action) {
+    public void onLikeKolSuccess(int rowNumber, LikeKolPostUseCase.LikeKolPostAction action) {
         if (adapter.getList().size() > rowNumber && adapter.getList().get(rowNumber) instanceof BaseKolViewModel) {
             BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getList().get(rowNumber);
             kolViewModel.setLiked(!kolViewModel.isLiked());

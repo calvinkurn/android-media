@@ -98,6 +98,7 @@ import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -536,7 +537,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         presenter.cursor = cursor
     }
 
-    override fun onLikeKolSuccess(rowNumber: Int, action: Int) {
+    override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
         if (adapter.data.size > rowNumber
                 && adapter.data[rowNumber] != null
                 && adapter.data[rowNumber] is DynamicPostViewModel) {

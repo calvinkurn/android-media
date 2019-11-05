@@ -1,8 +1,9 @@
 
-package com.tokopedia.kol.feature.post.data.pojo;
+package com.tokopedia.kol.feature.post.data.pojo.likekolpost;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.kol.feature.post.data.pojo.LikeKolPostSuccessData;
 
 public class DoLikeKolPost {
 

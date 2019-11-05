@@ -3,6 +3,8 @@ package com.tokopedia.shop.feed.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.kol.feature.post.data.query.LikeKolPostQueryProvider
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase.Companion.MUTATION_LIKE_KOL_POST
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.presenter.FeedShopPresenter
@@ -27,6 +29,13 @@ class FeedShopModule {
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+    }
+
+    @FeedShopScope
+    @Provides
+    @Named(MUTATION_LIKE_KOL_POST)
+    fun provideLikeKolPostMutation(): String {
+        return LikeKolPostQueryProvider.getQuery()
     }
 
 }

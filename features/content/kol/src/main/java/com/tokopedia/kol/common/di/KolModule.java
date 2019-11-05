@@ -16,6 +16,7 @@ import com.tokopedia.kol.common.data.source.KolAuthInterceptor;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.kol.common.util.KolConstant;
+import com.tokopedia.kol.feature.post.data.query.LikeKolPostQueryProvider;
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract;
 import com.tokopedia.kol.feature.video.view.presenter.VideoDetailPresenter;
 import com.tokopedia.network.NetworkRouter;
@@ -39,6 +40,8 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+
+import static com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase.MUTATION_LIKE_KOL_POST;
 
 /**
  * @author by milhamj on 06/02/18.
@@ -169,5 +172,12 @@ public class KolModule {
     public FeedAnalyticTracker providesFeedAnalyticTracker(TrackingQueue trackingQueue,
                                                            UserSessionInterface userSessionInterface)  {
         return new FeedAnalyticTracker(trackingQueue, userSessionInterface);
+    }
+
+    @KolScope
+    @Provides
+    @Named(MUTATION_LIKE_KOL_POST)
+    String provideLikeKolPostMutation() {
+        return LikeKolPostQueryProvider.INSTANCE.getQuery();
     }
 }
