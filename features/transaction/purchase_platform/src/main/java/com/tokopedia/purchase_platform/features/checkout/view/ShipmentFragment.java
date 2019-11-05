@@ -2163,31 +2163,37 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
                 setPinpoint(cartItemPosition);
             } else {
-                sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(recommendedCourier.getName());
-                if (isToogleYearEndPromoOn()) {
-                    sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(recommendedCourier.getShipperProductId());
-                }
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
 
-                // Clear logistic voucher data when any duration is selected and voucher is not null
-                if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
-                        !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) && isClearPromo) {
-                    shipmentPresenter.cancelAutoApplyPromoStackLogistic(
-                            shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
-                    shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
-                    setBenefitSummaryInfoUiModel(null);
-                    if (!stillHasAppliedPromo()) {
-                        resetPromoBenefit();
+                if (isTradeInByDropOff()) {
+                    shipmentAdapter.setSelectedCourierTradeInPickup(recommendedCourier);
+                    shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
+                } else {
+                    sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(recommendedCourier.getName());
+                    if (isToogleYearEndPromoOn()) {
+                        sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(recommendedCourier.getShipperProductId());
                     }
-                    shipmentAdapter.clearTotalPromoStackAmount();
-                    shipmentAdapter.updateShipmentCostModel();
-                    shipmentAdapter.updateCheckoutButtonData(null);
-                }
-                shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
-                shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-                shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);
-                if (!TextUtils.isEmpty(recommendedCourier.getPromoCode()) && isDurationClick) {
-                    checkCourierPromo(recommendedCourier, cartItemPosition);
+
+                    // Clear logistic voucher data when any duration is selected and voucher is not null
+                    if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
+                            !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) && isClearPromo) {
+                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(
+                                shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+                        setBenefitSummaryInfoUiModel(null);
+                        if (!stillHasAppliedPromo()) {
+                            resetPromoBenefit();
+                        }
+                        shipmentAdapter.clearTotalPromoStackAmount();
+                        shipmentAdapter.updateShipmentCostModel();
+                        shipmentAdapter.updateCheckoutButtonData(null);
+                    }
+                    shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
+                    shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
+                    shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);
+                    if (!TextUtils.isEmpty(recommendedCourier.getPromoCode()) && isDurationClick) {
+                        checkCourierPromo(recommendedCourier, cartItemPosition);
+                    }
                 }
             }
         }
