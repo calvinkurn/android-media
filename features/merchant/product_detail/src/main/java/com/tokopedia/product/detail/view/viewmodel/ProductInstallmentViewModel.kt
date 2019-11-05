@@ -32,11 +32,14 @@ class ProductInstallmentViewModel @Inject constructor(
     private val installmentResp = MutableLiveData<Result<List<InstallmentBank>>>()
     val transformedInstallment = Transformations.map(installmentResp){
         when(it){
-            is Success -> Success(it.data.flatMap { it.installmentList.map { installment -> it.copy(
-                    installmentList = listOf(installment))}}.groupBy { it.installmentList.first().term })
+            is Success -> {
+                Success(it.data.flatMap { it.installmentList.map { installment -> it.copy(
+                        installmentList = listOf(installment))}}.groupBy { it.installmentList.first().term })
+            }
             is Fail -> it
 
         }
+
     }
 
     fun loadInstallment(price: Float){

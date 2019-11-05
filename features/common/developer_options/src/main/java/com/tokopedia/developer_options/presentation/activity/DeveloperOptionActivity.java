@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
@@ -64,6 +65,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vForceCrash;
     private TextView vDevOptionRN;
     private TextView reviewNotifBtn;
+    private TextView pdpTest;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
     private ToggleButton toggleReactDeveloperMode;
@@ -128,6 +130,8 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         reviewNotifBtn = findViewById(R.id.review_notification);
 
+        pdpTest = findViewById(R.id.pdp_test);
+
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
 
@@ -153,6 +157,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             Editable prefix = remoteConfigPrefix.getText();
 
             startRemoteConfigEditor(prefix != null ? prefix.toString() : "");
+        });
+
+        pdpTest.setOnClickListener(v->{
+            RouteManager.route(this, ApplinkConstInternalMarketplace.DYNAMIC_PRODUCT_DETAIL);
         });
 
         vForceCrash.setOnClickListener(v -> {

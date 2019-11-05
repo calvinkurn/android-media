@@ -1955,7 +1955,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
         initToolBarMethod()
-
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {

@@ -107,7 +107,6 @@
                 <include layout="@layout/partial_product_rating_talk_courier"/>
                 <include layout="@layout/partial_product_detail_visibility"/>
                 <include layout="@layout/partial_value_proposition_os"/>
-                <include layout="@layout/partial_variant_rate_estimation" />
 
                 <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
                     android:id="@+id/merchantVoucherListWidget"
@@ -262,27 +261,29 @@
             </FrameLayout>
 
         </RelativeLayout>
-        
+
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          android:layout_gravity="bottom">
-    
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+
             <com.tokopedia.stickylogin.view.StickyLoginView
-              android:id="@+id/sticky_login_text"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/sticky_bg_color"
-              android:visibility="gone"
-              app:layout_constraintTop_toTopOf="parent"
-              app:sticky_highlight_color="@color/g_500"
-              app:sticky_left_icon="@drawable/ic_toped_widget_login"/>
-            
-            <include layout="@layout/partial_layout_button_action"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content" />
-            
+                android:id="@+id/sticky_login_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/sticky_bg_color"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:sticky_highlight_color="@color/g_500"
+                app:sticky_left_icon="@drawable/ic_toped_widget_login" />
+
+            <include
+                layout="@layout/partial_layout_button_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -327,6 +328,11 @@
             android:layout_gravity="center"
             android:visibility="gone"
             tools:visibility="visible"/>
+
+        <include
+            layout="@layout/partial_variant_rate_estimation"
+            app:layout_anchor="@+id/linearLayout"
+            app:layout_anchorGravity="bottom|center" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
