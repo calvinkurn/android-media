@@ -763,6 +763,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
                 break;
             case REQUEST_CODE_REVIEW:
+                adapter.resetReviewStars();
                 if (resultCode == Activity.RESULT_OK) {
                     adapter.removeReviewViewModel();
                 }

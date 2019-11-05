@@ -33,7 +33,8 @@ class ImageReviewAdapter(private val addDataClick: OnAddImageClick) : RecyclerVi
                         addDataClick)
             }
             TYPE_IMAGE -> {
-                return ImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_image_chooser_review, view, false))
+                return ImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_image_chooser_review, view, false),
+                        addDataClick)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }

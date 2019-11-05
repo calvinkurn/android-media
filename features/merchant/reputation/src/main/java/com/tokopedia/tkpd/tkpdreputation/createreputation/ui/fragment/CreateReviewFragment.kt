@@ -27,7 +27,6 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -196,25 +195,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
         edit_text_review.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
 
-                if (s.toString().length < WRITE_REVIEW_MIN_LENGTH) {
-
-                    /**
-                     * https://stackoverflow.com/questions/53543063/error-message-text-for-textinputlayout-is-cut-off
-                     */
-                    txt_input_review.isErrorEnabled = true
-                    txt_input_review.error = null
-                    txt_input_review.error = getString(R.string.review_min_character)
-
-                    if (!shouldIncreaseProgressBar) {
-                        shouldIncreaseProgressBar = true
-                        stepper_review.progress = stepper_review.progress - 1
-                    }
-                } else {
-                    if (shouldIncreaseProgressBar) {
-                        stepper_review.progress = stepper_review.progress + 1
-                        shouldIncreaseProgressBar = false
-                    }
-                    txt_input_review.isErrorEnabled = false
+                if (s.toString().isEmpty() && !shouldIncreaseProgressBar) {
+                    shouldIncreaseProgressBar = true
+                    stepper_review.progress = stepper_review.progress - 1
+                } else if(shouldIncreaseProgressBar) {
+                    stepper_review.progress = stepper_review.progress + 1
+                    shouldIncreaseProgressBar = false
                 }
             }
 
@@ -388,11 +374,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSubmitReview() {
-        val intent = RouteManager.getIntent(context,ApplinkConst.HOME)
+        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
 
         Handler(Looper.getMainLooper()).postDelayed({
             activity?.run {
-                setResult(Activity.RESULT_OK,intent)
+                setResult(Activity.RESULT_OK, intent)
                 startActivity(intent)
                 finish()
             }
