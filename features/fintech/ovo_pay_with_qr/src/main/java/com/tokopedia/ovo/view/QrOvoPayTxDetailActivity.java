@@ -30,7 +30,6 @@ public class QrOvoPayTxDetailActivity extends BaseSimpleActivity implements Tran
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.e("sandeep","entered in detail activity");
         LocalCacheHandler localCache = new LocalCacheHandler(getApplicationContext(), LOCAL_CACHE_ID);
         String saveInstanceCacheId = localCache.getString(CACHE_ID);
         SaveInstanceCacheManager saveInstanceCacheManager = new SaveInstanceCacheManager(
