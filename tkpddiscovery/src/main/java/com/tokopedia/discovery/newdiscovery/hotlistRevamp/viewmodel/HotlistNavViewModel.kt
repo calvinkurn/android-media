@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.discovery.categoryrevamp.domain.usecase.CategoryProductUseCase
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.DynamicFilterUseCase
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.GetProductListUseCase
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.QuickFilterUseCase
@@ -22,6 +23,7 @@ import javax.inject.Inject
 
 class HotlistNavViewModel @Inject constructor(var hotlistDetailUseCase: HotlistDetailUseCase,
                                               var getProductListUseCase: GetProductListUseCase,
+                                              var categoryProductUseCase: CategoryProductUseCase,
                                               var quickFilterUseCase: QuickFilterUseCase,
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
                                               var cpmAdsUseCase: CpmAdsUseCase) : ViewModel() {
@@ -66,6 +68,29 @@ class HotlistNavViewModel @Inject constructor(var hotlistDetailUseCase: HotlistD
                     }
                 }
 
+            }
+
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable?) {
+                mProductList.value = Fail(e ?: Throwable("Throw Error"))
+            }
+        })
+    }
+
+    fun getProductListWithoutTopAds(params: RequestParams) {
+        categoryProductUseCase.execute(params, object : Subscriber<ProductListResponse>() {
+            override fun onNext(productListResponse: ProductListResponse?) {
+                productListResponse?.let { productResponse ->
+                    (productResponse.searchProduct)?.let { searchProduct ->
+                        searchProduct.products?.let { productList ->
+                            mProductList.value = Success((productList) as List<ProductsItem>)
+                        }
+
+                        mProductCount.value = searchProduct.countText
+                    }
+                }
             }
 
             override fun onCompleted() {

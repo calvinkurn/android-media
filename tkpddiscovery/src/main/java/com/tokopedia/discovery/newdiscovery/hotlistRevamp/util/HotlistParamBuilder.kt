@@ -43,11 +43,11 @@ class HotlistParamBuilder {
         return requestParam
     }
 
-    fun generateProductListParams(strFilterAttribute: String,
-                                  start: Int,
-                                  uniqueId: String,
-                                  selectedSort: HashMap<String, String>,
-                                  selectedFilter: HashMap<String, String>): RequestParams {
+    fun generateProductListParamsWithTopAds(strFilterAttribute: String,
+                                            start: Int,
+                                            uniqueId: String,
+                                            selectedSort: HashMap<String, String>,
+                                            selectedFilter: HashMap<String, String>): RequestParams {
         val param = RequestParams.create()
         param.putString("product_params", prepareProductListParams(strFilterAttribute,
                 start * 10,
@@ -60,6 +60,22 @@ class HotlistParamBuilder {
                 start,
                 createParametersForQuery(selectedSort),
                 createParametersForQuery(selectedFilter)))
+        return param
+    }
+
+    fun generateProductListParamsWithOutTopAds(strFilterAttribute: String,
+                                               start: Int,
+                                               uniqueId: String,
+                                               selectedSort: HashMap<String, String>,
+                                               selectedFilter: HashMap<String, String>): RequestParams {
+        val param = RequestParams.create()
+        param.putString("params", prepareProductListParams(strFilterAttribute,
+                start * 10,
+                10,
+                uniqueId,
+                createParametersForQuery(selectedSort),
+                createParametersForQuery(selectedFilter))
+        )
         return param
 
     }

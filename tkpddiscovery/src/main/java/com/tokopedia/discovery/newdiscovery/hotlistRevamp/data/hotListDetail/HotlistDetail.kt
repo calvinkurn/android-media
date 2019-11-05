@@ -29,7 +29,7 @@ data class HotlistDetail(
         val description: String? = null,
 
         @field:SerializedName("isTopads")
-        val isTopads: Boolean? = null,
+        var isTopads: Boolean = false,
 
         @field:SerializedName("cityID")
         val cityID: String? = null,

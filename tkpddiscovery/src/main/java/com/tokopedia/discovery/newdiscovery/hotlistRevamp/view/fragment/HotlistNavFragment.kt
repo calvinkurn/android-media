@@ -320,16 +320,25 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     private fun fetchProducts(start: Int) {
 
-
-        val param = hotlistParamBuilder.generateProductListParams(
-                hotlistDetail?.strFilterAttribute ?: "",
-                start,
-                getUniqueId(),
-                getSelectedSort(),
-                getSelectedFilter()
-        )
-        hotlistnavViewModel.fetchProductListingWithTopAds(param)
-
+        if (hotlistDetail?.isTopads == true) {
+            val param = hotlistParamBuilder.generateProductListParamsWithTopAds(
+                    hotlistDetail?.strFilterAttribute ?: "",
+                    start,
+                    getUniqueId(),
+                    getSelectedSort(),
+                    getSelectedFilter()
+            )
+            hotlistnavViewModel.fetchProductListingWithTopAds(param)
+        } else {
+            val param = hotlistParamBuilder.generateProductListParamsWithOutTopAds(
+                    hotlistDetail?.strFilterAttribute ?: "",
+                    start,
+                    getUniqueId(),
+                    getSelectedSort(),
+                    getSelectedFilter()
+            )
+            hotlistnavViewModel.getProductListWithoutTopAds(param)
+        }
     }
 
 
@@ -469,14 +478,14 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
         hotlistNavAnalytics.eventProductClicked(hotListAlias,
-                "tokopedia://product/" + item.id,
+                "tokopedia://product/" + item.category,
                 isUserLoggedIn(),
                 hotlistType,
                 adapterPosition,
                 item.isTopAds,
                 item.name,
                 item.id.toString(),
-                item.price, item.categoryBreadcrumb + " / " + item.id)
+                item.price, item.categoryBreadcrumb + " / " + item.category)
 
         val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
         if (intent != null) {
@@ -529,15 +538,6 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {
-        hotlistNavAnalytics.eventProductImpression(hotListAlias,
-                isUserLoggedIn(),
-                hotlistType,
-                adapterPosition,
-                item.isTopAds,
-                item.name,
-                item.id.toString(),
-                item.price,
-                item.categoryBreadcrumb + " / " + item.id)
     }
 
     // on item change view
@@ -554,7 +554,17 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         product_recyclerview.requestLayout()
     }
 
-    override fun onListItemImpressionEvent(item: Visitable<Any>, position: Int) {
+    override fun onListItemImpressionEvent(element: Visitable<Any>, position: Int) {
+        val item = element as ProductsItem
+        hotlistNavAnalytics.eventProductImpression(hotListAlias,
+                isUserLoggedIn(),
+                hotlistType,
+                position,
+                item.isTopAds,
+                item.name,
+                item.id.toString(),
+                item.price,
+                item.categoryBreadcrumb + " / " + item.category)
     }
 
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {
