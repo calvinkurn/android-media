@@ -756,6 +756,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
         if (isTradeInDropOff) {
+            tvChooseDurationTradeIn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        mActionListener.onChooseShipmentDuration(
+                                shipmentCartItemModel, currentAddress, shopShipmentList, getAdapterPosition()
+                        );
+                    }
+                }
+            });
             llShippingOptionsContainer.setVisibility(View.GONE);
             llShipmentRecommendationContainer.setVisibility(View.GONE);
             layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
