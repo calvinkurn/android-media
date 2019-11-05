@@ -1,0 +1,12 @@
+include 'libraries:inappupdate'
+
+include 'features:discovery:similarsearch'
+
+include 'features:discovery:wishlist_common'
+
+include 'libraries:applink'
+include "libraries:track"
+include 'libraries:kotlin_extension'
+
+include 'tkpdabstraction'
+include 'tkpddesign'
