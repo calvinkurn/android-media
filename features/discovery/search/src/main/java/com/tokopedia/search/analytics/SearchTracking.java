@@ -551,14 +551,15 @@ public class SearchTracking {
         eventTrackingMap.put(EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT.toLowerCase());
         eventTrackingMap.put(EVENT_ACTION, generateWishlistClickEventAction(wishlistTrackingModel.isAddWishlist(), wishlistTrackingModel.isUserLoggedIn()));
         eventTrackingMap.put(EVENT_LABEL, generateWishlistClickEventLabel(wishlistTrackingModel.getProductId(), wishlistTrackingModel.isTopAds(), wishlistTrackingModel.getKeyword()));
-        eventTrackingMap.put(USER_ID, wishlistTrackingModel.isUserLoggedIn() ? wishlistTrackingModel.getUserId() : "0");
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
     }
 
     private static String generateWishlistClickEventAction(boolean isAddWishlist, boolean isLoggedIn) {
         return getAddOrRemoveWishlistAction(isAddWishlist)
+                + " - "
                 + SearchEventTracking.Action.MODULE
+                + " - "
                 + getIsLoggedInWishlistAction(isLoggedIn);
     }
 

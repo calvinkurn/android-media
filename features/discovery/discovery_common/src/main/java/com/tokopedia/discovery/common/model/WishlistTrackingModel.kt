@@ -5,6 +5,5 @@ data class WishlistTrackingModel(
         var productId: String = "",
         var isTopAds: Boolean = false,
         var keyword: String = "",
-        var isUserLoggedIn: Boolean = false,
-        var userId: String = "0"
+        var isUserLoggedIn: Boolean = false
 )

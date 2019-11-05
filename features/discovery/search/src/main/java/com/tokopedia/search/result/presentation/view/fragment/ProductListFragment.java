@@ -778,7 +778,6 @@ public class ProductListFragment
         wishlistTrackingModel.setProductId(productItemViewModel.getProductID());
         wishlistTrackingModel.setTopAds(productItemViewModel.isTopAds());
         wishlistTrackingModel.setKeyword(getQueryKey());
-        wishlistTrackingModel.setUserId(userSession.getUserId());
         wishlistTrackingModel.setUserLoggedIn(userSession.isLoggedIn());
 
         return wishlistTrackingModel;

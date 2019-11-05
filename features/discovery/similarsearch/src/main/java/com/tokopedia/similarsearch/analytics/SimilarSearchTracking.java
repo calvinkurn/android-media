@@ -69,14 +69,15 @@ public class SimilarSearchTracking {
         eventTrackingMap.put(EVENT_CATEGORY, SimilarSearchAppEventTracking.Category.SIMILAR_PRODUCT.toLowerCase());
         eventTrackingMap.put(EVENT_ACTION, generateWishlistClickEventAction(wishlistTrackingModel.isAddWishlist(), wishlistTrackingModel.isUserLoggedIn()));
         eventTrackingMap.put(EVENT_LABEL, generateWishlistClickEventLabel(wishlistTrackingModel.getProductId(), wishlistTrackingModel.isTopAds(), wishlistTrackingModel.getKeyword()));
-        eventTrackingMap.put(USER_ID, wishlistTrackingModel.isUserLoggedIn() ? wishlistTrackingModel.getUserId() : "0");
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
     }
 
     private static String generateWishlistClickEventAction(boolean isAddWishlist, boolean isLoggedIn) {
         return getAddOrRemoveWishlistAction(isAddWishlist)
+                + " - "
                 + SimilarSearchAppEventTracking.Action.MODULE
+                + " - "
                 + getIsLoggedInWishlistAction(isLoggedIn);
     }
 

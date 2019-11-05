@@ -137,7 +137,6 @@ public class SimilarSearchPresenter extends BaseDaggerPresenter<SimilarSearchCon
         wishlistTrackingModel.setProductId(String.valueOf(productsItem.getId()));
         wishlistTrackingModel.setTopAds(false);
         wishlistTrackingModel.setKeyword(getView().getQueryKey());
-        wishlistTrackingModel.setUserId(userSession.getUserId());
         wishlistTrackingModel.setUserLoggedIn(userSession.isLoggedIn());
 
         return wishlistTrackingModel;
