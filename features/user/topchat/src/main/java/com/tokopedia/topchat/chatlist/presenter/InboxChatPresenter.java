@@ -291,7 +291,9 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                     listMessage.getRole(),
                     viewModel.getMode(),
                     viewModel.getKeyword(),
-                    listMessage.getImage());
+                    listMessage.getImage(),
+                    position
+            );
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             getView().startActivityForResult(intent, InboxMessageConstant.OPEN_DETAIL_MESSAGE);
             getView().overridePendingTransition(0, 0);

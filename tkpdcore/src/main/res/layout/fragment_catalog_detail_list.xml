@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -86,7 +86,7 @@
                     android:textSize="@dimen/fonts" />
             </LinearLayout>
         </LinearLayout>
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <ProgressBar
         android:id="@+id/loading"

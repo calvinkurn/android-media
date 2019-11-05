@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
@@ -14,8 +14,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.CopyPromoVoucher;
@@ -98,10 +99,8 @@ public class HotlistPromoView extends BaseCustomView {
     }
 
     private void openWebViewURL(String url, Context context) {
-        if (url != "" && context != null) {
-            Intent intent = new Intent(context, BannerWebView.class);
-            intent.putExtra("url", url);
-            context.startActivity(intent);
+        if (!url.equals("") && context != null) {
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
         }
     }
 

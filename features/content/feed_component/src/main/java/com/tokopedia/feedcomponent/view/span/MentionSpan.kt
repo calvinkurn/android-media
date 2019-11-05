@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.view.span
 
 import android.graphics.Typeface
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
@@ -16,7 +16,7 @@ class MentionSpan(
         val fullText: String,
         val userId: String,
         val fullName: String,
-        val start: Int,
+        var start: Int,
         val onClickListener: OnClickListener
 ) : ClickableSpan() {
 
@@ -29,7 +29,8 @@ class MentionSpan(
 
     val length = displayedText.length
 
-    val end = start + length
+    val end: Int
+        get() = start + length
 
     override fun onClick(p0: View) {
         onClickListener.onClick(userId)

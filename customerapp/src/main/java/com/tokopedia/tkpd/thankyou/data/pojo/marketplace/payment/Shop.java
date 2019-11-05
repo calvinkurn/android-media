@@ -8,23 +8,12 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Shop {
-    @SerializedName("is_official")
-    @Expose
-    private boolean isOffical;
     @SerializedName("shop_id")
     @Expose
     private int shopId;
     @SerializedName("shop_name")
     @Expose
     private String shopName;
-
-    public boolean isOffical() {
-        return isOffical;
-    }
-
-    public void setOffical(boolean offical) {
-        isOffical = offical;
-    }
 
     public int getShopId() {
         return shopId;

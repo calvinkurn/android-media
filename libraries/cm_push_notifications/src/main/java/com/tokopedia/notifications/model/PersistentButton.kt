@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.model
 
-import android.arch.persistence.room.ColumnInfo
+import androidx.room.ColumnInfo
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
@@ -33,11 +33,15 @@ open class PersistentButton() : Parcelable {
     @Expose
     var isAppLogo: Boolean = false
 
-    protected constructor(`in`: Parcel): this() {
+    @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+    var element_id: String? = ""
+
+    protected constructor(`in`: Parcel) : this() {
         appLink = `in`.readString()
         text = `in`.readString()
         icon = `in`.readString()
         isAppLogo = `in`.readByte().toInt() != 0
+        element_id = `in`.readString().toString()
     }
 
     override fun describeContents(): Int {
@@ -49,6 +53,7 @@ open class PersistentButton() : Parcelable {
         parcel.writeString(text)
         parcel.writeString(icon)
         parcel.writeByte((if (isAppLogo) 1 else 0).toByte())
+        parcel.writeString (element_id)
     }
 
     companion object CREATOR : Parcelable.Creator<PersistentButton> {

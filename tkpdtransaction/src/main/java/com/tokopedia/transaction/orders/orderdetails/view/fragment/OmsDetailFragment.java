@@ -9,12 +9,12 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -571,10 +571,10 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 public void onClick(View v) {
                     if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                         if (!TextUtils.isEmpty(item.getCategory()) && "Deal".equalsIgnoreCase(item.getCategory())) {
-                            Toaster.Companion.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
+                            Toaster.INSTANCE.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
                             });
                         } else {
-                            Toaster.Companion.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
+                            Toaster.INSTANCE.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
                             });
                         }
                         presenter.setActionButton(item.getActionButtons(), null, 0, false);

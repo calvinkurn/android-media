@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.main.draft.data.mapper;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -27,7 +27,7 @@ import com.tokopedia.product.manage.item.variant.data.model.variantsubmit.Produc
 import com.tokopedia.product.manage.item.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.product.manage.item.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.product.manage.item.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
-import com.tokopedia.productdraftdatabase.ProductDraftDataBase;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraft;
 import com.tokopedia.product.manage.item.common.util.FreeReturnTypeDef;
 import com.tokopedia.product.manage.item.common.util.ProductInsuranceValueTypeDef;
 
@@ -41,7 +41,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/13/17.
  */
 
-public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductViewModel> {
+public class ProductDraftMapper implements Func1<ProductDraft, ProductViewModel> {
     public static final String UTF_8 = "UTF-8";
 
     private static final int VERSION_PRODUCT_VIEW_MODEL = 1;
@@ -50,7 +50,7 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
     }
 
     @Override
-    public ProductViewModel call(ProductDraftDataBase productDraftDataBase) {
+    public ProductViewModel call(ProductDraft productDraftDataBase) {
         ProductViewModel productViewModel;
         try {
             productViewModel = CacheUtil.convertStringToModel(

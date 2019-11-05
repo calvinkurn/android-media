@@ -1,10 +1,10 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration;
 
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.tokopedia.productcard.v2.ProductCardView;
@@ -22,7 +22,9 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     private final List<Integer> allowedViewTypes = Arrays.asList(
             R.layout.search_result_product_card_small_grid,
             R.layout.search_result_product_card_big_grid,
-            R.layout.search_result_product_card_list);
+            R.layout.search_result_product_card_list,
+            R.layout.search_result_recommendation_card_small_grid
+    );
 
     public ProductItemDecoration(int spacing) {
         this.spacing = spacing;

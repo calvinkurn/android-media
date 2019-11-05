@@ -3,10 +3,10 @@ package com.tokopedia.shop.page.view.holder
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
-import android.support.annotation.DrawableRes
-import android.support.v4.content.ContextCompat
-import android.support.v7.content.res.AppCompatResources
-import android.support.v7.view.ContextThemeWrapper
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.view.ContextThemeWrapper
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
@@ -15,6 +15,10 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -35,9 +39,10 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         private const val IS_MODERATED = 1
         private const val MODERATE_OPTION_ONE = 0
         private const val MODERATE_OPTION_TWO = 1
+        private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
     }
 
-    fun bind(shopInfo: ShopInfo, isMyShop: Boolean) {
+    fun bind(shopInfo: ShopInfo, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shopName.text = MethodChecker.fromHtml(shopInfo.shopCore.name).toString()
         view.shopFollower.setOnClickListener { listener.onFollowerTextClicked() }
         ImageHandler.loadImageCircle2(view.context, view.shopImageView, shopInfo.shopAssets.avatar)
@@ -55,6 +60,19 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             displayAsSeller()
         } else {
             displayAsBuyer()
+        }
+
+        if(shopInfo.freeOngkir.isActive)
+            showLabelFreeOngkir(remoteConfig)
+        else
+            view.label_free_ongkir.hide()
+    }
+
+    private fun showLabelFreeOngkir(remoteConfig: RemoteConfig) {
+        val labelTitle = remoteConfig.getString(LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE, LABEL_FREE_ONGKIR_DEFAULT_TITLE)
+        if (labelTitle.isNotEmpty()) {
+            view.label_free_ongkir.show()
+            view.label_free_ongkir.text = labelTitle
         }
     }
 

@@ -11,22 +11,24 @@ public class OrderDetail {
     @SerializedName("order_detail_id")
     @Expose
     private int orderDetailId;
-    @SerializedName("product")
+    @SerializedName("product_name")
     @Expose
-    private Product product;
+    private String productName;
     @SerializedName("product_id")
     @Expose
     private int productId;
     @SerializedName("product_price")
     @Expose
-    private float productPrice;
+    private double productPrice;
     @SerializedName("quantity")
     @Expose
     private int quantity;
     @SerializedName("subtotal_price")
     @Expose
     private float subtotalPrice;
-
+    @SerializedName("category_name")
+    @Expose
+    private String categoryName;
 
     public int getOrderDetailId() {
         return orderDetailId;
@@ -36,12 +38,12 @@ public class OrderDetail {
         this.orderDetailId = orderDetailId;
     }
 
-    public Product getProduct() {
-        return product;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public int getProductId() {
@@ -52,11 +54,11 @@ public class OrderDetail {
         this.productId = productId;
     }
 
-    public float getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(float productPrice) {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 
@@ -74,5 +76,13 @@ public class OrderDetail {
 
     public void setSubtotalPrice(float subtotalPrice) {
         this.subtotalPrice = subtotalPrice;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

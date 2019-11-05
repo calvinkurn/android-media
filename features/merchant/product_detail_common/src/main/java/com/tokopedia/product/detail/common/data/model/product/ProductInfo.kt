@@ -62,8 +62,40 @@ data class ProductInfo(
 
         @SerializedName("media")
         @Expose
-        val media: List<Media> = listOf()
+        val media: List<Media> = listOf(),
+
+        @SerializedName("freeOngkir")
+        @Expose
+        val freeOngkir: FreeOngkir = FreeOngkir()
+
+
 ) {
+
+    fun getProductImageUrl(): String? {
+        if (pictures == null || pictures.isEmpty()) return null
+        return pictures[0].urlThumbnail
+    }
+
+    fun getProductName(): String? {
+        return basic.name
+    }
+
+    fun getProductPrice(): Float {
+        return basic.price
+    }
+
+    fun getProductUrl(): String? {
+        return basic.url
+    }
+
+    fun getFsProductIsActive(): Boolean {
+        return freeOngkir.isFreeOngkirActive
+    }
+
+    fun getFsProductImageUrl(): String {
+        return freeOngkir.freeOngkirImgUrl
+    }
+
     data class Response(
             @SerializedName("getPDPInfo")
             @Expose

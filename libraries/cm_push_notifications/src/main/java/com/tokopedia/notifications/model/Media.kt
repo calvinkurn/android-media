@@ -1,10 +1,12 @@
 package com.tokopedia.notifications.model
 
-import android.arch.persistence.room.ColumnInfo
+
+import androidx.room.ColumnInfo
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.notifications.common.CMConstant
 
 /**
  * @author lalit.singh
@@ -33,9 +35,15 @@ data class Media(
         @SerializedName("display_url")
         @ColumnInfo(name = "display_url")
         @Expose
-        var displayUrl: String
+        var displayUrl: String,
+
+        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+        @ColumnInfo(name = CMConstant.PayloadKeys.ELEMENT_ID)
+        @Expose
+        var element_id: String? = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.readString()?.let { it } ?: "",
             parcel.readString()?.let { it } ?: "",
             parcel.readString()?.let { it } ?: "",
             parcel.readString()?.let { it } ?: "",
@@ -48,6 +56,7 @@ data class Media(
         parcel.writeString(mediumQuality)
         parcel.writeString(lowQuality)
         parcel.writeString(displayUrl)
+        parcel.writeString(element_id)
     }
 
     override fun describeContents(): Int {

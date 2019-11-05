@@ -8,12 +8,12 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Rect
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -982,7 +982,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
+        val shop = postTagItem.shop.firstOrNull()
+        feedAnalytics.eventProfileAddToCart(
+                postTagItem.id,
+                postTagItem.text,
+                postTagItem.price,
+                1,
+                shop?.shopId?.toIntOrZero() ?: -1,
+                ""
+        )
         presenter.addPostTagItemToCart(postTagItem)
     }
 
@@ -1172,7 +1181,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         this.profileHeader = element
         app_bar_layout.visibility = View.VISIBLE
         app_bar_layout.setExpanded(true)
-        iv_image_collapse.loadImageRounded(element.avatar)
+        iv_image_collapse.loadImageWithoutPlaceholder(element.avatar)
         iv_profile.loadImageCircle(element.avatar)
         tv_name.text = element.name
         val affName = if (element.affiliateName.isNotBlank()) {
@@ -1413,8 +1422,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             )
                         }
                     }
-
-                    onAffiliateTrackClicked(model.tracking, false)
                 }
             }
         }

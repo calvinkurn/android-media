@@ -1,6 +1,6 @@
 package com.tokopedia.shop.product.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
@@ -40,6 +41,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
                                                       private val getMembershipUseCase: GetMembershipUseCase,
@@ -76,8 +78,8 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
     val etalaseHighLight = mutableListOf<ShopEtalaseViewModel>()
     val claimMembershipResp = MutableLiveData<Result<MembershipClaimBenefitResponse>>()
 
-    fun getFeaturedProduct(shopId: String, isForceRefresh: Boolean = false) {
-        getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(shopId.toInt())
+    fun getFeaturedProduct(shopId: String, userId: String, isForceRefresh: Boolean = false) {
+        getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(shopId.toInt(), userId.toIntOrZero())
         getShopFeaturedProductUseCase.isFromCacheFirst = !isForceRefresh
 
         launchCatchError(block = {
@@ -205,8 +207,10 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
         addWishListUseCase.createObservable(productId, userId, listener)
     }
 
-    fun clearEtalaseCache() {
+    fun clearCache() {
         getShopEtalaseByShopUseCase.clearCache()
+        getShopProductUseCase.clearCache()
+        getShopFeaturedProductUseCase.clearCache()
     }
 
 
@@ -239,6 +243,8 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
                 it.isWishList = isWishlist
                 it.productUrl = uri
                 it.isShowWishList = !isMyOwnProduct
+                it.isShowFreeOngkir = freeOngkir.isActive
+                it.freeOngkirPromoIcon = freeOngkir.imgUrl
             }
 
     private fun ShopProduct.toProductViewModel(isMyOwnProduct: Boolean): ShopProductViewModel = ShopProductViewModel().also {
@@ -250,7 +256,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
         it.imageUrl = primaryImage.original
         it.imageUrl300 = primaryImage.resize300
         it.totalReview = stats.reviewCount.toString()
-        it.rating = stats.rating.toDouble()
+        it.rating = (stats.rating.toDouble() / 20).roundToInt().toDouble()
         if (cashback.cashbackPercent > 0) {
             it.cashback = cashback.cashbackPercent.toDouble()
         }
@@ -261,6 +267,8 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
         it.productUrl = productUrl
         it.isSoldOut = flags.isSold
         it.isShowWishList = !isMyOwnProduct
+        it.isShowFreeOngkir = freeOngkir.isActive
+        it.freeOngkirPromoIcon = freeOngkir.imgUrl
     }
 
     private fun ShopEtalaseModel.toViewModel(): ShopEtalaseViewModel {

@@ -4,13 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.os.PersistableBundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.app.TaskStackBuilder;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +23,9 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
@@ -103,17 +110,14 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     private boolean isSendButtonEnabled = false;
 
-    @DeepLink(ApplinkConst.TICKET_DETAIL)
-    public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Intent parentIntent = new Intent(context, InboxListActivity.class);
-        String ticketId = bundle.getString(PARAM_TICKET_T_ID);
-        if (ticketId == null) {
-            ticketId = bundle.getString(PARAM_TICKET_ID, "");
-        }
-        taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(getIntent(context, ticketId));
-        return taskStackBuilder;
+    @Override
+    public void onCreateNavigateUpTaskStack(android.app.TaskStackBuilder builder) {
+        super.onCreateNavigateUpTaskStack(builder);
+    }
+
+    @Override
+    public void onCreateSupportNavigateUpTaskStack(@NonNull TaskStackBuilder builder) {
+        super.onCreateSupportNavigateUpTaskStack(builder);
     }
 
     public static Intent getIntent(Context context, String ticketId) {
@@ -121,6 +125,10 @@ public class InboxDetailActivity extends InboxBaseActivity
         intent.putExtra(PARAM_TICKET_ID, ticketId);
         intent.putExtra(IS_OFFICIAL_STORE, false);
         return intent;
+    }
+
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
     }
 
     @Override
@@ -142,8 +150,8 @@ public class InboxDetailActivity extends InboxBaseActivity
         if (ticketDetail.getStatus().equalsIgnoreCase(utils.SOLVED)
                 || ticketDetail.getStatus().equalsIgnoreCase(utils.OPEN)) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
-                    getResources().getColor(R.color.y_200),
-                    getResources().getColor(R.color.orange_500), textSizeLabel));
+                    getResources().getColor(com.tokopedia.design.R.color.y_200),
+                    getResources().getColor(com.tokopedia.design.R.color.orange_500), textSizeLabel));
             rvMessageList.setPadding(0, 0, 0,
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
             if(commentsItems.get(commentsItems.size()-1).getCreatedBy().getRole().equalsIgnoreCase(ROLE_TYPE_AGENT)&&commentsItems.get(commentsItems.size()-1).getRating().equalsIgnoreCase("")){
@@ -158,14 +166,14 @@ public class InboxDetailActivity extends InboxBaseActivity
         } else if (ticketDetail.getStatus().equalsIgnoreCase(utils.CLOSED)
                 && !ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.closed),
-                    getResources().getColor(R.color.grey_200),
-                    getResources().getColor(R.color.black_38), textSizeLabel));
+                    getResources().getColor(com.tokopedia.design.R.color.grey_200),
+                    getResources().getColor(com.tokopedia.design.R.color.black_38), textSizeLabel));
             showIssueClosed();
 
         } else if (ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.need_rating),
-                    getResources().getColor(R.color.r_100),
-                    getResources().getColor(R.color.r_400), textSizeLabel));
+                    getResources().getColor(com.tokopedia.design.R.color.r_100),
+                    getResources().getColor(com.tokopedia.design.R.color.r_400), textSizeLabel));
             toggleTextToolbar(View.GONE);
             rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
         }
@@ -314,6 +322,14 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> paths = UriUtil.destructureUri(ApplinkConst.TICKET_DETAIL, uri);
+            if (!paths.isEmpty()) {
+                String ticketId = paths.get(0);
+                getIntent().putExtra(PARAM_TICKET_T_ID, ticketId);
+            }
+        }
         super.onCreate(savedInstanceState);
         imageUploadAdapter = new ImageUploadAdapter(this, this);
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -326,13 +342,12 @@ public class InboxDetailActivity extends InboxBaseActivity
 
 
     private void showImagePickerDialog() {
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
                 null, null);
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_IMAGE_PICKER);
-
     }
 
     @Override
@@ -570,8 +585,8 @@ public class InboxDetailActivity extends InboxBaseActivity
         int textSizeLabel = 11;
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
         tvTicketTitle.setText(utils.getStatusTitle(subject + ".   " + getString(R.string.closed),
-                getResources().getColor(R.color.grey_200),
-                getResources().getColor(R.color.black_38), textSizeLabel));
+                getResources().getColor(com.tokopedia.design.R.color.grey_200),
+                getResources().getColor(com.tokopedia.design.R.color.black_38), textSizeLabel));
     }
 
     @Override
@@ -583,9 +598,9 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void setSubmitButtonEnabled(boolean enabled) {
         isSendButtonEnabled = enabled;
         if (enabled) {
-            ivSendButton.setColorFilter(getResources().getColor(R.color.green_nob));
+            ivSendButton.setColorFilter(getResources().getColor(com.tokopedia.design.R.color.green_nob));
         } else {
-            ivSendButton.setColorFilter(getResources().getColor(R.color.grey_300));
+            ivSendButton.setColorFilter(getResources().getColor(com.tokopedia.design.R.color.grey_300));
         }
     }
 
@@ -783,7 +798,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void showMessage(String message) {
         super.showMessage(message);
-        Toaster.Companion.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, v1 -> {
+        Toaster.INSTANCE.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, v1 -> {
         });
     }
 
@@ -797,7 +812,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         if (isSendButtonEnabled){
             sendMessage();
         }else{
-            Toaster.Companion.showErrorWithAction(getRootView(),this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK,v1 -> {
+            Toaster.INSTANCE.showErrorWithAction(getRootView(),this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK,v1 -> {
             });
         }
     }

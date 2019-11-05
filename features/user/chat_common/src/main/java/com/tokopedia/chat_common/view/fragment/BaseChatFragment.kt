@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -35,6 +34,7 @@ import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.URLEncoder
 import java.util.*
 
 /**
@@ -116,9 +116,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     open fun getParamInt(paramName: String, arguments: Bundle?,
                          savedInstanceState: Bundle?): Int {
         return when {
-            savedInstanceState != null -> savedInstanceState.getInt(paramName, 0)
-            arguments != null -> arguments.getInt(paramName, 0)
-            else -> 0
+            savedInstanceState != null -> savedInstanceState.getInt(paramName, -1)
+            arguments != null -> arguments.getInt(paramName, -1)
+            else -> -1
         }
     }
 
@@ -156,8 +156,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                 isBranchIOLink(url) -> handleBranchIOLinkClick(url)
                 RouteManager.isSupportApplink(activity, url) && !URLUtil.isNetworkUrl(url) -> RouteManager.route(activity, url)
                 else -> {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                            url))
+                    val encodedUrl = URLEncoder.encode(url, "UTF-8")
+                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl))
                 }
             }
         }
@@ -171,13 +171,18 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun handleBranchIOLinkClick(url: String) {
-        activity?.run {
-            val applinkRouter = this.applicationContext as ApplinkRouter
-            var intent = applinkRouter.getApplinkIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
+        if (GlobalConfig.isCustomerApp()) {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
             startActivity(intent)
+        } else {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
+    }
+
+    private fun openWebview(url: String) {
+        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
     override fun isBranchIOLink(url: String): Boolean {
@@ -250,13 +255,13 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun showChatMenu() {
-        if(bottomChatMenu.isAdded) {
-            return
-        }
+        if(bottomChatMenu.isAdded) return
         bottomChatMenu.show(childFragmentManager, BottomChatMenuFragment.TAG)
     }
 
     override fun onClickAttachProduct() {}
 
     override fun onClickImagePicker() {}
+
+    override fun trackChatMenuClicked(label: String) {}
 }

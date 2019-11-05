@@ -1,7 +1,7 @@
 package com.tokopedia.instantloan.view.adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +23,7 @@ class LendingCategoryAdapter(lendingCategoryList: ArrayList<GqlLendingCategoryDa
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         context = parent.context
         val inflater = LayoutInflater.from(parent.context)
-        val view: View = inflater.inflate(R.layout.il_lending_category_item, null)
+        val view: View = inflater.inflate(com.tokopedia.instantloan.R.layout.il_lending_category_item, null)
         return LendingCategoryAdapter.LeCategoryViewHolder(view)
     }
 
@@ -42,8 +42,8 @@ class LendingCategoryAdapter(lendingCategoryList: ArrayList<GqlLendingCategoryDa
 
         init {
             context = view.context
-            imageView = view.findViewById(R.id.category_image_view)
-            heading = view.findViewById(R.id.category_heading)
+            imageView = view.findViewById(com.tokopedia.instantloan.R.id.category_image_view)
+            heading = view.findViewById(com.tokopedia.instantloan.R.id.category_heading)
         }
 
         fun bindData(categoryItem: GqlLendingCategoryData, position: Int) {

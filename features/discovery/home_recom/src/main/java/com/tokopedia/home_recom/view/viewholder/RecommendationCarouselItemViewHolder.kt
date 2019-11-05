@@ -1,7 +1,7 @@
 package com.tokopedia.home_recom.view.viewholder
 
 import android.app.Activity
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -12,6 +12,8 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
@@ -29,30 +31,34 @@ class RecommendationCarouselItemViewHolder (
 
     override fun bind(element: RecommendationCarouselItemDataModel) {
         productCardView.run {
-            removeAllShopBadges()
-            setProductNameVisible(true)
-            setPriceVisible(true)
-            setImageProductVisible(true)
-            setButtonWishlistVisible(true)
-            setSlashedPriceInvisible(element.productItem.slashedPriceInt <= 0 && element.productItem.discountPercentage <= 0)
-            setLabelDiscountInvisible(element.productItem.slashedPriceInt <= 0 && element.productItem.discountPercentage <= 0)
-            setImageRatingInvisible(element.productItem.rating <= 0 && element.productItem.countReview <= 0)
-            setReviewCountInvisible(element.productItem.rating <= 0 && element.productItem.countReview <= 0)
-            setShopLocationVisible(true)
-            setShopBadgesVisible(element.productItem.badgesUrl.isNotEmpty())
-            setLinesProductTitle(2)
-            setButtonWishlistImage(element.productItem.isWishlist)
-            setProductNameText(element.productItem.name)
-            setPriceText(element.productItem.price)
-            setImageProductUrl(element.productItem.imageUrl)
-            setImageTopAdsVisible(element.productItem.isTopAds)
-            setSlashedPriceText(element.productItem.slashedPrice)
-            setLabelDiscountText(element.productItem.discountPercentage)
-            setReviewCount(element.productItem.countReview)
-            setRating(element.productItem.rating)
-            mapBadges(element.productItem.badgesUrl)
-            setShopLocationText(element.productItem.location)
-            realignLayout()
+            setProductModel(
+                    ProductCardModel(
+                            slashedPrice = element.productItem.slashedPrice,
+                            productName = element.productItem.name,
+                            formattedPrice = element.productItem.price,
+                            productImageUrl = element.productItem.imageUrl,
+                            isTopAds = element.productItem.isTopAds,
+                            discountPercentage = element.productItem.discountPercentage.toString(),
+                            reviewCount = element.productItem.countReview,
+                            ratingCount = element.productItem.rating,
+                            shopLocation = element.productItem.location,
+                            isWishlistVisible = true,
+                            isWishlisted = element.productItem.isWishlist,
+                            shopBadgeList = element.productItem.badgesUrl.map {
+                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                            },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    isActive = element.productItem.isFreeOngkirActive,
+                                    imageUrl = element.productItem.freeOngkirImageUrl
+                            )
+                    ),
+                    BlankSpaceConfig(
+                            ratingCount = true,
+                            discountPercentage = true,
+                            twoLinesProductName = true
+                    )
+            )
+
             setImageProductViewHintListener(element.productItem, object: ViewHintListener{
                 override fun onViewHint() {
                     if(element.productItem.isTopAds){

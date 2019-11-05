@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         app:cardUseCompatPadding="true"
         app:cardElevation="@dimen/dp_4"
         app:cardCornerRadius="@dimen/dp_4"
@@ -37,7 +37,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout"
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -82,7 +82,7 @@
                         app:layout_constraintTop_toBottomOf="@id/tv_name"
                         android:text="@string/value_status_followed"/>
 
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:layout_marginBottom="@dimen/dp_5"
@@ -114,5 +114,5 @@
                 app:buttonCompatSize="medium"
                 android:text="Follow"/>
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

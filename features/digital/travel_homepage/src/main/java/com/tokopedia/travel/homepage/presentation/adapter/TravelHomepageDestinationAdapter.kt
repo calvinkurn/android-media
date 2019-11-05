@@ -1,6 +1,6 @@
 package com.tokopedia.travel.homepage.presentation.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,20 +29,15 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
         holder.bind(list[position], position, listener)
     }
 
+    fun updateList(newList: List<TravelHomepageDestinationModel.Destination>) {
+        this.list = newList
+        notifyDataSetChanged()
+    }
 
     class DestinationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(destination: TravelHomepageDestinationModel.Destination, position: Int, listener: OnItemClickListener) {
             with(itemView) {
-
-                val layoutParams = destination_container.layoutParams
-                if (position == 0) {
-                    layoutParams.height = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_145)
-                } else {
-                    layoutParams.height = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_180)
-                }
-                destination_container.layoutParams = layoutParams
-
                 image.loadImage(destination.attributes.imageUrl)
                 title.text = destination.attributes.title
                 subtitle.text = destination.attributes.subtitle

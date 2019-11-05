@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.model
 
-import android.arch.persistence.room.ColumnInfo
+import androidx.room.ColumnInfo
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
@@ -36,11 +36,22 @@ data class Carousel(
         @SerializedName("index")
         @ColumnInfo(name = "index")
         @Expose
-        var index: Int = 0
-) : Parcelable {
+        var index: Int = 0,
 
-    constructor(source: Parcel) : this(source.readString(), source.readString(),
-            source.readString(), source.readString(), source.readInt())
+        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+        @ColumnInfo(name = CMConstant.PayloadKeys.ELEMENT_ID)
+        @Expose
+        var element_id: String? = "") : Parcelable {
+
+    constructor(source: Parcel) :
+            this(
+                    source.readString(),
+                    source.readString(),
+                    source.readString(),
+                    source.readString(),
+                    source.readInt(),
+                    source.readString()
+            )
 
     override fun describeContents(): Int {
         return 0
@@ -52,6 +63,7 @@ data class Carousel(
         dest?.writeString(this.icon)
         dest?.writeString(this.filePath)
         dest?.writeInt(this.index)
+        dest?.writeString(this.element_id)
     }
 
 

@@ -8,9 +8,9 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.applink.RouteManager;
@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
+import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.item.BuildConfig;
@@ -151,14 +152,24 @@ public class UploadProductService extends BaseService implements AddProductServi
     private void logException(Throwable t) {
         try {
             if (!BuildConfig.DEBUG) {
-                String errorMessage = String.format("Error add product. userId: %s | userEmail: %s",
+                String errorMessage = String.format("Error add product. userId: %s | userEmail: %s | %s",
                         userSession.getUserId(),
-                        userSession.getEmail());
+                        userSession.getEmail(),
+                        getExceptionMessage(t));
                 AddProductException exception = new AddProductException(errorMessage, t);
                 Crashlytics.logException(exception);
             }
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private String getExceptionMessage(Throwable t) {
+        if (t instanceof ResponseV4ErrorException
+                && ((ResponseV4ErrorException) t).getErrorList().size() > 0) {
+            return ((ResponseV4ErrorException) t).getErrorList().get(0);
+        } else {
+            return t.getLocalizedMessage();
         }
     }
 

@@ -34,7 +34,7 @@ public class ImageHelper {
     public static Bitmap getBitmapFromUri(Context context, Uri uri, int width, int height) {
         Bitmap bitmap = null;
         try {
-            bitmap = Glide.with(context).load(uri).asBitmap().into(width, height).get();
+            bitmap = Glide.with(context).asBitmap().load(uri).into(width, height).get();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.database.convertors
 
-import android.arch.persistence.room.TypeConverter
+import androidx.room.TypeConverter
 import com.tokopedia.notifications.model.NotificationStatus
 
 class NotificationStatusConverter {

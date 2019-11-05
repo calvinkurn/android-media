@@ -5,33 +5,15 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.tokopedia.applink.ApplinkConst;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.common.PayloadConverter;
 import com.tokopedia.notifications.common.PersistentEvent;
-import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
-import com.tokopedia.notifications.model.Carousel;
-import com.tokopedia.notifications.model.Grid;
-import com.tokopedia.notifications.model.Media;
-import com.tokopedia.notifications.model.PersistentButton;
-import com.tokopedia.notifications.model.ProductInfo;
-
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author lalit.singh
@@ -43,7 +25,8 @@ public class CMNotificationFactory {
         if (context == null) {
             return null;
         }
-        IrisAnalyticsEvents.INSTANCE.sendPushReceiveEvent(context, baseNotificationModel);
+        IrisAnalyticsEvents.INSTANCE.sendPushEvent(context,IrisAnalyticsEvents.PUSH_RECEIVED,baseNotificationModel);
+
         if (CMConstant.NotificationType.SILENT_PUSH.equals(baseNotificationModel.getType())) {
             handleSilentPush(context, baseNotificationModel);
             return null;

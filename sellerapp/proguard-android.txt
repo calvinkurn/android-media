@@ -212,3 +212,6 @@ public protected *;
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 -keep class com.github.anrwatchdog.** { *; }
+
+# -- laku6
+-dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn

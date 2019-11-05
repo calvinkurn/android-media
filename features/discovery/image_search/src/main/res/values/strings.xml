@@ -8,4 +8,6 @@
     <string name="invalid_image_search_response" >Terjadi kesalahan, ulangi beberapa saat lagi</string>
     <string name="image_search_msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="image_search_msg_add_wishlist">Sukses menambah wishlist</string>
+    <string name="image_search_msg_empty_product_title">Oops, Produk Nggak Ditemukan</string>
+    <string name="image_search_toolbar_text">Cari di Tokopedia</string>
 </resources>

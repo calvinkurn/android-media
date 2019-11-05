@@ -1,8 +1,8 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.graphics.Paint;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatRatingBar;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatRatingBar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -42,6 +42,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private TextView wholesaleTextView;
     private TextView preOrderTextView;
     private ImageView freeReturnImageView;
+    private ImageView freeOngkirBanner;
     private AppCompatRatingBar qualityRatingBar;
     private TextView totalReview;
     private View soldOutView;
@@ -78,6 +79,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         badgeContainer = view.findViewById(R.id.badges_container);
 
         freeReturnImageView = view.findViewById(R.id.image_view_free_return);
+        freeOngkirBanner = view.findViewById(R.id.image_view_free_ongkir);
         productImageView = view.findViewById(R.id.product_image);
         wishlistImageView = view.findViewById(R.id.image_view_wishlist);
         wishlistContainer = view.findViewById(R.id.wishlist_button_container);
@@ -99,6 +101,19 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         updateDisplayRating(shopProductViewModel);
         updateDisplayBadges(shopProductViewModel);
         updateDisplayWishList(shopProductViewModel);
+        updateDisplayFreeDeliveryBanner(shopProductViewModel);
+    }
+
+    private void updateDisplayFreeDeliveryBanner(ShopProductViewModel shopProductViewModel) {
+        if (shopProductViewModel.isShowFreeOngkir()) {
+            ImageHandler.loadImageRounded2(
+                    freeOngkirBanner.getContext(),
+                    freeOngkirBanner,
+                    shopProductViewModel.getFreeOngkirPromoIcon()
+            );
+            freeOngkirBanner.setVisibility(View.VISIBLE);
+        } else
+            freeOngkirBanner.setVisibility(View.GONE);
     }
 
     private void updateDisplayGeneralView(final ShopProductViewModel shopProductViewModel) {

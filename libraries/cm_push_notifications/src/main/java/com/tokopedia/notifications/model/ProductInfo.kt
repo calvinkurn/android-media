@@ -1,10 +1,11 @@
 package com.tokopedia.notifications.model
 
-import android.arch.persistence.room.ColumnInfo
+import androidx.room.ColumnInfo
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.notifications.common.CMConstant
 
 data class ProductInfo(
 
@@ -46,9 +47,15 @@ data class ProductInfo(
         @SerializedName("appLink")
         @ColumnInfo(name = "appLink")
         @Expose
-        var appLink: String? = null
+        var appLink: String? = null,
+
+        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+        @ColumnInfo(name = CMConstant.PayloadKeys.ELEMENT_ID)
+        @Expose
+        var element_id: String? = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.readString()?.let { it } ?: "",
             parcel.readString()?.let { it } ?: "",
             parcel.readString()?.let { it } ?: "",
             parcel.readString()?.let { it } ?: "",
@@ -67,6 +74,7 @@ data class ProductInfo(
         parcel.writeString(productMessage)
         parcel.writeString(productButtonMessage)
         parcel.writeString(appLink)
+        parcel.writeString(element_id)
     }
 
     override fun describeContents(): Int {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +8,7 @@
     android:layout_marginRight="@dimen/dp_8"
     android:layout_marginBottom="@dimen/dp_8">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:cardCornerRadius="@dimen/dp_10"
@@ -30,8 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_margin="@dimen/dp_4"
             android:orientation="vertical">
 
             <ImageView
@@ -56,11 +55,11 @@
                 android:gravity="center"
                 android:lineSpacingExtra="0dp"
                 android:maxLines="2"
-                app:typographyType="heading_5"
+                app:typographyType="heading_6"
                 tools:text="Olahraga" />
 
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

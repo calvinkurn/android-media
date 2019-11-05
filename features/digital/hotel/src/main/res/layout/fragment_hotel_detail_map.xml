@@ -11,7 +11,7 @@
         app:cameraZoom="20"
         app:mapType="normal" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/dp_48"
         android:layout_height="@dimen/dp_48"
         android:layout_alignParentEnd="true"

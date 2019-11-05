@@ -1,30 +1,30 @@
 package com.tokopedia.notifications.database;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
-import android.arch.persistence.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
+
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.tokopedia.notifications.database.convertors.CarouselConverter;
 import com.tokopedia.notifications.database.convertors.GridConverter;
+import com.tokopedia.notifications.database.convertors.JsonObjectConverter;
+import com.tokopedia.notifications.database.convertors.NotificationModeConverter;
+import com.tokopedia.notifications.database.convertors.NotificationStatusConverter;
 import com.tokopedia.notifications.database.convertors.ProductInfoConverter;
 import com.tokopedia.notifications.database.convertors.PushActionButtonConverter;
+import com.tokopedia.notifications.database.pushRuleEngine.BaseNotificationDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.ButtonListConverter;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.InAppDataDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.model.BaseNotificationModel;
-import com.tokopedia.notifications.database.pushRuleEngine.BaseNotificationDao;
-import com.tokopedia.notifications.database.convertors.JsonObjectConverter;
-import com.tokopedia.notifications.database.convertors.NotificationModeConverter;
-import com.tokopedia.notifications.database.convertors.NotificationStatusConverter;
 
-@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 2)
+@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 3)
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
         NotificationStatusConverter.class,
@@ -45,9 +45,9 @@ public abstract class RoomDB extends RoomDatabase {
 
     /**
      * Below Migration added to rename fields of table(inapp_data and elapsed_time) as columnInfo is not added to these table
-     * and data copying is not required as doesn't contain any data*
+     * and data coping is not required as doesn't contain any data*
      **/
-    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+    private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("DROP TABLE inapp_data");
@@ -67,10 +67,16 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+
+    /**
+     * Below Migration added to add fields in table(inapp_data)*
+     **/
+    private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            //todo migration for offline push
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `campaignId` TEXT");
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `campaignUserToken` TEXT");
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `parentId` TEXT");
         }
     };
 
@@ -80,7 +86,7 @@ public abstract class RoomDB extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             RoomDB.class, "inapp_database")
-                            .addMigrations(MIGRATION_1_2)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                             .build();
                 }
             }

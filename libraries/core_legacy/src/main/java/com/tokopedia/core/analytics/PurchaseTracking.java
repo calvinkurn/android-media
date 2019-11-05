@@ -1,10 +1,12 @@
 package com.tokopedia.core.analytics;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.track.TrackApp;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import kotlin.Pair;
 
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_CAT;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID;
@@ -37,10 +41,12 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String LOGISTIC_TYPE = "logistic_type";
     public static final String ECOMMERCE = "ecommerce";
     public static final String EVENT_LABEL = "";
+    public static final String ITEMS = "items";
 
     public static final String USER_ID = "userId";
 
-    public static void marketplace(Context context, Purchase purchase) {
+    public static void marketplace(Context context, Pair<Purchase, Bundle> purchaseBundlePair) {
+        Purchase purchase = purchaseBundlePair.getFirst();
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                 AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
@@ -59,6 +65,8 @@ public class PurchaseTracking extends TrackingUtils {
         ));
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_FINISH_TX);
         TrackApp.getInstance().getGTM().clearEnhanceEcommerce();
+
+
     }
 
     public static void digital(Context context, Purchase purchase) {

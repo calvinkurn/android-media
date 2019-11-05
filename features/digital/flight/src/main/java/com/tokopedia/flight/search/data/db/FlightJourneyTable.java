@@ -1,14 +1,12 @@
 package com.tokopedia.flight.search.data.db;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 
 import java.util.List;
 

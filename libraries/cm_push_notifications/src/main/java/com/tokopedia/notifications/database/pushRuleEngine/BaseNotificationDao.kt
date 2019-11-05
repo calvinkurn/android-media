@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.database.pushRuleEngine
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationStatus
 
