@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
-import androidx.appcompat.app.AppCompatActivity;
-import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
@@ -280,10 +281,15 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
             //map applink to internal if any
             String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
-            if (!TextUtils.isEmpty(mappedDeeplink)) {
-                routeApplink(deepLinkDelegate, mappedDeeplink);
+
+            Bundle queryParamBundle = RouteManager.getBundleFromAppLinkQueryParams(applinkString);
+            Bundle defaultBundle = new Bundle();
+            defaultBundle.putBundle(RouteManager.QUERY_PARAM, queryParamBundle);
+
+            if (TextUtils.isEmpty(mappedDeeplink)) {
+                routeApplink(deepLinkDelegate, applinkString, defaultBundle);
             } else {
-                routeApplink(deepLinkDelegate, applinkString);
+                routeApplink(deepLinkDelegate, mappedDeeplink, defaultBundle);
             }
 
             if (getIntent().getExtras() != null) {
@@ -345,11 +351,14 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 });
     }
 
-    private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString) {
+    private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString, Bundle defaultBundle) {
         if (deepLinkDelegate.supportsUri(applinkString)) {
-            routeFromApplink(Uri.parse(applinkString));
+            routeFromApplink(Uri.parse(applinkString), defaultBundle);
         } else {
             Intent intent = RouteManager.getIntent(this, applinkString);
+            if (defaultBundle != null) {
+                intent.putExtras(defaultBundle);
+            }
             startActivity(intent);
         }
     }
@@ -371,10 +380,14 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 label);
     }
 
-    private void routeFromApplink(Uri applink) {
+    private void routeFromApplink(Uri applink, Bundle defaultBudle) {
         if (applink != null) {
             try {
+
                 Intent nextIntent = ((ApplinkRouter) getApplicationContext()).applinkDelegate().getIntent(this, applink.toString());
+                if (defaultBudle != null) {
+                    nextIntent.putExtras(defaultBudle);
+                }
                 if (getIntent() != null && getIntent().getExtras() != null)
                     nextIntent.putExtras(getIntent().getExtras());
 
@@ -432,15 +445,15 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         String promoId = bundle.getString("promo_id", "");
         String url = BerandaUrl.PROMO_URL;
         if (!TextUtils.isEmpty(promoId)) {
-            url+= promoId;
+            url += promoId;
         }
-        url+= FLAG_APP;
+        url += FLAG_APP;
         return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     @DeepLink(ApplinkConst.BROWSER)
     public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
-        String webUrl = extras.getString( "url", TokopediaUrl.Companion.getInstance().getWEB()
+        String webUrl = extras.getString("url", TokopediaUrl.Companion.getInstance().getWEB()
         );
         Intent destination = new Intent(Intent.ACTION_VIEW);
         String decodedUrl;
