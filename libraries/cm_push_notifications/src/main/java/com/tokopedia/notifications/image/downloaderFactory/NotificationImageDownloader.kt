@@ -3,6 +3,7 @@ package com.tokopedia.notifications.image.downloaderFactory
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
+import android.util.Log
 import com.bumptech.glide.Glide
 import com.tokopedia.notifications.common.CarouselUtilities
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -30,8 +31,10 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
 
     private fun downloadImage(context: Context, url: String, imageSizeAndTimeout: ImageSizeAndTimeout): Bitmap? {
         try {
-            Glide.with(context).load(url)
+            return Glide.with(context)
+                    .load(url)
                     .asBitmap()
+                    .override(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
                     .into(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
                     .get(imageSizeAndTimeout.seconds, TimeUnit.SECONDS)
         } catch (e: CancellationException) {

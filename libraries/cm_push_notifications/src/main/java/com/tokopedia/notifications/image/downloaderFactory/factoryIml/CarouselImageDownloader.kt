@@ -10,7 +10,7 @@ class CarouselImageDownloader(baseNotificationModel: BaseNotificationModel)
     override suspend fun downloadImages(context: Context): BaseNotificationModel? {
         baseNotificationModel.carouselList.forEach { carousel ->
             carousel.icon?.let { icon ->
-                val filePath = downloadAndStore(context, icon, ImageSizeAndTimeout.BIG_IMAGE)
+                val filePath = downloadAndStore(context, icon, ImageSizeAndTimeout.CAROUSEL)
                 filePath?.let {
                     carousel.filePath = filePath
                 }

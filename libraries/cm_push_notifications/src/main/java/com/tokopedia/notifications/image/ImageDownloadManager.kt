@@ -7,11 +7,13 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 class ImageDownloadManager(val context: Context, val baseNotificationModel: BaseNotificationModel) {
 
     suspend fun startImageDownload(): BaseNotificationModel? {
-        return ImageFactory.provideNotificationImageDownloader(baseNotificationModel)?.downloadImages(context)
+        return ImageFactory.provideNotificationImageDownloader(baseNotificationModel)
+                ?.downloadImages(context)
+                ?: baseNotificationModel
     }
 
     companion object {
-        suspend fun downloadImages(context: Context, baseNotificationModel: BaseNotificationModel) :BaseNotificationModel?{
+        suspend fun downloadImages(context: Context, baseNotificationModel: BaseNotificationModel): BaseNotificationModel? {
             return ImageDownloadManager(context, baseNotificationModel).startImageDownload()
         }
     }

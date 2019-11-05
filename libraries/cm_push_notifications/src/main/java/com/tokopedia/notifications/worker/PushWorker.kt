@@ -1,13 +1,16 @@
 package com.tokopedia.notifications.worker
 
 import android.content.Context
+import android.content.ContextWrapper
 import androidx.work.*
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.PushController
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
+import com.tokopedia.notifications.image.downloaderFactory.PARENT_DIR
 import com.tokopedia.notifications.model.NotificationStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 const val PERIODIC_TIME_INTERVAL_MINUTE = 16L
@@ -24,10 +27,38 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
                 deleteActiveNotification()
                 deleteNotificationByStatus(NotificationStatus.DELETE)
                 deleteAllPrevCompleted()
-            } catch (e: Exception) {
+                clearNotificationMediaForExpiredNotification();
+            } catch (e: Throwable) {
             }
             Result.success()
         }
+    }
+
+    private suspend fun clearNotificationMediaForExpiredNotification() {
+        val parentDirectory = getParentImageDirectory(appContext)
+        val dirList = parentDirectory.listFiles()
+        dirList?.forEach { file ->
+            clearDirectory(file)
+        }
+    }
+
+    private fun clearDirectory(dir: File){
+        try {
+            if(dir.isDirectory && dir.name.contains("_")){
+                val directoryExpiryTime = dir.name.split("_")[1]
+                if(directoryExpiryTime.toLong() < System.currentTimeMillis()){
+                    dir.deleteRecursively()
+                }
+            }
+        }catch (e : Exception){}
+    }
+
+    private fun getParentImageDirectory(context: Context): File {
+        val cw = ContextWrapper(context.applicationContext)
+        val internalDirectory = cw.getDir(PARENT_DIR, Context.MODE_PRIVATE)
+        if (!internalDirectory.exists())
+            internalDirectory.mkdir()
+        return internalDirectory
     }
 
     private suspend fun deleteAllPrevCompleted() {
@@ -47,7 +78,7 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
     }
 
     private suspend fun deleteActiveNotification() {
-        var baseNotificationModelList = PushRepository.getInstance(appContext)
+        val baseNotificationModelList = PushRepository.getInstance(appContext)
                 .pushDataStore
                 .getNotificationByStatusList(NotificationStatus.ACTIVE)
         baseNotificationModelList?.forEach { baseNotificationModel ->
@@ -69,8 +100,8 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
         }
     }
 
-    companion object{
-        fun schedulePeriodicWorker(){
+    companion object {
+        fun schedulePeriodicWorker() {
             val pushWorker = PeriodicWorkRequest
                     .Builder(PushWorker::class.java, PERIODIC_TIME_INTERVAL_MINUTE, TimeUnit.MINUTES)
                     .setConstraints(Constraints.NONE)
@@ -81,6 +112,4 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
                     pushWorker)
         }
     }
-
-
 }

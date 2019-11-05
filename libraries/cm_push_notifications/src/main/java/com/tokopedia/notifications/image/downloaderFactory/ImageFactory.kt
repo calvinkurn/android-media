@@ -8,6 +8,8 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 class ImageFactory (val baseNotificationModel: BaseNotificationModel){
 
     private fun getNotificationImageDownloader() : NotificationImageDownloader?{
+        if(baseNotificationModel.endTime < System.currentTimeMillis())
+            return null
         if(CMNotificationUtils.hasActionButton(baseNotificationModel))
             baseNotificationModel.type = CMConstant.NotificationType.ACTION_BUTTONS
         return when(baseNotificationModel.type){

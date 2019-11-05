@@ -9,7 +9,7 @@ class ProductImageDownloader(baseNotificationModel: BaseNotificationModel)
     : NotificationImageDownloader(baseNotificationModel) {
     override suspend fun downloadImages(context: Context): BaseNotificationModel? {
         baseNotificationModel.productInfoList.forEach { productInfo ->
-            val filePath = downloadAndStore(context, productInfo.productImage, ImageSizeAndTimeout.BIG_IMAGE)
+            val filePath = downloadAndStore(context, productInfo.productImage, ImageSizeAndTimeout.PRODUCT_IMAGE)
             filePath?.let {
                 productInfo.productImage = filePath
             }

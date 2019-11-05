@@ -3,6 +3,7 @@ package com.tokopedia.notifications
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.common.launchCatchError
@@ -26,6 +27,8 @@ class PushController(val context: Context) : CoroutineScope {
             //todo event notification received offline
             launchCatchError(
                     block = {
+                        Log.d("PUSHController", "Code update")
+
                         val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
                         if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) {
                             onOfflinePushPayloadReceived(baseNotificationModel)
@@ -33,6 +36,7 @@ class PushController(val context: Context) : CoroutineScope {
                             onLivePushPayloadReceived(baseNotificationModel)
                         }
                     }, onError = {
+                Log.d("PUSHController", it.message)
             })
 
         } catch (e: Exception) {
@@ -40,16 +44,26 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     private suspend fun onLivePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
+
+        var updatedBaseNotificationModel: BaseNotificationModel? = null
         if (baseNotificationModel.type == CMConstant.NotificationType.DELETE_NOTIFICATION)
             baseNotificationModel.status = NotificationStatus.COMPLETED
         else if (baseNotificationModel.startTime == 0L
                 || baseNotificationModel.endTime > System.currentTimeMillis()) {
-            createAndPostNotification(baseNotificationModel)
+
+            updatedBaseNotificationModel = ImageDownloadManager.downloadImages(context, baseNotificationModel)
+            updatedBaseNotificationModel?.let {
+                createAndPostNotification(updatedBaseNotificationModel)
+            } ?: createAndPostNotification(baseNotificationModel)
+
             baseNotificationModel.status = NotificationStatus.ACTIVE
         } else {
             baseNotificationModel.status = NotificationStatus.COMPLETED
         }
-        PushRepository.getInstance(context)
+        updatedBaseNotificationModel?.let {
+            PushRepository.getInstance(context)
+                    .insertNotificationModel(updatedBaseNotificationModel)
+        } ?: PushRepository.getInstance(context)
                 .insertNotificationModel(baseNotificationModel)
     }
 
@@ -63,10 +77,10 @@ class PushController(val context: Context) : CoroutineScope {
             }
         } else {
             baseNotificationModel.status = NotificationStatus.PENDING
-            val updatedBaseNotificationModel  = ImageDownloadManager.downloadImages(context, baseNotificationModel)
+            val updatedBaseNotificationModel = ImageDownloadManager.downloadImages(context, baseNotificationModel)
             updatedBaseNotificationModel?.let {
                 PushRepository.getInstance(context).insertNotificationModel(updatedBaseNotificationModel)
-            }?: PushRepository.getInstance(context).insertNotificationModel(baseNotificationModel)
+            } ?: PushRepository.getInstance(context).insertNotificationModel(baseNotificationModel)
         }
     }
 
