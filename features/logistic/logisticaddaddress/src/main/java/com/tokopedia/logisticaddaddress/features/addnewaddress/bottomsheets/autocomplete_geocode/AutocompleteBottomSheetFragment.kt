@@ -1,7 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -28,9 +27,9 @@ import javax.inject.Inject
  */
 class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetListener, AutocompleteBottomSheetAdapter.ActionListener {
     private var bottomSheetView: View? = null
-    private var currentLat: Double? = 0.0
-    private var currentLong: Double? = 0.0
-    private var currentSearch: String? = ""
+    private var currentLat: Double = 0.0
+    private var currentLong: Double = 0.0
+    private var currentSearch: String = ""
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private lateinit var rlCurrentLocation: RelativeLayout
@@ -50,9 +49,9 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            currentLat = it.getDouble(CURRENT_LAT)
-            currentLong = it.getDouble(CURRENT_LONG)
-            currentSearch = it.getString(CURRENT_SEARCH)
+            currentLat = it.getDouble(CURRENT_LAT, defaultLat)
+            currentLong = it.getDouble(CURRENT_LONG, defaultLong)
+            currentSearch = it.getString(CURRENT_SEARCH, "")
         }
     }
 
@@ -97,44 +96,30 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     private fun setViewListener() {
-        if (currentSearch?.isNotEmpty() == true) {
+        if (currentSearch.isNotEmpty()) {
             etSearch.apply {
-                setText(currentSearch.toString())
+                setText(currentSearch)
                 selectAll()
                 requestFocus()
                 setListenerClearBtn()
                 setSelection(etSearch.text.length)
             }
-            currentSearch?.let {
-                loadAutocomplete(it)
-            }
+            loadAutocomplete(currentSearch)
         } else {
             icCloseBtn.visibility = View.GONE
-
-            if (currentLat != 0.0 && currentLong != 0.0) {
-                context?.let {
-                    if (AddNewAddressUtils.isLocationEnabled(it)) {
-                        doLoadAutocompleteGeocode()
-                    }
-                }
-            } else {
-                context?.let {
-                    if (AddNewAddressUtils.isLocationEnabled(it)) {
-                        if (currentLat == 0.0 && currentLong == 0.0) {
-                            currentLat = defaultLat
-                            currentLong = defaultLong
-                        }
-                        doLoadAutocompleteGeocode()
-                    } else {
-                        // When user does not enable location
-                        showGpsDisabledNotification()
-                        rlCurrentLocation.setOnClickListener {
-                            AddNewAddressUtils.hideKeyboard(etSearch, context)
-                            showLocationInfoBottomSheet()
-                        }
+            context?.let {
+                if (AddNewAddressUtils.isLocationEnabled(it)) {
+                    doLoadAutocompleteGeocode()
+                } else {
+                    // When user does not enable location
+                    showGpsDisabledNotification()
+                    rlCurrentLocation.setOnClickListener {
+                        AddNewAddressUtils.hideKeyboard(etSearch, context)
+                        showLocationInfoBottomSheet()
                     }
                 }
             }
+
         }
 
         etSearch.run {
@@ -234,15 +219,15 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         llLoading.visibility = View.VISIBLE
     }
 
-    override fun onSuccessGetAutocompleteGeocode(responseAutocompleteGeocodeDataUiModel: AutocompleteGeocodeDataUiModel) {
+    override fun onSuccessGetAutocompleteGeocode(dataUiModel: AutocompleteGeocodeDataUiModel) {
         llLoading.visibility = View.GONE
         rvPoiList.visibility = View.VISIBLE
         mDisabledGps.visibility = View.GONE
-        if (responseAutocompleteGeocodeDataUiModel.results.isNotEmpty()) {
+        if (dataUiModel.results.isNotEmpty()) {
             llSubtitle.visibility = View.VISIBLE
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = true
-            adapter.dataAutocompleteGeocode = responseAutocompleteGeocodeDataUiModel.results.toMutableList()
+            adapter.dataAutocompleteGeocode = dataUiModel.results.toMutableList()
             adapter.notifyDataSetChanged()
         }
     }
