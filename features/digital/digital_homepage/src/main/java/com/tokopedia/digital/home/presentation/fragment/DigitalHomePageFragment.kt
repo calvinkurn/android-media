@@ -11,10 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
@@ -29,6 +32,7 @@ import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactor
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
+import kotlinx.android.synthetic.main.digital_home_search_view.view.*
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
@@ -42,8 +46,11 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     lateinit var viewModel: DigitalHomePageViewModel
     private var searchBarTransitionRange = 0
 
+    lateinit var searchBar: FrameLayout
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.layout_digital_home, container, false)
+        searchBar = view.findViewById(R.id.digital_homepage_search_bar)
         return view
     }
 
@@ -55,7 +62,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             viewModel = viewModelProvider.get(DigitalHomePageViewModel::class.java)
         }
 
-        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.toolbar_transition_range)
+        searchBarTransitionRange = resources.getDimensionPixelSize(TOOLBAR_TRANSITION_RANGE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,9 +121,13 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         if (offsetAlpha >= 255) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
+            context?.run { searchBar.search_view_container.background =
+                        MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray) }
         } else {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
             digital_homepage_toolbar.toInitialMode()
+            context?.run { searchBar.search_view_container.background =
+                        MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background) }
         }
     }
 
@@ -249,6 +260,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     companion object {
+        val TOOLBAR_TRANSITION_RANGE = R.dimen.dp_8
+
         fun getInstance() = DigitalHomePageFragment()
     }
 }

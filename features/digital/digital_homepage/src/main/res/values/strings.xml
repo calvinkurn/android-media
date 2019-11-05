@@ -5,4 +5,6 @@
     <string name="digital_home_label_order_list">Daftar Transaksi</string>
     <string name="digital_home_label_help">Bantuan</string>
     <string name="digital_home_label_mybills">Langganan</string>
+
+    <string name="digital_home_search_view_hint"><![CDATA[Cari di Topup & Tagihan]]></string>
 </resources>
