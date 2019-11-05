@@ -60,7 +60,7 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
     }
 
     private fun prepareTncIDHashMap() {
-        for(tncItem in tncDataList) {
+        for (tncItem in tncDataList) {
             tncIdHashMap[tncItem.tncId] = tncItem.tncList
         }
     }

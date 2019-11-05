@@ -60,17 +60,20 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_installment_detail_heading" />
 
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
+        <FrameLayout
             android:id="@+id/ft_installment_ticker_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
-            app:closeButtonVisibility="gone"
+            android:background="@drawable/bg_rounded_grey_250"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/installment_detail_ll"
-            app:tickerShapeType="loose"
-            app:tickerType="information"
             tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="@dimen/dp_24"
+                android:layout_height="@dimen/dp_24"
+                app:srcCompat="@drawable/ft_pdp_info_icon" />
 
             <LinearLayout
                 android:id="@+id/ll_tnc_description"
@@ -78,11 +81,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dp_8"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_installment_data_heading" />
+                android:paddingBottom="@dimen/dp_8" />
 
-        </com.tokopedia.unifycomponents.ticker.Ticker>
+        </FrameLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_installment_data_heading"
