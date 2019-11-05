@@ -12,6 +12,7 @@
     app:layout_constraintCircleRadius="@dimen/dp_8">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/review_card_content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_15">

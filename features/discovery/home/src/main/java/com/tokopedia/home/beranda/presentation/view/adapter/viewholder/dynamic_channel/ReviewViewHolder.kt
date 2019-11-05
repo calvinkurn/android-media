@@ -44,7 +44,7 @@ class ReviewViewHolder(
 
         itemView.addOnImpressionListener(element, object : ViewHintListener {
             override fun onViewHint() {
-                HomePageTracking.sendHomeReviewImpression(
+                HomePageTracking.homeReviewImpression(
                         categoryListener.trackingQueue,
                         element.suggestedProductReview.suggestedProductReview,
                         adapterPosition,
@@ -54,17 +54,20 @@ class ReviewViewHolder(
             }
         })
 
+        itemView.review_card_content_container.setOnClickListener{
+            HomePageTracking.homeReviewOnBlankSpaceClickTracker("", "")
+        }
         itemView.animated_review.init()
         itemView.animated_review.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
+                HomePageTracking.homeReviewOnRatingChangedTracker("", "", position + 1)
                 reviewListener.onReviewClick(adapterPosition, position, element.suggestedProductReview.suggestedProductReview.linkURL)
             }
         })
 
         itemView.ic_close_review.setOnClickListener{
-            HomePageTracking.sendHomeReviewOnCloseTracker("", "")
+            HomePageTracking.homeReviewOnCloseTracker("", "")
             reviewListener.onCloseClick()
         }
     }
-
 }

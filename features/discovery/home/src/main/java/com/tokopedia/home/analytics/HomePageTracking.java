@@ -1576,7 +1576,7 @@ public class HomePageTracking {
         return list;
     }
 
-    public static void sendHomeReviewImpression(
+    public static void homeReviewImpression(
             TrackingQueue trackingQueue,
             SuggestedProductReviewResponse reviewData,
             int position,
@@ -1588,7 +1588,7 @@ public class HomePageTracking {
                 "name", "product review notification - " + orderId + " - " + productId,
                 "creative", "product review notification - " + orderId + " - " + productId,
                 "creative_url", reviewData.getImageUrl(),
-                "position", String.valueOf(position + 1),
+                "position", Integer.toString(position + 1, 10),
                 "category", "",
                 "promo_id", null,
                 "promo_code", null
@@ -1608,11 +1608,29 @@ public class HomePageTracking {
         ));
     }
 
-    public static void sendHomeReviewOnCloseTracker(String orderId, String productId) {
+    public static void homeReviewOnCloseTracker(String orderId, String productId) {
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 EVENT, "clickReview",
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "click - back button on home product review widget",
+                EVENT_LABEL, orderId + " - " + productId
+        ));
+    }
+
+    public static void homeReviewOnRatingChangedTracker(String orderId, String productId, int starCount) {
+        getTracker().sendGeneralEvent(DataLayer.mapOf(
+                EVENT, "clickReview",
+                EVENT_CATEGORY, "homepage-pdp",
+                EVENT_ACTION, "click - product rating stars on home product review widget",
+                EVENT_LABEL, orderId + " - " + productId + " - " + Integer.toString(starCount, 10)
+        ));
+    }
+
+    public static void homeReviewOnBlankSpaceClickTracker(String orderId, String productId) {
+        getTracker().sendGeneralEvent(DataLayer.mapOf(
+                EVENT, "clickReview",
+                EVENT_CATEGORY, "homepage-pdp",
+                EVENT_ACTION, "click - home product review widget",
                 EVENT_LABEL, orderId + " - " + productId
         ));
     }
