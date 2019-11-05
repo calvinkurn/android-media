@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 
@@ -20,6 +20,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
