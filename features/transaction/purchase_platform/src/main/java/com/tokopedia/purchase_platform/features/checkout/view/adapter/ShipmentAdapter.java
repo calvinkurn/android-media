@@ -502,8 +502,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 for (Object item : shipmentDataList) {
                     if (item instanceof ShipmentCartItemModel) {
                         invoiceTradeInIndex = shipmentDataList.indexOf(item);
-                        ((ShipmentCartItemModel) item).setHasSetDropOffLocation(true);
-                        ((ShipmentCartItemModel) item).setStateHasLoadCourierTradeInDropOffState(false);
+                        ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) item;
+                        shipmentCartItemModel.setHasSetDropOffLocation(true);
+                        shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(false);
+                        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                            shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourierTradeInDropOff(null);
+                        }
                         break;
                     }
                 }
