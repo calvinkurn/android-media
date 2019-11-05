@@ -1,5 +1,8 @@
 package com.tokopedia.referral.di
 
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
+
 import javax.inject.Scope
 
 /**
@@ -7,5 +10,5 @@ import javax.inject.Scope
  */
 
 @Scope
-@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 annotation class ReferralScope
