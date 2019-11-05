@@ -197,14 +197,14 @@ class ChangePinFragment : BaseDaggerFragment() {
         if(isForgot){
             changePinForgotBtn.apply {
                 text = getString(R.string.change_pin_forgot_btn)
-                setTextColor(resources.getColor(R.color.Green_G500))
+                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500))
                 setOnClickListener(onForgotPinClick)
                 isEnabled = true
             }
         }else {
             changePinForgotBtn.apply {
                 text = getString(R.string.change_pin_avoid_info)
-                setTextColor(resources.getColor(R.color.Neutral_N700_44))
+                setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
                 isEnabled = false
             }
         }
