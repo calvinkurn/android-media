@@ -128,11 +128,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void loadDataFromArguments() {
         productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
-        if (productViewModel != null) {
-
-            if (productViewModel.getSearchParameter() != null)
-                setSearchParameter(productViewModel.getSearchParameter());
-        }
     }
 
 
@@ -197,7 +192,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void setupAdapter() {
-        imageProductListTypeFactory = new ImageProductListTypeFactoryImpl(this, this, getQueryKey());
+        imageProductListTypeFactory = new ImageProductListTypeFactoryImpl(this, this);
         adapter = new ImageProductListAdapter(imageProductListTypeFactory);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)));
@@ -250,9 +245,15 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.refreshData();
+                refreshData();
             }
         });
+    }
+
+    private void refreshData() {
+        adapter.clearAllElements();
+        staggeredGridLayoutLoadMoreTriggerListener.resetState();
+        presenter.refreshData();
     }
 
     protected ImageProductListPresenter getPresenter() {
@@ -404,7 +405,13 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void showRefreshLayout() {
+        refreshLayout.setRefreshing(true);
+    }
+
+    @Override
     public void hideRefreshLayout() {
+        refreshLayout.setRefreshing(false);
     }
 
     @Override

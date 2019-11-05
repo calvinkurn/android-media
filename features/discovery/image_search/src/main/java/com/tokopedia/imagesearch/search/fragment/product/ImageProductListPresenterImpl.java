@@ -110,6 +110,12 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
         refreshImageSearchUseCase.execute(
                 RefreshImageSearchUseCase.generateParams(token),
                 new Subscriber<SearchResultModel>() {
+
+                    @Override
+                    public void onStart() {
+                        getView().showRefreshLayout();
+                    }
+
                     @Override
                     public void onCompleted() {
 
@@ -117,11 +123,13 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().hideRefreshLayout();
                         getView().displayErrorRefresh();
                     }
 
                     @Override
                     public void onNext(SearchResultModel searchResultModel) {
+                        getView().hideRefreshLayout();
                         handleRefreshResult(searchResultModel);
                     }
                 }

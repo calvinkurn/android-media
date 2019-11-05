@@ -37,13 +37,6 @@ public class DefaultImageSearchSubscriber extends Subscriber<SearchResultModel> 
     @Override
     public void onNext(SearchResultModel searchResultModel) {
         ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(view.getContext(), searchResultModel);
-        SearchParameter imageSearchProductParameter = new SearchParameter();
-        imageSearchProductParameter.set(SearchApiConst.START, String.valueOf(searchResultModel.getProductList().size()));
-        imageSearchProductParameter.setSearchQuery(searchResultModel.getQuery());
-        imageSearchProductParameter.set(SearchApiConst.SOURCE, "imagesearch");
-
-        model.setSearchParameter(imageSearchProductParameter);
-
         view.onHandleImageResponseSearch(model);
     }
 }

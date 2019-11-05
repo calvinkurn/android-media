@@ -39,6 +39,8 @@ public interface ImageProductListFragmentView extends CustomerView {
 
     void backToTop();
 
+    void showRefreshLayout();
+
     void hideRefreshLayout();
 
     BaseAppComponent getBaseAppComponent();
