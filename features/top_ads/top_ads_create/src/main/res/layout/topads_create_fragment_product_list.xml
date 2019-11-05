@@ -48,15 +48,15 @@
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="text"
         android:orientation="horizontal">
 
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:checked="true"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_4"
             style="@style/TopadsProductFilterRadioButtonStyle"
             android:text="@string/belum_diiklankan" />
         <RadioButton
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_4"
             style="@style/TopadsProductFilterRadioButtonStyle"
             android:text="@string/sudah_diiklankan" />
     </RadioGroup>
