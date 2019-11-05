@@ -10,12 +10,12 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
-import com.tokopedia.imagesearch.domain.model.SearchResultModel;
+import com.tokopedia.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.imagesearch.domain.usecase.RefreshImageSearchUseCase;
 import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
-import com.tokopedia.imagesearch.helper.ProductViewModelHelper;
+import com.tokopedia.imagesearch.search.exception.ImageNotSupportedException;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -41,6 +41,8 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     private static final long LOAD_MORE_DELAY_MS = 1000;
 
     @Inject
+    GetImageSearchUseCase getImageSearchUseCase;
+    @Inject
     RefreshImageSearchUseCase refreshImageSearchUseCase;
     @Inject
     AddWishListUseCase addWishlistActionUseCase;
@@ -53,6 +55,14 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     private CategoryFilterModel categoryFilterModel;
     private String selectedCategoryId = "";
     private String token;
+
+    @Override
+    public void detachView() {
+        if(getImageSearchUseCase != null) getImageSearchUseCase.unsubscribe();
+        if(refreshImageSearchUseCase != null) refreshImageSearchUseCase.unsubscribe();
+        if(addWishlistActionUseCase != null) addWishlistActionUseCase.unsubscribe();
+        if(removeWishlistActionUseCase != null) removeWishlistActionUseCase.unsubscribe();
+    }
 
     @Override
     public void attachView(ImageProductListFragmentView viewListener,
@@ -106,10 +116,47 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     }
 
     @Override
+    public void requestImageSearch(String imagePath) {
+        getImageSearchUseCase.setImagePath(imagePath);
+        getImageSearchUseCase.execute(
+                GetImageSearchUseCase.generateParams(getView().getSearchParameter()),
+                new Subscriber<ProductViewModel>() {
+
+                    @Override
+                    public void onStart() {
+                        getView().showRefreshLayout();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().hideRefreshLayout();
+                        if (e instanceof ImageNotSupportedException) {
+                            getView().showImageNotSupportedError();
+                        } else {
+                            getView().onHandleInvalidImageSearchResponse();
+                        }
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ProductViewModel productViewModel) {
+                        getView().hideRefreshLayout();
+                        handleGetImageSearchResult(productViewModel);
+                        getView().onHandleImageResponseSearch(productViewModel);
+                    }
+                });
+    }
+
+    @Override
     public void refreshData() {
         refreshImageSearchUseCase.execute(
                 RefreshImageSearchUseCase.generateParams(token, getView().getSearchParameter()),
-                new Subscriber<SearchResultModel>() {
+                new Subscriber<ProductViewModel>() {
 
                     @Override
                     public void onStart() {
@@ -128,22 +175,22 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
                     }
 
                     @Override
-                    public void onNext(SearchResultModel searchResultModel) {
+                    public void onNext(ProductViewModel productViewModel) {
                         getView().hideRefreshLayout();
-                        handleRefreshResult(searchResultModel);
+                        handleGetImageSearchResult(productViewModel);
                     }
                 }
         );
     }
 
-    private void handleRefreshResult(SearchResultModel searchResultModel) {
-        ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(getView().getContext(), searchResultModel);
+    private void handleGetImageSearchResult(ProductViewModel model) {
         initData(new ArrayList<>(model.getProductList()), model.getCategoryFilterModel(), model.getToken());
         if (!isSelectedCategoryValid(model.getCategoryFilterModel())) {
             selectedCategoryId = "";
         }
         setFilterCategory(selectedCategoryId);
-        getView().renderDynamicFilter(searchResultModel.getDynamicFilterModel());
+        getView().renderDynamicFilter(model.getDynamicFilterModel());
+        getView().setTotalSearchResultCount(model.getTotalDataText());
         getView().reloadData();
     }
 

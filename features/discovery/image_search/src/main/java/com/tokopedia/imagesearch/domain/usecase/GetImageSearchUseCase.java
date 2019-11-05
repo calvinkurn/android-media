@@ -8,12 +8,14 @@ import android.util.Base64;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.data.mapper.ImageProductMapper;
-import com.tokopedia.imagesearch.domain.model.SearchResultModel;
+import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
 import com.tokopedia.imagesearch.helper.ImageHelper;
+import com.tokopedia.imagesearch.helper.UrlParamUtils;
 import com.tokopedia.imagesearch.network.response.ImageSearchProductResponse;
 import com.tokopedia.imagesearch.search.exception.ImageNotSupportedException;
 import com.tokopedia.usecase.RequestParams;
@@ -31,11 +33,12 @@ import rx.Observable;
  * Created by sachinbansal on 1/10/18.
  */
 
-public class GetImageSearchUseCase extends UseCase<SearchResultModel> {
+public class GetImageSearchUseCase extends UseCase<ProductViewModel> {
 
 
-    private static final String IMAGE_CONTENT = "image";
-    private static final String PARAMS = "params";
+    private static final String VAR_IMAGE = "image";
+    private static final String VAR_PARAMS = "params";
+
     private ImageProductMapper productMapper;
     private Context context;
     private GraphqlUseCase graphqlUseCase;
@@ -45,9 +48,6 @@ public class GetImageSearchUseCase extends UseCase<SearchResultModel> {
 
     private final int MAX_WIDTH = 1280;
     private final int MAX_HEIGHT = 720;
-
-    private final static String pageSize = "100";
-    private final static String pageOffset = "0";
 
     private String imagePath;
     private final int MIN_WIDTH = 200;
@@ -62,7 +62,7 @@ public class GetImageSearchUseCase extends UseCase<SearchResultModel> {
     }
 
     @Override
-    public Observable<SearchResultModel> createObservable(RequestParams params) {
+    public Observable<ProductViewModel> createObservable(RequestParams params) {
         return Observable.just(imagePath)
                 .flatMap(imagePath -> {
                     File imgFile = new File(imagePath);
@@ -100,12 +100,10 @@ public class GetImageSearchUseCase extends UseCase<SearchResultModel> {
                     String encodePicContent = Base64.encodeToString(byteArray,
                             Base64.NO_WRAP | Base64.NO_CLOSE);
 
-                    Map<String, Object> mapContentVariable = new HashMap<>();
-                    params.putString(IMAGE_CONTENT, encodePicContent);
-                    params.putString(PARAMS, initializeSearchRequestParamForGql());
-
                     GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                            R.raw.query_image_search), ImageSearchProductResponse.class, params.getParameters());
+                            R.raw.query_image_search), ImageSearchProductResponse.class);
+
+                    graphqlRequest.setVariables(createParametersForQuery(encodePicContent, params.getParameters()));
 
                     graphqlUseCase.clearRequest();
                     graphqlUseCase.addRequest(graphqlRequest);
@@ -114,8 +112,24 @@ public class GetImageSearchUseCase extends UseCase<SearchResultModel> {
                 });
     }
 
-    private static String initializeSearchRequestParamForGql() {
-        return "page=" + String.valueOf(pageOffset) + "&page_size=" + pageSize + "&device=" + SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE;
+    private Map<String, Object> createParametersForQuery(String encodePicContent, Map<String, Object> parameters) {
+        Map<String, Object> variables = new HashMap<>();
+
+        variables.put(VAR_IMAGE, encodePicContent);
+        variables.put(VAR_PARAMS, UrlParamUtils.generateUrlParamString(parameters));
+
+        return variables;
+    }
+
+    public static RequestParams generateParams(SearchParameter searchParameter) {
+        RequestParams params = RequestParams.create();
+        params.putString(SearchApiConst.PAGE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_START);
+        params.putString(SearchApiConst.PAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_PAGE_SIZE);
+        params.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        params.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_IMAGE_SEARCH);
+        params.putAll(searchParameter.getSearchParameterMap());
+
+        return params;
     }
 
     public void setImagePath(String imagePath) {

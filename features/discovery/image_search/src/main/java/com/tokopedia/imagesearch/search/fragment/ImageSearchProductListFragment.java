@@ -12,7 +12,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -26,9 +28,9 @@ import com.tokopedia.filter.common.manager.FilterSortManager;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
-import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
+import com.tokopedia.imagesearch.analytics.ImageSearchEventTracking;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -54,14 +56,17 @@ import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.Catego
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.RedirectionListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
-import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,13 +86,16 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         ImageProductListFragmentView,
         ProductListener, WishListActionListener, CategoryFilterListener {
 
+    private static final String NO_RESPONSE = "no response";
+    private static final String SUCCESS = "success match found";
+
     public static final String SCREEN_IMAGE_SEARCH_TAB = "Image Search result - Image tab";
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
 
-    private static final String EXTRA_PRODUCT_LIST = "EXTRA_PRODUCT_LIST";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
-    private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
+    private static final String EXTRA_IMAGE_PATH = "EXTRA_IMAGE_PATH";
+    private static final String EXTRA_IS_FROM_CAMERA = "EXTRA_IS_FROM_CAMERA";
 
     protected RecyclerView recyclerView;
     @Inject
@@ -95,7 +103,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Inject
     UserSessionInterface userSession;
 
-    private Config topAdsConfig;
     private ImageProductListAdapter adapter;
     private ProductViewModel productViewModel;
     private ImageProductListTypeFactory imageProductListTypeFactory;
@@ -107,18 +114,20 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     public int spanCount;
     private TrackingQueue trackingQueue;
-    private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
     private ImageSearchNavigationListener imageSearchNavigationListener;
     private BottomSheetListener bottomSheetListener;
     private FilterTrackingData filterTrackingData;
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
+    private String imagePath;
+    private boolean isFromCamera;
 
 
-    public static ImageSearchProductListFragment newInstance(ProductViewModel productViewModel) {
+    public static ImageSearchProductListFragment newInstance(String imagePath, boolean isFromCamera) {
         Bundle args = new Bundle();
-        args.putParcelable(ARG_VIEW_MODEL, productViewModel);
+        args.putString(EXTRA_IMAGE_PATH, imagePath);
+        args.putBoolean(EXTRA_IS_FROM_CAMERA, isFromCamera);
         ImageSearchProductListFragment imageSearchProductListFragment = new ImageSearchProductListFragment();
         imageSearchProductListFragment.setArguments(args);
         return imageSearchProductListFragment;
@@ -150,14 +159,15 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void loadDataFromSavedState(Bundle savedInstanceState) {
-        productViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_LIST);
         setSearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
+        imagePath = savedInstanceState.getString(EXTRA_IMAGE_PATH);
+        isFromCamera = savedInstanceState.getBoolean(EXTRA_IS_FROM_CAMERA);
     }
 
     private void loadDataFromArguments() {
-        productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
+        imagePath = getArguments().getString(EXTRA_IMAGE_PATH);
+        isFromCamera = getArguments().getBoolean(EXTRA_IS_FROM_CAMERA);
     }
-
 
     @Override
     protected String getScreenName() {
@@ -197,10 +207,14 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         super.onViewCreated(view, savedInstanceState);
         initSpan();
         bindView(view);
-        initTopAdsConfig();
         setupAdapter();
         setupListener();
         initSwipeToRefresh(view);
+        performImageSearch();
+    }
+
+    private void performImageSearch() {
+        presenter.requestImageSearch(imagePath);
     }
 
     @Override
@@ -362,20 +376,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                 SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE);
     }
 
-    private void initTopAdsConfig() {
-        topAdsConfig = new Config.Builder()
-                .setSessionId(userSession.getDeviceId())
-                .setUserId(userSession.getUserId())
-                .setEndpoint(Endpoint.PRODUCT)
-                .build();
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_PRODUCT_LIST, productViewModel);
+        outState.putString(EXTRA_IMAGE_PATH, imagePath);
+        outState.putBoolean(EXTRA_IS_FROM_CAMERA, isFromCamera);
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, getSearchParameter());
-        outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
     }
 
     private void setupAdapter() {
@@ -384,10 +390,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)));
         recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
-
-        presenter.initData(initMappingProduct(), productViewModel.getCategoryFilterModel(), productViewModel.getToken());
-        renderDynamicFilter(productViewModel.getDynamicFilterModel());
-        presenter.loadMoreData(0);
     }
 
     private void setupListener() {
@@ -715,5 +717,129 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public String getEmptyResultMessage() {
         return getString(R.string.image_search_msg_empty_product_title);
+    }
+
+    @Override
+    public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
+        trackEventOnSuccessImageSearch(productViewModel);
+    }
+
+    @Override
+    public void onHandleInvalidImageSearchResponse() {
+
+        if (isFromCamera) {
+            sendCameraImageSearchResultGTM(NO_RESPONSE);
+        } else {
+            sendGalleryImageSearchResultGTM(NO_RESPONSE);
+        }
+
+        Toast.makeText(getContext(), getString(R.string.invalid_image_search_response), Toast.LENGTH_LONG).show();
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void showImageNotSupportedError() {
+        Toast.makeText(getContext(), getResources().getString(R.string.image_not_supported), Toast.LENGTH_LONG).show();
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+    }
+
+    private void sendGalleryImageSearchResultGTM(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                ImageSearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                ImageSearchEventTracking.Category.IMAGE_SEARCH,
+                ImageSearchEventTracking.Action.GALLERY_SEARCH_RESULT,
+                label);
+    }
+
+
+    private void sendCameraImageSearchResultGTM(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                ImageSearchEventTracking.Event.IMAGE_SEARCH_CLICK,
+                ImageSearchEventTracking.Category.IMAGE_SEARCH,
+                ImageSearchEventTracking.Action.CAMERA_SEARCH_RESULT,
+                label);
+    }
+
+    private void trackEventOnSuccessImageSearch(ProductViewModel productViewModel) {
+        if (productViewModel.getProductList() == null || productViewModel.getProductList().size() == 0) {
+            return;
+        }
+        sendGTMEventSuccessImageSearch();
+        sendAppsFlyerEventSuccessImageSearch(productViewModel);
+    }
+
+    private void sendGTMEventSuccessImageSearch() {
+        if (isFromCamera) {
+            sendCameraImageSearchResultGTM(SUCCESS);
+        } else {
+            sendGalleryImageSearchResultGTM(SUCCESS);
+        }
+    }
+
+    private void sendAppsFlyerEventSuccessImageSearch(ProductViewModel productViewModel) {
+        JSONArray afProdIds = new JSONArray();
+        HashMap<String, String> category = new HashMap<String, String>();
+        ArrayList<String> prodIdArray = new ArrayList<>();
+
+        if (productViewModel.getProductList().size() > 0) {
+            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
+                if (i < 3) {
+                    prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
+                    afProdIds.put(productViewModel.getProductList().get(i).getProductID());
+                } else {
+                    break;
+                }
+                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
+            }
+        }
+
+        eventAppsFlyerViewListingSearch(afProdIds,productViewModel.getQuery(),prodIdArray);
+        sendMoEngageSearchAttemptSuccessImageSearch(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+    }
+
+    private void eventAppsFlyerViewListingSearch(JSONArray productsId, String keyword, ArrayList<String> prodIds) {
+        Map<String, Object> listViewEvent = new HashMap<>();
+        listViewEvent.put("af_content_id", prodIds);
+        listViewEvent.put("af_currency", "IDR");
+        listViewEvent.put("af_content_type", "product");
+        listViewEvent.put("af_search_string", keyword);
+        if (productsId.length() > 0) {
+            listViewEvent.put("af_success", "success");
+        } else {
+            listViewEvent.put("af_success", "fail");
+        }
+
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent("af_search", listViewEvent);
+    }
+
+    private void sendMoEngageSearchAttemptSuccessImageSearch(String keyword, boolean isResultFound, HashMap<String, String> category) {
+        Map<String, Object> value = DataLayer.mapOf(
+                ImageSearchEventTracking.MOENGAGE.KEYWORD, keyword,
+                ImageSearchEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
+        );
+        if (category != null) {
+            value.put(ImageSearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
+            value.put(ImageSearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
+        }
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, ImageSearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
+    }
+
+    @Override
+    public void setTotalSearchResultCount(String formattedResultCount) {
+        if (bottomSheetListener != null) {
+            bottomSheetListener.setFilterResultCount(formattedResultCount);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (presenter != null) {
+            presenter.detachView();
+        }
+        super.onDestroy();
     }
 }

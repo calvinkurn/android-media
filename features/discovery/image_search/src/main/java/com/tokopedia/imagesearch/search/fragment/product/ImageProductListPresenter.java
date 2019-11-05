@@ -28,4 +28,6 @@ public interface ImageProductListPresenter extends CustomerPresenter<ImageProduc
     boolean isCategoryFilterSelected(String categoryId);
 
     void setFilterCategory(String categoryId);
+
+    void requestImageSearch(String imagePath);
 }

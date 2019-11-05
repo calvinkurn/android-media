@@ -8,15 +8,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.FrameLayout;
@@ -24,6 +16,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -60,7 +58,6 @@ import com.tokopedia.track.TrackApp;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -76,27 +73,22 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 
 public class ImageSearchActivity extends BaseActivity
-        implements ImageSearchContract.View,
-        RedirectionListener,
+        implements RedirectionListener,
         BottomSheetListener,
         ImageSearchNavigationListener,
         PermissionCheckerHelper.PermissionCheckListener {
 
     private static final int REQUEST_CODE_IMAGE = 2390;
-    private static final String NO_RESPONSE = "no response";
-    private static final String SUCCESS = "success match found";
     private static final String KEY_IMAGE_PATH = "image_path";
+    private static final String KEY_IS_FROM_CAMERA = "is_from_camera";
 
     private Toolbar toolbar;
     private View backButton;
     private TextView searchTextView;
     private ImageView thumbnailImage;
-    private FrameLayout container;
-    protected ProgressBar loadingView;
     private BottomSheetFilterView bottomSheetFilterView;
     private View buttonFilter;
     private View buttonSort;
-    private View searchNavDivider;
     private View searchNavContainer;
 
     protected View root;
@@ -108,12 +100,7 @@ public class ImageSearchActivity extends BaseActivity
     private ImageSearchNavigationListener.ClickListener searchNavigationClickListener;
 
     @Inject
-    ImageSearchPresenter searchPresenter;
-
-    @Inject
     PermissionCheckerHelper permissionCheckerHelper;
-
-    private String lastQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,12 +132,9 @@ public class ImageSearchActivity extends BaseActivity
         backButton = findViewById(R.id.action_up_btn);
         searchTextView = findViewById(R.id.imageSearchTextView);
         thumbnailImage = findViewById(R.id.imageSearchThumbnail);
-        container = (FrameLayout) findViewById(R.id.image_search_container);
-        loadingView = findViewById(R.id.image_search_progressBar);
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter);
         buttonFilter = findViewById(R.id.button_filter);
         buttonSort = findViewById(R.id.button_sort);
-        searchNavDivider = findViewById(R.id.search_nav_divider);
         searchNavContainer = findViewById(R.id.search_nav_container);
         root = findViewById(R.id.image_search_root);
     }
@@ -164,7 +148,6 @@ public class ImageSearchActivity extends BaseActivity
                 FilterEventTracking.Category.FILTER_PRODUCT,
                 "",
                 FilterEventTracking.Category.PREFIX_IMAGE_SEARCH_RESULT_PAGE));
-        showLoadingView(false);
     }
 
     private void initBottomSheetListener() {
@@ -246,20 +229,8 @@ public class ImageSearchActivity extends BaseActivity
 
     @Override
     public void setupSearchNavigation(ClickListener clickListener) {
-        if (loadingView.getVisibility() != View.VISIBLE) {
-            showBottomNavigation();
-        }
-
+        showBottomNavigation();
         this.searchNavigationClickListener = clickListener;
-    }
-
-
-    protected void showLoadingView(boolean visible) {
-        loadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
-
-    protected void showContainer(boolean visible) {
-        container.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     protected void initToolbar() {
@@ -292,19 +263,8 @@ public class ImageSearchActivity extends BaseActivity
         backButton.setOnClickListener(v -> onBackPressed());
     }
 
-    protected void setToolbarTitle(String query) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(query);
-        }
-    }
-
-    protected void setLastQuery(String lastQuery) {
-        this.lastQuery = lastQuery;
-    }
-
     private void initImageSearch() {
         initInjector();
-        searchPresenter.attachView(this);
     }
 
     private void initInjector() {
@@ -330,7 +290,7 @@ public class ImageSearchActivity extends BaseActivity
 
     private void restoreStateOnCreate(@NonNull Bundle savedInstanceState) {
         String imagePath = savedInstanceState.getString(KEY_IMAGE_PATH, "");
-
+        isFromCamera = savedInstanceState.getBoolean(KEY_IS_FROM_CAMERA);
         if (!TextUtils.isEmpty(imagePath)) {
             onImagePickedSuccess(imagePath);
         }
@@ -552,119 +512,15 @@ public class ImageSearchActivity extends BaseActivity
         finish();
     }
 
-    private void sendGalleryImageSearchResultGTM(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                ImageSearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                ImageSearchEventTracking.Category.IMAGE_SEARCH,
-                ImageSearchEventTracking.Action.GALLERY_SEARCH_RESULT,
-                label);
-    }
-
-
-    private void sendCameraImageSearchResultGTM(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                ImageSearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                ImageSearchEventTracking.Category.IMAGE_SEARCH,
-                ImageSearchEventTracking.Action.CAMERA_SEARCH_RESULT,
-                label);
-    }
-
     public void onImagePickedSuccess(String imagePath) {
         setImagePath(imagePath);
-        showLoadingView(true);
-        showContainer(false);
         loadThumbnailImage(imagePath);
-        searchPresenter.requestImageSearch(imagePath);
+        loadSection(imagePath);
     }
 
-    @Override
-    public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
-        trackEventOnSuccessImageSearch(productViewModel);
-
-        showImageSearchResult(productViewModel);
-
-        showLoadingView(false);
-    }
-
-    private void trackEventOnSuccessImageSearch(ProductViewModel productViewModel) {
-        if (productViewModel.getProductList() == null || productViewModel.getProductList().size() == 0) {
-            return;
-        }
-        sendGTMEventSuccessImageSearch();
-        sendAppsFlyerEventSuccessImageSearch(productViewModel);
-    }
-
-    private void sendGTMEventSuccessImageSearch() {
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(SUCCESS);
-        } else {
-            sendGalleryImageSearchResultGTM(SUCCESS);
-        }
-    }
-
-    private void sendAppsFlyerEventSuccessImageSearch(ProductViewModel productViewModel) {
-        JSONArray afProdIds = new JSONArray();
-        HashMap<String, String> category = new HashMap<String, String>();
-        ArrayList<String> prodIdArray = new ArrayList<>();
-
-        if (productViewModel.getProductList().size() > 0) {
-            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
-                if (i < 3) {
-                    prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
-                    afProdIds.put(productViewModel.getProductList().get(i).getProductID());
-                } else {
-                    break;
-                }
-                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
-            }
-        }
-
-        eventAppsFlyerViewListingSearch(this, afProdIds,productViewModel.getQuery(),prodIdArray);
-        sendMoEngageSearchAttemptSuccessImageSearch(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
-    }
-
-    public static void eventAppsFlyerViewListingSearch(Context context,JSONArray productsId, String keyword, ArrayList<String> prodIds) {
-        Map<String, Object> listViewEvent = new HashMap<>();
-        listViewEvent.put("af_content_id", prodIds);
-        listViewEvent.put("af_currency", "IDR");
-        listViewEvent.put("af_content_type", "product");
-        listViewEvent.put("af_search_string", keyword);
-        if (productsId.length() > 0) {
-            listViewEvent.put("af_success", "success");
-        } else {
-            listViewEvent.put("af_success", "fail");
-        }
-
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent("af_search", listViewEvent);
-    }
-
-    public void sendMoEngageSearchAttemptSuccessImageSearch(String keyword, boolean isResultFound, HashMap<String, String> category) {
-        Map<String, Object> value = DataLayer.mapOf(
-                ImageSearchEventTracking.MOENGAGE.KEYWORD, keyword,
-                ImageSearchEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
-        );
-        if (category != null) {
-            value.put(ImageSearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
-            value.put(ImageSearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
-        }
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, ImageSearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
-    }
-
-    private void showImageSearchResult(ProductViewModel productViewModel) {
-        if (productViewModel != null) {
-            setLastQuery(productViewModel.getQuery());
-            loadSection(productViewModel);
-            setToolbarTitle(getString(R.string.title_image_search));
-        } else {
-            moveToAutoCompletePage();
-        }
-    }
-
-    private void loadSection(ProductViewModel productViewModel) {
-        imageSearchProducListFragment = ImageSearchProductListFragment.newInstance(productViewModel);
+    private void loadSection(String imagePath) {
+        imageSearchProducListFragment = ImageSearchProductListFragment.newInstance(imagePath, isFromCamera);
         addFragment(R.id.image_search_container, imageSearchProducListFragment);
-
-        showContainer(true);
     }
 
     private void addFragment(int containerViewId, ImageSearchProductListFragment fragment) {
@@ -675,33 +531,6 @@ public class ImageSearchActivity extends BaseActivity
         }
     }
 
-    @Override
-    public void onHandleInvalidImageSearchResponse() {
-        showLoadingView(false);
-
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(NO_RESPONSE);
-        } else {
-            sendGalleryImageSearchResultGTM(NO_RESPONSE);
-        }
-
-        Toast.makeText(this, getString(R.string.invalid_image_search_response), Toast.LENGTH_LONG).show();
-        finish();
-    }
-
-    @Override
-    public void showImageNotSupportedError() {
-        showLoadingView(false);
-
-        Toast.makeText(this, getResources().getString(R.string.image_not_supported), Toast.LENGTH_LONG).show();
-        finish();
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
-    }
-
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
@@ -709,26 +538,14 @@ public class ImageSearchActivity extends BaseActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(KEY_IMAGE_PATH, imagePath);
+        outState.putBoolean(KEY_IS_FROM_CAMERA, isFromCamera);
 
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onDestroy() {
-        if(searchPresenter != null) {
-            searchPresenter.detachView();
-        }
-
-        super.onDestroy();
-    }
-
-    @Override
     public void moveToAutoCompletePage() {
-        if (!TextUtils.isEmpty(lastQuery)) {
-            startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + lastQuery);
-        } else {
-            startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE);
-        }
+        startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE);
     }
 
     private void startActivityWithApplink(String applink, String... parameter) {

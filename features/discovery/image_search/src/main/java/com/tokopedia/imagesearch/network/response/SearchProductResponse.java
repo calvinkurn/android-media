@@ -148,6 +148,8 @@ public class SearchProductResponse {
             private String price;
             @SerializedName("price_range")
             private String priceRange;
+            @SerializedName("wishlist")
+            private boolean wishlist;
             @SerializedName("shop")
             private Shop shop;
             @SerializedName("condition")
@@ -237,6 +239,14 @@ public class SearchProductResponse {
 
             public void setPriceRange(String priceRange) {
                 this.priceRange = priceRange;
+            }
+
+            public boolean isWishlist() {
+                return wishlist;
+            }
+
+            public void setWishlist(boolean wishlist) {
+                this.wishlist = wishlist;
             }
 
             public Shop getShop() {

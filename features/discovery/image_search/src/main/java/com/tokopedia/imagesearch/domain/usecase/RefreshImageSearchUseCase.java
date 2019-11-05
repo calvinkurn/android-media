@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.data.mapper.ImageProductMapper;
-import com.tokopedia.imagesearch.domain.model.SearchResultModel;
+import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
 import com.tokopedia.imagesearch.helper.UrlParamUtils;
 import com.tokopedia.imagesearch.network.response.ImageSearchProductResponse;
 import com.tokopedia.usecase.RequestParams;
@@ -20,19 +20,10 @@ import java.util.Map;
 
 import rx.Observable;
 
-public class RefreshImageSearchUseCase extends UseCase<SearchResultModel> {
+public class RefreshImageSearchUseCase extends UseCase<ProductViewModel> {
 
     private static final String VAR_IMAGE = "image";
     private static final String VAR_PARAMS = "params";
-
-    private static final String PARAM_PAGE = "page";
-    private static final String PARAM_PAGE_SIZE = "page_size";
-    private static final String PARAM_DEVICE = "device";
-    private static final String PARAM_SOURCE = "source";
-    private static final String PARAM_TOKEN = "token";
-
-    private final static String DEFAULT_PAGE_SIZE = "100";
-    private final static String DEFAULT_PAGE = "0";
 
     private ImageProductMapper productMapper;
     private Context context;
@@ -47,7 +38,7 @@ public class RefreshImageSearchUseCase extends UseCase<SearchResultModel> {
     }
 
     @Override
-    public Observable<SearchResultModel> createObservable(RequestParams params) {
+    public Observable<ProductViewModel> createObservable(RequestParams params) {
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.query_image_search), ImageSearchProductResponse.class);
@@ -73,11 +64,11 @@ public class RefreshImageSearchUseCase extends UseCase<SearchResultModel> {
 
     public static RequestParams generateParams(String token, SearchParameter searchParameter) {
         RequestParams params = RequestParams.create();
-        params.putString(PARAM_PAGE, DEFAULT_PAGE);
-        params.putString(PARAM_PAGE_SIZE, DEFAULT_PAGE_SIZE);
-        params.putString(PARAM_DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        params.putString(PARAM_SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
-        params.putString(PARAM_TOKEN, token);
+        params.putString(SearchApiConst.PAGE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_START);
+        params.putString(SearchApiConst.PAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_PAGE_SIZE);
+        params.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        params.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_IMAGE_SEARCH);
+        params.putString(SearchApiConst.TOKEN, token);
         params.putAll(searchParameter.getSearchParameterMap());
 
         return params;
