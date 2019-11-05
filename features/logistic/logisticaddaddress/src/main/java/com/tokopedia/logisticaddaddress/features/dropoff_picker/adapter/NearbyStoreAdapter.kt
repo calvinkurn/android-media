@@ -19,6 +19,7 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when(viewType) {
             R.layout.item_nearby_location -> NearbiesViewHolder(view)
             R.layout.item_empty_nearby_location -> EmptyViewHolder(view)
+            R.layout.item_dropoff_list_header -> HeaderViewHolder(view)
             else -> LoadingViewHolder(view)
         }
     }
@@ -39,6 +40,7 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int = when(mData[position]) {
         is DropoffNearbyModel -> R.layout.item_nearby_location
         is EmptyType -> R.layout.item_empty_nearby_location
+        is HeaderType -> R.layout.item_dropoff_list_header
         is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
         else -> throw RuntimeException("View type does not match")
     }
@@ -48,6 +50,7 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (item.isEmpty()) {
             mData.add(EmptyType())
         } else {
+            mData.add(HeaderType())
             mData.addAll(item)
         }
         notifyDataSetChanged()
@@ -74,12 +77,14 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class EmptyViewHolder(val view: View): RecyclerView.ViewHolder(view)
     class LoadingViewHolder(val view: View): RecyclerView.ViewHolder(view)
+    class HeaderViewHolder(val view: View): RecyclerView.ViewHolder(view)
 
     interface ActionListener {
         fun onItemClicked(view: View)
     }
 
     interface DropoffVisitable
+    data class HeaderType(var text: String = ""): DropoffVisitable
     data class EmptyType(var id: Int = 0): DropoffVisitable
     data class LoadingType(var id: Int = 0): DropoffVisitable
 }
