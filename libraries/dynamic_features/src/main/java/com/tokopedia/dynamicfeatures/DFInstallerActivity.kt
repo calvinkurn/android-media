@@ -1,10 +1,10 @@
 package com.tokopedia.dynamicfeatures
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import android.view.View
@@ -17,9 +17,8 @@ import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.image.ImageLoader
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
+
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -52,7 +51,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private var imageUrl: String? = null
     private var moduleSize = 0L
 
-    private var errorList:MutableList<String> = mutableListOf()
+    private var errorList: MutableList<String> = mutableListOf()
     private var downloadTimes = 0
     private var successInstall = false
 
@@ -109,7 +108,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             if (resultCode == Activity.RESULT_CANCELED) {
                 hideProgress()
             }
-        } else if(requestCode == SETTING_REQUEST_CODE){
+        } else if (requestCode == SETTING_REQUEST_CODE) {
             downloadFeature()
         } else {
             super.onActivityResult(requestCode, resultCode, data)
@@ -119,15 +118,15 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private fun initializeViews() {
         progressBar = findViewById(R.id.progress_bar)
         progressBar.getProgressDrawable().setColorFilter(
-            ContextCompat.getColor(this, R.color.tkpd_main_green),
-            android.graphics.PorterDuff.Mode.MULTIPLY)
+                ContextCompat.getColor(this, R.color.tkpd_main_green),
+                android.graphics.PorterDuff.Mode.MULTIPLY)
         progressText = findViewById(R.id.progress_text)
         progressTextPercent = findViewById(R.id.progress_text_percent)
         imageView = findViewById(R.id.image)
 
         progressBar.getProgressDrawable().setColorFilter(
-            ContextCompat.getColor(this, R.color.tkpd_main_green),
-            android.graphics.PorterDuff.Mode.MULTIPLY);
+                ContextCompat.getColor(this, R.color.tkpd_main_green),
+                android.graphics.PorterDuff.Mode.MULTIPLY);
         buttonDownload = findViewById(R.id.button_download)
 
         buttonDownload.setOnClickListener {
@@ -151,8 +150,8 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
         // Create request to install a feature module by name.
         val request = SplitInstallRequest.newBuilder()
-            .addModule(name)
-            .build()
+                .addModule(name)
+                .build()
 
         // Load and install the requested feature module.
         manager.startInstall(request).addOnSuccessListener {
@@ -221,7 +220,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
             SplitInstallSessionStatus.INSTALLING -> {
                 updateProgressMessage(
-                    getString(R.string.installing_x, moduleNameTranslated)
+                        getString(R.string.installing_x, moduleNameTranslated)
                 )
             }
             SplitInstallSessionStatus.FAILED -> {
@@ -251,6 +250,14 @@ class DFInstallerActivity : BaseSimpleActivity() {
             button_download.setOnClickListener {
                 downloadFeature()
             }
+        } else if (SplitInstallErrorCode.MODULE_UNAVAILABLE.toString() == errorCode) {
+            image.setImageResource(R.drawable.ic_ill_module_unavailable)
+            title_txt.setText(getString(R.string.download_error_module_unavailable_title))
+            subtitle_txt.setText(getString(R.string.download_error_module_unavailable_subtitle))
+            button_download.setText(getString(R.string.goto_playstore))
+            button_download.setOnClickListener {
+                gotoPlayStore()
+            }
         } else {
             image.setImageResource(R.drawable.ic_ill_general_error)
             title_txt.setText(getString(R.string.download_error_general_title))
@@ -258,6 +265,14 @@ class DFInstallerActivity : BaseSimpleActivity() {
             button_download.setOnClickListener {
                 downloadFeature()
             }
+        }
+    }
+
+    private fun gotoPlayStore() {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+        } catch (anfe: ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
         }
     }
 
@@ -280,7 +295,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         progressText.text = String.format("%.2f KB / %.2f KB",
-            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
+                (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
         button_download.visibility = View.INVISIBLE
     }
@@ -314,8 +329,8 @@ class DFInstallerActivity : BaseSimpleActivity() {
     override fun onDestroy() {
         super.onDestroy()
         DFInstallerLogUtil.logStatus(this, "DFM",
-            moduleName, moduleSize,
-            errorList, downloadTimes, successInstall)
+                moduleName, moduleSize,
+                errorList, downloadTimes, successInstall)
     }
 
 }
