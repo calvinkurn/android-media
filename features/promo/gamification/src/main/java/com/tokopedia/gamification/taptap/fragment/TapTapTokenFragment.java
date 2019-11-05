@@ -723,9 +723,16 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void onSuccessDownloadAllAsset() {
-        renderViewCrackEgg();
-        if (fpmRender != null)
-            fpmRender.stopTrace();
+        if (getActivity() == null) {
+            return;
+        }
+
+        getActivity().runOnUiThread(() -> {
+            hideLoading();
+            renderViewCrackEgg();
+            if (fpmRender != null)
+                fpmRender.stopTrace();
+        });
     }
 
     @Override
