@@ -42,6 +42,8 @@ object DeeplinkMapper {
                         getRegisteredNavigationMarketplace(deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
+                    deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW,true) ->
+                        getCreateReviewInternal(deeplink)
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){
@@ -83,20 +85,19 @@ object DeeplinkMapper {
      * If not found, return current deeplink, means it registered
      */
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
-        return when {
-            deeplink == ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
-            deeplink == ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
-            deeplink == ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
-            deeplink == ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
-            deeplink == ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
-            deeplink == ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
-            deeplink == ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
-            deeplink == ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
-            deeplink == ApplinkConst.INBOX_TICKET -> return ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
-            deeplink == ApplinkConst.INSTANT_LOAN -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
-            deeplink == ApplinkConst.INSTANT_LOAN_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
-            deeplink == ApplinkConst.PINJAMAN_ONLINE_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
-            deeplink.contains(ApplinkConst.PRODUCT_CREATE_REVIEW) -> getCreateReviewInternal(deeplink)
+        return when (deeplink) {
+            ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
+            ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
+            ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+            ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
+            ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
+            ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
+            ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
+            ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
+            ApplinkConst.INBOX_TICKET -> return ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
+            ApplinkConst.INSTANT_LOAN -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
+            ApplinkConst.INSTANT_LOAN_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
+            ApplinkConst.PINJAMAN_ONLINE_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
             else -> ""
         }
     }
