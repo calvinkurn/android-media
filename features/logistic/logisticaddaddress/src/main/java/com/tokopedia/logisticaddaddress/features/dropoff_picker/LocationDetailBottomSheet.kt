@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -16,7 +17,7 @@ class LocationDetailBottomSheet : ConstraintLayout {
     var tvDetail: Typography
     var buttonOk: UnifyButton
     var buttonCancel: UnifyButton
-    private var mData: LocationDataModel? = null
+    private var mData: DropoffNearbyModel? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -31,7 +32,7 @@ class LocationDetailBottomSheet : ConstraintLayout {
         buttonCancel = findViewById(R.id.button_cancel)
     }
 
-    fun setStore(datum: LocationDataModel) {
+    fun setStore(datum: DropoffNearbyModel) {
         mData = datum
         tvOpening.text = datum.openingHours
         tvTitle.text = datum.addrName
@@ -40,7 +41,7 @@ class LocationDetailBottomSheet : ConstraintLayout {
         requestLayout()
     }
 
-    fun setOnOkClickListener(listener: (view: View, data: LocationDataModel?) -> Unit) {
+    fun setOnOkClickListener(listener: (view: View, data: DropoffNearbyModel?) -> Unit) {
         buttonOk.setOnClickListener { listener(it, mData) }
     }
 
