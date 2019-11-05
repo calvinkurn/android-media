@@ -863,9 +863,9 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             return;
         }
 
-        ViewPager pager = getView().findViewById(com.tokopedia.design.R.id.view_pager_ticker);
+        ViewPager pager = getView().findViewById(R.id.view_pager_ticker);
         pager.setAdapter(new SectionTickerPagerAdapter(getContext(), content.getLayoutTickerAttr().getTickerList()));
-        CirclePageIndicator pageIndicator = getView().findViewById(com.tokopedia.design.R.id.page_indicator_ticker);
+        CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator_ticker);
         View hideTickerView = getView().findViewById(R.id.ic_close_ticker);
         hideTickerView.setOnClickListener(v -> tickerContainer.setVisibility(View.GONE));
 
