@@ -7,6 +7,6 @@ data class EventModel(var event: String,
                       var category: String,
                       var action: String,
                       var label: String) {
-    var key:String = ""
-        get() = hashCode().toString()
+    var key: String = ""
+        get() = event + category + action + label
 }
