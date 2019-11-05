@@ -16,8 +16,9 @@ import com.tokopedia.design.base.BaseCustomView;
  */
 public class ToolbarRemoveView extends BaseCustomView {
 
-    public interface OnToolbarRemoveAllCartListener {
+    public interface ToolbarCartListener {
         void onToolbarRemoveAllCart();
+        void onGoToChuck();
     }
 
     public ToolbarRemoveView(@NonNull Context context) {
@@ -49,7 +50,7 @@ public class ToolbarRemoveView extends BaseCustomView {
             textView.setText(title);
     }
 
-    public void setOnClickRemove(OnToolbarRemoveAllCartListener clickRemove) {
+    public void setOnClickRemove(ToolbarCartListener clickRemove) {
         if (btnRemove != null)
             btnRemove.setOnClickListener(v -> clickRemove.onToolbarRemoveAllCart());
     }

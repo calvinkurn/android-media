@@ -102,7 +102,6 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
@@ -687,11 +686,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
 
-        AnalyticsTrackerUtil.sendEvent(getActivity(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.HOMEPAGE,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_POINT,
-                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_LABEL);
+        HomePageTracking.sendTokopointTrackerClick();
     }
 
     @Override
@@ -1389,19 +1384,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    @Override
-    public void onTokopointCheckNowClicked(String applink) {
-        if (TextUtils.isEmpty(applink)) {
-            return;
-        }
-
-        if (getActivity() != null
-                && RouteManager.isSupportApplink(getActivity(), applink)) {
-            openApplink(applink);
-        } else {
-            openWebViewURL(applink, getActivity());
-        }
-    }
 
     @Override
     public HomeEggListener getEggListener() {
@@ -1585,6 +1567,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         } else {
             params.setMargins(0, 0, 0, 0);
+        }
+    }
+
+    @Override
+    public void onTokopointCheckNowClicked(@NotNull String applink) {
+        if(!TextUtils.isEmpty(applink)){
+            RouteManager.route(getContext(),applink);
         }
     }
 }

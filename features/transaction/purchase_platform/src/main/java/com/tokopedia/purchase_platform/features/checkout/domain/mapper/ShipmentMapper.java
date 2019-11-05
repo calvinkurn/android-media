@@ -157,7 +157,7 @@ public class ShipmentMapper implements IShipmentMapper {
                         voucherOrdersItemData.setIsAutoapply(true);
                         voucherOrdersItemDataList.add(voucherOrdersItemData);
                     }
-                    autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
+                    autoApplyStackData.setVoucherOrdersItemDataList(voucherOrdersItemDataList);
                 }
             }
             dataResult.setAutoApplyStackData(autoApplyStackData);

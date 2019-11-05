@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.PromoRequest;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -1243,6 +1244,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (checkPromoParam != null && checkPromoParam.getPromo() != null) {
             if (checkPromoParam.getPromo().getCodes() != null && checkPromoParam.getPromo().getCodes().size() > 0) {
                 builder.promoCodes(checkPromoParam.getPromo().getCodes());
+                List<PromoRequest> promoRequests = new ArrayList<>();
+                for (String promoCode : checkPromoParam.getPromo().getCodes()) {
+                    PromoRequest promoRequest = new PromoRequest();
+                    promoRequest.setCode(promoCode);
+                    promoRequest.setType(PromoRequest.TYPE_GLOBAL);
+
+                    promoRequests.add(promoRequest);
+                }
+                builder.promos(promoRequests);
             }
             builder.hasPromoStacking(true);
         }

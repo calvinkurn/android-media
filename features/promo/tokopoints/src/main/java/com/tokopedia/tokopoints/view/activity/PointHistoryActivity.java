@@ -24,7 +24,7 @@ public class PointHistoryActivity extends BaseSimpleActivity implements HasCompo
         updateTitle(getString(R.string.tp_title_history));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
+            toolbar.setElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_0));
         }
     }
 
