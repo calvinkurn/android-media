@@ -125,8 +125,8 @@
             </RelativeLayout>
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/policy_ticker"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_60"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:closeButtonVisibility="gone"
                 app:tickerShapeType="loose"
                 app:tickerType="announcement"

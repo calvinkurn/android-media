@@ -401,3 +401,7 @@
 -dontwarn org.junit.**
 
 -keep public class com.google.android.material.bottomnavigation.** { *; }
+
+-keepclassmembers public class com.google.android.material.bottomsheet.BottomSheetDialog {
+    private <fields>;
+}

@@ -74,3 +74,6 @@ coverageResults/
 
 # unify
 unifyconfig/unifyproject.config
+
+customerapp/src/main/assets/df.cfg
+sellerapp/src/main/assets/df.cfg

@@ -241,8 +241,8 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         String campaignId = Constants.CAMPAIGN_ID_PROD;
         if (Constants.LAKU6_BASEURL.equals(Constants.LAKU6_BASEURL_STAGING))
             campaignId = Constants.CAMPAIGN_ID_STAGING;
-//        laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-//                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, TRADEIN_TEST_TYPE);
+        laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
+                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, TRADEIN_TEST_TYPE);
         requestPermission();
     }
 
@@ -419,6 +419,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
             mTvGoToProductDetails.setOnClickListener(v -> {
                 showPermissionDialog();
             });
+            if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
+                sendGeneralEvent(clickEvent,
+                        category,
+                        TradeInGTMConstants.ACTION_CLICK_BATAL_BUTTON,
+                        TradeInGTMConstants.BERI_IZIN_PENG_HP);
+            }
         } else {
         }
     }

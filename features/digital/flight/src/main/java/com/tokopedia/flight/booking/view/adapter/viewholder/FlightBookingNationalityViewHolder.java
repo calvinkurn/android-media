@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.R;
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 
 /**
@@ -14,7 +13,7 @@ import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 
 public class FlightBookingNationalityViewHolder extends AbstractViewHolder<CountryPhoneCode> {
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_booking_nationality;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_nationality;
 
     private TextView countryName;
 
@@ -25,6 +24,6 @@ public class FlightBookingNationalityViewHolder extends AbstractViewHolder<Count
 
     public FlightBookingNationalityViewHolder(View layoutView) {
         super(layoutView);
-        countryName = (TextView) layoutView.findViewById(R.id.country_name);
+        countryName = (TextView) layoutView.findViewById(com.tokopedia.flight.R.id.country_name);
     }
 }
