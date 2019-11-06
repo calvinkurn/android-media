@@ -80,9 +80,14 @@ class OfficialHomeFragment :
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                counterTitleShouldBeRendered += 1
-                adapter?.showLoading()
-                viewModel.loadMore(category, page)
+                if (swipeRefreshLayout?.isRefreshing == false) {
+                    counterTitleShouldBeRendered += 1
+                    viewModel.loadMore(category, page)
+
+                    if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
+                        adapter?.showLoading()
+                    }
+                }
             }
         }
     }
