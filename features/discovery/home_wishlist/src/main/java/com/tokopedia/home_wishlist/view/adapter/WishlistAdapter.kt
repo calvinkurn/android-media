@@ -12,6 +12,7 @@ import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.base.SmartRecyclerAdapter
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
+import com.tokopedia.home_wishlist.view.viewholder.DynamicCarouselRecommendationViewHolder
 
 /**
  * A Class of WishlistAdapter.

@@ -424,7 +424,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public int getProductId() {
         String productIdString = cartPassData.getProductId();
-        return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
+        try {
+            return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override

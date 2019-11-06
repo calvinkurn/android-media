@@ -30,6 +30,7 @@ import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_dynamic_feed.*
 import javax.inject.Inject
 
@@ -43,6 +44,7 @@ class DynamicFeedFragment:
         DynamicFeedContract.View {
 
     companion object {
+        val REQUEST_LOGIN = 345
         private const val KOL_COMMENT_CODE = 13
         private const val KEY_FEED  = "KEY_FEED"
         fun newInstance(feedKey: String): DynamicFeedFragment {
@@ -59,6 +61,9 @@ class DynamicFeedFragment:
 
     @Inject
     lateinit var feedAnalyticTracker: FeedAnalyticTracker
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var isLoading = false
     private var isForceRefresh = false
@@ -184,11 +189,19 @@ class DynamicFeedFragment:
     }
 
     override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
-        presenter.likeKol(id, positionInFeed, columnNumber)
+        if (userSession.isLoggedIn) {
+            presenter.likeKol(id, positionInFeed, columnNumber)
+        } else {
+            routeToLogin()
+        }
     }
 
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
-        startActivityForResult(KolCommentActivity.getCallingIntent(activity, id, positionInFeed, columnNumber), KOL_COMMENT_CODE)
+        if (userSession.isLoggedIn) {
+            startActivityForResult(KolCommentActivity.getCallingIntent(activity, id, positionInFeed, columnNumber), KOL_COMMENT_CODE)
+        } else {
+            routeToLogin()
+        }
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
@@ -303,5 +316,11 @@ class DynamicFeedFragment:
 
     private fun showSnackbar(s: String) {
         NetworkErrorHelper.showSnackbar(activity, s)
+    }
+
+    private fun routeToLogin() {
+        activity?.let {
+            it.startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQUEST_LOGIN)
+        }
     }
 }

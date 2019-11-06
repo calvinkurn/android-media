@@ -22,6 +22,7 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterAdapter
 import kotlinx.android.synthetic.main.fragment_hotel_search_filter.*
+import kotlin.math.max
 
 class HotelSearchFilterFragment: BaseDaggerFragment() {
     var filter: Filter = Filter()
@@ -127,9 +128,9 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
 
     private fun setupRating(filterReview: Filter.FilterReview) {
         val ratingStep = (filterReview.minReview.toInt()..filterReview.maxReview.toInt()).toList()
-        selectedFilter.reviewScore = if (ratingStep.first() != 0 && selectedFilter.reviewScore == 0) ratingStep.last() else selectedFilter.reviewScore
+        selectedFilter.reviewScore = if (ratingStep.first() != 0 && selectedFilter.reviewScore == 0) ratingStep.first() else selectedFilter.reviewScore
         rating_seekbar.max = ratingStep.size - 1
-        rating_seekbar.progress = filterReview.maxReview.toInt() - selectedFilter.reviewScore
+        rating_seekbar.progress = filterReview.maxReview.toInt() - max(selectedFilter.reviewScore, 5)
         ratingStep.forEachIndexed { index, item ->
             val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
             stepView.findViewById<TextViewCompat>(R.id.title_step).text = String.format("%.1f", item.toFloat())

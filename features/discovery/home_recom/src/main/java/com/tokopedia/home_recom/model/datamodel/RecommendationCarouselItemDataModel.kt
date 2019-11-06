@@ -2,7 +2,6 @@ package com.tokopedia.home_recom.model.datamodel
 
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
-import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselItemViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem

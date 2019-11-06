@@ -3,15 +3,14 @@ package com.tokopedia.home_wishlist.view.viewholder
 import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.view.custom.WishlistCardView
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 class WishlistItemViewHolder(
         private val view: View
@@ -41,7 +40,14 @@ class WishlistItemViewHolder(
             )
             productCardView.setAddToCartButtonVisible(true)
             productCardView.setDeleteButtonVisible(!element.isOnBulkRemoveProgress)
-
+            setImageProductViewHintListener(element, object: ViewHintListener {
+                override fun onViewHint() {
+//                    if(element.productItem.isTopAds){
+//                        ImpresionTask().execute(element.productItem.trackerImageUrl)
+//                    }
+                    (listener as WishlistListener).onProductImpression(element, adapterPosition)
+                }
+            })
             if(!element.productItem.available){
                 setOutOfStock()
             } else {
