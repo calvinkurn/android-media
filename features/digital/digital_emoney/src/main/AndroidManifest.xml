@@ -12,7 +12,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".view.activity.EmoneyCheckBalanceActivity"
+            android:name=".view.activity.EmoneyCheckBalanceNFCActivity"
             android:label="@string/emoney_toolbar_title_etoll_check_balance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -26,14 +26,12 @@
 
                 <data
                     android:host="@string/host_digital"
-                    android:path="@string/path_emoney_brizzi"
-                    android:scheme="@string/internal_scheme" />
+                    android:path="@string/path_smartcard"
+                    android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
-
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
