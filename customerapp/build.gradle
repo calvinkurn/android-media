@@ -93,7 +93,7 @@ project.ext {
     ]
 }
 
-def hermesPath = "../reactnative-apps/node_modules/hermesvm/android/";
+def hermesPath = "../hermes/";
 def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
