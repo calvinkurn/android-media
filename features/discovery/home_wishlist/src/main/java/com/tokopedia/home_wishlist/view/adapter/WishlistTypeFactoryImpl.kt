@@ -19,7 +19,7 @@ class WishlistTypeFactoryImpl(private val appExecutors: SmartExecutors) : Wishli
     }
 
     override fun type(recommendationCarouselDataModel: RecommendationCarouselDataModel): Int {
-        return RecommendationCarouselViewHolder.LAYOUT
+        return DynamicCarouselRecommendationViewHolder.LAYOUT
     }
 
     override fun type(recommendationTitleDataModel: RecommendationTitleDataModel): Int {
@@ -66,6 +66,7 @@ class WishlistTypeFactoryImpl(private val appExecutors: SmartExecutors) : Wishli
             RecommendationItemViewHolder.LAYOUT -> RecommendationItemViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
             RecommendationCarouselViewHolder.LAYOUT -> RecommendationCarouselViewHolder(view, appExecutors)
+            DynamicCarouselRecommendationViewHolder.LAYOUT -> DynamicCarouselRecommendationViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         }
     }

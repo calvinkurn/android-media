@@ -198,11 +198,11 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, slidesModel.getId(),
+                                                FIELD_ID, String.valueOf(slidesModel.getId()),
                                                 FIELD_NAME, VALUE_NAME_PROMO,
                                                 FIELD_CREATIVE, slidesModel.getCreativeName(),
                                                 FIELD_CREATIVE_URL, slidesModel.getImageUrl(),
-                                                FIELD_POSITION, slidesModel.getPosition(),
+                                                FIELD_POSITION, String.valueOf(slidesModel.getPosition()),
                                                 FIELD_PROMO_CODE, promoCode
                                         )
                                 )
@@ -221,11 +221,11 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, slidesModel.getId(),
+                                                FIELD_ID, String.valueOf(slidesModel.getId()),
                                                 FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
                                                 FIELD_CREATIVE, slidesModel.getCreativeName(),
                                                 FIELD_CREATIVE_URL, slidesModel.getImageUrl(),
-                                                FIELD_POSITION, slidesModel.getPosition(),
+                                                FIELD_POSITION, String.valueOf(slidesModel.getPosition()),
                                                 FIELD_PROMO_CODE, slidesModel.getPromoCode().isEmpty()?slidesModel.getPromoCode():NO_PROMO_CODE
                                         )
                                 )
@@ -1510,11 +1510,11 @@ public class HomePageTracking {
                 BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
                 list.add(
                         DataLayer.mapOf(
-                                FIELD_ID, bannerSlidesModel.getId(),
+                                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
                                 FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
                                 FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
                                 FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
-                                FIELD_POSITION, bannerSlidesModel.getPosition()
+                                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
                         )
                 );
             }
@@ -1529,11 +1529,11 @@ public class HomePageTracking {
                 BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
                 list.add(
                         DataLayer.mapOf(
-                                FIELD_ID, bannerSlidesModel.getId(),
+                                FIELD_ID, String.valueOf(bannerSlidesModel.getId()),
                                 FIELD_NAME, VALUE_NAME_PROMO,
                                 FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
                                 FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
-                                FIELD_POSITION, bannerSlidesModel.getPosition()
+                                FIELD_POSITION, String.valueOf(bannerSlidesModel.getPosition())
                         )
                 );
             }

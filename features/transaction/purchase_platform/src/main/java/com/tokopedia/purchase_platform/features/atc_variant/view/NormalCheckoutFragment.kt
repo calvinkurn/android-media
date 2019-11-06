@@ -155,6 +155,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            isNeedRefresh: Boolean,
                            isLeasing: Boolean,
                            reference: String?,
+                           customEventLabel: String?,
+                           customEventAction: String?,
                            tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
@@ -181,6 +183,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putString(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, condition)
                     putBoolean(EXTRA_IS_LEASING, isLeasing)
                     putString(ApplinkConst.Transaction.EXTRA_REFERENCE, reference)
+                    putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, customEventLabel)
+                    putString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, customEventAction)
                 }
             }
             return fragment
@@ -615,9 +619,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun goToApplyLeasing() {
+        val selectedProductId =  if (selectedVariantId.toIntOrZero() > 0) {
+            selectedVariantId
+        } else {
+            productId
+        }
         val urlApplyLeasingWithProductId = String.format(
                 URL_APPLY_LEASING,
-                productId
+                selectedProductId
         )
         val webViewUrl = String.format(
                 "%s?url=%s",
@@ -871,7 +880,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         trackerAttribution, trackerListName,
                         viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false,
                         getPageReference(),
-                        freeOngkir.isFreeOngkirActive
+                        freeOngkir.isFreeOngkirActive,
+                        getCustomEventLabel(),
+                        getCustomEventAction()
                 )
             }
             onFinishAddToCart(message)
@@ -995,6 +1006,15 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun getPageReference(): String {
         return arguments?.getString(ApplinkConst.Transaction.EXTRA_REFERENCE, "") ?: ""
+    }
+
+    private fun getCustomEventLabel(): String {
+        return arguments?.getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, "") ?: ""
+    }
+
+
+    private fun getCustomEventAction(): String {
+        return arguments?.getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, "") ?: ""
     }
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),
