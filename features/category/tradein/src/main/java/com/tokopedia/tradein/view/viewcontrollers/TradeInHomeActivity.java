@@ -348,8 +348,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
 
     private void showPermissionDialog() {
         isShowingPermissionPopup = true;
-        showDialogFragment(getString(R.string.tradein_text_request_access),
-                getString(R.string.tradein_text_permission_description), "", "");
+        if (getIntent().getBooleanExtra(TradeInParams.PARAM_PERMISSION_GIVEN, false)) {
+            clickAccept();
+        } else {
+            showDialogFragment(getString(R.string.tradein_text_request_access),
+                    getString(R.string.tradein_text_permission_description), "", "");
+        }
     }
 
     private void showDeviceNotElligiblePopup(int messageStringId) {

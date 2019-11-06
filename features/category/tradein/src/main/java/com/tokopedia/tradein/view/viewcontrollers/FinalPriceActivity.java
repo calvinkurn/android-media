@@ -244,7 +244,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         sendGeneralEvent(viewEvent,
                 category,
                 TradeInGTMConstants.ACTION_VIEW_HARGA_FINAL,
-                String.format("diagnostic id - %s",deviceId));
+                TRADEIN_TYPE == TRADEIN_MONEYIN ? String.format("diagnostic id - %s", deviceId) : "");
     }
 
     private void setVisibilityGroup(int visibility) {
