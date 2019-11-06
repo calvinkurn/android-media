@@ -21,6 +21,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                                          var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
+    private var expandedPosition = -1
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): RecyclerView.ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.pdp_installment_layout, parent, false)
@@ -106,8 +107,6 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
             } else {
                 vHolder.llInstallmentContainer.hide()
             }
-
-            var expandedPosition = -1
 
             vHolder.rlMainContainer.setOnClickListener {
                 item.expandLayout = !item.expandLayout
