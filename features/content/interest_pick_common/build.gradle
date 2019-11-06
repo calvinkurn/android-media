@@ -21,7 +21,6 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.interestPickCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
@@ -45,10 +44,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'interest-pick-common'
+    artifactId = 'interest-pick'
     groupId = 'com.tokopedia.content'
     versionName = "1.0.0"
-    artifactName = "interest_pick_common-release"
+    artifactName = "interest_pick-release"
 }
 
 apply from: '../../../publish_local.gradle'
