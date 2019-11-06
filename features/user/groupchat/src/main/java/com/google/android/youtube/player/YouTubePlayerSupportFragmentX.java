@@ -11,6 +11,14 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.youtube.player.internal.ab;
 
+/**
+ * I created this class because we need to change android.support to androidx and YouTubeAndroidPlayerApi did not update since 2016.
+ *
+ * reference:
+ * https://stackoverflow.com/questions/52577000/youtube-player-support-fragment-no-longer-working-on-android-studio-3-2-android
+ * https://developers.google.com/youtube/android/player/revision_history
+ * https://developers.google.com/youtube/android/player/downloads
+ */
 public class YouTubePlayerSupportFragmentX extends Fragment implements YouTubePlayer.Provider {
     private final YouTubePlayerSupportFragmentX.a a = new YouTubePlayerSupportFragmentX.a();
     private Bundle b;
