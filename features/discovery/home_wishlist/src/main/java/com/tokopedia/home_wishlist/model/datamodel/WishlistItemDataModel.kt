@@ -4,13 +4,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class WishlistItemDataModel(
         val productItem: WishlistItem,
         var isOnBulkRemoveProgress: Boolean = false,
         var isOnChecked: Boolean = false,
         var isOnAddToCartProgress: Boolean = false
-) : WishlistDataModel{
+) : WishlistDataModel, ImpressHolder(){
 
     override fun getUniqueIdentity(): Any = productItem.id
 

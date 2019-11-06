@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_wishlist.R
+import com.tokopedia.home_wishlist.analytics.WishlistTracking
 import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
@@ -47,6 +48,7 @@ class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<Recomme
                     if(element.recommendationItem.isTopAds){
                         ImpresionTask().execute(element.recommendationItem.trackerImageUrl)
                     }
+                    (listener as WishlistListener).onProductImpression(element, adapterPosition)
                 }
             })
 
@@ -59,6 +61,7 @@ class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<Recomme
 
             setButtonWishlistOnClickListener {
                 (listener as WishlistListener).onWishlistClick(-1, adapterPosition, element.recommendationItem.isWishlist)
+                WishlistTracking.clickWishlistIconRecommendation(!element.recommendationItem.isWishlist)
             }
         }
     }
