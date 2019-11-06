@@ -1,5 +1,6 @@
 package com.tokopedia.common_tradein.viewmodel;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import android.view.View;
 
@@ -7,7 +8,6 @@ import android.view.View;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.common_tradein.R;
 
-import android.support.annotation.Nullable;
 
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse;
 import com.tokopedia.common_tradein.customviews.TradeInTextView;
