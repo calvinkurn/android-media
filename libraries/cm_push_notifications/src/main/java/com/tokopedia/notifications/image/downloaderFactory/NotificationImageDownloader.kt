@@ -35,7 +35,7 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
                     .asBitmap()
                     .load(url)
                     .override(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
-                    .into(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
+                    .submit(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
                     .get(imageSizeAndTimeout.seconds, TimeUnit.SECONDS)
         } catch (e: CancellationException) {
         } catch (e: ExecutionException) {
