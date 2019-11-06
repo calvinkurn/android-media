@@ -73,13 +73,12 @@ ext {
     // Sort and categorize alphabetically by folder name
     app = [
         customerapp     : ":customerapp",
-        sellerapp       : ":sellerapp",
-        mitraapp        : ":kelontongapp"
+        sellerapp       : ":sellerapp"
     ]
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.0.0'
-    unifyComponentsVersion = '1.1.0'
+    unifyComponentsVersion = '1.1.1'
     unifyCoachMarkVersion = '1.2.0'
     unifyCalendarVersion = '1.0.0'
     unifyBannerVersion = '1.0.0'
@@ -169,7 +168,6 @@ ext {
 
     serviceDependencies = [
             crashlytics : "com.crashlytics.sdk.android:crashlytics:2.9.9",
-            crashlyticsAnswers : "com.crashlytics.sdk.android:answers:1.4.6@aar",
             anrWatchDogs: "com.salomonbrys.anrwatchdog:anrwatchdog:1.3.0"
     ]
 
@@ -205,8 +203,8 @@ ext {
             rxJavaComputation     : 'io.reactivex:rxjava-computation-expressions:0.21.0',
             multiDex              : "androidx.multidex:multidex:$multiDexVersion",
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
-            dagger                : "com.google.dagger:dagger:2.5",
-            daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
+            dagger                : "com.google.dagger:dagger:2.9",
+            daggerCompiler        : "com.google.dagger:dagger-compiler:2.9",
             bcaxcoWidget          : "com.bca.xco.widget:BCAXCOWidget:1.0@aar",
 
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
@@ -215,7 +213,7 @@ ext {
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
-            imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
+            imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.8.0",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
             hansel                : "io.hansel.preprocessor:preprocessor:8.3.5",
