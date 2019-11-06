@@ -61,7 +61,12 @@ class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<Recomme
 
             setButtonWishlistOnClickListener {
                 (listener as WishlistListener).onWishlistClick(-1, adapterPosition, element.recommendationItem.isWishlist)
-                WishlistTracking.clickWishlistIconRecommendation(!element.recommendationItem.isWishlist)
+                WishlistTracking.clickEmptyWishlistIconRecommendation(
+                        productId = element.recommendationItem.productId.toString(),
+                        isAdd = !element.recommendationItem.isWishlist,
+                        isTopAds = element.recommendationItem.isTopAds,
+                        recomTitle = element.title
+                )
             }
         }
     }

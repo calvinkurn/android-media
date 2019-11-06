@@ -187,7 +187,7 @@ open class WishlistViewModel @Inject constructor(
             val widget = wishlistRepository.getSingleRecommendationData(page)
             val newList = ArrayList(emptyDataVisitable)
             if(page == 0) newList.add(RecommendationTitleDataModel(widget.title, ""))
-            newList.addAll(widget.recommendationItemList.map { RecommendationItemDataModel(it) })
+            newList.addAll(widget.recommendationItemList.map { RecommendationItemDataModel(widget.title, it) })
             wishlistData.value = newList
         }){
 

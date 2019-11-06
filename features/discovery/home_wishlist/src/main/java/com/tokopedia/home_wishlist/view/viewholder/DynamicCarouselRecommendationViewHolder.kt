@@ -9,6 +9,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home_wishlist.R
+import com.tokopedia.home_wishlist.analytics.WishlistTracking
 import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataModel
@@ -42,6 +43,12 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                 carouselProductCardOnWishlistItemClickListener = object : CarouselProductCardListener.OnWishlistItemClickListener{
                     override fun onWishlistItemClick(productCardModel: ProductCardModel, childPosition: Int) {
                         (listener as WishlistListener).onWishlistClick(adapterPosition, childPosition, productCardModel.isWishlisted)
+                        WishlistTracking.clickWishlistIconRecommendation(
+                                productId = element.list[childPosition].recommendationItem.productId.toString(),
+                                isAdd = !element.list[childPosition].recommendationItem.isWishlist,
+                                isTopAds = element.list[childPosition].recommendationItem.isTopAds,
+                                recomTitle = element.title
+                        )
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener{

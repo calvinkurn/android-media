@@ -55,8 +55,8 @@ object WishlistTracking {
     private const val EVENT_PRODUCT_CLICK = "productClick"
     private const val EVENT_ADD_TO_CART = "addToCart"
     private const val EVENT_CLICK_WISHLIST = "clickWishlist"
-    private const val EVENT_LABEL_SOURCE = "source: %s"
-    private const val EVENT_LABEL_SOURCE_WITH_PRODUCT_ID = "source: %s - product_id: %s"
+    private const val EVENT_LABEL_RECOM_WISHLIST = "%s - %s - %s"
+    private const val EVENT_LABEL_RECOM_WISHLIST_EMPTY_WISHLIST = "%s - %s - %s - empty_wishlist"
 
     private const val EVENT_WISHLIST_PAGE = "wishlist page"
     private const val IMPRESSION_LIST = "/wishlist"
@@ -305,12 +305,23 @@ object WishlistTracking {
         )
     }
 
-    fun clickWishlistIconRecommendation(isAdd: Boolean){
+    fun clickWishlistIconRecommendation(productId: String, isTopAds: Boolean, recomTitle: String, isAdd: Boolean){
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT to EVENT_CLICK_WISHLIST,
                         EVENT_CATEGORY to EVENT_WISHLIST_PAGE,
-                        EVENT_LABEL to VALUE_EMPTY,
+                        EVENT_LABEL to String.format(EVENT_LABEL_RECOM_WISHLIST, productId, if(isTopAds) "topads" else "general", recomTitle),
+                        EVENT_ACTION to if(isAdd) EVENT_ACTION_CLICK_ADD_WISHLIST else EVENT_ACTION_CLICK_REMOVE_WISHLIST
+                )
+        )
+    }
+
+    fun clickEmptyWishlistIconRecommendation(productId: String, isTopAds: Boolean, recomTitle: String, isAdd: Boolean){
+        getTracker().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT to EVENT_CLICK_WISHLIST,
+                        EVENT_CATEGORY to EVENT_WISHLIST_PAGE,
+                        EVENT_LABEL to String.format(EVENT_LABEL_RECOM_WISHLIST_EMPTY_WISHLIST, productId, if(isTopAds) "topads" else "general", recomTitle),
                         EVENT_ACTION to if(isAdd) EVENT_ACTION_CLICK_ADD_WISHLIST else EVENT_ACTION_CLICK_REMOVE_WISHLIST
                 )
         )
