@@ -227,13 +227,13 @@ class OfficialStoreTracking(context: Context) {
                 PROMO_VIEW, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", shopId,
+                        "id", shopId.toString(),
                         "name", "/official-store/$categoryName - popular brands",
                         "position", "$shopPosition",
                         "creative", "$shopName - $additionalInformation",
                         "creative_url", imageUrl,
-                        "promo_id", null,
-                        "promo_code", null
+                        "promo_id", VALUE_NONE_OTHER,
+                        "promo_code", VALUE_NONE_OTHER
                         )
                     )
                 )
