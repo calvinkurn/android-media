@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
+import com.tokopedia.logisticaddaddress.utils.toKilometers
 import kotlinx.android.synthetic.main.item_nearby_location.view.*
 
 class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -74,7 +75,7 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val desc = "${datum.districtName}, ${datum.cityName}, ${datum.provinceName}"
             view.tv_location_title.text = datum.addrName
             view.tv_location_desc.text = desc
-            view.tv_distance.text = datum.storeDistance
+            view.tv_distance.text = datum.storeDistance.toKilometers()
             view.tag = datum
         }
 
