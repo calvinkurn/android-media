@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase;
+import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase;
+import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
@@ -50,6 +52,7 @@ import javax.inject.Inject;
 
 import dagger.Lazy;
 import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
@@ -99,6 +102,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Inject
     StickyLoginUseCase stickyLoginUseCase;
+
+    @Inject
+    PlayCardHomeUseCase playCardHomeUseCase;
 
     private String currentCursor = "";
     private GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
@@ -626,4 +632,21 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             }
         );
     }
+
+    @Override
+    public void getPlayBanner(int adapterPosition) {
+        playCardHomeUseCase.execute(new Function1<PlayCardHome, Unit>() {
+            @Override
+            public Unit invoke(PlayCardHome playCardHome) {
+                getView().setPlayContentBanner(playCardHome, adapterPosition);
+                return null;
+            }
+        }, new Function1<Throwable, Unit>() {
+            @Override
+            public Unit invoke(Throwable throwable) {
+                return null;
+            }
+        });
+    }
+
 }
