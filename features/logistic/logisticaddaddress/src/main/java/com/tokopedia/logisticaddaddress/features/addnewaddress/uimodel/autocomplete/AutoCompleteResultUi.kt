@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomp
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.MatchedSubstringsItem
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.StructuredFormatting
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.TermsItem
+import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteAdapter
 
 data class AutoCompleteResultUi(
         val types: List<String> = emptyList(),
@@ -10,4 +11,4 @@ data class AutoCompleteResultUi(
         val terms: List<TermsItem> = emptyList(),
         val structuredFormatting: StructuredFormatting = StructuredFormatting(),
         val description: String = "",
-        val placeId: String = "")
+        val placeId: String = "") : AutoCompleteAdapter.AutoCompleteVisitable
