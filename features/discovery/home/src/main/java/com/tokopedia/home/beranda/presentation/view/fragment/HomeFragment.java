@@ -1514,8 +1514,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
         this.tickerDetail = tickerDetail;
-        updateStickyState();
-        stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
+        updateStickyState(); 
     }
 
     @Override
@@ -1545,6 +1544,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (stickyLoginView.isShowing()) {
             positionSticky = stickyLoginView.getLocation();
+            stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
         }
 
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
