@@ -4,10 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -16,6 +12,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.tokopedia.design.R;
 
 /**
@@ -80,10 +81,14 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         }
 
         View layoutTitle = parentView.findViewById(R.id.layout_title);
-        layoutTitle.setOnClickListener(v -> onCloseButtonClick());
+        if (layoutTitle != null) {
+            layoutTitle.setOnClickListener(v -> onCloseButtonClick());
+        }
 
         View closeButton = parentView.findViewById(R.id.btn_close);
-        closeButton.setOnClickListener(view -> BottomSheets.this.dismiss());
+        if (closeButton != null) {
+            closeButton.setOnClickListener(view -> BottomSheets.this.dismiss());
+        }
 
         FrameLayout frameParent = parentView.findViewById(R.id.bottomsheet_container);
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);

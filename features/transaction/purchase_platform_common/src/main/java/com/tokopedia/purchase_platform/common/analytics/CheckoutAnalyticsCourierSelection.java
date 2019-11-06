@@ -343,21 +343,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                                                 boolean isTradeIn,
                                                 String eventAction,
                                                 String eventLabel) {
-        String eventCategory = EventCategory.COURIER_SELECTION;
-        if (isTradeIn) {
-            eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
-        }
 
-        eCommerceBundle.putLong(FirebaseAnalytics.Param.CHECKOUT_STEP, step);
-        eCommerceBundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, checkoutOption);
-        eCommerceBundle.putString("eventCategory", eventCategory);
-        eCommerceBundle.putString("eventAction", eventAction);
-        eCommerceBundle.putString("eventLabel", eventLabel);
-
-        if (!TextUtils.isEmpty(transactionId)) {
-            eCommerceBundle.putString("payment_id", transactionId);
-        }
-        sendEnhancedEcommerceV5(FirebaseAnalytics.Event.CHECKOUT_PROGRESS, eCommerceBundle);
     }
 
     public void eventClickCourierSelectionClickPilihAlamatLain() {

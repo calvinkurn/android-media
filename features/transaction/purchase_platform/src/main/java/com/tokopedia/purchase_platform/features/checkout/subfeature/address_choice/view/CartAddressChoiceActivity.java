@@ -57,7 +57,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     private static final String TAG_CORNER_FRAGMENT = "TAG_CORNER_FRAGMENT";
     private int typeRequest;
     private Token token;
-    private String PARAM_ADDRESS_MODEL;
+    private String PARAM_ADDRESS_MODEL = "EDIT_PARAM";
     private CheckoutAnalyticsChangeAddress mAnalytics = new CheckoutAnalyticsChangeAddress();
 
     public static Intent createInstance(Activity activity,
