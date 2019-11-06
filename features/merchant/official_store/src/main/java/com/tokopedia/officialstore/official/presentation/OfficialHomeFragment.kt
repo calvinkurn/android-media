@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -18,7 +19,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -38,11 +38,9 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.view.adapter.viewholder.home.DynamicChannelViewHolder
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.function.Predicate
 import javax.inject.Inject
 
 class OfficialHomeFragment :
@@ -71,7 +69,6 @@ class OfficialHomeFragment :
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
     private var layoutManager: StaggeredGridLayoutManager? = null
-    private var endlesScrollListener: EndlessRecyclerViewScrollListener? = null
     private var category: Category? = null
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
@@ -79,6 +76,16 @@ class OfficialHomeFragment :
     private var counterTitleShouldBeRendered = 0
     private var totalScroll = 0
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
+
+    private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
+        object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                counterTitleShouldBeRendered += 1
+                adapter?.showLoading()
+                viewModel.loadMore(category, page)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,23 +106,12 @@ class OfficialHomeFragment :
         recyclerView = view.findViewById(R.id.recycler_view)
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
-        endlesScrollListener = getEndlessRecyclerViewScrollListener()
 
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
         return view
-    }
-
-    private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                counterTitleShouldBeRendered += 1
-                adapter?.showLoading()
-                viewModel.loadMore(category, page)
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -138,7 +134,7 @@ class OfficialHomeFragment :
     private fun resetData() {
         adapter?.clearAllElements()
         adapter?.resetState()
-        endlesScrollListener?.resetState()
+        endlessScrollListener?.resetState()
     }
 
     private fun refreshData() {
@@ -151,6 +147,7 @@ class OfficialHomeFragment :
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
+                    setLoadMoreListener()
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -166,6 +163,7 @@ class OfficialHomeFragment :
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBenefit(it.data, adapter)
+                    setLoadMoreListener()
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -182,6 +180,7 @@ class OfficialHomeFragment :
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title)
+                    setLoadMoreListener()
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -216,7 +215,7 @@ class OfficialHomeFragment :
                 is Success -> {
                     PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
                     adapter?.hideLoading()
-                    endlesScrollListener?.updateStateAfterGetData()
+                    endlessScrollListener.updateStateAfterGetData()
                     swipeRefreshLayout?.isRefreshing = false
                     if (counterTitleShouldBeRendered == 1) {
                         OfficialHomeMapper.mappingProductrecommendationTitle(it.data.title, adapter)
@@ -251,16 +250,18 @@ class OfficialHomeFragment :
     }
 
     private fun setListener() {
-        endlesScrollListener?.let {
-            recyclerView?.addOnScrollListener(it)
-        }
+        setLoadMoreListener()
 
         swipeRefreshLayout?.setOnRefreshListener {
             adapter?.getVisitables()?.removeAll {
-                it is DynamicChannelViewModel || it is ProductRecommendationViewModel || it is ProductRecommendationTitleViewModel
+                it is DynamicChannelViewModel
+                        || it is ProductRecommendationViewModel
+                        || it is ProductRecommendationTitleViewModel
+                        || it is LoadingMoreModel
             }
             counterTitleShouldBeRendered = 0
             adapter?.notifyDataSetChanged()
+            recyclerView?.removeOnScrollListener(endlessScrollListener)
             refreshData()
         }
 
@@ -279,6 +280,10 @@ class OfficialHomeFragment :
             }
         }
 
+    }
+
+    private fun setLoadMoreListener() {
+        recyclerView?.addOnScrollListener(endlessScrollListener)
     }
 
     override fun getScreenName(): String {
