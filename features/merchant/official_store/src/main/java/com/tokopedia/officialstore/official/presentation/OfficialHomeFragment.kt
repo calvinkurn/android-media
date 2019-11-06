@@ -379,6 +379,12 @@ class OfficialHomeFragment :
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
+
+        tracking?.eventClickWishlist(
+                category?.title.toEmptyStringIfNull(),
+                isAddWishlist,
+                viewModel.isLoggedIn(),
+                PRODUCT_RECOMMENDATION_TITLE_SECTION)
     }
 
     override fun onCountDownFinished() {
