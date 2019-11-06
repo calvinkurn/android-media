@@ -16,21 +16,29 @@ class FlightBookingPriceAdapter: RecyclerView.Adapter<FlightBookingPriceAdapter.
 
     var routePriceList: List<FlightCart.PriceDetail> = listOf()
     var amenityPriceList: List<FlightCart.PriceDetail> = listOf()
+    var othersPriceList: List<FlightCart.PriceDetail> = listOf()
     lateinit var listener: PriceListener
     var routePriceCount: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
             ViewHolder(LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false))
 
-    override fun getItemCount(): Int = routePriceList.size + amenityPriceList.size
+    override fun getItemCount(): Int = routePriceList.size + othersPriceList.size + amenityPriceList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (position < routePriceList.size) holder.bind(routePriceList[position])
-        else holder.bind(amenityPriceList[position - routePriceList.size])
+        else if (position < amenityPriceList.size + routePriceList.size) holder.bind(amenityPriceList[position - routePriceList.size])
+        else holder.bind(othersPriceList[position - routePriceList.size - amenityPriceList.size])
     }
 
     fun updateRoutePriceList(list: List<FlightCart.PriceDetail>) {
         this.routePriceList = list
+        countTotalPrice()
+        notifyDataSetChanged()
+    }
+
+    fun updateOthersPriceList(list: List<FlightCart.PriceDetail>) {
+        this.othersPriceList = list
         countTotalPrice()
         notifyDataSetChanged()
     }
@@ -44,6 +52,7 @@ class FlightBookingPriceAdapter: RecyclerView.Adapter<FlightBookingPriceAdapter.
     fun countTotalPrice() {
         var totalPrice = 0
         for (item in routePriceList) totalPrice += item.priceNumeric
+        for (item in othersPriceList) totalPrice += item.priceNumeric
         for (item in amenityPriceList) totalPrice += item.priceNumeric
         listener.onPriceChangeListener(FlightCurrencyFormatUtil.convertToIdrPrice(totalPrice), totalPrice)
     }

@@ -4,9 +4,13 @@ package com.tokopedia.flight.bookingV3.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.flight.R
+import com.tokopedia.flight.booking.constant.FlightBookingPassenger
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
 import com.tokopedia.flight.bookingV3.data.FlightBookingParam
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
@@ -36,18 +40,21 @@ import javax.inject.Inject
 class FlightBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                  val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val flightCartResult = MutableLiveData<Result<FlightCartViewEntity>>()
-    val flightPromoResult = MutableLiveData<FlightPromoViewEntity>()
-    val profileResult = MutableLiveData<Result<ProfileInfo>>()
-    val flightPassengersData = MutableLiveData<List<FlightBookingPassengerViewModel>>()
+
+    val flightCartResult = MutableLiveData<Result<FlightCartViewEntity>>() //journey, insurance option, luggage option and meal option
+    val flightPromoResult = MutableLiveData<FlightPromoViewEntity>() //promoData
+    val profileResult = MutableLiveData<Result<ProfileInfo>>() //profileData from userSession
+    val flightPassengersData = MutableLiveData<List<FlightBookingPassengerViewModel>>() //passengerData
+    val flightCancelVoucherSuccess = MutableLiveData<Boolean>() //voucher cancel success
+
+    //priceListData
     val flightPriceData = MutableLiveData<List<FlightCart.PriceDetail>>()
     val flightOtherPriceData = MutableLiveData<List<FlightCart.PriceDetail>>()
-    val flightCancelVoucherSuccess = MutableLiveData<Boolean>()
+    val flightAmenityPriceData = MutableLiveData<List<FlightCart.PriceDetail>>()
 
     val flightBookingParam = FlightBookingParam()
 
     var retryCount = 0
-
 
     fun getCart(rawQuery: String, cartId: String) {
         val params = mapOf(PARAM_CART_ID to cartId)
@@ -98,6 +105,72 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             flightPassengersData.value = passengerViewModels
         }
         //calculatePriceHere
+        addPassengerAmenitiesPrices()
+    }
+
+    fun onTravellerAsPassenger(isEnable: Boolean) {
+        val userProfile = if (profileResult.value is Success) (profileResult.value as Success).data else ProfileInfo()
+        val passengers = (flightPassengersData.value ?: listOf()).toMutableList()
+        if (passengers.isNotEmpty() && userProfile.fullName.isNotEmpty()) {
+            val passenger = FlightBookingPassengerViewModel()
+            passenger.passengerLocalId = 1
+            passenger.type = FlightBookingPassenger.ADULT
+            passenger.flightBookingLuggageMetaViewModels = arrayListOf()
+            passenger.flightBookingMealMetaViewModels = arrayListOf()
+            if (isEnable) {
+                passenger.headerTitle = String.format(userProfile.fullName)
+                passenger.passengerFirstName = userProfile.fullName
+                passenger.passengerBirthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
+            } else {
+                passenger.headerTitle = String.format("Penumpang dewasa")
+            }
+            passengers[0] = passenger
+            flightPassengersData.value = passengers
+        }
+    }
+
+    fun addPassengerAmenitiesPrices() {
+        val flightBookingPassengers = flightPassengersData.value ?: listOf()
+        // amenities
+        val meals = hashMapOf<String, Int>()
+        val luggages = hashMapOf<String, Int>()
+
+        for (flightPassengerViewModel in flightBookingPassengers) {
+            for (flightBookingAmenityMetaViewModel in flightPassengerViewModel.flightBookingMealMetaViewModels) {
+                for (flightBookingAmenityViewModel in flightBookingAmenityMetaViewModel.amenities) {
+                    if (meals[flightBookingAmenityMetaViewModel.description] != null) {
+                        var total = meals[flightBookingAmenityMetaViewModel.description]!!
+                        total += flightBookingAmenityViewModel.priceNumeric
+                        meals[flightBookingAmenityMetaViewModel.description] = total
+                    } else {
+                        meals[flightBookingAmenityMetaViewModel.description] = flightBookingAmenityViewModel.priceNumeric
+                    }
+                }
+            }
+            for (flightBookingLuggageMetaViewModel in flightPassengerViewModel.flightBookingLuggageMetaViewModels) {
+                for (flightBookingLuggageViewModel in flightBookingLuggageMetaViewModel.amenities) {
+                    if (luggages[flightBookingLuggageMetaViewModel.description] != null) {
+                        var total = luggages[flightBookingLuggageMetaViewModel.description]!!
+                        total += flightBookingLuggageViewModel.priceNumeric
+                        luggages[flightBookingLuggageMetaViewModel.description] = total
+                    } else {
+                        luggages[flightBookingLuggageMetaViewModel.description] = flightBookingLuggageViewModel.priceNumeric
+                    }
+                }
+            }
+        }
+
+        val prices = listOf<FlightCart.PriceDetail>().toMutableList()
+        for ((key, value) in meals) {
+            prices.add(FlightCart.PriceDetail(String.format("%s %s", "Makanan",
+                    key), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
+        }
+        for ((key, value) in luggages) {
+            prices.add(FlightCart.PriceDetail(String.format("%s %s", "Bagasi",
+                    key), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
+
+        }
+        flightAmenityPriceData.value = prices
     }
 
     fun updateOtherPriceData(priceDetail: List<FlightCart.PriceDetail>) {
@@ -144,7 +217,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun onInsuranceChanges(insurance: FlightCart.Insurance, checked: Boolean) {
-
         val otherPrices = flightOtherPriceData.value?.toMutableList() ?: mutableListOf()
         if (checked) {
             val index = flightBookingParam.insurances.indexOf(insurance)

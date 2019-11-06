@@ -40,8 +40,10 @@ class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassenger
         fun bind(passenger: FlightBookingPassengerViewModel, listener: PassengerViewHolderListener) {
             with(view) {
                 tv_passenger_name.text = passenger.headerTitle
-                if (passenger.passengerFirstName != null) renderPassengerInfo(passenger)
-                else {
+                if (passenger.passengerFirstName != null) {
+                    renderPassengerInfo(passenger)
+                    tv_edit_passenger_info.text = "Ubah"
+                } else {
                     rv_passenger_info.hide()
                     tv_edit_passenger_info.text = "Isi Data"
                 }

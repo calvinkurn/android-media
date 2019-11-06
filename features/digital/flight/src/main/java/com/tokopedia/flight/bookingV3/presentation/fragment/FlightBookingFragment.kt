@@ -22,7 +22,6 @@ import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragme
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.flight.booking.di.FlightBookingComponent
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
@@ -35,7 +34,6 @@ import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -136,6 +134,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightOtherPriceData.observe(this, Observer {
             renderOtherPriceData(it)
         })
+
+        bookingViewModel.flightAmenityPriceData.observe(this, Observer {
+            renderAmenityPriceData(it)
+        })
     }
 
     private fun renderData(cart: FlightCartViewEntity) {
@@ -184,6 +186,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun renderOtherPriceData(priceList: List<FlightCart.PriceDetail>) {
+        if (::flightPriceAdapter.isInitialized) {
+            flightPriceAdapter.updateOthersPriceList(priceList)
+        }
+    }
+
+    private fun renderAmenityPriceData(priceList: List<FlightCart.PriceDetail>) {
         if (::flightPriceAdapter.isInitialized) {
             flightPriceAdapter.updateAmenityPriceList(priceList)
         }
@@ -256,6 +264,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
         launchLoadingPageJob.start()
         bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_get_cart), "")
         bookingViewModel.getProfile(GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile))
+
+        setUpView()
+    }
+
+    private fun setUpView() {
         hidePriceDetail()
 
         widget_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
@@ -270,10 +283,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
                             REQUEST_CODE_CONTACT_FORM)
                 }
             }
-
         })
 
         tv_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
+        switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
+            bookingViewModel.onTravellerAsPassenger(on)
+        }
     }
 
     fun renderAutoApplyPromo(flightVoucher: FlightPromoViewEntity) {
