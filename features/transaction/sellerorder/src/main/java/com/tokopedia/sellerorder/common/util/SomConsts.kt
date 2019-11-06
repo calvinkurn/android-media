@@ -41,6 +41,7 @@ object SomConsts {
 
     const val ACTION_OK = "OK"
     const val RESULT_ACCEPT_ORDER = "result_accept_order"
+    const val RESULT_REJECT_ORDER = "result_reject_order"
     const val KEY_REJECT_ORDER = "reject_order"
 
     const val KEY_REASON_EMPTY_STOCK = "empty_stock"
@@ -66,6 +67,7 @@ object SomConsts {
     const val VALUE_COURIER_PROBLEM_OTHERS = "Lainnya"
 
     const val TITLE_PILIH_PENOLAKAN = "Pilih alasan penolakan"
+    const val TITLE_PILIH_PRODUK_KOSONG = "Pilih produk yang kosong"
     const val TITLE_COURIER_PROBLEM = "Kendala Kurir"
 
     const val BOTTOMSHEET_TEXT_ONLY_TYPE = "text_only"

@@ -69,4 +69,15 @@
 
     <string name="datepicker_start_title">Mulai Dari</string>
     <string name="datepicker_end_title">Sampai</string>
+
+    <string name="global_error">Terjadi kesalahan. Mohon ulangi kembali</string>
+    <string name="image_product">Image Product</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_price">Rp 10.000.000</string>
+    <string name="extra_note_label">Catatan Penutupan Toko</string>
+    <string name="extra_note_tooltip">Contoh: Toko tutup karena liburan</string>
+
+    <string name="empty_stock_extra_note">Beritahu pembeli bahwa stok produk kosong (opsional)</string>
+    <string name="empty_stock_extra_placeholder">Contoh: Maaf ya, barangnya habis</string>
+
 </resources>

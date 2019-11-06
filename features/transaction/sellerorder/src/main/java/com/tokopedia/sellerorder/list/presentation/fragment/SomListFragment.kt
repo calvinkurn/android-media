@@ -26,9 +26,11 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.detail.data.model.SomAcceptOrder
+import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.list.data.model.SomListFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
@@ -67,7 +69,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var refreshHandler: RefreshHandler? = null
     private var isLoading = false
     private var tabActive = ""
-    private val FLAG_ACCEPT_ORDER = 3333
+    private val FLAG_DETAIL = 3333
 
 
     private val somListViewModel by lazy {
@@ -379,24 +381,32 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     renderFilter()
                 }
             }
-        } else if (requestCode == FLAG_ACCEPT_ORDER && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == FLAG_DETAIL && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(RESULT_ACCEPT_ORDER)) {
                     val resultAcceptOrder = data.getParcelableExtra<SomAcceptOrder.Data.AcceptOrder>(RESULT_ACCEPT_ORDER)
-                    refreshHandler?.startRefresh()
-                    val toasterSuccess = Toaster
-                    view?.let { v ->
-                        toasterSuccess.make(v, resultAcceptOrder.listMessage.first(), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, SomConsts.ACTION_OK)
-                    }
+                    refreshThenShowToasterOk(resultAcceptOrder.listMessage.first())
+
+                } else if (data.hasExtra(RESULT_REJECT_ORDER)) {
+                    val resultRejectOrder = data.getParcelableExtra<SomRejectOrder.Data.RejectOrder>(RESULT_REJECT_ORDER)
+                    refreshThenShowToasterOk(resultRejectOrder.message.first())
                 }
             }
+        }
+    }
+
+    private fun refreshThenShowToasterOk(message: String) {
+        refreshHandler?.startRefresh()
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.make(v, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, SomConsts.ACTION_OK)
         }
     }
 
     override fun onListItemClicked(orderId: String) {
         Intent(activity, SomDetailActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
-            startActivityForResult(this, FLAG_ACCEPT_ORDER)
+            startActivityForResult(this, FLAG_DETAIL)
         }
     }
 }

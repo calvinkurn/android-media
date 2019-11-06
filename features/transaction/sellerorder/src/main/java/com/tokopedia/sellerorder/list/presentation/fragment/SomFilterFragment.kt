@@ -98,6 +98,7 @@ class SomFilterFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setListeners()
+        setupDatePickers()
         observingCourierList()
         observingOrderTypeList()
         observingStatusOrderList()
@@ -111,16 +112,25 @@ class SomFilterFragment : BaseDaggerFragment() {
             })
             activity?.finish()
         }
-        et_start_date?.setOnClickListener { showDatePicker(START_DATE) }
-        et_end_date?.setOnClickListener { showDatePicker(END_DATE) }
     }
 
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(flag: String) {
-        context?.let {
+        context?.let {  context ->
             val minDate = GregorianCalendar(2010, 0, 1)
-            val dateNow = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
-            val datePicker = DatePickerUnify(it, minDate, dateNow, dateNow)
+            val dateNow = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
+            var dateMax = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
+            val isEndDateFilled = currentFilterParams?.endDate?.isNotEmpty()
+            isEndDateFilled?.let { isNotEmpty ->
+                if (isNotEmpty && flag.equals(START_DATE, true)) {
+                    val splitEndDate = currentFilterParams?.endDate?.split('/')
+                    splitEndDate?.let {
+                        dateMax = GregorianCalendar(it[2].toInt(), it[1].toInt(), it[0].toInt())
+                    }
+                }
+            }
+
+            val datePicker = DatePickerUnify(context, minDate, dateNow, dateMax)
             when { flag.equals(START_DATE, true) -> datePicker.setTitle(getString(R.string.mulai_dari))
                    flag.equals(END_DATE, true) -> datePicker.setTitle(getString(R.string.sampai)) }
             datePicker.show(fragmentManager, "")
@@ -158,6 +168,14 @@ class SomFilterFragment : BaseDaggerFragment() {
             11 -> monthString = "Des"
         }
         return monthString
+    }
+
+    private fun setupDatePickers() {
+        et_start_date.setText(currentFilterParams?.startDate)
+        et_end_date.setText(currentFilterParams?.endDate)
+
+        et_start_date?.setOnClickListener { showDatePicker(START_DATE) }
+        et_end_date?.setOnClickListener { showDatePicker(END_DATE) }
     }
 
     private fun loadAllFilter() {

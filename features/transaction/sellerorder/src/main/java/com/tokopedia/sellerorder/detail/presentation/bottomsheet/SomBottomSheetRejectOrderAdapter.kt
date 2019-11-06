@@ -34,7 +34,7 @@ class SomBottomSheetRejectOrderAdapter(private var listener: ActionListener, pri
             else -> throw IllegalArgumentException("Invalid view type")
         }*/
 
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bottomsheet_text_item, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.bottomsheet_reject_item, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -65,6 +65,7 @@ class SomBottomSheetRejectOrderAdapter(private var listener: ActionListener, pri
             holder.itemView.reject_reason.visibility = View.GONE
         } else {
             holder.itemView.reject_reason.visibility = View.VISIBLE
+            holder.itemView.reject_reason.setPlaceholder(holder.itemView.context.getString(R.string.placeholder_reject_reason))
         }
 
         holder.itemView.setOnClickListener {

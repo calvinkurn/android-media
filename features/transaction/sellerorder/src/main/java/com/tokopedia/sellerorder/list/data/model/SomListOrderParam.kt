@@ -19,7 +19,7 @@ data class SomListOrderParam(
 
         @SerializedName("start_date")
         @Expose
-        var startDate: String = "01/01/2017",
+        var startDate: String = "01/01/2010",
 
         @SerializedName("end_date")
         @Expose

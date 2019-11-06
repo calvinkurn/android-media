@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by fwidjaja on 2019-10-10.
  */
-data class SomRejectOrderParam (
+data class SomRejectRequest (
         @SerializedName("order_id")
         @Expose
         var orderId: String = "",
@@ -39,16 +39,15 @@ data class SomRejectOrderParam (
 
         @SerializedName("mobile")
         @Expose
-        var mobile: String = "",
+        var mobile: String = "1",
 
         @SerializedName("lang")
         @Expose
-        var lang: String = "",
+        var lang: String = "id",
 
         @SerializedName("ignore_penalty")
         @Expose
-        var ignorePenalty: String = ""
-
+        var ignorePenalty: String = "false"
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
@@ -58,9 +57,9 @@ data class SomRejectOrderParam (
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "")
+            parcel.readString() ?: "1",
+            parcel.readString() ?: "id",
+            parcel.readString() ?: "false")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(orderId)
@@ -79,12 +78,12 @@ data class SomRejectOrderParam (
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<SomRejectOrderParam> {
-        override fun createFromParcel(parcel: Parcel): SomRejectOrderParam {
-            return SomRejectOrderParam(parcel)
+    companion object CREATOR : Parcelable.Creator<SomRejectRequest> {
+        override fun createFromParcel(parcel: Parcel): SomRejectRequest {
+            return SomRejectRequest(parcel)
         }
 
-        override fun newArray(size: Int): Array<SomRejectOrderParam?> {
+        override fun newArray(size: Int): Array<SomRejectRequest?> {
             return arrayOfNulls(size)
         }
     }

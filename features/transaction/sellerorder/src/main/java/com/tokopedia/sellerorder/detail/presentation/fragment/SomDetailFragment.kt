@@ -18,7 +18,6 @@ import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
-import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_ONLY_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_RADIO_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
@@ -39,8 +38,10 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_COLON
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_END
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_START
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OFFICE_CLOSED
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_COURIER_PROBLEM
@@ -50,7 +51,9 @@ import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_SHOP_CLOSED
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetStockEmptyAdapter
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -63,22 +66,27 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 /**
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener {
+class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener  {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
     private var acceptOrderResponse = SomAcceptOrder.Data.AcceptOrder()
+    private var rejectOrderResponse = SomRejectOrder.Data.RejectOrder()
+    private var rejectReasonResponse = listOf<SomReasonRejectData.Data.SomRejectReason>()
     private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
-    private var listRejectData: ArrayList<SomRejectData> = arrayListOf()
+    private var listRejectTypeData: ArrayList<SomRejectTypeData> = arrayListOf()
     private lateinit var somDetailAdapter: SomDetailAdapter
     private lateinit var somBottomSheetRejectOrderAdapter:  SomBottomSheetRejectOrderAdapter
+    private lateinit var somBottomSheetRejectReasonsAdapter:  SomBottomSheetRejectReasonsAdapter
+    private lateinit var somBottomSheetStockEmptyAdapter: SomBottomSheetStockEmptyAdapter
     private lateinit var dialogUnify: DialogUnify
     private lateinit var bottomSheetUnify: BottomSheetUnify
 
@@ -181,16 +189,40 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                         activity?.finish()
 
                     } else {
-                        // if success = 0 : dismiss dialogUnify, then show toaster error
-                        val toasterError = Toaster
-                        view?.let { v ->
-                            toasterError.make(v, acceptOrderResponse.listMessage.first(), LENGTH_SHORT, TYPE_ERROR, ACTION_OK)
-                        }
+                        showToasterError(acceptOrderResponse.listMessage.first())
                     }
                 }
                 is Fail -> {
-                    // dismiss dialogUnify
                     dialogUnify.dismiss()
+                }
+            }
+        })
+    }
+
+    private fun observingRejectReasons() {
+        somDetailViewModel.rejectReasonResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    rejectReasonResponse = it.data.listSomRejectReason
+                    somBottomSheetRejectReasonsAdapter = SomBottomSheetRejectReasonsAdapter(this)
+                    bottomSheetUnify = BottomSheetUnify()
+                    if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
+                    val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
+                    viewBottomSheet.rv_bottomsheet_secondary?.apply {
+                        layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+                        adapter = somBottomSheetRejectReasonsAdapter
+                    }
+                    viewBottomSheet.extra_notes_wrapper?.visibility = View.GONE
+                    bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+                    bottomSheetUnify.setChild(viewBottomSheet)
+                    bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+                    bottomSheetUnify.setTitle(TITLE_PILIH_PENOLAKAN)
+                    somBottomSheetRejectReasonsAdapter.listRejectReasons = rejectReasonResponse.toMutableList()
+                    somBottomSheetRejectReasonsAdapter.notifyDataSetChanged()
+                }
+                is Fail -> {
+                    bottomSheetUnify.dismiss()
+                    showToasterError(getString(R.string.global_error))
                 }
             }
         })
@@ -292,9 +324,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     mapKey[btn.key] = btn.displayName
 
                 }
-                /*val rejectData = SomRejectData(mapKey, BOTTOMSHEET_TEXT_ONLY_TYPE)
-                listRejectData = arrayListOf()
-                listRejectData.add(rejectData)*/
                 somBottomSheetRejectOrderAdapter.mapKey = mapKey
                 somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
             }
@@ -312,6 +341,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
             adapter = somBottomSheetRejectOrderAdapter
         }
+        viewBottomSheet.fl_btn_primary?.visibility = View.GONE
+        viewBottomSheet.extra_notes_wrapper?.visibility = View.GONE
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
         bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
@@ -321,21 +352,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         bottomSheetUnify.dismiss()
         println("++ KEY = $key")
         if (key.equals(KEY_REJECT_ORDER, true)) {
-            somBottomSheetRejectOrderAdapter = SomBottomSheetRejectOrderAdapter(this, hasRadioBtn = false, hasReasonEditText = false)
-            showTextOnlyBottomSheet()
-            bottomSheetUnify.clearHeader(false)
-            bottomSheetUnify.clearClose(false)
-            bottomSheetUnify.setTitle(TITLE_PILIH_PENOLAKAN)
-
-            var map = HashMap<String, String>()
-            createOptionsRejectOrder(map)
-
-            /*val rejectData = SomRejectData(createOptionsRejectOrder(), BOTTOMSHEET_TEXT_ONLY_TYPE)
-            listRejectData = arrayListOf()
-            listRejectData.add(rejectData)
-
-            somBottomSheetRejectOrderAdapter.mapKey = createOptionsRejectOrder()
-            somBottomSheetRejectOrderAdapter.notifyDataSetChanged()*/
+            somDetailViewModel.getRejectReasons(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_reason))
+            observingRejectReasons()
 
         } else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
             // besok lanjut bikin adapter untuk beberapa layout khusus untuk reject order
@@ -345,23 +363,14 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             bottomSheetUnify.clearHeader(false)
             bottomSheetUnify.clearClose(false)
             bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
-            listRejectData = arrayListOf()
+            listRejectTypeData = arrayListOf()
             val mapRadio = HashMap<String, String>()
             mapRadio[KEY_REASON_OTHER] = VALUE_REASON_OTHER
-            listRejectData.add(SomRejectData(createOptionsCourierProblems(), BOTTOMSHEET_TEXT_RADIO_TYPE))
-            listRejectData.add(SomRejectData(mapRadio, BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE))
-            // somBottomSheetRejectOrderAdapter.listRejectData = listRejectData
+            listRejectTypeData.add(SomRejectTypeData(createOptionsCourierProblems(), BOTTOMSHEET_TEXT_RADIO_TYPE))
+            listRejectTypeData.add(SomRejectTypeData(mapRadio, BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE))
+            // somBottomSheetRejectOrderAdapter.listRejectTypeData = listRejectTypeData
             // somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
         }
-    }
-
-    private fun createOptionsRejectOrder(map: HashMap<String, String>): HashMap<String, String> {
-        map[KEY_REASON_EMPTY_STOCK] = VALUE_REASON_EMPTY_STOCK
-        map[KEY_REASON_SHOP_CLOSED] = VALUE_REASON_SHOP_CLOSED
-        map[KEY_REASON_COURIER_PROBLEM] = VALUE_REASON_COURIER_PROBLEM
-        map[KEY_REASON_BUYER_NO_RESPONSE] = VALUE_REASON_BUYER_NO_RESPONSE
-        map[KEY_REASON_OTHER] = VALUE_REASON_OTHER
-        return map
     }
 
     private fun createOptionsCourierProblems(): HashMap<String, String> {
@@ -392,5 +401,93 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             setChild(childView)
         }
         bottomSheetUnify.show(fragmentManager, "")
+    }
+
+    override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
+        println("++ REASON CODE = ${rejectReason.reasonCode}")
+        /* 1 = Stok Produk Kosong
+        *  4 = Toko Sedang Tutup
+        *  7 = Kendala Kurir
+        *  15 = Pembeli Tidak Respons
+        *  14 = Lainnya */
+        when (rejectReason.reasonCode) {
+            1 -> setProductEmpty(rejectReason.reasonCode.toString())
+            4 -> {}
+            7 -> {}
+            15 -> {}
+            14 -> {}
+        }
+    }
+
+    private fun setProductEmpty(rCode: String) {
+        // ini penentu previous bottomsheetnya dismissed apa nggak?
+        bottomSheetUnify.dismiss()
+        somBottomSheetStockEmptyAdapter = SomBottomSheetStockEmptyAdapter()
+        bottomSheetUnify = BottomSheetUnify()
+        if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
+        viewBottomSheet.rv_bottomsheet_secondary?.apply {
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+            adapter = somBottomSheetStockEmptyAdapter }
+
+        viewBottomSheet.extra_notes_wrapper?.hint = getString(R.string.empty_stock_extra_note)
+        viewBottomSheet.extra_notes_input?.hint = getString(R.string.empty_stock_extra_placeholder)
+
+        viewBottomSheet.fl_btn_primary?.visibility = View.VISIBLE
+        viewBottomSheet.fl_btn_primary?.setOnClickListener {
+            bottomSheetUnify.dismiss()
+            val orderRejectRequest = SomRejectRequest()
+            orderRejectRequest.orderId = detailResponse.orderId.toString()
+            orderRejectRequest.rCode = rCode
+            var strListPrd = ""
+            var indexPrd = 0
+            somBottomSheetStockEmptyAdapter.getListProductEmptied().forEach {
+                if (indexPrd > 0) strListPrd += "~"
+                strListPrd += it.id
+                indexPrd++
+            }
+            orderRejectRequest.listPrd = strListPrd
+            orderRejectRequest.reason = viewBottomSheet.extra_notes_input?.text.toString()
+            somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
+            observingRejectOrder()
+        }
+
+        bottomSheetUnify.setFullPage(true)
+        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+        bottomSheetUnify.setChild(viewBottomSheet)
+        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        bottomSheetUnify.setTitle(TITLE_PILIH_PRODUK_KOSONG)
+        somBottomSheetStockEmptyAdapter.listProduct = detailResponse.listProduct.toMutableList()
+        somBottomSheetStockEmptyAdapter.notifyDataSetChanged()
+    }
+
+    private fun observingRejectOrder() {
+        somDetailViewModel.rejectOrderResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    rejectOrderResponse = it.data.rejectOrder
+                    if (rejectOrderResponse.success == 1) {
+                        // if success = 1 : finishActivity, then show toaster
+                        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(RESULT_REJECT_ORDER, rejectOrderResponse)
+                        })
+                        activity?.finish()
+
+                    } else {
+                        showToasterError(rejectOrderResponse.message.first())
+                    }
+                }
+                is Fail -> {
+                    showToasterError(getString(R.string.global_error))
+                }
+            }
+        })
+    }
+
+    private fun showToasterError(message: String) {
+        val toasterError = Toaster
+        view?.let { v ->
+            toasterError.make(v, message, LENGTH_SHORT, TYPE_ERROR, ACTION_OK)
+        }
     }
 }
