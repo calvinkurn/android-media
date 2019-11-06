@@ -58,6 +58,7 @@ ext {
             topAdsSdk                       : ":features:discovery:topadssdk",
             wishlistCommon                  : ":features:discovery:wishlist_common",
             productCard                     : ":features:discovery:productcard",
+            carouselProductCard             : ":features:discovery:carousel_productcard",
             filter                          : ":features:discovery:filter",
             imageSearch                     : ":features:discovery:image_search",
             similarSearch                   : ":features:discovery:similarsearch",
