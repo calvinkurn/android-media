@@ -11,4 +11,9 @@ class AutoCompleteActivity : BaseSimpleActivity() {
 
     override fun isShowCloseButton(): Boolean = true
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0,0)
+    }
+
 }

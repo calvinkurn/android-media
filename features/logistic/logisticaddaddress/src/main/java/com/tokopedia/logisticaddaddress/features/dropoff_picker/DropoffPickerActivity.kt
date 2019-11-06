@@ -98,11 +98,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mButtonGrant.setOnClickListener {
             checkForPermission()
         }
-        mSearchInput.setOnClickListener {
-            val intent = Intent(this@DropoffPickerActivity, AutoCompleteActivity::class.java)
-            startActivity(intent)
-        }
+        mSearchInput.setOnClickListener(goToAutoComplete)
         mSearchText = mSearchInput.searchTextView
+        mSearchText.setOnClickListener(goToAutoComplete)
         mSearchText.isCursorVisible = false
         mSearchText.isFocusable = false
         mStoreDetail = findViewById(R.id.bottom_sheet_detail)
@@ -110,7 +108,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mStoreDetail.setOnOkClickListener { _, data ->
             val resultIntent = Intent().apply {
                 val intentData = data?.let { dropoffMapper.mapToIntentModel(it) }
-                putExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION, intentData) }
+                putExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION, intentData)
+            }
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
         }
@@ -371,6 +370,12 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private fun stopLocationRequest() {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+    }
+
+    private val goToAutoComplete: (View) -> Unit = {
+        val intent = Intent(this, AutoCompleteActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_up, R.anim.stay_still)
     }
 
 }
