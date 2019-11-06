@@ -31,18 +31,58 @@
         app:layout_constraintTop_toBottomOf="@+id/tg_detail_title"
         app:showLoadingState="true" />
 
-    <com.tokopedia.salam.umrah.common.presentation.widget.TicketView
+    <RelativeLayout
         android:id="@+id/tv_umrah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
         android:background="@drawable/umrah_bg_order_detail_ticket"
-        android:elevation="@dimen/dp_4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_umrah_widget"
-        app:tv_anchor1="@+id/ticket_head"
-        app:tv_circleRadius="@dimen/dp_8">
+        >
+
+        <com.tokopedia.salam.umrah.common.presentation.widget.CustomTicketView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignBottom="@+id/divider1"
+            android:layout_alignParentTop="true"
+            app:borderColor="@color/grey_200"
+            app:borderWidth="1dp"
+            app:cornerRadius="4dp"
+            app:cornerType="roundedscallop"
+            app:scallopRadius="8dp"
+            app:showBorder="true"
+            app:showTopShadow="true"
+            app:ticketElevation="4dp" />
+
+        <com.tokopedia.salam.umrah.common.presentation.widget.CustomTicketView
+            android:id="@+id/customView2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignTop="@+id/divider1"
+            android:layout_alignBottom="@+id/ticket_bottom"
+            app:borderColor="@color/grey_200"
+            app:borderWidth="1dp"
+            app:cornerRadius="4dp"
+            app:cornerType="scalloprounded"
+            app:scallopRadius="8dp"
+            app:showBorder="false"
+            app:showBottomShadow="true"
+
+            app:ticketElevation="4dp" />
+
+
+        <!--v.setLayerType(View.LAYER_TYPE_SOFTWARE, null);-->
+        <ImageView
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@+id/ticket_head"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_8"
+            android:background="@drawable/umrah_dash_line" />
 
         <LinearLayout
             android:id="@+id/ticket_head"
@@ -75,19 +115,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:layout_marginTop="@dimen/dp_8"
-                android:background="@drawable/umrah_dash_line" />
-
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ticket_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ticket_head"
+            android:layout_below="@+id/divider1"
             android:orientation="vertical"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
@@ -148,8 +182,13 @@
                     app:unifyButtonVariant="ghost" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         </LinearLayout>
-    </com.tokopedia.salam.umrah.common.presentation.widget.TicketView>
+
+    </RelativeLayout>
+
+
 
     <LinearLayout
         android:id="@+id/container_umrah_e_voucher"
@@ -189,6 +228,7 @@
             app:srcCompat="@drawable/ic_arrow_right_grey" />
 
     </LinearLayout>
+
 
 
     <View

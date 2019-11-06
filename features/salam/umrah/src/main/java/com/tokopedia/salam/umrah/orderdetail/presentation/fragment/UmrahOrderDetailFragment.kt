@@ -3,10 +3,14 @@ package com.tokopedia.salam.umrah.orderdetail.presentation.fragment
 
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Html
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,7 +19,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleAdapter
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleDetailAdapter
@@ -166,6 +172,15 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             }
         }
 
+        if (data.conditionalInfo.title.isNotEmpty()) {
+            ll_header_info.visibility = View.VISIBLE
+            tg_header_info.text = data.conditionalInfo.text
+            ll_header_info.setOnClickListener {
+                RouteManager.route(context, data.conditionalInfo.url)
+            }
+        }
+
+
         val jamaahLayoutManager = LinearLayoutManager(context)
         val jamaahAdapter = UmrahSimpleAdapter()
         jamaahAdapter.isTitleBold = true
@@ -198,11 +213,14 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         rv_action_button.layoutManager = buttonLayoutManager
         rv_action_button.adapter = buttonAdapter
 
-        tg_umrah_contact_us.text = getTextFromHtml(data.contactUs.helpText)
-        tg_umrah_contact_us.setOnClickListener {
-            RouteManager.route(context, data.contactUs.helpUrl)
-        }
+        tg_umrah_condition_agreement.makeLinks(Pair(getString(R.string.umrah_order_detail_condition_agreement_link), View.OnClickListener {
+            RouteManager.route(context, data.helpLink)
+        }))
 
+        tg_umrah_contact_us.text = getTextFromHtml(data.contactUs.helpText)
+        tg_umrah_contact_us.makeLinks(Pair(getString(R.string.umrah_order_detail_link_pusat_bantuan),View.OnClickListener {
+            RouteManager.route(context,data.contactUs.helpUrl)
+        }))
     }
 
     private fun renderMyUmrahWidget(data: MyUmrahWidgetModel) {
@@ -215,15 +233,41 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     }
 
     override fun onItemClicked(buttonViewModel: UmrahOrderDetailButtonViewModel, position: Int) {
-        RouteManager.route(context, buttonViewModel.buttonLink)
+        RouteManager.route(context, "${DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH}${buttonViewModel.buttonLink}")
     }
 
     private fun getTextFromHtml(htmlText: String): CharSequence =
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                Html.fromHtml(htmlText, Html.FROM_HTML_MODE_LEGACY)
+                val htmlWithEnter = htmlText.replace(getString(R.string.umrah_order_detail_old_value_quetion_mark)
+                        ,getString(R.string.umrah_order_detail_new_value_quetion_mark), false)
+                Html.fromHtml(htmlWithEnter,Html.FROM_HTML_MODE_LEGACY)
             } else {
                 Html.fromHtml(htmlText)
             }
+
+    fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
+        val spannableString = SpannableString(this.text)
+        for (link in links) {
+            val clickableSpan = object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    Selection.setSelection((view as TextView).text as Spannable, 0)
+                    view.invalidate()
+                    link.second.onClick(view)
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                }
+            }
+            val startIndexOfLink = this.text.toString().indexOf(link.first)
+            spannableString.setSpan(clickableSpan, startIndexOfLink, startIndexOfLink + link.first.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        }
+        this.movementMethod = LinkMovementMethod.getInstance()
+        this.setText(spannableString, TextView.BufferType.SPANNABLE)
+    }
 
     companion object {
 

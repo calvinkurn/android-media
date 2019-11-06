@@ -42,20 +42,27 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_status_detail" />
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/tv_header_info"
+    <LinearLayout
+        android:id="@+id/ll_header_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
         android:visibility="gone"
-        app:closeButtonVisibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:background="@drawable/umrah_bg_order_detail_ticker"
         app:layout_constraintTop_toBottomOf="@+id/divider_status"
-        app:tickerShapeType="loose"
-        app:tickerType="warning"
-        tools:visibility="gone" />
+
+        >
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_header_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/umrah_order_detail_ticker_example"
+            android:gravity="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:typographyType="small"
+            />
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_header_detail"
@@ -64,7 +71,7 @@
         android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_header_info" />
+        app:layout_constraintTop_toBottomOf="@+id/ll_header_info" />
 
     <View
         android:id="@+id/divider_status_detail"
