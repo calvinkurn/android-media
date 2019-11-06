@@ -113,9 +113,9 @@ public class ShipmentDataConverter {
         recipientAddress.setCornerAddress(userAddress.isCorner());
 
         // Todo : Remove this mock data
-        recipientAddress.setTradeIn(true);
-        recipientAddress.setDisableMultipleAddress(true);
-        recipientAddress.setTradeInDropOffEnable(true);
+//        recipientAddress.setTradeIn(true);
+//        recipientAddress.setDisableMultipleAddress(true);
+//        recipientAddress.setTradeInDropOffEnable(true);
 
         return recipientAddress;
     }
