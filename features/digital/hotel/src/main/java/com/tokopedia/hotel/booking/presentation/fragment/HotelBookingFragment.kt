@@ -19,11 +19,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
 import com.tokopedia.common.travel.presentation.model.TravelContactData
@@ -45,6 +47,8 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
@@ -62,6 +66,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     lateinit var hotelCart: HotelCart
+    lateinit var appliedVoucher: HotelCart.AppliedVoucher
     var hotelBookingPageModel = HotelBookingPageModel()
 
     lateinit var progressDialog: ProgressDialog
@@ -89,7 +94,8 @@ class HotelBookingFragment : HotelBaseFragment() {
         bookingViewModel.hotelCartResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    hotelCart = it.data
+                    hotelCart = it.data.response
+                    appliedVoucher = it.data.appliedVoucher
                     initView()
                 }
                 is Fail -> {
@@ -173,7 +179,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupRoomInfo(hotelCart.property, hotelCart.cart)
         setupRoomRequestForm(hotelCart.cart)
         setupContactDetail(hotelCart.cart)
-//        setupPayNowPromoTicker(hotelCart.property)
+        setupPayNowPromoTicker(hotelCart, appliedVoucher)
         setupInvoiceSummary(hotelCart.cart, hotelCart.property)
         setupImportantNotes(hotelCart.property)
 
@@ -378,9 +384,43 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
     }
 
-    private fun setupPayNowPromoTicker(property: HotelPropertyData) {
-        if (property.rooms.isNotEmpty() && property.isDirectPayment) {
+    private fun setupPayNowPromoTicker(cart: HotelCart,
+                                       appliedVoucher: HotelCart.AppliedVoucher) {
+        if (cart.property.rooms.isNotEmpty()
+//                && cart.property.isDirectPayment // TODO remove this condition, testing only
+        ) {
             booking_pay_now_promo_container.visibility = View.VISIBLE
+
+            if (appliedVoucher.code.isNotEmpty()) {
+                booking_pay_now_promo_ticker.title = appliedVoucher.titleDescription
+                booking_pay_now_promo_ticker.desc = appliedVoucher.message
+                booking_pay_now_promo_ticker.state = TickerPromoStackingCheckoutView.State.ACTIVE
+            } else {
+                booking_pay_now_promo_ticker.state = TickerPromoStackingCheckoutView.State.EMPTY
+            }
+
+            booking_pay_now_promo_ticker.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
+                override fun onClickUsePromo() {
+                    // TODO route to applinkinternal
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                    intent.putExtra("EXTRA_COUPON_ACTIVE", appliedVoucher.isCoupon)
+                    intent.putExtra("EXTRA_CART_ID", cart.cartID)
+                    startActivityForResult(intent, 234)
+                    Toast.makeText(context, "onClickUsePromo", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onResetPromoDiscount() {
+                    Toast.makeText(context, "onResetPromoDiscount", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onClickDetailPromo() {
+                    Toast.makeText(context, "onClickDetailPromo", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onDisablePromoDiscount() {
+                    Toast.makeText(context, "onDisablePromoDiscount", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

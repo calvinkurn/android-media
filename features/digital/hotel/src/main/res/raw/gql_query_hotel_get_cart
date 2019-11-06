@@ -81,5 +81,15 @@ query PropertyCart($data: PropertyGetCartRequest!) {
         }
       }
     }
+    appliedVoucher {
+          code
+          discount
+          discountAmount
+          cashback
+          cashbackAmount
+          message
+          titleDescription
+          isCoupon
+    }
   }
 }

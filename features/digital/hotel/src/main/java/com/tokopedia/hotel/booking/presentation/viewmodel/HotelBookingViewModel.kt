@@ -35,7 +35,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
                                                 val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
-    val hotelCartResult = MutableLiveData<Result<HotelCart>>()
+    val hotelCartResult = MutableLiveData<Result<HotelCart.Response>>()
     val hotelCheckoutResult = MutableLiveData<Result<HotelCheckoutResponse>>()
 
     fun getContactList(query: String) {
@@ -69,7 +69,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCart.Response>()
 
-            hotelCartResult.value = Success(data.response)
+            hotelCartResult.value = Success(data)
         }) {
             hotelCartResult.value = Fail(it)
         }
