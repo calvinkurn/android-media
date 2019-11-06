@@ -103,7 +103,7 @@
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_promo_last_seen" />
+                    tools:listitem="@layout/item_last_seen_promo_history" />
             </LinearLayout>
 
             <include
