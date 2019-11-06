@@ -131,8 +131,8 @@ public class ShipmentDataConverter {
 
 
                     if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
-                        if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders() != null) {
-                            for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
+                        if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList() != null) {
+                            for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList()) {
                                 if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
                                     if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
                                         shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
@@ -172,8 +172,8 @@ public class ShipmentDataConverter {
                         .get(0).getUserAddress().getAddressId());
 
                 if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
-                    if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders() != null) {
-                        for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
+                    if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList() != null) {
+                        for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList()) {
                             if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
                                 if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
                                     shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));

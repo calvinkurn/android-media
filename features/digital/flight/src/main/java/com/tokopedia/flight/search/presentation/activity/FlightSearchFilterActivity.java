@@ -18,10 +18,8 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
-import com.tokopedia.flight.search.presentation.presenter.FlightFilterPresenter;
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
-import com.tokopedia.flight.search.presentation.presenter.FlightFilterPresenter;
 import com.tokopedia.flight.search.presentation.FlightFilterCountView;
 import com.tokopedia.flight.search.presentation.fragment.FlightFilterAirlineFragment;
 import com.tokopedia.flight.search.presentation.fragment.FlightFilterDepartureFragment;
@@ -29,8 +27,9 @@ import com.tokopedia.flight.search.presentation.fragment.FlightFilterRefundableF
 import com.tokopedia.flight.search.presentation.fragment.FlightFilterTransitFragment;
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFilterFragment;
 import com.tokopedia.flight.search.presentation.fragment.OnFlightBaseFilterListener;
-import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
+import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel;
+import com.tokopedia.flight.search.presentation.presenter.FlightFilterPresenter;
 
 import java.util.List;
 
@@ -91,9 +90,9 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             count = savedInstanceState.getInt(SAVED_COUNT);
         }
 
-        containerLayout = (LinearLayout) findViewById(R.id.container_layout);
-        loadingLayout = (RelativeLayout) findViewById(R.id.loading_layout);
-        buttonFilter = (Button) findViewById(R.id.button_filter);
+        containerLayout = (LinearLayout) findViewById(com.tokopedia.flight.R.id.container_layout);
+        loadingLayout = (RelativeLayout) findViewById(com.tokopedia.flight.R.id.loading_layout);
+        buttonFilter = (Button) findViewById(com.tokopedia.flight.R.id.button_filter);
         buttonFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,7 +122,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (flightSearchStaatisticModel != null) {
-            getMenuInflater().inflate(R.menu.menu_filter_reset, menu);
+            getMenuInflater().inflate(com.tokopedia.flight.R.menu.menu_filter_reset, menu);
         }
         return true;
     }
@@ -131,7 +130,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_reset) {
+        if (id == com.tokopedia.flight.R.id.action_reset) {
             onResetClicked();
             return true;
         } else {
@@ -200,8 +199,8 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     public void replaceFragment(Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
-                .replace(R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
+                .setCustomAnimations(R.anim.flight_enter_from_right, R.anim.flight_exit_to_left, R.anim.flight_enter_from_left, R.anim.flight_exit_to_right)
+                .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, tag).addToBackStack(tag).commit();
         setUpTitleByTag(tag);
     }
 
@@ -211,16 +210,16 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             isCloseButton = true;
             toolbar.setTitle(getTitle());
         } else if (FlightFilterDepartureFragment.TAG.equals(tag)) {
-            toolbar.setTitle(getString(R.string.flight_search_filter_departure_time));
+            toolbar.setTitle(getString(com.tokopedia.flight.R.string.flight_search_filter_departure_time));
             isCloseButton = false;
         } else if (FlightFilterTransitFragment.TAG.equals(tag)) {
-            toolbar.setTitle(getString(R.string.transit));
+            toolbar.setTitle(getString(com.tokopedia.flight.R.string.transit));
             isCloseButton = false;
         } else if (FlightFilterAirlineFragment.TAG.equals(tag)) {
-            toolbar.setTitle(getString(R.string.airline));
+            toolbar.setTitle(getString(com.tokopedia.flight.R.string.airline));
             isCloseButton = false;
         } else if (FlightFilterRefundableFragment.TAG.equals(tag)) {
-            toolbar.setTitle(getString(R.string.refundable_policy));
+            toolbar.setTitle(getString(com.tokopedia.flight.R.string.refundable_policy));
             isCloseButton = false;
         }
         updateToolbarBackIcon();
@@ -242,7 +241,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_flight_filter;
+        return com.tokopedia.flight.R.layout.activity_flight_filter;
     }
 
     @Override
@@ -324,9 +323,9 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     private void updateButtonFilter(int count) {
         if (currentTag.equals(getTagFragment())) {
-            buttonFilter.setText(getString(R.string.flight_there_has_x_flights, count));
+            buttonFilter.setText(getString(com.tokopedia.flight.R.string.flight_there_has_x_flights, count));
         } else {
-            buttonFilter.setText(getString(R.string.flight_save_x_flights, count));
+            buttonFilter.setText(getString(com.tokopedia.flight.R.string.flight_save_x_flights, count));
         }
     }
 

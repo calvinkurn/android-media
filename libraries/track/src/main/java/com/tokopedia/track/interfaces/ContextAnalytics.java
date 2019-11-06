@@ -97,15 +97,4 @@ public abstract class ContextAnalytics implements Analytics {
                                     String shopId, String shopType, String userId,
                                     @Nullable Map<String, Object> customDimension) { }
 
-    public void pushGeneralGtmV5(String event, String category, String action, String label){}
-
-    public void pushGeneralGtmV5(Map<String, Object> params){}
-
-    public void pushClickEECommerce(Bundle bundle){}
-
-    public void pushEECommerce(String param, Bundle bundle){}
-
-    public void sendScreenV5(String screenName) {}
-
-    public void sendScreenV5(String screenName, Map<String, String> additionalParams) {}
 }

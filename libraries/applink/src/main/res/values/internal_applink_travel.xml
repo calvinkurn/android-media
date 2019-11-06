@@ -9,15 +9,27 @@
 
     <string name="host_travel_entertainment" translatable="false">travelentertainment</string>
     <string name="host_hotel" translatable="false">hotel</string>
+    <string name="host_flight" translatable="false">pesawat</string>
 
     <string name="path_hotel_dashboard" translatable="false">/dashboard</string>
+    <string name="path_hotel_search_result" translatable="false">/result</string>
     <string name="path_hotel_detail" translatable="false">/detail/.*\</string>
     <string name="path_hotel_booking" translatable="false">/booking/.*\</string>
     <string name="path_hotel_order" translatable="false">/order</string>
     <string name="path_hotel_order_detail" translatable="false">/order/.*\</string>
-    <string name="title_hotel">Hotel</string>
-    <string name="title_travel_homepage">Travel &amp; Entertainment</string>
 
     <string name="path_travel_entertainment_home" translatable="false">/home</string>
+
+    <string name="path_flight_phone_verification" translatable="false">/phone-verification</string>
+
+    <string name="title_hotel">Hotel</string>
+    <string name="title_flight">Tiket Pesawat</string>
+    <string name="title_travel_homepage">Travel &amp; Entertainment</string>
+
+    <string name="path_flight_dashboard" translatable="false">/dashboard</string>
+    <string name="path_flight_search" translatable="false">/search</string>
+    <string name="path_flight_order_list" translatable="false">/order</string>
+    <string name="path_flight_order_detail" translatable="false">/order/.*\</string>
+    <string name="path_flight_cancel" translatable="false">/cancel</string>
 
 </resources>

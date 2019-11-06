@@ -1,9 +1,9 @@
 package com.tokopedia.flight.cancellation.domain.mapper;
 
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 
 import java.util.ArrayList;
 import java.util.HashMap;
