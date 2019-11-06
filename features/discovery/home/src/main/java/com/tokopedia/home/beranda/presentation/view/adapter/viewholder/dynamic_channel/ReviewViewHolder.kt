@@ -59,8 +59,9 @@ class ReviewViewHolder(
         ImageHandler.LoadImage(itemView.review_card_bg, cardBg)
         itemView.review_card_content_container.setOnClickListener{
             HomePageTracking.homeReviewOnBlankSpaceClickTracker("", "")
+            reviewListener.onReviewClick(adapterPosition, 5, element.suggestedProductReview.suggestedProductReview.linkURL)
         }
-        itemView.animated_review.init()
+        itemView.animated_review.resetStars(false)
         itemView.animated_review.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
                 HomePageTracking.homeReviewOnRatingChangedTracker("", "", position + 1)

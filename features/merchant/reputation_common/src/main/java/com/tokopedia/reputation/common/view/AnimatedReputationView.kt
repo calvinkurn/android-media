@@ -65,8 +65,6 @@ class AnimatedReputationView @JvmOverloads constructor(
         } else {
             txt_desc_status.visibility = View.GONE
         }
-
-        init()
     }
 
     private val normalAnimation = object : Runnable {
@@ -141,9 +139,15 @@ class AnimatedReputationView @JvmOverloads constructor(
     }
 
     //Reset stars
-    fun init() {
+    fun resetStars(shouldRedraw: Boolean = false) {
+        clickAt = 0
+        lastReview = 0
         listOfStarsView.forEach {
-            it.reviewView.init()
+            if (shouldRedraw) {
+                it.reviewView.init()
+            } else {
+                it.reviewView.resetStars()
+            }
             it.isAnimated = false
         }
     }

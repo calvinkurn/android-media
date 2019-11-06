@@ -195,10 +195,6 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         return POSITION_UNDEFINED;
     }
 
-    public void resetReviewStars(){
-        notifyItemChanged(hasReview());
-    }
-
     private int removeGeolocation() {
         for(int i=0; i<visitables.size(); i++){
             if(visitables.get(i) instanceof GeolocationPromptViewModel){

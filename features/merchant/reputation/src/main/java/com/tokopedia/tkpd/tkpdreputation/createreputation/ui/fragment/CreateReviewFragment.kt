@@ -163,7 +163,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         anonymous_text.text = generateAnonymousText()
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
-        animatedReviewPicker.init()
+        animatedReviewPicker.resetStars(true)
         animatedReviewPicker.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
                 reviewClickAt = position

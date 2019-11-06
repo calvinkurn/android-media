@@ -25,6 +25,12 @@ class AnimatedStarsView @JvmOverloads constructor(
         setImageDrawable(normalAnimation)
     }
 
+    fun resetStars() {
+        if (!showingNormalAnim) {
+            morph()
+        }
+    }
+
     fun morph() {
         val drawable = if (showingNormalAnim) normalAnimation else reverseAnimation
         setImageDrawable(drawable)
