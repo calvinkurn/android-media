@@ -390,7 +390,8 @@ open class DynamicPostViewHolder(v: View,
         when {
             like.isChecked -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
-                itemView.likeText.text = like.fmt
+                val likeCount = if (like.fmt.isEmpty()) like.value.toString() else like.fmt
+                itemView.likeText.text = likeCount
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeText.context, R.color.tkpd_main_green)
                 )
