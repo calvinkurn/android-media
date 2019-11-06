@@ -494,16 +494,20 @@ class OfficialHomeFragment :
     }
 
     override fun mixImageImpression(channelData: Channel) {
-        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+        val impressionTag = "Images Impression"
+
+        if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
             tracking?.dynamicChannelMixCardImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id)
+            sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
     }
 
     override fun mixBannerImpression(channelData: Channel) {
-        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+        val impressionTag = "Banner Impression"
+
+        if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
             tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id)
+            sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
     }
 }
