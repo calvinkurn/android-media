@@ -396,14 +396,14 @@ open class DynamicPostViewHolder(v: View,
                 )
             }
             like.value > 0 -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
+                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 itemView.likeText.text = like.fmt
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeText.context, R.color.black_54)
                 )
             }
             else -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
+                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 itemView.likeText.setText(R.string.kol_action_like)
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
