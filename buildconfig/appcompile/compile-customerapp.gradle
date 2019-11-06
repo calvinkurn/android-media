@@ -42,6 +42,7 @@ include ":features:digital:digital_homepage"
 include "features:discovery:category_common"
 include "features:discovery:discovery_common"
 include 'features:discovery:productcard'
+include 'features:discovery:carousel_productcard'
 include 'features:discovery:filter'
 include 'features:discovery:image_search'
 include 'features:discovery:similarsearch'

@@ -120,7 +120,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private LinearLayout merchantStatusLL;
     private long CHECK_VISIBILITY_DELAY = 700;
 
-    private ConstraintLayout layoutTicker;
+    private View layoutTicker;
     private TextView tvTickerMessage;
     private ImageView ivDismissTicker;
     private int mclLateCount = 0;
