@@ -680,7 +680,7 @@ public class GTMAnalytics extends ContextAnalytics {
             return GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
+            return "NO_GA_ID";
         }
     }
 
