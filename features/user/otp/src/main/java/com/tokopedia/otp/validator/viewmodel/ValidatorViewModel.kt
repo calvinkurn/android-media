@@ -178,10 +178,6 @@ class ValidatorViewModel @Inject constructor(
     }
 
     companion object {
-        const val OTP_TYPE_ACTIVATE = "142"
-        const val OTP_TYPE_REGISTER = "126"
-
         const val MODE_EMAIL = "email"
-        const val MODE_PHONE = "email"
     }
 }

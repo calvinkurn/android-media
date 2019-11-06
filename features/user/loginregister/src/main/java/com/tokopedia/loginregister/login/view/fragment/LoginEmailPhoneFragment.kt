@@ -1260,8 +1260,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         const val REQUEST_ADD_PIN = 117
         private val REQUEST_OTP_VALIDATE = 118
         private val REQUEST_PENDING_OTP_VALIDATE = 119
-        private const val OTP_TYPE_REGISTER = "126"
-        private const val OTP_TYPE_ACTIVATE = "142"
 
         const val PHONE_TYPE = "phone"
         const val EMAIL_TYPE = "email"
