@@ -13,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,13 +84,11 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
-import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.HomeMainToolbar;
-import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
@@ -449,10 +449,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
-                    ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
-                }
-
                 if (presenter != null) {
                     presenter.getSearchHint();
                     presenter.getHomeData();
@@ -1292,39 +1288,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private ArrayList<ShowCaseObject> buildShowCase() {
-        if (homeMainToolbar == null)
-            return null;
-        ArrayList<ShowCaseObject> list = new ArrayList<>();
-        int statusBarHeight = ViewHelper.getStatusBarHeight(getActivity());
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            statusBarHeight = 0;
-        }
-        list.add(new ShowCaseObject(homeMainToolbar.getBtnNotification(),
-                getString(R.string.sc_notif_title),
-                getString(R.string.sc_notif_desc))
-                .withCustomTarget(new int[]{
-                        homeMainToolbar.getBtnNotification().getLeft(),
-                        homeMainToolbar.getBtnNotification().getTop()
-                                + statusBarHeight,
-                        homeMainToolbar.getBtnNotification().getRight(),
-                        homeMainToolbar.getBtnNotification().getBottom()
-                                + statusBarHeight
-                }));
-        list.add(new ShowCaseObject(homeMainToolbar.getBtnWishlist(),
-                getString(R.string.sc_wishlist_title),
-                getString(R.string.sc_wishlist_desc))
-                .withCustomTarget(new int[]{
-                        homeMainToolbar.getBtnWishlist().getLeft(),
-                        homeMainToolbar.getBtnWishlist().getTop()
-                                + statusBarHeight,
-                        homeMainToolbar.getBtnWishlist().getRight(),
-                        homeMainToolbar.getBtnWishlist().getBottom()
-                                + statusBarHeight
-                }));
-        return list;
-    }
-
     private boolean isUserLoggedIn() {
         return userSession.isLoggedIn();
     }
@@ -1525,7 +1488,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
         this.tickerDetail = tickerDetail;
         updateStickyState();
-        stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
     }
 
     @Override
@@ -1555,6 +1517,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (stickyLoginView.isShowing()) {
             positionSticky = stickyLoginView.getLocation();
+            stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
         }
 
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
@@ -1578,6 +1541,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         } else {
             params.setMargins(0, 0, 0, 0);
         }
+    }
+
+    @Override
+    public int getWindowWidth() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        return width;
     }
 
     @Override
