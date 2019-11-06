@@ -141,7 +141,7 @@
     <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="something_wrong_happened">Terjadi Kesalahan</string>
     <string name="title_dropoff_picker">Pilih lokasi Drop Off</string>
-    <string name="searchbar_dropoff_hint">Cari Tempat Drop Off...</string>
+    <string name="searchbar_dropoff_hint">Cari Tempat Drop Off…</string>
     <string name="gps_empty_title">GPS tidak terdeteksi!</string>
     <string name="gps_empty_desc">Cari otomatis dengan aktifkan GPS atau masukkan kata kunci lokasi</string>
     <string name="gps_empty_action">Aktifkan GPS</string>
@@ -155,6 +155,7 @@
     <string name="button_title_change_keyword">Ubah Kata Kunci</string>
     <string name="no_dropoff_found_desc">Tidak ada titik Drop Off dalam radius</string>
     <string name="no_dropoff_found_title">Tidak menemukan titik Drop Off terdekat</string>
+    <string name="title_autocomplete_page">Cari Lokasi</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

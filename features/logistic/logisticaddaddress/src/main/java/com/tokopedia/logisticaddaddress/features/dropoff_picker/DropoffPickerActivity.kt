@@ -33,6 +33,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
+import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteActivity
 import com.tokopedia.logisticaddaddress.features.dropoff_picker.adapter.NearbyStoreAdapter
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
@@ -96,6 +97,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mButtonGrant = findViewById(R.id.button_grant_permission)
         mButtonGrant.setOnClickListener {
             checkForPermission()
+        }
+        mSearchInput.setOnClickListener {
+            val intent = Intent(this@DropoffPickerActivity, AutoCompleteActivity::class.java)
+            startActivity(intent)
         }
         mSearchText = mSearchInput.searchTextView
         mSearchText.isCursorVisible = false
