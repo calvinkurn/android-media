@@ -38,6 +38,15 @@ class BannedProductAttachmentViewHolder(itemView: View?)
     private fun bindWarning(viewModel: BannedProductAttachmentViewModel) {
         val message = viewModel.getBannedWarningMessage()
         warning?.setTextDescription(message)
+
+        // Workaround for ticker not wrapping multiline content correctly
+        warning?.post {
+            warning?.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            warning?.requestLayout()
+        }
     }
 
     private fun bindImage(viewModel: BannedProductAttachmentViewModel) {
