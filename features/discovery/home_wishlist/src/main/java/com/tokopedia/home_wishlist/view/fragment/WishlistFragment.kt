@@ -10,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -23,18 +21,18 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.home_wishlist.R
+import com.tokopedia.home_wishlist.analytics.WishlistTracking
 import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
+import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.util.Status
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.custom.CustomSearchView
-import com.tokopedia.home_wishlist.view.ext.isEmptyWishlist
-import com.tokopedia.home_wishlist.view.ext.isErrorWishlist
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_PRODUCT_ID
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_UPDATED_POSITION
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.REQUEST_FROM_PDP
@@ -250,10 +248,19 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     override fun onProductClick(dataModel: WishlistDataModel, position: Int) {
-        if(dataModel is WishlistItemDataModel){
-            goToPDP(dataModel.productItem.id, position)
-        } else if(dataModel is RecommendationCarouselItemDataModel){
-            goToPDP(dataModel.recommendationItem.productId.toString(), position)
+        when (dataModel) {
+            is WishlistItemDataModel -> {
+                WishlistTracking.productClick(dataModel.productItem, position.toString())
+                goToPDP(dataModel.productItem.id, position)
+            }
+            is RecommendationCarouselItemDataModel -> {
+                WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
+                goToPDP(dataModel.recommendationItem.productId.toString(), position)
+            }
+            is RecommendationItemDataModel -> {
+                WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
+                goToPDP(dataModel.recommendationItem.productId.toString(), position)
+            }
         }
     }
 
@@ -282,16 +289,25 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         viewModel.setRecommendationItemWishlist(parentPosition, childPosition, wishlistStatus)
     }
 
-    override fun onProductImpression(dataModel: WishlistDataModel) {
-        // Add tracker
+    override fun onProductImpression(dataModel: WishlistDataModel, position: Int) {
+        when (dataModel) {
+            is WishlistItemDataModel -> WishlistTracking.impressionProduct(trackingQueue, dataModel.productItem, position.toString())
+            is RecommendationItemDataModel -> WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
+            is RecommendationCarouselItemDataModel -> WishlistTracking.impressionRecommendation(trackingQueue, dataModel.recommendationItem, position)
+        }
     }
 
     private fun handleMessageAction(action: Event<BaseActionData>){
         if(action.peekContent().isSuccess){
             when(action.peekContent()){
-                is AddToCartActionData -> showToaster(getString(R.string.wishlist_success_atc))
+                is AddToCartActionData -> {
+                    showToaster(getString(R.string.wishlist_success_atc))
+//                    WishlistTracking.clickBuy()
+                }
                 is AddWishlistRecommendationData -> showToaster(getString(R.string.wishlist_success_add))
-                is BulkRemoveWishlistActionData -> showToaster(getString(R.string.wishlist_success_remove))
+                is BulkRemoveWishlistActionData -> {
+                    showToaster(getString(R.string.wishlist_success_remove))
+                }
                 is RemoveWishlistActionData -> showToaster(getString(R.string.wishlist_success_remove))
                 is RemoveWishlistRecommendationData -> showToaster(getString(R.string.wishlist_success_remove))
             }

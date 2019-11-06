@@ -72,6 +72,9 @@ data class WishlistItem(
     @SerializedName("price")
     @Expose
     val price: String  = "",
+    @SerializedName("category_breadcrumb")
+    @Expose
+    val categoryBreadcrumb: String = "",
     @SerializedName("rating")
     @Expose
     val rating: Int  = -1,
