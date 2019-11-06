@@ -66,7 +66,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 val view = LayoutInflater.from(mContext).inflate(R.layout.pdp_installment_data_detail_layout, null, false)
 
                 val monthCountTv = view.findViewById<TextView>(R.id.tv_month_count)
-                monthCountTv.text = String.format(mContext!!.getString(R.string.pdp_installment_price_heading), installmentData.creditCardInstallmentTerm)
+                monthCountTv.text = String.format(mContext.getString(R.string.pdp_installment_price_heading), installmentData.creditCardInstallmentTerm)
 
                 val tvInstallmentPriceExt = view.findViewById<TextView>(R.id.tv_installment_price_ext)
                 val priceTv = view.findViewById<TextView>(R.id.tv_installment_price)

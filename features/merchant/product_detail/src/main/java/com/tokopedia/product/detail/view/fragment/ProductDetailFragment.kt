@@ -1239,7 +1239,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
         val bundleData = Bundle()
         bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
-        bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price!!)
+        bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price ?: 0f)
         bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
         pdpInstallmentBottomSheet.arguments = bundleData
         pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")

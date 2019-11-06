@@ -16,8 +16,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/pdp_ic_homecredit" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/iv_installment_toggle"

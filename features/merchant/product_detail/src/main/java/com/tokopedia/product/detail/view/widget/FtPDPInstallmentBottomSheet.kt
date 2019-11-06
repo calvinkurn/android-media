@@ -110,7 +110,9 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
             val params = (inflatedView.getParent() as View).layoutParams
             inflatedView.measure(0, 0)
             val displayMetrics = DisplayMetrics()
-            activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            activity?.let {
+                it.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            }
             val screenHeight = displayMetrics.heightPixels
 
             if (bottomSheetBehavior != null)
