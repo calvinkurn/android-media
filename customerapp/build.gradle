@@ -84,7 +84,18 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
+project.ext {
+    defaultVersionCode = 341001101;
+    defaultVersionName = "3.41";
+    react = [
+            nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
+            enableHermes: true,
+    ]
+}
+
 def hermesPath = "../reactnative-apps/node_modules/hermesvm/android/";
+def jscFlavor = 'org.webkit:android-jsc:+'
+def enableHermes = project.ext.react.get("enableHermes", false);
 
 buildscript {
     repositories {
@@ -108,14 +119,6 @@ buildscript {
 
 
 android {
-
-    project.ext {
-        defaultVersionCode = 341001101;
-        defaultVersionName = "3.41";
-        react = [
-                nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
-        ]
-    }
 
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
@@ -483,13 +486,13 @@ dependencies {
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.expandableTextview
     implementation project(rootProject.ext.libraries.cameraview)
-    implementation (rootProject.ext.miscDependencies.flexBoxLayout){
+    implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.miscDependencies.ucrop){
+    implementation(rootProject.ext.miscDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.miscDependencies.imagecropper){
+    implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.exoPlayerCore
@@ -503,10 +506,10 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    implementation (rootProject.ext.analyticsDependencies.branch) {
+    implementation(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
@@ -590,8 +593,13 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
 
-    debugImplementation files(hermesPath + "hermes-debug.aar")
-    releaseImplementation files(hermesPath + "hermes-release.aar")
+
+    if (enableHermes) {
+        debugImplementation files(hermesPath + "hermes-debug.aar")
+        releaseImplementation files(hermesPath + "hermes-release.aar")
+    } else {
+        implementation jscFlavor
+    }
 }
 
 
