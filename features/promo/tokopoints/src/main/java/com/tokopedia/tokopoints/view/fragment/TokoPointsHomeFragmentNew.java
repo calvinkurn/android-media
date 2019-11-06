@@ -867,7 +867,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         pager.setAdapter(new SectionTickerPagerAdapter(getContext(), content.getLayoutTickerAttr().getTickerList()));
         CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator_ticker);
         View hideTickerView = getView().findViewById(R.id.ic_close_ticker);
-        hideTickerView.setOnClickListener(v -> tickerContainer.setVisibility(View.GONE));
+        hideTickerView.setVisibility(View.GONE);
 
         if (content.getLayoutTickerAttr().getTickerList().size() > 1) {
             //adding bottom dots(Page Indicator)
