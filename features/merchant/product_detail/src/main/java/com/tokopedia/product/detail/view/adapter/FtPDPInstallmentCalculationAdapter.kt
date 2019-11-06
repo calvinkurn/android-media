@@ -107,21 +107,26 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 vHolder.llInstallmentContainer.hide()
             }
 
+            var expandedPosition = -1
+
             vHolder.rlMainContainer.setOnClickListener {
+                item.expandLayout = !item.expandLayout
+
                 if (item.expandLayout) {
-                    vHolder.ivInstallmentToggle.animate().rotation(0f).duration = 300
-                    vHolder.llInstallmentContainer.hide()
-                } else {
                     vHolder.ivInstallmentToggle.animate().rotation(180f).duration = 300
                     vHolder.llInstallmentContainer.show()
+                } else {
+                    vHolder.ivInstallmentToggle.animate().rotation(0f).duration = 300
+                    vHolder.llInstallmentContainer.hide()
                 }
-                item.expandLayout = !item.expandLayout
+
                 for (index in 0 until partnerDataList.size) {
-                    if (position != index && item.expandLayout == partnerDataList[index].expandLayout) {
-                        partnerDataList[index].expandLayout = !item.expandLayout
+                    if (expandedPosition != position && expandedPosition == index) {
+                        partnerDataList[index].expandLayout = false
                         notifyItemChanged(index)
                     }
                 }
+                expandedPosition = position
             }
 
             inflateInstructionListData(vHolder, position, mContext)
