@@ -152,6 +152,9 @@
     <string name="button_cancel">Batal</string>
     <string name="button_choose">Pilih</string>
     <string name="store_logo">Logo Tempat Ambil</string>
+    <string name="button_title_change_keyword">Ubah Kata Kunci</string>
+    <string name="no_dropoff_found_desc">Tidak ada titik Drop Off dalam radius</string>
+    <string name="no_dropoff_found_title">Tidak menemukan titik Drop Off terdekat</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

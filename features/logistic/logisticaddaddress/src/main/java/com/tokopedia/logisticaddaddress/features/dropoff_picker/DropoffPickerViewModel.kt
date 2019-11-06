@@ -36,10 +36,8 @@ class DropoffPickerViewModel
 
         getStoreUseCase.execute(
                 { response ->
-                    if (response.keroAddressStoreLocation.data.isNotEmpty()) {
-                        val successResponse = mapper.map(response)
-                        mStoreResponse.value = Success(successResponse)
-                    }
+                    val successResponse = mapper.map(response)
+                    mStoreResponse.value = Success(successResponse)
                 },
                 { error ->
                     mStoreResponse.value = Fail(error)

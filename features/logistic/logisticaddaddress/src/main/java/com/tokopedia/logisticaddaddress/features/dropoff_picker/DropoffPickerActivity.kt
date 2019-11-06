@@ -31,6 +31,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
+import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
+import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.adapter.NearbyStoreAdapter
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -66,10 +69,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mStoreDetail: LocationDetailBottomSheet
 
     @Inject
+    lateinit var dropoffMapper: GetStoreMapper
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-
     private val viewModel by lazy { viewModelProvider.get(DropoffPickerViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,7 +104,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mStoreDetail.setOnCancelClickListener { mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN }
         mStoreDetail.setOnOkClickListener { _, data ->
             val resultIntent = Intent().apply {
-                putExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION, data) }
+                val intentData = data?.let { dropoffMapper.mapToIntentModel(it) }
+                putExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION, intentData) }
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
         }
@@ -110,7 +115,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         rv.adapter = mNearbyAdapter
         mNearbyAdapter.setActionListener(object : NearbyStoreAdapter.ActionListener {
             override fun onItemClicked(view: View) {
-                showStoreDetail(view.tag as LocationDataModel)
+                showStoreDetail(view.tag as DropoffNearbyModel)
             }
         })
 
@@ -153,7 +158,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         }
         mMap?.setOnMarkerClickListener {
             val tag: Any? = it.tag
-            if (tag is LocationDataModel) {
+            if (tag is DropoffNearbyModel) {
                 showStoreDetail(tag)
             }
             true
@@ -262,6 +267,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_self_map_green)))
         mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        mNearbyAdapter.setStateLoading()
+        mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         viewModel.getStores("${latLng.latitude},${latLng.longitude}")
     }
 
@@ -289,7 +296,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mNoPermissionsView.visibility = View.GONE
     }
 
-    private fun showStoreDetail(datum: LocationDataModel) {
+    private fun showStoreDetail(datum: DropoffNearbyModel) {
         mMarkerList.forEach {
             val tag = it.tag
             if (tag is LocationDataModel) {
@@ -307,7 +314,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mDetailBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    private fun drawStoreLocations(data: List<LocationDataModel>) {
+    private fun drawStoreLocations(data: List<DropoffNearbyModel>) {
         mMarkerList.clear()
         for (datum in data) {
             val marker = mMap?.addMarker(MarkerOptions()
