@@ -18,17 +18,13 @@ class DigitalHomePageFavoriteViewHolder(itemView: View?, val onItemBindListener:
         val layoutManager = GridLayoutManager(itemView.context, FAVORITES_SPAN_COUNT)
         itemView.rv_digital_homepage_favorites.layoutManager = layoutManager
         if (element.isLoaded) {
-            if (element.data != null) {
-                itemView.visibility = View.VISIBLE
+            element.data?.section?.run {
                 itemView.digital_homepage_favorites_shimmering.hide()
                 itemView.digital_homepage_favorites_container.show()
-                itemView.digital_homepage_favorites_title.text = element.data.section.title
-                itemView.rv_digital_homepage_favorites.adapter = DigitalItemFavoriteAdapter(element.data.section.items, onItemBindListener)
-            } else {
-                itemView.visibility = View.GONE
+                itemView.digital_homepage_favorites_title.text = title
+                itemView.rv_digital_homepage_favorites.adapter = DigitalItemFavoriteAdapter(items, onItemBindListener)
             }
         } else {
-            itemView.visibility = View.VISIBLE
             itemView.digital_homepage_favorites_shimmering.show()
             itemView.digital_homepage_favorites_container.hide()
             onItemBindListener.onFavoritesItemDigitalBind(element.isLoadFromCloud)

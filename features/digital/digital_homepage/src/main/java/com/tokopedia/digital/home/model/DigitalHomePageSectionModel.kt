@@ -7,7 +7,7 @@ import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactor
 abstract class DigitalHomePageSectionModel(
         @SerializedName("rechargeSubHomePageSection")
         @Expose
-        val data: Data? = Data()) : DigitalHomePageItemModel() {
+        val data: Data? = null) : DigitalHomePageItemModel() {
 
     abstract override fun type(typeFactory: DigitalHomePageTypeFactory): Int
 

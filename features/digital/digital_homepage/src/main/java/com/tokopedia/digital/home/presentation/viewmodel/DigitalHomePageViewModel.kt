@@ -90,7 +90,12 @@ class DigitalHomePageViewModel  @Inject constructor(
             }.getSuccessData<DigitalHomePageFavoritesModel>()
             digitalHomePageList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[FAVORITES_ORDER] = data
+                if (data.data != null) {
+                    updatedList[FAVORITES_ORDER] = data
+                    updatedList[FAVORITES_ORDER].isEmpty = false
+                } else {
+                    updatedList[FAVORITES_ORDER].isEmpty = true
+                }
                 updatedList[FAVORITES_ORDER].isLoaded = true
                 updatedList[FAVORITES_ORDER].isSuccess = true
                 digitalHomePageList.value = updatedList
@@ -100,6 +105,7 @@ class DigitalHomePageViewModel  @Inject constructor(
                 val updatedList = it.toMutableList()
                 updatedList[FAVORITES_ORDER].isLoaded = true
                 updatedList[FAVORITES_ORDER].isSuccess = false
+                updatedList[FAVORITES_ORDER].isEmpty = false
                 digitalHomePageList.value = updatedList
                 checkIfAllError()
             }
@@ -116,7 +122,12 @@ class DigitalHomePageViewModel  @Inject constructor(
 //            }.getSuccessData<DigitalHomePageTrustMarkModel>()
 //            digitalHomePageList.value?.let {
 //                val updatedList = it.toMutableList()
-//                updatedList[TRUST_MARK_ORDER] = data
+//                if (data.data != null) {
+//                    updatedList[TRUST_MARK_ORDER] = data
+//                    updatedList[TRUST_MARK_ORDER].isEmpty = false
+//                } else {
+//                    updatedList[TRUST_MARK_ORDER].isEmpty = true
+//                }
 //                updatedList[TRUST_MARK_ORDER].isLoaded = true
 //                updatedList[TRUST_MARK_ORDER].isSuccess = true
 //                digitalHomePageList.value = updatedList
@@ -131,7 +142,7 @@ class DigitalHomePageViewModel  @Inject constructor(
 //            }
 //        }
 //    }
-
+//
 //    fun getNewUserZoneList(rawQuery: String, isLoadFromCloud: Boolean) {
 //        val param = mapOf(SECTION_TYPE to NEW_USER_ZONE_PARAM)
 //        launchCatchError(block = {
@@ -142,7 +153,12 @@ class DigitalHomePageViewModel  @Inject constructor(
 //            }.getSuccessData<DigitalHomePageNewUserZoneModel>()
 //            digitalHomePageList.value?.let {
 //                val updatedList = it.toMutableList()
-//                updatedList[NEW_USER_ZONE_ORDER] = data
+//                if (data.data != null) {
+//                    updatedList[NEW_USER_ZONE_ORDER] = data
+//                    updatedList[NEW_USER_ZONE_ORDER].isEmpty = false
+//                } else {
+//                    updatedList[NEW_USER_ZONE_ORDER].isEmpty = true
+//                }
 //                updatedList[NEW_USER_ZONE_ORDER].isLoaded = true
 //                updatedList[NEW_USER_ZONE_ORDER].isSuccess = true
 //                digitalHomePageList.value = updatedList
@@ -157,7 +173,7 @@ class DigitalHomePageViewModel  @Inject constructor(
 //            }
 //        }
 //    }
-
+//
 //    fun getSpotlightList(rawQuery: String, isLoadFromCloud: Boolean) {
 //        val param = mapOf(SECTION_TYPE to SPOTLIGHT_PARAM)
 //        launchCatchError(block = {
@@ -168,7 +184,12 @@ class DigitalHomePageViewModel  @Inject constructor(
 //            }.getSuccessData<DigitalHomePageSpotlightModel>()
 //            digitalHomePageList.value?.let {
 //                val updatedList = it.toMutableList()
-//                updatedList[SPOTLIGHT_ORDER] = data
+//                if (data.data != null) {
+//                    updatedList[SPOTLIGHT_ORDER] = data
+//                    updatedList[SPOTLIGHT_ORDER].isEmpty = false
+//                } else {
+//                    updatedList[SPOTLIGHT_ORDER].isEmpty = true
+//                }
 //                updatedList[SPOTLIGHT_ORDER].isLoaded = true
 //                updatedList[SPOTLIGHT_ORDER].isSuccess = true
 //                digitalHomePageList.value = updatedList
@@ -196,7 +217,7 @@ class DigitalHomePageViewModel  @Inject constructor(
         digitalHomePageList.value?.let {
             var isSuccess = false
             for (item in it) {
-                if (item.isSuccess || !item.isLoaded) {
+                if (item == null || item.isSuccess || !item.isLoaded) {
                     isSuccess = true
                     break
                 }

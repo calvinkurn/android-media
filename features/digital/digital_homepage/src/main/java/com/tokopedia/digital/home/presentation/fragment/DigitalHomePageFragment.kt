@@ -157,7 +157,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_ORDER])?.let { categoryData ->
                     trackingUtil.eventCategoryImpression(categoryData)
                 }
-                renderList(this)
+                val list = this.filter { item -> !item.isEmpty }
+                renderList(list)
             }
         })
 
