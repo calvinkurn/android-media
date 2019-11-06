@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel;
@@ -34,6 +35,7 @@ import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -217,6 +219,9 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                             ));
                             HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
                             break;
+                        case DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER:
+                            list.add(mappingPlayChannel(channel, new HashMap<>(), homeData.isCache()));
+                            break;
                     }
                 }
             }
@@ -351,5 +356,11 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
             viewModel.setTrackingCombined(false);
         }
         return viewModel;
+    }
+
+    private HomeVisitable mappingPlayChannel(DynamicHomeChannel.Channels channel,
+                                             Map<String, Object> trackingData,
+                                             boolean isCache) {
+        return new PlayCardViewModel();
     }
 }
