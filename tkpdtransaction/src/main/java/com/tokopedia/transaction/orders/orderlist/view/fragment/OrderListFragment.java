@@ -701,6 +701,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
         this.selectedOrderId = order.id();
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
+                if(mOrderCategory.equals(OrderListContants.BELANJA))
+                    presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
+                else
+                    handleDefaultCase(actionButton);
+                break;
             case ACTION_SUBMIT_CANCELLATION:
             case ACTION_ASK_SELLER:
                 presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
@@ -713,27 +718,31 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 presenter.finishOrder(selectedOrderId, actionButtonUri);
                 break;
             default:
-                String newUri = actionButton.uri();
-                if (newUri.startsWith(KEY_URI)) {
-                    if (newUri.contains(KEY_URI_PARAMETER)) {
-                        Uri url = Uri.parse(newUri);
-                        String queryParameter = url.getQueryParameter(KEY_URI_PARAMETER) != null ? url.getQueryParameter(KEY_URI_PARAMETER):"";
-                        newUri = newUri.replace(queryParameter, "");
-                        newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
-                    }
-                    RouteManager.route(getActivity(), newUri);
-                } else if (!TextUtils.isEmpty(newUri)) {
-                    try {
-                        startActivity(((UnifiedOrderListRouter) getActivity()
-                                .getApplication()).getWebviewActivityWithIntent(getContext(),
-                                URLEncoder.encode(newUri, "UTF-8")));
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
+                handleDefaultCase(actionButton);
                 break;
         }
 
+    }
+
+    private void handleDefaultCase(ActionButton actionButton) {
+        String newUri = actionButton.uri();
+        if (newUri.startsWith(KEY_URI)) {
+            if (newUri.contains(KEY_URI_PARAMETER)) {
+                Uri url = Uri.parse(newUri);
+                String queryParameter = url.getQueryParameter(KEY_URI_PARAMETER) != null ? url.getQueryParameter(KEY_URI_PARAMETER):"";
+                newUri = newUri.replace(queryParameter, "");
+                newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
+            }
+            RouteManager.route(getActivity(), newUri);
+        } else if (!TextUtils.isEmpty(newUri)) {
+            try {
+                startActivity(((UnifiedOrderListRouter) getActivity()
+                        .getApplication()).getWebviewActivityWithIntent(getContext(),
+                        URLEncoder.encode(newUri, "UTF-8")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
