@@ -87,11 +87,13 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    fun clearMaps(activity: Activity) {
+    fun clearMaps(activity: Activity, removeSubscriber: Boolean = true) {
 
         mapOfJobs[activity]?.cancel()
         mapOfJobs.remove(activity)
-        mapOfDialogs[activity]?.first?.removeAutoApplyLiveDataObserver()
+        if (removeSubscriber) {
+            mapOfDialogs[activity]?.first?.removeAutoApplyLiveDataObserver()
+        }
         mapOfDialogs.remove(activity)
     }
 

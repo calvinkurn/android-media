@@ -164,12 +164,13 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         bottomSheet.setCustomContentView(view, "", true)
         bottomSheet.show()
         bottomSheet.setOnDismissListener {
-            if (!TextUtils.isEmpty(couponCodeAfterClaim) && shouldCallAutoApply) {
+            val canHitAutoApply = !TextUtils.isEmpty(couponCodeAfterClaim) && shouldCallAutoApply
+            if (canHitAutoApply) {
                 viewModel.autoApply(couponCodeAfterClaim!!)
             }
             IS_DISMISSED = true
             if (activityContext is Activity) {
-                subscriber.clearMaps(activityContext)
+                subscriber.clearMaps(activityContext, !canHitAutoApply)
             }
         }
         bottomSheetDialog = bottomSheet
