@@ -275,7 +275,7 @@ class HotlistNavAnalytics {
         val map = DataLayer.mapOf(
                 KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $hotlistName - filter hotlist",
-                KEY_EVENT_ACTION, "apply filter",
+                KEY_EVENT_ACTION, "click apply filter",
                 KEY_EVENT_LABEL, "$filterName-$filterValue",
                 KEY_LOGIN_TYPE, getLoginType(isLoggedIn)
         )
