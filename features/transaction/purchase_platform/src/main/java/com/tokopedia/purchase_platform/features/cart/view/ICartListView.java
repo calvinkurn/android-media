@@ -5,7 +5,7 @@ import android.app.Activity;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView;
 import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
 import com.tokopedia.purchase_platform.common.base.IBaseView;
@@ -54,7 +54,9 @@ public interface ICartListView extends IBaseView {
 
     List<CartItemData> getAllCartDataList();
 
-    void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllItem);
+    List<CartItemData> getAllAvailableCartDataList();
+
+    void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllItem, boolean unselectAllItem, boolean hasAvailableItems);
 
     void updateCashback(double cashback);
 
@@ -86,7 +88,7 @@ public interface ICartListView extends IBaseView {
 
     Promo generateCheckPromoFirstStepParam();
 
-    void showMerchantVoucherListBottomsheet(ShopGroupData shopGroupData);
+    void showMerchantVoucherListBottomsheet(ShopGroupAvailableData shopGroupAvailableData);
 
     void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
 

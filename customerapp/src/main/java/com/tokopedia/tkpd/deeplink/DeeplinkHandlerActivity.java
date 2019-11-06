@@ -54,8 +54,6 @@ import com.tokopedia.explore.applink.ExploreApplinkModule;
 import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
-import com.tokopedia.flight.applink.FlightApplinkModule;
-import com.tokopedia.flight.applink.FlightApplinkModuleLoader;
 import com.tokopedia.gamification.applink.GamificationApplinkModule;
 import com.tokopedia.gamification.applink.GamificationApplinkModuleLoader;
 import com.tokopedia.groupchat.common.applink.GroupChatApplinkModule;
@@ -122,8 +120,6 @@ import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
-import com.tokopedia.tokopoints.TokopointApplinkModule;
-import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
@@ -162,7 +158,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         DiscoveryApplinkModule.class,
         SessionApplinkModule.class,
         FeedDeeplinkModule.class,
-        FlightApplinkModule.class,
         InstantDebitBcaApplinkModule.class,
         DigitalBrowseApplinkModule.class,
         ReputationApplinkModule.class,
@@ -180,7 +175,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         TrackingAppLinkModule.class,
         HowtopayApplinkModule.class,
         TopChatAppLinkModule.class,
-        TokopointApplinkModule.class,
         NotifCenterApplinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
@@ -225,7 +219,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new DiscoveryApplinkModuleLoader(),
                     new SessionApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
-                    new FlightApplinkModuleLoader(),
                     new InstantDebitBcaApplinkModuleLoader(),
                     new DigitalBrowseApplinkModuleLoader(),
                     new ReputationApplinkModuleLoader(),
@@ -242,7 +235,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new TrackingAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
                     new TopChatAppLinkModuleLoader(),
-                    new TokopointApplinkModuleLoader(),
                     new NotifCenterApplinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),

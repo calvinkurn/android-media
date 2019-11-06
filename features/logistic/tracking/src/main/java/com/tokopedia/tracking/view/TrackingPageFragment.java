@@ -296,6 +296,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                     tickerPagerAdapter.setPagerDescriptionClickEvent((charSequence, o) -> {
                         RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
                     });
+                    tickerInfoCourier.addPagerView(tickerPagerAdapter, tickerDataList);
 
                 } else {
                     AdditionalInfoUiModel additionalInfoUiModel = additionalInfoUiModelList.get(0);
