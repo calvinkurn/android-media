@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 
 class CarouselProductCardView: BaseCustomView {
 
@@ -142,6 +143,14 @@ class CarouselProductCardView: BaseCustomView {
             }
         }
         return contentHeight
+    }
+
+    fun setItemDecoration(itemDecoration: RecyclerView.ItemDecoration){
+        if(carouselProductCardRecyclerView?.itemDecorationCount == 0) carouselProductCardRecyclerView?.addItemDecoration(itemDecoration)
+    }
+
+    fun setSnapHelper(snapHelper: SnapHelper){
+        snapHelper.attachToRecyclerView(carouselProductCardRecyclerView)
     }
 
     private fun getSizeForEachSpan(maxWidth: Int, spanCount: Int) : Int {

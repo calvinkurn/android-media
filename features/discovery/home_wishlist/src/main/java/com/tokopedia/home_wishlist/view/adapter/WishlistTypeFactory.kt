@@ -1,7 +1,6 @@
 package com.tokopedia.home_wishlist.view.adapter
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.model.datamodel.*
 
