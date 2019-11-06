@@ -2,6 +2,7 @@ package com.tokopedia.home_wishlist.view.viewholder
 
 import android.os.Bundle
 import android.view.View
+import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
@@ -17,7 +18,7 @@ class WishlistItemViewHolder(
 ) : SmartAbstractViewHolder<WishlistItemDataModel>(view){
 
     private val productCardView: WishlistCardView by lazy { view.findViewById<WishlistCardView>(R.id.wishlist_item) }
-    private val checkBox: CheckboxUnify by lazy { view.findViewById<CheckboxUnify>(R.id.wishlist_checkbox) }
+    private val checkBox: CheckBox by lazy { view.findViewById<CheckBox>(R.id.wishlist_checkbox) }
 
     override fun bind(element: WishlistItemDataModel, listener: SmartListener) {
         productCardView.run {
@@ -39,7 +40,7 @@ class WishlistItemViewHolder(
                     )
             )
             productCardView.setAddToCartButtonVisible(true)
-            productCardView.setDeleteButtonVisible(true)
+            productCardView.setDeleteButtonVisible(!element.isOnBulkRemoveProgress)
 
             if(!element.productItem.available){
                 setOutOfStock()
@@ -92,6 +93,7 @@ class WishlistItemViewHolder(
             }
             if(bundle.containsKey("isOnBulkRemoveProgress")){
                 checkBox.visibility = if(bundle.getBoolean("isOnBulkRemoveProgress")) View.VISIBLE else View.GONE
+                productCardView.setDeleteButtonVisible(!bundle.getBoolean("isOnBulkRemoveProgress"))
             }
 
         }

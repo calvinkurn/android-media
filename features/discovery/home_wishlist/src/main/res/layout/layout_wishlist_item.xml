@@ -6,14 +6,16 @@
     android:layout_marginRight="@dimen/dp_8"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+    <CheckBox
         android:id="@+id/wishlist_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:checked="false"
+        />
     <com.tokopedia.home_wishlist.view.custom.WishlistCardView
         android:id="@+id/wishlist_item"
         android:layout_width="match_parent"

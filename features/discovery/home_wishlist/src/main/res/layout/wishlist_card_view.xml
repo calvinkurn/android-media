@@ -345,6 +345,8 @@
             android:textAllCaps="false"
             android:textColor="@color/orange_red"
             android:visibility="gone"
+            app:layout_goneMarginLeft="@dimen/dp_8"
+            app:layout_goneMarginStart="@dimen/dp_8"
             app:unifyButtonVariant="ghost"
             app:unifyButtonType="transaction"
             app:unifyButtonSize="small"
@@ -360,6 +362,8 @@
             android:layout_height="0dp"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_8"
             android:background="@drawable/productcard_module_bg_button_delete"
             android:clickable="true"
             android:focusable="true"
@@ -367,12 +371,14 @@
             android:padding="@dimen/dp_7"
             android:tint="@color/Neutral_N400"
             android:visibility="gone"
+            app:layout_goneMarginLeft="@dimen/dp_8"
+            app:layout_goneMarginStart="@dimen/dp_8"
             app:layout_constraintBottom_toBottomOf="@+id/textViewAddToCart"
             app:layout_constraintEnd_toStartOf="@+id/textViewAddToCart"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textViewAddToCart"
-            tools:visibility="visible">
+            tools:visibility="gone">
             <ImageView
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
