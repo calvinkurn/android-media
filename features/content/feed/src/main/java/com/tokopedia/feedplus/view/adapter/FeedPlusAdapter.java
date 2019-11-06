@@ -34,7 +34,7 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private boolean unsetListener;
     private OnLoadListener loadListener;
     private RecyclerView recyclerView;
-    private int itemTreshold = 4;
+    private int itemTreshold = 5;
 
     private EndlessScrollRecycleListener endlessScrollListener = new EndlessScrollRecycleListener() {
         @Override
