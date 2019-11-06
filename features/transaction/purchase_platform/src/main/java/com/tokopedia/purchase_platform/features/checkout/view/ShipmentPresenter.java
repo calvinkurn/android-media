@@ -319,9 +319,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setTickerAnnouncementHolderData(TickerAnnouncementHolderData tickerAnnouncementHolderData) {
         this.tickerAnnouncementHolderData = tickerAnnouncementHolderData;
-        if (tickerAnnouncementHolderData != null) {
-            analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
-        }
     }
 
     @Override
@@ -609,6 +606,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     new TickerAnnouncementHolderData(String.valueOf(cartShipmentAddressFormData.getTickerData().getId()),
                             cartShipmentAddressFormData.getTickerData().getMessage())
             );
+            analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
         }
 
         RecipientAddressModel newAddress = getView().getShipmentDataConverter()
