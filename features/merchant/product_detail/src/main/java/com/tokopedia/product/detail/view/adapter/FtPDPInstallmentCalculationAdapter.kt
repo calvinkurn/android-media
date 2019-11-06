@@ -4,10 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -152,6 +149,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
     }
 
     inner class InstallmentItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        internal val rlMainContainer: RelativeLayout = view.findViewById(R.id.ll_main_container)
         internal val tvInstallmentTitle: TextView = view.findViewById(R.id.tv_installment_detail_heading)
         internal val tvInstallmentDataHeading = view.findViewById<TextView>(R.id.tv_installment_data_heading)
         internal val ivInstallmentToggle: ImageView = view.findViewById(R.id.iv_installment_toggle)
@@ -165,7 +163,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
         private var expandLayout = true
 
         init {
-            ivInstallmentToggle.setOnClickListener {
+            rlMainContainer.setOnClickListener {
                 if (expandLayout) {
                     ivInstallmentToggle.animate().rotation(180f).duration = 300
                     llInstallmentContainer.show()

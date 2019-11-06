@@ -7,25 +7,37 @@
     android:paddingTop="@dimen/dp_8"
     android:paddingBottom="@dimen/dp_8">
 
-
-    <ImageView
-        android:id="@+id/iv_installment_main_icon"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_28"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <ImageView
-        android:id="@+id/iv_installment_toggle"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/ll_main_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_drop_down_grey_checkout_module" />
+        android:layout_marginTop="@dimen/dp_8"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_installment_main_icon"
+            android:layout_width="@dimen/dp_56"
+            android:layout_height="@dimen/dp_28"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/iv_installment_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/dp_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_alignBaseline="@+id/iv_installment_main_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_drop_down_grey_checkout_module" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/ll_row_container"
@@ -36,7 +48,7 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_installment_main_icon">
+        app:layout_constraintTop_toBottomOf="@+id/ll_main_container">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_installment_detail_heading"

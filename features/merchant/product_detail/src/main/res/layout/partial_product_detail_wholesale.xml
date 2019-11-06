@@ -75,8 +75,8 @@
 
     <ImageView
         android:id="@+id/iv_ovo_installment_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_28"
         android:layout_gravity="center"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
