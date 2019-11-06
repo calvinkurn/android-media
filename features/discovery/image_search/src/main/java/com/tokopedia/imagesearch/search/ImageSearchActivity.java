@@ -464,6 +464,8 @@ public class ImageSearchActivity extends BaseActivity
 
         if (requestCode == REQUEST_CODE_IMAGE) {
             handleResultFromImagePicker(resultCode, data);
+        } else {
+            onActivityResultBottomSheet(requestCode, resultCode, data);
         }
     }
 

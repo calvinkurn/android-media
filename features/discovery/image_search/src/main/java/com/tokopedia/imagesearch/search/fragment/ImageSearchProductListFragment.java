@@ -209,20 +209,13 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         bindView(view);
         setupAdapter();
         setupListener();
+        setupSearchNavigation();
         initSwipeToRefresh(view);
         performImageSearch();
     }
 
     private void performImageSearch() {
         presenter.requestImageSearch(imagePath);
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && getView() != null) {
-            setupSearchNavigation();
-        }
     }
 
     protected void setupSearchNavigation() {
