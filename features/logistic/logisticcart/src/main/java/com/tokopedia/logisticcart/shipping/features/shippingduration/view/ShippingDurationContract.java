@@ -44,7 +44,8 @@ public interface ShippingDurationContract {
         void loadCourierRecommendation(ShipmentDetailData shipmentDetailData, int selectedServiceId,
                                        List<ShopShipment> shopShipmentList, int codHistory,
                                        boolean isCorner, boolean isLeasing, String pslCode,
-                                       List<Product> products, String cartString);
+                                       List<Product> products, String cartString, boolean isTradeInDropOff,
+                                       RecipientAddressModel recipientAddressModel);
 
         void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner, boolean isLeasing);
 

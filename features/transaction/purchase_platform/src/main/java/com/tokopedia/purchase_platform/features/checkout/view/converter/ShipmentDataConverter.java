@@ -45,14 +45,16 @@ public class ShipmentDataConverter {
         if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
             UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
             boolean isTradeIn = false;
+            boolean isTradeInDropOffEnable = false;
             if (cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop() != null &&
                     cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop().size() > 0) {
                 for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
                     if (groupShop.getProducts() != null && groupShop.getProducts().size() > 0) {
                         boolean foundData = false;
                         for (Product product : groupShop.getProducts()) {
-                            if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+                            if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
                                 isTradeIn = true;
+                                isTradeInDropOffEnable = product.getTradeInInfoData().isDropOffEnable();
                                 foundData = true;
                                 break;
                             }
@@ -61,7 +63,7 @@ public class ShipmentDataConverter {
                     }
                 }
             }
-            return createRecipientAddressModel(userAddress, isTradeIn);
+            return createRecipientAddressModel(userAddress, isTradeIn, isTradeInDropOffEnable);
         }
         return null;
     }
@@ -69,7 +71,7 @@ public class ShipmentDataConverter {
     public RecipientAddressModel getRecipientAddressModel(UserAddress userAddress) {
         // Trade in is only available on OCS.
         // OCS is not available to send to multiple address
-        return createRecipientAddressModel(userAddress, false);
+        return createRecipientAddressModel(userAddress, false, false);
     }
 
     public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -81,7 +83,7 @@ public class ShipmentDataConverter {
     }
 
     @NonNull
-    private RecipientAddressModel createRecipientAddressModel(UserAddress userAddress, boolean isTradeIn) {
+    private RecipientAddressModel createRecipientAddressModel(UserAddress userAddress, boolean isTradeIn, boolean isTradeInDropOffEnable) {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
         recipientAddress.setId(String.valueOf(userAddress.getAddressId()));
@@ -107,7 +109,13 @@ public class ShipmentDataConverter {
         recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
         recipientAddress.setCornerId(String.valueOf(userAddress.getCornerId()));
         recipientAddress.setTradeIn(isTradeIn);
+        recipientAddress.setTradeInDropOffEnable(isTradeInDropOffEnable);
         recipientAddress.setCornerAddress(userAddress.isCorner());
+
+        // Todo : Remove this mock data
+        recipientAddress.setTradeIn(true);
+        recipientAddress.setDisableMultipleAddress(true);
+        recipientAddress.setTradeInDropOffEnable(true);
 
         return recipientAddress;
     }
@@ -131,8 +139,8 @@ public class ShipmentDataConverter {
 
 
                     if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
-                        if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders() != null) {
-                            for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
+                        if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList() != null) {
+                            for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList()) {
                                 if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
                                     if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
                                         shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
@@ -172,8 +180,8 @@ public class ShipmentDataConverter {
                         .get(0).getUserAddress().getAddressId());
 
                 if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
-                    if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders() != null) {
-                        for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
+                    if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList() != null) {
+                        for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList()) {
                             if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
                                 if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
                                     shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
@@ -347,10 +355,10 @@ public class ShipmentDataConverter {
         cartItemModel.setFreeShipping(product.isFreeShipping());
         cartItemModel.setFreeShippingBadgeUrl(product.getFreeShippingBadgeUrl());
 
-        if (product.getTradeInInfo() != null && product.getTradeInInfo().isValidTradeIn()) {
+        if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
             cartItemModel.setValidTradeIn(true);
-            cartItemModel.setOldDevicePrice(product.getTradeInInfo().getOldDevicePrice());
-            cartItemModel.setNewDevicePrice(product.getTradeInInfo().getNewDevicePrice());
+            cartItemModel.setOldDevicePrice(product.getTradeInInfoData().getOldDevicePrice());
+            cartItemModel.setNewDevicePrice(product.getTradeInInfoData().getNewDevicePrice());
         }
 
         if (product.getPurchaseProtectionPlanData() != null) {

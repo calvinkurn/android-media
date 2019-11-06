@@ -17,6 +17,7 @@ public class ShipmentDetailData implements Parcelable {
     private ShipmentCartData shipmentCartData;
     private ShipmentItemData selectedShipment;
     private CourierItemData selectedCourier;
+    private CourierItemData selectedCourierTradeInDropOff;
     private Boolean useInsurance;
     private boolean usePartialOrder;
     private Boolean useDropshipper;
@@ -31,6 +32,7 @@ public class ShipmentDetailData implements Parcelable {
     private int addressId;
     private boolean preorder;
     private boolean isTradein;
+    private boolean isTradeInDropOff;
     private Boolean isOrderPriority;
 
     public ShipmentDetailData() {
@@ -43,6 +45,7 @@ public class ShipmentDetailData implements Parcelable {
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         selectedShipment = in.readParcelable(ShipmentItemData.class.getClassLoader());
         selectedCourier = in.readParcelable(CourierItemData.class.getClassLoader());
+        selectedCourierTradeInDropOff = in.readParcelable(CourierItemData.class.getClassLoader());
         byte tmpUseInsurance = in.readByte();
         useInsurance = tmpUseInsurance == 0 ? null : tmpUseInsurance == 1;
         usePartialOrder = in.readByte() != 0;
@@ -59,6 +62,7 @@ public class ShipmentDetailData implements Parcelable {
         addressId = in.readInt();
         preorder = in.readByte() != 0;
         isTradein = in.readByte() != 0;
+        isTradeInDropOff = in.readByte() != 0;
         byte tmpIsOrderPriority = in.readByte();
         isOrderPriority = tmpIsOrderPriority ==0 ? null : tmpIsOrderPriority ==1;
     }
@@ -235,12 +239,28 @@ public class ShipmentDetailData implements Parcelable {
         isTradein = tradein;
     }
 
+    public boolean isTradeInDropOff() {
+        return isTradeInDropOff;
+    }
+
+    public void setTradeInDropOff(boolean tradeInDropOff) {
+        isTradeInDropOff = tradeInDropOff;
+    }
+
     public Boolean isOrderPriority() {
         return isOrderPriority;
     }
 
     public void setOrderPriority(Boolean orderPriority) {
         this.isOrderPriority = orderPriority;
+    }
+
+    public CourierItemData getSelectedCourierTradeInDropOff() {
+        return selectedCourierTradeInDropOff;
+    }
+
+    public void setSelectedCourierTradeInDropOff(CourierItemData selectedCourierTradeInDropOff) {
+        this.selectedCourierTradeInDropOff = selectedCourierTradeInDropOff;
     }
 
     @Override
@@ -256,6 +276,7 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeParcelable(shipmentCartData, flags);
         dest.writeParcelable(selectedShipment, flags);
         dest.writeParcelable(selectedCourier, flags);
+        dest.writeParcelable(selectedCourierTradeInDropOff, flags);
         dest.writeByte((byte) (useInsurance == null ? 0 : useInsurance ? 1 : 2));
         dest.writeByte((byte) (usePartialOrder ? 1 : 0));
         dest.writeByte((byte) (useDropshipper == null ? 0 : useDropshipper ? 1 : 2));
@@ -270,6 +291,7 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeByte((byte) (preorder ? 1 : 0));
         dest.writeTypedList(shippingCourierViewModels);
         dest.writeByte((byte) (isTradein ? 1 : 0));
+        dest.writeByte((byte) (isTradeInDropOff ? 1 : 0));
         dest.writeByte((byte) (isOrderPriority == null ? 0 : isOrderPriority ? 1 : 2));
     }
 }

@@ -45,8 +45,8 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                         boolean isLeasing,
                         String pslCode, int selectedSpId, int selectedServiceId,
                         List<ShopShipment> shopShipments,
-                        Subscriber<ShippingRecommendationData> subscriber,
-                        ShippingParam shippingParam) {
+                        ShippingParam shippingParam,
+                        Subscriber<ShippingRecommendationData> subscriber) {
         query = getQueryWithParams(query, codHistory, isCorner, isLeasing, pslCode, shopShipments, shippingParam);
         executeQuery(query, selectedSpId, selectedServiceId, shopShipments, subscriber);
     }
@@ -164,6 +164,15 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
 
         double weightInKilograms = shippingParam.getWeightInKilograms();
         queryStringBuilder = setParam(queryStringBuilder, Param.WEIGHT, String.valueOf(weightInKilograms));
+
+        int tradeIn = 0;
+        if (shippingParam.isTradeInDropOff()) {
+            tradeIn = 2;
+        } else if (shippingParam.isTradein()) {
+            tradeIn = 1;
+        }
+        queryStringBuilder = setParam(queryStringBuilder, Param.IS_TRADEIN, String.valueOf(tradeIn));
+
         queryStringBuilder = setParam(queryStringBuilder, Param.IS_CORNER, String.valueOf(isCorner ? 1 : 0));
         queryStringBuilder = setParam(queryStringBuilder, Param.SHOP_ID, shippingParam.getShopId());
         queryStringBuilder = setParam(queryStringBuilder, Param.TYPE, Param.VALUE_ANDROID);
@@ -179,7 +188,6 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
         queryStringBuilder = setParam(queryStringBuilder, Param.IS_BLACKBOX, String.valueOf(shippingParam.getIsBlackbox() ? 1 : 0));
         queryStringBuilder = setParam(queryStringBuilder, Param.ADDRESS_ID, String.valueOf(shippingParam.getAddressId()));
         queryStringBuilder = setParam(queryStringBuilder, Param.PREORDER, String.valueOf(shippingParam.getIsPreorder() ? 1 : 0));
-        queryStringBuilder = setParam(queryStringBuilder, Param.IS_TRADEIN, String.valueOf(shippingParam.isTradein() ? 1 : 0));
         queryStringBuilder = setParam(queryStringBuilder, Param.VEHICLE_LEASING, String.valueOf(isLeasing ? 1 : 0));
         queryStringBuilder = setParam(queryStringBuilder, Param.PSL_CODE, (promoCode != null) ? promoCode : "");
         queryStringBuilder = setParam(queryStringBuilder, Param.PRODUCTS, productJson.replace("\"", "\\\""));

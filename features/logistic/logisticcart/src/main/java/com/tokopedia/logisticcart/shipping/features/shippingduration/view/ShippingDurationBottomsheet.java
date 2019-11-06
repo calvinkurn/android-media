@@ -57,6 +57,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_PSL_CODE = "ARGUMENT_PSL_CODE";
     public static final String ARGUMENT_PRODUCTS = "ARGUMENT_PRODUCTS";
     public static final String ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING";
+    public static final String ARGUMENT_IS_TRADE_IN_DROP_OFF = "ARGUMENT_IS_TRADE_IN_DROP_OFF";
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
@@ -87,7 +88,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                                           RecipientAddressModel recipientAddressModel,
                                                           int cartPosition, int codHistory,
                                                           boolean isLeasing, String pslCode,
-                                                          ArrayList<Product> products, String cartString) {
+                                                          ArrayList<Product> products, String cartString,
+                                                          boolean isTradeInDropOff) {
         ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData);
@@ -100,6 +102,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putString(ARGUMENT_PSL_CODE, pslCode);
         bundle.putParcelableArrayList(ARGUMENT_PRODUCTS, products);
         bundle.putString(ARGUMENT_CART_STRING, cartString);
+        bundle.putBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF, isTradeInDropOff);
         shippingDurationBottomsheet.setArguments(bundle);
 
         return shippingDurationBottomsheet;
@@ -180,10 +183,11 @@ public class ShippingDurationBottomsheet extends BottomSheets
             String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
             ArrayList<Product> products = getArguments().getParcelableArrayList(ARGUMENT_PRODUCTS);
             String cartString = getArguments().getString(ARGUMENT_CART_STRING);
+            boolean isTradeInDropOff = getArguments().getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF);
             if (shipmentDetailData != null) {
                 // Called from checkout
                 presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
-                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString);
+                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, recipientAddressModel);
             } else if (shippingParam != null) {
                 // Called from express checkout
                 presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory, mIsCorner, isLeasing);
@@ -239,6 +243,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                     @Override
                     public void onRetryClicked() {
                         if (getArguments() != null) {
+                            RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
                             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
                             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
                             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
@@ -247,11 +252,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
                             String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
                             ArrayList<Product> products = getArguments().getParcelableArrayList(ARGUMENT_PRODUCTS);
                             String cartString = getArguments().getString(ARGUMENT_CART_STRING);
+                            boolean isTradeInDropOff = getArguments().getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF);
                             if (shipmentDetailData != null) {
                                 presenter.loadCourierRecommendation(
                                         shipmentDetailData, selectedServiceId, shopShipments,
                                         codHistory, mIsCorner, isLeasing, pslCode,
-                                        products, cartString
+                                        products, cartString, isTradeInDropOff, recipientAddressModel
                                 );
                             }
                         }

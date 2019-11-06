@@ -29,6 +29,10 @@ public class TradeInInfo {
     @Expose
     public String oldDevicePriceFmt = "";
 
+    @SerializedName("drop_off_enable")
+    @Expose
+    public boolean dropOffEnable;
+
     public boolean isValidTradeIn() {
         return isValidTradeIn;
     }
@@ -47,5 +51,9 @@ public class TradeInInfo {
 
     public String getOldDevicePriceFmt() {
         return oldDevicePriceFmt;
+    }
+
+    public boolean isDropOffEnable() {
+        return dropOffEnable;
     }
 }

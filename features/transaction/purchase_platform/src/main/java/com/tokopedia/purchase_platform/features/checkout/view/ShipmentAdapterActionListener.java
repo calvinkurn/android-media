@@ -1,12 +1,11 @@
 package com.tokopedia.purchase_platform.features.checkout.view;
 
-import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 
 import java.util.List;
 
@@ -47,7 +46,7 @@ public interface ShipmentAdapterActionListener {
 
     void onTotalPaymentChange(String totalPayment);
 
-    void onFinishChoosingShipment(List<CheckPromoCodeCartShipmentRequest.Data> data);
+    void onFinishChoosingShipment();
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 
@@ -101,7 +100,7 @@ public interface ShipmentAdapterActionListener {
                              ShipmentDetailData shipmentDetailData,
                              ShipmentCartItemModel shipmentCartItemModel,
                              List<ShopShipment> shopShipmentList,
-                             boolean isCourierRecommendation);
+                             boolean isCourierRecommendation, boolean isTradeInDropOff);
 
     void onCourierPromoCanceled(String shipperName, String promoCode);
 
@@ -120,4 +119,10 @@ public interface ShipmentAdapterActionListener {
     void onProcessToPayment();
 
     void onProcessToPaymentCod();
+
+    void onChangeTradeInDropOffClicked();
+
+    boolean isTradeInByDropOff();
+
+    void onTradeInAddressTabChanged(int position);
 }
