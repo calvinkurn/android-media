@@ -249,6 +249,7 @@
                             android:scaleType="fitCenter"
                             app:srcCompat="@drawable/ic_thumb"
                             android:visibility="visible"
+                            android:layout_gravity="center"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/likeText"
                             app:layout_constraintTop_toTopOf="parent"
@@ -264,6 +265,7 @@
                             android:paddingEnd="@dimen/dp_16"
                             android:paddingRight="@dimen/dp_16"
                             android:text="@string/kol_action_like"
+                            android:layout_gravity="center"
                             android:textColor="@color/color_like_comment_share"
                             android:visibility="visible"
                             app:typographyType="body_3"
@@ -278,6 +280,7 @@
                             android:scaleType="fitCenter"
                             app:srcCompat="@drawable/ic_feed_comment"
                             android:visibility="visible"
+                            android:layout_gravity="center"
                             tools:ignore="RtlSymmetry"
                             tools:visibility="visible" />
 
@@ -291,6 +294,7 @@
                             android:paddingEnd="@dimen/dp_16"
                             android:paddingRight="@dimen/dp_16"
                             android:text="@string/kol_action_comment"
+                            android:layout_gravity="center"
                             android:textColor="@color/color_like_comment_share"
                             android:visibility="visible"
                             app:typographyType="body_3"
