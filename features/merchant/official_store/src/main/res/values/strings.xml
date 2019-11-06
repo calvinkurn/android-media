@@ -1,4 +1,12 @@
 <resources>
 
     <string name="react_native_banner_official_title">Official Store</string>
+    <string name="os_query_search">Cari di Official Store</string>
+    <string name="dc_action_text">Lihat Semua</string>
+    <string name="os_featured_shop_title">Featured Brand</string>
+    <string name="os_featured_shop_link">Semua Brand</string>
+    <string name="os_product_recommendation_title">Rekomendasi Untukmu</string>
+
+    <string name="os_error_try_again">Coba lagi</string>
+
 </resources>
