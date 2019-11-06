@@ -10,7 +10,7 @@ import com.tokopedia.topads.data.CreateManualAdsStepperModel
 /**
  * Author errysuprayogi on 01,November,2019
  */
-abstract class CreateManualAdsBaseStepperFragment<T : CreateManualAdsStepperModel>: BaseDaggerFragment() {
+abstract class BaseStepperFragment<T : CreateManualAdsStepperModel>: BaseDaggerFragment() {
     protected var stepperModel: T? = null
     protected val stepperListener: StepperListener? by lazy {
         if (context is StepperListener) context as StepperListener else null

@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
-import kotlinx.android.synthetic.main.topads_create_fragment_keyword_list.*
+import kotlinx.android.synthetic.main.topads_create_fragment_summary.*
 
 /**
  * Author errysuprayogi on 29,October,2019
  */
-class CreateManualAdsKeywordAdsListFragment: CreateManualAdsBaseStepperFragment<CreateManualAdsStepperModel>() {
+class SummaryAdsFragment: BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     companion object {
         fun createInstance(): Fragment {
 
-            val fragment = CreateManualAdsKeywordAdsListFragment()
+            val fragment = SummaryAdsFragment()
             val args = Bundle()
             fragment.setArguments(args)
             return fragment
@@ -38,20 +38,20 @@ class CreateManualAdsKeywordAdsListFragment: CreateManualAdsBaseStepperFragment<
     }
 
     override fun getScreenName(): String {
-        return CreateManualAdsCreateGroupAdsFragment::class.java.simpleName
+        return CreateGroupAdsFragment::class.java.simpleName
     }
 
     override fun initInjector() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_create_fragment_keyword_list, container, false)
+        return inflater.inflate(R.layout.topads_create_fragment_summary, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_next.setOnClickListener {
-            gotoNextPage()
+        btn_submit.setOnClickListener {
+
         }
     }
 }

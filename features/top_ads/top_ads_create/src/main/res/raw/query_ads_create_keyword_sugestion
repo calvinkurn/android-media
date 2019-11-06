@@ -1,0 +1,18 @@
+query topAdsGetKeywordSuggestion($productIds:String!, $groupId:Int!){
+  topAdsGetKeywordSuggestion(product_ids:$productIds, group_id:$groupId){
+        data{
+      keyword
+      bid_suggest
+      total_search
+    }
+    errors{
+      code
+      detail
+      object{
+        type
+        text
+      }
+      title
+    }
+  }
+}

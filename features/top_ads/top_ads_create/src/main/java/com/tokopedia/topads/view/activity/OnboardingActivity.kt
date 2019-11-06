@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.topads_create_activity_onboarding.*
 /**
  * Author errysuprayogi on 29,October,2019
  */
-class CreateAdsOnboardingActivity : BaseActivity() {
+class OnboardingActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +21,7 @@ class CreateAdsOnboardingActivity : BaseActivity() {
             RouteManager.route(this, ApplinkConst.SellerApp.TOPADS_AUTOADS)
         }
         btn_start_manual_ads.setOnClickListener {
-            startActivity(Intent(this, CreateManualAdsStepperActivity::class.java))
+            startActivity(Intent(this, StepperActivity::class.java))
         }
 
     }

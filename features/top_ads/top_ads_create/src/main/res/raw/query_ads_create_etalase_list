@@ -1,0 +1,10 @@
+query getEtalaseList($shopId:String!){
+  shopShowcasesByShopID(shopId:$shopId, hideNoCount:false,hideShowcaseGroup:false,isOwner:false) {
+    result {
+      id
+      name
+      count
+      type
+    }
+  }
+}
