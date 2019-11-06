@@ -9,7 +9,7 @@ import java.util.*
 /**
  * @author by nisie on 5/14/18.
  */
-class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
+open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
     var productId: Int = 0
         private set
