@@ -22,7 +22,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
 
 project.ext {

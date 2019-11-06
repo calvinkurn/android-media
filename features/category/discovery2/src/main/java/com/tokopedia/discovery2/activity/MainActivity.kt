@@ -1,7 +1,8 @@
 package com.tokopedia.discovery2.activity
 
-import android.support.v7.app.AppCompatActivity
+
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.discovery2.R
 
 class MainActivity : AppCompatActivity() {
