@@ -41,6 +41,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -1456,6 +1457,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             if (it.response.data.partnerCode.isNotBlank()) {
                 iv_ovo_installment_icon.show()
                 iv_arrow_next.show()
+
+                ImageHandler.loadImage(context, iv_ovo_installment_icon, it.response.data.partnerIcon, R.drawable.ic_loading_image)
 
                 iv_ovo_installment_icon.setOnClickListener {
                     openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
