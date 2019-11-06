@@ -1,9 +1,9 @@
 package com.tokopedia.discovery.categoryrevamp.adapters
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
 import com.tokopedia.filter.common.data.Filter
@@ -17,6 +17,8 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
         const val VIEW_QUICK_FILTER = 0
         const val VIEW_PRODUCT_COUNT = 1
         const val VIEW_SHIMMER = 2
+
+        const val SHIMMER_LAYOUT_COUNT = 4
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -38,7 +40,7 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
 
     override fun getItemCount(): Int {
         return if (quickFilterList.size <= 0) {
-            4
+            SHIMMER_LAYOUT_COUNT
         } else {
             quickFilterList.size + 1
         }
@@ -63,6 +65,7 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
                 VIEW_QUICK_FILTER
         }
     }
+
     private fun setQuickFilterData(holder: QuickFilterViewHolder, position: Int) {
         val option: Option = quickFilterList[position].options[0]
         bindFilterNewIcon(holder, option)
@@ -105,6 +108,7 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
         companion object {
             val LAYOUT = R.layout.item_nav_quick_filter
         }
+
         val quickFilterText = itemView.findViewById<Typography>(R.id.quick_filter_text)
         val itemContainer = itemView.findViewById<View>(R.id.filter_item_container)
         val filterNewIcon = itemView.findViewById<View>(R.id.filter_new_icon)
@@ -114,6 +118,7 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
         companion object {
             val LAYOUT = R.layout.item_nav_product_count
         }
+
         val productCountText = itemView.findViewById<Typography>(R.id.product_count_text)
     }
 

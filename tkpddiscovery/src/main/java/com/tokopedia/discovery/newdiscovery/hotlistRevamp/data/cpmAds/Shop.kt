@@ -8,7 +8,7 @@ data class Shop(
         val product: List<ProductItem?>? = null,
 
         @field:SerializedName("gold_shop")
-        val goldShop: Boolean? = null,
+        val goldShop: Boolean? = false,
 
         @field:SerializedName("city")
         val city: String? = null,
@@ -20,7 +20,7 @@ data class Shop(
         val imageShop: ImageShop? = null,
 
         @field:SerializedName("gold_shop_badge")
-        val goldShopBadge: Boolean? = null,
+        val goldShopBadge: Boolean? = false,
 
         @field:SerializedName("id")
         val id: String? = null

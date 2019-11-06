@@ -7,34 +7,51 @@ import com.tokopedia.usecase.RequestParams
 class HotlistParamBuilder {
 
     companion object {
+        private const val PARAM_PRODUCT_KEY = "productKey"
+        private const val START = "start"
+        private const val DEVICE = "device"
+        private const val SOURCE = "source"
+        private const val UNIQUE_ID = "unique_id"
+        private const val ROWS = "rows"
+        private const val KEY_SAFE_SEARCH = "safe_search"
+        private const val KEY_QUERY = "q"
+        private const val KEY_PAGE = "page"
+        private const val KEY_EP = "ep"
+        private const val KEY_ITEM = "item"
+        private const val KEY_F_SHOP = "fshop"
+        private const val KEY_SRC = "src"
+        private const val FILTER = "filter"
+        private const val KEY_TEMPLATE_ID = "template_id"
+
+
+        private const val KEY_PRODUCT_PARAMS = "product_params"
+        private const val KEY_TOP_PARAMS = "top_params"
+        private const val KEY_PARAMS = "params"
+        private const val KEY_SRC_HOTLIST = "hotlist"
+
+        private const val DEVICE_TYPE = "android"
+        private const val ITEMS_PER_PAGE = 10
+        private const val CPM_ADS_PER_PAGE = 1
+        private const val TOP_ADS_PER_PAGE = "2"
+        private const val CPM_TEMPLATE_ID = "2"
+
         val hotlistParamBuilder: HotlistParamBuilder by lazy { HotlistParamBuilder() }
     }
 
-    val PARAM_PRODUCT_KEY = "productKey"
-    val KEY_PARAMS = "params"
-    val START = "start"
-    val SC = "sc"
-    val DEVICE = "device"
-    val SOURCE = "source"
-    val UNIQUE_ID = "unique_id"
-    val ROWS = "rows"
-    val KEY_SAFE_SEARCH = "safe_search"
-    val OB = "ob"
-    val Q = "q"
-    val KEY_PAGE = "page"
-    val KEY_EP = "ep"
-    val KEY_ITEM = "item"
-    val KEY_F_SHOP = "fshop"
-    val KEY_DEPT_ID = "dep_id"
-    val KEY_SRC = "src"
-    val QUERY = "query"
-    val FILTER = "filter"
-    val KEY_TEMPLATE_ID = "template_id"
-
-    enum class HotListType(public val value: String) {
+    enum class HotListType(val value: String) {
         CURATED("Curated"),
         URL("Url"),
         KEYWORD("Keyword")
+    }
+
+    enum class SourceType(val value: String) {
+        DIRECTORY("directory"),
+        QUICK_FILTER("quick_filter")
+    }
+
+    enum class EpType(val value: String) {
+        PRODUCT("product"),
+        HEADLINE("headline")
     }
 
     fun getHotlistDetailParams(productKey: String): RequestParams {
@@ -49,14 +66,14 @@ class HotlistParamBuilder {
                                             selectedSort: HashMap<String, String>,
                                             selectedFilter: HashMap<String, String>): RequestParams {
         val param = RequestParams.create()
-        param.putString("product_params", prepareProductListParams(strFilterAttribute,
-                start * 10,
-                10,
+        param.putString(KEY_PRODUCT_PARAMS, prepareProductListParams(strFilterAttribute,
+                start * ITEMS_PER_PAGE,
+                ITEMS_PER_PAGE,
                 uniqueId,
                 createParametersForQuery(selectedSort),
                 createParametersForQuery(selectedFilter))
         )
-        param.putString("top_params", preparetopAdsParams(strFilterAttribute,
+        param.putString(KEY_TOP_PARAMS, preparetopAdsParams(strFilterAttribute,
                 start,
                 createParametersForQuery(selectedSort),
                 createParametersForQuery(selectedFilter)))
@@ -69,9 +86,9 @@ class HotlistParamBuilder {
                                                selectedSort: HashMap<String, String>,
                                                selectedFilter: HashMap<String, String>): RequestParams {
         val param = RequestParams.create()
-        param.putString("params", prepareProductListParams(strFilterAttribute,
-                start * 10,
-                10,
+        param.putString(KEY_PARAMS, prepareProductListParams(strFilterAttribute,
+                start * ITEMS_PER_PAGE,
+                ITEMS_PER_PAGE,
                 uniqueId,
                 createParametersForQuery(selectedSort),
                 createParametersForQuery(selectedFilter))
@@ -84,10 +101,9 @@ class HotlistParamBuilder {
         val paramMap = RequestParams()
         val daFilterQueryType = DAFilterQueryType()
         daFilterQueryType.sc = hotlistId
-        paramMap.putString(SOURCE, "search_product")
         paramMap.putObject(FILTER, daFilterQueryType)
-        paramMap.putString(Q, "")
-        paramMap.putString(SOURCE, "directory")
+        paramMap.putString(KEY_QUERY, "")
+        paramMap.putString(SOURCE, SourceType.DIRECTORY.value)
         return paramMap
     }
 
@@ -97,26 +113,26 @@ class HotlistParamBuilder {
         val daFilterQueryType = DAFilterQueryType()
         daFilterQueryType.sc = hotlistId
         quickFilterParam.putObject(FILTER, daFilterQueryType)
-        quickFilterParam.putString(SOURCE, "quick_filter")
+        quickFilterParam.putString(SOURCE, SourceType.QUICK_FILTER.value)
         return quickFilterParam
     }
 
     fun generateCpmTopAdsParams(queryItem: String): RequestParams {
         val cpmParams = RequestParams()
         val param = RequestParams.create()
-        cpmParams.putString(DEVICE, "android")
-        cpmParams.putString(KEY_SRC, "hotlist")
-        cpmParams.putString(KEY_ITEM, "1")
-        cpmParams.putString(KEY_EP, "headline")
-        cpmParams.putString(KEY_TEMPLATE_ID, "3")
-        cpmParams.putString(KEY_PAGE, "1")
-        cpmParams.putString(Q, queryItem)
+        cpmParams.putString(DEVICE, DEVICE_TYPE)
+        cpmParams.putString(KEY_SRC, KEY_SRC_HOTLIST)
+        cpmParams.putString(KEY_ITEM, CPM_ADS_PER_PAGE.toString())
+        cpmParams.putString(KEY_EP, EpType.HEADLINE.value)
+        cpmParams.putString(KEY_TEMPLATE_ID, CPM_TEMPLATE_ID)
+        cpmParams.putString(KEY_PAGE, CPM_ADS_PER_PAGE.toString())
+        cpmParams.putString(KEY_QUERY, queryItem)
         param.putString(KEY_PARAMS, createParametersForQuery(cpmParams.parameters))
         return param
     }
 
     private fun prepareProductListParams(strFilterAttribute: String, start: Int, rows: Int, unique_id: String, sortParam: String, filterParam: String): String {
-        var param = "$strFilterAttribute&device=android&start=$start&rows=$rows&unique_id=$unique_id"
+        var param = "$strFilterAttribute&device=$DEVICE_TYPE&$START=$start&$ROWS=$rows&$UNIQUE_ID=$unique_id"
         if (filterParam.isNotEmpty()) {
             param = "$param&$filterParam"
         }
@@ -124,13 +140,13 @@ class HotlistParamBuilder {
             param = "$param&$sortParam"
         }
         if (param.isNotEmpty()) {
-            param = "$param&safe_search=false"
+            param = "$param&$KEY_SAFE_SEARCH=false"
         }
         return param
     }
 
     private fun preparetopAdsParams(strFilterAttribute: String, page: Int, sortParam: String, filterParam: String): String {
-        var param = "$strFilterAttribute&device=android&page=$page&item=2&ep=product&fshop=1&src=directory"
+        var param = "$strFilterAttribute&device=$DEVICE_TYPE&page=$page&item=$TOP_ADS_PER_PAGE&ep=${EpType.PRODUCT.value}&$KEY_F_SHOP=1&src=${SourceType.DIRECTORY.value}"
         if (filterParam.isNotEmpty()) {
             param = "$param&$filterParam"
         }
@@ -138,7 +154,7 @@ class HotlistParamBuilder {
             param = "$param&$sortParam"
         }
         if (param.isNotEmpty()) {
-            param = "$param&safe_search=false"
+            param = "$param&$KEY_SAFE_SEARCH=false"
         }
         return param
     }

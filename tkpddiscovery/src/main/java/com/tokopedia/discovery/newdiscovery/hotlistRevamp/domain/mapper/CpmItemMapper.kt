@@ -29,15 +29,15 @@ class CpmItemMapper {
 
                 headline.shop?.product?.let {
 
-                    for (i in it) {
-                        i?.let { productItem ->
-                            list.add(CpmItem(productItem.name,
+                    for (productItem in it) {
+                        productItem?.let { element ->
+                            list.add(CpmItem(element.name,
                                     "",
-                                    productItem.imageProduct?.imageUrl,
-                                    productItem.priceFormat,
+                                    element.imageProduct?.imageUrl,
+                                    element.priceFormat,
                                     true,
-                                    productItem.applinks,
-                                    productItem.imageProduct?.imageClickUrl,
+                                    element.applinks,
+                                    element.imageProduct?.imageClickUrl,
                                     ""))
                         }
                     }

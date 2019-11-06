@@ -3,14 +3,15 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import androidx.fragment.app.Fragment;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
@@ -42,6 +43,8 @@ public class HotlistActivity extends DiscoveryActivity
     private static final String EXTRA_HOTLIST_PARAM_TRACKER = "EXTRA_HOTLIST_PARAM_TRACKER";
     private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
     private static final String TAG = HotlistActivity.class.getSimpleName();
+    private static final String KEY_ALIAS = "alias";
+    private static final String KEY_TRACKER_ATTRIBUTION = "tracker_attribution";
     private AppBarLayout appBarLayout;
     private TextView descriptionTxt;
     private DescriptionView descriptionView;
@@ -56,12 +59,12 @@ public class HotlistActivity extends DiscoveryActivity
 
         if (HotlistNavActivity.isHotlistNavEnabled(context)) {
             return HotlistNavActivity.createInstanceUsingAlias(context,
-                    bundle.getString("alias", ""),
-                    bundle.getString("tracker_attribution", ""));
+                    bundle.getString(KEY_ALIAS, ""),
+                    bundle.getString(KEY_TRACKER_ATTRIBUTION, ""));
         } else {
             return HotlistActivity.createInstanceUsingAlias(context,
-                    bundle.getString("alias", ""),
-                    bundle.getString("tracker_attribution", "")
+                    bundle.getString(KEY_ALIAS, ""),
+                    bundle.getString(KEY_TRACKER_ATTRIBUTION, "")
             );
         }
     }

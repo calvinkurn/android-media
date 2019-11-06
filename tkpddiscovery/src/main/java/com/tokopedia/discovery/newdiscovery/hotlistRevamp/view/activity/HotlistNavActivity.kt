@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tkpd.library.utils.legacy.MethodChecker
@@ -22,6 +21,8 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
@@ -52,6 +53,11 @@ class HotlistNavActivity : BaseActivity(),
     private val STATE_BIG = 3
     private val ORDER_BY = "ob"
 
+    enum class ViewStateType(val value: String) {
+        GRID("grid"),
+        LIST("list"),
+        BIG("big")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +89,6 @@ class HotlistNavActivity : BaseActivity(),
             try {
                 extras.putString(EXTRA_HOTLIST_PARAM_TRACKER, URLDecoder.decode(trackerAttribution, "UTF-8"))
             } catch (e: UnsupportedEncodingException) {
-                e.printStackTrace()
                 extras.putString(EXTRA_HOTLIST_PARAM_TRACKER, trackerAttribution.replace("%20".toRegex(), " "))
             }
 
@@ -114,7 +119,7 @@ class HotlistNavActivity : BaseActivity(),
                 STATE_GRID -> {
                     hotlistNavAnalytics.eventDisplayButtonClicked(alias,
                             isUserLoggedIn(),
-                            "grid")
+                            ViewStateType.GRID.value)
                     img_display_button.tag = STATE_LIST
                     img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_list_display))
                 }
@@ -122,14 +127,14 @@ class HotlistNavActivity : BaseActivity(),
                 STATE_LIST -> {
                     hotlistNavAnalytics.eventDisplayButtonClicked(alias,
                             isUserLoggedIn(),
-                            "list")
+                            ViewStateType.LIST.value)
                     img_display_button.tag = STATE_BIG
                     img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_big_display))
                 }
                 STATE_BIG -> {
                     hotlistNavAnalytics.eventDisplayButtonClicked(alias,
                             isUserLoggedIn(),
-                            "big")
+                            ViewStateType.BIG.value)
                     img_display_button.tag = STATE_GRID
                     img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_grid_display))
                 }
@@ -173,19 +178,15 @@ class HotlistNavActivity : BaseActivity(),
     }
 
     private fun showBottomNavigation() {
-        searchNavContainer?.visibility = View.VISIBLE
+        searchNavContainer?.show()
     }
 
     private fun prepareView() {
         bottomSheetFilterView?.initFilterBottomSheet(FilterTrackingData(
                 FilterEventTracking.Event.CLICK_CATEGORY,
                 FilterEventTracking.Category.FILTER_CATEGORY,
-                getCategoryId(),
+                "",
                 FilterEventTracking.Category.PREFIX_CATEGORY_PAGE))
-    }
-
-    private fun getCategoryId(): String? {
-        return ""
     }
 
     private fun initToolbar(alias: String) {
@@ -230,7 +231,9 @@ class HotlistNavActivity : BaseActivity(),
 
     private fun generateAliasUsingURL(url: String): String {
         val uri = Uri.parse(url)
-        return uri.pathSegments[1]
+        return if (uri.pathSegments.size > 1)
+            uri.pathSegments[1]
+        else ""
     }
 
 
@@ -267,7 +270,7 @@ class HotlistNavActivity : BaseActivity(),
     }
 
     override fun hideBottomNavigation() {
-        searchNavContainer?.visibility = View.GONE
+        searchNavContainer?.hide()
     }
 
 

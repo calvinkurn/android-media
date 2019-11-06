@@ -7,32 +7,35 @@ import com.tokopedia.track.interfaces.Analytics
 
 class HotlistNavAnalytics {
 
-    val KEY_EVENT = "event"
-    val KEY_EVENT_CATEGORY = "eventCategory"
-    val KEY_EVENT_ACTION = "eventAction"
-    val KEY_EVENT_LABEL = "eventLabel"
-    val KEY_LOGIN_TYPE = "loginType"
-    val KEY_POSITION = "position"
-    val KEY_ATTRIBUTION = "attribution"
-    val KEY_ECOMMERCE = "ecommerce"
-    val KEY_CURRENCY_CODE = "currencyCode"
-    val KEY_IMPRESSIONS = "impressions"
-    val KEY_CLICK = "click"
-    val KEY_ACTION_FIELD = "actionField"
-    val KEY_PRODUCTS = "products"
-    val KEY_NAME = "name"
-    val KEY_ID = "id"
-    val KEY_PRICE = "price"
-    val KEY_BRAND = ""
-    val KEY_LIST = "list"
-    val KEY_CATEGORY = "category"
-    val KEY_VARIANT = "variant"
-
     companion object {
+        private const val KEY_EVENT = "event"
+        private const val KEY_EVENT_CATEGORY = "eventCategory"
+        private const val KEY_EVENT_ACTION = "eventAction"
+        private const val KEY_EVENT_LABEL = "eventLabel"
+        private const val KEY_LOGIN_TYPE = "loginType"
+        private const val KEY_POSITION = "position"
+        private const val KEY_ATTRIBUTION = "attribution"
+        private const val KEY_ECOMMERCE = "ecommerce"
+        private const val KEY_CURRENCY_CODE = "currencyCode"
+        private const val KEY_IMPRESSIONS = "impressions"
+        private const val KEY_CLICK = "click"
+        private const val KEY_ACTION_FIELD = "actionField"
+        private const val KEY_PRODUCTS = "products"
+        private const val KEY_NAME = "name"
+        private const val KEY_ID = "id"
+        private const val KEY_PRICE = "price"
+        private const val KEY_BRAND = ""
+        private const val KEY_LIST = "list"
+        private const val KEY_CATEGORY = "category"
+        private const val KEY_VARIANT = "variant"
+        private const val KEY_EVENT_VIEW_HOTLIST_IRIS = "viewHotlistIris"
+        private const val KEY_CLICK_HOTLIST = "clickHotlist"
+        private const val CURRENCY_VALUE = "IDR"
+
         val hotlistNavAnalytics: HotlistNavAnalytics by lazy { HotlistNavAnalytics() }
     }
 
-    fun getTracker(): Analytics {
+    private fun getTracker(): Analytics {
         return TrackApp.getInstance().gtm
     }
 
@@ -43,7 +46,7 @@ class HotlistNavAnalytics {
 
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, "viewHotlistIris",
+                KEY_EVENT, KEY_EVENT_VIEW_HOTLIST_IRIS,
                 KEY_EVENT_CATEGORY, "hotlist page - $pagePath",
                 KEY_EVENT_ACTION, "topads headline impression",
                 KEY_EVENT_LABEL, "",
@@ -58,7 +61,7 @@ class HotlistNavAnalytics {
                                    pagePath: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, "clickHotlist",
+                KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $pagePath",
                 KEY_EVENT_ACTION, "topads headline product",
                 KEY_EVENT_LABEL, "",
@@ -73,7 +76,7 @@ class HotlistNavAnalytics {
                                 pagePath: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, "clickHotlist",
+                KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $pagePath",
                 KEY_EVENT_ACTION, "topads headline shop",
                 KEY_EVENT_LABEL, "",
@@ -88,7 +91,7 @@ class HotlistNavAnalytics {
                           pagePath: String, share_icon: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, "clickHotlist",
+                KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $pagePath",
                 KEY_EVENT_ACTION, "click social share",
                 KEY_EVENT_LABEL, "",
@@ -153,7 +156,7 @@ class HotlistNavAnalytics {
                 KEY_EVENT_LABEL, hotlistName,
                 KEY_LOGIN_TYPE, getLoginType(isLoggedIn),
                 KEY_ECOMMERCE, DataLayer.mapOf(
-                KEY_CURRENCY_CODE, "IDR",
+                KEY_CURRENCY_CODE, CURRENCY_VALUE,
                 KEY_IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
                 KEY_NAME, name,
                 KEY_ID, id,
@@ -184,7 +187,7 @@ class HotlistNavAnalytics {
             "remove wishlist"
         }
         val map = DataLayer.mapOf(
-                KEY_EVENT, "clickHotlist",
+                KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $hotlistName",
                 KEY_EVENT_ACTION, eventAction + " - " + hotlistType + " - " + getLoginType(isLoggedIn),
                 KEY_EVENT_LABEL, product_id + "-" + if (isTopAds) "topads" else "general",
@@ -203,7 +206,7 @@ class HotlistNavAnalytics {
                                 filterValue: Boolean) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, "clickHotlist",
+                KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $hotlistName",
                 KEY_EVENT_ACTION, "click quick filter",
                 KEY_EVENT_LABEL, "${option.name}-${option.value}" + "-" + filterValue.toString(),
@@ -220,7 +223,7 @@ class HotlistNavAnalytics {
                          sortName: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, "clickHotlist",
+                KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $hotlistName",
                 KEY_EVENT_ACTION, "click sort",
                 KEY_EVENT_LABEL, sortName,
@@ -236,7 +239,7 @@ class HotlistNavAnalytics {
                            isLoggedIn: Boolean) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, "clickHotlist",
+                KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $hotlistName",
                 KEY_EVENT_ACTION, "click filter",
                 KEY_EVENT_LABEL, "",
@@ -253,7 +256,7 @@ class HotlistNavAnalytics {
                          sortValue: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, "clickHotlist",
+                KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $hotlistName - sort hotlist",
                 KEY_EVENT_ACTION, "click apply sort",
                 KEY_EVENT_LABEL, "$sortName - $sortValue",
@@ -270,7 +273,7 @@ class HotlistNavAnalytics {
                            filterValue: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, "clickHotlist",
+                KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $hotlistName - filter hotlist",
                 KEY_EVENT_ACTION, "apply filter",
                 KEY_EVENT_LABEL, "$filterName-$filterValue",
@@ -286,7 +289,7 @@ class HotlistNavAnalytics {
                                   displayName: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, "clickHotlist",
+                KEY_EVENT, KEY_CLICK_HOTLIST,
                 KEY_EVENT_CATEGORY, "hotlist page - $hotlistName",
                 KEY_EVENT_ACTION, "click display",
                 KEY_EVENT_LABEL, displayName,
@@ -296,7 +299,7 @@ class HotlistNavAnalytics {
     }
 
 
-    fun getLoginType(isUserLoggedIn: Boolean): String {
+    private fun getLoginType(isUserLoggedIn: Boolean): String {
         return if (isUserLoggedIn) {
             "Login"
         } else {
@@ -304,7 +307,7 @@ class HotlistNavAnalytics {
         }
     }
 
-    fun getIsTopAdsString(isTopAds: Boolean): String {
+    private fun getIsTopAdsString(isTopAds: Boolean): String {
         return if (isTopAds) {
             "topads"
         } else {

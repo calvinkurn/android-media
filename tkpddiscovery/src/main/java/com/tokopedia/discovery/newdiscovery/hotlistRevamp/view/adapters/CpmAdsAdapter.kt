@@ -21,6 +21,7 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
         const val VIEW_SHOP = 0
         const val VIEW_PRODUCT = 1
         const val VIEW_SHIMMER = 2
+        const val SHIMMER_ITEM_COUNT = 3
     }
     val viewMap = HashMap<Int, Boolean>()
 
@@ -47,7 +48,7 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
 
     override fun getItemCount(): Int {
         return if (cpmItemList.size <= 0) {
-            3
+            SHIMMER_ITEM_COUNT  // done to load shimmer items
         } else {
             cpmItemList.size
         }
@@ -62,9 +63,6 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
             VIEW_PRODUCT -> {
                 setProductData(holder as ProductViewHolder, position)
             }
-            else -> {
-            }
-
         }
     }
 

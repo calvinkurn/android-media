@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class FilterAttribute(
 
         @field:SerializedName("pmax")
-        val pmax: Int? = null,
+        val pmax: Int? = 0,
 
         @field:SerializedName("rt")
         val rt: String? = null,
@@ -17,16 +17,16 @@ data class FilterAttribute(
         val fullDomain: String? = null,
 
         @field:SerializedName("hot_id")
-        val hotId: Int? = null,
+        val hotId: Int? = 0,
 
         @field:SerializedName("etalase")
-        val etalase: Int? = null,
+        val etalase: Int? = 0,
 
         @field:SerializedName("discount")
-        val discount: Int? = null,
+        val discount: Int? = 0,
 
         @field:SerializedName("official")
-        val official: Boolean? = null,
+        val official: Boolean? = false,
 
         @field:SerializedName("fq")
         val fq: String? = null,
@@ -41,13 +41,13 @@ data class FilterAttribute(
         val xsname: String? = null,
 
         @field:SerializedName("image_square")
-        val imageSquare: Boolean? = null,
+        val imageSquare: Boolean? = false,
 
         @field:SerializedName("sc_identifier")
-        val scIdentifier: Int? = null,
+        val scIdentifier: Int? = 0,
 
         @field:SerializedName("fshop")
-        val fshop: Int? = null,
+        val fshop: Int? = 0,
 
         @field:SerializedName("sc")
         val sc: String? = null,
@@ -56,25 +56,25 @@ data class FilterAttribute(
         val negative: String? = null,
 
         @field:SerializedName("ob")
-        val ob: Int? = null,
+        val ob: Int? = 0,
 
         @field:SerializedName("wholesale")
-        val wholesale: Boolean? = null,
+        val wholesale: Boolean? = false,
 
         @field:SerializedName("shipping")
         val shipping: String? = null,
 
         @field:SerializedName("min_sold")
-        val minSold: Int? = null,
+        val minSold: Int? = 0,
 
         @field:SerializedName("pmin")
-        val pmin: Int? = null,
+        val pmin: Int? = 0,
 
         @field:SerializedName("fcity")
         val fcity: String? = null,
 
         @field:SerializedName("kreasi_lokal")
-        val kreasiLokal: Boolean? = null,
+        val kreasiLokal: Boolean? = false,
 
         @field:SerializedName("dname")
         val dname: String? = null,
@@ -86,31 +86,31 @@ data class FilterAttribute(
         val negativeSc: String? = null,
 
         @field:SerializedName("max_sold")
-        val maxSold: Int? = null,
+        val maxSold: Int? = 0,
 
         @field:SerializedName("st")
         val st: String? = null,
 
         @field:SerializedName("ctg_id")
-        val ctgId: Int? = null,
+        val ctgId: Int? = 0,
 
         @field:SerializedName("start")
-        val start: Int? = null,
+        val start: Int? = 0,
 
         @field:SerializedName("catalog_rows")
-        val catalogRows: Int? = null,
+        val catalogRows: Int? = 0,
 
         @field:SerializedName("floc")
         val floc: String? = null,
 
         @field:SerializedName("is_curated")
-        val isCurated: Boolean? = null,
+        val isCurated: Boolean? = false,
 
         @field:SerializedName("rows")
-        val rows: Int? = null,
+        val rows: Int? = 0,
 
         @field:SerializedName("cashback")
-        val cashback: Boolean? = null,
+        val cashback: Boolean? = false,
 
         @field:SerializedName("q")
         val Q: String? = null,
@@ -119,13 +119,13 @@ data class FilterAttribute(
         val shopId: String? = null,
 
         @field:SerializedName("condition")
-        val condition: Int? = null,
+        val condition: Int? = 0,
 
         @field:SerializedName("freereturns")
-        val freereturns: Boolean? = null,
+        val freereturns: Boolean? = false,
 
         @field:SerializedName("rf")
-        val rf: Boolean? = null,
+        val rf: Boolean? = false,
 
         @field:SerializedName("sname")
         val sname: String? = null,
@@ -137,11 +137,11 @@ data class FilterAttribute(
         val defaultSc: String? = null,
 
         @field:SerializedName("is_featured")
-        val isFeatured: Boolean? = null,
+        val isFeatured: Boolean? = false,
 
         @field:SerializedName("preorder")
-        val preorder: Boolean? = null,
+        val preorder: Boolean? = false,
 
         @field:SerializedName("cid")
-        val cid: Int? = null
+        val cid: Int? = 0
 )

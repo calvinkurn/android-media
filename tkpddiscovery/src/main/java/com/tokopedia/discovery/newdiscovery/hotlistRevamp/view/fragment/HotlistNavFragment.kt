@@ -92,27 +92,32 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     private lateinit var quickFilterAdapter: QuickFilterAdapter
     private lateinit var cpmAdsAdapter: CpmAdsAdapter
 
-    var productNavListAdapter: ProductNavListAdapter? = null
-    var productList: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
-    var CpmList: ArrayList<CpmItem> = ArrayList()
+    private var productNavListAdapter: ProductNavListAdapter? = null
+    private var productList: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
+    private var CpmList: ArrayList<CpmItem> = ArrayList()
     private lateinit var productTypeFactory: ProductTypeFactory
-    var quickFilterList = ArrayList<Filter>()
+    private var quickFilterList = ArrayList<Filter>()
 
     private var hotlistDetail: HotlistDetail? = null
     private var hotlistType: String = ""
 
-    var pageCount = 0
-    var isPagingAllowed: Boolean = true
+    private var pageCount = 0
+    private var isPagingAllowed: Boolean = true
 
     private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
     private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
+    private val REQUEST_PRODUCT_ITEM_CLICK = 1002
+
+    private val HOTLIST_APP_LINK_FORMAT = "tokopedia://product/"
+    private val HOTLIST_SHARE_URI = "https://www.tokopedia.com/hot/"
+
+    private val HOTLIST_SCREEN_NAME = "hotlist"
 
     var hotListAlias = ""
 
     companion object {
         private val EXTRA_ALIAS = "extra_alias"
         private val EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION"
-        private val EXTRA_QUERY_HOTLIST = "EXTRA_QUERY_HOTLIST"
 
         fun createInstanceUsingAlias(alias: String, trackerAttribution: String): Fragment {
             val fragment = HotlistNavFragment()
@@ -126,7 +131,6 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_hotlist_nav, container, false)
     }
 
@@ -146,7 +150,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun observeField() {
-        hotlistnavViewModel.mHotListDetailResponse.observe(this, Observer {
+        hotlistnavViewModel.mHotListDetailResponse.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -154,14 +158,14 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                 }
 
                 is Fail -> {
-
+                    showNoDataScreen(true)
                 }
             }
 
         })
 
 
-        hotlistnavViewModel.mProductList.observe(this, Observer {
+        hotlistnavViewModel.mProductList.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -196,7 +200,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             }
         })
 
-        hotlistnavViewModel.mProductCount.observe(this, Observer {
+        hotlistnavViewModel.mProductCount.observe(viewLifecycleOwner, Observer {
             it?.let {
                 setTotalSearchResultCount(it)
                 if (!TextUtils.isEmpty(it)) {
@@ -209,33 +213,26 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
 
 
-        hotlistnavViewModel.mDynamicFilterModel.observe(this, Observer {
+        hotlistnavViewModel.mDynamicFilterModel.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
                     renderDynamicFilter(it.data.data)
                 }
-
-                is Fail -> {
-                }
             }
         })
 
 
-        hotlistnavViewModel.mQuickFilterModel.observe(this, Observer {
+        hotlistnavViewModel.mQuickFilterModel.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
                     LoadQuickFilters(it.data as ArrayList)
                 }
-
-                is Fail -> {
-                }
             }
-
         })
 
-        hotlistnavViewModel.mCpmTopAdsData.observe(this, Observer {
+        hotlistnavViewModel.mCpmTopAdsData.observe(viewLifecycleOwner, Observer {
 
             when (it) {
                 is Success -> {
@@ -254,8 +251,6 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                 }
 
             }
-
-
         })
 
     }
@@ -263,11 +258,11 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            layout_no_data.visibility = View.VISIBLE
+            layout_no_data.show()
             txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
         } else {
-            layout_no_data.visibility = View.GONE
+            layout_no_data.hide()
         }
     }
 
@@ -346,6 +341,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     private fun initViewModel() {
         activity?.let {
             hotlistnavViewModel = viewModelProvider.get(HotlistNavViewModel::class.java)
+            lifecycle.addObserver(hotlistnavViewModel)
         }
 
     }
@@ -467,7 +463,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun getScreenName(): String {
-        return "hotlist"
+        return HOTLIST_SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -479,7 +475,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
         hotlistNavAnalytics.eventProductClicked(hotListAlias,
-                "tokopedia://product/" + item.category,
+                HOTLIST_APP_LINK_FORMAT + item.category,
                 isUserLoggedIn(),
                 hotlistType,
                 adapterPosition,
@@ -491,7 +487,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
-            startActivityForResult(intent, 1002)
+            startActivityForResult(intent, REQUEST_PRODUCT_ITEM_CLICK)
         }
         if (item.isTopAds) {
             ImpresionTask().execute(item.productClickTrackingUrl)
@@ -696,7 +692,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                 .setName(getString(R.string.message_share_catalog))
                 .setTextContent(hotlistShareMsg)
                 .setCustMsg(hotlistShareMsg)
-                .setUri("https://www.tokopedia.com/hot/" + hotlistDetail?.aliasKey)
+                .setUri(HOTLIST_SHARE_URI + hotlistDetail?.aliasKey)
                 .setId(hotlistDetail?.aliasKey)
                 .build()
 

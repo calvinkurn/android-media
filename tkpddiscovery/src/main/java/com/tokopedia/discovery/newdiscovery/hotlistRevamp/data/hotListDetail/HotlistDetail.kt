@@ -11,7 +11,7 @@ data class HotlistDetail(
         val aliasKey: String? = null,
 
         @field:SerializedName("filterShop")
-        val filterShop: Int? = null,
+        val filterShop: Int? = 0,
 
         @field:SerializedName("shareFilePath")
         val shareFilePath: String? = null,
@@ -41,7 +41,7 @@ data class HotlistDetail(
         val metaDescription: String? = null,
 
         @field:SerializedName("isPromo")
-        val isPromo: Boolean? = null,
+        val isPromo: Boolean? = false,
 
         @field:SerializedName("queries")
         val queries: List<QueriesItem?>? = null,
@@ -65,7 +65,7 @@ data class HotlistDetail(
         val metaTitle: String? = null,
 
         @field:SerializedName("id")
-        val id: Int? = null,
+        val id: Int? = 0,
 
         @field:SerializedName("productUrl")
         val productUrl: String? = null,

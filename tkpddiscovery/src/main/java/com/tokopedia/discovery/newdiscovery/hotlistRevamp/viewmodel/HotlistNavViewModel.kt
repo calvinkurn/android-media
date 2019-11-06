@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.hotlistRevamp.viewmodel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.CategoryProductUseCase
@@ -26,7 +25,7 @@ class HotlistNavViewModel @Inject constructor(var hotlistDetailUseCase: HotlistD
                                               var categoryProductUseCase: CategoryProductUseCase,
                                               var quickFilterUseCase: QuickFilterUseCase,
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
-                                              var cpmAdsUseCase: CpmAdsUseCase) : ViewModel() {
+                                              var cpmAdsUseCase: CpmAdsUseCase) : ViewModel(), LifecycleObserver {
 
     val mHotListDetailResponse = MutableLiveData<Result<HotListDetailResponse>>()
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -147,7 +146,15 @@ class HotlistNavViewModel @Inject constructor(var hotlistDetailUseCase: HotlistD
                 mCpmTopAdsData.value = Fail(e)
             }
         })
+    }
 
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    internal fun onDestroy() {
+        hotlistDetailUseCase.unsubscribe()
+        getProductListUseCase.unsubscribe()
+        categoryProductUseCase.unsubscribe()
+        quickFilterUseCase.unsubscribe()
+        dynamicFilterUseCase.unsubscribe()
+        cpmAdsUseCase.unsubscribe()
     }
 }
