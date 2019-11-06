@@ -1,17 +1,19 @@
 package com.tokopedia.tokopoints.view.presenter
 
 import android.content.res.Resources
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.contract.TokopointAddPointContract
+import com.tokopedia.tokopoints.view.model.addpointsection.CategoriesItem
 import com.tokopedia.tokopoints.view.model.addpointsection.RewardPointResponse
 import rx.Subscriber
 import javax.inject.Inject
 
-class AddPointPresenter @Inject constructor(val rewardUsecase: GraphqlUseCase) : TokopointAddPointContract.Presenter {
+class AddPointPresenter @Inject constructor(val rewardUsecase: GraphqlUseCase) : BaseDaggerPresenter<TokopointAddPointContract.View>(), TokopointAddPointContract.Presenter {
 
 
     override fun getRewardPoint(resources: Resources) {
@@ -32,19 +34,11 @@ class AddPointPresenter @Inject constructor(val rewardUsecase: GraphqlUseCase) :
 
                 if (addPointResponse != null) {
                     val rewardPointResponse = addPointResponse.getData<RewardPointResponse>(RewardPointResponse::class.java)
-                }
+                    view.inflatePointsData(rewardPointResponse.sheetHowToGetV2?.sections?.get(1)?.categories as ArrayList<CategoriesItem>)
 
+                }
             }
         })
-
     }
-
-
-    override fun attachView(view: TokopointAddPointContract.View?) {
-    }
-
-    override fun detachView() {
-    }
-
 
 }

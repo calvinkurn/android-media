@@ -438,7 +438,9 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         } else if (source.getId() == R.id.container_fab_egg_token) {
             if (mSumToken <= 0) {
                 if (mStartPurchaseBottomSheet != null) {
-                    mStartPurchaseBottomSheet.show(getChildFragmentManager(), StartPurchaseBottomSheet.class.getName());
+                   // mStartPurchaseBottomSheet.show(getChildFragmentManager(), StartPurchaseBottomSheet.class.getName());
+                    AddPointsFragment addPointsFragment = new AddPointsFragment();
+                    addPointsFragment.show(getChildFragmentManager(),"");
                 }
             } else {
                 if (getActivity() != null) {
@@ -854,7 +856,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public void renderTicker(SectionContent content) {
-        if (getView() == null
+    /*    if (getView() == null
                 || content == null
                 || content.getLayoutTickerAttr() == null
                 || content.getLayoutTickerAttr().getTickerList() == null
@@ -863,9 +865,9 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             return;
         }
 
-        ViewPager pager = getView().findViewById(com.tokopedia.design.R.id.view_pager_ticker);
+        ViewPager pager = getView().findViewById(R.id.view_pager_ticker);
         pager.setAdapter(new SectionTickerPagerAdapter(getContext(), content.getLayoutTickerAttr().getTickerList()));
-        CirclePageIndicator pageIndicator = getView().findViewById(com.tokopedia.design.R.id.page_indicator_ticker);
+        CirclePageIndicator pageIndicator = getView().findViewById(R.id.page_indicator_ticker);
         View hideTickerView = getView().findViewById(R.id.ic_close_ticker);
         hideTickerView.setOnClickListener(v -> tickerContainer.setVisibility(View.GONE));
 
@@ -898,7 +900,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        });*/
     }
 
     @Override

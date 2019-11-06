@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.model.addpointsection.SectionsItem
+import com.tokopedia.tokopoints.view.model.addpointsection.CategoriesItem
 
-class AddPointsAdapter (val item:ArrayList<SectionsItem>,val listenerItemClick: AddPointAdapterVH.ListenerItemClick): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AddPointsAdapter (val item:ArrayList<CategoriesItem>,val listenerItemClick: AddPointAdapterVH.ListenerItemClick): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.tp_item_section_category, parent, false)
-        return AddPointAdapterVH(view,listenerItemClick)
+        return AddPointAdapterVH(view,listenerItemClick,parent.context)
     }
 
     override fun getItemCount(): Int {
