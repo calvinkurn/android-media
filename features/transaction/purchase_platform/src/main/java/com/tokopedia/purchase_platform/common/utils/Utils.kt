@@ -21,7 +21,8 @@ object Utils {
     }
 
     @JvmStatic
-    fun getHtmlFormat(text: String): String {
+    fun getHtmlFormat(text: String?): String {
+        if (text == null) return ""
         if (TextUtils.isEmpty(text)) {
             return SpannableStringBuilder("").toString()
         }

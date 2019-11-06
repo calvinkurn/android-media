@@ -23,7 +23,7 @@ public class SendGiftActivity extends BaseSimpleActivity implements HasComponent
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_send_coupon));
-        toolbar.setNavigationIcon(R.drawable.navigation_cancel);
+        toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_close);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

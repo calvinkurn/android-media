@@ -16,10 +16,11 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.CouponFilterPagerAdapter;
@@ -33,6 +34,7 @@ import com.tokopedia.tokopoints.view.util.TabUtil;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,26 +58,15 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         updateTitle(getString(R.string.tp_label_my_coupon));
         getComponent().inject(this);
         mPresenter.attachView(this);
-        mContainerMain = findViewById(R.id.container);
+        mContainerMain = findViewById(com.tokopedia.design.R.id.container);
         initViews();
         UserSessionInterface userSession = new UserSession(this);
-        if (userSession.isLoggedIn()) {
-            if (getApplicationContext() instanceof TokopointRouter
-                    && ((TokopointRouter) getApplicationContext())
-                    .getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_COUPON_LISTING, false)) {
-                finish();
-                if (getIntent() == null || getIntent().getExtras() == null) {
-                    startActivity(CouponListingStackedActivity.getCallingIntent(this));
-                } else {
-                    startActivity(CouponListingStackedActivity.getCallingIntent(this, getIntent().getExtras()));
-                }
-            } else {
-                mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
-                showLoading();
-            }
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+        Bundle bundle = new Bundle();
+        if ( getIntent().getData() != null ) {
+            bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING, getIntent().getData(),bundle);
         }
+        startActivity(CouponListingStackedActivity.getCallingIntent(this, bundle));
+        finish();
     }
 
     @Override
@@ -94,10 +85,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
         return tokoPointComponent;
     }
 
-    @DeepLink({ApplinkConstant.COUPON_LISTING,
-            ApplinkConstant.COUPON_LISTING2,
-            ApplinkConstant.COUPON_LISTING3,
-            ApplinkConstant.COUPON_LISTING4})
+
     public static Intent getCallingIntent(Context context, @NonNull Bundle extras) {
         Intent intent = new Intent(context, MyCouponListingActivity.class);
         intent.putExtras(extras);
