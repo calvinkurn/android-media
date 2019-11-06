@@ -1115,7 +1115,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private val REQUEST_OTP_VALIDATE = 113
         private val REQUEST_PENDING_OTP_VALIDATE = 114
 
-        private const val OTP_TYPE_ACTIVATE = "142"
+        private const val OTP_TYPE_ACTIVATE = "143"
         private const val OTP_TYPE_REGISTER = "126"
 
         private val FACEBOOK = "facebook"
