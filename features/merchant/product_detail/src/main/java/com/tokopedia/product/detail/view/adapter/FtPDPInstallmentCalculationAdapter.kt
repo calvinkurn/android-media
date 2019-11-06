@@ -17,7 +17,7 @@ import kotlin.math.roundToLong
 
 class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                                          var isOfficialStore: Boolean,
-                                         var data: ArrayList<FtCalculationPartnerData>,
+                                         var partnerDataList: ArrayList<FtCalculationPartnerData>,
                                          var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
@@ -28,14 +28,14 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return partnerDataList.size
     }
 
     override fun onBindViewHolder(vHolder: RecyclerView.ViewHolder, position: Int) {
 
         val mContext = vHolder.itemView.context ?: return
 
-        val item = data[position]
+        val item = partnerDataList[position]
         val ftTncData = getDataFromFragment.getTncData(item.tncId)
 
         if (vHolder is InstallmentItemViewHolder) {
@@ -77,7 +77,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                         tvInstallmentMinimumPriceExt.text = String.format(mContext.getString(R.string.ft_min_installment_amount),
                                 CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.minimumAmount, false))
                     } else {
-                        if(installmentData.maximumAmount == 0) {
+                        if (installmentData.maximumAmount == 0) {
                             tvInstallmentMinimumPriceExt.hide()
                             tvInstallmentPriceExt.show()
                             priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(monthlyProductPrice.roundToLong(), false)
@@ -101,13 +101,36 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 vHolder.llInstallmentDetail.addView(view)
             }
 
+            if (item.expandLayout) {
+                vHolder.llInstallmentContainer.show()
+            } else {
+                vHolder.llInstallmentContainer.hide()
+            }
+
+            vHolder.rlMainContainer.setOnClickListener {
+                if (item.expandLayout) {
+                    vHolder.ivInstallmentToggle.animate().rotation(0f).duration = 300
+                    vHolder.llInstallmentContainer.hide()
+                } else {
+                    vHolder.ivInstallmentToggle.animate().rotation(180f).duration = 300
+                    vHolder.llInstallmentContainer.show()
+                }
+                item.expandLayout = !item.expandLayout
+                for (index in 0 until partnerDataList.size) {
+                    if (position != index && item.expandLayout == partnerDataList[index].expandLayout) {
+                        partnerDataList[index].expandLayout = !item.expandLayout
+                        notifyItemChanged(index)
+                    }
+                }
+            }
+
             inflateInstructionListData(vHolder, position, mContext)
         }
     }
 
     private fun inflateInstructionListData(vHolder: InstallmentItemViewHolder, position: Int, context: Context) {
 
-        val item = data[position]
+        val item = partnerDataList[position]
 
         if (item.creditCardInstructionList.isEmpty()) {
             vHolder.tvInstallmentDataHeading.hide()
@@ -162,7 +185,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
 
         private var expandLayout = true
 
-        init {
+        /*init {
             rlMainContainer.setOnClickListener {
                 if (expandLayout) {
                     ivInstallmentToggle.animate().rotation(180f).duration = 300
@@ -173,6 +196,6 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                 }
                 expandLayout = !expandLayout
             }
-        }
+        }*/
     }
 }

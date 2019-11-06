@@ -193,7 +193,9 @@ data class FtCalculationPartnerData(
         val creditCardInstallmentList: ArrayList<CalculationInstallmentData> = ArrayList(),
 
         @SerializedName("instruction_list")
-        val creditCardInstructionList: ArrayList<PaymentPartnerInstructionData> = ArrayList()
+        val creditCardInstructionList: ArrayList<PaymentPartnerInstructionData> = ArrayList(),
+
+        var expandLayout: Boolean = false
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -206,7 +208,8 @@ data class FtCalculationPartnerData(
             },
             arrayListOf<PaymentPartnerInstructionData>().apply {
                 parcel.readList(this, PaymentPartnerInstructionData::class.java.classLoader)
-            }
+            },
+            parcel.readByte() != 0.toByte()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -216,6 +219,7 @@ data class FtCalculationPartnerData(
         parcel.writeInt(tncId)
         parcel.writeList(creditCardInstallmentList)
         parcel.writeList(creditCardInstructionList)
+        parcel.writeByte(if(expandLayout) 1 else 0)
     }
 
     override fun describeContents(): Int {
