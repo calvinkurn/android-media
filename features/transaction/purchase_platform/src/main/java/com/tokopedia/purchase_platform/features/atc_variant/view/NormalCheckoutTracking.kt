@@ -59,14 +59,17 @@ class NormalCheckoutTracking {
                                      trackerAttribution: String?,
                                      trackerListName: String?,
                                      multiOrigin: Boolean,
-                                     reference: String = "",
-                                     isFreeOngkir: Boolean
+                                     reference: String,
+                                     isFreeOngkir: Boolean,
+                                     customEventLabel: String,
+                                     customEventAction: String
     ) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
             "click - tambah ke keranjang on variants page",
             selectedVariantId, selectedProductInfo,
             qty, shopId, shopType, shopName, cartId,
-            trackerAttribution, trackerListName, multiOrigin, reference, isFreeOngkir)
+            trackerAttribution, trackerListName, multiOrigin, reference, isFreeOngkir,
+            customEventLabel, customEventAction)
     }
 
     fun eventClickBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -118,16 +121,20 @@ class NormalCheckoutTracking {
                                                   trackerListName: String?,
                                                   multiOrigin: Boolean,
                                                   reference: String = "",
-                                                  isFreeOngkir: Boolean = false
+                                                  isFreeOngkir: Boolean = false,
+                                                  customEventLabel: String = "",
+                                                  customEventAction: String = ""
                                                   ) {
         val dimension83 = if (isFreeOngkir) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
         if (originalProductInfoAndVariant == null) {
             isTrackTradeIn = false
             return
         }
+
         var productVariantString = (originalProductInfoAndVariant.productVariant
             .getOptionListString(selectedVariantId)?.joinToString(" - ")
             ?: "non variant")
+
         val category: String = if (isTrackTradeIn) {
             productVariantString = ""
             HARGA_FINAL_TRADEIN
@@ -136,12 +143,23 @@ class NormalCheckoutTracking {
         } else {
             PRODUCT_DETAIL_PAGE
         }
+
+        val eventLabel = when {
+            reference == ApplinkConst.TOPCHAT && customEventLabel.isNotEmpty() -> customEventLabel
+            else -> productVariantString
+        }
+
+        val eventAction = when {
+            reference == ApplinkConst.TOPCHAT && customEventAction.isNotEmpty() -> customEventAction
+            else -> actionLabel
+        }
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             mutableMapOf<String, Any>(
                 "event" to "addToCart",
                 "eventCategory" to category,
-                "eventAction" to actionLabel,
-                "eventLabel" to productVariantString,
+                "eventAction" to eventAction,
+                "eventLabel" to eventLabel,
                 KEY_PRODUCT_ID to selectedProductInfo.basic.id,
                 "ecommerce" to mutableMapOf(
                     "currencyCode" to "IDR",
