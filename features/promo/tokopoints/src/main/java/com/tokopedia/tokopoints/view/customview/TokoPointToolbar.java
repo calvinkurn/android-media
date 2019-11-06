@@ -12,16 +12,17 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
-import android.support.annotation.ColorInt;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.AppCompatImageButton;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tokopoints.R;
@@ -91,7 +92,7 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
     private void initDrawableResources() {
 
-        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_new_action_back);
+        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_new_action_back_tokopoints);
 
         leaderboardWhiteDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_leaderboard);
         leaderboardGreyDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_tp_leaderboard_grey);
@@ -192,7 +193,7 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
     public void applyAlphaToToolbarBackground(float alpha) {
         setBackgroundColor(
-                adjustAlpha(mContext.getResources().getColor(R.color.white), alpha));
+                adjustAlpha(mContext.getResources().getColor(com.tokopedia.design.R.color.white), alpha));
     }
 
     @ColorInt

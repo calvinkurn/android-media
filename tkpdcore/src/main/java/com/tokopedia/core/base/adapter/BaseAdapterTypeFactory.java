@@ -1,6 +1,6 @@
 package com.tokopedia.core.base.adapter;
 
-import android.support.annotation.CallSuper;
+import androidx.annotation.CallSuper;
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.exception.TypeNotSupportedException;

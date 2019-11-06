@@ -118,6 +118,7 @@ class CartMapperData : ICartMapperData {
                 crossSellingConfig?.run {
                     val crossSellingConfig = CrossSellingConfig()
                     crossSellingConfig.isSkipAble = isSkipAble
+                    crossSellingConfig.isChecked = isChecked
 
                     val crossSellingWording = if (cartDigitalInfoData.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED) {
                         wordingIsSubscribed
@@ -133,6 +134,8 @@ class CartMapperData : ICartMapperData {
                         cartDigitalInfoData.crossSellingConfig = crossSellingConfig
                     }
                 }
+
+                attributesDigital.fintechProduct = fintechProduct
             }
 
             cartDigitalInfoData.additionalInfos = cartAdditionalInfoList

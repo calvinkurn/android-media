@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.support.annotation.Nullable
 import android.text.TextUtils
+import androidx.annotation.Nullable
 import com.bumptech.glide.Glide
 import com.tokopedia.notifications.model.Carousel
 import com.tokopedia.notifications.model.ProductInfo
@@ -64,8 +64,7 @@ object CarouselUtilities {
 
     private fun getBitmap(context: Context, url: String?): Bitmap? {
         return try {
-            Glide.with(context).load(url)
-                    .asBitmap()
+            Glide.with(context).asBitmap().load(url)
                     .into(MAX_WIDTH, MAX_HEIGHT)
                     .get(GLIDE_TIME_OUT, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
@@ -77,6 +76,7 @@ object CarouselUtilities {
         } catch (e: IllegalArgumentException) {
             return null
         }
+        return null
     }
 
     @Nullable

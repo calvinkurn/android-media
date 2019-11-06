@@ -4,7 +4,7 @@ package com.tokopedia.flight.common.util;
  * Created by zulfikarrahman on 12/14/17.
  */
 
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

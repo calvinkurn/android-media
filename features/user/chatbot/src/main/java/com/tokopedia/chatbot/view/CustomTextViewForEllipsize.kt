@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.view
 
 import android.content.Context
-import android.support.v7.widget.AppCompatTextView
+import androidx.appcompat.widget.AppCompatTextView
 import android.text.DynamicLayout
 import android.text.StaticLayout
 import android.util.AttributeSet

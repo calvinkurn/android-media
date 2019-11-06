@@ -5,10 +5,10 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.widget.TextViewCompat;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.core.widget.TextViewCompat;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -87,7 +87,7 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
                 mSuccessFocusColor);
         mSuccessTextAppearance = a.getResourceId(
                 R.styleable.TkpdTextInputLayout_ttil_successTextAppearance,
-                android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Caption);
+                androidx.appcompat.R.style.TextAppearance_AppCompat_Caption);
         mPrefixString = a.getString(
                 R.styleable.TkpdTextInputLayout_ttil_prefixString);
         a.recycle();
@@ -181,7 +181,7 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
                     // Probably caused by our theme not extending from Theme.Design*. Instead
                     // we manually set something appropriate
                     TextViewCompat.setTextAppearance(mSuccessView,
-                            android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Caption);
+                            androidx.appcompat.R.style.TextAppearance_AppCompat_Caption);
                 }
 
                 int[][] states = new int[][] {

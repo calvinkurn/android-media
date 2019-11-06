@@ -13,7 +13,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
                 android:padding="@dimen/dp_10">
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <ImageView
@@ -251,7 +251,7 @@
                                         android:visibility="gone"/>
 
                         </FrameLayout>
-                        <android.support.constraint.Barrier
+                        <androidx.constraintlayout.widget.Barrier
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:id="@+id/barrier"
@@ -259,6 +259,6 @@
                                 app:constraint_referenced_ids="review_count,rating,location,badge,product_image"
                                 tools:layout_editor_absoluteY="19dp"
                                 tools:layout_editor_absoluteX="19dp"/>
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
         </com.tokopedia.unifycomponents.CardUnify>
 </com.tokopedia.unifycomponents.ContainerUnify>

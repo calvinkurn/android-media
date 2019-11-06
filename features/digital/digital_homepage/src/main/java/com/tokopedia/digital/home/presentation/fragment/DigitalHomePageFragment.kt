@@ -1,20 +1,20 @@
 package com.tokopedia.digital.home.presentation.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.RelativeLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
@@ -141,8 +141,30 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
         viewModel.digitalHomePageList.observe(this, Observer {
             clearAllData()
-            it?.run { renderList(this) }
+            it?.run {
+                mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_ORDER])?.let { categoryData ->
+                    trackingUtil.eventCategoryImpression(categoryData)
+                }
+                renderList(this)
+            }
         })
+
+        viewModel.isAllError.observe(this, Observer {
+            it?.let { isAllError ->
+                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView, object : NetworkErrorHelper.RetryClickedListener {
+                    override fun onRetryClicked() {
+                        loadDataFromCloud()
+                    }
+                })
+            }
+        })
+    }
+
+    fun loadDataFromCloud() {
+        isLoadingInitialData = true
+        adapter.clearAllElements()
+        showLoading()
+        viewModel.getInitialList(true)
     }
 
     override fun loadData(page: Int) {
@@ -182,7 +204,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
-        trackingUtil.eventCategoryImpression(element, position)
+        // do nothing
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
@@ -211,6 +233,19 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     override fun onClickMyBills() {
         trackingUtil.eventClickLangganan()
         RouteManager.route(activity, APPLINK_HOME_MYBILLS)
+    }
+
+    private fun mapCategoryData(data: DigitalHomePageItemModel): List<DigitalHomePageCategoryModel.Submenu>? {
+        if (data is DigitalHomePageCategoryModel) {
+            val categoryList = mutableListOf<DigitalHomePageCategoryModel.Submenu>()
+            for (subtitle in data.listSubtitle) {
+                for (submenu in subtitle.submenu) {
+                    categoryList.add(submenu)
+                }
+            }
+            return categoryList
+        }
+        return null
     }
 
     companion object {

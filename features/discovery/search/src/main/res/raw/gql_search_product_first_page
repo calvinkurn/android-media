@@ -107,14 +107,6 @@ query SearchProduct(
         }
     }
 
-    ace_guide(q: $query) {
-        data {
-            applink
-            keyword
-            url
-        }
-    }
-
     quick_filter(query: $query, extraParams: $params) {
         filter {
             options {

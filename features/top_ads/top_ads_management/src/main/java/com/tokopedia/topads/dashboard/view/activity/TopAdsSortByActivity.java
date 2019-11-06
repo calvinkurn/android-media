@@ -2,8 +2,8 @@ package com.tokopedia.topads.dashboard.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;

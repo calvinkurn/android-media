@@ -13,7 +13,7 @@
         android:layout_weight="1"
         app:decimal_max_length="@integer/product_max_counter_int_length" />
 
-    <android.support.v7.widget.AppCompatImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/image_button_minus"
         style="@style/ImageButton.Counter"
         android:layout_marginLeft="@dimen/dp_5"
@@ -21,7 +21,7 @@
         android:layout_marginTop="@dimen/dp_8"
         app:srcCompat="@drawable/bg_button_counter_minus" />
 
-    <android.support.v7.widget.AppCompatImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/image_button_plus"
         style="@style/ImageButton.Counter"
         android:layout_marginLeft="@dimen/dp_5"

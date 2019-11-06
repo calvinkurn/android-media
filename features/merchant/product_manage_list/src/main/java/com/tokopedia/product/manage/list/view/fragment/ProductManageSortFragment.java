@@ -13,13 +13,14 @@ import com.tokopedia.product.manage.list.di.ProductManageModule;
 import com.tokopedia.product.manage.list.view.adapter.ProductManageSortAdapter;
 import com.tokopedia.product.manage.list.view.listener.ProductManageSortView;
 import com.tokopedia.product.manage.list.view.presenter.ProductManageSortPresenter;
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_SORT_SELECTED;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
@@ -35,7 +36,7 @@ public class ProductManageSortFragment extends BaseListFragment<ProductManageSor
     public static ProductManageSortFragment createInstance(String selectedSortProduct) {
         ProductManageSortFragment productManageSortFragment = new ProductManageSortFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ProductManageConstant.EXTRA_SORT_SELECTED, selectedSortProduct);
+        bundle.putString(EXTRA_SORT_SELECTED, selectedSortProduct);
         productManageSortFragment.setupArguments(bundle);
         return productManageSortFragment;
     }
@@ -59,7 +60,7 @@ public class ProductManageSortFragment extends BaseListFragment<ProductManageSor
     @Override
     protected void setupArguments(Bundle arguments) {
         super.setupArguments(arguments);
-        selectedSortProduct = arguments.getString(ProductManageConstant.EXTRA_SORT_SELECTED, SortProductOption.POSITION);
+        selectedSortProduct = arguments.getString(EXTRA_SORT_SELECTED, SortProductOption.POSITION);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class ProductManageSortFragment extends BaseListFragment<ProductManageSor
         ((ProductManageSortAdapter) adapter).setSortProductOption(productManageSortModel.getId());
         adapter.notifyDataSetChanged();
         Intent intent = new Intent();
-        intent.putExtra(ProductManageConstant.EXTRA_SORT_SELECTED, productManageSortModel);
+        intent.putExtra(EXTRA_SORT_SELECTED, productManageSortModel);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

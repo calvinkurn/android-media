@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:padding="@dimen/dp_8">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_reviewer"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
@@ -24,7 +24,7 @@
             android:layout_alignParentTop="true"
             tools:src="@color/grey_300"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_quote"
             android:layout_width="55dp"
             android:layout_height="40dp"
@@ -66,7 +66,7 @@
             app:fontSize="micro"
             app:textViewTheme="lightDisabled"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_rating_review"
             android:layout_width="80dp"
             android:layout_height="20dp"
@@ -93,7 +93,7 @@
             app:fontSize="small"
             app:textViewTheme="lightSecondary"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_review_attachment"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_width="match_parent"
@@ -108,4 +108,4 @@
 
     </RelativeLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

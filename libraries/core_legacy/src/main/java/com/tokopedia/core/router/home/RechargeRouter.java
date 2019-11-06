@@ -2,7 +2,7 @@ package com.tokopedia.core.router.home;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * @author Kulomady on 11/22/16.

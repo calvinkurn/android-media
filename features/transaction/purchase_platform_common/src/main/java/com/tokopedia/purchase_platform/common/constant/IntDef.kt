@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.common.constant
 
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 
 @IntDef(ATC_ONLY, ATC_AND_BUY, TRADEIN_BUY, APPLY_CREDIT)
 @Retention(AnnotationRetention.SOURCE)

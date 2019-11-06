@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chattemplate.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
-import android.support.v4.view.MotionEventCompat;
+import androidx.annotation.LayoutRes;
+import androidx.core.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;

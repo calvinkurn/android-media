@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
-import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
@@ -51,9 +50,9 @@ public class PromoCouponViewModule {
 
     @Provides
     @LoyaltyScope
-    IPromoCouponPresenter provideIPromoCouponPresenter(IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase,
+    IPromoCouponPresenter provideIPromoCouponPresenter(IPromoCouponInteractor promoCouponInteractor,
                                                        TrainCheckVoucherUseCase trainVoucherUseCase, @ApplicationContext Context context) {
-        return new PromoCouponPresenter(view, promoCouponInteractor, flightCheckVoucherUseCase, trainVoucherUseCase, new UserSession(context));
+        return new PromoCouponPresenter(view, promoCouponInteractor, trainVoucherUseCase, new UserSession(context));
     }
 
 
@@ -63,12 +62,6 @@ public class PromoCouponViewModule {
             return (LoyaltyModuleRouter) context;
         }
         throw new RuntimeException("Applicaton should implement LoyaltyModuleRouter");
-    }
-
-
-    @Provides
-    FlightCheckVoucherUseCase provideFlightCheckVoucherUseCase(LoyaltyModuleRouter loyaltyModuleRouter) {
-        return new FlightCheckVoucherUseCase(loyaltyModuleRouter);
     }
 
 

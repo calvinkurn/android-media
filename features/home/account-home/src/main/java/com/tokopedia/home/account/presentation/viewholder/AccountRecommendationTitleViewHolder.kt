@@ -1,7 +1,7 @@
 package com.tokopedia.home.account.presentation.viewholder
 
-import android.support.annotation.LayoutRes
-import android.support.v4.widget.TextViewCompat
+import androidx.annotation.LayoutRes
+import androidx.core.widget.TextViewCompat
 import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

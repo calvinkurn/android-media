@@ -1,12 +1,12 @@
 package com.tokopedia.home_recom.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -65,7 +65,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.run{
-            (this as HomeRecommendationActivity).supportActionBar?.title = ""
+            (this as HomeRecommendationActivity).supportActionBar?.title = getString(R.string.recom_similar_recommendation)
         }
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
@@ -90,9 +90,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                     it.status.isEmpty() -> showEmpty()
                     it.status.isError() -> showGetListError(Throwable(it.message))
                     it.status.isSuccess() -> {
-                        it.data?.get(0)?.let {
-                            activity?.run{
-                                (this as HomeRecommendationActivity).supportActionBar?.title = if(it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
+                        if(it.data?.isNotEmpty() == true){
+                            it.data[0].let {
+                                activity?.run{
+                                    (this as HomeRecommendationActivity).supportActionBar?.title = if(it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
+                                }
                             }
                         }
                         renderList(mapDataModel(it.data ?: emptyList()), true)
@@ -149,7 +151,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
     }
 
     override fun loadData(page: Int) {
-        recommendationViewModel.getSimilarProductRecommendation(page, ref, productId)
+        recommendationViewModel.getSimilarProductRecommendation(page, source, productId)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {

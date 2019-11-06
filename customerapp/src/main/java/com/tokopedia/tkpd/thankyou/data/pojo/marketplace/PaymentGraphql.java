@@ -11,19 +11,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 public class PaymentGraphql {
     @SerializedName("payment")
     @Expose
-    PaymentData payment;
-
-    @SerializedName("new_buyer_flag")
-    @Expose
-    private boolean newBuyerFlag;
-
-    public boolean isNewBuyerFlag() {
-        return newBuyerFlag;
-    }
-
-    public void setNewBuyerFlag(boolean newBuyerFlag) {
-        this.newBuyerFlag = newBuyerFlag;
-    }
+    private PaymentData payment;
 
     public PaymentData getPayment() {
         return payment;
