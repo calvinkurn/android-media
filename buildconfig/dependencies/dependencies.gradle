@@ -208,7 +208,6 @@ ext {
             dagger                : "com.google.dagger:dagger:2.5",
             daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
             bcaxcoWidget          : "com.bca.xco.widget:BCAXCOWidget:1.0@aar",
-            brizzi                : "id.co.bri.sdk:brizzi:0.2@aar",
 
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
