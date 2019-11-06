@@ -90,7 +90,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
     private var originalBtnText: String? = null
     private var couponCodeAfterClaim: String? = null
-    private var shouldCallAutoApply = true
+    private var shouldCallAutoApply = false
     private val rightViewList = ArrayList<View>()
     private val leftViewList = ArrayList<View>()
     private var bottomSheetFmContainer: ViewGroup? = null
@@ -156,7 +156,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
              gratificationData: GratificationData,
              claimCouponApi: ClaimCouponApi,
              autoHitActionButton: Boolean): Dialog? {
-        Log.wtf("NOOB", "Hashcode = ${activityContext.hashCode()}")
         if (activityContext is Activity && activityContext.isFinishing) {
             return null
         }
@@ -319,6 +318,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         performAnimationToGotoClaimUI()
         couponCodeAfterClaim = data.popGratificationClaim?.dummyCouponCode
         this.data = data
+        shouldCallAutoApply = true
     }
 
     private fun setListeners(activityContext: Context) {
@@ -339,6 +339,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         viewModel.autoApplyLiveData.observe((activityContext as AppCompatActivity), autoApplyObserver!!)
 
         btnAction.setOnClickListener {
+            shouldCallAutoApply = false
             if (!skipBtnAction) {
 
                 val retryAvailable = retryCount < MAX_RETRY_COUNT
@@ -351,13 +352,11 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                     } else if (data is ClaimPopGratificationResponse) {
                         performActionAfterCouponIsClaimed(activityContext, data as ClaimPopGratificationResponse)
                     } else {
-                        shouldCallAutoApply = false
                         bottomSheetDialog.dismiss()
                     }
                 } else {
                     dropKeysFromBundle(ApplinkConst.HOME, activityContext.intent)
                     RouteManager.route(btnAction.context, ApplinkConst.HOME)
-                    shouldCallAutoApply = false
                     bottomSheetDialog.dismiss()
                 }
                 skipBtnAction = true
@@ -413,7 +412,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         if (!TextUtils.isEmpty(applink)) {
             dropKeysFromBundle(applink, activityContext.intent)
             RouteManager.route(btnAction.context, applink)
-            shouldCallAutoApply = false
             bottomSheetDialog.dismiss()
         }
     }
@@ -433,7 +431,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             } else {
                 dropKeysFromBundle(applink, activityContext.intent)
                 RouteManager.route(btnAction.context, applink)
-                shouldCallAutoApply = false
                 bottomSheetDialog.dismiss()
             }
         } else {
@@ -442,7 +439,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             val bundle = addGratificationDataInBundleIfNotLoggedIn(activityContext, gratificationData)
             activityContext.intent.putExtras(bundle)
             activityContext.intent?.putExtra(PARAM_WAITING_FOR_LOGIN, true)
-            shouldCallAutoApply = false
 
             val handler = Handler()
             handler.postDelayed({
