@@ -5,10 +5,7 @@ import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteRe
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.Data
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.PredictionsItem
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.StructuredFormatting
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompletePredictionUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteResponseUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteStructuredFormattingUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.*
 import javax.inject.Inject
 
 /**
@@ -27,14 +24,28 @@ class AutocompleteMapper @Inject constructor() {
         return AutocompleteResponseUiModel(dataUiModel)
     }
 
+    fun mapLean(response: AutocompleteResponse): List<AutoCompleteResultUi> {
+        val dataResponse = response.keroMapsAutocomplete.data.predictions
+        return dataResponse.map {
+            AutoCompleteResultUi(
+                    it.types,
+                    it.matchedSubstrings,
+                    it.terms,
+                    it.structuredFormatting,
+                    it.description, it.placeId
+            )
+        }
+    }
+
     private fun mapData(data: Data): AutocompleteDataUiModel {
         val listPredictions = data.predictions.map {
-            mapPrediction(it) }
+            mapPrediction(it)
+        }
 
         return AutocompleteDataUiModel(listPredictions)
     }
 
-    private fun mapPrediction(predictionsItem: PredictionsItem) : AutocompletePredictionUiModel {
+    private fun mapPrediction(predictionsItem: PredictionsItem): AutocompletePredictionUiModel {
         var structuredFormattingUiModel = AutocompleteStructuredFormattingUiModel()
         var placeId: String
         predictionsItem.let {
@@ -44,7 +55,7 @@ class AutocompleteMapper @Inject constructor() {
         return AutocompletePredictionUiModel(placeId, structuredFormattingUiModel)
     }
 
-    private fun mapStructuredFormatting(structuredFormatting: StructuredFormatting) : AutocompleteStructuredFormattingUiModel {
+    private fun mapStructuredFormatting(structuredFormatting: StructuredFormatting): AutocompleteStructuredFormattingUiModel {
         return AutocompleteStructuredFormattingUiModel(
                 mainText = structuredFormatting.mainText,
                 secondaryText = structuredFormatting.secondaryText

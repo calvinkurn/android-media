@@ -1,0 +1,13 @@
+package com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete
+
+import com.tokopedia.logisticaddaddress.domain.model.autocomplete.MatchedSubstringsItem
+import com.tokopedia.logisticaddaddress.domain.model.autocomplete.StructuredFormatting
+import com.tokopedia.logisticaddaddress.domain.model.autocomplete.TermsItem
+
+data class AutoCompleteResultUi(
+        val types: List<String> = emptyList(),
+        val matchedSubstrings: List<MatchedSubstringsItem> = emptyList(),
+        val terms: List<TermsItem> = emptyList(),
+        val structuredFormatting: StructuredFormatting = StructuredFormatting(),
+        val description: String = "",
+        val placeId: String = "")
