@@ -27,7 +27,7 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
                 deleteActiveNotification()
                 deleteNotificationByStatus(NotificationStatus.DELETE)
                 deleteAllPrevCompleted()
-                clearNotificationMediaForExpiredNotification();
+                clearNotificationMediaForExpiredNotification()
             } catch (e: Throwable) {
             }
             Result.success()

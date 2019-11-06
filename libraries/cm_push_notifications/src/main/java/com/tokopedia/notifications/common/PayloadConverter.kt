@@ -10,6 +10,8 @@ import com.tokopedia.notifications.model.*
 import org.json.JSONObject
 import java.util.*
 
+const val HOURS_24_IN_MILLIS: Long = 24 * 60 * 60 * 1000L
+
 object PayloadConverter {
 
     private val TAG = PayloadConverter::class.java.simpleName
@@ -72,19 +74,23 @@ object PayloadConverter {
         model.startTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_START_TIME)) {
             try {
                 data.getString(CMConstant.PayloadKeys.NOTIFICATION_START_TIME).toLong()
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 0L
             }
-        }
-        else 0L
-        model.endTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_END_TIME)){
+        } else 0L
+        model.endTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_END_TIME)) {
             try {
                 data.getString(CMConstant.PayloadKeys.NOTIFICATION_END_TIME).toLong()
-            }catch (e : Exception){
+            } catch (e: Exception) {
                 0L
             }
+        } else 0L
+        if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
+                        model.endTime == 0L)) {
+            model.startTime = System.currentTimeMillis()
+            model.endTime = System.currentTimeMillis() + HOURS_24_IN_MILLIS
         }
-        else 0L
+
         model.status = NotificationStatus.PENDING
 
         return model

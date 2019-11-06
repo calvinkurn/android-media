@@ -35,7 +35,7 @@ object CarouselUtilities {
 
     fun downloadCarouselImages(context: Context, carouselList: List<Carousel>) {
         for (carousel in carouselList) {
-            if (TextUtils.isEmpty(carousel.icon)) {
+            if (TextUtils.isEmpty(carousel.icon) || !TextUtils.isEmpty(carousel.filePath)) {
                 continue
             }
             val bitmap = getBitmap(context, carousel.icon)
@@ -51,11 +51,13 @@ object CarouselUtilities {
             if (TextUtils.isEmpty(productInfo.productImage)) {
                 continue
             }
-            val bitmap = getBitmap(context, productInfo.productImage)
-            if (null != bitmap) {
-                val path = saveBitmapToInternalStorage(context, bitmap, IMAGE_DIR_PRODUCT)
-                path?.let {
-                    productInfo.productImage = path
+            if(productInfo.productImage.startsWith("http")) {
+                val bitmap = getBitmap(context, productInfo.productImage)
+                if (null != bitmap) {
+                    val path = saveBitmapToInternalStorage(context, bitmap, IMAGE_DIR_PRODUCT)
+                    path?.let {
+                        productInfo.productImage = path
+                    }
                 }
             }
         }
