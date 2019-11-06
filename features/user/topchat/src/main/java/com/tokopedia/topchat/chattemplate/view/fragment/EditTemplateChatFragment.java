@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -115,6 +115,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         int i = item.getItemId();
         if (i == R.id.action_organize) {
             if (allowDelete == ENABLE_DELETE) {
+                analytics.trackDeleteTemplateChat();
                 showDialogDelete();
             } else {
                 showError(new MessageErrorException(getActivity().getString(R.string
@@ -134,6 +135,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        analytics.trackConfirmDeleteTemplateChat();
                         presenter.deleteTemplate(getArguments().getInt(InboxMessageConstant.PARAM_POSITION));
                         dialog.dismiss();
                     }
@@ -196,6 +198,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                analytics.trackSaveTemplateChat();
                 presenter.submitText(editText.getText().toString(), message, list);
             }
         });

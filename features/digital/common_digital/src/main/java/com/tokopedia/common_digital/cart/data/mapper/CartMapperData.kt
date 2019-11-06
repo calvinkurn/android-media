@@ -1,5 +1,6 @@
 package com.tokopedia.common_digital.cart.data.mapper
 
+import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType
 import com.tokopedia.common_digital.cart.data.entity.response.AdditionalInfo
 import com.tokopedia.common_digital.cart.data.entity.response.AutoApplyVoucher
 import com.tokopedia.common_digital.cart.data.entity.response.Detail
@@ -8,17 +9,8 @@ import com.tokopedia.common_digital.cart.data.entity.response.RelationshipsCart
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData
 import com.tokopedia.common_digital.cart.domain.model.PostPaidPopupAttribute
-import com.tokopedia.common_digital.cart.view.model.cart.AttributesDigital
-import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo
-import com.tokopedia.common_digital.cart.view.model.cart.CartAutoApplyVoucher
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
-import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital
-import com.tokopedia.common_digital.cart.view.model.cart.CrossSellingConfig
+import com.tokopedia.common_digital.cart.view.model.cart.*
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
-import com.tokopedia.common_digital.cart.view.model.cart.Relation
-import com.tokopedia.common_digital.cart.view.model.cart.RelationData
-import com.tokopedia.common_digital.cart.view.model.cart.Relationships
-import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital
 import com.tokopedia.common_digital.common.MapperDataException
 import com.tokopedia.common_digital.product.data.response.PostPaidPopup
 
@@ -121,18 +113,31 @@ class CartMapperData : ICartMapperData {
             relationships.relationOperator = Relation(relationDataOperator)
             relationships.relationProduct = Relation(relationDataProduct)
 
-            if (responseCartData.attributes!!.crossSellingConfig != null) {
-                val crossSellingConfig = CrossSellingConfig()
-                crossSellingConfig.isSkipAble = responseCartData.attributes!!.crossSellingConfig!!.isSkipAble
-                crossSellingConfig.headerTitle = responseCartData.attributes!!.crossSellingConfig!!.wording!!.headerTitle
-                crossSellingConfig.bodyTitle = responseCartData.attributes!!.crossSellingConfig!!.wording!!.bodyTitle
-                crossSellingConfig.bodyContentBefore = responseCartData.attributes!!.crossSellingConfig!!.wording!!.bodyContentBefore
-                crossSellingConfig.bodyContentAfter = responseCartData.attributes!!.crossSellingConfig!!.wording!!.bodyContentAfter
-                crossSellingConfig.checkoutButtonText = responseCartData.attributes!!.crossSellingConfig!!.wording!!.checkoutButtonText
-                cartDigitalInfoData.crossSellingConfig = crossSellingConfig
+            responseCartData.attributes?.run {
+                cartDigitalInfoData.crossSellingType = crossSellingType
+                crossSellingConfig?.run {
+                    val crossSellingConfig = CrossSellingConfig()
+                    crossSellingConfig.isSkipAble = isSkipAble
+                    crossSellingConfig.isChecked = isChecked
+
+                    val crossSellingWording = if (cartDigitalInfoData.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED) {
+                        wordingIsSubscribed
+                    } else {
+                        wording
+                    }
+                    crossSellingWording?.run {
+                        crossSellingConfig.headerTitle = headerTitle
+                        crossSellingConfig.bodyTitle = bodyTitle
+                        crossSellingConfig.bodyContentBefore = bodyContentBefore
+                        crossSellingConfig.bodyContentAfter = bodyContentAfter
+                        crossSellingConfig.checkoutButtonText = checkoutButtonText
+                        cartDigitalInfoData.crossSellingConfig = crossSellingConfig
+                    }
+                }
+
+                attributesDigital.fintechProduct = fintechProduct
             }
 
-            cartDigitalInfoData.crossSellingType = responseCartData.attributes!!.crossSellingType
             cartDigitalInfoData.additionalInfos = cartAdditionalInfoList
             cartDigitalInfoData.attributes = attributesDigital
             cartDigitalInfoData.id = responseCartData.id

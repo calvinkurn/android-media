@@ -64,6 +64,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.dialog
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.analytics)
@@ -91,6 +92,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
+    implementation project(rootProject.ext.features.logisticdata)
     //-------------------------------------------------------------------//
 
 
@@ -98,15 +100,13 @@ dependencies {
     //----------------------- Sub Feature Section -----------------------//
     //-------------------------------------------------------------------//
     implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.features.logisticcart)
     //-------------------------------------------------------------------//
 
 
     //-------------------------------------------------------------------//
     //--------- Feature Section (This section should be empty!!) --------//
     //-------------------------------------------------------------------//
-    implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticaddaddress)
-    implementation project(rootProject.ext.features.logisticcart)
     // productCard & topAdsSdk is used for recommendation section on cart
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.topAdsSdk)

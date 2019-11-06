@@ -6,12 +6,12 @@
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/dp_8">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/dp_56"
             android:layout_height="@dimen/dp_56"
             app:srcCompat="@drawable/bg_cross_sell_category"
@@ -19,7 +19,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_image"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
@@ -72,6 +72,6 @@
             app:typographyType="body_3"
             tools:text="Kalau belum, beli tiket pesawat ke Bali, yuk!" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>

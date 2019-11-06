@@ -381,8 +381,27 @@
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
 
+
+-dontwarn androidx.appcompat.widget.RebindReportingHolder
+
 # -- laku6
 -keep class com.scottyab.rootbeer.** { *; }
 -dontwarn com.scottyab.rootbeer.**
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
 -dontwarn kotlinx.coroutines.flow.**inlined**
+
+# -- Unit Test
+-keep class junit.framework.** { *; }
+-keep class android.test.** { *; }
+-keep class org.mockito.** { *; }
+-keep class org.junit.** { *; }
+-dontwarn junit.framework.**
+-dontwarn android.test.**
+-dontwarn org.mockito.**
+-dontwarn org.junit.**
+
+-keep public class com.google.android.material.bottomnavigation.** { *; }
+
+-keepclassmembers public class com.google.android.material.bottomsheet.BottomSheetDialog {
+    private <fields>;
+}

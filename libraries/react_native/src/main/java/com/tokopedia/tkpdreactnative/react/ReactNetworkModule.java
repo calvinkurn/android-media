@@ -11,13 +11,13 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
@@ -58,8 +58,6 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     @Inject
     UnifyReactNetworkRepository unifyReactNetworkRepository;
 
-    ReactNativeNetworkComponent daggerRnNetworkComponent;
-
     private CompositeSubscription compositeSubscription;
     private Context context;
 
@@ -67,10 +65,11 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         super(reactContext);
 
         this.context = reactContext;
-        if (reactContext.getApplicationContext() instanceof MainApplication) {
-            AppComponent appComponent = ((MainApplication) reactContext.getApplicationContext()).getApplicationComponent();
-            daggerRnNetworkComponent = DaggerReactNativeNetworkComponent.builder()
-                    .appComponent(appComponent).build();
+        if (reactContext.getApplicationContext() instanceof BaseMainApplication) {
+            BaseAppComponent appComponent = ((BaseMainApplication) reactContext.getApplicationContext())
+                    .getBaseAppComponent();
+            ReactNativeNetworkComponent daggerRnNetworkComponent = DaggerReactNativeNetworkComponent.builder()
+                    .baseAppComponent(appComponent).build();
             daggerRnNetworkComponent.inject(this);
             compositeSubscription = new CompositeSubscription();
         } else {
@@ -108,7 +107,8 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getResponse(String url, String method, String request, Boolean isAuth, final Promise promise) {
         try {
-            compositeSubscription.add(reactNetworkRepository.getResponse(url, method, convertStringRequestToHashMap(request), isAuth)
+            compositeSubscription.add(reactNetworkRepository.getResponse(url, method,
+                    convertStringRequestToHashMap(request), isAuth)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(new Subscriber<String>() {
                         @Override
@@ -264,22 +264,28 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getBaseApiUrl(String param, Promise promise){
-        if (param.equals("mojito")){
-            promise.resolve(TokopediaUrl.Companion.getInstance().getMOJITO());
-        } else if (param.equals("ace")){
-            promise.resolve(TokopediaUrl.Companion.getInstance().getACE());
-        } else if (param.equals("gql")) {
-            promise.resolve(TokopediaUrl.Companion.getInstance().getGQL());
-        } else if (param.equals("pulsa")){
-            promise.resolve(TokopediaUrl.Companion.getInstance().getPULSA_API());
-        } else if (param.equals("tome")) {
-            promise.resolve(TokopediaUrl.Companion.getInstance().getTOME());
-        } else if (param.equals("tokopedia")) {
-            promise.resolve(TokopediaUrl.Companion.getInstance().getWEB());
-        } else if (param.equals("gql")) {
-            promise.resolve(TokopediaUrl.Companion.getInstance().getGQL());
-        } else {
-            promise.reject("Base api url param is not found!");
+        switch (param) {
+            case "mojito":
+                promise.resolve(TokopediaUrl.Companion.getInstance().getMOJITO());
+                break;
+            case "ace":
+                promise.resolve(TokopediaUrl.Companion.getInstance().getACE());
+                break;
+            case "gql":
+                promise.resolve(TokopediaUrl.Companion.getInstance().getGQL());
+                break;
+            case "pulsa":
+                promise.resolve(TokopediaUrl.Companion.getInstance().getPULSA_API());
+                break;
+            case "tome":
+                promise.resolve(TokopediaUrl.Companion.getInstance().getTOME());
+                break;
+            case "tokopedia":
+                promise.resolve(TokopediaUrl.Companion.getInstance().getWEB());
+                break;
+            default:
+                promise.reject("Base api url param is not found!");
+                break;
         }
     }
 

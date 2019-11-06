@@ -1,8 +1,8 @@
 package com.tokopedia.tradein.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.MutableLiveData
 import android.content.Intent
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn

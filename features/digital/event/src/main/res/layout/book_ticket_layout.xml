@@ -8,18 +8,18 @@
     android:background="@color/transparent"
     android:orientation="vertical">
 
-    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         tools:context="com.tokopedia.events.view.activity.EventBookTicketActivity">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapse_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -42,13 +42,13 @@
                         android:layout_height="2dp"
                         android:background="@color/grey_100" />
                 </LinearLayout>
-            </android.support.design.widget.CollapsingToolbarLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 android:background="@color/grey_100" />
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
 
         <LinearLayout
@@ -125,8 +125,8 @@
             </RelativeLayout>
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/policy_ticker"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_60"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:closeButtonVisibility="gone"
                 app:tickerShapeType="loose"
                 app:tickerType="announcement"
@@ -142,7 +142,7 @@
         </LinearLayout>
 
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <RelativeLayout
         android:id="@+id/button_count_layout"
@@ -257,7 +257,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"

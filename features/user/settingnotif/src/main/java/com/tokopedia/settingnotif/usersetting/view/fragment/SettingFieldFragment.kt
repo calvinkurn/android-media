@@ -2,10 +2,10 @@ package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.annotation.RawRes
-import android.support.annotation.StringRes
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.RawRes
+import androidx.annotation.StringRes
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -125,7 +125,9 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
 
     override fun onErrorGetUserSetting() {
         showMessage(MESSAGE_ERROR_SERVER)
-        renderList(emptyList())
+        activity?.let {
+            renderList(emptyList())
+        }
     }
 
     protected fun showMessage(@StringRes messageRes: Int) {

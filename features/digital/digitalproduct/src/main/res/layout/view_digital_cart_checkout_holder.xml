@@ -36,13 +36,13 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 style="@style/TextView.Micro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/digital_cart_total_payment_label" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_total_payment"
                 style="@style/TextView.TitleMedium.OrangeRed.Bold"
                 android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                 tools:text="Rp102.500" />
         </LinearLayout>
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_checkout"
             style="@style/Button.Submit.Orange"
             android:layout_width="0dp"

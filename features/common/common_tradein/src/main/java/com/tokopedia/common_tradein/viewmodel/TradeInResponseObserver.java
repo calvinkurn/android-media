@@ -1,6 +1,6 @@
 package com.tokopedia.common_tradein.viewmodel;
 
-import android.arch.lifecycle.Observer;
+import androidx.lifecycle.Observer;
 import android.view.View;
 
 

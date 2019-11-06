@@ -1,6 +1,6 @@
 package com.tokopedia.train.search.data.typedef;
 
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 
 import static com.tokopedia.train.search.data.typedef.DepartureTimeTypeDef.AFTERNOON;
 import static com.tokopedia.train.search.data.typedef.DepartureTimeTypeDef.MORNING;

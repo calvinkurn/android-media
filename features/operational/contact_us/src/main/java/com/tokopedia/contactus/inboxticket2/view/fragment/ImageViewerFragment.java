@@ -2,10 +2,10 @@ package com.tokopedia.contactus.inboxticket2.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +67,7 @@ public class ImageViewerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.contactus_layout_fragment_image_viewer, container, false);
         vpImageViewer = contentView.findViewById(R.id.vp_image_viewer);
-        closeButton = contentView.findViewById(com.tokopedia.design.R.id.close_button);
+        closeButton = contentView.findViewById(R.id.close_button);
         TouchImageAdapter imageAdapter = new TouchImageAdapter(getContext(), IMAGES_LOC);
         vpImageViewer.setAdapter(imageAdapter);
         imageAdapter.SetonImageStateChangeListener(new TouchImageAdapter.OnImageStateChange() {

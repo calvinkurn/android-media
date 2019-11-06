@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_gmstat"
     android:layout_width="match_parent"
@@ -15,7 +15,7 @@
             android:id="@+id/date_label_view"
             style="@style/LabelLayout.BorderBottom" />
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_marginTop="@dimen/dp_15"
             style="@style/CardViewLayoutMatchParent">
 
@@ -32,7 +32,7 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <com.tokopedia.design.card.TitleCardView
             android:id="@+id/popular_product_card_view"
@@ -88,4 +88,4 @@
 
         </com.tokopedia.design.card.TitleCardView>
     </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>

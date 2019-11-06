@@ -42,3 +42,11 @@ fun Int.toCompactAmountStringByDivider(divider: Int, suffix: String): String {
         append(suffix)
     }
 }
+
+fun Int?.orZero(): Int = this ?: 0
+
+fun Long?.orZero(): Long = this ?: 0
+
+fun Float?.orZero(): Float = this ?: 0f
+
+fun Double?.orZero(): Double = this ?: 0f.toDouble()

@@ -1,13 +1,13 @@
 package com.tokopedia.tradein.view.viewcontrollers;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
+import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -19,10 +19,8 @@ import android.widget.TextView;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.logisticaddaddress.AddressConstants;
-import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.tradein.model.DeviceAttr;
@@ -70,6 +68,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private TextView tvTitle;
     private int tradeInStringId = R.string.tukar_tambah;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_HARGA_FINAL;
+    private static final String KERO_TOKEN = "token";
 
     public static Intent getHargaFinalIntent(Context context) {
         return new Intent(context, FinalPriceActivity.class);
@@ -145,10 +144,10 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
                     goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_HARDWARE_ID, deviceId);
                     navigateToActivityRequest(goToCheckout, MoneyInCheckoutActivity.MONEY_IN_REQUEST_CHECKOUT);
                 } else {
-                    startActivityForResult(PinpointMapActivity.Companion.newInstance(this,
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, result.getToken(),
-                            false, false, false, null,
-                            false), PINPOINT_ACTIVITY_REQUEST_CODE);
+                    Intent intent = RouteManager.getIntent(
+                            this, ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+                    intent.putExtra(KERO_TOKEN, result.getToken());
+                    startActivityForResult(intent, PINPOINT_ACTIVITY_REQUEST_CODE);
                 }
             }
 

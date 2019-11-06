@@ -5,6 +5,11 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactory
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
+import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.BUYER_TAG
+import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.OFFICIAL_TAG
+import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.SELLER_TAG
+import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.STATE_CHAT_READ
+import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.STATE_CHAT_UNREAD
 
 /**
  * @author : Steven 2019-08-08
@@ -41,4 +46,26 @@ data class ItemChatListPojo(
     fun markAsRead() {
         attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_READ
     }
+
+    fun hasTheSameMsgId(state: ChatStateItem): Boolean {
+        return msgId == state.msgID.toString()
+    }
+
+    fun getLiteralReadStatus(): String {
+        return when (attributes?.readStatus) {
+            STATE_CHAT_UNREAD -> "unread"
+            STATE_CHAT_READ -> "read"
+            else -> ""
+        }
+    }
+
+    fun getLiteralUserType(): String {
+        return when (attributes?.contact?.tag) {
+            BUYER_TAG -> "buyer"
+            SELLER_TAG -> "seller"
+            OFFICIAL_TAG -> "OA"
+            else -> ""
+        }
+    }
+
 }

@@ -3,10 +3,10 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +18,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
+import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDefaultPresenter;
 
 import javax.inject.Inject;
@@ -36,16 +37,20 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     public interface InteractionListener {
         void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData passData);
 
-        void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData);
+        void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData,
+                                            DigitalCheckoutPassData cartPassData,
+                                            DigitalSubscriptionParams subParams);
     }
 
     @Inject
     DigitalCartDefaultPresenter presenter;
 
-    public static DigitalCartDefaultFragment newInstance(DigitalCheckoutPassData passData) {
+    public static DigitalCartDefaultFragment newInstance(DigitalCheckoutPassData passData,
+                                                         DigitalSubscriptionParams subParams) {
         DigitalCartDefaultFragment fragment = new DigitalCartDefaultFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PASS_DATA, passData);
+        bundle.putParcelable(ARG_SUBSCRIPTION_PARAMS, subParams);
         fragment.setArguments(bundle);
         return fragment;
 
@@ -120,9 +125,10 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     public void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData,
-                                               DigitalCheckoutPassData cartPassData) {
+                                               DigitalCheckoutPassData cartPassData,
+                                               DigitalSubscriptionParams subParams) {
         if (interactionListener != null)
-            interactionListener.inflateMyBillsSubscriptionPage(cartDigitalInfoData, cartPassData);
+            interactionListener.inflateMyBillsSubscriptionPage(cartDigitalInfoData, cartPassData, subParams);
     }
 
     @Override

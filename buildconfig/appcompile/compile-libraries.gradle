@@ -45,4 +45,6 @@ include "libraries:webview"
 include "libraries:collapsing_tab_layout"
 
 include "libraries:videouploader"
+include "libraries:translator"
+
 

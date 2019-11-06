@@ -5,8 +5,8 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
@@ -409,7 +409,16 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         if (item is FlashSaleSubmissionProductItem) {
             val criteria = item.campaign.criteria
             val stockInput = StringUtils.convertToNumeric(etStock.text.toString(), true)
+            context?.run {
+                tilStock.setHelper(getString(R.string.flash_sale_min_stock_x,criteria.stockMin))
+            }
             if (stockInput < 0 || stockInput < criteria.stockMin) {
+                tilStock.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
+                return false
+            } else if(stockInput > criteria.maxCustomStock){
+                context?.run {
+                    tilStock.setHelper(getString(R.string.flash_sale_max_stock_x,criteria.maxCustomStock))
+                }
                 tilStock.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
                 return false
             } else {

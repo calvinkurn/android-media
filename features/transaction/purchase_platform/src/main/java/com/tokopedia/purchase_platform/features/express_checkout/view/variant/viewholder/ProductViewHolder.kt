@@ -5,13 +5,15 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.purchase_platform.features.express_checkout.data.constant.MAX_QUANTITY
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductChild
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.express_checkout.data.constant.MAX_QUANTITY
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductChild
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductViewModel
 import kotlinx.android.synthetic.main.item_product_detail_product_page.view.*
 
 /**
@@ -27,11 +29,11 @@ class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListe
     override fun bind(element: ProductViewModel?) {
         if (element != null) {
             var stockWording = ""
-            if (element.isFreeOngkir) {
-                ImageHandler.loadImage(itemView.context, itemView.img_free_ongkir, element.freeOngkirImg, R.drawable.ic_loading_image)
-                itemView.img_free_ongkir.visibility = View.VISIBLE
+            if (element.isFreeOngkir && element.freeOngkirImg.isNotBlank()) {
+                itemView.img_free_ongkir.visible()
+                itemView.img_free_ongkir.loadImageRounded(element.freeOngkirImg)
             } else {
-                itemView.img_free_ongkir.visibility = View.GONE
+                itemView.img_free_ongkir.gone()
             }
 
             ImageHandler.loadImageRounded2(itemView.context, itemView.img_product, element.productImageUrl)
