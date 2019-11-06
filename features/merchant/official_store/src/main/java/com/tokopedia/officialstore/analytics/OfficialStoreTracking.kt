@@ -67,6 +67,9 @@ class OfficialStoreTracking(context: Context) {
     fun sendScreen(categoryName: String) {
         val screenName = "/official-store/$categoryName"
         val customDimension = HashMap<String, String>()
+        // ask requested Dini Praptiwi at 6/11/2019 3:25 PM
+        // @mzennis jadi seharusnya pake event
+        customDimension["event"] = "openScreen"
         customDimension["cd35"] = "/official-store"
         tracker.sendScreenAuthenticated(screenName, customDimension)
     }
