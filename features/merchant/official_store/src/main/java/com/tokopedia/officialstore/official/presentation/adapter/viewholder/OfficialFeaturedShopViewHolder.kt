@@ -58,15 +58,16 @@ class OfficialFeaturedShopViewHolder(view: View): AbstractViewHolder<OfficialFea
             adapter?.shopList = it
             adapter?.notifyDataSetChanged()
 
-            val shopItem = it[0]
-            officialStoreTracking?.eventImpressionFeatureBrand(
-                    element.categoryName.toEmptyStringIfNull(),
-                    shopItem.shopId.toEmptyStringIfNull(),
-                    0,
-                    shopItem.name.toEmptyStringIfNull(),
-                    shopItem.imageUrl.toEmptyStringIfNull(),
-                    shopItem.additionalInformation.toEmptyStringIfNull()
-            )
+            it.forEachIndexed { index, shop ->
+                officialStoreTracking?.eventImpressionFeatureBrand(
+                        element.categoryName.toEmptyStringIfNull(),
+                        shop.shopId.toString().toEmptyStringIfNull(),
+                        index + 1,
+                        shop.name.toEmptyStringIfNull(),
+                        shop.imageUrl.toEmptyStringIfNull(),
+                        shop.additionalInformation.toEmptyStringIfNull()
+                )
+            }
 
             adapter?.onItemClickListener = object: FeaturedShopAdapter.OnItemClickListener {
                 override fun onItemClick(position: Int, shop: Shop) {
