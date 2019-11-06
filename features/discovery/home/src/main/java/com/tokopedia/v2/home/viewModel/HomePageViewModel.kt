@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.v2.home.base.HomeRepository
 import com.tokopedia.v2.home.model.pojo.HomeData
 import com.tokopedia.v2.home.model.vo.Resource

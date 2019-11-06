@@ -15,27 +15,21 @@ class HomeData(
     @NonNull
     val id: Int = 1,
 
-    @Expose
     @SerializedName("dynamicHomeChannel")
     val dynamicHomeChannel: DynamicHomeChannel,
 
-    @Expose
     @SerializedName("slides")
     val banner: Banner,
 
-    @Expose
     @SerializedName("ticker")
     val ticker: Ticker,
 
-    @Expose
     @SerializedName("dynamicHomeIcon")
     val dynamicHomeIcon: DynamicHomeIcon,
 
-    @Expose
     @SerializedName("spotlight")
     val spotlight: Spotlight,
 
-    @Expose
     @SerializedName("homeFlag")
     var homeFlag: HomeFlag
 )

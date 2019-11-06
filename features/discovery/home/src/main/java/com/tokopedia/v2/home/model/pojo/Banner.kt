@@ -9,7 +9,7 @@ data class Banner(
 
 data class BannerSlide(
     @SerializedName("id")
-    val id: Int = 0,
+    val id: Int,
     @SerializedName("title")
     val title: String,
     @SerializedName("message")

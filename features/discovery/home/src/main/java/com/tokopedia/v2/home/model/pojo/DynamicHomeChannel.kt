@@ -4,9 +4,8 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class DynamicHomeChannel(
-        @Expose
-        @SerializedName("channels")
-        val channels: List<Channel>
+    @SerializedName("channels")
+    val channels: List<Channel> = listOf()
 )
 
 data class Channel(
@@ -32,7 +31,7 @@ data class Channel(
 
     @Expose
     @SerializedName("type")
-    val type: ChannelType?,
+    val type: String?,
 
     @Expose
     @SerializedName("showPromoBadge")

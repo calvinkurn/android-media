@@ -2,6 +2,7 @@ package com.tokopedia.v2.home.data.repository
 
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.v2.home.base.HomeRepository
 import com.tokopedia.v2.home.base.NetworkBoundResource
@@ -24,7 +25,7 @@ class HomeRepositoryImpl(
                         }
                     }
                 }
-                return response.getData<HomeData>(HomeData::class.java)
+                return response.getSuccessData()
             }
 
             override suspend fun saveCallResults(items: HomeData) {
@@ -44,5 +45,9 @@ class HomeRepositoryImpl(
             }
 
         }.build().asLiveData()
+    }
+
+    override suspend fun getOldHomeDataWithCache(): GraphqlResponse {
+        return homeRemoteDataSource.getOldHomeData()
     }
 }

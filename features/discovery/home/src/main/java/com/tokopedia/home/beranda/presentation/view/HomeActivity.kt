@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 class HomeActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         return com.tokopedia.v2.home.ui.fragment.HomeFragment()
+//        return HomeFragment.newInstance(false)
     }
 
     companion object{

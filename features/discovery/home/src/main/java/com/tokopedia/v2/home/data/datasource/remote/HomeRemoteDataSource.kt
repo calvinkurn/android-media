@@ -5,23 +5,34 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.v2.home.model.pojo.HomeData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class HomeRemoteDataSource (
         private val graphqlRepository: GraphqlRepository,
-        private val userSessionInterface: UserSessionInterface,
         private val homeQuery: String
 ){
-    suspend fun getHomeData(): GraphqlResponse {
-        val cacheStrategy =
-                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+    suspend fun getHomeData(): GraphqlResponse = withContext(Dispatchers.IO) {
+        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
         val gqlRecommendationRequest = GraphqlRequest(
                 homeQuery,
                 HomeData::class.java
         )
 
-        return graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
+        graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
+    }
+
+    suspend fun getOldHomeData(): GraphqlResponse = withContext(Dispatchers.IO) {
+        val cacheStrategy =
+                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+
+        val gqlRecommendationRequest = GraphqlRequest(
+                homeQuery,
+                com.tokopedia.home.beranda.domain.model.HomeData::class.java
+        )
+
+        graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
     }
 }
