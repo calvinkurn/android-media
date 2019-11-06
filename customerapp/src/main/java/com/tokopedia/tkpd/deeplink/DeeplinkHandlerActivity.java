@@ -107,6 +107,7 @@ import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
 import com.tokopedia.product.manage.list.applink.ProductManageApplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
+import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
@@ -270,6 +271,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        GratificationSubscriber.addActivityNameToExclude(getClass().getCanonicalName());
         super.onCreate(savedInstanceState);
         ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
 

@@ -18,9 +18,8 @@ class DialogManagerPresenter @Inject constructor(val getPopGratificationUseCase:
     }
 
 
-    suspend fun composeApi(gratificationData: GratificationData): GetCouponDetailResponse {
-        val data = getGratificationAndShowDialog(gratificationData)
-        val ids = mapperGratificationResponseToCouponIds(data)
+    suspend fun composeApi(getPopGratificationResponse: GetPopGratificationResponse): GetCouponDetailResponse {
+        val ids = mapperGratificationResponseToCouponIds(getPopGratificationResponse)
         return getCatalogDetail(ids)
     }
 
