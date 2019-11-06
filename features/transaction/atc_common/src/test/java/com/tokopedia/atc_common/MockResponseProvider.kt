@@ -26,7 +26,7 @@ val responseAtcSuccess = "{\n" +
         "],\n" +
         "\"status\":\"OK\",\n" +
         "\"data\":{\n" +
-        "\"success\":0,\n" +
+        "\"success\":1,\n" +
         "\"cart_id\":\"0\",\n" +
         "\"product_id\":0,\n" +
         "\"quantity\":0,\n" +
@@ -59,7 +59,7 @@ val responseAtcError = "{\n" +
         "\"error_message\":[\n" +
         "\"Jumlah barang tidak valid.\"\n" +
         "],\n" +
-        "\"status\":\"OK\",\n" +
+        "\"status\":\"ERROR\",\n" +
         "\"data\":{\n" +
         "\"success\":0,\n" +
         "\"cart_id\":\"0\",\n" +

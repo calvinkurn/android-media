@@ -1,11 +1,9 @@
 package com.tokopedia.atc_common.domain.mapper
 
 import com.tokopedia.atc_common.MockResponseProvider
-import org.junit.After
-import org.junit.Before
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Created by Irfan Khoirul on 2019-09-11.
@@ -26,33 +24,33 @@ class AddToCartDataMapperTest {
     }
 
     @Test
-    fun mapAddToCartResponseSuccess_statusIsOne() {
+    fun mapAddToCartResponseSuccess_successIsOne() {
         //given
         val mockResponse = MockResponseProvider.getResponseAtcSuccess()
         //when
         val result = mapper.mapAddToCartResponse(mockResponse)
         //then
-        assertEquals(1, result.status)
+        assertEquals(1, result.data.success)
     }
 
     @Test
-    fun mapAddToCartResponseSuccess_responseJsonShouldBeEmpty() {
+    fun mapAddToCartResponseSuccess_responseJsonShouldNotBeEmpty() {
         //given
         val mockResponse = MockResponseProvider.getResponseAtcSuccess()
         //when
         val result = mapper.mapAddToCartResponse(mockResponse)
         //then
-        assertEquals("", result.responseJson)
+        assertNotEquals("", result.responseJson)
     }
 
     @Test
-    fun mapAddToCartResponseError_statusIsZero() {
+    fun mapAddToCartResponseError_sucessIsZero() {
         //given
         val mockResponse = MockResponseProvider.getResponseAtcError()
         //when
         val result = mapper.mapAddToCartResponse(mockResponse)
         //then
-        assertEquals(0, result.status)
+        assertEquals(0, result.data.success)
     }
 
     @Test
