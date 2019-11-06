@@ -384,8 +384,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
 
     // GTM v5 EE Step 1
     private void sendEnhancedECommerce(Bundle eCommerceBundle, String eventLabel) {
-        eCommerceBundle.putString("eventLabel", eventLabel);
-        sendEnhancedEcommerceV5(FirebaseAnalytics.Event.BEGIN_CHECKOUT, eCommerceBundle);
+
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Bundle eCommerceBundle, boolean eligibleCod) {
