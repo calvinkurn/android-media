@@ -37,14 +37,12 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                 checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT)
                 roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT).toInt()
                 adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT).toInt()
-            } else if (!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty()) {
-                if (uri.getQueryParameter(PARAM_SHOW_ROOM).toInt() == 1) {
+            } else if (!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && uri.getQueryParameter(PARAM_SHOW_ROOM).toInt() == 1) {
                     val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
                     val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
                     val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
                     checkInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, tomorrow)
                     checkOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
-                }
             }
         } else {
             with(intent) {
