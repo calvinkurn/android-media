@@ -47,12 +47,12 @@ open class WishlistViewModel @Inject constructor(
 
     /**
      * @param recommendationPositionInPage
-     * @param maxItemInPage
+     * @param maxItemInPage = 20 wishlist item + 1 recommendation carousel
      *
      * Used in getWishlistData and getNextPageData
      */
     private val recommendationPositionInPage = 4
-    private val maxItemInPage = 20
+    private val maxItemInPage = 21
 
     var keywordSearch: String = ""
         private set
@@ -89,6 +89,7 @@ open class WishlistViewModel @Inject constructor(
         keywordSearch = keyword
         currentPage = 0
         currentPage++
+        val cura = currentPage
 
         wishlistState.value = Status.LOADING
         launchCatchError(block = {
@@ -113,6 +114,7 @@ open class WishlistViewModel @Inject constructor(
                     val recommendationData = wishlistRepository.getRecommendationData(currentPage, data.items.map { it.id })
                     if(recommendationData.isNotEmpty()) {
                         visitableWishlist = mappingRecommendationToWishlist(
+                                currentPage = currentPage,
                                 recommendationList = recommendationData,
                                 wishlistVisitable = visitableWishlist,
                                 recommendationPositionInPage = recommendationPositionInPage,
@@ -145,7 +147,10 @@ open class WishlistViewModel @Inject constructor(
             if (!data.isSuccess) {
                 wishlistData.value = newPageVisitableData
                 currentPage--
-                loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(isSuccess = false, message = data.errorMessage))
+                loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
+                        isSuccess = false,
+                        hasNextPage = data.hasNextPage,
+                        message = data.errorMessage))
                 return@launchCatchError
             }
             if (data.items.isEmpty()) {
@@ -159,17 +164,24 @@ open class WishlistViewModel @Inject constructor(
                     val recommendationData = wishlistRepository.getRecommendationData(currentPage, data.items.map { it.id })
                     if(recommendationData.isNotEmpty()) {
                         wishlistData.value = mappingRecommendationToWishlist(
+                                currentPage = currentPage,
                                 recommendationList = recommendationData,
                                 wishlistVisitable = newPageVisitableData,
                                 recommendationPositionInPage = recommendationPositionInPage,
                                 maxItemInPage = maxItemInPage)
                     }
                 }
-
+                loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
+                        isSuccess = true,
+                        hasNextPage = data.hasNextPage,
+                        message = data.errorMessage))
             }
         }){
             wishlistData.value = newPageVisitableData
-            loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(isSuccess = false, message = it.message
+            loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
+                    isSuccess = false,
+                    hasNextPage = false,
+                    message = it.message
                     ?: ""))
             currentPage--
         }
@@ -660,14 +672,16 @@ open class WishlistViewModel @Inject constructor(
     }
 
     private fun mappingRecommendationToWishlist(
+            currentPage: Int,
             wishlistVisitable: List<WishlistDataModel>,
             recommendationList: List<RecommendationWidget>,
             recommendationPositionInPage: Int,
             maxItemInPage: Int): List<WishlistDataModel>{
         val list = mutableListOf<WishlistDataModel>()
 
+        val recommendationPositionInThisPage = ((currentPage-1) * maxItemInPage) + recommendationPositionInPage
         list.addAll(wishlistVisitable)
-        list.add(recommendationPositionInPage,
+        list.add(recommendationPositionInThisPage,
                 RecommendationCarouselDataModel(
                         id = recommendationList.first().tid,
                         title = recommendationList.first().title,

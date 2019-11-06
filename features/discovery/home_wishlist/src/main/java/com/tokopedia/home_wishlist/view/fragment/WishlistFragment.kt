@@ -10,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -33,8 +31,6 @@ import com.tokopedia.home_wishlist.util.Status
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.custom.CustomSearchView
-import com.tokopedia.home_wishlist.view.ext.isEmptyWishlist
-import com.tokopedia.home_wishlist.view.ext.isErrorWishlist
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_PRODUCT_ID
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_UPDATED_POSITION
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.REQUEST_FROM_PDP
@@ -50,6 +46,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 /**
@@ -216,7 +213,13 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
      */
     private fun loadData(){
         viewModel.wishlistLiveData.observe(viewLifecycleOwner, Observer { response ->
-            if(response.isNotEmpty()) renderList(response)
+            if(response.isNotEmpty())
+                renderList(response)
+        })
+        viewModel.loadMoreWishlistAction.observe(viewLifecycleOwner, Observer {
+            loadMoreWishlistActionData -> updateScrollListenerState(
+                loadMoreWishlistActionData.getContentIfNotHandled()?.hasNextPage?:false)
+
         })
         viewModel.wishlistState.observe(viewLifecycleOwner, Observer { state ->
             if(state.isEmpty() || state.isLoading() || state.isError()){
@@ -248,6 +251,12 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         adapter.submitList(list)
         recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
+
+    fun updateScrollListenerState(hasNextPage: Boolean) {
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
+    }
+
 
     override fun onProductClick(dataModel: WishlistDataModel, position: Int) {
         if(dataModel is WishlistItemDataModel){
