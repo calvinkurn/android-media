@@ -45,6 +45,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_HOME_WIDGET = "home_widget";
         public static final String LAYOUT_BANNER_ORGANIC = "banner_organic";
         public static final String LAYOUT_BANNER_CAROUSEL = "banner_carousel";
+        public static final String LAYOUT_PLAY_BANNER = "banner_play";
 
         public static final String channelId = "channelId";
 
