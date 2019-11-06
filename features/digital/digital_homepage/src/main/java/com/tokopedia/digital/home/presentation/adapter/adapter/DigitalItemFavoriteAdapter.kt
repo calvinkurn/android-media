@@ -1,0 +1,41 @@
+package com.tokopedia.digital.home.presentation.adapter.adapter
+
+import androidx.recyclerview.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
+import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.kotlin.extensions.view.loadImage
+import kotlinx.android.synthetic.main.layout_digital_home_category_item_submenu.view.*
+
+class DigitalItemFavoriteAdapter(val items: List<DigitalHomePageSectionModel.Item>, val onItemBindListener: OnItemBindListener)
+    : RecyclerView.Adapter<DigitalItemFavoriteAdapter.DigitalItemFavoriteViewHolder>() {
+
+    override fun onBindViewHolder(viewHolder: DigitalItemFavoriteViewHolder, position: Int) {
+        viewHolder.bind(items.get(position), onItemBindListener)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, position: Int): DigitalItemFavoriteViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_digital_home_category_item_submenu_frame, parent, false)
+        return DigitalItemFavoriteViewHolder(view)
+    }
+
+    override fun getItemCount(): Int {
+        return items.size
+    }
+
+    class DigitalItemFavoriteViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(element: DigitalHomePageSectionModel.Item, onItemBindListener: OnItemBindListener) {
+//            onItemBindListener.onCategoryImpression(element, position + 1)
+            itemView.category_image.loadImage(element.mediaUrl)
+            itemView.category_name.text = element.htmlContent
+            itemView.setOnClickListener {
+                onItemBindListener.onSectionItemClicked(element, adapterPosition + 1)
+            }
+            itemView.visibility = View.GONE
+        }
+
+    }
+}

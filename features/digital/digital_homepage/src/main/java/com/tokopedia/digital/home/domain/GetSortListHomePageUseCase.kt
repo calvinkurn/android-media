@@ -1,9 +1,6 @@
 package com.tokopedia.digital.home.domain
 
-import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageTransactionModel
-import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.model.*
 
 class GetSortListHomePageUseCase {
 
@@ -12,15 +9,20 @@ class GetSortListHomePageUseCase {
         val homeBanner = DigitalHomePageBannerModel()
         homeBanner.isLoadFromCloud = loadFromCloud
 
-        val transaction = DigitalHomePageTransactionModel()
-        transaction.isLoadFromCloud = loadFromCloud
-        transaction.isLoaded = true
+        val favorites = DigitalHomePageFavoritesModel()
+        favorites.isLoadFromCloud = loadFromCloud
+
+//        val newUserZone = DigitalHomePageNewUserZoneModel()
+//        newUserZone.isLoadFromCloud = loadFromCloud
+//
+//        val spotLight = DigitalHomePageSpotlightModel()
+//        spotLight.isLoadFromCloud = loadFromCloud
 
         val category = DigitalHomePageCategoryModel()
         category.isLoadFromCloud = loadFromCloud
 
         return listOf(homeBanner,
-                transaction,
+                favorites,
                 category
         )
     }

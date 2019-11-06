@@ -27,6 +27,7 @@ import com.tokopedia.digital.home.di.DigitalHomePageComponent
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
@@ -182,6 +183,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         viewModel.getInitialList(swipeToRefresh?.isRefreshing ?: false)
     }
 
+    override fun loadInitialData() {
+        loadDataFromCloud()
+    }
+
     override fun onBannerItemDigitalBind(loadFromCloud: Boolean?) {
         viewModel.getBannerList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner), loadFromCloud
                 ?: true)
@@ -196,6 +201,11 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         //nothing to do, api not ready yet
     }
 
+    override fun onFavoritesItemDigitalBind(loadFromCloud: Boolean?) {
+        viewModel.getFavoritesList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section), loadFromCloud
+                ?: true)
+    }
+
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
         trackingUtil.eventCategoryClick(element, position)
         RouteManager.route(activity, element?.applink)
@@ -208,6 +218,11 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
     override fun onBannerAllItemClicked() {
         RouteManager.route(activity, ApplinkConst.PROMO_LIST)
+    }
+
+    override fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, i: Int) {
+        // TODO: Add tracking
+        RouteManager.route(activity, element.applink)
     }
 
     override fun onBannerImpressionTrack(banner: DigitalHomePageBannerModel.Banner?, position: Int) {
