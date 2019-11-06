@@ -18,7 +18,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
 
 
     override fun getScreenName(): String {
-        return TopChatAnalytics.Category.CHAT_DETAIL
+        return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
     }
 
     override fun getNewFragment(): Fragment {

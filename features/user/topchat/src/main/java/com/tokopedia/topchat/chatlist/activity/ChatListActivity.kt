@@ -76,7 +76,7 @@ class ChatListActivity : BaseTabActivity()
     }
 
     override fun getScreenName(): String {
-        return ChatListAnalytic.Category.CATEGORY_INBOX_CHAT
+        return "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
     }
 
     override fun getViewPagerAdapter(): PagerAdapter? {
