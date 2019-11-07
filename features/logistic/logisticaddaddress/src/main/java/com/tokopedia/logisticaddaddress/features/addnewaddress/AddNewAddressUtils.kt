@@ -37,11 +37,6 @@ object AddNewAddressUtils {
     val MONAS_LONG: Double = 106.826457
 
     @JvmStatic
-    fun generateLatLng(latitude: Double?, longitude: Double?): LatLng {
-        return latitude?.let { longitude?.let { it1 -> LatLng(it, it1) } }!!
-    }
-
-    @JvmStatic
     fun showToastError(message: String, view: View, activity: Activity) {
         var msg = message
         if (message.isEmpty()) {
