@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
 import com.tokopedia.logisticaddaddress.utils.toKilometers
+import kotlinx.android.synthetic.main.item_empty_nearby_location.view.*
 import kotlinx.android.synthetic.main.item_nearby_location.view.*
 
 class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -33,6 +34,9 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.view.setOnClickListener {
                     mListener?.onItemClicked(it)
                 }
+            }
+            is EmptyViewHolder -> {
+                holder.itemView.button_search.setOnClickListener { mListener?.requestAutoComplete() }
             }
         }
     }
@@ -74,6 +78,7 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ActionListener {
         fun onItemClicked(view: View)
+        fun requestAutoComplete()
     }
 
     class NearbiesViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

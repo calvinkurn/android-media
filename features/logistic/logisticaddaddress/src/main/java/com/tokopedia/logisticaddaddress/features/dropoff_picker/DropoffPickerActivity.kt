@@ -122,6 +122,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             override fun onItemClicked(view: View) {
                 showStoreDetail(view.tag as DropoffNearbyModel)
             }
+
+            override fun requestAutoComplete() {
+                goToAutoComplete.invoke(null)
+            }
         })
 
         mNearbiesBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
@@ -383,7 +387,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mFusedLocationClient.removeLocationUpdates(mLocationCallback)
     }
 
-    private val goToAutoComplete: (View) -> Unit = {
+    private val goToAutoComplete: (View?) -> Unit = {
         val intent = Intent(this, AutoCompleteActivity::class.java)
         startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE)
         overridePendingTransition(R.anim.slide_in_up, R.anim.stay_still)
