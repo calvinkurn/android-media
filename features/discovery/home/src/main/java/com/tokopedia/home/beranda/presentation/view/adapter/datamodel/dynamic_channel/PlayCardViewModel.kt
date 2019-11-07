@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import com.tokopedia.dynamicbanner.entity.PlayCardHome
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
@@ -10,6 +11,7 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
     private var isCombined: Boolean = false
     private var trackingDataForCombination: List<Any> = emptyList()
     private var playCardHome: PlayCardHome = PlayCardHome()
+    private var channel: DynamicHomeChannel.Channels? = null
 
     override fun isCache(): Boolean {
         return isCache
@@ -21,6 +23,18 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
 
     fun setPlayCardHome(playCardHome: PlayCardHome) {
         this.playCardHome = playCardHome
+    }
+
+    fun setChannel(channel: DynamicHomeChannel.Channels) {
+        this.channel = channel
+    }
+
+    fun getChannel(): DynamicHomeChannel.Channels? {
+        return channel
+    }
+
+    fun getPlayCardHome(): PlayCardHome {
+        return playCardHome
     }
 
     override fun type(typeFactory: HomeTypeFactory): Int {
