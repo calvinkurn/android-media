@@ -1,13 +1,12 @@
 package com.tokopedia.home.beranda.presentation.presenter;
 
-import androidx.annotation.NonNull;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase;
+import com.tokopedia.dynamicbanner.entity.PlayCard;
 import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
@@ -50,9 +49,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Lazy;
 import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
@@ -635,13 +634,33 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void getPlayBanner(int adapterPosition) {
-        playCardHomeUseCase.execute(
-                playCardHome -> {
-                    getView().setPlayContentBanner(playCardHome, adapterPosition);
-                    return Unit.INSTANCE;
-                },
-                throwable -> Unit.INSTANCE
-        );
+        PlayCardHome playCardHome = new PlayCardHome();
+        PlayCard playCard = new PlayCard();
+        playCard.setImageUrl("https://ecs7.tokopedia.net/img/attachment/2019/8/20/22796090/22796090_b9954493-b3f2-4abe-b225-8685a5f71135.jpg");
+        playCard.setTotalView("10K");
+        playCard.setShowTotalView(false);
+        playCard.setShowLive(true);
+        playCard.setApplink("tokopedia://groupchat");
+        playCardHome.setPlayGetCardHome(playCard);
+
+        Observable.just(playCardHome)
+                .observeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        playCardHome1 -> {
+                            getView().setPlayContentBanner(playCardHome1, adapterPosition);
+                        },
+                        throwable -> {
+
+                        });
+
+//        playCardHomeUseCase.execute(
+//                playCardHome -> {
+//                    getView().setPlayContentBanner(playCardHome, adapterPosition);
+//                    return Unit.INSTANCE;
+//                },
+//                throwable -> Unit.INSTANCE
+//        );
     }
 
 }
