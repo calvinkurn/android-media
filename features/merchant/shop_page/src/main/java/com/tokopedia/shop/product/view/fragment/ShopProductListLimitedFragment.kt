@@ -519,25 +519,28 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         updateScrollListenerState(hasNextPage)
 
         if (shopProductAdapter.shopProductViewModelList.size == 0) {
-            // only add the empty state when the shop has No Product And No Official URL
+//            // only add the empty state when the shop has No Product And No Official URL
+//
+//            val needShowEmpty: Boolean
+//            val officialWebViewUrl = getOfficialWebViewUrl(shopInfo)
+//            if (TextUtils.isEmpty(officialWebViewUrl)) { // no promo web, show empty
+//                needShowEmpty = true
+//            } else {
+//                // no need to show empty (even if the product is empty) when there is official web
+//                // check if it is all product or specific etalase.
+//                needShowEmpty = !isCurrentlyShowAllEtalase
+//            }
+//
+//            if (needShowEmpty) {
+//                shopProductAdapter.isNeedToShowEtalase = true
+//                shopProductAdapter.addElement(emptyDataViewModel)
+//            } else {
+//                shopProductAdapter.isNeedToShowEtalase = false
+//                shopProductAdapter.clearAllNonDataElement()
+//            }
+            shopProductAdapter.isNeedToShowEtalase = true
+            shopProductAdapter.addElement(emptyDataViewModel)
 
-            val needShowEmpty: Boolean
-            val officialWebViewUrl = getOfficialWebViewUrl(shopInfo)
-            if (TextUtils.isEmpty(officialWebViewUrl)) { // no promo web, show empty
-                needShowEmpty = true
-            } else {
-                // no need to show empty (even if the product is empty) when there is official web
-                // check if it is all product or specific etalase.
-                needShowEmpty = !isCurrentlyShowAllEtalase
-            }
-
-            if (needShowEmpty) {
-                shopProductAdapter.isNeedToShowEtalase = true
-                shopProductAdapter.addElement(emptyDataViewModel)
-            } else {
-                shopProductAdapter.isNeedToShowEtalase = false
-                shopProductAdapter.clearAllNonDataElement()
-            }
             bottom_action_view.visibility = View.GONE
             bottom_action_view.hide()
         } else {
