@@ -44,6 +44,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
         textInputCoupon.setText(promoHistoryItem.promoCode)
+        promoHistoryItem.promoCode?.let { promoCheckoutListMarketplacePresenter.checkPromoStackingCode(it, isOneClickShipment, promo) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
