@@ -29,7 +29,7 @@ class GetPMCancellationQuestionnaireDataUseCase @Inject constructor(
                 RequestParams.EMPTY
         ).subscribeOn(Schedulers.io())
     }
-    SaldoWebViewActivity
+
     private fun getShopStatus(requestParams: RequestParams): Observable<GoldGetPmOsStatus> {
         return getShopStatusUseCase.createObservable(
                 GetShopStatusUseCase.createRequestParams(
