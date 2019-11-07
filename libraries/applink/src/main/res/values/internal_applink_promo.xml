@@ -14,4 +14,13 @@
 
     <string name="path_promo_list_marketplace" translatable="false">/list/marketplace</string>
     <string name="path_promo_detail_marketplace" translatable="false">/detail/marketplace</string>
+
+    <!-- for tokopoint module -->
+    <string name="host_tokopoints">tokopoints</string>
+    <string name="path_tokopoint_home">/home</string>
+    <string name="path_tokopoints_coupon">/kupon-saya</string>
+    <string name="path_tokopoints_coupon_details">/kupon-detail</string>
+    <string name="path_tokopoints_catalog_details">/tukar-detail</string>
+    <string name="path_tokopoints_catalog_listing">/tukar-point</string>
+    <string name="title_tokopoints">TokoPoints</string>
 </resources>

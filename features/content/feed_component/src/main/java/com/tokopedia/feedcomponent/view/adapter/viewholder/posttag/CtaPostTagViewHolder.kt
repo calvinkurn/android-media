@@ -1,7 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.posttag
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.CardView
+import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

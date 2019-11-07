@@ -145,8 +145,16 @@ public class Purchase {
         ActionField.put("affiliation", aff);
     }
 
+    public Object getAffiliation() {
+        return ActionField.get("affiliation");
+    }
+
     public void setTax(Object tax) {
         ActionField.put("tax", tax);
+    }
+
+    public Object getTax() {
+        return ActionField.get("tax");
     }
 
     public void setRevenue(Object revenue) {
@@ -159,6 +167,10 @@ public class Purchase {
 
     public void setCouponCode(Object coupon) {
         ActionField.put(KEY_COUPON, coupon);
+    }
+
+    public Object getCouponCode() {
+        return ActionField.get(KEY_COUPON);
     }
 
     public Object getRevenue() {

@@ -5,8 +5,8 @@ package com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration
  */
 
 import android.graphics.Rect
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 class SpacingItemDecoration @JvmOverloads constructor(private val spacing: Int, private var displayMode: Int = -1) : RecyclerView.ItemDecoration() {

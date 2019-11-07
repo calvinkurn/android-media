@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
+import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
@@ -63,7 +64,7 @@ public interface HomeContract {
 
         void addImpressionToTrackingQueue(List<HomeVisitable> visitables);
 
-        void showRecomendationButton();
+        void configureHomeFlag(HomeFlag homeFlag);
 
         Observable<TokopointHomeDrawerData> getTokopoint();
 

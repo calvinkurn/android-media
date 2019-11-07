@@ -1,6 +1,6 @@
 package com.tokopedia.navigation.presentation.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.viewholder.ProductRecommendationMoreViewHolder

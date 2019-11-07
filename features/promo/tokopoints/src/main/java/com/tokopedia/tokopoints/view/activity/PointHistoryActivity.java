@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -24,7 +24,7 @@ public class PointHistoryActivity extends BaseSimpleActivity implements HasCompo
         updateTitle(getString(R.string.tp_title_history));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
+            toolbar.setElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_0));
         }
     }
 

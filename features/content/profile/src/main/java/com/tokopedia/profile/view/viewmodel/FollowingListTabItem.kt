@@ -1,6 +1,6 @@
 package com.tokopedia.profile.view.viewmodel
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 
 /**
  * @author by milhamj on 30/10/18.

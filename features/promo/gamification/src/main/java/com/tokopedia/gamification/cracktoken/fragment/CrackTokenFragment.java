@@ -14,11 +14,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -33,10 +28,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -53,25 +54,24 @@ import com.tokopedia.gamification.cracktoken.compoundview.WidgetRewardCrackResul
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
-import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.HomeActionButton;
 import com.tokopedia.gamification.data.entity.HomeSmallButton;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.unifyprinciples.Typography;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 
 /**
@@ -347,8 +347,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
 
-        ImageHandler.loadImageWithSignature(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl(),
-                new StringSignature(tokenUser.getBackgroundAsset().getVersion()));
+        String backgroundUrl = tokenUser.getBackgroundAsset().getBackgroundImgUrl();
+        ObjectKey signature = new ObjectKey(tokenUser.getBackgroundAsset().getVersion());
+        ImageHandler.loadImageWithSignature(ivContainer, backgroundUrl, signature);
 
         if (TextUtils.isEmpty(homeSmallButton.getImageURL())) {
             flPrize.setVisibility(View.GONE);
@@ -578,12 +579,20 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onSuccessDownloadAllAsset() {
-        renderViewCrackEgg();
-        showToolTip();
-        widgetTokenOnBoarding.showHandOnboarding();
-        trackingLuckyEggView();
-        if (fpmRender != null)
-            fpmRender.stopTrace();
+        if (getActivity() == null) {
+            return;
+        }
+
+        getActivity().runOnUiThread(() -> {
+            hideLoading();
+            renderViewCrackEgg();
+            showToolTip();
+            widgetTokenOnBoarding.showHandOnboarding();
+            trackingLuckyEggView();
+            if (fpmRender != null)
+                fpmRender.stopTrace();
+        });
+
     }
 
     @Override
@@ -607,22 +616,25 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         hideInfoTitle();
         vibrate();
         fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
-        widgetTokenView.setTokenClicked();
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
                 !TextUtils.isEmpty(crackResult.getImageUrl())) {
             Glide.with(getContext())
-                    .load(crackResult.getImageUrl())
                     .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
+                    .load(crackResult.getImageUrl())
+                    .into(new CustomTarget<Bitmap>() {
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             crackResult.setImageBitmap(resource);
                             showCrackWidgetSuccess(crackResult);
                         }
 
                         @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            super.onLoadFailed(errorDrawable);
                             crackResult.setImageBitmap(null);
                             // image load is failed, but we need to show the text instead.
                             showCrackWidgetSuccess(crackResult);

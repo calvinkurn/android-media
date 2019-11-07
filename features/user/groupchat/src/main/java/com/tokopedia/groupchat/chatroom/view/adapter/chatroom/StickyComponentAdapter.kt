@@ -3,7 +3,7 @@ package com.tokopedia.groupchat.chatroom.view.adapter.chatroom
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.graphics.Typeface
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -167,8 +167,10 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
 
     private fun dismissItem(position: Int): () -> Unit {
         return {
-            list.removeAt(position)
-            notifyItemRemoved(position)
+            if(list.size > position) {
+                list.removeAt(position)
+                notifyItemRemoved(position)
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter.chatadaptercard;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
 

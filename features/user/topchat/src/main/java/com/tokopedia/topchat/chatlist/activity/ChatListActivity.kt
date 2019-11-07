@@ -1,14 +1,14 @@
 package com.tokopedia.topchat.chatlist.activity
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v4.view.PagerAdapter
+import com.google.android.material.tabs.TabLayout
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,6 +73,10 @@ class ChatListActivity : BaseTabActivity()
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_chat_list
+    }
+
+    override fun getScreenName(): String {
+        return "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
     }
 
     override fun getViewPagerAdapter(): PagerAdapter? {

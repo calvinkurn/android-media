@@ -42,9 +42,9 @@ public class WalletRouterUtil {
                         (Fragment) originSource, requestCode, appLinkScheme, alternateRedirectUrl,
                         bundlePass
                 );
-            } else if (originSource instanceof android.support.v4.app.Fragment) {
+            } else if (originSource instanceof androidx.fragment.app.Fragment) {
                 walletRouter.navigateAppLinkWallet(
-                        (android.support.v4.app.Fragment) originSource, requestCode,
+                        (androidx.fragment.app.Fragment) originSource, requestCode,
                         appLinkScheme, alternateRedirectUrl, bundlePass
                 );
             } else {

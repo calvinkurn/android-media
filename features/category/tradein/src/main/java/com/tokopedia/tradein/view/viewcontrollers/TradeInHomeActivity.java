@@ -3,6 +3,7 @@ package com.tokopedia.tradein.view.viewcontrollers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,9 +12,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -347,8 +348,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
 
     private void showPermissionDialog() {
         isShowingPermissionPopup = true;
-        showDialogFragment(getString(R.string.tradein_text_request_access),
-                getString(R.string.tradein_text_permission_description), "", "");
+        if (getIntent().getBooleanExtra(TradeInParams.PARAM_PERMISSION_GIVEN, false)) {
+            clickAccept();
+        } else {
+            showDialogFragment(getString(R.string.tradein_text_request_access),
+                    getString(R.string.tradein_text_permission_description), "", "");
+        }
     }
 
     private void showDeviceNotElligiblePopup(int messageStringId) {
@@ -418,6 +423,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
             mTvGoToProductDetails.setOnClickListener(v -> {
                 showPermissionDialog();
             });
+            if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
+                sendGeneralEvent(clickEvent,
+                        category,
+                        TradeInGTMConstants.ACTION_CLICK_BATAL_BUTTON,
+                        TradeInGTMConstants.BERI_IZIN_PENG_HP);
+            }
         } else {
         }
     }

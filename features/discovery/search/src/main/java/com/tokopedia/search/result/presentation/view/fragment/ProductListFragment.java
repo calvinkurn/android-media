@@ -3,10 +3,10 @@ package com.tokopedia.search.result.presentation.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +37,6 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
@@ -54,7 +53,6 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.decorati
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
-import com.tokopedia.search.result.presentation.view.listener.GuidedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
@@ -82,8 +80,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
@@ -96,6 +92,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
+
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 
@@ -106,7 +105,6 @@ public class ProductListFragment
         ProductListener,
         TickerListener,
         SuggestionListener,
-        GuidedSearchListener,
         RelatedSearchListener,
         QuickFilterListener,
         GlobalNavListener,
@@ -265,7 +263,7 @@ public class ProductListFragment
     private void setupAdapter() {
         productListTypeFactory = new ProductListTypeFactoryImpl(
                 this,
-                this, this,
+                this,
                 this, this,
                 this, this,
                 this, this, this,
@@ -491,7 +489,6 @@ public class ProductListFragment
     @Override
     public void onPause() {
         super.onPause();
-        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey(), SCREEN_SEARCH_PAGE_PRODUCT_TAB);
         trackingQueue.sendAll();
     }
 
@@ -681,11 +678,6 @@ public class ProductListFragment
 
     @Override
     public void onSuggestionClicked(String queryParams) {
-        performNewProductSearch(queryParams);
-    }
-
-    @Override
-    public void onSearchGuideClicked(String queryParams) {
         performNewProductSearch(queryParams);
     }
 
@@ -1140,18 +1132,6 @@ public class ProductListFragment
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
         intent.putExtras(extras);
         startActivityForResult(intent, REQUEST_CODE_LOGIN);
-    }
-
-    @Override
-    public void sendImpressionGuidedSearch() {
-        String currentKey = searchParameter.getSearchQuery();
-        String currentPage = String.valueOf(adapter.getStartFrom() / Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS));
-
-        SearchTracking.eventImpressionGuidedSearch(
-                getActivity(),
-                currentKey,
-                currentPage
-        );
     }
 
     @Override
