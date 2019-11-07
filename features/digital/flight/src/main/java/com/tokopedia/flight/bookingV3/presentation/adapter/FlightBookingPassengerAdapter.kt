@@ -55,7 +55,7 @@ class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassenger
         fun renderPassengerInfo(passenger: FlightBookingPassengerViewModel) {
             with(view) {
                 rv_passenger_info.show()
-                tv_passenger_name.text = String.format("%s %s %s", passenger.passengerTitle, passenger.passengerFirstName, passenger.passengerLastName)
+                tv_passenger_name.text = String.format("%s %s %s", passenger.passengerTitle ?: "", passenger.passengerFirstName, passenger.passengerLastName ?: "")
 
                 //initiate passenger detail like passport num, birthdate, luggage and amenities
                 var simpleViewModels = listOf<SimpleViewModel>().toMutableList()

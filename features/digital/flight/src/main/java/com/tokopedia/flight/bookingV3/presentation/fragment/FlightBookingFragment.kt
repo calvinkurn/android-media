@@ -3,6 +3,7 @@ package com.tokopedia.flight.bookingV3.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,8 @@ import com.tokopedia.flight.bookingV3.presentation.adapter.FlightInsuranceAdapte
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.util.FlightRequestUtil
+import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -42,7 +45,9 @@ import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -50,6 +55,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.*
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_loading.*
 import kotlinx.coroutines.*
+import java.util.*
 import javax.inject.Inject
 
 
@@ -101,6 +107,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 is Success -> {
                     launchLoadingPageJob.cancel()
                     renderData(it.data)
+                    setUpTimer(it.data.orderDueTimeStamp)
                 }
                 is Fail -> {
 
@@ -140,6 +147,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun setUpTimer(timeStamp: Date) {
+        countdown_timeout.setListener {
+            Log.d("TIMEOUT", timeStamp.toString())
+        }
+        countdown_timeout.cancel()
+        countdown_timeout.setExpiredDate(timeStamp)
+        countdown_timeout.start()
+        Log.d("TIMEOUT", "STARTTTT")
+    }
+
     private fun renderData(cart: FlightCartViewEntity) {
         hideShimmering()
 
@@ -148,9 +165,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
         rv_flight_booking_route_summary.layoutManager = layoutManager
         rv_flight_booking_route_summary.setHasFixedSize(true)
         rv_flight_booking_route_summary.adapter = flightRouteAdapter
+        flightRouteAdapter.listener = object : FlightJourneyAdapter.ViewHolder.ActionListener {
+            override fun onClickRouteDetail(id: String) {
+                navigateToDetailTrip(bookingViewModel.getRouteForFlightDetail(id))
+            }
+        }
         flightRouteAdapter.updateRoutes(cart.journeySummaries)
 
         renderInsuranceData(cart.insurances)
+    }
+
+    fun navigateToDetailTrip(departureTrip: FlightDetailViewModel) {
+        startActivity(FlightDetailActivity.createIntent(activity, departureTrip, false))
     }
 
     private fun renderInsuranceData(insurances: List<FlightCart.Insurance>) {
@@ -247,7 +273,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun renderProfileData(profileInfo: ProfileInfo) {
         widget_traveller_info.setContactName(profileInfo.fullName)
-        widget_traveller_info.setContactPhoneNum(profileInfo.phone)
+        widget_traveller_info.setContactPhoneNum(62, profileInfo.phone)
         widget_traveller_info.setContactEmail(profileInfo.email)
     }
 
@@ -300,7 +326,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flight_promo_ticker_view.state = flightVoucher.promoData.state
         flight_promo_ticker_view.title = flightVoucher.promoData.title
         flight_promo_ticker_view.desc = flightVoucher.promoData.description
-        flight_promo_ticker_view.actionListener = object : TickerCheckoutView.ActionListener {
+        flight_promo_ticker_view.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
+            override fun onResetPromoDiscount() {
+                isCouponChanged = true
+                bookingViewModel.onCancelAppliedVoucher(GraphqlHelper.loadRawString(resources,
+                        R.raw.promo_checkout_flight_cancel_voucher))
+                //todoo("not implemented") To change body of created functions use File | Settings | File Templates.
+            }
+
             override fun onClickUsePromo() {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
                 intent.putExtra("EXTRA_COUPON_ACTIVE", flightVoucher.isCouponActive)
@@ -410,20 +443,22 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             REQUST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
                 data?.let {
-                    var promoData = PromoData()
+                    var promoData = PromoStackingData()
                     if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(EXTRA_PROMO_DATA)
                     when (promoData.state) {
-                        TickerCheckoutView.State.EMPTY -> {
+                        TickerPromoStackingCheckoutView.State.EMPTY -> {
                             promoData.promoCode = ""
-                            flight_promo_ticker_view.resetView()
+                            flight_promo_ticker_view.state = TickerPromoStackingCheckoutView.State.EMPTY
+                            flight_promo_ticker_view.actionListener?.onDisablePromoDiscount()
                         }
-                        TickerCheckoutView.State.FAILED -> {
+                        TickerPromoStackingCheckoutView.State.FAILED -> {
                             promoData.promoCode = ""
                             bookingViewModel.updatePromoData(promoData)
                         }
-                        TickerCheckoutView.State.ACTIVE -> {
+                        TickerPromoStackingCheckoutView.State.ACTIVE -> {
                             bookingViewModel.updatePromoData(promoData)
                         }
+                        else -> { }
                     }
                 }
             }

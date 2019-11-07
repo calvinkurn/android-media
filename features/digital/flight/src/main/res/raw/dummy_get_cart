@@ -61,7 +61,7 @@
           "totalPriceNumeric": 30000,
           "currency": "",
           "isDomestic": true,
-          "repriceTime": 360,
+          "repriceTime": 10,
           "adult": 2,
           "child": 1,
           "infant": 1,
@@ -184,7 +184,7 @@
               },
               "routes": [
                 {
-                  "operatingAirlineID": "",
+                  "operatingAirlineID": "SI",
                   "departureAirportID": "CGK",
                   "departureTime": "2019-11-07T06:00:00Z",
                   "arrivalAirportID": "DPS",
@@ -192,11 +192,11 @@
                   "airlineID": "SI",
                   "flightNumber": "101",
                   "duration": "2 jam",
-                  "layover": "",
+                  "layover": "Jakarta Transit",
                   "refundable": true,
                   "departureTerminal": "X1",
                   "arrivalTerminal": "Z1",
-                  "stop": 0,
+                  "stop": 2,
                   "stopDetail": [],
                   "infos": [
                     {
@@ -212,7 +212,7 @@
                   ]
                 },
                 {
-                                  "operatingAirlineID": "",
+                                  "operatingAirlineID": "SI",
                                   "departureAirportID": "CGK",
                                   "departureTime": "2019-11-07T06:00:00Z",
                                   "arrivalAirportID": "DPS",

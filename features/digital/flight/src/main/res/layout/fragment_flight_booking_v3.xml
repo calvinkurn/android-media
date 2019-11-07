@@ -14,6 +14,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.tokopedia.common.travel.widget.CountdownTimeView
+                android:id="@+id/countdown_timeout"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_flight_booking_route_summary"
                 android:layout_width="match_parent"
@@ -130,7 +137,7 @@
                 android:background="#f3f4f5"
                 app:layout_constraintTop_toBottomOf="@id/rv_insurance_list" />
 
-            <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+            <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
                 android:id="@+id/flight_promo_ticker_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
