@@ -35,6 +35,7 @@ import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
 import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteActivity
 import com.tokopedia.logisticaddaddress.features.dropoff_picker.adapter.NearbyStoreAdapter
+import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -201,8 +202,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val latitude = data.getStringExtra("BUNDLE_LATITUDE")
                     val longitude = data.getStringExtra("BUNDLE_LONGITUDE")
-                    // todo: prevent number format exception
-                    val latLng = LatLng(latitude.toDouble(), longitude.toDouble())
+                    val latLng = getLatLng(latitude, longitude)
                     moveCamera(latLng)
                 }
             }
