@@ -12,7 +12,6 @@ import javax.inject.Named
 @Module class PlayCardModule {
 
     @Provides
-    @PlayCardScope
     @Named(QUERY_PLAY_CARD)
     fun provideRawPlayQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_home_play)
