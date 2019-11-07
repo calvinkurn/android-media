@@ -93,7 +93,7 @@ project.ext {
     ]
 }
 
-def hermesPath = "../reactnative-apps/node_modules/hermesvm/android/";
+def hermesPath = "../hermes/";
 def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
@@ -595,6 +595,7 @@ dependencies {
 
 
     if (enableHermes) {
+        project.logger.lifecycle('customerapp, hermes included')
         debugImplementation files(hermesPath + "hermes-debug.aar")
         releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {
