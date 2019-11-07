@@ -148,8 +148,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 stopLocationRequest()
                 if (result != null && result.locations.isNotEmpty()) {
                     val location = result.locations[0]
-                    val latlng = LatLng(location.latitude, location.longitude)
-                    moveCamera(latlng)
+                    moveCamera(getLatLng(location.latitude, location.longitude))
                 }
             }
         }
@@ -202,8 +201,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val latitude = data.getStringExtra("BUNDLE_LATITUDE")
                     val longitude = data.getStringExtra("BUNDLE_LONGITUDE")
-                    val latLng = getLatLng(latitude, longitude)
-                    moveCamera(latLng)
+                    moveCamera(getLatLng(latitude, longitude))
                 }
             }
         }
@@ -241,8 +239,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                             mFusedLocationClient.lastLocation
                                     .addOnSuccessListener {
                                         if (it != null) {
-                                            val latlng = LatLng(it.latitude, it.longitude)
-                                            moveCamera(latlng)
+                                            moveCamera(getLatLng(it.latitude, it.longitude))
                                         } else {
                                             // If it is null, either Google Play Service has just
                                             // been restarted or the location service is deactivated
@@ -337,7 +334,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_self_map_green)))
         for (datum in data) {
             val marker = mMap?.addMarker(MarkerOptions()
-                    .position(LatLng(datum.latitude.toDouble(), datum.longitude.toDouble()))
+                    .position(getLatLng(datum.latitude, datum.longitude))
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green)))
             marker?.let {
                 it.tag = datum

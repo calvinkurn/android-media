@@ -23,12 +23,12 @@ class DropoffPickerViewModel
     val storeData: LiveData<Result<DropoffUiModel>>
         get() = mStoreResponse
 
-    fun getStores(latlng: String) {
+    fun getStores(latLng: String) {
         getStoreUseCase.setTypeClass(GetStoreResponse::class.java)
         getStoreUseCase.setRequestParams(
                 mapOf(
                         "query" to mapOf(
-                                "latlng" to latlng,
+                                "latlng" to latLng,
                                 "type" to 3
                         )
                 ))
