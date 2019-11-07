@@ -40,11 +40,13 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun setData(items: List<AutoCompleteResultUi>) {
         data.clear()
-        if (items.isEmpty()) {
-            data.add(NoResultType())
-        } else {
-            data.addAll(items)
-        }
+        data.addAll(items)
+        notifyDataSetChanged()
+    }
+
+    fun setNoResult() {
+        data.clear()
+        data.add(NoResultType())
         notifyDataSetChanged()
     }
 

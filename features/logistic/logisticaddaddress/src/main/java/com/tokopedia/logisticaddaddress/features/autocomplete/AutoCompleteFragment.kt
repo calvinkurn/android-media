@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -51,6 +53,9 @@ class AutoCompleteFragment : Fragment(), SearchInputView.Listener {
         viewModel.autoCompleteList.observe(this, Observer {
             when (it) {
                 is Success -> adapter.setData(it.data)
+                is Fail -> when(it.throwable) {
+                    is MessageErrorException -> adapter.setNoResult()
+                }
             }
         })
     }
