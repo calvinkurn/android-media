@@ -10,7 +10,7 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false
     private var trackingDataForCombination: List<Any> = emptyList()
-    private var playCardHome: PlayCardHome = PlayCardHome()
+    private var playCardHome: PlayCardHome? = null
     private var channel: DynamicHomeChannel.Channels? = null
 
     override fun isCache(): Boolean {
@@ -33,7 +33,7 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
         return channel
     }
 
-    fun getPlayCardHome(): PlayCardHome {
+    fun getPlayCardHome(): PlayCardHome? {
         return playCardHome
     }
 
