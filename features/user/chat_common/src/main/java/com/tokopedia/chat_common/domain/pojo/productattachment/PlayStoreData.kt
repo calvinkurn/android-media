@@ -16,7 +16,7 @@ data class PlayStoreData(
 ) {
 
     fun isBanned(): Boolean {
-        return status == PLAY_STORE_BANNED
+        return status == PLAY_STORE_BANNED || status == PLAY_STORE_SUSPICIOUS
     }
 
     companion object {
