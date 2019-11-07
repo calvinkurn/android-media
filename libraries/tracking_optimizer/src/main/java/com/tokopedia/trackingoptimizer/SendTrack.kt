@@ -8,13 +8,11 @@ import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_CATEGOR
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.EVENT_LABEL
 import com.tokopedia.trackingoptimizer.db.model.TrackingDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
-import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.trackingoptimizer.repository.TrackingRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -22,6 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger
  * Created by hendry on 01/03/19.
  */
 var atomicInteger = AtomicInteger()
+private const val ROW_LIMIT = 10
+private const val LOOP_LIMIT = 10
 
 fun decreaseCounter() {
     val value = atomicInteger.getAndDecrement()
@@ -34,60 +34,58 @@ fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackingReposi
               onFinished: (() -> Unit)) {
     atomicInteger.getAndIncrement()
     coroutineScope.launch {
-        val eeFullModelList = trackingRepository.getAllEEFull()
-        val deleteEEFullJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
-            trackingRepository.deleteEEFull()
-        }
-        eeFullModelList?.run {
-            map {
-                sendTrack(it)
-            }
-        }
-        val eeModelList = trackingRepository.getAllEE()
-        val deleteEEJob = launch(Dispatchers.IO + TrackingExecutors.handler) {
-            trackingRepository.deleteEE()
-        }
-        eeModelList?.run {
-            map {
-                sendTrack(it)
-            }
-        }
-
-        deleteEEFullJob.join()
-        deleteEEJob.join()
+        sendEEAllThenDelete(trackingRepository)
         decreaseCounter()
         onFinished.invoke()
     }
 }
 
+private fun sendEEAllThenDelete(trackingRepository: TrackingRepository){
+    var counter = 0
+    while (counter < LOOP_LIMIT) {
+        val data = trackingRepository.getEE(ROW_LIMIT)
+        if (data?.isNotEmpty() == true) {
+            data.run {
+                map {
+                    sendTrack(it)
+                }
+            }
+            trackingRepository.deleteEE(data.toList())
+        } else {
+            // quit loop
+            break
+        }
+        counter++
+    }
+
+}
+
 fun sendTrack(it: TrackingDbModel) {
-    var hasSent = false
-    val map = mutableMapOf<String, Any?>()
     val eventModel: EventModel = GsonSingleton.instance.fromJson(it.event,
         object : TypeToken<EventModel>() {}.type)
+    val customDimensionMap = HashMapJsonUtil.jsonToMap(it.customDimension)
 
+    var enhanceECommerceMap: HashMap<String, Any>? = null
+    if (it is TrackingEEDbModel) {
+        enhanceECommerceMap = HashMapJsonUtil.jsonToMap(it.enhanceEcommerce)
+    }
+    sendTrack(eventModel, customDimensionMap, enhanceECommerceMap)
+}
+
+fun sendTrack(eventModel: EventModel, customDimensionMap:HashMap<String, Any>?,
+              enhanceECommerceMap: HashMap<String, Any>?) {
+    val map = mutableMapOf<String, Any?>()
     map.put(EVENT, eventModel.event)
     map.put(EVENT_CATEGORY, eventModel.category)
     map.put(EVENT_ACTION, eventModel.action)
     map.put(EVENT_LABEL, eventModel.label)
-    val customDimensionMap = HashMapJsonUtil.jsonToMap(it.customDimension)
-    if (customDimensionMap != null && customDimensionMap.isNotEmpty()) {
+    if (customDimensionMap?.isNotEmpty() == true) {
         map.putAll(customDimensionMap)
     }
-    if (it is TrackingEEDbModel || it is TrackingEEFullDbModel) {
-        var enhanceECommerceMap: HashMap<String, Any>? = null
-        if (it is TrackingEEDbModel) {
-            enhanceECommerceMap = HashMapJsonUtil.jsonToMap(it.enhanceEcommerce)
-        } else if (it is TrackingEEFullDbModel) {
-            enhanceECommerceMap = HashMapJsonUtil.jsonToMap(it.enhanceEcommerce)
-        }
-        if (enhanceECommerceMap != null && enhanceECommerceMap.isNotEmpty()) {
-            map.putAll(enhanceECommerceMap)
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
-            hasSent = true
-        }
-    }
-    if (!hasSent) {
+    if (enhanceECommerceMap != null && enhanceECommerceMap.isNotEmpty()) {
+        map.putAll(enhanceECommerceMap)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    } else {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 }
