@@ -140,7 +140,6 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(holder)
-        super.onViewAttachedToWindow(holder)
         val position = holder.adapterPosition
         if (!viewMap.containsKey(position) && viewMap.size > 0) {
             viewMap[position] = true
