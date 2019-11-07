@@ -14,4 +14,6 @@
     <string name="title_autocomplete" >Pencarian</string>
     <string name="title_search_result" >Hasil Pencarian</string>
     <string name="title_digital_deals" >Deals</string>
+    <string name="notif_settings_title">Pengaturan Notifikasi</string>
+    <string name="payment_settings_title">Pengaturan Pembayaran</string>
 </resources>
