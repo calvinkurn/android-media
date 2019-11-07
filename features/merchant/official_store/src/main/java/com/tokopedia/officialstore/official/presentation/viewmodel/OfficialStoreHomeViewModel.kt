@@ -117,9 +117,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     fun loadMore(category: Category?, page: Int) {
         val categories = category?.categories.toString()
-        val filteredCategories = categories.replace("""[]""", "") // Remove Square bracket from the string
+        val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
+        val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
         launchCatchError(block = {
-            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(filteredCategories, page).await())
+            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(categoriesWithoutClosingSquare, page).await())
         }) {
 
         }
