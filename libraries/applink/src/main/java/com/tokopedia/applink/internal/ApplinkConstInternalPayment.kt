@@ -14,4 +14,8 @@ object ApplinkConstInternalPayment {
     @JvmField
     val PAYMENT_CHECKOUT = "$INTERNAL_PAYMENT/checkout"
 
+    // PaymentSetting
+    @JvmField
+    val PAYMENT_SETTING = "$INTERNAL_PAYMENT/setting"
+
 }
