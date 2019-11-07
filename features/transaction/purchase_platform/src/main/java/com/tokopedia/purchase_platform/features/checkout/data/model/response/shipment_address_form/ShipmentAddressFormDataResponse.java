@@ -84,6 +84,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("tickers")
     @Expose
     private List<Ticker> tickers = new ArrayList<>();
+    @SerializedName("addresses")
+    @Expose
+    private Addresses addresses;
 
     @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
@@ -170,5 +173,9 @@ public class ShipmentAddressFormDataResponse {
 
     public List<Ticker> getTickers() {
         return tickers;
+    }
+
+    public Addresses getAddresses() {
+        return addresses;
     }
 }

@@ -1,0 +1,37 @@
+package com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform
+
+import android.os.Parcel
+import android.os.Parcelable
+
+/**
+ * Created by Irfan Khoirul on 2019-11-07.
+ */
+
+data class AddressesData(
+        var active: String = "",
+        var data: DataAddressData = DataAddressData()
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString() ?: "",
+            parcel.readParcelable(DataAddressData::class.java.classLoader) ?: DataAddressData()) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(active)
+        parcel.writeParcelable(data, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<AddressesData> {
+        override fun createFromParcel(parcel: Parcel): AddressesData {
+            return AddressesData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<AddressesData?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
