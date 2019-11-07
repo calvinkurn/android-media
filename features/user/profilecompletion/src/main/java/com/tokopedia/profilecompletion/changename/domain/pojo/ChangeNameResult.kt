@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.changename.data
+package com.tokopedia.profilecompletion.changename.domain.pojo
 
 data class ChangeNameResult(
         var data: ChangeNamePojo.UserProfileUpdate = ChangeNamePojo.UserProfileUpdate(),

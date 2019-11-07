@@ -14,7 +14,7 @@ import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
-import com.tokopedia.profilecompletion.changename.data.ChangeNamePojo
+import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.settingprofile.data.SubmitProfilePictureData
 import com.tokopedia.profilecompletion.settingprofile.data.UserProfileInfoData

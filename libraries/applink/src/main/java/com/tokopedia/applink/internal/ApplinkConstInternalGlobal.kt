@@ -111,7 +111,9 @@ object ApplinkConstInternalGlobal {
     // ChangeNameActivity
     // tokopedia-android-internal://global/change-name
     @JvmField
-    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name"
+    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name?oldName={oldName}"
+    @JvmField
+    val PARAM_FULL_NAME = "oldName"
 
     // AddEmailActivity
     // tokopedia-android-internal://global/add-email

@@ -4,23 +4,29 @@ package com.tokopedia.profilecompletion.changename.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.changename.data.ChangeNameResult
+import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
+import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_add_name_register.view.*
 import kotlinx.android.synthetic.main.fragment_change_fullname.*
 import javax.inject.Inject
 
@@ -31,10 +37,10 @@ class ChangeNameFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-
     private val viewModel by lazy { viewModelProvider.get(ChangeNameViewModel::class.java) }
+
+    private var oldName: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -46,6 +52,11 @@ class ChangeNameFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_change_fullname, container, false)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        oldName = arguments?.getString(ApplinkConstInternalGlobal.PARAM_FULL_NAME).toString()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
@@ -53,18 +64,51 @@ class ChangeNameFragment : BaseDaggerFragment() {
     }
 
     private fun initListener() {
+        changeNameTextName?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s != null) {
+                    when {
+                        s.isEmpty() || s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
+                            if (s.length < MINIMUM_LENGTH) {
+                                onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
+                            } else if (s.length > MAXIMUM_LENGTH) {
+                                onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_long_35)))
+                            }
+                            changeNameButtonSave?.isEnabled = false
+                        }
+                        s.toString() == oldName -> {
+                            onErrorChangeName(Throwable(resources.getString(R.string.error_name_same_with_previous)))
+                            changeNameButtonSave?.isEnabled = false
+                        }
+                        else -> {
+                            changeNameButtonSave?.isEnabled = true
+                            activity?.let {
+                                changeNameTextMessage?.run {
+                                    text = getString(R.string.change_name_visible_on_another_user)
+                                    setTextColor(ContextCompat.getColor(it, R.color.grey_700))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        })
+
         changeNameButtonSave?.setOnClickListener {
-            when {
-                changeNameTextName?.text.isNullOrEmpty() || changeNameTextName?.text?.length as Int  <= MINIMUM_LENGTH -> {
-                    onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
-                }
-                changeNameTextName?.text?.length as Int > MAXIMUM_LENGTH -> {
-                    onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_long)))
-                }
-                else -> {
-                    showLoading()
-                    viewModel.changePublicName(changeNameTextName?.text.toString())
-                }
+            val fullName = changeNameTextName?.text
+            if (fullName != null) {
+                showLoading()
+                viewModel.changePublicName(changeNameTextName?.text.toString())
+            } else {
+                onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
             }
         }
     }
@@ -92,14 +136,21 @@ class ChangeNameFragment : BaseDaggerFragment() {
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+
+        ChangeNameTracker().onSuccessChangeName()
     }
 
 
     private fun onErrorChangeName(throwable: Throwable) {
         hideLoading()
-        view?.let { v ->
-            throwable.message?.let {
-                msg -> Toaster.make(v, msg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+
+        throwable.message?.let { message ->
+            activity?.let {
+                changeNameTextMessage?.run {
+                    text = message
+                    setTextColor(ContextCompat.getColor(it, R.color.red_500))
+                    ChangeNameTracker().onFailedChangeName(throwable.message.toString())
+                }
             }
         }
     }
@@ -115,8 +166,8 @@ class ChangeNameFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        private const val MINIMUM_LENGTH = 3
-        private const val MAXIMUM_LENGTH = 128
+        const val MINIMUM_LENGTH = 3
+        const val MAXIMUM_LENGTH = 35
 
         const val EXTRA_PROFILE_SCORE = "profile_score"
         const val EXTRA_PUBLIC_NAME = "public_name"

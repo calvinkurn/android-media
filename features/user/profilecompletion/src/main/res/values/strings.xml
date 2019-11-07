@@ -13,7 +13,9 @@
     <string name="name_confirmation">Apakah nama lengkap Anda sudah benar?</string>
     <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
     <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
-    <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 128 karakter</string>
+    <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 35 karakter</string>
+    <string name="error_name_too_long_35">Nama lengkap terlalu panjang, maksimal 35 karakter</string>
+    <string name="error_name_same_with_previous">Nama tidak boleh sama</string>
     <string name="name_confirmation_yes">Ya, benar</string>
     <string name="name_confirmation_no">Tidak</string>
     <string name="error_minimal_name">Minimum 3 karakter</string>
@@ -28,6 +30,7 @@
     <string name="change_name_note">Kamu hanya dapat mengubah nama satu kali. Pastikan nama sudah benar.</string>
     <string name="change_name_fullname">Nama Lengkap</string>
     <string name="change_name_visible_on_public_note">Nama akan terlihat oleh publik</string>
+    <string name="change_name_visible_on_another_user">Nama dapat dilihat oleh pengguna lainnya</string>
     <string name="change_name_change_success">Nama lengkap berhasil diubah</string>
   
     <!-- PROFILE COMPLETION -->
