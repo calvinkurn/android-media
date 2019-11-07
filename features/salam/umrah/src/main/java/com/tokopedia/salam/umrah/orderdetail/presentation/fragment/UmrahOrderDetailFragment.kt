@@ -214,7 +214,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         rv_action_button.adapter = buttonAdapter
 
         tg_umrah_condition_agreement.makeLinks(Pair(getString(R.string.umrah_order_detail_condition_agreement_link), View.OnClickListener {
-            RouteManager.route(context, "https://tokopedia.com/help")
+            RouteManager.route(context, "m.tokopedia.com/help")
         }))
 
         tg_umrah_contact_us.text = getTextFromHtml(data.contactUs.helpText)
