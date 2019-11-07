@@ -7,8 +7,11 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
+import com.tokopedia.logisticaddaddress.domain.model.dropoff.AddressResponse
+import com.tokopedia.logisticaddaddress.domain.model.dropoff.DataAddress
 import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
 import com.tokopedia.logisticaddaddress.domain.query.AutoCompleteQuery
+import com.tokopedia.logisticaddaddress.domain.query.GetAddressQuery
 import com.tokopedia.logisticaddaddress.domain.query.GetDistrictQuery
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
@@ -23,6 +26,7 @@ class AutoCompleteViewModel
         dispatcher: CoroutineDispatcher,
         private val autoCompleteUseCase: GraphqlUseCase<AutocompleteResponse>,
         private val getDistrictUseCase: GraphqlUseCase<GetDistrictResponse>,
+        private val getSavedAddressUseCase: GraphqlUseCase<AddressResponse>,
         private val autoCompleteMapper: AutocompleteMapper,
         private val getDistrictMapper: GetDistrictMapper) : BaseViewModel(dispatcher) {
 
@@ -32,6 +36,9 @@ class AutoCompleteViewModel
     private val mValidatedDistrict = MutableLiveData<Result<GetDistrictDataUiModel>>()
     val validatedDistrict: LiveData<Result<GetDistrictDataUiModel>>
         get() = mValidatedDistrict
+    private val mSavedAddress = MutableLiveData<Result<List<DataAddress>>>()
+    val savedAddress: LiveData<Result<List<DataAddress>>>
+        get() = mSavedAddress
 
     fun getAutoCompleteList(keyword: String) {
         autoCompleteUseCase.setTypeClass(AutocompleteResponse::class.java)
@@ -60,6 +67,26 @@ class AutoCompleteViewModel
                 },
                 { mValidatedDistrict.value = Fail(it) }
         )
+    }
+
+    fun getSavedAddress() {
+        getSavedAddressUseCase.setTypeClass(AddressResponse::class.java)
+        getSavedAddressUseCase.setGraphqlQuery(GetAddressQuery.keroAddressCorner)
+        getSavedAddressUseCase.setRequestParams(mapOf(
+                "input" to mapOf(
+                        "show_address" to true
+                )
+        ))
+
+        getSavedAddressUseCase.execute(
+                {
+                    mSavedAddress.value = Success(it.keroAddressCorner.data)
+                },
+                {
+                    mSavedAddress.value = Fail(it)
+                }
+        )
+
     }
 
 }
