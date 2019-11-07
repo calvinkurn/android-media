@@ -21,7 +21,6 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.listener.AppBarState;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.listener.AppBarStateChangeListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistPresenter;
-import com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.activity.HotlistNavActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -54,12 +53,7 @@ public class HotlistActivity extends DiscoveryActivity
     private static Intent createInstanceUsingAlias(Context context,
                                                    String alias,
                                                    String trackerAttribution) {
-        Intent intent;
-        if (HotlistNavActivity.isHotlistNavEnabled(context)) {
-            intent = new Intent(context, HotlistNavActivity.class);
-        } else {
-            intent = new Intent(context, HotlistActivity.class);
-        }
+        Intent intent = new Intent(context, HotlistActivity.class);
         Bundle extras = new Bundle();
         extras.putString(EXTRA_HOTLIST_PARAM_ALIAS, alias);
         try {

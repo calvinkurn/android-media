@@ -62,6 +62,14 @@ public class BrowseProductRouter {
         return intent;
     }
 
+    public static Intent getHotlistIntent(Context context, String url) {
+        Intent intent = RouterUtils.getActivityIntent(context, BROWSE_HOTLIST_ACTIVITY);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.EXTRAS_HOTLIST_URL, url);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     public static Intent getCategoryNavigationIntent(Context context) {
         Intent intent =  RouterUtils.getActivityIntent(context, CATEGORY_NAVIGATION_ACTIVITY);
         return intent;

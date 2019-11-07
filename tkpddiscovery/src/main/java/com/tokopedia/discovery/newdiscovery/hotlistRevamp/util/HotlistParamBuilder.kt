@@ -33,7 +33,7 @@ class HotlistParamBuilder {
         private const val ITEMS_PER_PAGE = 10
         private const val CPM_ADS_PER_PAGE = 1
         private const val TOP_ADS_PER_PAGE = "2"
-        private const val CPM_TEMPLATE_ID = "2"
+        private const val CPM_TEMPLATE_ID = "3"
 
         val hotlistParamBuilder: HotlistParamBuilder by lazy { HotlistParamBuilder() }
     }
