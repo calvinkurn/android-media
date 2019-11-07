@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
 import kotlinx.android.synthetic.main.item_autocomplete_result.view.*
@@ -19,7 +18,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (viewType) {
             R.layout.item_autocomplete_result -> ResultViewHolder(view)
             R.layout.item_autocomplete_no_result -> NoResultViewHolder(view)
-            else -> LoadingViewholder(view)
+            else -> ShimmeringViewHolder(view)
         }
     }
 
@@ -30,7 +29,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (holder) {
             is ResultViewHolder -> {
                 if (item is AutoCompleteResultUi) {
-                    holder.bind(item as AutoCompleteResultUi)
+                    holder.bind(item)
                     holder.itemView.setOnClickListener { listener?.onResultClicked(item) }
                 }
             }
@@ -81,7 +80,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ShimmeringViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
