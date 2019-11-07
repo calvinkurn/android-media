@@ -43,10 +43,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
+const val REQUEST_CODE_LOCATION: Int = 1
+const val REQUEST_CODE_AUTOCOMPLETE: Int = 2
 
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
-    private val REQUEST_CODE_LOCATION: Int = 1
     private val GREEN_ARGB = 0x40388E3C
 
     lateinit var mPermissionChecker: PermissionCheckerHelper
@@ -142,8 +143,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 stopLocationRequest()
                 if (result != null && result.locations.isNotEmpty()) {
                     val location = result.locations[0]
-                    mLastLocation = LatLng(location.latitude, location.longitude)
-                    moveCamera(mLastLocation)
+                    val latlng = LatLng(location.latitude, location.longitude)
+                    moveCamera(latlng)
                 }
             }
         }
@@ -192,6 +193,15 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 if (resultCode == Activity.RESULT_CANCELED) setLocationEmptyView()
                 else if (resultCode == Activity.RESULT_OK) checkForPermission()
             }
+            REQUEST_CODE_AUTOCOMPLETE -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val latitude = data.getStringExtra("BUNDLE_LATITUDE")
+                    val longitude = data.getStringExtra("BUNDLE_LONGITUDE")
+                    // todo: prevent number format exception
+                    val latLng = LatLng(latitude.toDouble(), longitude.toDouble())
+                    moveCamera(latLng)
+                }
+            }
         }
     }
 
@@ -228,8 +238,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                             mFusedLocationClient.lastLocation
                                     .addOnSuccessListener {
                                         if (it != null) {
-                                            mLastLocation = LatLng(it.latitude, it.longitude)
-                                            moveCamera(mLastLocation)
+                                            val latlng = LatLng(it.latitude, it.longitude)
+                                            moveCamera(latlng)
                                         } else {
                                             // If it is null, either Google Play Service has just
                                             // been restarted or the location service is deactivated
@@ -262,14 +272,12 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun moveCamera(latLng: LatLng) {
+        mLastLocation = latLng
         setMapView()
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
                 .zoom(16f)
                 .build()
-        mMap?.addMarker(MarkerOptions()
-                .position(latLng)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_self_map_green)))
         mMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
         mNearbyAdapter.setStateLoading()
         mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -303,7 +311,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private fun showStoreDetail(datum: DropoffNearbyModel) {
         mMarkerList.forEach {
             val tag = it.tag
-            if (tag is LocationDataModel) {
+            if (tag is DropoffNearbyModel) {
                 if (tag.addrId == datum.addrId) {
                     it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_white))
                 } else {
@@ -320,6 +328,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private fun drawStoreLocations(data: List<DropoffNearbyModel>) {
         mMarkerList.clear()
+        mMap?.clear()
+        mMap?.addMarker(MarkerOptions()
+                .position(mLastLocation)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_self_map_green)))
         for (datum in data) {
             val marker = mMap?.addMarker(MarkerOptions()
                     .position(LatLng(datum.latitude.toDouble(), datum.longitude.toDouble()))
@@ -374,7 +386,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private val goToAutoComplete: (View) -> Unit = {
         val intent = Intent(this, AutoCompleteActivity::class.java)
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE)
         overridePendingTransition(R.anim.slide_in_up, R.anim.stay_still)
     }
 
