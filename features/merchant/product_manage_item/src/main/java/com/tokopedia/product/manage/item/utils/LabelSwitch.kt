@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.item.utils
 import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.CompoundButton
@@ -124,5 +125,13 @@ class LabelSwitch : BaseCustomView {
 
     fun setListenerValue(listener: CompoundButton.OnCheckedChangeListener) {
         this.listener = listener
+    }
+
+    fun setSwitchEnabled(isEnabled: Boolean) {
+        switchEnable = isEnabled
+        switchStatus.isClickable = isEnabled
+        switchStatus.isEnabled = isEnabled
+        this.isClickable = isEnabled
+        this.isEnabled = isEnabled
     }
 }

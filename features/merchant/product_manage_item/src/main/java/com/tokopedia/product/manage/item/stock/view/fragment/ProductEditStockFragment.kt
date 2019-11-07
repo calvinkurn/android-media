@@ -5,11 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
@@ -19,6 +22,8 @@ import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddE
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.manage.item.stock.view.model.ProductStock
 import kotlinx.android.synthetic.main.fragment_product_edit_stock.*
+import kotlinx.android.synthetic.main.widget_label_switch_product.view.*
+import timber.log.Timber
 
 class ProductEditStockFragment : Fragment() {
 
@@ -50,6 +55,7 @@ class ProductEditStockFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setDataStock(productStock)
+
         if (hasVariant) {
             decimalInputViewStock.text = MIN_STOCK_VARIANT
             decimalInputViewStock.visibility = View.GONE
@@ -62,6 +68,8 @@ class ProductEditStockFragment : Fragment() {
         labelSwitchStock.setListenerValue(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
             setStockLabel(isChecked)
         })
+
+        labelSwitchStock.setSwitchEnabled(!isAddStatus)
 
         texViewMenu?.run {
             text = getString(R.string.label_save)
