@@ -1,147 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography24"
+        style="@style/TextView.Small.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16">
+        android:layout_marginLeft="@dimen/dp_16"
+        android:text="@string/biaya_per_klik"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_info" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            style="@style/TextView.Small.Bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/biaya_per_klik" />
+    <ImageView
+        android:id="@+id/btn_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:contentDescription="INFO"
+        android:padding="@dimen/dp_5"
+        app:layout_constraintStart_toEndOf="@+id/typography24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topads_create_ic_information" />
 
-        <ImageView
-            android:id="@+id/btn_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dp_5"
-            app:srcCompat="@drawable/topads_create_ic_information" />
-
-    </LinearLayout>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/card1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:orientation="vertical"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardUseCompatPadding="true"
-        app:contentPadding="@dimen/dp_16">
+        app:contentPadding="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_info">
 
-
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/budget"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_16"
+                android:hint="Rp"
+                app:layout_constraintEnd_toStartOf="@+id/recom_txt"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/subtitle" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/subtitle"
                 style="@style/TextView.Micro"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_5"
-                app:typographyType="body_3"
-                android:text="@string/biaya_per_klik" />
+                android:text="@string/biaya_per_klik"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3" />
 
-            <LinearLayout
-                android:id="@+id/container_budget"
-                android:layout_width="match_parent"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/recom_txt"
+                style="@style/TextView.Micro"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:hint="Rp" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    style="@style/TextView.Micro"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:typographyType="body_3"
-                    android:text="@string/rekomendasi_rp" />
-            </LinearLayout>
-        </LinearLayout>
-
+                android:text="@string/rekomendasi_rp"
+                app:layout_constraintBottom_toBottomOf="@+id/budget"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/budget"
+                app:layout_constraintTop_toTopOf="@+id/budget"
+                app:typographyType="body_3" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
+
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography27"
         style="@style/TextView.Small.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="20dp"
+        android:text="Kata Kunci (3)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card1" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography27"
+        tools:itemCount="10"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/topads_create_layout_budget_list_item"
+        tools:visibility="visible">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.tokopedia.design.component.RoundFloatingButton
+        android:id="@+id/tip_btn"
+        style="@style/TextView.Micro.Green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_12"
+        android:backgroundTint="#FFFCF5"
+        android:text="@string/tip_biaya_iklan"
+        android:textAllCaps="false"
+        app:buttonCompatSize="medium"
+        app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_6"
+        android:layout_above="@+id/btn_submit"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:background="@drawable/topads_create_bg_shader_gray"
+        app:layout_constraintBottom_toTopOf="@+id/btn_next"
+        tools:layout_editor_absoluteX="6dp" />
+
+    <Button
+        android:id="@+id/btn_next"
+        style="@style/Button.Submit.Green.Full"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:text="Kata Kunci (3)" />
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="-6dp"
-        android:layout_weight="1">
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:text="@string/lanjutkan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:itemCount="10"
-            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/topads_create_layout_budget_list_item"/>
-
-        <com.tokopedia.design.component.RoundFloatingButton
-            android:id="@+id/tip_btn"
-            style="@style/TextView.Micro.Green"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_margin="@dimen/dp_10"
-            android:backgroundTint="#FFFCF5"
-            android:text="@string/tip_biaya_iklan"
-            android:textAllCaps="false"
-            app:buttonCompatSize="medium"
-            app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <LinearLayout
-        android:id="@+id/container_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_6"
-            android:layout_above="@+id/btn_submit"
-            android:background="@drawable/topads_create_bg_shader_gray" />
-
-
-        <Button
-            android:id="@+id/btn_next"
-            style="@style/Button.Submit.Green"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/lanjutkan" />
-    </LinearLayout>
-
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

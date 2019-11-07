@@ -30,7 +30,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.util.SessionHandler;
@@ -123,7 +122,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         background = view.findViewById(R.id.background);
         login = view.findViewById(R.id.login);
         register = view.findViewById(R.id.register);
-        linearLayout = view.findViewById(R.id.linearLayout);
+        linearLayout = view.findViewById(R.id.parent);
         progressBar = view.findViewById(R.id.progress_login);
         titleView = view.findViewById(R.id.title_view);
         containerProvider = view.findViewById(R.id.container_provider);

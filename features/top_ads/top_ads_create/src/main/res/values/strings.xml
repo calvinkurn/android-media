@@ -62,4 +62,12 @@
     <string name="gunakan_rekomendasi_biaya_agar_produkmu_lebih_bersaing">Gunakan rekomendasi biaya agar produkmu lebih bersaing</string>
     <string name="bayar_hanya_jika_iklan_produkmu_di_klik_dari_hasil_pencarian_kata_kunci_pilihan">Bayar hanya jika iklan produkmu di-klik dari hasil pencarian kata kunci pilihan.</string>
     <string name="batas_biaya_tertinggi_saat_iklanmu_di_klik_calon_pembeli_di_tokopedia">Batas biaya tertinggi saat iklanmu di-klik calon pembeli\ndi Tokopedia.</string>
+    <string name="iklan_manual">Iklan Manual</string>
+    <string name="iklan_otomatis">Iklan Otomatis</string>
+    <string name="buat_iklan_dengan_pengaturan_lengkap">Buat iklan dengan pengaturan lengkap</string>
+    <string name="mulai_iklan_manual">Mulai Iklan Manual</string>
+    <string name="gunakan_grup_iklan_untuk_mengiklankan_produkmu_sekaligus">Gunakan grup iklan untuk mengiklankan produkmu sekaligus.</string>
+    <string name="ilustration">Ilustration</string>
+    <string name="ketik_kata_kunci">Ketik kata kunci</string>
+    <string name="tambah">Tambah</string>
 </resources>

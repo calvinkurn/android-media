@@ -1,56 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout7"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/topads_create_bg_top_round"
-    android:orientation="vertical">
+    android:background="@drawable/topads_create_bg_top_round">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16">
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:padding="@dimen/dp_2"
+        app:layout_constraintEnd_toStartOf="@+id/typography30"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topads_create_ic_group_close" />
 
-        <ImageView
-            android:id="@+id/btn_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_10"
-            android:padding="@dimen/dp_2"
-            app:srcCompat="@drawable/topads_create_ic_group_close" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography30"
+        style="@style/TextView.TitleBig.Bold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:gravity="center_vertical"
+        android:text="@string/urutkan"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_close" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            style="@style/TextView.TitleBig.Bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:gravity="center_vertical"
-            android:text="@string/urutkan" />
-
-    </LinearLayout>
 
     <RadioGroup
         android:id="@+id/rb_group"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
+        android:layout_height="0dp"
         android:divider="@drawable/topads_create_h_divider"
         android:dividerPadding="16dip"
+        android:inputType="text"
+        android:orientation="vertical"
         android:showDividers="middle"
-        android:orientation="vertical">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography30">
 
         <RadioButton
             android:id="@+id/rb_terlaris"
             style="@style/TopadsProductSortRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layoutDirection="rtl"
+            android:layout_marginTop="10dp"
             android:checked="true"
+            android:layoutDirection="rtl"
             android:text="@string/terlaris"
             android:textAlignment="textStart" />
 
@@ -59,7 +64,7 @@
             style="@style/TopadsProductSortRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_marginTop="1dp"
             android:layoutDirection="rtl"
             android:text="@string/terbaru"
             android:textAlignment="textStart" />
@@ -69,7 +74,7 @@
             style="@style/TopadsProductSortRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_marginTop="1dp"
             android:layoutDirection="rtl"
             android:text="@string/harga_tertinggi"
             android:textAlignment="textStart" />
@@ -79,10 +84,11 @@
             style="@style/TopadsProductSortRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_marginTop="1dp"
             android:layoutDirection="rtl"
             android:text="@string/harga_terendah"
             android:textAlignment="textStart" />
+
     </RadioGroup>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,54 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/btn_submit"
-        android:layout_marginBottom="-6dp"
-        android:orientation="vertical"
-        android:padding="@dimen/dp_16">
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_16">
 
 
-        <com.tokopedia.unifyprinciples.Typography
-            style="@style/TextView.TitleBig.Bold"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography12"
+        style="@style/TextView.TitleBig.Bold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:text="@string/group_iklan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography18"
+        style="@style/TextView.Small"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography12"
+        app:typographyType="body_3" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sp_17"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography18">
+
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:gravity="left"
-            android:text="@string/group_iklan" />
+            android:hint="@string/ketik_nama_group_iklan"
+            tools:layout_editor_absoluteX="-5dp"
+            tools:layout_editor_absoluteY="232dp" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            style="@style/TextView.Small"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_35"
-            android:gravity="left"
-            android:text="@string/atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk"
-            app:typographyType="body_3" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/ketik_nama_group_iklan" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.tokopedia.unifyprinciples.Typography
-            style="@style/TextView.Micro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/contoh_spatu_lari_bando_wanita_gaun_pesta"
-            app:typographyType="body_3" />
-
-    </LinearLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography19"
+        style="@style/TextView.Micro"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/contoh_spatu_lari_bando_wanita_gaun_pesta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        app:typographyType="body_3" />
 
     <com.tokopedia.design.component.RoundFloatingButton
         android:id="@+id/tip_btn"
@@ -57,20 +67,32 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_submit"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_12"
         android:backgroundTint="#FFFCF5"
         android:gravity="center"
         android:text="@string/apa_itu_group_iklan"
         android:textAllCaps="false"
         app:buttonCompatSize="medium"
-        app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips" />
+        app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips"
+        app:layout_constraintBottom_toTopOf="@+id/btn_submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_submit"
         style="@style/Button.Submit.Green.Full"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/dp_16"
-        android:text="@string/buat_group_iklan" />
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/buat_group_iklan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

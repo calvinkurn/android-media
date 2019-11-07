@@ -1,77 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout8"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/topads_create_bg_top_round"
-    android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:background="@drawable/topads_create_bg_top_round">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:padding="@dimen/dp_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topads_create_ic_group_close" />
 
-        <ImageView
-            android:id="@+id/btn_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_10"
-            android:padding="@dimen/dp_2"
-            app:srcCompat="@drawable/topads_create_ic_group_close" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            style="@style/TextView.TitleBig.Bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:gravity="center_vertical"
-            android:text="@string/tip_memilih_produk"  />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography31"
+        style="@style/TextView.TitleBig.Bold"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/tip_memilih_produk"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_close"
+        app:layout_constraintTop_toTopOf="@+id/btn_close" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_10"
-            android:padding="@dimen/dp_2"
-            app:srcCompat="@drawable/topads_create_ic_checklist" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            style="@style/TextView.Small"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:gravity="top"
-            app:typographyType="body_3"
-            android:text="@string/pilih_produk_dengan_ulasan_terbanyak" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:padding="@dimen/dp_2"
+        app:layout_constraintBottom_toBottomOf="@+id/typography32"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/typography32"
+        app:srcCompat="@drawable/topads_create_ic_checklist" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp_10"
-            android:padding="@dimen/dp_2"
-            app:srcCompat="@drawable/topads_create_ic_checklist" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography32"
+        style="@style/TextView.Small"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:gravity="top"
+        android:text="@string/pilih_produk_dengan_ulasan_terbanyak"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView5"
+        app:layout_constraintTop_toBottomOf="@+id/typography31"
+        app:typographyType="body_3" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            style="@style/TextView.Small"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            app:typographyType="body_3"
-            android:text="@string/pilih_produk_terpopuler" />
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:padding="@dimen/dp_2"
+        app:layout_constraintBottom_toBottomOf="@+id/typography33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/typography33"
+        app:srcCompat="@drawable/topads_create_ic_checklist" />
 
-</LinearLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography33"
+        style="@style/TextView.Small"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/pilih_produk_terpopuler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView6"
+        app:layout_constraintTop_toBottomOf="@+id/typography32"
+        app:typographyType="body_3" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
