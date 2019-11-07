@@ -22,6 +22,7 @@ query {
         og_description
         og_url
         og_image
+        total_view
         start_date
         end_date
         created_date
