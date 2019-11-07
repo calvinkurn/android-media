@@ -16,6 +16,7 @@ import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
+import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
@@ -149,25 +150,6 @@ class SomFilterFragment : BaseDaggerFragment() {
             }
             datePicker.setCloseClickListener { datePicker.dismiss() }
         }
-    }
-
-    private fun convertMonth(mm: Int): String {
-        var monthString = ""
-        when (mm) {
-            0 -> monthString = "Jan"
-            1 -> monthString = "Feb"
-            2 -> monthString = "Mar"
-            3 -> monthString = "Apr"
-            4 -> monthString = "Mei"
-            5 -> monthString = "Jun"
-            6 -> monthString = "Jul"
-            7 -> monthString = "Ags"
-            8 -> monthString = "Sep"
-            9 -> monthString = "Okt"
-            10 -> monthString = "Nov"
-            11 -> monthString = "Des"
-        }
-        return monthString
     }
 
     private fun setupDatePickers() {

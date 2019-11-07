@@ -11,18 +11,6 @@
         android:layout_height="wrap_content"
         android:visibility="visible"/>
 
-    <!--<com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/extra_note_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/rv_bottomsheet_secondary"
-        app:layout_constraintStart_toStartOf="parent"
-        app:typographyWeight="reguler"
-        app:typographyType="body_3"
-        android:textColor="@color/Neutral_N700_68"
-        tools:text="@string/extra_note_label"
-        android:layout_marginTop="@dimen/dp_16"/>-->
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/extra_notes_wrapper"
         style="@style/HintTextInputLayout"

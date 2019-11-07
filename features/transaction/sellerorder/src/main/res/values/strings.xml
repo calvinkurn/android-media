@@ -80,4 +80,12 @@
     <string name="empty_stock_extra_note">Beritahu pembeli bahwa stok produk kosong (opsional)</string>
     <string name="empty_stock_extra_placeholder">Contoh: Maaf ya, barangnya habis</string>
 
+    <string name="start_shop_closed_label">Mulai dari tanggal</string>
+    <string name="end_shop_closed_label">Sampai dengan tanggal</string>
+    <string name="shop_closed_note_label">Catatan Penutupan Toko</string>
+    <string name="shop_closed_note_placeholder">Contoh: Toko tutup karena liburan</string>
+    <string name="shop_closed_endnote1">Dengan klik</string>
+    <string name="shop_closed_endnote2">Tolak Pesanan</string>
+    <string name="shop_closed_endnote3">, kamu akan menolak pesanan ini dan menutup toko hingga </string>
+
 </resources>

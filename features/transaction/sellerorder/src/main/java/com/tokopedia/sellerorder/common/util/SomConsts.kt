@@ -69,6 +69,7 @@ object SomConsts {
     const val TITLE_PILIH_PENOLAKAN = "Pilih alasan penolakan"
     const val TITLE_PILIH_PRODUK_KOSONG = "Pilih produk yang kosong"
     const val TITLE_COURIER_PROBLEM = "Kendala Kurir"
+    const val TITLE_ATUR_TOKO_TUTUP = "Atur tanggal toko tutup"
 
     const val BOTTOMSHEET_TEXT_ONLY_TYPE = "text_only"
     const val BOTTOMSHEET_TEXT_RADIO_TYPE = "text_radio"

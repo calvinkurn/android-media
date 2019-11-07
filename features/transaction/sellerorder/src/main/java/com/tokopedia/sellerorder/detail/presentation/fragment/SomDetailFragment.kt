@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -12,9 +13,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
+import com.tokopedia.kotlin.extensions.convertFormatDate
+import com.tokopedia.kotlin.extensions.convertMonth
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
@@ -30,7 +36,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_BUYER_NO_RESPO
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_EMPTY_STOCK
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_OTHER
-import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_SHOP_CLOSED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
@@ -39,13 +44,13 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_END
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_START
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OFFICE_CLOSED
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_COURIER_PROBLEM
-import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_EMPTY_STOCK
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_SHOP_CLOSED
 import com.tokopedia.sellerorder.detail.data.model.*
@@ -55,19 +60,21 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetR
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetStockEmptyAdapter
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
+import kotlinx.android.synthetic.main.bottomsheet_shop_closed.*
+import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import java.text.SimpleDateFormat as SimpleDateFormat1
 
 /**
  * Created by fwidjaja on 2019-09-30.
@@ -143,8 +150,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun prepareLayout() {
-        somDetailAdapter = SomDetailAdapter()
-        somDetailAdapter.setActionListener(this)
+        somDetailAdapter = SomDetailAdapter().apply {
+            setActionListener(this@SomDetailFragment)
+        }
+        // somDetailAdapter.setActionListener(this)
         rv_detail?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = somDetailAdapter
@@ -205,18 +214,21 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 is Success -> {
                     rejectReasonResponse = it.data.listSomRejectReason
                     somBottomSheetRejectReasonsAdapter = SomBottomSheetRejectReasonsAdapter(this)
+                    bottomSheetUnify.dismiss()
                     bottomSheetUnify = BottomSheetUnify()
-                    if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
+                    // if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
                     val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
                     viewBottomSheet.rv_bottomsheet_secondary?.apply {
                         layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
                         adapter = somBottomSheetRejectReasonsAdapter
                     }
                     viewBottomSheet.extra_notes_wrapper?.visibility = View.GONE
+
                     bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
                     bottomSheetUnify.setChild(viewBottomSheet)
                     bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
                     bottomSheetUnify.setTitle(TITLE_PILIH_PENOLAKAN)
+
                     somBottomSheetRejectReasonsAdapter.listRejectReasons = rejectReasonResponse.toMutableList()
                     somBottomSheetRejectReasonsAdapter.notifyDataSetChanged()
                 }
@@ -412,10 +424,74 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         *  14 = Lainnya */
         when (rejectReason.reasonCode) {
             1 -> setProductEmpty(rejectReason.reasonCode.toString())
-            4 -> {}
+            4 -> setShopClosed(rejectReason.reasonCode.toString())
             7 -> {}
             15 -> {}
             14 -> {}
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat", "SetTextI18n")
+    private fun setShopClosed(rCode: String) {
+        bottomSheetUnify.dismiss()
+        bottomSheetUnify = BottomSheetUnify().apply {
+            if (isAdded) this.dismiss()
+
+        }
+        if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_shop_closed, null)
+
+        val defaultDateNow = Date().toFormattedString("dd/MM/yyyy")
+        // setup closing start date
+        viewBottomSheet.tf_start_shop_closed?.textFieldWrapper?.hint = getString(R.string.start_shop_closed_label)
+        viewBottomSheet.tf_start_shop_closed?.textFieldInput?.setText(defaultDateNow)
+        viewBottomSheet.tf_start_shop_closed?.textFieldInput?.isEnabled = false
+
+        // setup closing end date
+        viewBottomSheet.tf_end_shop_closed?.textFieldWrapper?.hint = getString(R.string.end_shop_closed_label)
+        viewBottomSheet.tf_end_shop_closed?.textFieldInput?.apply {
+            setText(defaultDateNow)
+        }
+        viewBottomSheet.tf_end_shop_closed?.textFieldInput?.isEnabled = false
+        viewBottomSheet.tf_end_shop_closed?.setFirstIcon(R.drawable.ic_som_filter_calendar)
+        viewBottomSheet.tf_end_shop_closed?.textFieldIcon1?.setOnClickListener {
+            showDatePicker(viewBottomSheet.tf_end_shop_closed, viewBottomSheet)
+        }
+        updateClosingEndDate(convertFormatDate(defaultDateNow, "dd/MM/yyyy", "dd MMM yyyy"), viewBottomSheet)
+
+        // setup closing additional notes
+        viewBottomSheet.tf_shop_closed_notes?.setLabelStatic(true)
+        viewBottomSheet.tf_shop_closed_notes?.textFiedlLabelText?.text = getString(R.string.shop_closed_note_label)
+        viewBottomSheet.tf_shop_closed_notes?.textFieldInput?.hint = getString(R.string.shop_closed_note_placeholder)
+
+        bottomSheetUnify.setFullPage(true)
+        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+        bottomSheetUnify.setChild(viewBottomSheet)
+        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        bottomSheetUnify.setTitle(TITLE_ATUR_TOKO_TUTUP)
+
+        viewBottomSheet.btn_reject_shop_closed?.setOnClickListener {
+            bottomSheetUnify.dismiss()
+            val orderRejectRequest = SomRejectRequest(
+                    orderId = detailResponse.orderId.toString(),
+                    rCode = rCode,
+                    closedNote = viewBottomSheet.tf_shop_closed_notes?.textFieldInput?.text.toString(),
+                    closeEnd = viewBottomSheet.tf_end_shop_closed?.textFieldInput?.text.toString()
+            )
+            println("++ orderRejectRequest = $orderRejectRequest")
+            somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
+            observingRejectOrder()
+        }
+    }
+
+    private fun updateClosingEndDate(endDate: String, viewBottomSheet: View) {
+        val endNote1 = getString(R.string.shop_closed_endnote1)
+        val endNote2 = getString(R.string.shop_closed_endnote2)
+        val endNote3 = getString(R.string.shop_closed_endnote3)
+
+        context?.let {
+            val customString = HtmlLinkHelper(it, "$endNote1 <b>$endNote2</b>$endNote3 $endDate")
+            viewBottomSheet.shop_closed_endnotes?.text = customString.spannedString
         }
     }
 
@@ -488,6 +564,25 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         val toasterError = Toaster
         view?.let { v ->
             toasterError.make(v, message, LENGTH_SHORT, TYPE_ERROR, ACTION_OK)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showDatePicker(tfEndShopClosed: TextFieldUnify, viewBottomSheet: View) {
+        context?.let {  context ->
+            val dateNow = GregorianCalendar(LocaleUtils.getCurrentLocale(context))
+            val dateMax = GregorianCalendar(2100, 0, 1)
+
+            val datePicker = DatePickerUnify(context, dateNow, dateNow, dateMax)
+            datePicker.setTitle(getString(R.string.end_shop_closed_label))
+            datePicker.show(fragmentManager, "")
+            datePicker.datePickerButton.setOnClickListener {
+                val resultDate = datePicker.getDate()
+                tfEndShopClosed.textFieldInput.setText("${resultDate[0]}/${resultDate[1]+1}/${resultDate[2]}")
+                updateClosingEndDate("${resultDate[0]} ${convertMonth(resultDate[1])} ${resultDate[2]}", viewBottomSheet)
+                datePicker.dismiss()
+            }
+            datePicker.setCloseClickListener { datePicker.dismiss() }
         }
     }
 }
