@@ -59,7 +59,7 @@
         android:paddingBottom="@dimen/dp_10"
         android:textColor="@color/tp_loyalty_color"
         android:textIsSelectable="false"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_28"
         android:textStyle="bold"
         android:visibility="visible"
         app:LineStroke="2dp"

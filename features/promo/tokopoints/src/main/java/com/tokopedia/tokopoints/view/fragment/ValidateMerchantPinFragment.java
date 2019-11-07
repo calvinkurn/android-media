@@ -36,8 +36,8 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     private ValidatePinCallBack mValidatePinCallBack;
 
 
-    public static Fragment newInstance(Bundle extras) {
-        Fragment fragment = new ValidateMerchantPinFragment();
+    public static ValidateMerchantPinFragment newInstance(Bundle extras) {
+        ValidateMerchantPinFragment fragment = new ValidateMerchantPinFragment();
         fragment.setArguments(extras);
         return fragment;
     }
@@ -45,9 +45,10 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ValidatePinCallBack) {
-            mValidatePinCallBack = (ValidatePinCallBack) context;
-        }
+    }
+
+    public void setmValidatePinCallBack(ValidatePinCallBack mValidatePinCallBack) {
+        this.mValidatePinCallBack = mValidatePinCallBack;
     }
 
     @Nullable

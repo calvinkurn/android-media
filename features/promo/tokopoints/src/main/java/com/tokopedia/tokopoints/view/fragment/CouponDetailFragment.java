@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -19,6 +20,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -77,7 +79,7 @@ import static com.tokopedia.tokopoints.view.util.CommanUtilsKt.getLessDisplayDat
 import static com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE;
 import static com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING;
 
-public class CouponDetailFragment extends BaseDaggerFragment implements CouponDetailContract.View, View.OnClickListener, ValidateMerchantPinFragment.ValidatePinCallBack {
+public class CouponDetailFragment extends BaseDaggerFragment implements CouponDetailContract.View, View.OnClickListener {
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
@@ -233,7 +235,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     @Override
     public void openWebView(String url) {
-        RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW,url);
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {
@@ -372,7 +374,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    RouteManager.route(getContext(),ApplinkConst.HOME);
+                    RouteManager.route(getContext(), ApplinkConst.HOME);
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
@@ -696,6 +698,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         bottomSheet.setCustomContentView(view, title, false);
         bottomSheet.show();
     }
+
     private void addCountDownTimer(CouponValueEntity item, Typography label, TextView btnContinue) {
         if (mTimer != null || getView() == null) {
             mTimer.cancel();
@@ -771,10 +774,10 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     public void onSwipeResponse(CouponSwipeUpdate data, String qrCodeLink, String barCodeLink) {
         mSwipeCardView.setCouponCode(data.getPartnerCode());
-       showBarCodeView(data.getNote(),qrCodeLink,barCodeLink);
+        showBarCodeView(data.getNote(), qrCodeLink, barCodeLink);
     }
 
-    private void showBarCodeView(String note,String qrCodeLink, String barCodeLink){
+    private void showBarCodeView(String note, String qrCodeLink, String barCodeLink) {
         mBarCodeContainer.setVisibility(View.GONE);
         if (qrCodeLink != null && !qrCodeLink.isEmpty()) {
             mBtnQrCode.setVisibility(View.VISIBLE);
@@ -809,9 +812,19 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         Bundle bundle = new Bundle();
         bundle.putString(CommonConstant.EXTRA_PIN_INFO, pinInfo);
         bundle.putString(CommonConstant.EXTRA_COUPON_ID, code);
-        Fragment fragment = ValidateMerchantPinFragment.newInstance(bundle);
-        mBottomSheetFragment = CloseableBottomSheetFragment.Companion.newInstance(fragment,true,getString(R.string.tp_masukan_pin), (dialog) -> mSwipeCardView.reset(), CloseableBottomSheetFragment.STATE_FULL);
-        mBottomSheetFragment.showNow(getActivity().getSupportFragmentManager(),"");
+        ValidateMerchantPinFragment fragment = ValidateMerchantPinFragment.newInstance(bundle);
+        fragment.setmValidatePinCallBack(new ValidateMerchantPinFragment.ValidatePinCallBack() {
+            @Override
+            public void onSuccess(CouponSwipeUpdate couponSwipeUpdate) {
+                mSwipeCardView.setCouponCode(couponSwipeUpdate.getPartnerCode());
+                showBarCodeView(couponSwipeUpdate.getNote(), "", "");
+                if (mBottomSheetFragment != null) {
+                    mBottomSheetFragment.dismiss();
+                }
+            }
+        });
+        mBottomSheetFragment = CloseableBottomSheetFragment.Companion.newInstance(fragment, true, getString(R.string.tp_masukan_pin), (dialog) -> mSwipeCardView.reset(), CloseableBottomSheetFragment.STATE_FULL);
+        mBottomSheetFragment.showNow(getActivity().getSupportFragmentManager(), "");
     }
 
 
@@ -847,12 +860,6 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         tvLabelError.setText(labelText);
     }
 
-    @Override
-    public void onSuccess(CouponSwipeUpdate couponSwipeUpdate) {
-        mSwipeCardView.setCouponCode(couponSwipeUpdate.getPartnerCode());
-        showBarCodeView(couponSwipeUpdate.getNote(),"","");
-        if(mBottomSheetFragment != null) {
-            mBottomSheetFragment.dismiss();
-        }
-    }
+
 }
+
