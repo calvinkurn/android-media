@@ -635,18 +635,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void getPlayBanner(int adapterPosition) {
-        playCardHomeUseCase.execute(new Function1<PlayCardHome, Unit>() {
-            @Override
-            public Unit invoke(PlayCardHome playCardHome) {
-                getView().setPlayContentBanner(playCardHome, adapterPosition);
-                return null;
-            }
-        }, new Function1<Throwable, Unit>() {
-            @Override
-            public Unit invoke(Throwable throwable) {
-                return null;
-            }
-        });
+        playCardHomeUseCase.execute(
+                playCardHome -> {
+                    getView().setPlayContentBanner(playCardHome, adapterPosition);
+                    return Unit.INSTANCE;
+                },
+                throwable -> Unit.INSTANCE
+        );
     }
 
 }
