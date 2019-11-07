@@ -631,4 +631,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url);
     }
 
+    public void showRetryButtonToaster(String message) {
+        if (getView() == null)
+            return;
+
+        getView().showSuccessMessageWithAction(message);
+    }
 }

@@ -48,7 +48,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:visibility="gone"
-        android:background="@drawable/bg_green_rectangle"   >
+        android:background="@drawable/bg_green_rectangle">
 
     <ImageView
         android:layout_width="wrap_content"
