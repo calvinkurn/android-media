@@ -26,6 +26,9 @@ data class AddressesData(
     }
 
     companion object CREATOR : Parcelable.Creator<AddressesData> {
+        const val DEFAULT_ADDRESS = "default_address";
+        const val TRADE_IN_ADDRESS = "trade_in_address";
+
         override fun createFromParcel(parcel: Parcel): AddressesData {
             return AddressesData(parcel)
         }
