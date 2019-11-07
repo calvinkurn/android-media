@@ -69,6 +69,17 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCart.Response>()
 
+            // TODO remove this, for testing only
+//            data.appliedVoucher = HotelCart.AppliedVoucher(
+//                    "DGTOPED",
+//                    "Rp 0",
+//                    0,
+//                    "Rp 5.000",
+//                    5000,
+//                    "Potensi Cashback senilai Rp 5.000 akan ditambahkan setelah pembelian berhasil",
+//                    "Dummy title description",
+//                    0)
+            data.response.property.isDirectPayment = true
             hotelCartResult.value = Success(data)
         }) {
             hotelCartResult.value = Fail(it)

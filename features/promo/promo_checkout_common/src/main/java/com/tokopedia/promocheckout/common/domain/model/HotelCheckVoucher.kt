@@ -32,7 +32,7 @@ class HotelCheckVoucher (
 
 ) {
     class Response(
-            @SerializedName("data")
+            @SerializedName("propertyCheckVoucher")
             @Expose
             var response: HotelCheckVoucher = HotelCheckVoucher()
     )

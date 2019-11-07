@@ -27,7 +27,7 @@ data class HotelCart (
 
                 @SerializedName("appliedVoucher")
                 @Expose
-                val appliedVoucher: AppliedVoucher = AppliedVoucher()
+                var appliedVoucher: AppliedVoucher = AppliedVoucher()
         )
 
         data class AppliedVoucher (

@@ -46,8 +46,11 @@ import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -66,6 +69,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     lateinit var hotelCart: HotelCart
+    var promoData: PromoData? = null
     lateinit var appliedVoucher: HotelCart.AppliedVoucher
     var hotelBookingPageModel = HotelBookingPageModel()
 
@@ -160,6 +164,40 @@ class HotelBookingFragment : HotelBaseFragment() {
                     data?.run {
                         hotelBookingPageModel.contactData = this.getParcelableExtra(HotelContactDataFragment.EXTRA_CONTACT_DATA)
                         renderContactData()
+                    }
+                }
+            }
+
+            COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.let {
+                        if (it.hasExtra(COUPON_EXTRA_PROMO_DATA)) {
+                            val itemPromoData = it.getParcelableExtra<PromoData>(COUPON_EXTRA_PROMO_DATA)
+                            promoData = itemPromoData
+                            when (itemPromoData.state) {
+                                TickerCheckoutView.State.EMPTY -> {
+                                    setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                                            "",
+                                            "")
+                                }
+                                TickerCheckoutView.State.FAILED -> {
+                                    setupPromoTicker(TickerCheckoutView.State.FAILED,
+                                            promoData?.title.toEmptyStringIfNull(),
+                                            promoData?.description.toEmptyStringIfNull())
+
+                                }
+                                TickerCheckoutView.State.ACTIVE -> {
+                                    setupPromoTicker(TickerCheckoutView.State.ACTIVE,
+                                            promoData?.title.toEmptyStringIfNull(),
+                                            promoData?.description.toEmptyStringIfNull())
+                                }
+                                else -> {
+                                    setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                                            "",
+                                            "")
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -386,35 +424,39 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun setupPayNowPromoTicker(cart: HotelCart,
                                        appliedVoucher: HotelCart.AppliedVoucher) {
-        if (cart.property.rooms.isNotEmpty()
-//                && cart.property.isDirectPayment // TODO remove this condition, testing only
-        ) {
+        if (cart.property.rooms.isNotEmpty() && cart.property.isDirectPayment) {
             booking_pay_now_promo_container.visibility = View.VISIBLE
 
             if (appliedVoucher.code.isNotEmpty()) {
-                booking_pay_now_promo_ticker.title = appliedVoucher.titleDescription
-                booking_pay_now_promo_ticker.desc = appliedVoucher.message
-                booking_pay_now_promo_ticker.state = TickerPromoStackingCheckoutView.State.ACTIVE
+                setupPromoTicker(TickerCheckoutView.State.ACTIVE,
+                        appliedVoucher.titleDescription,
+                        appliedVoucher.message)
             } else {
-                booking_pay_now_promo_ticker.state = TickerPromoStackingCheckoutView.State.EMPTY
+                setupPromoTicker(TickerCheckoutView.State.EMPTY,
+                        "",
+                        "")
             }
 
             booking_pay_now_promo_ticker.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
                 override fun onClickUsePromo() {
-                    // TODO route to applinkinternal
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
-                    intent.putExtra("EXTRA_COUPON_ACTIVE", appliedVoucher.isCoupon)
-                    intent.putExtra("EXTRA_CART_ID", cart.cartID)
-                    startActivityForResult(intent, 234)
-                    Toast.makeText(context, "onClickUsePromo", Toast.LENGTH_SHORT).show()
+                    intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, appliedVoucher.isCoupon)
+                    intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
+                    startActivityForResult(intent, COUPON_EXTRA_LIST_ACTIVITY_RESULT)
                 }
 
                 override fun onResetPromoDiscount() {
-                    Toast.makeText(context, "onResetPromoDiscount", Toast.LENGTH_SHORT).show()
+                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    // TODO handle ketika ga jadi pake promo
                 }
 
                 override fun onClickDetailPromo() {
-                    Toast.makeText(context, "onClickDetailPromo", Toast.LENGTH_SHORT).show()
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL)
+                    val voucherCode = if (promoData?.promoCode.isNullOrEmpty()) appliedVoucher.code else promoData?.promoCode
+                    intent.putExtra(COUPON_EXTRA_COUPON_CODE, voucherCode)
+                    intent.putExtra(COUPON_EXTRA_CART_ID, hotelCart.cartID)
+                    intent.putExtra(COUPON_EXTRA_IS_USE, true)
+                    startActivityForResult(intent, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT)
                 }
 
                 override fun onDisablePromoDiscount() {
@@ -423,6 +465,21 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
         }
     }
+
+    private fun setupPromoTicker(state: TickerCheckoutView.State,
+                                 title: String,
+                                 description: String) {
+
+        if (state == TickerCheckoutView.State.EMPTY) {
+            booking_pay_now_promo_ticker.title = title
+            booking_pay_now_promo_ticker.state = TickerPromoStackingCheckoutView.State.EMPTY
+        } else if (state == TickerCheckoutView.State.ACTIVE) {
+            booking_pay_now_promo_ticker.title = title
+            booking_pay_now_promo_ticker.desc = description
+            booking_pay_now_promo_ticker.state = TickerPromoStackingCheckoutView.State.ACTIVE
+        }
+    }
+
 
     private fun setupInvoiceSummary(cart: HotelCartData, property: HotelPropertyData) {
         cart.fares.find { it.type == "base_price" }?.let {
@@ -557,6 +614,14 @@ class HotelBookingFragment : HotelBaseFragment() {
         const val TAG_HOTEL_TAX_POLICY = "hotel_tax_policy"
         const val TAG_HOTEL_IMPORTANT_NOTES = "hotel_important_notes"
         const val ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT = 250
+
+        const val COUPON_EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
+        const val COUPON_EXTRA_CART_ID = "EXTRA_CART_ID"
+        const val COUPON_EXTRA_COUPON_CODE = "EXTRA_KUPON_CODE"
+        const val COUPON_EXTRA_IS_USE = "EXTRA_IS_USE"
+        const val COUPON_EXTRA_LIST_ACTIVITY_RESULT = 3121
+        const val COUPON_EXTRA_DETAIL_ACTIVITY_RESULT = 3122
+        const val COUPON_EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
 
         private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z\\s]*$"
 

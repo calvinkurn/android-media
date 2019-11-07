@@ -25,6 +25,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
@@ -57,6 +58,7 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void onCreate() {
+        GraphqlUrl.BASE_URL = "https://gql-staging.tokopedia.com/";
         GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;

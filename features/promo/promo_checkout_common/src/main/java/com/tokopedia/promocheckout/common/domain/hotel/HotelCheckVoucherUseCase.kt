@@ -20,7 +20,8 @@ class HotelCheckVoucherUseCase(private val context: Context, private val graphql
         requestParams?.let {
             val variables = mapOf(PARAMNAME_DATA to it.parameters)
             val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                    R.raw.promo_checkout_hotel_check_voucher), HotelCheckVoucher.Response::class.java, variables, false)
+                    R.raw.promo_checkout_hotel_check_voucher),
+                    HotelCheckVoucher.Response::class.java, variables, false)
             graphqlUseCase.clearRequest()
             graphqlUseCase.addRequest(graphqlRequest)
             graphqlUseCase.execute(requestParams, subscriber)
