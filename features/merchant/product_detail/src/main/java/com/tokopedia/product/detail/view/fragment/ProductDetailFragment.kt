@@ -805,19 +805,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
 
         if (!::recommendationSecondView.isInitialized) {
-            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this, productDetailTracking)
+            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this, productDetailTracking, activity!!)
         }
 
         if (!::recommendationFirstView.isInitialized) {
-            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this, productDetailTracking)
+            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this, productDetailTracking, activity!!)
         }
 
         if (!::recommendationThirdView.isInitialized) {
-            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this, productDetailTracking)
+            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this, productDetailTracking, activity!!)
         }
 
         if (!::recommendationFourthView.isInitialized) {
-            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this, productDetailTracking)
+            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this, productDetailTracking, activity!!)
         }
 
         if (!::valuePropositionView.isInitialized) {
@@ -1405,11 +1405,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     shopInfo.shopCore.shopID,
                     shopInfo.goldOS.shopTypeString,
                     productId ?: "")
-            productDetailTracking.sendScreenV5(
-                    shopInfo.shopCore.shopID,
-                    shopInfo.goldOS.shopTypeString,
-                    productId ?: "",
-                    productInfo?.category?.detail?.firstOrNull()?.id ?: "")
+
 
             if (delegateTradeInTracking) {
                 trackProductView(tradeInParams.isEligible == 1)

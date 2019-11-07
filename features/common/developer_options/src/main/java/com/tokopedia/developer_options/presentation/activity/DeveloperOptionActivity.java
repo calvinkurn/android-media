@@ -313,6 +313,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void initTranslator() {
-        new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
+//        new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
     }
 }
