@@ -3,7 +3,7 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name">
+        android:label="@string/payment_setting_app_name">
         <activity
             android:name=".list.view.activity.SettingListPaymentActivity"
             android:label="@string/payment_title_list_card"
