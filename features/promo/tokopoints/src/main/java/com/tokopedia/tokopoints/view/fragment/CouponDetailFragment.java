@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
@@ -24,12 +27,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
@@ -43,10 +44,12 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CouponCatalogInfoPagerAdapter;
+import com.tokopedia.tokopoints.view.adapter.CouponListAdapter;
 import com.tokopedia.tokopoints.view.contract.CouponDetailContract;
 import com.tokopedia.tokopoints.view.customview.RoundButton;
 import com.tokopedia.tokopoints.view.customview.SwipeCardView;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.model.CouponSwipeDetail;
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponDetailPresenter;
@@ -56,6 +59,8 @@ import com.tokopedia.tokopoints.view.util.TabUtil;
 import com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.webview.TkpdWebView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -72,7 +77,7 @@ import static com.tokopedia.tokopoints.view.util.CommanUtilsKt.getLessDisplayDat
 import static com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE;
 import static com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING;
 
-public class CouponDetailFragment extends BaseDaggerFragment implements CouponDetailContract.View, View.OnClickListener {
+public class CouponDetailFragment extends BaseDaggerFragment implements CouponDetailContract.View, View.OnClickListener, ValidateMerchantPinFragment.ValidatePinCallBack {
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
@@ -488,7 +493,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         mCouponName = data.getTitle();
         TextView description = getView().findViewById(R.id.tv_title);
         TextView label = getView().findViewById(R.id.text_time_label);
-        TextView value = getView().findViewById(R.id.text_time_value);
+        Typography value = getView().findViewById(R.id.text_time_value);
         TextView btnAction2 = getView().findViewById(R.id.btn_continue);
         ImageView imgBanner = getView().findViewById(R.id.img_banner_coupon);
         ImageView imgLabel = getView().findViewById(R.id.img_time);
@@ -502,7 +507,6 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageUrlMobile());
 
         if (data.getUsage() != null) {
-            imgLabel.setImageResource(R.drawable.ic_tp_time);
             label.setVisibility(View.VISIBLE);
             label.setText(data.getUsage().getText());
             value.setVisibility(View.VISIBLE);
@@ -516,6 +520,8 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
                     btnAction2.setVisibility(View.VISIBLE);
                 }
             }
+
+
         }
 
         if (TextUtils.isEmpty(data.getMinimumUsageLabel())) {
@@ -534,8 +540,15 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             textMinExchangeValue.setText(data.getMinimumUsage());
         }
 
-        imgLabel.setVisibility(View.VISIBLE);
-        imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
+        if (data.getUsage() != null && (data.getUsage().getActiveCountDown() > 0
+                || data.getUsage().getExpiredCountDown() <= 0)) {
+            imgLabel.setColorFilter(ContextCompat.getColor(imgLabel.getContext(), R.color.tp_coupon_disable), android.graphics.PorterDuff.Mode.SRC_IN);
+            imgMinExchange.setColorFilter(ContextCompat.getColor(imgMinExchange.getContext(), R.color.tp_coupon_disable), android.graphics.PorterDuff.Mode.SRC_IN);
+        } else {
+            imgLabel.setColorFilter(ContextCompat.getColor(imgLabel.getContext(), com.tokopedia.design.R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+            imgMinExchange.setColorFilter(ContextCompat.getColor(imgMinExchange.getContext(), com.tokopedia.design.R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+
         this.mRealCode = data.getRealCode();
         btnAction2.setOnClickListener(v -> {
             if (!TextUtils.isEmpty(mRealCode)) {
@@ -631,19 +644,13 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
                             "");
                 }
             });
-
-            if (!data.getSwipe().getNote().isEmpty()) {
-                mTextSwipeNote.setText(data.getSwipe().getNote());
-                mTextSwipeNote.setVisibility(View.VISIBLE);
-                mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(), com.tokopedia.design.R.color.black_70));
-            }
-
             if (data.getSwipe().getPartnerCode() != null
                     && !data.getSwipe().getPartnerCode().isEmpty()) {
                 mSwipeCardView.setCouponCode(data.getSwipe().getPartnerCode());
             }
-        }
+            showBarCodeView(data.getSwipe().getNote(), "", "");
 
+        }
         //Coupon impression ga
         AnalyticsTrackerUtil.sendEvent(getContext(),
                 AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
@@ -652,54 +659,11 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
                 mCouponName);
     }
 
+
     private void setupInfoPager(String info, String tnc) {
         if (getView() == null) {
             return;
         }
-
-//        CouponCatalogInfoPagerAdapter adapter = new CouponCatalogInfoPagerAdapter(getActivityContext(), info, tnc);
-//        WrapContentHeightViewPager pager = getView().findViewById(R.id.view_pager_info);
-//
-//        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                if (position == 0) {
-//                    AnalyticsTrackerUtil.sendEvent(getContext(),
-//                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-//                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-//                            AnalyticsTrackerUtil.ActionKeys.CLICK_KETENTUAN,
-//                            mCouponName);
-//                } else {
-//                    AnalyticsTrackerUtil.sendEvent(getContext(),
-//                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-//                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-//                            AnalyticsTrackerUtil.ActionKeys.CLICK_CARA_PAKAI,
-//                            mCouponName);
-//                }
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//
-//            }
-//        });
-//
-//        TabLayout tabs = getView().findViewById(R.id.tab_layout_info);
-//        pager.setAdapter(adapter);
-//        pager.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
-//        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
-//        llBottomBtn.setVisibility(View.VISIBLE);
-//
-//        //excluding extra padding from tabs
-//        TabUtil.wrapTabIndicatorToTitle(tabs,
-//                (int) getResources().getDimension(R.dimen.tp_margin_medium),
-//                (int) getResources().getDimension(R.dimen.tp_margin_regular));
 
         TkpdWebView tvHowToUse = getView().findViewById(R.id.how_to_use_content);
         TkpdWebView tvTnc = getView().findViewById(R.id.tnc_content);
@@ -715,6 +679,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         howToUseSeeMore.setOnClickListener(v -> {
             loadWebViewInBottomsheet(info, getString(R.string.how_to_use_coupon_catalog));
         });
+        llBottomBtn.setVisibility(View.VISIBLE);
     }
 
     private void loadWebViewInBottomsheet(String data, String title) {
@@ -730,7 +695,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         bottomSheet.setCustomContentView(view, title, false);
         bottomSheet.show();
     }
-    private void addCountDownTimer(CouponValueEntity item, TextView label, TextView btnContinue) {
+    private void addCountDownTimer(CouponValueEntity item, Typography label, TextView btnContinue) {
         if (mTimer != null || getView() == null) {
             mTimer.cancel();
         }
@@ -741,6 +706,9 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
                 ProgressBar progressBar = getView().findViewById(R.id.progress_timer);
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
+                label.setTextColor(getContext().getResources().getColor(com.tokopedia.design.R.color.r_400));
+                label.setType(Typography.SMALL);
+                label.invalidate();
                 mTimer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                     @Override
                     public void onTick(long l) {
@@ -802,6 +770,10 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
     public void onSwipeResponse(CouponSwipeUpdate data, String qrCodeLink, String barCodeLink) {
         mSwipeCardView.setCouponCode(data.getPartnerCode());
+       showBarCodeView(data.getNote(),qrCodeLink,barCodeLink);
+    }
+
+    private void showBarCodeView(String note,String qrCodeLink, String barCodeLink){
         mBarCodeContainer.setVisibility(View.GONE);
         if (qrCodeLink != null && !qrCodeLink.isEmpty()) {
             mBtnQrCode.setVisibility(View.VISIBLE);
@@ -814,9 +786,9 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             mTextSwipeNote.setGravity(Gravity.LEFT);
         }
 
-        if (data.getNote() != null && !data.getNote().isEmpty()) {
+        if (note != null && !note.isEmpty()) {
             mTextSwipeNote.setVisibility(View.VISIBLE);
-            mTextSwipeNote.setText(data.getNote());
+            mTextSwipeNote.setText(note);
             mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(), com.tokopedia.design.R.color.black_38));
             mBarCodeContainer.setVisibility(View.VISIBLE);
         } else {
@@ -834,16 +806,21 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             return;
         }
 
-        Fragment fragment = new ValidateMerchantPinFragment();
+//        CloseableBottomSheetDialog bottomSheetDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+
+
         Bundle bundle = new Bundle();
         bundle.putString(CommonConstant.EXTRA_PIN_INFO, pinInfo);
         bundle.putString(CommonConstant.EXTRA_COUPON_ID, code);
-        fragment.setArguments(bundle);
+        Fragment fragment = ValidateMerchantPinFragment.newInstance(bundle);
 
-        getActivity().getSupportFragmentManager().beginTransaction()
+//        bottomSheetDialog.setCustomContentView(fragment,"Enter Pin",true);
+        CloseableBottomSheetFragment bottomSheetFragment = CloseableBottomSheetFragment.Companion.newInstance(fragment,true,getString(R.string.masukan_pin), (dialog) -> mSwipeCardView.reset(), CloseableBottomSheetFragment.STATE_FULL);
+        bottomSheetFragment.showNow(getActivity().getSupportFragmentManager(),"");
+        /*getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, ValidateMerchantPinFragment.class.getCanonicalName())
                 .addToBackStack(ValidateMerchantPinFragment.class.getCanonicalName())
-                .commit();
+                .commit();*/
     }
 
 
@@ -877,5 +854,10 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
 
         tvTitleError.setText(titleText);
         tvLabelError.setText(labelText);
+    }
+
+    @Override
+    public void onSuccess(CouponSwipeUpdate couponSwipeUpdate) {
+        mSwipeCardView.setCouponCode(couponSwipeUpdate.getPartnerCode());
     }
 }

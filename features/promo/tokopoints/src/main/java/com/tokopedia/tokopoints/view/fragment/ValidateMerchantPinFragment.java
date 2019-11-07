@@ -17,6 +17,7 @@ import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.contract.ValidateMerchantPinContract;
+import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
 import com.tokopedia.tokopoints.view.presenter.ValidateMerchantPinPresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
@@ -30,12 +31,21 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     private PinEditText mEditPin;
     private TextView mTextError;
     private TextView mTextInfo;
+    private ValidatePinCallBack mValidatePinCallBack;
 
 
     public static Fragment newInstance(Bundle extras) {
         Fragment fragment = new ValidateMerchantPinFragment();
         fragment.setArguments(extras);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ValidatePinCallBack){
+            mValidatePinCallBack = (ValidatePinCallBack) context;
+        }
     }
 
     @Nullable
@@ -131,7 +141,8 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     }
 
     @Override
-    public void onSuccess() {
+    public void onSuccess(CouponSwipeUpdate couponSwipeUpdate) {
+        mValidatePinCallBack.onSuccess(couponSwipeUpdate);
         getActivity().onBackPressed();
     }
 
@@ -149,5 +160,9 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     @Override
     public Context getActivityContext() {
         return getActivity();
+    }
+
+    interface ValidatePinCallBack{
+        void onSuccess(CouponSwipeUpdate couponSwipeUpdate);
     }
 }

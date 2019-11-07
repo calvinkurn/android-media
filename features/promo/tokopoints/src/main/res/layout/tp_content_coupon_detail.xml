@@ -40,35 +40,32 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_12"
                     android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
                     android:lineSpacingExtra="@dimen/sp_6"
-                    tool:text="Top Up E-Money Lebih Cepat dan Dapat Cashback hingga Rp10.000"
+                    android:maxLines="2"
                     android:textColor="@color/clr_f531353b"
                     app:typographyType="heading_4"
-                    app:typographyWeight="bold" />
+                    app:typographyWeight="bold"
+                    tool:text="Top Up E-Money Lebih Cepat dan Dapat Cashback hingga Rp10.000" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
                     android:paddingStart="@dimen/dp_16"
                     android:paddingLeft="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_8"
                     android:paddingEnd="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
-                    android:paddingBottom="@dimen/dp_8">
+                    android:paddingRight="@dimen/dp_16">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/img_time"
@@ -77,69 +74,73 @@
                         android:visibility="visible"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/bg_tp_time_greeen" />
+                        app:srcCompat="@drawable/ic_tp_time_new" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/text_time_label"
-                        android:layout_marginStart="@dimen/tp_margin_small"
-                        android:layout_marginLeft="@dimen/tp_margin_small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/tp_margin_small"
+                        android:layout_marginLeft="@dimen/tp_margin_small"
                         android:text="@string/points_saya"
                         android:textColor="@color/clr_ae31353b"
+                        app:layout_constraintBottom_toBottomOf="@+id/img_time"
                         app:layout_constraintLeft_toRightOf="@+id/img_time"
                         app:layout_constraintTop_toTopOf="@+id/img_time"
-                        app:layout_constraintBottom_toBottomOf="@+id/img_time"
                         app:typographyType="body_3" />
+
                     <ProgressBar
                         android:id="@+id/progress_timer"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:indeterminate="false"
-                        android:progressDrawable="@drawable/bg_tp_timer_bg"
-                        android:visibility="visible"
+                        android:progressDrawable="@drawable/bg_tp_coupon_timer"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
                         app:layout_constraintLeft_toLeftOf="@+id/text_time_value"
                         app:layout_constraintRight_toRightOf="@+id/text_time_value"
                         app:layout_constraintTop_toTopOf="@+id/text_time_value" />
+
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/text_time_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/tp_margin_xsmall"
                         android:layout_marginLeft="@dimen/tp_margin_xsmall"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/img_time"
-                        app:layout_constraintBottom_toBottomOf="@id/img_time"
-                        tool:text="16 Aug 2019"
                         android:background="@color/transparent"
                         android:textColor="@color/clr_ae31353b"
+                        app:layout_constraintBottom_toBottomOf="@id/img_time"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/img_time"
                         app:typographyType="body_2"
-                        app:typographyWeight="bold" />
+                        app:typographyWeight="bold"
+                        tool:text="16 Aug 2019" />
 
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_rp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_8"
                         android:layout_marginRight="@dimen/dp_8"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/img_time"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:srcCompat="@drawable/ic_tp_rp" />
+                        app:srcCompat="@drawable/ic_tp_rp_new" />
+
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_min_txn_label"
-                        android:layout_marginStart="@dimen/tp_margin_small"
-                        android:layout_marginLeft="@dimen/tp_margin_small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tool:text="Minimum Transaksi"
+                        android:layout_marginStart="@dimen/tp_margin_small"
+                        android:layout_marginLeft="@dimen/tp_margin_small"
                         android:textColor="@color/clr_ae31353b"
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_rp"
                         app:layout_constraintLeft_toRightOf="@+id/iv_rp"
                         app:layout_constraintTop_toTopOf="@+id/iv_rp"
-                        app:layout_constraintBottom_toBottomOf="@+id/iv_rp"
-                        app:typographyType="body_3" />
+                        app:typographyType="body_3"
+                        tool:text="Minimum Transaksi" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_min_txn_value"
@@ -147,14 +148,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/tp_margin_xsmall"
                         android:layout_marginLeft="@dimen/tp_margin_xsmall"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/iv_rp"
-                        app:layout_constraintBottom_toBottomOf="@id/iv_rp"
-                        tool:text="Rp 3000000"
                         android:background="@color/transparent"
                         android:textColor="@color/clr_ae31353b"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_rp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/iv_rp"
                         app:typographyType="body_2"
-                        app:typographyWeight="bold" />
+                        app:typographyWeight="bold"
+                        tool:text="Rp 3000000" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.AppBarLayout>
@@ -191,9 +192,8 @@
                     android:id="@+id/tnc_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginLeft="16dp"
                     android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:scrollbars="none"
                     app:layout_constraintLeft_toLeftOf="@+id/tnc"
@@ -217,7 +217,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_2"
                     android:layout_margin="@dimen/dp_16"
-                    android:background="@color/bg_label_grey"
+                    android:background="@color/bg_label_grey_tokopoints"
                     app:layout_constraintLeft_toLeftOf="@+id/tnc_see_more"
                     app:layout_constraintRight_toRightOf="@+id/tnc_see_more"
                     app:layout_constraintTop_toBottomOf="@+id/tnc_see_more" />
@@ -260,37 +260,37 @@
                     app:typographyType="body_2"
                     app:typographyWeight="bold" />
 
-                <View
-                    android:id="@+id/bottom_separator"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_2"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:background="@color/bg_label_grey"
-                    app:layout_constraintLeft_toLeftOf="@+id/how_to_use_see_more"
-                    app:layout_constraintRight_toRightOf="@+id/how_to_use_see_more"
-                    app:layout_constraintTop_toBottomOf="@+id/how_to_use_see_more"
-                    app:layout_goneMarginBottom="@dimen/dp_8" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-         <androidx.cardview.widget.CardView
-             app:cardCornerRadius="@dimen/dp_12"
-             android:id="@+id/barcode_container"
-            android:layout_width="match_parent"
-             app:cardUseCompatPadding="true"
-            android:layout_height="wrap_content"
-             android:layout_margin="@dimen/dp_16"
 
-             >
-            <include
-                android:layout_height="wrap_content"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/barcode_container"
                 android:layout_width="match_parent"
-                android:layout_marginTop="7dp"
-                android:layout_marginBottom="@dimen/dp_7"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_12"
-                layout="@layout/tp_layout_swipe_coupon_code" />
-        </androidx.cardview.widget.CardView>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:visibility="gone"
+                app:cardElevation="@dimen/dp_3"
+                app:cardCornerRadius="@dimen/dp_15"
+                app:cardUseCompatPadding="true"
+                tool:visibility="visible"
+
+                >
+
+                <include
+                    layout="@layout/tp_layout_swipe_coupon_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:layout_marginBottom="@dimen/dp_7" />
+            </androidx.cardview.widget.CardView>
 
 
         </LinearLayout>
