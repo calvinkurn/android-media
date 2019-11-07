@@ -209,6 +209,8 @@ class HotlistNavActivity : BaseActivity(),
     }
 
     private fun attachFragment() {
+        var trackerAttribution = ""
+        var searchQuery = ""
         intent.extras?.let {
             val url = it.getString(EXTRA_HOTLIST_PARAM_URL, "")
             alias = if (url.isEmpty()) {
@@ -216,16 +218,18 @@ class HotlistNavActivity : BaseActivity(),
             } else {
                 generateAliasUsingURL(url)
             }
-            val searchQuery = it.getString(EXTRA_HOTLIST_PARAM_QUERY, "")
-            val trackerAttribution = it.getString(EXTRA_HOTLIST_PARAM_TRACKER, "")
-
-            val Fragment = HotlistNavFragment.createInstanceUsingAlias(alias, trackerAttribution)
-            hotlistFragment = Fragment as BaseCategorySectionFragment
-            supportFragmentManager.beginTransaction().add(R.id.parent_view,
-                    Fragment).commit()
-            hotlistFragment.setSortListener(this)
-            initToolbar(alias)
+            searchQuery = it.getString(EXTRA_HOTLIST_PARAM_QUERY, "")
+            trackerAttribution = it.getString(EXTRA_HOTLIST_PARAM_TRACKER, "")
+        } ?: run {
+            alias = intent.data?.path?.replace("/", "") ?: ""
         }
+        val Fragment = HotlistNavFragment.createInstanceUsingAlias(alias, trackerAttribution)
+        hotlistFragment = Fragment as BaseCategorySectionFragment
+        supportFragmentManager.beginTransaction().add(R.id.parent_view,
+                Fragment).commit()
+        hotlistFragment.setSortListener(this)
+        initToolbar(alias)
+
     }
 
 

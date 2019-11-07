@@ -9,10 +9,8 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.component.DaggerHotlistComponent;
@@ -53,22 +51,6 @@ public class HotlistActivity extends DiscoveryActivity
 
     @Inject
     HotlistPresenter hotlistPresenter;
-
-    @DeepLink(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL)
-    public static Intent getCallingApplinkHostlistIntent(Context context, Bundle bundle) {
-
-        if (HotlistNavActivity.isHotlistNavEnabled(context)) {
-            return HotlistNavActivity.createInstanceUsingAlias(context,
-                    bundle.getString(KEY_ALIAS, ""),
-                    bundle.getString(KEY_TRACKER_ATTRIBUTION, ""));
-        } else {
-            return HotlistActivity.createInstanceUsingAlias(context,
-                    bundle.getString(KEY_ALIAS, ""),
-                    bundle.getString(KEY_TRACKER_ATTRIBUTION, "")
-            );
-        }
-    }
-
     private static Intent createInstanceUsingAlias(Context context,
                                                    String alias,
                                                    String trackerAttribution) {
@@ -177,14 +159,19 @@ public class HotlistActivity extends DiscoveryActivity
     }
 
     private Fragment getHotlistFragment() {
-        String url = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_URL, "");
-        String alias = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_ALIAS, "");
-        String searchQuery = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_QUERY, "");
-        String trackerAttribution = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_TRACKER, "");
-        if (!alias.isEmpty()) {
-            return HotlistFragment.createInstanceUsingAlias(alias, trackerAttribution);
+        if (getIntent().getExtras() != null) {
+            String url = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_URL, "");
+            String alias = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_ALIAS, "");
+            String searchQuery = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_QUERY, "");
+            String trackerAttribution = getIntent().getExtras().getString(EXTRA_HOTLIST_PARAM_TRACKER, "");
+            if (!alias.isEmpty()) {
+                return HotlistFragment.createInstanceUsingAlias(alias, trackerAttribution);
+            }
+            return HotlistFragment.createInstanceUsingURL(url, searchQuery);
+        } else {
+            String alias = getIntent().getData().getPath().replace("/", "");
+            return HotlistFragment.createInstanceUsingAlias(alias);
         }
-        return HotlistFragment.createInstanceUsingURL(url, searchQuery);
     }
 
     private void initInjector() {
