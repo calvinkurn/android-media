@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -52,6 +53,7 @@ class AutoCompleteFragment : Fragment(),
         val rvResults = view.findViewById<RecyclerView>(R.id.rv_autocomplete)
         rvResults.layoutManager = LinearLayoutManager(context)
         rvResults.hasFixedSize()
+        rvResults.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         rvResults.adapter = adapter
         adapter.setActionListener(this)
 

@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ResolvableApiException
@@ -116,6 +117,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
         val rv = findViewById<RecyclerView>(R.id.rv_dropoff)
         rv.layoutManager = LinearLayoutManager(this)
+        rv.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         rv.adapter = mNearbyAdapter
         mNearbyAdapter.setActionListener(adapterListener)
 
