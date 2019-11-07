@@ -7,4 +7,6 @@
         dist:title="@string/voucher_game_app_name">
         <dist:fusing dist:include="true" />
     </dist:module>
+
+    <application android:hasCode="false" />
 </manifest>
