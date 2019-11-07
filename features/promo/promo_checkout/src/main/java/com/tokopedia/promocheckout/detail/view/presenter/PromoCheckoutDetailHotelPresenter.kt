@@ -72,34 +72,6 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
                 })
     }
 
-    override fun cancelPromo() {
-        view.showLoading()
-        // TODO try to ask is there cancel voucher promo for hotel?
-//        cancelVoucherUseCase.execute(object : Subscriber<GraphqlResponse>() {
-//
-//            override fun onNext(response: GraphqlResponse) {
-//                view.hideLoading()
-//                val cancelPromoResponse = response.getData<HotelCancelVoucher.Response>(HotelCancelVoucher.Response::class.java).response
-//                if (cancelPromoResponse.attributes.success) {
-//                    view.onSuccessCancelPromo()
-//                } else {
-//                    view.onErrorCancelPromo(Throwable("Promo tidak berhasil dilepas"))
-//                }
-//            }
-//
-//            override fun onCompleted() {
-//
-//            }
-//
-//            override fun onError(e: Throwable) {
-//                if (isViewAttached) {
-//                    view.hideLoading()
-//                    view.onErrorCancelPromo(e)
-//                }
-//            }
-//        })
-    }
-
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
         super.detachView()
