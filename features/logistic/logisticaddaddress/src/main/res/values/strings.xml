@@ -157,6 +157,8 @@
     <string name="no_dropoff_found_desc">Tidak ada titik Drop Off dalam radius</string>
     <string name="no_dropoff_found_title">Tidak menemukan titik Drop Off terdekat</string>
     <string name="title_autocomplete_page">Cari Lokasi</string>
+    <string name="tv_noresult_title">Lokasi tidak ketemu</string>
+    <string name="tv_noresult_desc">Cek kata pencarian kamu atau cari lewat peta</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

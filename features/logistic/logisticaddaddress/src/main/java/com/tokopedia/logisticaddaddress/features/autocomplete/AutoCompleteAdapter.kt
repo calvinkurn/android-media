@@ -17,6 +17,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
             R.layout.item_autocomplete_result -> ResultViewHolder(view)
+            R.layout.item_autocomplete_no_result -> NoResultViewHolder(view)
             else -> LoadingViewholder(view)
         }
     }
@@ -33,6 +34,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int = when (data[position]) {
         is AutoCompleteResultUi -> R.layout.item_autocomplete_result
         is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
+        is NoResultType -> R.layout.item_autocomplete_no_result
         else -> throw RuntimeException("View type not found!!")
     }
 
@@ -45,10 +47,18 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun setLoading() {
         data.clear()
         data.add(LoadingType())
+        notifyDataSetChanged()
+    }
+
+    fun setNoResultView() {
+        data.clear()
+        data.add(NoResultType())
+        notifyDataSetChanged()
     }
 
     interface AutoCompleteVisitable
     data class LoadingType(val id: Int = 0) : AutoCompleteVisitable
+    data class NoResultType(val id: Int = 0) : AutoCompleteVisitable
 
     class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: AutoCompleteResultUi) {
@@ -58,4 +68,6 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
