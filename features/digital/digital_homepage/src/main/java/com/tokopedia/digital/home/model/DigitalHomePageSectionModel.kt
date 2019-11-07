@@ -54,20 +54,20 @@ class DigitalHomePageFavoritesModel: DigitalHomePageSectionModel() {
     }
 }
 
-//class DigitalHomePageTrustMarkModel: DigitalHomePageSectionModel() {
-//    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
-//        return typeFactory.type(this)
-//    }
-//}
-//
-//class DigitalHomePageNewUserZoneModel: DigitalHomePageSectionModel() {
-//    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
-//        return typeFactory.type(this)
-//    }
-//}
-//
-//class DigitalHomePageSpotlightModel: DigitalHomePageSectionModel() {
-//    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
-//        return typeFactory.type(this)
-//    }
-//}
+class DigitalHomePageTrustMarkModel: DigitalHomePageSectionModel() {
+    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}
+
+class DigitalHomePageNewUserZoneModel: DigitalHomePageSectionModel() {
+    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}
+
+class DigitalHomePageSpotlightModel: DigitalHomePageSectionModel() {
+    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}

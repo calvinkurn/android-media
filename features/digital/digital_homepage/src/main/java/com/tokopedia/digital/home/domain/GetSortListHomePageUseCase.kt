@@ -12,17 +12,23 @@ class GetSortListHomePageUseCase {
         val favorites = DigitalHomePageFavoritesModel()
         favorites.isLoadFromCloud = loadFromCloud
 
-//        val newUserZone = DigitalHomePageNewUserZoneModel()
-//        newUserZone.isLoadFromCloud = loadFromCloud
-//
-//        val spotLight = DigitalHomePageSpotlightModel()
-//        spotLight.isLoadFromCloud = loadFromCloud
+        val trustMark = DigitalHomePageTrustMarkModel()
+        trustMark.isLoadFromCloud = loadFromCloud
+
+        val newUserZone = DigitalHomePageNewUserZoneModel()
+        newUserZone.isLoadFromCloud = loadFromCloud
+
+        val spotLight = DigitalHomePageSpotlightModel()
+        spotLight.isLoadFromCloud = loadFromCloud
 
         val category = DigitalHomePageCategoryModel()
         category.isLoadFromCloud = loadFromCloud
 
         return listOf(homeBanner,
                 favorites,
+                trustMark,
+                newUserZone,
+                spotLight,
                 category
         )
     }

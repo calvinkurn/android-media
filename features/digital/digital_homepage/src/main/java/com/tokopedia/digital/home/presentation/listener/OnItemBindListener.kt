@@ -8,6 +8,9 @@ interface OnItemBindListener {
     fun onBannerItemDigitalBind(loadFromCloud: Boolean?)
     fun onCategoryItemDigitalBind(loadFromCloud: Boolean?)
     fun onFavoritesItemDigitalBind(loadFromCloud: Boolean?)
+    fun onTrustMarkItemDigitalBind(loadFromCloud: Boolean?)
+    fun onNewUserZoneItemDigitalBind(loadFromCloud: Boolean?)
+    fun onSpotlightItemDigitalBind(loadFromCloud: Boolean?)
     fun onPromoItemDigitalBind()
 
     fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, i: Int)

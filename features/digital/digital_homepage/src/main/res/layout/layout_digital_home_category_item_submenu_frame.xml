@@ -15,7 +15,7 @@
         app:cardElevation="@dimen/dp_2">
 
         <com.tokopedia.design.image.SquareImageView
-            android:id="@+id/category_image"
+            android:id="@+id/category_frame_image"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:layout_margin="@dimen/dp_12"
@@ -24,7 +24,7 @@
     </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/category_name"
+        android:id="@+id/category_frame_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

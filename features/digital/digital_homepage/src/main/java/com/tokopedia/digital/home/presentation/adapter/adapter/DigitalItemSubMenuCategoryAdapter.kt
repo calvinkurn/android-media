@@ -28,11 +28,11 @@ class DigitalItemSubMenuCategoryAdapter(val submenu: List<DigitalHomePageCategor
 
     class DigitalItemSubmenuCategoryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: DigitalHomePageCategoryModel.Submenu?, onItemBindListener: OnItemBindListener) {
-            onItemBindListener.onCategoryImpression(element, position + 1)
+            onItemBindListener.onCategoryImpression(element, adapterPosition + 1)
             itemView.category_image.loadImage(element?.icon?:"")
             itemView.category_name.text = element?.label
             itemView.setOnClickListener {
-                onItemBindListener.onCategoryItemClicked(element, position +1)
+                onItemBindListener.onCategoryItemClicked(element, adapterPosition +1)
             }
         }
 

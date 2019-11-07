@@ -207,6 +207,21 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 ?: true)
     }
 
+    override fun onTrustMarkItemDigitalBind(loadFromCloud: Boolean?) {
+        viewModel.getTrustMarkList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section), loadFromCloud
+                ?: true)
+    }
+
+    override fun onNewUserZoneItemDigitalBind(loadFromCloud: Boolean?) {
+        viewModel.getNewUserZoneList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section), loadFromCloud
+                ?: true)
+    }
+
+    override fun onSpotlightItemDigitalBind(loadFromCloud: Boolean?) {
+        viewModel.getSpotlightList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section), loadFromCloud
+                ?: true)
+    }
+
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
         trackingUtil.eventCategoryClick(element, position)
         RouteManager.route(activity, element?.applink)

@@ -32,17 +32,17 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
         return DigitalHomePageFavoriteViewHolder.LAYOUT
     }
 
-//    fun type(digitalHomePageTrustMarkModel: DigitalHomePageTrustMarkModel): Int {
-//        return DigitalHomePageTrustMarkViewHolder.LAYOUT
-//    }
-//
-//    fun type(digitalHomePageNewUserZoneModel: DigitalHomePageNewUserZoneModel): Int {
-//        return DigitalHomePageNewUserZoneViewHolder.LAYOUT
-//    }
-//
-//    fun type(digitalHomePageSpotlightModel: DigitalHomePageSpotlightModel): Int {
-//        return DigitalHomePageSpotlightViewHolder.LAYOUT
-//    }
+    fun type(digitalHomePageTrustMarkModel: DigitalHomePageTrustMarkModel): Int {
+        return DigitalHomePageTrustMarkViewHolder.LAYOUT
+    }
+
+    fun type(digitalHomePageNewUserZoneModel: DigitalHomePageNewUserZoneModel): Int {
+        return DigitalHomePageNewUserZoneViewHolder.LAYOUT
+    }
+
+    fun type(digitalHomePageSpotlightModel: DigitalHomePageSpotlightModel): Int {
+        return DigitalHomePageSpotlightViewHolder.LAYOUT
+    }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
@@ -51,6 +51,9 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
             DigitalHomePagePromoViewHolder.LAYOUT -> return DigitalHomePagePromoViewHolder(parent, onItemBindListener)
             DigitalHomePageTransactionViewHolder.LAYOUT -> return DigitalHomePageTransactionViewHolder(parent, transactionListener)
             DigitalHomePageFavoriteViewHolder.LAYOUT -> return DigitalHomePageFavoriteViewHolder(parent, onItemBindListener)
+            DigitalHomePageTrustMarkViewHolder.LAYOUT -> return DigitalHomePageTrustMarkViewHolder(parent, onItemBindListener)
+            DigitalHomePageNewUserZoneViewHolder.LAYOUT -> return DigitalHomePageNewUserZoneViewHolder(parent, onItemBindListener)
+            DigitalHomePageSpotlightViewHolder.LAYOUT -> return DigitalHomePageSpotlightViewHolder(parent, onItemBindListener)
         }
         return super.createViewHolder(parent, type)
     }
