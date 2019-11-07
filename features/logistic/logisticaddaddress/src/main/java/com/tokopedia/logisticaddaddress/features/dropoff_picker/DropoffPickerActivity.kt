@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -37,7 +36,6 @@ import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteActivi
 import com.tokopedia.logisticaddaddress.features.dropoff_picker.adapter.NearbyStoreAdapter
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
-import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
@@ -119,15 +117,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         val rv = findViewById<RecyclerView>(R.id.rv_dropoff)
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = mNearbyAdapter
-        mNearbyAdapter.setActionListener(object : NearbyStoreAdapter.ActionListener {
-            override fun onItemClicked(view: View) {
-                showStoreDetail(view.tag as DropoffNearbyModel)
-            }
-
-            override fun requestAutoComplete() {
-                goToAutoComplete.invoke(null)
-            }
-        })
+        mNearbyAdapter.setActionListener(adapterListener)
 
         mNearbiesBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
         mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
@@ -389,5 +379,16 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE)
         overridePendingTransition(R.anim.slide_in_up, R.anim.stay_still)
     }
+
+    private val adapterListener: NearbyStoreAdapter.ActionListener =
+            object : NearbyStoreAdapter.ActionListener {
+                override fun onItemClicked(view: View) {
+                    showStoreDetail(view.tag as DropoffNearbyModel)
+                }
+
+                override fun requestAutoComplete() {
+                    goToAutoComplete.invoke(null)
+                }
+            }
 
 }
