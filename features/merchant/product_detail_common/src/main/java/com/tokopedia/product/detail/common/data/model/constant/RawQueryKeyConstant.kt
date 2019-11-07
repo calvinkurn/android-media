@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.di
+package com.tokopedia.product.detail.common.data.model.constant
 
 object RawQueryKeyConstant {
     const val QUERY_SHOP = "query_shop"
@@ -27,9 +27,7 @@ object RawQueryKeyConstant {
     const val QUERY_PRODUCT_PP = "query_ppGetItemDetailPage"
     const val QUERY_RECOMMEN_PRODUCT = "query_recommendation_product"
     const val QUERY_SHOP_FEATURE = "query_shop_feature"
-    const val QUERY_GET_PDP_LAYOUT = "query_get_pdp_layout"
     const val MUTATION_AFFILIATE_TRACKING = "mutation_af_tracking"
     const val MUTATION_UPDATE_CART_COUNTER = "update_cart_counter"
-    const val QUERY_PDP_FINANCING_RECOMMENDATION = "pdpFinancingRecommendation"
-    const val QUERY_PDP_FINANCING_CALCULATION = "pdpFinancingCalculation"
+
 }

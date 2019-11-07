@@ -1,0 +1,41 @@
+query pdpGetLayout($productId:String!){
+  pdpGetLayout(productID:$productId) {
+    Name
+    BasicInfo {
+      ProductID
+      CategoryID
+    }
+    Components {
+      Name
+      Type
+      Data {
+        ... on pdpDataSocialProof {
+          Row
+          Content {
+            Icon
+            Title
+            Subtitle
+            Applink
+            Type
+            Rating
+          }
+        }
+        ... on pdpDataProductInfo {
+          Row
+          Content {
+            Title
+            Subtitle
+            Applink
+          }
+        }
+        ... on pdpDataInfo {
+          Applink
+          Content {
+            Icon
+            Text
+          }
+        }
+        }
+    }
+  }
+}

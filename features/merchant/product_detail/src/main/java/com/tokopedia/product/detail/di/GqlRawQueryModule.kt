@@ -233,4 +233,11 @@ class GqlRawQueryModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
     }
 
+    @ProductDetailScope
+    @Provides
+    @Named(RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT)
+    fun provideGetPdpLayout(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_pdp_layout)
+    }
+
 }

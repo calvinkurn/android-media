@@ -102,7 +102,7 @@
                     android:fitsSystemWindows="true"
                     app:layout_collapseMode="none"
                     app:scrimAnimationDuration="50"
-                    tools:visibility="gone" />
+                    tools:visibility="visible" />
                 <include layout="@layout/partial_product_detail_header"/>
                 <include layout="@layout/partial_product_rating_talk_courier"/>
                 <include layout="@layout/partial_product_detail_visibility"/>
