@@ -49,7 +49,7 @@ public class AutoCompleteSearchAdapter extends RecyclerView.Adapter<AutoComplete
 
     private void bindViewListener(Holder holder, AutoCompleteViewModel model) {
         holder.tvAutoComplete.setOnClickListener(v -> {
-            mainView.onAutoCompleteItemClicked(model.getText());
+            mainView.onAutoCompleteItemClicked(model.getText(), model.getKeyword());
         });
 
         holder.ivAutoComplete.setOnClickListener(v -> {

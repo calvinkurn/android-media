@@ -37,6 +37,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
@@ -104,8 +106,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private boolean isSellerEnabled;
     private SaldoTransactionHistoryFragment saldoHistoryFragment;
 
-    private long sellerSaldoBalance;
-    private long buyerSaldoBalance;
+    private float sellerSaldoBalance;
+    private float buyerSaldoBalance;
     private float totalSaldoBalance;
     private LinearLayout saldoTypeLL;
     private LinearLayout merchantDetailLL;
@@ -118,7 +120,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private LinearLayout merchantStatusLL;
     private long CHECK_VISIBILITY_DELAY = 700;
 
-    private ConstraintLayout layoutTicker;
+    private View layoutTicker;
     private TextView tvTickerMessage;
     private ImageView ivDismissTicker;
     private int mclLateCount = 0;
@@ -513,12 +515,12 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public long getSellerSaldoBalance() {
+    public float getSellerSaldoBalance() {
         return sellerSaldoBalance;
     }
 
     @Override
-    public long getBuyerSaldoBalance() {
+    public float getBuyerSaldoBalance() {
         return buyerSaldoBalance;
     }
 
@@ -567,7 +569,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         drawButton.setClickable(state);
     }
 
-        @SuppressLint("Range")
+    @SuppressLint("Range")
     @Override
     public void showErrorMessage(String error) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), error);
@@ -674,13 +676,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setBuyerSaldoBalance(long balance, String text) {
+    public void setBuyerSaldoBalance(float balance, String text) {
         buyerSaldoBalance = balance;
         buyerBalanceTV.setText(text);
     }
 
     @Override
-    public void setSellerSaldoBalance(long amount, String formattedAmount) {
+    public void setSellerSaldoBalance(float amount, String formattedAmount) {
         sellerSaldoBalance = amount;
         sellerBalanceTV.setText(formattedAmount);
     }
@@ -708,7 +710,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     @Override
     public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
-
         if (response != null && response.isEligible()) {
             statusWithDrawLock = response.getStatus();
             switch (statusWithDrawLock) {

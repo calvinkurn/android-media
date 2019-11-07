@@ -14,13 +14,16 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
-import com.tokopedia.payment.activity.TopPayActivity
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInGTMConstants
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
@@ -103,9 +106,9 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         mTvTnc.movementMethod = LinkMovementMethod.getInstance()
         val tvChangeRecipientAddress = findViewById<Typography>(R.id.tv_change_recipient_address) as Typography
         tvChangeRecipientAddress.setOnClickListener {
-            val intent = CartAddressChoiceActivity.createInstance(this,
-                    CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN)
-            startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE)
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION)
+            intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN)
+            startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
         }
     }
 
@@ -156,9 +159,9 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                     paymentPassData.callbackSuccessUrl = it.data.callbackUrl
                     paymentPassData.callbackFailedUrl = ""
                     paymentPassData.queryString = it.data.queryString
-                    startActivityForResult(
-                            TopPayActivity.createInstance(this, paymentPassData),
-                            TopPayActivity.REQUEST_CODE)
+                    val intent = RouteManager.getIntent(this, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+                    intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+                    startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
                 }
             }
         })
@@ -313,20 +316,20 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) run {
+        if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) run {
             onResultFromRequestCodeAddressOptions(resultCode, data)
-        } else if (requestCode == TopPayActivity.REQUEST_CODE) run {
+        } else if (requestCode == PaymentConstant.REQUEST_CODE) run {
             onResultFromPayment(resultCode)
         }
     }
 
     private fun onResultFromRequestCodeAddressOptions(resultCode: Int, data: Intent?) {
-        if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS) {
+        if (resultCode == CheckoutConstant.RESULT_CODE_ACTION_SELECT_ADDRESS) {
             when (resultCode) {
-                CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS -> {
+                CheckoutConstant.RESULT_CODE_ACTION_SELECT_ADDRESS -> {
                     if (data != null) {
                         val addressModel = data.getParcelableExtra<RecipientAddressModel>(
-                                CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA
+                                CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA
                         )
                         val recipientAddress = KeroGetAddress.Data(
                                 addressModel.id.toInt(),
@@ -362,14 +365,14 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
     private fun onResultFromPayment(resultCode: Int) {
         when (resultCode) {
-            TopPayActivity.PAYMENT_SUCCESS, Activity.RESULT_OK -> {
+            PaymentConstant.PAYMENT_SUCCESS, Activity.RESULT_OK -> {
                 setResult(Activity.RESULT_OK, null)
                 finish()
             }
-            TopPayActivity.PAYMENT_FAILED -> {
+            PaymentConstant.PAYMENT_FAILED -> {
                 showMessage(getString(R.string.money_in_alert_payment_canceled_or_failed))
             }
-            TopPayActivity.PAYMENT_CANCELLED -> {
+            PaymentConstant.PAYMENT_CANCELLED -> {
                 showMessage(getString(R.string.money_in_alert_payment_canceled))
             }
             else -> {

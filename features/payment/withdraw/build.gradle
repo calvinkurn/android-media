@@ -49,13 +49,6 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-
-    implementation project(rootProject.ext.features.settingbank)
-
 }
 
 project.ext {

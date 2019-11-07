@@ -23,7 +23,7 @@ import com.tokopedia.instantloan.view.presenter.DanaInstanLoanPresenter
 
 class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivity, private val mLayouts: IntArray, private val mPresenter: DanaInstanLoanPresenter) : PagerAdapter() {
     private val mLayoutInflater: LayoutInflater
-    private val link = mActivity.resources.getString(R.string.instant_loan_clickable_link)
+    private val link = mActivity.resources.getString(com.tokopedia.instantloan.R.string.instant_loan_clickable_link)
     internal var instantLoanAnalytics: InstantLoanAnalytics? = null
 
     init {
@@ -38,13 +38,13 @@ class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivit
 
         if (position == mLayouts.size - 2) {
 
-            val textView = view.findViewById<TextView>(R.id.text_label_processing_time)
+            val textView = view.findViewById<TextView>(com.tokopedia.instantloan.R.id.text_label_processing_time)
 
             val clickableSpan = object : ClickableSpan() {
 
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
-                    ds.color = mActivity.resources.getColor(R.color.tkpd_green_header)
+                    ds.color = mActivity.resources.getColor(com.tokopedia.design.R.color.tkpd_green_header)
                     ds.isUnderlineText = false
                 }
 
@@ -57,7 +57,7 @@ class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivit
             val spannableString = SpannableString(textView.text.toString())
 
             spannableString.setSpan(clickableSpan,
-                    mActivity.resources.getString(R.string.text_intro_slide_2).length + 1,
+                    mActivity.resources.getString(com.tokopedia.instantloan.R.string.text_intro_slide_2).length + 1,
                     textView.text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             textView.text = spannableString
@@ -66,7 +66,7 @@ class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivit
 
 
         } else if (position == mLayouts.size - 1) {
-            val textTnC = view.findViewById<TextView>(R.id.text_tnc)
+            val textTnC = view.findViewById<TextView>(com.tokopedia.instantloan.R.id.text_tnc)
             val startIndexOfLink = textTnC.text.toString().indexOf(link)
 
             val spannableString = SpannableString(textTnC.text.toString())
@@ -75,7 +75,7 @@ class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivit
 
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
-                    ds.color = mActivity.resources.getColor(R.color.tkpd_green_header)
+                    ds.color = mActivity.resources.getColor(com.tokopedia.design.R.color.tkpd_green_header)
                     ds.isUnderlineText = false
                 }
 
@@ -90,7 +90,7 @@ class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivit
 
             textTnC.text = spannableString
             textTnC.movementMethod = LinkMovementMethod.getInstance()
-            view.findViewById<View>(R.id.button_connect_device).setOnClickListener { v ->
+            view.findViewById<View>(com.tokopedia.instantloan.R.id.button_connect_device).setOnClickListener { v ->
                 sendLoanPopupClickEvent(InstantLoanEventConstants.EventLabel.PL_POPUP_CONNECT_DEVICE)
                 mPresenter.startDataCollection()
             }

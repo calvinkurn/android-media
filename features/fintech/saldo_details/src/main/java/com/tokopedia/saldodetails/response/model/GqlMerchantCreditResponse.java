@@ -82,7 +82,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
         dest.writeValue(anchorList);
         dest.writeList(infoList);
         dest.writeByte((byte) (showBox ? 1 : 0));
-        dest.writeValue(boxInfo);
+        dest.writeValue(getBoxInfo());
     }
 
     public boolean isEligible() {
@@ -158,6 +158,7 @@ public class GqlMerchantCreditResponse implements Parcelable {
     }
 
     public GqlBoxInfoResponse getBoxInfo() {
+        if (boxInfo == null) boxInfo = new GqlBoxInfoResponse();
         return boxInfo;
     }
 

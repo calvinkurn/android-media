@@ -23,7 +23,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.snackbar.Snackbar
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.collection.ArrayMap
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
@@ -43,6 +42,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -57,8 +57,6 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.discovery.common.manager.AdultManager
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
-import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -70,9 +68,6 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.normalcheckout.constant.*
-import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
-import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
@@ -111,6 +106,14 @@ import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
+import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.constant.Constant.*
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA_CACHE_ID
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_SELECTED_WAREHOUSE
+import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
+import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
+import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants.Action.Companion.ACTION_GET_REFERRAL_CODE
 import com.tokopedia.referral.ReferralAction
@@ -129,13 +132,10 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
-import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -409,7 +409,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
         })
-        warehouseId?.let{
+        warehouseId?.let {
             productInfoViewModel.warehouseId = it
         }
     }
@@ -466,6 +466,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initView()
         tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         tv_trade_in_promo.setOnClickListener {
+            productId?.let{
+                productDetailTracking.eventClickTradeInRibbon(it)
+            }
             scrollToTradeInWidget()
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
@@ -716,25 +719,25 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productInfo?.run {
                 val isOcsCheckoutType = (productInfoViewModel.p2Login.value)?.isOcsCheckoutType
                         ?: false
-                val intent = NormalCheckoutActivity.getIntent(it,
-                        basic.shopID.toString(),
-                        category.id,
-                        category.name,
-                        parentProductId,
-                        basic.name,
-                        productInfo?.basic?.price,
-                        basic.condition,
-                        userInputNotes,
-                        userInputQuantity,
-                        userInputVariant,
-                        action,
-                        null,
-                        trackerAttribution,
-                        trackerListName,
-                        shopInfo?.goldOS?.shopTypeString,
-                        shopInfo?.shopCore?.name,
-                        isOcsCheckoutType,
-                        isLeasing)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, basic.name)
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, productInfo?.basic?.price)
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, basic.condition)
+                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, category.id)
+                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, category.name)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, basic.shopID.toString())
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, parentProductId)
+                    putExtra(ApplinkConst.Transaction.EXTRA_NOTES, userInputNotes)
+                    putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, userInputQuantity)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, userInputVariant)
+                    putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
+                    putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution)
+                    putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopInfo?.goldOS?.shopTypeString)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopInfo?.shopCore?.name)
+                    putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
+                    putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, isLeasing)
+                }
                 if (::tradeInParams.isInitialized) {
                     intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
@@ -760,9 +763,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 val expressCheckoutUriString = ApplinkConstInternalMarketplace.EXPRESS_CHECKOUT
                 val intent = RouteManager.getIntent(it, expressCheckoutUriString)
                 intent?.run {
-                    putExtra("EXTRA_ATC_REQUEST", atcRequestParam)
-                    putExtra("tracker_attribution", trackerAttribution)
-                    putExtra("tracker_list_name", trackerListName)
+                    putExtra(EXTRA_ATC_REQUEST, atcRequestParam)
+                    putExtra(TRACKER_ATTRIBUTION, trackerAttribution)
+                    putExtra(TRACKER_LIST_NAME, trackerListName)
                     startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS)
                     it.overridePendingTransition(R.anim.pull_up, 0)
                 }
@@ -802,7 +805,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
         if (!::productDescrView.isInitialized) {
-            productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity)
+            productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity, productDetailTracking)
             addLoadMoreImpression()
         }
 
@@ -992,7 +995,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         search_pdp_toolbar.show()
         varToolbar = search_pdp_toolbar
         varPictureImage = view_picture_search_bar
-        varPictureImage.isNotVisibleOnTheScreen(object : ViewHintListener{
+        varPictureImage.isNotVisibleOnTheScreen(object : ViewHintListener {
             override fun onViewHint() {
                 varPictureImage.stopVideo()
             }
@@ -1149,12 +1152,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         productDetailTracking.eventViewHelpPopUpWhenAtc()
                     }
                 } else if (resultCode == Activity.RESULT_OK && data != null) {
-                    if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
+                    if (data.hasExtra(RESULT_PRODUCT_DATA_CACHE_ID)) {
                         //refresh product by selected variant/product
-                        val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
+                        val objectId: String = data.getStringExtra(RESULT_PRODUCT_DATA_CACHE_ID)
                         val cacheManager = SaveInstanceCacheManager(this@ProductDetailFragment.context!!, objectId)
-                        val selectedProductInfo: ProductInfo? = cacheManager.get(NormalCheckoutFragment.RESULT_PRODUCT_DATA, ProductInfo::class.java)
-                        val selectedWarehouse: MultiOriginWarehouse? = cacheManager.get(NormalCheckoutFragment.RESULT_SELECTED_WAREHOUSE,
+                        val selectedProductInfo: ProductInfo? = cacheManager.get(RESULT_PRODUCT_DATA, ProductInfo::class.java)
+                        val selectedWarehouse: MultiOriginWarehouse? = cacheManager.get(RESULT_SELECTED_WAREHOUSE,
                                 MultiOriginWarehouse::class.java)
                         if (selectedProductInfo != null) {
                             userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
@@ -1179,7 +1182,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         showAddToCartDoneBottomSheet(successMessage)
                         updateCartNotification()
                     }
-
                 }
             }
             REQUEST_CODE_ATC_EXPRESS -> {
@@ -1297,16 +1299,20 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun updateCartNotification() {
-        activity?.run {
-            (application as ProductDetailRouter).updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener {
-                if (isAdded) {
-                    if (isAppBarCollapsed) {
-                        initToolbarLight()
-                    } else {
-                        initToolBarMethod()
-                    }
-                }
-            })
+        productInfoViewModel.updateCartCounerUseCase(::onSuccessUpdateCartCounter)
+    }
+
+    private fun onSuccessUpdateCartCounter(count: Int) {
+        val cache = LocalCacheHandler(context, CartConstant.CART);
+        cache.putInt(CartConstant.IS_HAS_CART, if (count > 0) 1 else 0)
+        cache.putInt(CartConstant.CACHE_TOTAL_CART, count);
+        cache.applyEditor();
+        if (isAdded) {
+            if (isAppBarCollapsed) {
+                initToolbarLight()
+            } else {
+                initToolBarMethod()
+            }
         }
     }
 
@@ -1364,7 +1370,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onShipmentClicked() {
-        productDetailTracking.eventShippingClicked()
+        productDetailTracking.eventShippingClicked(productId ?: "")
         if (productInfoViewModel.isUserSessionActive()) {
             val productP3value = productInfoViewModel.productInfoP3resp.value
             if (!productP3value?.ratesModel?.services.isNullOrEmpty()) {
@@ -1693,7 +1699,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             return
         }
         // defaulting selecting variant
-        if (userInputVariant == productId && data.defaultChild > 0) {
+        if (userInputVariant == data.parentId.toString() && data.defaultChild > 0) {
             userInputVariant = data.defaultChild.toString()
         }
         val selectedVariantListString = data.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
@@ -1848,7 +1854,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         shop.shopCore.shopID, "",
                         "product", shop.shopCore.name, shop.shopAssets.avatar)
-                putChatProductInfoTo(intent)
+                productInfoViewModel.putChatProductInfoTo(intent, productId, productInfo, userInputVariant)
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -1856,54 +1862,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
         productDetailTracking.eventSendMessage()
-        productDetailTracking.eventSendChat()
-    }
-
-    private fun putChatProductInfoTo(intent: Intent?) {
-        if (intent == null) return
-        val variants = mapSelectedProductVariants()
-        val productImageUrl = getProductImageUrl()
-        val productName = getProductName()
-        val productPrice = getProductPrice()
-        val productUrl = getProductUrl()
-        val productColorVariant = variants?.get("colour")?.get("value")
-        val productColorHexVariant = variants?.get("colour")?.get("hex")
-        val productSizeVariant = variants?.get("size")?.get("value")
-        with(intent) {
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
-            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
-        }
-    }
-
-    private fun getProductImageUrl(): String? {
-        val images = productInfo?.pictures
-        return images?.get(0)?.urlThumbnail
-    }
-
-    private fun getProductName(): String? {
-        return productInfo?.basic?.name
-    }
-
-    private fun getProductPrice(): String? {
-        return productInfo?.basic?.price?.getCurrencyFormatted()
-    }
-
-    private fun getProductUrl(): String? {
-        return productInfo?.basic?.url
-    }
-
-    private fun mapSelectedProductVariants(): ArrayMap<String, ArrayMap<String, String>>? {
-        return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
-    }
-
-    private fun getProductVariant(): ProductVariant? {
-        return productInfoViewModel.p2General.value?.variantResp
+        productDetailTracking.eventSendChat(productId ?: "")
     }
 
     /**
@@ -1919,7 +1878,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun getImageURIPaths(): ArrayList<String> {
         return ArrayList(productInfo?.run {
             media.map {
-                if(it.type == "image") {
+                if (it.type == "image") {
                     it.urlOriginal
                 } else {
                     it.urlThumbnail
@@ -1929,7 +1888,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onVariantClicked() {
-        productDetailTracking.eventClickVariant(generateVariantString())
+        productDetailTracking.eventClickVariant(generateVariantString(), productId ?: "")
         goToNormalCheckout(ATC_AND_BUY)
     }
 
@@ -2038,7 +1997,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun showBadgeMenuCart(cartImageView: ImageView, lottieCartView: LottieAnimationView, animate: Boolean) {
         activity?.run {
-            val cartCount = (application as ProductDetailRouter).getCartCount(this)
+            val localCacheHandler = LocalCacheHandler(context, CartConstant.CART)
+            val cartCount = localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0)
+
             val icon = ContextCompat.getDrawable(this, cartImageView.tag as Int)
             if (icon is LayerDrawable) {
                 val badge = CountDrawable(this)
@@ -2155,12 +2116,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN)
             }
-            productDetailTracking.eventCartMenuClicked(generateVariantString())
+            productDetailTracking.eventCartMenuClicked(generateVariantString(), productId ?: "")
         }
     }
 
     private fun shareProduct() {
         if (productInfo == null && activity == null) return
+        productId?.let {
+            productDetailTracking.eventClickPdpShare(it)
+        }
         val productData = ProductData(
                 productInfo!!.basic.price.getCurrencyFormatted(),
                 "${productInfo!!.cashback.percentage}%",
@@ -2172,7 +2136,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 productInfo!!.basic.id.toString(),
                 productInfo!!.pictures?.getOrNull(0)?.urlOriginal ?: ""
         )
-
         checkAndExecuteReferralAction(productData)
     }
 

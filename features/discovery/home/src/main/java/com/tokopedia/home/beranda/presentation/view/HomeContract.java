@@ -10,15 +10,15 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
+import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
-import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public interface HomeContract {
 
         void hideLoading();
 
-        void setItems(List<Visitable> items, HeaderViewModel headerViewModel, int repositoryFlag);
+        void setItems(List<Visitable> items, int repositoryFlag);
 
         void setHint(SearchPlaceholder searchPlaceholder);
 
@@ -64,11 +64,7 @@ public interface HomeContract {
 
         void addImpressionToTrackingQueue(List<HomeVisitable> visitables);
 
-        void showRecomendationButton();
-
-        Observable<HomeHeaderWalletAction> getTokocashBalance();
-
-        Observable<PendingCashback> getTokocashPendingCashback();
+        void configureHomeFlag(HomeFlag homeFlag);
 
         Observable<TokopointHomeDrawerData> getTokopoint();
 

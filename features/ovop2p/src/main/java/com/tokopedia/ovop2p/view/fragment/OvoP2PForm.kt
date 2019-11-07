@@ -130,7 +130,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                                 AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_TRNSFR)
                     }
                 }
-                R.id.btn_ok -> {
+                com.tokopedia.design.R.id.btn_ok -> {
                     errorSnackbar.let {
                         if (it.isShownOrQueued) it.dismiss()
                     }

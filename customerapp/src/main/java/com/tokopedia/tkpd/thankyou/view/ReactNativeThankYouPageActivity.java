@@ -12,7 +12,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.common_wallet.balance.data.CacheUtil;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
@@ -20,7 +20,6 @@ import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
-import com.tokopedia.tokocash.CacheUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -32,7 +31,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     private static final String PLATFORM = "platform";
     private static final String DIGITAL = "digital";
-    private static final String GL_THANK_YOU_PAGE =  "gl_thank_you_page";
+    private static final String GL_THANK_YOU_PAGE = "gl_thank_you_page";
     private static final String PAGE_TITLE = "Thank You";
 
     private ReactInstanceManager reactInstanceManager;
@@ -103,7 +102,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
         if (initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES) != null &&
-                !initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES).isEmpty()){
+                !initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES).isEmpty()) {
             try {
                 data.setShopTypes(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
             } catch (UnsupportedEncodingException e) {
@@ -115,14 +114,12 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     @Override
     public void onBackPressed() {
-        if (isDigital()) {
-            FragmentManager manager = getSupportFragmentManager();
+        FragmentManager manager = getSupportFragmentManager();
 
-            if (manager != null) {
-                AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                rating.setDialogDismissListener(() -> closeThankyouPage());
-                rating.showDialog(manager, this);
-            }
+        if (isDigital() && manager != null) {
+            AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+            rating.setDialogDismissListener(this::closeThankyouPage);
+            rating.showDialog(manager, this);
         } else {
             closeThankyouPage();
         }

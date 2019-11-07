@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
@@ -31,7 +31,6 @@ import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -449,6 +448,10 @@ public abstract class SellerRouterApplication extends MainApplication
         ScreenTracking.screen(this, screenName);
     }
 
+    public void goToWebview(Context context, String url) {
+        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
+    }
+
     @Override
     public void openImagePreview(Context context, ArrayList<String> images,
                                  int position) {
@@ -728,11 +731,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Observable<TokoCashData> getTokoCashBalance() {
-        return null;
-    }
-
-    @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return DiscomActivity.newInstance(activity, token);
     }
@@ -791,6 +789,11 @@ public abstract class SellerRouterApplication extends MainApplication
         accessTokenRefresh.refreshToken();
     }
 
+    @Override
+    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
+
+    }
+
     public UserSession getSession() {
         return new UserSession(this);
     }
@@ -819,11 +822,6 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             context.startActivity(SellerappWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
-    }
-
-    @Override
-    public Intent getShopPageIntentByDomain(Context context, String domain) {
-        return ShopPageInternalRouter.getShopPageIntentByDomain(context, domain);
     }
 
     @Override
@@ -901,11 +899,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getCartIntent(Activity activity) {
         return null;
-    }
-
-    @Override
-    public void updateMarketplaceCartCounter(CartNotificationListener listener) {
-
     }
 
     @Override
@@ -1039,11 +1032,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
                                       String source) {
         return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
-    }
-
-    @Override
-    public int getCartCount(Context context) {
-        return 0;
     }
 
     @Override
@@ -1199,24 +1187,8 @@ public abstract class SellerRouterApplication extends MainApplication
     public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
     }
 
-    @Override
-    public Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest) {
-        return null;
-    }
-
-    @Override
-    public Intent getCheckoutIntent(Context context, String deviceid) {
-        return null;
-    }
-
     public String getDeviceId(Context context) {
         return "";
-    }
-    
-    @Override
-    public Intent getExpressCheckoutIntent(Activity activity,
-                                           com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam atcRequestParam) {
-        return null;
     }
 
     @Override

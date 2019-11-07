@@ -189,6 +189,8 @@ public class FilterHelper {
     private static void removeValueFromOptionWithInputTypeTextBox(List<Filter> filterList) {
         for (Filter filter : filterList) {
             for(Option option : filter.getOptions()) {
+                if(option.getInputType() == null) continue;
+
                 if(option.getInputType().equals(Option.INPUT_TYPE_TEXTBOX)) {
                     option.setValue("");
                 }

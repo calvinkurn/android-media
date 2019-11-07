@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -27,6 +28,9 @@ public class DealsLocationContract {
 
         void showProgressBar(boolean showProgressBar);
 
+        void setCurrentLocation(LocationResponse locationResponse);
+
+        void setDefaultLocation();
     }
 
     public interface Presenter extends CustomerPresenter<DealsLocationContract.View> {

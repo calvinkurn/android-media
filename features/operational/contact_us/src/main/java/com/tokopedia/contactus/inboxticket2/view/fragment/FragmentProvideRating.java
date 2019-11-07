@@ -188,7 +188,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
             finishFilter = new CustomViewQuickFilterItem();
             finishFilter.setName(filter.getMessage());
             finishFilter.setType(filter.getId()+"");
-            finishFilter.setColorBorder(R.color.tkpd_main_green);
+            finishFilter.setColorBorder(com.tokopedia.design.R.color.tkpd_main_green);
             filterItems.add(finishFilter);
         }
         mFilterReview.renderFilter(filterItems);
@@ -304,12 +304,12 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     }
 
     public void disableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(getContext(), R.color.grey_500));
+        mTxtFinished.setTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.grey_500));
         mTxtFinished.setEnabled(false);
     }
 
     public void enableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(getContext(), R.color.white));
+        mTxtFinished.setTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.white));
         mTxtFinished.setEnabled(true);
     }
 }

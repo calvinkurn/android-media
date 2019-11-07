@@ -24,6 +24,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.adapter.EmptyTrackingNotesAdapter;
@@ -33,10 +35,19 @@ import com.tokopedia.tracking.di.TrackingPageComponent;
 import com.tokopedia.tracking.di.TrackingPageModule;
 import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.utils.DateUtil;
+import com.tokopedia.tracking.viewmodel.AdditionalInfoUiModel;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
-import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.unifycomponents.ticker.TickerData;
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -82,6 +93,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private UnifyButton retryButton;
     private TextView retryStatus;
     private CountDownTimer mCountDownTimer;
+    private Ticker tickerInfoCourier;
 
     @Inject
     ITrackingPagePresenter presenter;
@@ -139,12 +151,16 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         retryButton = view.findViewById(R.id.retry_pickup_button);
         descriptionLayout = view.findViewById(R.id.description_layout);
         retryStatus = view.findViewById(R.id.tv_retry_status);
-        TextView furtherInformationText = view.findViewById(R.id.further_information_text);
+
+        // DO NOT DELETE - TO BE REPLACED LATER
+        /*TextView furtherInformationText = view.findViewById(R.id.further_information_text);
         furtherInformationText.setText(Html
                         .fromHtml(getString(R.string.further_information_text_html)),
                 TextView.BufferType.SPANNABLE);
-        furtherInformationText.setOnClickListener(onFurtherInformationClicked());
+        furtherInformationText.setOnClickListener(onFurtherInformationClicked());*/
+
         liveTrackingButton = view.findViewById(R.id.live_tracking_button);
+        tickerInfoCourier = view.findViewById(R.id.ticker_info_courier);
         fetchData();
     }
 
@@ -166,6 +182,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
         setHistoryView(model);
         setEmptyHistoryView(model);
         setLiveTrackingButton();
+        setTickerInfoCourier(model);
         mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking();
     }
 
@@ -259,6 +276,55 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
             trackingHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
             trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
         }
+    }
+
+    private void setTickerInfoCourier(TrackingViewModel trackingViewModel) {
+        if (trackingViewModel.getAdditionalInfoList() != null) {
+            List<AdditionalInfoUiModel> additionalInfoUiModelList = trackingViewModel.getAdditionalInfoList();
+            if (additionalInfoUiModelList.isEmpty()) {
+                tickerInfoCourier.setVisibility(View.GONE);
+            } else {
+                if (additionalInfoUiModelList.size() > 1) {
+                    List<TickerData> tickerDataList = new ArrayList<>();
+                    for (int i=0; i<additionalInfoUiModelList.size(); i++) {
+                        AdditionalInfoUiModel additionalInfoUiModel = additionalInfoUiModelList.get(i);
+                        String formattedDesc = formatTitleHtml(additionalInfoUiModel.getNotes(), additionalInfoUiModel.getUrlDetail(), additionalInfoUiModel.getUrlText());
+                        TickerData tickerData = new TickerData(additionalInfoUiModel.getTitle(), formattedDesc, Ticker.TYPE_ANNOUNCEMENT, true);
+                        tickerDataList.add(tickerData);
+                    }
+                    TickerPagerAdapter tickerPagerAdapter = new TickerPagerAdapter(getContext(), tickerDataList);
+                    tickerPagerAdapter.setPagerDescriptionClickEvent((charSequence, o) -> {
+                        RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
+                    });
+                    tickerInfoCourier.addPagerView(tickerPagerAdapter, tickerDataList);
+
+                } else {
+                    AdditionalInfoUiModel additionalInfoUiModel = additionalInfoUiModelList.get(0);
+                    String formattedDesc = formatTitleHtml(additionalInfoUiModel.getNotes(), additionalInfoUiModel.getUrlDetail(), additionalInfoUiModel.getUrlText());
+                    tickerInfoCourier.setHtmlDescription(formattedDesc);
+                    tickerInfoCourier.setTickerTitle(additionalInfoUiModel.getTitle());
+                    tickerInfoCourier.setTickerType(Ticker.TYPE_ANNOUNCEMENT);
+                    tickerInfoCourier.setTickerShape(Ticker.SHAPE_LOOSE);
+                    tickerInfoCourier.setDescriptionClickEvent(new TickerCallback() {
+                        @Override
+                        public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
+                            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, charSequence));
+                        }
+
+                        @Override
+                        public void onDismiss() {
+
+                        }
+                    });
+                }
+            }
+        } else {
+            tickerInfoCourier.setVisibility(View.GONE);
+        }
+    }
+
+    private String formatTitleHtml(String desc, String urlText, String url) {
+        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url);
     }
 
     private void setEmptyHistoryView(TrackingViewModel model) {
