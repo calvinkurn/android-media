@@ -1,5 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.autocomplete
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +16,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class AutoCompleteFragment : Fragment(), SearchInputView.Listener {
+class AutoCompleteFragment : Fragment(),
+        SearchInputView.Listener, AutoCompleteAdapter.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -49,13 +53,19 @@ class AutoCompleteFragment : Fragment(), SearchInputView.Listener {
         rvResults.layoutManager = LinearLayoutManager(context)
         rvResults.hasFixedSize()
         rvResults.adapter = adapter
+        adapter.setActionListener(this)
 
         viewModel.autoCompleteList.observe(this, Observer {
             when (it) {
                 is Success -> adapter.setData(it.data)
-                is Fail -> when(it.throwable) {
+                is Fail -> when (it.throwable) {
                     is MessageErrorException -> adapter.setNoResult()
                 }
+            }
+        })
+        viewModel.validatedDistrict.observe(this, Observer {
+            when (it) {
+                is Success -> sendResult(it.data.latitude, it.data.longitude)
             }
         })
     }
@@ -66,6 +76,10 @@ class AutoCompleteFragment : Fragment(), SearchInputView.Listener {
 
     override fun onSearchTextChanged(text: String?) {
         text?.let { fetchData(it) }
+    }
+
+    override fun onResultClicked(data: AutoCompleteResultUi) {
+        viewModel.getLatlng(data.placeId)
     }
 
     private fun initInjector() {
@@ -81,6 +95,17 @@ class AutoCompleteFragment : Fragment(), SearchInputView.Listener {
     private fun fetchData(keyword: String) {
         viewModel.getAutoCompleteList(keyword)
         adapter.setLoading()
+    }
+
+    private fun sendResult(lat: String, long: String) {
+        val resultIntent = Intent().apply {
+            putExtra("BUNDLE_LATITUDE", lat)
+            putExtra("BUNDLE_LONGITUDE", long)
+        }
+        activity?.let {
+            it.setResult(Activity.RESULT_OK, resultIntent)
+            it.finish()
+        }
     }
 
     companion object {

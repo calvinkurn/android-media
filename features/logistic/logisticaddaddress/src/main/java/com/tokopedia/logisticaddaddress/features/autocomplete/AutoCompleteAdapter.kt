@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.item_autocomplete_result.view.*
 class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val data: MutableList<AutoCompleteVisitable> = mutableListOf()
+    private var listener: ActionListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -27,7 +28,12 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = data[position]
         when (holder) {
-            is ResultViewHolder -> holder.bind(item as AutoCompleteResultUi)
+            is ResultViewHolder -> {
+                if (item is AutoCompleteResultUi) {
+                    holder.bind(item as AutoCompleteResultUi)
+                    holder.itemView.setOnClickListener { listener?.onResultClicked(item) }
+                }
+            }
         }
     }
 
@@ -36,6 +42,10 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
         is NoResultType -> R.layout.item_autocomplete_no_result
         else -> throw RuntimeException("View type not found!!")
+    }
+
+    fun setActionListener(listener: ActionListener) {
+        this.listener = listener
     }
 
     fun setData(items: List<AutoCompleteResultUi>) {
@@ -54,6 +64,10 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         data.clear()
         data.add(LoadingType())
         notifyDataSetChanged()
+    }
+
+    interface ActionListener {
+        fun onResultClicked(data: AutoCompleteResultUi)
     }
 
     interface AutoCompleteVisitable

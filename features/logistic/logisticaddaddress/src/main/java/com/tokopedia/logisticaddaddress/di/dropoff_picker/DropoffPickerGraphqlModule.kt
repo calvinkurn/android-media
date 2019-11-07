@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
+import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
 import dagger.Module
 import dagger.Provides
 
@@ -20,5 +21,10 @@ class DropoffPickerGraphqlModule {
     @DropoffPickerScope
     fun provideAutoCompleteUsecase(repository: GraphqlRepository)
             : GraphqlUseCase<AutocompleteResponse> = GraphqlUseCase(repository)
+
+    @Provides
+    @DropoffPickerScope
+    fun provideGetDistrictUsecase(repository: GraphqlRepository)
+            : GraphqlUseCase<GetDistrictResponse> = GraphqlUseCase(repository)
 
 }
