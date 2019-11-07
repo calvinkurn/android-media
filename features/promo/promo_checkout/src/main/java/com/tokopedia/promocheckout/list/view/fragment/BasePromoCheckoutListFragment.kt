@@ -108,7 +108,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     fun initView(view: View) {
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_horizontal_custom_quick_filter)!!)
-    //    view.recyclerViewLastSeenPromo.addItemDecoration(dividerItemDecoration)
         view.recyclerViewLastSeenPromo.addItemDecoration(PromoTicketItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
         view.recyclerViewLastSeenPromo.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         view.recyclerViewLastSeenPromo.adapter = promoLastSeenAdapter
@@ -139,10 +138,6 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         view.rv_carousel.addItemDecoration(dividerItemDecoration)
         view.rv_carousel.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         view.rv_carousel.adapter = promoCheckoutExchangeCouponAdapter
-
-        val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
-        getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
 
         populateExchnageCouponList()
 

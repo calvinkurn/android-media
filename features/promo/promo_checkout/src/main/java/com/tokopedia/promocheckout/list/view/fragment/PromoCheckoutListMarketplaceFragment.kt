@@ -148,10 +148,10 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     override fun loadData(page: Int) {
         if (isCouponActive) {
             pageNo = page
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
-            promoCheckoutListPresenter.getListLastSeen(serviceId, resources)
-            promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, pageNo, resources)
         }
+        promoCheckoutListPresenter.getListLastSeen(serviceId, resources)
+        promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
     }
 
     override fun onStop() {
