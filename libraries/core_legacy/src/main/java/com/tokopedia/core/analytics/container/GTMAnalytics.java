@@ -30,6 +30,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -93,7 +94,7 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // V4
         clearEnhanceEcommerce();
-        pushGeneral(clone(value));
+        pushGeneral(value);
 
         StringBuilder stacktrace = new StringBuilder();
 
@@ -932,16 +933,6 @@ public class GTMAnalytics extends ContextAnalytics {
         return this;
     }
 
-    public void pushClickEECommerce(Bundle bundle) {
-        // replace list
-        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
-                && !TextUtils.isEmpty(bundle.getString("list"))) {
-            bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
-            bundle.remove("list");
-        }
-        logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle, context);
-    }
-
     private static final String TRANSACTION = "transaction";
     private static final String PRODUCTVIEW = "productview";
     private static final String PRODUCTCLICK = "productclick";
@@ -1012,6 +1003,10 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent("campaignTrack", bundle, context);
     }
 
+    public static String GENERAL_EVENT_KEYS[] = new String[]{
+            KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT
+    };
+
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
         pushGeneral(params);
 
@@ -1022,6 +1017,11 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
         bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
         bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            if (!Arrays.asList(GENERAL_EVENT_KEYS).contains(entry.getKey()))
+                bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
+        }
 
         logEvent(params.get(KEY_EVENT) + "", bundle, context);
     }
@@ -1047,7 +1047,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void pushGeneral(Map<String, Object> values) {
-        Map<String, Object> data = new HashMap<>(values);
+        Map<String, Object> data = clone(values);
         Observable.just(data)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())

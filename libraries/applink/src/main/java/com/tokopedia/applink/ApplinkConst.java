@@ -232,6 +232,7 @@ public interface ApplinkConst {
     String CREATE_PASSWORD = "tokopedia://createpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
+    String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
 
     String KYC_NO_PARAM = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
@@ -399,6 +400,8 @@ public interface ApplinkConst {
         String TRACKER_LIST_NAME = "tracker_list_name";
         String EXTRA_REFERENCE = "reference";
         String EXTRA_IS_LEASING = "is_leasing";
+        String EXTRA_CUSTOM_EVENT_LABEL = "custom_event_label";
+        String EXTRA_CUSTOM_EVENT_ACTION = "custom_event_action";
 
         String EXTRA_CATEGORY_ID = "category_id";
         String EXTRA_CATEGORY_NAME = "category_name";
