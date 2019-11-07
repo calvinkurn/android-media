@@ -221,6 +221,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                             break;
                         case DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER:
                             list.add(mappingPlayChannel(channel, new HashMap<>(), homeData.isCache()));
+                            HomePageTracking.eventEnhanceImpressionPlayBanner(context, channel);
                             break;
                     }
                 }
@@ -361,6 +362,11 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
     private HomeVisitable mappingPlayChannel(DynamicHomeChannel.Channels channel,
                                              Map<String, Object> trackingData,
                                              boolean isCache) {
-        return new PlayCardViewModel();
+        PlayCardViewModel playCardViewModel = new PlayCardViewModel();
+        if (!isCache) {
+            playCardViewModel.setChannel(channel);
+            playCardViewModel.setTrackingData(trackingData);
+        }
+        return playCardViewModel;
     }
 }
