@@ -12,7 +12,7 @@ import javax.inject.Inject
  */
 open class GetDistrictMapper @Inject constructor() {
 
-    fun map(response: GraphqlResponse?) : GetDistrictResponseUiModel {
+    fun map(response: GraphqlResponse?): GetDistrictResponseUiModel {
         var dataUiModel = GetDistrictDataUiModel()
         val responseGetDistrict: GetDistrictResponse? = response?.getData(GetDistrictResponse::class.java)
         responseGetDistrict.let { responseGetDistrict ->
@@ -23,7 +23,14 @@ open class GetDistrictMapper @Inject constructor() {
         return GetDistrictResponseUiModel(dataUiModel)
     }
 
-    private fun mapData(data: Data) : GetDistrictDataUiModel {
+    fun mapLean(response: GetDistrictResponse): GetDistrictDataUiModel {
+        val data = response.keroPlacesGetDistrict.data
+        return data?.let {
+            mapData(it)
+        } ?: GetDistrictDataUiModel()
+    }
+
+    private fun mapData(data: Data): GetDistrictDataUiModel {
         return GetDistrictDataUiModel(
                 title = data.title,
                 formattedAddress = data.formattedAddress,
