@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.salam.umrah.R
+import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleAdapter
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleDetailAdapter
 import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
@@ -49,6 +50,9 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var umrahOrderDetailViewModel: UmrahOrderDetailViewModel
+
+    @Inject
+    lateinit var trackingUmrahUtil: TrackingUmrahUtil
 
     lateinit var orderId: String
 
@@ -147,6 +151,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         }
         tg_invoice_id.text = data.invoice.invoiceRefNum
         tg_invoice_button.setOnClickListener {
+            trackingUmrahUtil.umrahOrderDetailInvoice()
             RouteManager.route(context, data.invoice.invoiceUrl)
         }
         val titleLayoutManager = LinearLayoutManager(context)
@@ -168,6 +173,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             tg_umrah_order_travel.text = metaData.travelAgent
             tg_booking_code.text = metaData.bookingCode
             btn_show_detail_booking.setOnClickListener {
+                trackingUmrahUtil.umrahOrderDetailLihatDetail()
                 RouteManager.route(context, data.items[0].productUrl)
             }
         }
@@ -214,11 +220,13 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         rv_action_button.adapter = buttonAdapter
 
         tg_umrah_condition_agreement.makeLinks(Pair(getString(R.string.umrah_order_detail_condition_agreement_link), View.OnClickListener {
+            trackingUmrahUtil.umrahOrderDetailKebijakanPembatalan()
             RouteManager.route(context, data.helpLink)
         }))
 
         tg_umrah_contact_us.text = getTextFromHtml(data.contactUs.helpText)
         tg_umrah_contact_us.makeLinks(Pair(getString(R.string.umrah_order_detail_link_pusat_bantuan),View.OnClickListener {
+            trackingUmrahUtil.umrahOrderDetailBantuan()
             RouteManager.route(context,data.contactUs.helpUrl)
         }))
     }
