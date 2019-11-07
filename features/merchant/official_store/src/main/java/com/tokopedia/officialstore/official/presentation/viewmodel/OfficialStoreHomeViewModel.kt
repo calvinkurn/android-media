@@ -145,7 +145,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             var benefits = OfficialStoreBenefits()
             try {
                 benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
-            }catch (t: Throwable) {
+            } catch (t: Throwable) {
                 _officialStoreBenefitResult.value = Fail(t)
             }
             benefits
