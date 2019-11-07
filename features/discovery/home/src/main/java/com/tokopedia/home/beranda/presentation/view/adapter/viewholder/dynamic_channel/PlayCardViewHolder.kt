@@ -34,7 +34,6 @@ class PlayCardViewHolder(val view: View, val listener: HomeCategoryListener): Ab
 
     private fun bindCard(card: PlayCard) {
         imgBanner.loadImageRounded(card.imageUrl, 10f)
-        txtTotalViewers.text = card.totalView
         chipLive(card)
         chipViewers(card)
     }
@@ -45,6 +44,7 @@ class PlayCardViewHolder(val view: View, val listener: HomeCategoryListener): Ab
 
     private fun chipViewers(card: PlayCard) {
         chipPlayViewers.showWithCondition(card.isShowTotalView)
+        txtTotalViewers.text = card.totalView
     }
 
     companion object {
