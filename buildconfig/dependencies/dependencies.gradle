@@ -73,8 +73,7 @@ ext {
     // Sort and categorize alphabetically by folder name
     app = [
         customerapp     : ":customerapp",
-        sellerapp       : ":sellerapp",
-        mitraapp        : ":kelontongapp"
+        sellerapp       : ":sellerapp"
     ]
 
     unifyIconVersion = '0.0.4'
@@ -170,7 +169,6 @@ ext {
 
     serviceDependencies = [
             crashlytics : "com.crashlytics.sdk.android:crashlytics:2.9.9",
-            crashlyticsAnswers : "com.crashlytics.sdk.android:answers:1.4.6@aar",
             anrWatchDogs: "com.salomonbrys.anrwatchdog:anrwatchdog:1.3.0"
     ]
 
