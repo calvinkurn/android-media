@@ -14,6 +14,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -28,6 +30,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
+import com.tokopedia.otp.common.design.PinInputEditText
 import com.tokopedia.otp.validator.data.ModeListData
 import com.tokopedia.otp.validator.data.OtpModeListData
 import com.tokopedia.otp.validator.data.OtpRequestData
@@ -38,7 +41,6 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_validator.*
 import javax.inject.Inject
 
 /**
@@ -57,6 +59,16 @@ class ValidatorFragment: BaseDaggerFragment(){
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val validatorViewModel by lazy { viewModelProvider.get(ValidatorViewModel::class.java) }
 
+    private lateinit var verifyButton: ButtonCompat
+    private lateinit var inputVerifyCode: PinInputEditText
+    private lateinit var footer: TextView
+    private lateinit var errorImage: ImageView
+    private lateinit var registerIcon: ImageView
+    private lateinit var errorOtp: TextView
+    private lateinit var activationText: TextView
+    private lateinit var parent: View
+    private lateinit var progressBar: ProgressBar
+
     private var otpType = ""
     private var email = ""
     private var source = ""
@@ -65,12 +77,6 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     override fun initInjector() {
         getComponent(ValidatorComponent::class.java).inject(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
     }
 
     override fun onResume() {
@@ -85,6 +91,15 @@ class ValidatorFragment: BaseDaggerFragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_validator, container, false)
+        verifyButton = view.findViewById(R.id.verify_button)
+        inputVerifyCode = view.findViewById(R.id.input_verify_code)
+        footer = view.findViewById(R.id.footer)
+        errorImage = view.findViewById(R.id.error_image)
+        registerIcon = view.findViewById(R.id.register_icon)
+        errorOtp = view.findViewById(R.id.error_otp)
+        activationText = view.findViewById(R.id.activation_text)
+        parent = view.findViewById(R.id.parent)
+        progressBar = view.findViewById(R.id.progress_bar)
         return view
     }
 
@@ -93,9 +108,9 @@ class ValidatorFragment: BaseDaggerFragment(){
 
         prepareView()
 
-        verify_button.setOnClickListener {
+        verifyButton.setOnClickListener {
             analytics.trackClickActivationButton()
-            validatorViewModel.otpValidateEmail(otpType, input_verify_code.text.toString(), email)
+            validatorViewModel.otpValidateEmail(otpType, inputVerifyCode.text.toString(), email)
         }
 
         footer.setOnClickListener {
@@ -103,30 +118,30 @@ class ValidatorFragment: BaseDaggerFragment(){
             showChangeEmailDialog(email)
         }
 
-        input_verify_code.addTextChangedListener(object : TextWatcher{
+        inputVerifyCode.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) { }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s?.length == 6) {
-                    verify_button.buttonCompatType = ButtonCompat.PRIMARY
+                    verifyButton.buttonCompatType = ButtonCompat.PRIMARY
                 }else{
-                    verify_button.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
+                    verifyButton.buttonCompatType = ButtonCompat.PRIMARY_DISABLED
                 }
             }
 
         })
 
-        input_verify_code.setOnEditorActionListener { v, actionId, event ->
+        inputVerifyCode.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEND) {
-                validatorViewModel.otpValidateEmail(otpType, input_verify_code.text.toString(), email)
+                validatorViewModel.otpValidateEmail(otpType, inputVerifyCode.text.toString(), email)
                 true
             }else false
         }
 
-        error_image.setOnClickListener {
-            input_verify_code.setText("")
+        errorImage.setOnClickListener {
+            inputVerifyCode.setText("")
             removeErrorOtp()
         }
 
@@ -214,7 +229,7 @@ class ValidatorFragment: BaseDaggerFragment(){
             setActivateTextFull(modeListData.afterOtpListTextHtml)
 
         if(modeListData.otpListImgUrl.isNotEmpty())
-            ImageHandler.LoadImage(register_icon, modeListData.otpListImgUrl)
+            ImageHandler.LoadImage(registerIcon, modeListData.otpListImgUrl)
 
     }
 
@@ -239,7 +254,7 @@ class ValidatorFragment: BaseDaggerFragment(){
         activity?.let {
             analytics.trackSuccessClickOkResendButton()
             analytics.trackSuccessClickResendButton()
-            KeyboardHandler.DropKeyboard(it, input_verify_code)
+            KeyboardHandler.DropKeyboard(it, inputVerifyCode)
             removeErrorOtp()
             dismissLoading()
             ToasterNormal.show(it, getString(R.string.success_resend_activation))
@@ -280,7 +295,7 @@ class ValidatorFragment: BaseDaggerFragment(){
         activity?.let {
             throwable.message?.let { errorMessage ->
                 analytics.trackFailedClickActivationButton(errorMessage)
-                KeyboardHandler.DropKeyboard(it, input_verify_code)
+                KeyboardHandler.DropKeyboard(it, inputVerifyCode)
                 dismissLoading()
                 if (errorMessage == "") {
                     NetworkErrorHelper.showSnackbar(it)
@@ -288,8 +303,8 @@ class ValidatorFragment: BaseDaggerFragment(){
                     NetworkErrorHelper.showSnackbar(it, errorMessage)
                 }
 
-                error_image.visibility = View.VISIBLE
-                error_otp.visibility = View.VISIBLE
+                errorImage.visibility = View.VISIBLE
+                errorOtp.visibility = View.VISIBLE
             }
         }
     }
@@ -322,19 +337,19 @@ class ValidatorFragment: BaseDaggerFragment(){
     private fun setActivateText(email: String){
         activity?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                activation_text.text = Html.fromHtml(getString(R.string.validation_text).replace(
+                activationText.text = Html.fromHtml(getString(R.string.validation_text).replace(
                         getString(R.string.param_email_validation_text),
                         email, false
                 ), Html.FROM_HTML_MODE_COMPACT)
             } else {
-                activation_text.text = Html.fromHtml(getString(R.string.validation_text).replace(
+                activationText.text = Html.fromHtml(getString(R.string.validation_text).replace(
                         getString(R.string.param_email_validation_text),
                         email, false
                 ))
             }
 
-            input_verify_code.requestFocus()
-            KeyboardHandler.DropKeyboard(it, input_verify_code)
+            inputVerifyCode.requestFocus()
+            KeyboardHandler.DropKeyboard(it, inputVerifyCode)
         }
     }
 
@@ -342,30 +357,30 @@ class ValidatorFragment: BaseDaggerFragment(){
         activity?.let {
             if(text.isNotEmpty()){
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    activation_text.text = Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT)
+                    activationText.text = Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT)
                 } else {
-                    activation_text.text = Html.fromHtml(text)
+                    activationText.text = Html.fromHtml(text)
                 }
             }
 
-            input_verify_code.requestFocus()
-            KeyboardHandler.DropKeyboard(it, input_verify_code)
+            inputVerifyCode.requestFocus()
+            KeyboardHandler.DropKeyboard(it, inputVerifyCode)
         }
     }
 
     private fun removeErrorOtp() {
-        error_otp.visibility = View.INVISIBLE
-        error_image.visibility = View.INVISIBLE
+        errorOtp.visibility = View.INVISIBLE
+        errorImage.visibility = View.INVISIBLE
     }
 
     private fun showLoading() {
         parent.visibility = View.GONE
-        progress_bar.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
     }
 
     private fun dismissLoading() {
         parent.visibility = View.VISIBLE
-        progress_bar.visibility = View.GONE
+        progressBar.visibility = View.GONE
     }
 
     companion object {
