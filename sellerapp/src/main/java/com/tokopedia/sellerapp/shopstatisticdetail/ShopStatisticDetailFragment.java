@@ -1,14 +1,14 @@
-package com.tokopedia.core;
+package com.tokopedia.sellerapp.shopstatisticdetail;
 
 import android.os.Bundle;
 
 import com.tokopedia.core.app.V2BaseFragment;
-import com.tokopedia.core.facade.FacadeShopStatistic;
 import com.tokopedia.core.fragment.shopstatistic.ShopStatisticResponse;
 import com.tokopedia.core.fragment.shopstatistic.ShopStatisticReview;
 import com.tokopedia.core.fragment.shopstatistic.ShopStatisticSatisfaction;
 import com.tokopedia.core.fragment.shopstatistic.ShopStatisticTransaction;
-import com.tokopedia.core2.R;
+import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.facade.FacadeShopStatistic;
 
 
 /**
@@ -20,14 +20,14 @@ public class ShopStatisticDetailFragment extends V2BaseFragment {
     private ShopStatisticResponse shopStatisticResponse;
     private ShopStatisticTransaction shopStatisticTransaction;
     private ShopStatisticReview shopStatisticReview;
-    private String shopInfo;
+    private String shopInfoDashboardModelString;
     private FacadeShopStatistic facade;
     private Model model;
 
-    public static ShopStatisticDetailFragment createInstance(String shop_info) {
+    public static ShopStatisticDetailFragment createInstance(String shopInfoDashboardModelString) {
         ShopStatisticDetailFragment fragment = new ShopStatisticDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ShopStatisticDetail.EXTRA_SHOP_INFO, shop_info);
+        bundle.putString(ShopStatisticDetail.EXTRA_SHOP_INFO, shopInfoDashboardModelString);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -68,13 +68,11 @@ public class ShopStatisticDetailFragment extends V2BaseFragment {
     }
 
     @Override
-    protected void setListener() {
-        shopStatisticReview.setListener();
-    }
+    protected void setListener() {}
 
     private void initVar() {
-        shopInfo = getArguments().getString(ShopStatisticDetail.EXTRA_SHOP_INFO);
-        facade = FacadeShopStatistic.createInstance(shopInfo);
+        shopInfoDashboardModelString = getArguments().getString(ShopStatisticDetail.EXTRA_SHOP_INFO);
+        facade = FacadeShopStatistic.createInstance(shopInfoDashboardModelString);
         model = new Model();
     }
 

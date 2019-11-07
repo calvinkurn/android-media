@@ -23,19 +23,19 @@ public class ShopStatisticTransaction {
         public int hasTransaction;
         public TypeTransaction oneMonth;
         public TypeTransaction threeMonth;
-        public TypeTransaction twelveMonth;
+        public TypeTransaction sixMonth;
 
         public Model() {
             oneMonth = new TypeTransaction(1);
             threeMonth = new TypeTransaction(2);
-            twelveMonth = new TypeTransaction(3);
+            sixMonth = new TypeTransaction(3);
         }
     }
 
     public static class TypeTransaction {
         protected static final int TYPE_ONE_MONTH = 1;
         protected static final int TYPE_THREE_MONTH = 2;
-        protected static final int TYPE_TWELVE_MONTH = 3;
+        protected static final int TYPE_SIX_MONTH = 3;
 
         public int typeMonth;
         public int hasTransaction;
@@ -64,7 +64,7 @@ public class ShopStatisticTransaction {
     private class ViewHolder {
         View oneMonth;
         View threeMonth;
-        View twelveMonth;
+        View sixMonth;
         View tabMonth;
         View viewPie;
         View viewDescTransaction;
@@ -97,7 +97,7 @@ public class ShopStatisticTransaction {
     private void initView(){
         holder.oneMonth = findViewById(R.id.tab_1);
         holder.threeMonth = findViewById(R.id.tab_3);
-        holder.twelveMonth = findViewById(R.id.tab_12);
+        holder.sixMonth = findViewById(R.id.tab_6);
         holder.tabMonth = findViewById(R.id.tab_view);
         holder.viewPie = findViewById(R.id.view_pie);
         holder.viewDescTransaction = findViewById(R.id.view_message_transaction);
@@ -116,7 +116,7 @@ public class ShopStatisticTransaction {
     private void setListener() {
         holder.oneMonth.setOnClickListener(OnClickTab(0));
         holder.threeMonth.setOnClickListener(OnClickTab(1));
-        holder.twelveMonth.setOnClickListener(OnClickTab(2));
+        holder.sixMonth.setOnClickListener(OnClickTab(2));
     }
 
     private View.OnClickListener OnClickTab(final int value) {
@@ -127,23 +127,23 @@ public class ShopStatisticTransaction {
                     default:
                         holder.oneMonth.setBackgroundResource(R.color.greyish_bg);
                         holder.threeMonth.setBackgroundResource(0);
-                        holder.twelveMonth.setBackgroundResource(0);
+                        holder.sixMonth.setBackgroundResource(0);
                         createView(model.oneMonth);
                         setValue(model.oneMonth);
                         break;
                     case 1:
                         holder.oneMonth.setBackgroundResource(0);
                         holder.threeMonth.setBackgroundResource(R.color.greyish_bg);
-                        holder.twelveMonth.setBackgroundResource(0);
+                        holder.sixMonth.setBackgroundResource(0);
                         createView(model.threeMonth);
                         setValue(model.threeMonth);
                         break;
                     case 2:
                         holder.oneMonth.setBackgroundResource(0);
                         holder.threeMonth.setBackgroundResource(0);
-                        holder.twelveMonth.setBackgroundResource(R.color.greyish_bg);
-                        createView(model.twelveMonth);
-                        setValue(model.twelveMonth);
+                        holder.sixMonth.setBackgroundResource(R.color.greyish_bg);
+                        createView(model.sixMonth);
+                        setValue(model.sixMonth);
                         break;
                 }
             }
@@ -155,7 +155,7 @@ public class ShopStatisticTransaction {
             default: return "Belum ada Transaksi";
             case TypeTransaction.TYPE_ONE_MONTH: return "Belum ada Transaksi\ndalam 1 bulan terakhir";
             case TypeTransaction.TYPE_THREE_MONTH: return "Belum ada Transaksi\ndalam 3 bulan terakhir";
-            case TypeTransaction.TYPE_TWELVE_MONTH: return "Belum ada Transaksi\ndalam 1 tahun terakhir";
+            case TypeTransaction.TYPE_SIX_MONTH: return "Belum ada Transaksi\ndalam 6 Bulan terakhir";
         }
     }
 

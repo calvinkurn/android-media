@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.data.model
+package com.tokopedia.shop.common.graphql.data.shopinfo
 
 
 import com.google.gson.annotations.Expose
