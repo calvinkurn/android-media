@@ -298,6 +298,11 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     }
 
     @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
+    }
+
+    @Override
     public boolean isReturning() {
         return isReturning;
     }
