@@ -49,18 +49,18 @@ class AutoCompleteFragment : Fragment(), SearchInputView.Listener {
         rvResults.adapter = adapter
 
         viewModel.autoCompleteList.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is Success -> adapter.setData(it.data)
             }
         })
     }
 
     override fun onSearchSubmitted(text: String?) {
-        text?.let { viewModel.getAutoCompleteList(it) }
+        text?.let { fetchData(it) }
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let { viewModel.getAutoCompleteList(it) }
+        text?.let { fetchData(it) }
     }
 
     private fun initInjector() {
@@ -71,6 +71,11 @@ class AutoCompleteFragment : Fragment(), SearchInputView.Listener {
                         .build().inject(this)
             }
         }
+    }
+
+    private fun fetchData(keyword: String) {
+        viewModel.getAutoCompleteList(keyword)
+        adapter.setLoading()
     }
 
     companion object {

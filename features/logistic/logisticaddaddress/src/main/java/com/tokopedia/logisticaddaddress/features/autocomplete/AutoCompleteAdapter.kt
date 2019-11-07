@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
 import kotlinx.android.synthetic.main.item_autocomplete_result.view.*
@@ -14,7 +15,10 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return ResultViewHolder(view)
+        return when (viewType) {
+            R.layout.item_autocomplete_result -> ResultViewHolder(view)
+            else -> LoadingViewholder(view)
+        }
     }
 
     override fun getItemCount(): Int = data.size
@@ -28,6 +32,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int = when (data[position]) {
         is AutoCompleteResultUi -> R.layout.item_autocomplete_result
+        is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
         else -> throw RuntimeException("View type not found!!")
     }
 
@@ -37,7 +42,13 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun setLoading() {
+        data.clear()
+        data.add(LoadingType())
+    }
+
     interface AutoCompleteVisitable
+    data class LoadingType(val id: Int = 0) : AutoCompleteVisitable
 
     class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: AutoCompleteResultUi) {
@@ -45,4 +56,6 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             itemView.tv_autocomplete_desc.text = item.structuredFormatting.secondaryText
         }
     }
+
+    class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
