@@ -85,7 +85,6 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
     private fun setProductData(holder: ProductViewHolder, position: Int) {
         val item = cpmItemList[position]
         holder.product_name.text = item.name
-        holder.productDesc.text = item.description
         holder.productPrice.text = item.price_format
         ImageHandler.loadImage(holder.itemView.context,
                 holder.productImage,
@@ -127,7 +126,6 @@ class CpmAdsAdapter(private var cpmItemList: ArrayList<CpmItem>,
 
         val productImage = itemView.findViewById<ImageView>(R.id.product_image)
         val product_name = itemView.findViewById<TextView>(R.id.product_name)
-        val productDesc = itemView.findViewById<TextView>(R.id.product_desc)
         val productPrice = itemView.findViewById<TextView>(R.id.product_price)
         val product_cpm_parent = itemView.findViewById<ConstraintLayout>(R.id.product_cpm_parent)
     }

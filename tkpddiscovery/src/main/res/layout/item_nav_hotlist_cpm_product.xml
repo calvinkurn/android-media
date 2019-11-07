@@ -11,7 +11,7 @@
     android:layout_marginBottom="@dimen/dp_5">
 
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/card_background"
         android:layout_width="@dimen/dp_250"
         android:layout_height="@dimen/dp_75"
@@ -32,50 +32,34 @@
         app:layout_constraintTop_toTopOf="@+id/card_background"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="2"
         android:paddingEnd="@dimen/dp_12"
         android:paddingRight="@dimen/dp_12"
-        android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="@id/card_background"
         app:layout_constraintStart_toEndOf="@+id/product_image"
         app:layout_constraintTop_toTopOf="@+id/card_background"
+        app:typographyType="heading_6"
         tools:text="Termurah Apple iPhone 256GB X" />
 
-    <TextView
-        android:id="@+id/product_desc"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:ellipsize="end"
-        android:maxLength="100"
-        android:maxLines="1"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintBottom_toTopOf="@+id/product_price"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/product_image"
-        app:layout_constraintTop_toBottomOf="@+id/product_name"
-        tools:text="Gray 256 GB Grey " />
-
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:textColor="@color/product_card_price_text_color"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/card_background"
         app:layout_constraintStart_toEndOf="@+id/product_image"
-        app:layout_constraintTop_toBottomOf="@+id/product_desc"
+        app:layout_constraintTop_toBottomOf="@+id/product_name"
+        app:typographyType="heading_6"
+        app:typographyWeight="bold"
         tools:text="Rp. 8.200.000" />
 
     <ImageView
