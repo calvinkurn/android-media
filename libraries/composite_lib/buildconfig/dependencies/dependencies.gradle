@@ -154,6 +154,7 @@ ext {
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
             moengage   : "com.moengage:moe-android-sdk:9.7.02",
+            moengageAmp: "com.moengage:push-amp-plus:0.2.00",
             branch     : "io.branch.sdk.android:library:3.0.4+",
             logentries : "com.github.LogentriesCommunity:le_android:logentries-android-4.4.1"
     ]
