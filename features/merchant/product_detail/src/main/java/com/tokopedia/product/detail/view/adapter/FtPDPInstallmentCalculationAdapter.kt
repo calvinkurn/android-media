@@ -103,8 +103,10 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
             }
 
             if (item.expandLayout) {
+                vHolder.ivInstallmentToggle.animate().rotation(180f).duration = 300
                 vHolder.llInstallmentContainer.show()
             } else {
+                vHolder.ivInstallmentToggle.animate().rotation(0f).duration = 300
                 vHolder.llInstallmentContainer.hide()
             }
 
