@@ -48,7 +48,7 @@
             tool:text="dbvovbidfbvisdfbvi"
             android:id="@+id/text_swipe"
             app:typographyType="heading_5"
-            android:textColor="#7031353b"
+            android:textColor="@color/discount_color"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center" />

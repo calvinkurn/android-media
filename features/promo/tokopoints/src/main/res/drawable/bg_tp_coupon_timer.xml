@@ -2,16 +2,16 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape>
-            <corners android:radius="4dp" />
-            <solid android:color="#f3f4f5" />
+            <corners android:radius="@dimen/dp_4" />
+            <solid android:color="@color/bg_label_grey_tokopoints" />
         </shape>
     </item>
 
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <corners android:radius="4dp" />
-                <solid android:color="#ffeaef" />
+                <corners android:radius="@dimen/dp_4" />
+                <solid android:color="@color/tp_bg_progress_timer" />
             </shape>
         </clip>
     </item>

@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import javax.annotation.Resource
 
@@ -31,18 +33,19 @@ class CloseableBottomSheetFragment private constructor(private val fragment: Fra
         val headerTitle = contentView.findViewById<TextView>(R.id.title_closeable_rounded)
         val tray = contentView.findViewById<TextView>(R.id.tray_close)
 
-        if (!isCloseable) {
-            closeButton.visibility = View.GONE
-            headerTitle.visibility = View.GONE
-            tray.visibility = View.VISIBLE
-        } else {
-            closeButton.visibility = View.VISIBLE
-            headerTitle.visibility = View.VISIBLE
-            tray.visibility = View.GONE
+        if (isCloseable) {
+            closeButton.show()
+            headerTitle.show()
+            tray.hide()
             headerTitle.setText(title)
             closeButton.setOnClickListener {
                 dismiss()
             }
+
+        } else {
+            closeButton.hide()
+            headerTitle.hide()
+            tray.show()
         }
         setDialogShowListener()
         return contentView
@@ -80,16 +83,12 @@ class CloseableBottomSheetFragment private constructor(private val fragment: Fra
 
     override fun onCancel(dialog: DialogInterface?) {
         super.onCancel(dialog)
-        closableCallBack?.let {
-            it.onCloseClick(this)
-        }
+        closableCallBack?.onCloseClick(this)
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
         super.onDismiss(dialog)
-        closableCallBack?.let {
-            it.onCloseClick(this)
-        }
+        closableCallBack?.onCloseClick(this)
     }
 
 

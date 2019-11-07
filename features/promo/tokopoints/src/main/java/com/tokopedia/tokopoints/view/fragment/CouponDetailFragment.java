@@ -103,6 +103,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     private View llBottomBtn;
     private String mRealCode;
     private CardView mBarCodeContainer;
+    private CloseableBottomSheetFragment mBottomSheetFragment;
 
 
     public static Fragment newInstance(Bundle extras) {
@@ -805,22 +806,12 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
-
-//        CloseableBottomSheetDialog bottomSheetDialog = CloseableBottomSheetDialog.createInstance(getActivity());
-
-
         Bundle bundle = new Bundle();
         bundle.putString(CommonConstant.EXTRA_PIN_INFO, pinInfo);
         bundle.putString(CommonConstant.EXTRA_COUPON_ID, code);
         Fragment fragment = ValidateMerchantPinFragment.newInstance(bundle);
-
-//        bottomSheetDialog.setCustomContentView(fragment,"Enter Pin",true);
-        CloseableBottomSheetFragment bottomSheetFragment = CloseableBottomSheetFragment.Companion.newInstance(fragment,true,getString(R.string.masukan_pin), (dialog) -> mSwipeCardView.reset(), CloseableBottomSheetFragment.STATE_FULL);
-        bottomSheetFragment.showNow(getActivity().getSupportFragmentManager(),"");
-        /*getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, ValidateMerchantPinFragment.class.getCanonicalName())
-                .addToBackStack(ValidateMerchantPinFragment.class.getCanonicalName())
-                .commit();*/
+        mBottomSheetFragment = CloseableBottomSheetFragment.Companion.newInstance(fragment,true,getString(R.string.tp_masukan_pin), (dialog) -> mSwipeCardView.reset(), CloseableBottomSheetFragment.STATE_FULL);
+        mBottomSheetFragment.showNow(getActivity().getSupportFragmentManager(),"");
     }
 
 
@@ -859,5 +850,9 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     @Override
     public void onSuccess(CouponSwipeUpdate couponSwipeUpdate) {
         mSwipeCardView.setCouponCode(couponSwipeUpdate.getPartnerCode());
+        showBarCodeView(couponSwipeUpdate.getNote(),"","");
+        if(mBottomSheetFragment != null) {
+            mBottomSheetFragment.dismiss();
+        }
     }
 }

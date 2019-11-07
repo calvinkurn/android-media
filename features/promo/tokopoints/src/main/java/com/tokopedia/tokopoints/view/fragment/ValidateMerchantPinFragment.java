@@ -2,8 +2,10 @@ package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -43,7 +45,7 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ValidatePinCallBack){
+        if (context instanceof ValidatePinCallBack) {
             mValidatePinCallBack = (ValidatePinCallBack) context;
         }
     }
@@ -143,7 +145,6 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     @Override
     public void onSuccess(CouponSwipeUpdate couponSwipeUpdate) {
         mValidatePinCallBack.onSuccess(couponSwipeUpdate);
-        getActivity().onBackPressed();
     }
 
     @Override
@@ -162,7 +163,7 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
         return getActivity();
     }
 
-    interface ValidatePinCallBack{
+    interface ValidatePinCallBack {
         void onSuccess(CouponSwipeUpdate couponSwipeUpdate);
     }
 }
