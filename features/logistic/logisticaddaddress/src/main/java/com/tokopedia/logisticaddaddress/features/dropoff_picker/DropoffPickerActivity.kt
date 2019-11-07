@@ -208,8 +208,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private fun setObservers() {
         viewModel.storeData.observe(this, Observer { result ->
             when (result) {
-                is Fail -> Toast.makeText(this@DropoffPickerActivity,
-                        result.throwable.toString(), Toast.LENGTH_SHORT).show()
+                is Fail -> mNearbyAdapter.setError()
                 is Success -> {
                     drawStoreLocations(result.data.nearbyStores)
                     mNearbyAdapter.setData(result.data.nearbyStores)

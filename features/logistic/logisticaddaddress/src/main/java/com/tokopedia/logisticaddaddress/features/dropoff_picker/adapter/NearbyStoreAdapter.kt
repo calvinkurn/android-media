@@ -62,6 +62,12 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun setError() {
+        mData.clear()
+        mData.add(EmptyType())
+        notifyDataSetChanged()
+    }
+
     fun setActionListener(listener: ActionListener) {
         mListener = listener
     }
