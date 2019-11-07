@@ -25,10 +25,10 @@ class PlayCardViewHolder(val view: View, val listener: HomeCategoryListener): Ab
 
     override fun bind(element: PlayCardViewModel) {
         listener.onGetPlayBanner(adapterPosition)
-        bindCard(element.getPlayCardHome().playGetCardHome)
+        bindCard(element.getPlayCardHome().playGetCardHome.data.card)
         rootBanner.setOnClickListener {
             element.getChannel()?.enhanceClickPlayBanner
-            RouteManager.route(view.context, element.getPlayCardHome().playGetCardHome.applink)
+            RouteManager.route(view.context, element.getPlayCardHome().playGetCardHome.data.card.applink)
         }
     }
 
