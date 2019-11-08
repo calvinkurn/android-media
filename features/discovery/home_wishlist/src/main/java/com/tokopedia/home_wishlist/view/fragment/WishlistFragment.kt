@@ -105,7 +105,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_wishlist, container, false)
+        return inflater.inflate(R.layout.fragment_home_wishlist, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -227,14 +227,14 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         viewModel.wishlistState.observe(viewLifecycleOwner, Observer { state ->
             if(state.isEmpty() || state.isLoading() || state.isError()){
                 if(state.isLoading()) endlessRecyclerViewScrollListener?.resetState()
-                searchView?.hide()
+                searchView.hide()
                 swipeToRefresh?.isRefreshing = false
                 menu?.findItem(R.id.cancel)?.isVisible = false
                 menu?.findItem(R.id.manage)?.isVisible = false
             } else {
                 // success state
                 swipeToRefresh?.isRefreshing = false
-                searchView?.show()
+                searchView.show()
                 menu?.findItem(R.id.manage)?.isVisible = true
             }
         })
