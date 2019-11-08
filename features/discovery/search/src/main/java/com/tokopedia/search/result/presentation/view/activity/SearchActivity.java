@@ -79,6 +79,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
+import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FORTH_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_SECOND_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_THIRD_POSITION;
 
@@ -111,6 +112,7 @@ public class SearchActivity extends BaseActivity
     private String productTabTitle;
     private String shopTabTitle;
     private String profileTabTitle;
+    private String catalogTabTitle;
     private String autocompleteApplink;
 
     @Inject SearchTracking searchTracking;
@@ -291,6 +293,9 @@ public class SearchActivity extends BaseActivity
             case TAB_SECOND_POSITION:
                 SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
                 break;
+            case TAB_FORTH_POSITION:
+                SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
+                break;
         }
     }
 
@@ -383,6 +388,7 @@ public class SearchActivity extends BaseActivity
         productTabTitle = getString(R.string.product_tab_title);
         shopTabTitle = getString(R.string.shop_tab_title);
         profileTabTitle = getString(R.string.title_profile);
+        catalogTabTitle = getString(R.string.catalog_tab_title);
     }
 
     private void initViewModel() {
@@ -495,6 +501,7 @@ public class SearchActivity extends BaseActivity
         availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
         availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
         availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
+        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
 
         return !availableSearchTabs.contains(activeTab);
     }
@@ -534,6 +541,7 @@ public class SearchActivity extends BaseActivity
         searchSectionItemList.add(productTabTitle);
         searchSectionItemList.add(shopTabTitle);
         searchSectionItemList.add(profileTabTitle);
+        searchSectionItemList.add(catalogTabTitle);
     }
 
     private void initTabLayout() {
@@ -558,6 +566,9 @@ public class SearchActivity extends BaseActivity
                 case TAB_THIRD_POSITION:
                     profileListFragmentExecuteBackToTop();
                     break;
+                case TAB_FORTH_POSITION:
+                    catalogListFragmentExecuteBackToTop();
+                    break;
             }
         }
     }
@@ -580,6 +591,12 @@ public class SearchActivity extends BaseActivity
         }
     }
 
+    private void catalogListFragmentExecuteBackToTop() {
+        if (searchSectionPagerAdapter.getCatalogListFragment() != null) {
+            searchSectionPagerAdapter.getCatalogListFragment().backToTop();
+        }
+    }
+
     private void setActiveTab() {
         viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -598,6 +615,8 @@ public class SearchActivity extends BaseActivity
                 return TAB_SECOND_POSITION;
             case SearchConstant.ActiveTab.PROFILE:
                 return TAB_THIRD_POSITION;
+            case SearchConstant.ActiveTab.CATALOG:
+                return TAB_FORTH_POSITION;
             default:
                 return TAB_FIRST_POSITION;
         }
