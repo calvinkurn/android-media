@@ -175,4 +175,6 @@ public class RemoteConfigKey {
 
     public static final String GTM_REFRESH_IN_BACKGROUND = "android_gtm_refresh_in_background";
     public static final String ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW = "enable_customer_user_agent_in_webview";
+
+    public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 }
