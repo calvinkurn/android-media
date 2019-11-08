@@ -236,4 +236,8 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
 
         void onPartialSwipe();
     }
+
+    public String getCouponCode(){
+        return mTextCoupon.getText().toString();
+    }
 }

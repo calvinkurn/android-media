@@ -70,6 +70,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/tp_rounded_grey_background"
             android:paddingStart="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
             android:paddingEnd="@dimen/dp_16"

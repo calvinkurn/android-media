@@ -816,14 +816,18 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
         fragment.setmValidatePinCallBack(new ValidateMerchantPinFragment.ValidatePinCallBack() {
             @Override
             public void onSuccess(CouponSwipeUpdate couponSwipeUpdate) {
-                mSwipeCardView.setCouponCode(couponSwipeUpdate.getPartnerCode());
-                showBarCodeView(couponSwipeUpdate.getNote(), "", "");
                 if (mBottomSheetFragment != null) {
                     mBottomSheetFragment.dismiss();
                 }
+                mSwipeCardView.setCouponCode(couponSwipeUpdate.getPartnerCode());
+                showBarCodeView(couponSwipeUpdate.getNote(), "", "");
             }
         });
-        mBottomSheetFragment = CloseableBottomSheetFragment.Companion.newInstance(fragment, true, getString(R.string.tp_masukan_pin), (dialog) -> mSwipeCardView.reset(), CloseableBottomSheetFragment.STATE_FULL);
+        mBottomSheetFragment = CloseableBottomSheetFragment.Companion.newInstance(fragment, true, getString(R.string.tp_masukan_pin), (dialog) -> {
+            if (TextUtils.isEmpty(mSwipeCardView.getCouponCode())) {
+                mSwipeCardView.reset();
+            }
+        }, CloseableBottomSheetFragment.STATE_FULL);
         mBottomSheetFragment.showNow(getActivity().getSupportFragmentManager(), "");
     }
 
