@@ -19,7 +19,7 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            R.layout.item_nearby_location -> NearbiesViewHolder(view)
+            R.layout.item_nearby_location -> NearbyStoreViewHolder(view)
             R.layout.item_empty_nearby_location -> EmptyViewHolder(view)
             R.layout.item_dropoff_list_header -> HeaderViewHolder(view)
             else -> LoadingViewholder(view)
@@ -30,11 +30,8 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is NearbiesViewHolder -> {
+            is NearbyStoreViewHolder -> {
                 holder.bind(mData[position] as DropoffNearbyModel)
-                holder.view.setOnClickListener {
-                    mListener?.onItemClicked(it)
-                }
             }
             is EmptyViewHolder -> {
                 holder.itemView.button_search.setOnClickListener { mListener?.requestAutoComplete() }
@@ -87,12 +84,13 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private data class EmptyType(var id: Int = 0) : DropoffVisitable
     private data class LoadingType(var id: Int = 0) : DropoffVisitable
 
-    private class NearbiesViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    private inner class NearbyStoreViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(datum: DropoffNearbyModel) {
             val desc = "${datum.districtName}, ${datum.cityName}, ${datum.provinceName}"
             view.tv_location_title.text = datum.addrName
             view.tv_location_desc.text = desc
             view.tv_distance.text = datum.storeDistance.toKilometers()
+            view.setOnClickListener { mListener?.onItemClicked(it) }
             view.tag = datum
         }
 

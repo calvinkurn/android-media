@@ -33,10 +33,8 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is ResultViewHolder -> {
                 if (item is AutoCompleteResultUi) {
                     holder.bindAutoComplete(item)
-                    holder.itemView.setOnClickListener { listener?.onResultClicked(item) }
                 } else if (item is AddressResultUi) {
                     holder.bindSavedAddress(item)
-                    holder.itemView.setOnClickListener { listener?.onResultClicked(item) }
                 }
             }
         }
@@ -91,15 +89,17 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    private class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private inner class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindAutoComplete(item: AutoCompleteResultUi) {
             itemView.tv_autocomplete_title.text = item.structuredFormatting.mainText
             itemView.tv_autocomplete_desc.text = item.structuredFormatting.secondaryText
+            itemView.setOnClickListener { listener?.onResultClicked(item) }
         }
 
         fun bindSavedAddress(item: AddressResultUi) {
             itemView.tv_autocomplete_title.text = item.addrName
             itemView.tv_autocomplete_desc.text = item.address1
+            itemView.setOnClickListener { listener?.onResultClicked(item) }
         }
     }
 }
