@@ -14,6 +14,7 @@ class SpotlightItemViewModel(val id: Int, val title: String, val description: St
             "eventCategory", "homepage",
             "eventAction", "click on banner spotlight",
             "eventLabel", title,
+            "channelId", channelId,
             "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(

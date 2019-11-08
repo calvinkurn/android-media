@@ -217,6 +217,7 @@ public class DynamicHomeChannel {
                     "eventCategory", "homepage",
                     "eventAction", "click on lego product",
                     "eventLabel", getHeader().getName(),
+                    channelId, id,
                     "ecommerce", DataLayer.mapOf(
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(
@@ -409,7 +410,6 @@ public class DynamicHomeChannel {
                     "eventCategory", "homepage",
                     "eventAction", "impression on lego product",
                     "eventLabel", "",
-                    channelId, id,
                     "ecommerce", DataLayer.mapOf(
                             "curencyCode", "IDR",
                             "impressions", DataLayer.listOf(
@@ -538,6 +538,7 @@ public class DynamicHomeChannel {
                     "event", "promoClick",
                     "eventCategory", "homepage",
                     "eventAction", "lego banner click",
+                    channelId, id,
                     "eventLabel", grid.getAttribution(),
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
@@ -585,6 +586,7 @@ public class DynamicHomeChannel {
                     "eventCategory", "homepage",
                     "eventAction", "click on product dynamic channel mix",
                     "eventLabel", getHeader().name,
+                    channelId, id,
                     "ecommerce", DataLayer.mapOf(
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(
@@ -641,6 +643,7 @@ public class DynamicHomeChannel {
                     "eventCategory", "homepage",
                     "eventAction", "click on banner dynamic channel mix",
                     "eventLabel", getHeader().name,
+                    channelId, id,
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
@@ -662,6 +665,7 @@ public class DynamicHomeChannel {
                     "event", "promoClick",
                     "eventCategory", "homepage",
                     "eventAction", "click "+getBanner().getCta().getText()+" on dynamic channel mix",
+                    channelId, id,
                     "eventLabel", getHeader().name,
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
