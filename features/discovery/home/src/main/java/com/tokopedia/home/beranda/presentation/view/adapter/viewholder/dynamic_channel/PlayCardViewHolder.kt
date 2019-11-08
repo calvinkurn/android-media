@@ -47,7 +47,7 @@ class PlayCardViewHolder(val view: View, val listener: HomeCategoryListener): Ab
     private fun bindCard(card: PlayCard) {
         chipLive(card)
         chipViewers(card)
-        ImageHandler.loadImageRounded(view.context, imgBanner, card.imageUrl, ROUNDED_RADIUS)
+        ImageHandler.loadImageRounded2(view.context, imgBanner, card.imageUrl, ROUNDED_RADIUS)
     }
 
     private fun chipLive(card: PlayCard) {
