@@ -108,7 +108,6 @@ public interface SearchConstant {
         int TAB_FIRST_POSITION = 0;
         int TAB_SECOND_POSITION = 1;
         int TAB_THIRD_POSITION = 2;
-        int TAB_FORTH_POSITION = 3;
     }
 
     interface Cart {
