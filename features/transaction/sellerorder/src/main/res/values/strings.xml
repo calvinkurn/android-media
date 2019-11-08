@@ -88,4 +88,9 @@
     <string name="shop_closed_endnote2">Tolak Pesanan</string>
     <string name="shop_closed_endnote3">, kamu akan menolak pesanan ini dan menutup toko hingga </string>
 
+    <string name="buyer_no_resp_label">Jelaskan kendala yang kamu alami</string>
+    <string name="buyer_no_resp_placeholder">Contoh: Pembeli tidak jawab</string>
+    <string name="other_reason_resp_label">Alasan penolakan lainnya</string>
+    <string name="other_reason_resp_placeholder">Contoh: Saya tidak bisa menerima...</string>
+
 </resources>

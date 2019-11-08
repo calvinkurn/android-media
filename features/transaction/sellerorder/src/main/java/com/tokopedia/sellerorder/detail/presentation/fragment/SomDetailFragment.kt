@@ -429,8 +429,8 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             1 -> setProductEmpty(rejectReason.reasonCode.toString())
             4 -> setShopClosed(rejectReason.reasonCode.toString())
             7 -> setCourierProblems(rejectReason.reasonCode.toString(), rejectReason.listChild)
-            15 -> {}
-            14 -> {}
+            15 -> setBuyerNoResponse(rejectReason.reasonCode.toString())
+            14 -> setOtherReason(rejectReason.reasonCode.toString())
         }
     }
 
@@ -449,9 +449,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         viewBottomSheet.tf_extra_notes?.textFiedlLabelText?.text = getString(R.string.empty_stock_extra_note)
         viewBottomSheet.tf_extra_notes?.setPlaceholder(getString(R.string.empty_stock_extra_placeholder))
 
-        // viewBottomSheet.extra_notes_wrapper?.hint = getString(R.string.empty_stock_extra_note)
-        // viewBottomSheet.extra_notes_input?.hint = getString(R.string.empty_stock_extra_placeholder)
-
         viewBottomSheet.fl_btn_primary?.visibility = View.VISIBLE
         viewBottomSheet.fl_btn_primary?.setOnClickListener {
             bottomSheetUnify.dismiss()
@@ -467,8 +464,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             }
             orderRejectRequest.listPrd = strListPrd
             orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
-            somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
-            observingRejectOrder()
+            doRejectOrder(orderRejectRequest)
         }
 
         bottomSheetUnify.setFullPage(true)
@@ -527,8 +523,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     closedNote = viewBottomSheet.tf_shop_closed_notes?.textFieldInput?.text.toString(),
                     closeEnd = viewBottomSheet.tf_end_shop_closed?.textFieldInput?.text.toString()
             )
-            somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
-            observingRejectOrder()
+            doRejectOrder(orderRejectRequest)
         }
     }
 
@@ -561,8 +556,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             orderRejectRequest.orderId = detailResponse.orderId.toString()
             orderRejectRequest.rCode = rCode
             orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
-            somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
-            observingRejectOrder()
+            doRejectOrder(orderRejectRequest)
         }
 
         bottomSheetUnify.setFullPage(true)
@@ -574,6 +568,72 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         somBottomSheetCourierProblemsAdapter.notifyDataSetChanged()
     }
 
+    private fun setBuyerNoResponse(reasonCode: String) {
+        bottomSheetUnify.dismiss()
+
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null).apply {
+            rv_bottomsheet_secondary?.visibility = View.GONE
+            tf_extra_notes?.visibility = View.VISIBLE
+            tf_extra_notes?.setLabelStatic(true)
+            tf_extra_notes?.textFiedlLabelText?.text = getString(R.string.buyer_no_resp_label)
+            tf_extra_notes?.setPlaceholder(getString(R.string.buyer_no_resp_placeholder))
+            fl_btn_primary?.visibility = View.VISIBLE
+            fl_btn_primary?.setOnClickListener {
+                bottomSheetUnify.dismiss()
+
+                val orderRejectRequest = SomRejectRequest().apply {
+                    orderId = detailResponse.orderId.toString()
+                    rCode = reasonCode
+                    reason = tf_extra_notes?.textFieldInput?.text.toString()
+                }
+                doRejectOrder(orderRejectRequest)
+            }
+        }
+
+        bottomSheetUnify = BottomSheetUnify().apply {
+            if (this.isAdded) this.dismiss()
+            setFullPage(true)
+            setOnDismissListener { this.dismiss() }
+            setCloseClickListener { this.dismiss() }
+            setChild(viewBottomSheet)
+            setTitle(VALUE_REASON_BUYER_NO_RESPONSE)
+        }
+        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+    }
+
+    private fun setOtherReason(reasonCode: String) {
+        bottomSheetUnify.dismiss()
+
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null).apply {
+            rv_bottomsheet_secondary?.visibility = View.GONE
+            tf_extra_notes?.visibility = View.VISIBLE
+            tf_extra_notes?.setLabelStatic(true)
+            tf_extra_notes?.textFiedlLabelText?.text = getString(R.string.other_reason_resp_label)
+            tf_extra_notes?.setPlaceholder(getString(R.string.other_reason_resp_placeholder))
+            fl_btn_primary?.visibility = View.VISIBLE
+            fl_btn_primary?.setOnClickListener {
+                bottomSheetUnify.dismiss()
+
+                val orderRejectRequest = SomRejectRequest().apply {
+                    orderId = detailResponse.orderId.toString()
+                    rCode = reasonCode
+                    reason = tf_extra_notes?.textFieldInput?.text.toString()
+                }
+                doRejectOrder(orderRejectRequest)
+            }
+        }
+
+        bottomSheetUnify = BottomSheetUnify().apply {
+            if (this.isAdded) this.dismiss()
+            setFullPage(true)
+            setOnDismissListener { this.dismiss() }
+            setCloseClickListener { this.dismiss() }
+            setChild(viewBottomSheet)
+            setTitle(VALUE_REASON_OTHER)
+        }
+        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+    }
+
     override fun onChooseOptionCourierProblem(optionCourierProblem: SomReasonRejectData.Data.SomRejectReason.Child) {
         if (optionCourierProblem.reasonText.equals(VALUE_COURIER_PROBLEM_OTHERS, ignoreCase = true)) {
             bottomSheetUnify.tf_extra_notes?.visibility = View.VISIBLE
@@ -582,6 +642,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         } else {
             bottomSheetUnify.tf_extra_notes?.visibility = View.GONE
         }
+    }
+
+    private fun doRejectOrder(orderRejectRequest: SomRejectRequest) {
+        somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
+        observingRejectOrder()
     }
 
     private fun observingRejectOrder() {
