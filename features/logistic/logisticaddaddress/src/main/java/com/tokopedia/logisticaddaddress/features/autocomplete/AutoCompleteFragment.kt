@@ -57,7 +57,7 @@ class AutoCompleteFragment : Fragment(),
         rvResults.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         rvResults.adapter = adapter
         adapter.setActionListener(this)
-        viewModel.getSavedAddress()
+        fetchSavedAddress()
 
         viewModel.autoCompleteList.observe(this, Observer {
             when (it) {
@@ -87,7 +87,13 @@ class AutoCompleteFragment : Fragment(),
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let { fetchData(it) }
+        text?.let {
+            if (it.isBlank()) {
+                fetchSavedAddress()
+            } else {
+                fetchData(it)
+            }
+        }
     }
 
     override fun onResultClicked(data: AutoCompleteAdapter.AutoCompleteVisitable) {
@@ -110,6 +116,11 @@ class AutoCompleteFragment : Fragment(),
 
     private fun fetchData(keyword: String) {
         viewModel.getAutoCompleteList(keyword)
+        adapter.setLoading()
+    }
+
+    private fun fetchSavedAddress() {
+        viewModel.getSavedAddress()
         adapter.setLoading()
     }
 
