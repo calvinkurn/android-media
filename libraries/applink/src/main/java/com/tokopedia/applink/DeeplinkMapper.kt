@@ -3,18 +3,17 @@ package com.tokopedia.applink
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
+import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalOperational
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
+import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -48,10 +47,12 @@ object DeeplinkMapper {
                         getRegisteredNavigationDeals(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.PROFILE) ->
                         getRegisteredNavigationContent(deeplink)
+                    deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
+                        getRegisteredHotlist(context,deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
-
+                    deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(context, deeplink)
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){
@@ -100,6 +101,7 @@ object DeeplinkMapper {
             ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
             ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
+            ApplinkConst.ADD_PIN_ONBOARD -> return ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING
             ApplinkConst.FLIGHT -> return ApplinkConstInternalTravel.DASHBOARD_FLIGHT
             ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO

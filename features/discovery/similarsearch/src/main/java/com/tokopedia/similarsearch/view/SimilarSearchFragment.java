@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.similarsearch.R;
 import com.tokopedia.similarsearch.analytics.SimilarSearchTracking;
 import com.tokopedia.similarsearch.di.DaggerSimilarSearchComponent;
@@ -34,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.discovery.common.constants.SearchConstant.SimilarSearch.QUERY;
 
 public class SimilarSearchFragment extends BaseDaggerFragment implements SimilarSearchContract.View, WishListActionListener, SimilarSearchAdapter.WishListClickListener {
 
@@ -51,10 +54,11 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
     private SimilarSearchComponent similarSearhComponent;
 
 
-    public static SimilarSearchFragment newInstance(String productId) {
+    public static SimilarSearchFragment newInstance(String productId, String query) {
 
         Bundle args = new Bundle();
         args.putString(PRODUCT_ID, productId);
+        args.putString(QUERY, query);
         SimilarSearchFragment fragment = new SimilarSearchFragment();
         fragment.setArguments(args);
         return fragment;
@@ -152,7 +156,16 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
 
     @Override
     public String getProductID() {
+        if (getArguments() == null) return "";
+
         return getArguments().getString(PRODUCT_ID);
+    }
+
+    @Override
+    public String getQueryKey() {
+        if (getArguments() == null) return "";
+
+        return getArguments().getString(QUERY);
     }
 
     @Override

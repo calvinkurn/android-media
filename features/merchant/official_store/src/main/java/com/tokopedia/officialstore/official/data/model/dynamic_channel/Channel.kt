@@ -2,15 +2,17 @@ package com.tokopedia.officialstore.official.data.model.dynamic_channel
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 data class Channel(
-        val header: Header?,
-        val hero: Hero?,
-        val banner: Banner?,
-        val id: String,
-        val name: String,
-        val layout: String,
-        val grids: MutableList<Grid?>?
+        @Expose @SerializedName("header") val header: Header?,
+        @Expose @SerializedName("hero") val hero: Hero?,
+        @Expose @SerializedName("banner") val banner: Banner?,
+        @Expose @SerializedName("id") val id: String,
+        @Expose @SerializedName("name") val name: String,
+        @Expose @SerializedName("layout") val layout: String,
+        @Expose @SerializedName("grids") val grids: MutableList<Grid?>?
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
