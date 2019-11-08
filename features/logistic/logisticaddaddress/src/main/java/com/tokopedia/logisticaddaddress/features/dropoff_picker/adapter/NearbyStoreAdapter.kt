@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
 import com.tokopedia.logisticaddaddress.utils.toKilometers
@@ -21,7 +22,7 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             R.layout.item_nearby_location -> NearbiesViewHolder(view)
             R.layout.item_empty_nearby_location -> EmptyViewHolder(view)
             R.layout.item_dropoff_list_header -> HeaderViewHolder(view)
-            else -> LoadingViewHolder(view)
+            else -> LoadingViewholder(view)
         }
     }
 
@@ -45,7 +46,7 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         is DropoffNearbyModel -> R.layout.item_nearby_location
         is EmptyType -> R.layout.item_empty_nearby_location
         is HeaderType -> R.layout.item_dropoff_list_header
-        is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
+        is LoadingType -> LoadingViewholder.LAYOUT
         else -> throw RuntimeException("View type does not match")
     }
 
@@ -93,7 +94,6 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     class EmptyViewHolder(val view: View) : RecyclerView.ViewHolder(view)
-    class LoadingViewHolder(val view: View) : RecyclerView.ViewHolder(view)
     class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     interface DropoffVisitable

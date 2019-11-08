@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AddressResultUi
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
@@ -19,7 +20,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (viewType) {
             R.layout.item_autocomplete_result -> ResultViewHolder(view)
             R.layout.item_autocomplete_no_result -> NoResultViewHolder(view)
-            else -> ShimmeringViewHolder(view)
+            else -> LoadingViewholder(view)
         }
     }
 
@@ -43,7 +44,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int = when (data[position]) {
         is AutoCompleteResultUi -> R.layout.item_autocomplete_result
         is AddressResultUi -> R.layout.item_autocomplete_result
-        is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
+        is LoadingType -> LoadingViewholder.LAYOUT
         is NoResultType -> R.layout.item_autocomplete_no_result
         else -> throw RuntimeException("View type not found!!")
     }
@@ -94,8 +95,6 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             itemView.tv_autocomplete_desc.text = item.address1
         }
     }
-
-    class ShimmeringViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
