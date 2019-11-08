@@ -8,7 +8,7 @@ class ImageDownloadManager(val context: Context, val baseNotificationModel: Base
 
     suspend fun startImageDownload(): BaseNotificationModel? {
         return ImageFactory.provideNotificationImageDownloader(baseNotificationModel)
-                ?.downloadImages(context)
+                ?.downloadAndVerify(context)
                 ?: baseNotificationModel
     }
 

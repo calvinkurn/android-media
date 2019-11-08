@@ -78,6 +78,11 @@ public class CMNotificationFactory {
                     cancelNotification(context, baseNotificationModel.getNotificationId());
                     return null;
 
+                case CMConstant.NotificationType.DROP_NOTIFICATION:
+                    cancelNotification(context, baseNotificationModel.getNotificationId());
+                    IrisAnalyticsEvents.INSTANCE.sendPushEvent(context, IrisAnalyticsEvents.PUSH_CANCELLED, baseNotificationModel);
+                    return null;
+
             }
         }
         return null;

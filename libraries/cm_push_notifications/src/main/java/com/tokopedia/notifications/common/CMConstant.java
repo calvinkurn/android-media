@@ -35,6 +35,7 @@ public interface CMConstant {
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
         String DELETE_NOTIFICATION = "Delete";
+        String DROP_NOTIFICATION = "Drop";
         String CAROUSEL_NOTIFICATION = "Carousel";
         String SILENT_PUSH = "Silent";
         String VISUAL_NOTIIFICATION = "Visual";

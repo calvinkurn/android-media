@@ -46,8 +46,10 @@ class PushController(val context: Context) : CoroutineScope {
     private suspend fun onLivePushPayloadReceived(baseNotificationModel: BaseNotificationModel) {
 
         var updatedBaseNotificationModel: BaseNotificationModel? = null
-        if (baseNotificationModel.type == CMConstant.NotificationType.DELETE_NOTIFICATION)
+        if (baseNotificationModel.type == CMConstant.NotificationType.DELETE_NOTIFICATION) {
             baseNotificationModel.status = NotificationStatus.COMPLETED
+            createAndPostNotification(baseNotificationModel)
+        }
         else if (baseNotificationModel.startTime == 0L
                 || baseNotificationModel.endTime > System.currentTimeMillis()) {
 

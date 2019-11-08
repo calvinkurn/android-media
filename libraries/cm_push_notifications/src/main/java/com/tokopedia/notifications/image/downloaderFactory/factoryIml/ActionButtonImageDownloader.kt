@@ -8,15 +8,25 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 class ActionButtonImageDownloader(baseNotificationModel: BaseNotificationModel)
     : NotificationImageDownloader(baseNotificationModel) {
 
-    override suspend fun downloadImages(context: Context): BaseNotificationModel? {
-        baseNotificationModel.media?.let { media ->
-            val filePath = downloadAndStore(context, media.displayUrl, ImageSizeAndTimeout.BIG_IMAGE)
+    override suspend fun verifyAndUpdate() {
+        baseNotificationModel.media?.run {
+            (mediumQuality.startsWith("http") || mediumQuality.startsWith("www")).let {
+                if(it) {
+                    baseNotificationModel.media = null
+                }
+            }
+        }
+    }
+
+    override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
+        baseNotificationModel.media?.run {
+            val filePath = downloadAndStore(context, displayUrl, ImageSizeAndTimeout.BIG_IMAGE)
             filePath?.let {
-                media.displayUrl = filePath
-                media.mediumQuality = filePath
-                media.highQuality = filePath
-                media.lowQuality = filePath
-                media.fallbackUrl = filePath
+                displayUrl = filePath
+                mediumQuality = filePath
+                highQuality = filePath
+                lowQuality = filePath
+                fallbackUrl = filePath
             }
         }
         baseNotificationModel.actionButton.forEach { actionButton ->
@@ -25,6 +35,8 @@ class ActionButtonImageDownloader(baseNotificationModel: BaseNotificationModel)
                 actionButton.actionButtonIcon = filePath
             }
         }
+
+        verifyAndUpdate()
         return baseNotificationModel
     }
 }
