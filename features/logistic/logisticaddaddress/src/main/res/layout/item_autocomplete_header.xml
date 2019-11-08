@@ -12,7 +12,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/title_bottom_sheet_dropoff"
+        android:text="@string/title_bottom_sheet_autocomplete"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"

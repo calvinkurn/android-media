@@ -20,6 +20,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (viewType) {
             R.layout.item_autocomplete_result -> ResultViewHolder(view)
             R.layout.item_autocomplete_no_result -> NoResultViewHolder(view)
+            R.layout.item_autocomplete_header -> HeaderViewHolder(view)
             else -> LoadingViewholder(view)
         }
     }
@@ -45,6 +46,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         is AutoCompleteResultUi -> R.layout.item_autocomplete_result
         is AddressResultUi -> R.layout.item_autocomplete_result
         is LoadingType -> LoadingViewholder.LAYOUT
+        is HeaderType -> R.layout.item_autocomplete_header
         is NoResultType -> R.layout.item_autocomplete_no_result
         else -> throw RuntimeException("View type not found!!")
     }
@@ -61,6 +63,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun setEmptyData(items: List<AddressResultUi>) {
         data.clear()
+        data.add(HeaderType())
         data.addAll(items)
         notifyDataSetChanged()
     }
@@ -84,6 +87,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     interface AutoCompleteVisitable
     data class LoadingType(val id: Int = 0) : AutoCompleteVisitable
     data class NoResultType(val id: Int = 0) : AutoCompleteVisitable
+    data class HeaderType(val id: Int = 0): AutoCompleteVisitable
 
     class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindAutoComplete(item: AutoCompleteResultUi) {
@@ -97,4 +101,5 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
