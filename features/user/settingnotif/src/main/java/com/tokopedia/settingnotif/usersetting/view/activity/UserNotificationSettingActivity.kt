@@ -27,7 +27,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     private fun setupView() {
-        val color = ContextCompat.getColor(this, R.color.white)
+        val color = ContextCompat.getColor(this, com.tokopedia.design.R.color.white)
         fragmentContainer?.setBackgroundColor(color)
     }
 
