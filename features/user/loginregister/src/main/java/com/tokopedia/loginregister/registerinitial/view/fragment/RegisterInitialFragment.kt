@@ -946,7 +946,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
-        analytics.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
