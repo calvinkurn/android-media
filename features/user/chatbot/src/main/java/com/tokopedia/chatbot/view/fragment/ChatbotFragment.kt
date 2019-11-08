@@ -139,8 +139,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun openCsat(csatResponse: WebSocketCsatResponse) {
         mCsatResponse = csatResponse
-        list_quick_reply.hide()
-        showCsatRatingView()
+        if(::mCsatResponse.isInitialized){
+            list_quick_reply.hide()
+            showCsatRatingView()
+        }
     }
 
     private fun showCsatRatingView() {
@@ -356,27 +358,29 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun submitRating(data: Intent?) {
-        val attributes = mCsatResponse.attachment?.attributes
-        val reasonList = attributes?.reasons
-        val input = InputItem()
-        input.chatbotSessionId = attributes?.chatbotSessionId
-        input.livechatSessionId = attributes?.livechatSessionId
-        val selectedOption = data?.getStringExtra(SELECTED_ITEMS)?.split(";")
-        var filters = ""
-        if (!selectedOption.isNullOrEmpty()) {
-            for (filter in selectedOption) {
-                filters += reasonList?.get(filter.toInt()) + ","
+        data?.let{
+            val attributes = mCsatResponse.attachment?.attributes
+            val reasonList = attributes?.reasons
+            val input = InputItem()
+            input.chatbotSessionId = attributes?.chatbotSessionId
+            input.livechatSessionId = attributes?.livechatSessionId
+            val selectedOption = it.getStringExtra(SELECTED_ITEMS)?.split(";")
+            var filters = ""
+            if (!selectedOption.isNullOrEmpty()) {
+                for (filter in selectedOption) {
+                    filters += reasonList?.get(filter.toInt()) + ","
+                }
+                filters = filters.substring(0, filters.length - 1)
             }
-            filters = filters.substring(0, filters.length - 1)
-        }
-        input.reason = filters
-        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
-        input.score = data?.extras?.getInt(EMOJI_STATE) ?: 0
-        input.timestamp = mCsatResponse.message?.timestampUnix.toString()
-        input.triggerRuleType = attributes?.triggerRuleType
+            input.reason = filters
+            input.otherReason = it.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
+            input.score = it.extras?.getInt(EMOJI_STATE) ?: 0
+            input.timestamp = mCsatResponse.message?.timestampUnix.toString()
+            input.triggerRuleType = attributes?.triggerRuleType
 
-        presenter.submitCsatRating(input, onError(),
-                onSuccessSubmitCsatRating())
+            presenter.submitCsatRating(input, onError(),
+                    onSuccessSubmitCsatRating())
+        }
     }
 
     private fun onSuccessSubmitCsatRating(): (String) -> Unit {
