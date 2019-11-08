@@ -9,11 +9,11 @@ import android.os.Parcelable
 
 data class AddressesData(
         var active: String = "",
-        var data: DataAddressData = DataAddressData()
+        var data: DataAddressData? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
-            parcel.readParcelable(DataAddressData::class.java.classLoader) ?: DataAddressData()) {
+            parcel.readParcelable(DataAddressData::class.java.classLoader) ?: null) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

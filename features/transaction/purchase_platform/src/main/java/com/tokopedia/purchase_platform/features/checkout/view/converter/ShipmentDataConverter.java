@@ -46,10 +46,17 @@ public class ShipmentDataConverter {
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
-            UserAddress defaultAddress = cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress();
+            UserAddress defaultAddress = null;
             UserAddress tradeInAddress = null;
-            if (cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress().getAddressId() != 0) {
-                tradeInAddress = cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress();
+            if (cartShipmentAddressFormData.getAddressesData() != null && cartShipmentAddressFormData.getAddressesData().getData() != null) {
+                if (cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress() != null &&
+                        cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress().getAddressId() != 0) {
+                    defaultAddress = cartShipmentAddressFormData.getAddressesData().getData().getDefaultAddress();
+                }
+                if (cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress() != null &&
+                        cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress().getAddressId() != 0) {
+                    tradeInAddress = cartShipmentAddressFormData.getAddressesData().getData().getTradeInAddress();
+                }
             }
             boolean isTradeIn = false;
             boolean isTradeInDropOffEnable = false;
@@ -72,10 +79,12 @@ public class ShipmentDataConverter {
             }
             RecipientAddressModel recipientAddressModel = createRecipientAddressModel(defaultAddress, tradeInAddress, isTradeIn, isTradeInDropOffEnable);
             recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
-            if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.DEFAULT_ADDRESS)) {
-                recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
-            } else if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.TRADE_IN_ADDRESS)) {
-                recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN);
+            if (cartShipmentAddressFormData.getAddressesData() != null) {
+                if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.DEFAULT_ADDRESS)) {
+                    recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
+                } else if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.TRADE_IN_ADDRESS)) {
+                    recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN);
+                }
             }
         }
         return null;
@@ -102,31 +111,33 @@ public class ShipmentDataConverter {
                                                               boolean isTradeInDropOffEnable) {
         RecipientAddressModel recipientAddress = new RecipientAddressModel();
 
-        recipientAddress.setId(String.valueOf(defaultAddress.getAddressId()));
-        recipientAddress.setAddressStatus(defaultAddress.getStatus());
-        recipientAddress.setAddressName(defaultAddress.getAddressName());
-        recipientAddress.setCountryName(defaultAddress.getCountry());
-        recipientAddress.setProvinceName(defaultAddress.getProvinceName());
-        recipientAddress.setDestinationDistrictName(defaultAddress.getDistrictName());
-        recipientAddress.setCityName(defaultAddress.getCityName());
-        recipientAddress.setDestinationDistrictId(String.valueOf(defaultAddress.getDistrictId()));
-        recipientAddress.setStreet(defaultAddress.getAddress());
-        recipientAddress.setPostalCode(defaultAddress.getPostalCode());
-        recipientAddress.setCityId(String.valueOf(defaultAddress.getCityId()));
-        recipientAddress.setProvinceId(String.valueOf(defaultAddress.getProvinceId()));
+        if (defaultAddress != null) {
+            recipientAddress.setId(String.valueOf(defaultAddress.getAddressId()));
+            recipientAddress.setAddressStatus(defaultAddress.getStatus());
+            recipientAddress.setAddressName(defaultAddress.getAddressName());
+            recipientAddress.setCountryName(defaultAddress.getCountry());
+            recipientAddress.setProvinceName(defaultAddress.getProvinceName());
+            recipientAddress.setDestinationDistrictName(defaultAddress.getDistrictName());
+            recipientAddress.setCityName(defaultAddress.getCityName());
+            recipientAddress.setDestinationDistrictId(String.valueOf(defaultAddress.getDistrictId()));
+            recipientAddress.setStreet(defaultAddress.getAddress());
+            recipientAddress.setPostalCode(defaultAddress.getPostalCode());
+            recipientAddress.setCityId(String.valueOf(defaultAddress.getCityId()));
+            recipientAddress.setProvinceId(String.valueOf(defaultAddress.getProvinceId()));
 
-        recipientAddress.setRecipientName(defaultAddress.getReceiverName());
-        recipientAddress.setRecipientPhoneNumber(defaultAddress.getPhone());
-        recipientAddress.setLatitude(!TextUtils.isEmpty(defaultAddress.getLatitude()) ?
-                defaultAddress.getLatitude() : null);
-        recipientAddress.setLongitude(!TextUtils.isEmpty(defaultAddress.getLongitude()) ?
-                defaultAddress.getLongitude() : null);
+            recipientAddress.setRecipientName(defaultAddress.getReceiverName());
+            recipientAddress.setRecipientPhoneNumber(defaultAddress.getPhone());
+            recipientAddress.setLatitude(!TextUtils.isEmpty(defaultAddress.getLatitude()) ?
+                    defaultAddress.getLatitude() : null);
+            recipientAddress.setLongitude(!TextUtils.isEmpty(defaultAddress.getLongitude()) ?
+                    defaultAddress.getLongitude() : null);
 
-        recipientAddress.setSelected(defaultAddress.getStatus() == PRIME_ADDRESS);
-        recipientAddress.setCornerId(String.valueOf(defaultAddress.getCornerId()));
-        recipientAddress.setTradeIn(isTradeIn);
-        recipientAddress.setTradeInDropOffEnable(isTradeInDropOffEnable);
-        recipientAddress.setCornerAddress(defaultAddress.isCorner());
+            recipientAddress.setSelected(defaultAddress.getStatus() == PRIME_ADDRESS);
+            recipientAddress.setCornerId(String.valueOf(defaultAddress.getCornerId()));
+            recipientAddress.setTradeIn(isTradeIn);
+            recipientAddress.setTradeInDropOffEnable(isTradeInDropOffEnable);
+            recipientAddress.setCornerAddress(defaultAddress.isCorner());
+        }
 
         if (tradeInAddress != null) {
             LocationDataModel locationDataModel = new LocationDataModel();

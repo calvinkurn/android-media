@@ -8,12 +8,12 @@ import android.os.Parcelable
  */
 
 data class DataAddressData(
-        var defaultAddress: UserAddress = UserAddress(),
-        var tradeInAddress: UserAddress = UserAddress()
+        var defaultAddress: UserAddress? = null,
+        var tradeInAddress: UserAddress? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readParcelable(UserAddress::class.java.classLoader) ?: UserAddress(),
-            parcel.readParcelable(UserAddress::class.java.classLoader) ?: UserAddress()) {
+            parcel.readParcelable(UserAddress::class.java.classLoader) ?: null,
+            parcel.readParcelable(UserAddress::class.java.classLoader) ?: null) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
