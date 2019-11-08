@@ -2,14 +2,16 @@ package com.tokopedia.officialstore.official.data.model.dynamic_channel
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 data class Hero(
-        val id: Long,
-        val name: String,
-        val url: String,
-        val applink: String,
-        val imageUrl: String,
-        val attribution: String
+        @Expose @SerializedName("id") val id: Long,
+        @Expose @SerializedName("name") val name: String,
+        @Expose @SerializedName("url") val url: String,
+        @Expose @SerializedName("applink") val applink: String,
+        @Expose @SerializedName("imageUrl") val imageUrl: String,
+        @Expose @SerializedName("attribution") val attribution: String
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
