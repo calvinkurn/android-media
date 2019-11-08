@@ -247,6 +247,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             LIHAT_LABEL -> trackingUmrahUtil.umrahOrderDetailInvoice()
             LIHAT_DETAIL_LABEL -> trackingUmrahUtil.umrahOrderDetailDetailPDP()
             LIHAT_E_VOUCHER_LABEL -> trackingUmrahUtil.umrahOrderDetailDetailEVoucher()
+            BATALKAN_LABEL -> trackingUmrahUtil.umrahOrderDetailBatalkanPesanan()
         }
         RouteManager.route(context, "${buttonViewModel.buttonLink}")
     }
@@ -288,6 +289,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     companion object {
 
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
+        private const val BATALKAN_LABEL = "Batalkan Paket"
         private const val LIHAT_LABEL = "Lihat"
         private const val LIHAT_DETAIL_LABEL = "Lihat Detail"
         private const val LIHAT_E_VOUCHER_LABEL = "Lihat E-Voucher"
