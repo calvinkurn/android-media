@@ -80,9 +80,10 @@ public abstract class BaseNotificationFactory {
 
     protected Bitmap getBitmap(String url) {
         try {
-            return Glide.with(context).load(url)
+            return Glide.with(context)
                     .asBitmap()
-                    .into(getImageWidth(), getImageHeight())
+                    .load(url)
+                    .submit(getImageWidth(), getImageHeight())
                     .get(3, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e) {
             return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());

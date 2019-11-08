@@ -6,9 +6,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.*
 import android.graphics.drawable.GradientDrawable
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatImageView
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -17,6 +14,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.Resource
@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.gamification.util.HexValidator
 import com.tokopedia.home.R
@@ -35,6 +36,7 @@ import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.util.ViewUtils
+import java.security.MessageDigest
 import kotlin.math.roundToInt
 
 /**
@@ -75,12 +77,12 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
         Glide.with(itemView.context)
                 .load(BG_CONTAINER_URL)
-                .bitmapTransform(RoundedRightCornerTransformation(itemView.context, radius))
+                .transform(RoundedRightCornerTransformation(itemView.context, radius))
                 .into(imgNonLogin)
 
         container.setOnClickListener {
             HomePageTracking.eventTokopointNonLogin(itemView.context)
-            listener.onTokopointCheckNowClicked(ApplinkConst.TOKOPOINTS)
+            listener.onTokopointCheckNowClicked(ApplinkConstInternalPromo.TOKOPOINTS_HOME)
         }
         scanHolder.setOnClickListener { goToScanner() }
     }
@@ -120,6 +122,9 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             tvBalanceTokocash.visibility = View.GONE
             tokocashProgressBar.visibility = View.GONE
         } else if (element.homeHeaderWalletActionData == null && !element.isWalletDataError) {
+            tvActionTokocash.visibility = View.GONE
+            tvTitleTokocash.visibility = View.GONE
+            tvBalanceTokocash.visibility = View.GONE
             tokoCashHolder.setOnClickListener(null)
             tokocashProgressBar.visibility = View.VISIBLE
         } else {
@@ -131,6 +136,8 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
                 if (homeHeaderWalletAction.isLinked) {
                     tvTitleTokocash.text = homeHeaderWalletAction.cashBalance
+                    tvActionTokocash.visibility = View.VISIBLE
+                    tvBalanceTokocash.visibility = View.VISIBLE
                     tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
                     tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
                     tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
@@ -322,11 +329,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
     }
 
     inner class RoundedRightCornerTransformation(private val mBitmapPool: BitmapPool, private val mRadius: Int) : Transformation<Bitmap> {
-        private val mDiameter: Int = mRadius * 2
-
-        constructor(context: Context, radius: Int) : this(Glide.get(context).bitmapPool, radius)
-
-        override fun transform(resource: Resource<Bitmap>, outWidth: Int, outHeight: Int): Resource<Bitmap> {
+        override fun transform(context: Context, resource: Resource<Bitmap>, outWidth: Int, outHeight: Int): Resource<Bitmap> {
             val source = resource.get()
 
             val width = source.width
@@ -342,8 +345,16 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             paint.isAntiAlias = true
             paint.shader = BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
             drawRoundRect(canvas, paint, width.toFloat(), height.toFloat())
-            return BitmapResource.obtain(bitmap, mBitmapPool)
+            return BitmapResource.obtain(bitmap, mBitmapPool)!!
         }
+
+        override fun updateDiskCacheKey(messageDigest: MessageDigest) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        private val mDiameter: Int = mRadius * 2
+
+        constructor(context: Context, radius: Int) : this(Glide.get(context).bitmapPool, radius)
 
         private fun drawRoundRect(canvas: Canvas, paint: Paint, width: Float, height: Float) {
             val right = width - 0
@@ -352,11 +363,6 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             canvas.drawRoundRect(RectF(right - mDiameter, 0f, right, bottom), mRadius.toFloat(), mRadius.toFloat(),
                     paint)
             canvas.drawRect(RectF(0f, 0f, right - mRadius, bottom), paint)
-        }
-
-        override fun getId(): String {
-            return ("RoundedRightCornerTransformation(radius=" + mRadius + ", diameter="
-                    + mDiameter + ")")
         }
     }
 }

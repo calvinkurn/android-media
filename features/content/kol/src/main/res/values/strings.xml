@@ -65,6 +65,9 @@
     <string name="kol_add_image">Tambah Gambar</string>
     <string name="kol_add_photo">Tambah Foto</string>
 
+    <!--Kol Comment-->
+    <string name="kol_reply">Balas</string>
+
     <!--Report-->
     <string name="title_kol_report">Laporan Konten</string>
     <string name="kol_help_understand">Bantu Kami Memahami Apa yang Terjadi. Apa yang salah dari konten tersebut?</string>

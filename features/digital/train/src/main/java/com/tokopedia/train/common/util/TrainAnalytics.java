@@ -1,6 +1,6 @@
 package com.tokopedia.train.common.util;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.train.common.constant.TrainEventTracking;

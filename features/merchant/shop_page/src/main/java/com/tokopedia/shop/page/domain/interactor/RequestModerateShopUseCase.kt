@@ -42,7 +42,7 @@ class RequestModerateShopUseCase @Inject constructor(@Named(ShopPageConstant.MOD
         val variables = HashMap<String, Any>()
         variables[PARAM_INPUT] = getModerateSubmitInput(requestParams)
 
-        val graphqlRequest = GraphqlRequest(moderateQuery, ShopModerateData::class.java, variables)
+        val graphqlRequest = GraphqlRequest(moderateQuery, ShopModerateData::class.java,variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

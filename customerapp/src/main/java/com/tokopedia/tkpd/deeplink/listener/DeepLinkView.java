@@ -13,7 +13,7 @@ public interface DeepLinkView {
 
     void inflateFragment(Fragment fragment, String tag);
 
-    void inflateFragmentV4(android.support.v4.app.Fragment fragment, String tag);
+    void inflateFragmentV4(androidx.fragment.app.Fragment fragment, String tag);
 
     void initDeepLink();
 

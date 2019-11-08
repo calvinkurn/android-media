@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.utils
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 
 class ProductEditOptionMenu {
     @DrawableRes

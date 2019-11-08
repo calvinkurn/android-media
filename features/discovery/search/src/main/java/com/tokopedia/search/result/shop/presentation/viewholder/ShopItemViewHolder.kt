@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.shop.presentation.viewholder
 
-import android.support.annotation.DimenRes
-import android.support.annotation.IdRes
-import android.support.constraint.ConstraintSet
-import android.support.v7.widget.AppCompatImageView
+import androidx.annotation.DimenRes
+import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.appcompat.widget.AppCompatImageView
 import android.text.Spanned
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -11,8 +11,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.productcard.utils.doIfVisible
-import com.tokopedia.productcard.utils.isNullOrNotVisible
 import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
@@ -335,5 +333,13 @@ internal class ShopItemViewHolder(
 
     private fun getDimensionPixelSize(@DimenRes id: Int): Int {
         return context.resources.getDimensionPixelSize(id)
+    }
+
+    private val View?.isNullOrNotVisible: Boolean
+        get() = this == null || !this.isVisible
+    private fun View.doIfVisible(action: (View) -> Unit) {
+        if(this.isVisible) {
+            action(this)
+        }
     }
 }

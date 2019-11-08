@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/overlay_toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/action_back"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
@@ -35,7 +35,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/authorImage"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
@@ -49,7 +49,7 @@
             app:layout_constraintLeft_toRightOf="@+id/action_back"
             app:layout_constraintStart_toEndOf="@+id/action_back"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/authorBadge"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
@@ -103,7 +103,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="12 October pukul 13.55 2018 akhir kiamat semua dunia akan musnah"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/action_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
             app:srcCompat="@drawable/ic_three_dots_more_menu"
             app:tint="@color/white"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pager_indicator"
@@ -142,7 +142,7 @@
         app:layout_constraintTop_toBottomOf="@+id/overlay_toolbar"
         tools:text="1 dari 2"/>
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/media_pager"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -181,7 +181,7 @@
         app:layout_constraintTop_toTopOf="@+id/media_pager"
         app:layout_constraintBottom_toBottomOf="@+id/media_pager"/>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/overlay_tags"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -194,7 +194,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
         
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/tag_picture"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
@@ -285,7 +285,7 @@
             tools:text="@string/label_see_all"
             tools:visibility="visible" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/action_favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -299,7 +299,7 @@
             app:layout_constraintRight_toLeftOf="@+id/button_tag_action"
             tools:visibility="visible"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon_thumb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -325,14 +325,14 @@
             app:layout_constraintLeft_toRightOf="@+id/icon_thumb"
             app:layout_constraintBottom_toBottomOf="@+id/icon_thumb"/>
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/groupLike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:constraint_referenced_ids="icon_thumb,label_like"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -360,14 +360,14 @@
             app:layout_constraintLeft_toRightOf="@+id/icon_comment"
             app:layout_constraintBottom_toBottomOf="@+id/icon_thumb"/>
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/groupComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:constraint_referenced_ids="icon_comment,label_comment"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -397,13 +397,13 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintHorizontal_bias="0" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/groupShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:constraint_referenced_ids="icon_share,label_share"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

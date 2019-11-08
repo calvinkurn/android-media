@@ -13,17 +13,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,18 +96,15 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
-import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.HomeMainToolbar;
-import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
@@ -151,6 +150,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     public static Boolean HIDE_TICKER = false;
+    public static Boolean HIDE_GEO = false;
     private static final String SOURCE_ACCOUNT = "account";
     private boolean shouldDisplayReview = true;
     private int reviewAdapterPosition = -1;
@@ -457,14 +457,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
-                    ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
-                }
-
                 if (presenter != null) {
                     presenter.getSearchHint();
                     presenter.getHomeData();
-                    presenter.getHeaderData(true);
                 }
                 /**
                  * set notification gimmick
@@ -581,7 +576,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void configureHomeFlag(HomeFlag homeFlag) {
-        floatingTextButton.setVisibility(homeFlag.getHasRecomNavButton() && showRecomendation ? View.VISIBLE : View.GONE);
+        floatingTextButton.setVisibility(homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation ? View.VISIBLE : View.GONE);
     }
 
     private void onGoToSell() {
@@ -696,11 +691,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
 
-        AnalyticsTrackerUtil.sendEvent(getActivity(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.HOMEPAGE,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_POINT,
-                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_LABEL);
+        HomePageTracking.sendTokopointTrackerClick();
     }
 
     @Override
@@ -778,7 +769,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (presenter != null) {
             presenter.getSearchHint();
             presenter.getHomeData();
-            presenter.getHeaderData(false);
             presenter.getStickyContent();
         }
 
@@ -822,16 +812,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setItems(List<Visitable> items, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
-            List<Visitable> itemAfterGeoloc;
+            adapter.setItems(needToShowGeolocationComponent()
+              ? removeReviewComponent(items)
+              : removeGeolocationComponent(items));
 
-            // Remove review component if Geolocation showing
-            if (needToShowGeolocationComponent()) {
-                itemAfterGeoloc = removeReviewComponent(items);
-            } else {
-                itemAfterGeoloc = removeGeolocationComponent(items);
-            }
-
-            adapter.setItems(itemAfterGeoloc);
+            presenter.getHeaderData(false);
             presenter.getFeedTabData();
             adapter.showLoading();
 
@@ -841,7 +826,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
 
         } else {
-            adapter.setItems(items);
+            adapter.setItems(needToShowGeolocationComponent() ? items : removeGeolocationComponent(items));
         }
 
 
@@ -869,6 +854,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 needToShowGeolocationComponent = false;
             }
         }
+        if(needToShowGeolocationComponent && HIDE_GEO) return false;
         return needToShowGeolocationComponent;
     }
 
@@ -997,6 +983,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (feedTabVisitable != null) {
             visitables.add(feedTabVisitable);
         }
+        presenter.getHeaderData(false);
 
         if (!visitables.isEmpty()) {
             presenter.getFeedTabData();
@@ -1353,39 +1340,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private ArrayList<ShowCaseObject> buildShowCase() {
-        if (homeMainToolbar == null)
-            return null;
-        ArrayList<ShowCaseObject> list = new ArrayList<>();
-        int statusBarHeight = ViewHelper.getStatusBarHeight(getActivity());
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            statusBarHeight = 0;
-        }
-        list.add(new ShowCaseObject(homeMainToolbar.getBtnNotification(),
-                getString(R.string.sc_notif_title),
-                getString(R.string.sc_notif_desc))
-                .withCustomTarget(new int[]{
-                        homeMainToolbar.getBtnNotification().getLeft(),
-                        homeMainToolbar.getBtnNotification().getTop()
-                                + statusBarHeight,
-                        homeMainToolbar.getBtnNotification().getRight(),
-                        homeMainToolbar.getBtnNotification().getBottom()
-                                + statusBarHeight
-                }));
-        list.add(new ShowCaseObject(homeMainToolbar.getBtnWishlist(),
-                getString(R.string.sc_wishlist_title),
-                getString(R.string.sc_wishlist_desc))
-                .withCustomTarget(new int[]{
-                        homeMainToolbar.getBtnWishlist().getLeft(),
-                        homeMainToolbar.getBtnWishlist().getTop()
-                                + statusBarHeight,
-                        homeMainToolbar.getBtnWishlist().getRight(),
-                        homeMainToolbar.getBtnWishlist().getBottom()
-                                + statusBarHeight
-                }));
-        return list;
-    }
-
     private boolean isUserLoggedIn() {
         return userSession.isLoggedIn();
     }
@@ -1445,19 +1399,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    @Override
-    public void onTokopointCheckNowClicked(String applink) {
-        if (TextUtils.isEmpty(applink)) {
-            return;
-        }
-
-        if (getActivity() != null
-                && RouteManager.isSupportApplink(getActivity(), applink)) {
-            openApplink(applink);
-        } else {
-            openWebViewURL(applink, getActivity());
-        }
-    }
 
     @Override
     public HomeEggListener getEggListener() {
@@ -1524,6 +1465,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCloseGeolocationView() {
+        HIDE_GEO = true;
         adapter.removeGeolocationViewModel();
     }
 
@@ -1588,7 +1530,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
         this.tickerDetail = tickerDetail;
         updateStickyState();
-        stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
     }
 
     @Override
@@ -1618,6 +1559,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (stickyLoginView.isShowing()) {
             positionSticky = stickyLoginView.getLocation();
+            stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
         }
 
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
@@ -1673,4 +1615,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
+    @Override
+    public int getWindowWidth() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        return width;
+    }
+
+    @Override
+    public void onTokopointCheckNowClicked(@NotNull String applink) {
+        if(!TextUtils.isEmpty(applink)){
+            RouteManager.route(getContext(),applink);
+        }
+    }
 }

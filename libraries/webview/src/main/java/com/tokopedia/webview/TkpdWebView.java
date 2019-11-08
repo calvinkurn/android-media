@@ -3,14 +3,15 @@ package com.tokopedia.webview;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.authentication.AuthConstant;
@@ -67,6 +68,7 @@ public class TkpdWebView extends WebView {
             String userAgent = String.format("%s - Android %s","Tokopedia Webview", GlobalConfig.VERSION_NAME);
             webSettings.setUserAgentString(userAgent);
         }
+        SplitCompat.installActivity(context);
     }
 
     public void setWebViewScrollListener(@Nullable TkpdWebView.WebviewScrollListener scrollListener) {

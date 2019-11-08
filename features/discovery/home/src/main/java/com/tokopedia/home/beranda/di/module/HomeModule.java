@@ -215,8 +215,8 @@ public class HomeModule {
 
     @Provides
     @HomeScope
-    protected HomeVisitableFactory provideHomeVisitableFactory() {
-        return new HomeVisitableFactoryImpl();
+    protected HomeVisitableFactory provideHomeVisitableFactory(UserSessionInterface userSessionInterface) {
+        return new HomeVisitableFactoryImpl(userSessionInterface);
     }
   
     @Provides

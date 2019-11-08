@@ -1,7 +1,7 @@
 package com.tokopedia.home_recom.viewmodel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase

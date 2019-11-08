@@ -2,8 +2,8 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder
 
 import android.graphics.Typeface.ITALIC
 import android.graphics.Typeface.NORMAL
-import android.support.annotation.LayoutRes
-import android.support.design.widget.Snackbar
+import androidx.annotation.LayoutRes
+import com.google.android.material.snackbar.Snackbar
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView
@@ -102,6 +102,7 @@ class ChatItemListViewHolder(
     }
 
     private fun delete(element: ItemChatListPojo) {
+        listener.trackDeleteChat(element)
         listener.deleteChat(element, adapterPosition)
     }
 
@@ -130,7 +131,7 @@ class ChatItemListViewHolder(
 
     private fun responseSuccessChangeStateRead(list: List<ChatStateItem>, element: ItemChatListPojo) {
         for (state in list) {
-            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+            if (element.hasTheSameMsgId(state) && state.isSuccess()) {
                 changeStateMarkAsRead(element)
             }
         }
@@ -142,13 +143,14 @@ class ChatItemListViewHolder(
                 readStatus = STATE_CHAT_READ
                 bindReadState(readStatus, unreads)
                 listener.decreaseNotificationCounter()
+                listener.trackChangeReadStatus(element)
             }
         }
     }
 
     private fun responseSuccessChangeStateUnread(list: List<ChatStateItem>, element: ItemChatListPojo) {
         for (state in list) {
-            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+            if (element.hasTheSameMsgId(state) && state.isSuccess()) {
                 changeStateMarkAsUnread(element)
             }
         }
@@ -160,6 +162,7 @@ class ChatItemListViewHolder(
                 readStatus = STATE_CHAT_UNREAD
                 bindReadState(readStatus, unreads)
                 listener.increaseNotificationCounter()
+                listener.trackChangeReadStatus(element)
             }
         }
     }
@@ -247,7 +250,7 @@ class ChatItemListViewHolder(
 
         val now = Calendar.getInstance()
 
-        val timeFormatString = "hh:mm"
+        val timeFormatString = "HH:mm"
         val dateTimeFormatString = "dd MMM"
         val dateTimeYearFormatString = "dd MMM yy"
         val HOURS = (60 * 60 * 60).toLong()
@@ -277,6 +280,7 @@ class ChatItemListViewHolder(
         const val PAYLOAD_TYPING_STATE = 3207
         const val PAYLOAD_STOP_TYPING_STATE = 5431
 
+        const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"
         const val OFFICIAL_TAG = "Official"
     }

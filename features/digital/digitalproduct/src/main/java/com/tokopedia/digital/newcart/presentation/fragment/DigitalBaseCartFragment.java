@@ -3,9 +3,9 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -424,7 +424,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public int getProductId() {
         String productIdString = cartPassData.getProductId();
-        return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
+        try {
+            return TextUtils.isEmpty(productIdString) ? 0 : Integer.parseInt(productIdString);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override

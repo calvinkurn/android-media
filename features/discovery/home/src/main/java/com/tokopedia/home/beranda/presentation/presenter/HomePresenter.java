@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -123,10 +123,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         this.getShopInfoByDomainUseCase = getShopInfoByDomainUseCase;
         compositeSubscription = new CompositeSubscription();
         subscription = Subscriptions.empty();
-    }
-
-    public void setHomeHeader(HeaderViewModel homeHeader) {
-        headerViewModel = homeHeader;
     }
 
     @Override
@@ -259,6 +255,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void getHomeData() {
+        initHeaderViewModelData();
         HomeDataSubscriber homeLocalSubscriber = createHomeDataSubscriber();
         homeLocalSubscriber.setFlag(HomeDataSubscriber.FLAG_FROM_CACHE);
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
@@ -281,10 +278,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private void initHeaderViewModelData() {
         if (userSession.isLoggedIn()) {
-            if (headerViewModel == null) {
-                return;
-            }
-            headerViewModel.setPendingTokocashChecked(false);
+            getHeaderViewModel().setPendingTokocashChecked(false);
         }
     }
 
@@ -295,12 +289,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletAction) {
-        if (headerViewModel == null) {
-            return;
-        }
-        headerViewModel.setWalletDataSuccess();
-        headerViewModel.setHomeHeaderWalletActionData(homeHeaderWalletAction);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setWalletDataSuccess();
+        getHeaderViewModel().setHomeHeaderWalletActionData(homeHeaderWalletAction);
+        getView().updateHeaderItem(getHeaderViewModel());
     }
 
     @Override
@@ -310,46 +301,33 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void onHeaderTokocashError() {
-        if (headerViewModel == null) {
-            return;
-        }
-
-        headerViewModel.setWalletDataError();
-        headerViewModel.setHomeHeaderWalletActionData(null);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setWalletDataError();
+        getHeaderViewModel().setHomeHeaderWalletActionData(null);
+        getView().updateHeaderItem(getHeaderViewModel());
     }
 
     @Override
     public void updateHeaderTokoCashPendingData(CashBackData cashBackData) {
-        if (headerViewModel == null) {
-            return;
-        }
-        headerViewModel.setWalletDataSuccess();
-        headerViewModel.setCashBackData(cashBackData);
-        headerViewModel.setPendingTokocashChecked(true);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setWalletDataSuccess();
+        getHeaderViewModel().setCashBackData(cashBackData);
+        getHeaderViewModel().setPendingTokocashChecked(true);
+        getView().updateHeaderItem(getHeaderViewModel());
     }
 
     @Override
     public void onHeaderTokopointError() {
-        if (headerViewModel == null) {
-            return;
-        }
-        headerViewModel.setTokoPointDataError();
-        headerViewModel.setTokoPointDrawerData(null);
-        headerViewModel.setTokopointsDrawerHomeData(null);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setTokoPointDataError();
+        getHeaderViewModel().setTokoPointDrawerData(null);
+        getHeaderViewModel().setTokopointsDrawerHomeData(null);
+        getView().updateHeaderItem(getHeaderViewModel());
     }
 
     @Override
     public void onRefreshTokoPoint() {
-        if (headerViewModel == null) {
-            return;
-        }
-        headerViewModel.setTokoPointDataSuccess();
-        headerViewModel.setTokoPointDrawerData(null);
-        headerViewModel.setTokopointsDrawerHomeData(null);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setTokoPointDataSuccess();
+        getHeaderViewModel().setTokoPointDrawerData(null);
+        getHeaderViewModel().setTokopointsDrawerHomeData(null);
+        getView().updateHeaderItem(getHeaderViewModel());
 
         getTokopoint();
     }
@@ -358,12 +336,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     public void onRefreshTokoCash() {
         if (!userSession.isLoggedIn()) return;
 
-        if (headerViewModel == null) {
-            return;
-        }
-        headerViewModel.setWalletDataSuccess();
-        headerViewModel.setHomeHeaderWalletActionData(null);
-        getView().updateHeaderItem(headerViewModel);
+        getHeaderViewModel().setWalletDataSuccess();
+        getHeaderViewModel().setHomeHeaderWalletActionData(null);
+        getView().updateHeaderItem(getHeaderViewModel());
 
         getTokocashBalance();
     }
@@ -655,12 +630,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void updateHeaderTokoPointData(TokopointsDrawerHomeData tokopointsDrawerHomeData) {
-        if (headerViewModel == null) {
-            return;
-        }
-        headerViewModel.setTokoPointDataSuccess();
-
-        headerViewModel.setTokopointsDrawerHomeData(tokopointsDrawerHomeData != null ? tokopointsDrawerHomeData.getTokopointsDrawer() : null);
+        getHeaderViewModel().setTokoPointDataSuccess();
+        getHeaderViewModel().setTokopointsDrawerHomeData(tokopointsDrawerHomeData != null ? tokopointsDrawerHomeData.getTokopointsDrawer() : null);
         getView().updateHeaderItem(headerViewModel);
     }
 

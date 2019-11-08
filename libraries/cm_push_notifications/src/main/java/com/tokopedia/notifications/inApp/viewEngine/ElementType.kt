@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.inApp.viewEngine
 
-import android.support.annotation.IntDef
+import androidx.annotation.IntDef
 data class ElementType(@get:ViewType
                        @setparam:ViewType
                        var viewType: Int) {

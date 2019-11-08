@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
 import java.util.Map;
 
@@ -343,21 +340,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                                                 boolean isTradeIn,
                                                 String eventAction,
                                                 String eventLabel) {
-        String eventCategory = EventCategory.COURIER_SELECTION;
-        if (isTradeIn) {
-            eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
-        }
 
-        eCommerceBundle.putLong(FirebaseAnalytics.Param.CHECKOUT_STEP, step);
-        eCommerceBundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, checkoutOption);
-        eCommerceBundle.putString("eventCategory", eventCategory);
-        eCommerceBundle.putString("eventAction", eventAction);
-        eCommerceBundle.putString("eventLabel", eventLabel);
-
-        if (!TextUtils.isEmpty(transactionId)) {
-            eCommerceBundle.putString("payment_id", transactionId);
-        }
-        sendEnhancedEcommerceV5(FirebaseAnalytics.Event.CHECKOUT_PROGRESS, eCommerceBundle);
     }
 
     public void eventClickCourierSelectionClickPilihAlamatLain() {
@@ -930,6 +913,15 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT
+        );
+    }
+
+    public void eventViewInformationAndWarningTickerInCheckout(String tickerId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT,
+                tickerId
         );
     }
 }
