@@ -340,7 +340,7 @@ public class HomePageTracking {
     }
 
     public static void eventEnhancedImpressionWidgetHomePage(TrackingQueue trackingQueue,
-                                                             Map<String, Object> data) {
+                                                                     Map<String, Object> data) {
         trackingQueue.putEETracking((HashMap<String, Object>) data);
     }
 
