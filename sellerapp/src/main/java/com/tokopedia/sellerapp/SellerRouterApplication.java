@@ -726,11 +726,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
-        return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
-    }
-
-    @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return DiscomActivity.newInstance(activity, token);
     }
@@ -1183,10 +1178,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void onLoginSuccess() {
     }
 
-    @Override
-    public void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate) {
-    }
-
     public String getDeviceId(Context context) {
         return "";
     }
@@ -1250,9 +1241,4 @@ public abstract class SellerRouterApplication extends MainApplication
         return LoginActivity.DeepLinkIntents.getCallingIntent(context);
     }
 
-    @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context,
-                                            BottomSheets.BottomSheetDismissListener listener) {
-        //no op
-    }
 }
