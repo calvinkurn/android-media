@@ -84,7 +84,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private val adapterFactory by lazy { WishlistTypeFactoryImpl(appExecutors) }
     private val adapter by lazy { WishlistAdapter(appExecutors, adapterFactory, this) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.recycler_view) }
-    internal val searchView by lazy { view?.findViewById<CustomSearchView>(R.id.search_view) }
+    private lateinit var searchView: CustomSearchView
     private val swipeToRefresh by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
     private val containerDelete by lazy { view?.findViewById<FrameLayout>(R.id.container_delete) }
     private val deleteButton by lazy { view?.findViewById<UnifyButton>(R.id.delete_button) }
@@ -136,7 +136,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initView(view)
         loadData()
         observeAction()
     }
@@ -166,17 +166,18 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         }
     }
 
-    private fun initView(){
+    private fun initView(view: View){
         swipeToRefresh?.setOnRefreshListener{
             if(!modeBulkDelete) {
                 endlessRecyclerViewScrollListener?.resetState()
                 viewModel.getWishlistData()
             }
         }
-        searchView?.setDelayTextChanged(250)
-        searchView?.setListener(object : SearchInputView.Listener{
+        searchView = view.findViewById(R.id.wishlist_search_view)
+        searchView.setDelayTextChanged(250)
+        searchView.setListener(object : SearchInputView.Listener{
             override fun onSearchSubmitted(text: String?) {
-                searchView?.hideKeyboard()
+                searchView.hideKeyboard()
             }
 
             override fun onSearchTextChanged(text: String?) {

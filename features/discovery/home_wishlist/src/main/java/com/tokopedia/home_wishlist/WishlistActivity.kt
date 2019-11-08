@@ -10,7 +10,7 @@ import com.tokopedia.home_wishlist.di.WishlistComponent
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment
 import com.tokopedia.home_wishlist.di.DaggerWishlistComponent
 
-class WishlistActivity  : BaseSimpleActivity(), HasComponent<WishlistComponent> {
+class WishlistActivity : BaseSimpleActivity(), HasComponent<WishlistComponent> {
     override fun getComponent(): WishlistComponent {
         return DaggerWishlistComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()

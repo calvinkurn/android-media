@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.home.beranda.helper.GravitySnapHelper
+import com.tokopedia.home_wishlist.util.GravitySnapHelper
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.base.SmartExecutors
@@ -16,7 +16,6 @@ import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataMod
 import com.tokopedia.home_wishlist.view.adapter.RecommendationCarouselAdapter
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import androidx.recyclerview.widget.DefaultItemAnimator
-import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
 
 
 class RecommendationCarouselViewHolder(view: View, private val appExecutors: SmartExecutors) : SmartAbstractViewHolder<RecommendationCarouselDataModel>(view) {

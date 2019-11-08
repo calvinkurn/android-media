@@ -1,20 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="wrap_content">
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/empty_state"
+    android:orientation="vertical"
+    android:padding="20dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:unifyEmptyStateCTAFullWidth="true"
-        app:unifyEmptyStateDescription="@string/wishlist_empty_description"
-        app:unifyEmptyStateImageDrawable="@drawable/ic_empty_product"
-        app:unifyEmptyStateOrientation="horizontal"
-        app:unifyEmptyStatePrimaryCTAText="@string/wishlist_search_product"
-        app:unifyEmptyStateTitle="@string/wishlist"
-        app:unifyEmptyStateType="page"
-        android:visibility="visible"
-        tools:visibility="visible"/>
-</FrameLayout>
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:weightSum="12">
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5.5"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_empty_product"
+            android:scaleType="fitXY" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="6.5"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingLeft="8dp">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="@string/wishlist"
+                app:typographyType="heading_2"
+                android:paddingBottom="7dp" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                app:typographyType="body_3"
+                android:text="@string/wishlist_empty_description"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/retry_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/wishlist_search_product"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
+    </LinearLayout>
+
+</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

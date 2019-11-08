@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.helper
+package com.tokopedia.home_wishlist.util
 
 import android.util.DisplayMetrics
 import android.view.Gravity
