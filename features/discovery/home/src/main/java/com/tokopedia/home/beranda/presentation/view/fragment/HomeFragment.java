@@ -567,7 +567,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void configureHomeFlag(HomeFlag homeFlag) {
-        floatingTextButton.setVisibility(homeFlag.getHasRecomNavButton() && showRecomendation ? View.VISIBLE : View.GONE);
+        floatingTextButton.setVisibility(homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation ? View.VISIBLE : View.GONE);
     }
 
     private void onGoToSell() {
