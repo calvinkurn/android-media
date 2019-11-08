@@ -686,7 +686,7 @@ open class WishlistViewModel @Inject constructor(
                         id = recommendationList.first().tid,
                         title = recommendationList.first().title,
                         list = recommendationList.first().recommendationItemList.map {
-                            RecommendationCarouselItemDataModel(it, getRecommendationParentPosition(
+                            RecommendationCarouselItemDataModel(it, recommendationList.first().title, getRecommendationParentPosition(
                                     maxItemInPage,
                                     recommendationPositionInPage,
                                     currentPage)) } as MutableList<RecommendationCarouselItemDataModel>,

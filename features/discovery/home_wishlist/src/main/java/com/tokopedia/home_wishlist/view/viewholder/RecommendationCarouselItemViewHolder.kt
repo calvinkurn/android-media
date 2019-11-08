@@ -72,7 +72,12 @@ class RecommendationCarouselItemViewHolder(
 
             setButtonWishlistOnClickListener {
                 (listener as WishlistListener).onWishlistClick(element.parentPosition, adapterPosition, element.recommendationItem.isWishlist)
-                WishlistTracking.clickWishlistIconRecommendation(!element.recommendationItem.isWishlist)
+                WishlistTracking.clickWishlistIconRecommendation(
+                        productId = element.recommendationItem.productId.toString(),
+                        recomTitle = element.title,
+                        isTopAds = element.recommendationItem.isTopAds,
+                        isAdd = !element.recommendationItem.isWishlist
+                )
             }
         }
     }

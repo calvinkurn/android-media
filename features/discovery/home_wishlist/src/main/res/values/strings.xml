@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <string name="wishlist_global">wishlisthome</string>
+    <string name="wishlist_global">/wishlist</string>
     <string name="recom_global_applink_pattern">/.*\\/</string>
     <string name="recom_app_name">home_recom</string>
     <string name="recom_home_recommendation">Pilihan Tokopedia</string>

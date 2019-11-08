@@ -7,6 +7,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 data class RecommendationCarouselItemDataModel (
         val recommendationItem: RecommendationItem,
+        val title: String,
         val parentPosition: Int
 ) : WishlistDataModel {
     override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
