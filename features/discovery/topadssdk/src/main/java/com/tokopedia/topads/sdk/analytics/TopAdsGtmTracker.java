@@ -2,18 +2,20 @@ package com.tokopedia.topads.sdk.analytics;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.topads.sdk.domain.model.CpmData;
-import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
