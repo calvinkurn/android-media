@@ -176,8 +176,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
-            analytics.initCashShield(this)
-            analytics.sendCashShield(this)
         }
     }
 
