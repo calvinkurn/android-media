@@ -53,6 +53,7 @@ class AutoCompleteFragment : Fragment(),
 
         val rvResults = view.findViewById<RecyclerView>(R.id.rv_autocomplete)
         rvResults.layoutManager = LinearLayoutManager(context)
+        rvResults.setHasFixedSize(true)
         rvResults.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         rvResults.adapter = adapter
         adapter.setActionListener(this)
