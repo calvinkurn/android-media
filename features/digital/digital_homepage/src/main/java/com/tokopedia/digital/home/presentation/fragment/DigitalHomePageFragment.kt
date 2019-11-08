@@ -236,11 +236,12 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onBannerAllItemClicked() {
+        trackingUtil.eventClickAllBanners()
         RouteManager.route(activity, ApplinkConst.PROMO_LIST)
     }
 
-    override fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, i: Int) {
-        // TODO: Add tracking
+    override fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, i: Int, sectionType: String) {
+        trackingUtil.eventSectionClick(element, i, sectionType)
         RouteManager.route(activity, element.applink)
     }
 
@@ -283,8 +284,13 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     override fun onFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
             digital_homepage_search_view.searchTextView.clearFocus()
+            trackingUtil.eventClickSearchBox()
             context?.let{ context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
         }
+    }
+
+    fun onBackPressed() {
+        trackingUtil.eventClickBackButton()
     }
 
     companion object {

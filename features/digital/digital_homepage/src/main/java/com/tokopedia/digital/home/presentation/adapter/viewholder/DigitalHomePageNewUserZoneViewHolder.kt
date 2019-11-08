@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageNewUserZoneModel
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_BANNER_CLICK
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,7 +20,7 @@ class DigitalHomePageNewUserZoneViewHolder(itemView: View?, val onItemBindListen
                 itemView.digital_homepage_new_user_zone_shimmering.hide()
                 itemView.digital_homepage_new_user_zone_container.show()
                 ImageHandler.LoadImage(itemView.digital_homepage_new_user_zone_image, items[0].mediaUrl)
-                itemView.setOnClickListener { onItemBindListener.onSectionItemClicked(items[0], adapterPosition) }
+                itemView.setOnClickListener { onItemBindListener.onSectionItemClicked(items[0], adapterPosition, NEW_USER_BANNER_CLICK) }
             }
         } else {
             itemView.digital_homepage_new_user_zone_shimmering.show()

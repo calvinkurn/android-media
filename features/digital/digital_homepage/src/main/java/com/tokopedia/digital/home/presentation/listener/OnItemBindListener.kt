@@ -16,7 +16,7 @@ interface OnItemBindListener {
     fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, i: Int)
     fun onBannerItemClicked(element: DigitalHomePageBannerModel.Banner?, position: Int)
     fun onBannerAllItemClicked()
-    fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, i: Int)
+    fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, i: Int, sectionType: String)
 
     fun onBannerImpressionTrack(banner: DigitalHomePageBannerModel.Banner?, i: Int)
     fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int)

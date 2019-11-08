@@ -35,6 +35,11 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
         return travelHomepageComponent
     }
 
+    override fun onBackPressed() {
+        (fragment as DigitalHomePageFragment).onBackPressed()
+        super.onBackPressed()
+    }
+
     companion object {
         const val DIGITAL_HOMEPAGE_SCREEN_NAME = "/digital/subhomepage/topup"
 

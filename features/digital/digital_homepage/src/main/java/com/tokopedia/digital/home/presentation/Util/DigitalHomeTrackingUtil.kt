@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.presentation.Util
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.CREATIVE
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.CREATIVE_URL
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.ECOMMERCE
@@ -10,10 +11,22 @@ import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEECons
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.NAME
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.POSITION
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.PROMOTIONS
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.ALL_BANNERS_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BACK_BUTTON_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.MORE_INFO_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_BANNER_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_BOX_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_BANNER_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingCategoryConstant.DIGITAL_HOMEPAGE_CATEGORY
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingEventNameConstant.CLICK_HOMEPAGE
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingEventNameConstant.PROMO_CLICK
@@ -128,6 +141,68 @@ class DigitalHomeTrackingUtil {
 
     fun eventClickFavNumber(){
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, FAVOURITE_NUMBER)
+    }
+
+    fun eventClickBackButton(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, BACK_BUTTON_CLICK, "")
+    }
+
+    fun eventClickSearchBox(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, SEARCH_BOX_CLICK, "")
+    }
+
+    fun eventClickSearch(searchQuery: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, SEARCH_CLICK, searchQuery)
+    }
+
+    fun eventClickAllBanners(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, ALL_BANNERS_CLICK, "")
+    }
+
+    fun eventClickSubscriptionGuide(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, SUBSCRIPTION_GUIDE_CLICK, "")
+    }
+
+    fun eventClickMoreInfo(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, MORE_INFO_CLICK, "")
+    }
+
+    fun eventSectionImpression(data: List<DigitalHomePageSectionModel.Item>, eventAction: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, PROMO_VIEW,
+                        TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
+                        TrackAppUtils.EVENT_ACTION, eventAction,
+                        TrackAppUtils.EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(data).toArray()))
+                ))
+
+    }
+
+    fun eventSectionClick(data: DigitalHomePageSectionModel.Item, position: Int, eventAction: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, PROMO_CLICK,
+                        TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
+                        TrackAppUtils.EVENT_ACTION, eventAction,
+                        TrackAppUtils.EVENT_LABEL, data.title,
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(listOf(data)).toArray()))
+                ))
+
+    }
+
+    private fun createSectionItem(list: List<DigitalHomePageSectionModel.Item>): ArrayList<Any> {
+        val items = ArrayList<Any>()
+        for ((index, item) in list.withIndex()) {
+            items.add(DataLayer.mapOf(
+                    ID, item.id,
+                    NAME, item.title,
+                    POSITION, index,
+                    CREATIVE, item.title,
+                    CREATIVE_URL, item.mediaUrl
+            ))
+        }
+        return items
     }
 
 }

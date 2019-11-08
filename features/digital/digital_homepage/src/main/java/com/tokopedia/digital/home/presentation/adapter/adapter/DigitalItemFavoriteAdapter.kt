@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_CLICK
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.layout_digital_home_category_item_submenu_frame.view.*
@@ -32,7 +33,7 @@ class DigitalItemFavoriteAdapter(val items: List<DigitalHomePageSectionModel.Ite
             itemView.category_frame_image.loadImage(element.mediaUrl)
             itemView.category_frame_name.text = element.title
             itemView.setOnClickListener {
-                onItemBindListener.onSectionItemClicked(element, adapterPosition + 1)
+                onItemBindListener.onSectionItemClicked(element, adapterPosition, BEHAVIORAL_CATEGORY_CLICK)
             }
         }
 

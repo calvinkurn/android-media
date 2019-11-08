@@ -23,8 +23,8 @@
             style="@style/Toolbar.White"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
             android:background="@color/transparent"
+            android:minHeight="?attr/actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
@@ -34,23 +34,25 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/dp_3">
+                android:layout_marginTop="@dimen/dp_3"
+                android:orientation="horizontal">
 
                 <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
                     android:id="@+id/digital_homepage_search_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:padding="@dimen/dp_10"
-                    app:siv_search_hint="@string/digital_home_search_view_hint"/>
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingRight="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    app:siv_search_hint="@string/digital_home_search_view_hint" />
 
                 <ImageView
                     android:layout_width="@dimen/dp_30"
                     android:layout_height="@dimen/dp_30"
-                    android:layout_margin="@dimen/dp_8"
                     android:layout_gravity="center_vertical"
-                    app:srcCompat="@drawable/ic_warning_alert"/>
+                    android:layout_margin="@dimen/dp_8"
+                    app:srcCompat="@drawable/ic_warning_alert" />
 
             </LinearLayout>
 
