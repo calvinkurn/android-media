@@ -2,20 +2,18 @@ package com.tokopedia.topads.sdk.analytics;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.interfaces.Analytics;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -84,6 +82,23 @@ public class TopAdsGtmTracker {
                                         "position", position + 1))))
         );
         tracker.sendEnhanceEcommerceEvent(map);
+    }
+
+    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName) {
+        if (!dataLayerList.isEmpty()) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "productView",
+                    "eventCategory", "search result",
+                    "eventAction", "impression - product - topads",
+                    "eventLabel", keyword,
+                    "ecommerce", DataLayer.mapOf("currencyCode", "IDR",
+                            "impressions", DataLayer.listOf(
+                                    dataLayerList.toArray(new Object[dataLayerList.size()])
+                            )
+                    ));
+            trackingQueue.putEETracking((HashMap<String, Object>) map);
+            clearDataLayerList();
+        }
     }
 
     public void addSearchResultProductViewImpressions(Product item, int position) {
