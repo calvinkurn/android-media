@@ -82,7 +82,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initializePartialView()
@@ -153,6 +152,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
                 }
             }
+        })
+
+        viewModel.p2ShopDataResp.observe(this, Observer {
+            Log.e("p2","${it}")
         })
     }
 
