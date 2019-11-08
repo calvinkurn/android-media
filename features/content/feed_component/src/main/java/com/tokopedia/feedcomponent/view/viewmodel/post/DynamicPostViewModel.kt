@@ -5,6 +5,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * @author by milhamj on 28/11/18.
@@ -20,7 +21,8 @@ data class DynamicPostViewModel(
         val template: Template = Template(),
         val trackingPostModel: TrackingPostModel = TrackingPostModel(),
         val tracking: MutableList<TrackingViewModel> = ArrayList(),
-        val feedType: String = ""
+        val feedType: String = "",
+        val impressHolder: ImpressHolder = ImpressHolder()
 
 ) : Visitable<DynamicFeedTypeFactory> {
     

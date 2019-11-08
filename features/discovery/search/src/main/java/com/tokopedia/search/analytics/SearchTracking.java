@@ -5,8 +5,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -89,7 +90,6 @@ public class SearchTracking {
         }
 
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screen);
-        TrackApp.getInstance().getGTM().sendScreenV5(screen);
     }
 
     public void eventSearchResultSort(String screenName, String sortByValue) {
@@ -215,31 +215,6 @@ public class SearchTracking {
                         "searchFilter", filterSortParams
                 )
         );
-
-        eventClickSearchResultProductV5(productItemViewModel, eventLabel);
-    }
-
-    public static void eventClickSearchResultProductV5(ProductItemViewModel item,
-                                                       String eventLabel) {
-
-        Bundle product = new Bundle();
-        product.putString(FirebaseAnalytics.Param.ITEM_ID, item.getProductID());
-        product.putString(FirebaseAnalytics.Param.ITEM_NAME, item.getProductName());
-        product.putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other");
-        product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, item.getCategoryBreadcrumb());
-        product.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other");
-        product.putDouble(FirebaseAnalytics.Param.PRICE, safeParseDouble(item.getPrice()));
-        product.putLong(FirebaseAnalytics.Param.INDEX, 1);
-
-        Bundle bundle = new Bundle();
-        bundle.putString("eventCategory", "search result");
-        bundle.putString("eventAction", "click - product");
-        bundle.putString("eventLabel", eventLabel);
-        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, getActionFieldString(item.getPageNumber()));
-        bundle.putString("screenName", ProductListFragment.SCREEN_SEARCH_PAGE_PRODUCT_TAB);
-        bundle.putBundle("items", product);
-
-        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
     public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue,
@@ -258,40 +233,6 @@ public class SearchTracking {
                                 ))
                 )
         );
-
-        eventImpressionSearchResultProductV5(productItemViewModels, eventLabel);
-    }
-
-    public static void eventImpressionSearchResultProductV5(List<ProductItemViewModel> productItemViewModels,
-                                                          String eventLabel) {
-
-        ArrayList products = new ArrayList();
-
-        int index = 0;
-        for (ProductItemViewModel item : productItemViewModels) {
-            index++;
-            Bundle product = new Bundle();
-            String itemCategory = !TextUtils.isEmpty(item.getCategoryBreadcrumb()) ?
-                    item.getCategoryBreadcrumb() : "none / other";
-            product.putString(FirebaseAnalytics.Param.ITEM_ID, item.getProductID());
-            product.putString(FirebaseAnalytics.Param.ITEM_NAME, item.getProductName());
-            product.putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other");
-            product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, itemCategory);
-            product.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other");
-            product.putDouble(FirebaseAnalytics.Param.PRICE, safeParseDouble(item.getPrice()));
-            product.putLong(FirebaseAnalytics.Param.INDEX, index);
-            products.add(product);
-        }
-
-        Bundle bundle = new Bundle();
-        bundle.putString("eventCategory", "search result");
-        bundle.putString("eventAction", "impression - product");
-        bundle.putString("eventLabel", eventLabel);
-        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, getActionFieldString(getPageNumberFromFirstItem(productItemViewModels)));
-        bundle.putString("screenName", ProductListFragment.SCREEN_SEARCH_PAGE_PRODUCT_TAB);
-        bundle.putParcelableArrayList("items", products);
-
-        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, bundle);
     }
 
     private static int getPageNumberFromFirstItem(List<ProductItemViewModel> itemList) {
@@ -543,26 +484,47 @@ public class SearchTracking {
         );
     }
 
-    public void eventSuccessAddWishlistSearchResultProduct(String keyword, String productId) {
-        sendGeneralEventWithUserId(SearchEventTracking.Event.CLICK_WISHLIST,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.ADD_WISHLIST,
-                generateWishlistClickEventLabel(keyword, productId));
+    public static void eventSuccessWishlistSearchResultProduct(WishlistTrackingModel wishlistTrackingModel) {
+        Map<String, Object> eventTrackingMap = new HashMap<>();
+
+        eventTrackingMap.put(EVENT, SearchEventTracking.Event.CLICK_WISHLIST);
+        eventTrackingMap.put(EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT.toLowerCase());
+        eventTrackingMap.put(EVENT_ACTION, generateWishlistClickEventAction(wishlistTrackingModel.isAddWishlist(), wishlistTrackingModel.isUserLoggedIn()));
+        eventTrackingMap.put(EVENT_LABEL, generateWishlistClickEventLabel(wishlistTrackingModel.getProductId(), wishlistTrackingModel.isTopAds(), wishlistTrackingModel.getKeyword()));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
     }
 
-    public void eventSuccessRemoveWishlistSearchResultProduct(String keyword, String productId) {
-        sendGeneralEventWithUserId(SearchEventTracking.Event.CLICK_WISHLIST,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.REMOVE_WISHLIST,
-                generateWishlistClickEventLabel(keyword, productId));
+    private static String generateWishlistClickEventAction(boolean isAddWishlist, boolean isLoggedIn) {
+        return getAddOrRemoveWishlistAction(isAddWishlist)
+                + " - "
+                + SearchEventTracking.Action.MODULE
+                + " - "
+                + getIsLoggedInWishlistAction(isLoggedIn);
     }
 
-    private String generateWishlistClickEventLabel(String keyword, String productId) {
-        return keyword + " - " + productId;
+    private static String getAddOrRemoveWishlistAction(boolean isAddWishlist) {
+        return isAddWishlist ? SearchEventTracking.Action.ADD_WISHLIST : SearchEventTracking.Action.REMOVE_WISHLIST;
+    }
+
+    private static String getIsLoggedInWishlistAction(boolean isLoggedIn) {
+        return isLoggedIn ? SearchEventTracking.Action.LOGIN : SearchEventTracking.Action.NON_LOGIN;
+    }
+
+    private static String generateWishlistClickEventLabel(String productId, boolean isTopAds, String keyword) {
+        return productId
+                + " - "
+                + getTopAdsOrGeneralLabel(isTopAds)
+                + " - "
+                + keyword;
+    }
+
+    private static String getTopAdsOrGeneralLabel(boolean isTopAds) {
+        return isTopAds ? SearchEventTracking.Label.TOPADS : SearchEventTracking.Label.GENERAL;
     }
 
     public void eventActionClickCartButton(String keyword) {
-        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.TOP_NAV_SEARCH_RESULT_PAGE,
                 SearchEventTracking.Action.CLICK_CART_BUTTON_SEARCH_RESULT,
@@ -571,7 +533,7 @@ public class SearchTracking {
     }
 
     public void eventActionClickHomeButton(String keyword) {
-        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.TOP_NAV_SEARCH_RESULT_PAGE,
                 SearchEventTracking.Action.CLICK_HOME_BUTTON_SEARCH_RESULT,
@@ -588,7 +550,7 @@ public class SearchTracking {
     }
 
     public static void trackEventClickSearchBar() {
-        TrackApp.getInstance().getGTM().pushGeneralGtmV5(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_TOP_NAV,
                 SearchEventTracking.Category.EVENT_TOP_NAV_SEARCH_SRP,
                 SearchEventTracking.Action.CLICK_SEARCH_BOX,

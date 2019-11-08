@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
 
 /**
  * Created by Irfan Khoirul on 21/08/18.
@@ -11,7 +11,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopG
 
 public class CartShopHolderData implements Parcelable {
 
-    private ShopGroupData shopGroupData;
+    private ShopGroupAvailableData shopGroupAvailableData;
     private boolean allSelected;
     private boolean partialSelected;
 
@@ -19,14 +19,14 @@ public class CartShopHolderData implements Parcelable {
     }
 
     protected CartShopHolderData(Parcel in) {
-        shopGroupData = in.readParcelable(ShopGroupData.class.getClassLoader());
+        shopGroupAvailableData = in.readParcelable(ShopGroupAvailableData.class.getClassLoader());
         allSelected = in.readByte() != 0;
         partialSelected = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(shopGroupData, flags);
+        dest.writeParcelable(shopGroupAvailableData, flags);
         dest.writeByte((byte) (allSelected ? 1 : 0));
         dest.writeByte((byte) (partialSelected ? 1 : 0));
     }
@@ -48,12 +48,12 @@ public class CartShopHolderData implements Parcelable {
         }
     };
 
-    public ShopGroupData getShopGroupData() {
-        return shopGroupData;
+    public ShopGroupAvailableData getShopGroupAvailableData() {
+        return shopGroupAvailableData;
     }
 
-    public void setShopGroupData(ShopGroupData shopGroupData) {
-        this.shopGroupData = shopGroupData;
+    public void setShopGroupAvailableData(ShopGroupAvailableData shopGroupAvailableData) {
+        this.shopGroupAvailableData = shopGroupAvailableData;
     }
 
     public boolean isAllSelected() {
@@ -62,7 +62,7 @@ public class CartShopHolderData implements Parcelable {
 
     public void setAllSelected(boolean allSelected) {
         this.allSelected = allSelected;
-        this.shopGroupData.setChecked(allSelected);
+        this.shopGroupAvailableData.setChecked(allSelected);
     }
 
     public boolean isPartialSelected() {
