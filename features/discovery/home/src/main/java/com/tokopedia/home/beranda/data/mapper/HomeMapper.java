@@ -220,7 +220,8 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                             HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
                             break;
                         case DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER:
-                            list.add(mappingPlayChannel(channel, new HashMap<>(), homeData.isCache()));
+                            HomeVisitable playBanner = mappingPlayChannel(channel, new HashMap<>(), homeData.isCache());
+                            if (!list.contains(playBanner)) list.add(playBanner);
                             HomePageTracking.eventEnhanceImpressionPlayBanner(context, channel);
                             break;
                     }
