@@ -31,7 +31,13 @@ class SearchCategoryHomePageUseCase(graphqlRepository: GraphqlRepository): Graph
                             item.icon
                     )
                 }
-                return Success(searchCategoryData.filter { it.name.contains(searchQuery, true) })
+                var filteredData = searchCategoryData.filter { it.name.contains(searchQuery, true) }
+                // Add search query to model for visual purposes
+                filteredData = filteredData.map { item ->
+                    item.searchQuery = searchQuery
+                    return@map item
+                }
+                return Success(filteredData)
             }
             throw MessageErrorException("Incorrect data model")
         } catch (throwable: Throwable) {

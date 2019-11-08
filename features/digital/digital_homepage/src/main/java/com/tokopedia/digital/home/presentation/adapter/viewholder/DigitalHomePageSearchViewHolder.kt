@@ -1,5 +1,9 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -14,13 +18,20 @@ import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_digital_home_favorites.view.*
 import kotlinx.android.synthetic.main.layout_digital_home_search_category_item.view.*
 
-class DigitalHomePageSearchViewHolder(itemView: View?, val onSearchCategoryClickListener: OnSearchCategoryClickListener) :
+class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCategoryClickListener: OnSearchCategoryClickListener) :
         AbstractViewHolder<DigitalHomePageSearchCategoryModel>(itemView) {
 
     override fun bind(element: DigitalHomePageSearchCategoryModel) {
         with(itemView) {
             digital_homepage_search_category_image.loadImage(element.icon)
-            digital_homepage_search_category_name.text = element.name
+
+            // Add search query shading to category name
+            val spannableString = SpannableStringBuilder(element.name)
+            val searchQueryIndex = element.name.indexOf(element.searchQuery)
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, searchQueryIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), searchQueryIndex + element.searchQuery.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            digital_homepage_search_category_name.text = spannableString
+
             setOnClickListener { onSearchCategoryClickListener.onSearchCategoryClicked(element, adapterPosition) }
         }
     }
