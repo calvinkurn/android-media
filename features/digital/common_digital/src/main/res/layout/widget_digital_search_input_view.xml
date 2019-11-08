@@ -3,21 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/search_input_view_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_10"
-    android:paddingTop="@dimen/dp_10">
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/search_view_container"
+        android:id="@+id/search_input_view_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_digital_homepage_search_view_background"
+        android:background="@drawable/digital_bg_search_input_text_area"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_10">
+        android:padding="@dimen/dp_8">
 
         <ImageView
             android:id="@+id/image_view_search"
@@ -31,12 +26,11 @@
             style="@style/EditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginLeft="@dimen/dp_4"
             android:layout_weight="1"
             android:background="@null"
             android:ellipsize="end"
-            android:hint="@string/digital_home_search_view_hint"
+            android:hint="@string/search_hint_default"
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"

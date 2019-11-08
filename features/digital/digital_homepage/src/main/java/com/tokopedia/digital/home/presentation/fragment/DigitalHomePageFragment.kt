@@ -1,18 +1,17 @@
 package com.tokopedia.digital.home.presentation.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
+import android.widget.LinearLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -20,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
@@ -28,16 +28,20 @@ import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
 import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
+import com.tokopedia.digital.home.presentation.Util.DigitalHomePageCategoryDataMapper
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
+import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
-import kotlinx.android.synthetic.main.digital_home_search_view.view.*
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
-class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, DigitalHomePageTypeFactory>(), OnItemBindListener, DigitalHomePageTransactionViewHolder.TransactionListener {
+class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, DigitalHomePageTypeFactory>(),
+        OnItemBindListener,
+        DigitalHomePageTransactionViewHolder.TransactionListener,
+        SearchInputView.FocusChangeListener {
 
     @Inject
     lateinit var trackingUtil: DigitalHomeTrackingUtil
@@ -47,11 +51,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     lateinit var viewModel: DigitalHomePageViewModel
     private var searchBarTransitionRange = 0
 
-    lateinit var searchBar: FrameLayout
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.layout_digital_home, container, false)
-        searchBar = view.findViewById(R.id.digital_homepage_search_bar)
         return view
     }
 
@@ -70,6 +71,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         super.onViewCreated(view, savedInstanceState)
         hideStatusBar()
         digital_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        digital_homepage_search_view.setFocusChangeListener(this)
         calculateToolbarView(0)
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
@@ -119,15 +121,16 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             offsetAlpha = 0f
         }
 
+        val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(R.id.search_input_view_container)
         if (offsetAlpha >= 255) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
-            context?.run { searchBar.search_view_container.background =
+            context?.run { searchBarContainer.background =
                         MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray) }
         } else {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
             digital_homepage_toolbar.toInitialMode()
-            context?.run { searchBar.search_view_container.background =
+            context?.run { searchBarContainer.background =
                         MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background) }
         }
     }
@@ -154,7 +157,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         viewModel.digitalHomePageList.observe(this, Observer {
             clearAllData()
             it?.run {
-                mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_ORDER])?.let { categoryData ->
+                DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_ORDER])?.let { categoryData ->
                     trackingUtil.eventCategoryImpression(categoryData)
                 }
                 val list = this.filter { item -> !item.isEmpty }
@@ -277,17 +280,11 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         RouteManager.route(activity, APPLINK_HOME_MYBILLS)
     }
 
-    private fun mapCategoryData(data: DigitalHomePageItemModel): List<DigitalHomePageCategoryModel.Submenu>? {
-        if (data is DigitalHomePageCategoryModel) {
-            val categoryList = mutableListOf<DigitalHomePageCategoryModel.Submenu>()
-            for (subtitle in data.listSubtitle) {
-                for (submenu in subtitle.submenu) {
-                    categoryList.add(submenu)
-                }
-            }
-            return categoryList
+    override fun onFocusChanged(hasFocus: Boolean) {
+        if (hasFocus) {
+            digital_homepage_search_view.searchTextView.clearFocus()
+            context?.let{ context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
         }
-        return null
     }
 
     companion object {

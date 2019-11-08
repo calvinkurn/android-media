@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.digital.home.domain.GetSortListHomePageUseCase
+import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
@@ -31,5 +32,10 @@ class DigitalHomePageModule {
     @DigitalHomePageScope
     @Provides
     fun provideGetEmptyVMsUseCase(): GetSortListHomePageUseCase = GetSortListHomePageUseCase()
+
+    @DigitalHomePageScope
+    @Provides
+    fun provideSearchCategoryUseCase(graphqlRepository: GraphqlRepository): SearchCategoryHomePageUseCase =
+            SearchCategoryHomePageUseCase(graphqlRepository)
 
 }

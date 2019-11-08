@@ -34,14 +34,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_3">
 
-                <include
-                    android:id="@+id/digital_homepage_search_bar"
-                    layout="@layout/digital_home_search_view"
+                <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
+                    android:id="@+id/digital_homepage_search_view"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
+                    android:padding="@dimen/dp_10"
+                    app:siv_search_hint="@string/digital_home_search_view_hint"/>
 
                 <ImageView
                     android:layout_width="@dimen/dp_30"

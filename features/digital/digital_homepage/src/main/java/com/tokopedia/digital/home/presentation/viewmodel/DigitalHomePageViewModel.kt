@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class DigitalHomePageViewModel  @Inject constructor(
         val graphqlRepository: GraphqlRepository,
-        val dispatcher: CoroutineDispatcher,
+        dispatcher: CoroutineDispatcher,
         val getSortListHomePageUseCase: GetSortListHomePageUseCase)
     : BaseViewModel(dispatcher) {
 
