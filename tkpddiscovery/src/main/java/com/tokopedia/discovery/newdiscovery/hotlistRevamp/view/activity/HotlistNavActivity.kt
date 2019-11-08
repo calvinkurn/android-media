@@ -212,14 +212,18 @@ class HotlistNavActivity : BaseActivity(),
         var trackerAttribution = ""
         var searchQuery = ""
         intent.extras?.let {
-            val url = it.getString(EXTRA_HOTLIST_PARAM_URL, "")
-            alias = if (url.isEmpty()) {
-                it.getString(EXTRA_HOTLIST_PARAM_ALIAS, "")
+            if (it.containsKey(EXTRA_HOTLIST_PARAM_URL)) {
+                val url = it.getString(EXTRA_HOTLIST_PARAM_URL, "")
+                alias = if (url.isEmpty()) {
+                    it.getString(EXTRA_HOTLIST_PARAM_ALIAS, "")
+                } else {
+                    generateAliasUsingURL(url)
+                }
+                searchQuery = it.getString(EXTRA_HOTLIST_PARAM_QUERY, "")
+                trackerAttribution = it.getString(EXTRA_HOTLIST_PARAM_TRACKER, "")
             } else {
-                generateAliasUsingURL(url)
+                alias = intent.data?.path?.replace("/", "") ?: ""
             }
-            searchQuery = it.getString(EXTRA_HOTLIST_PARAM_QUERY, "")
-            trackerAttribution = it.getString(EXTRA_HOTLIST_PARAM_TRACKER, "")
         } ?: run {
             alias = intent.data?.path?.replace("/", "") ?: ""
         }
