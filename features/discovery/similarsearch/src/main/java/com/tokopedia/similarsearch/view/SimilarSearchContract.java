@@ -15,6 +15,7 @@ public interface SimilarSearchContract {
         @Nullable Context getAppContext();
 
         String getProductID();
+        String getQueryKey();
 
         void setProductList(List<ProductsItem> productList);
         void setEmptyLayoutVisible();

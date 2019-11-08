@@ -253,6 +253,8 @@ public interface ShipmentContract {
         void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration, boolean isCod, String shippingPriceMin, String shippingPriceHigh);
 
         void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId, boolean isCod);
+
+        void sendAnalyticsViewInformationAndWarningTickerInCheckout(String tickerId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
