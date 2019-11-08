@@ -23,6 +23,7 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
 
     fun setPlayCardHome(playCardHome: PlayCardHome) {
         this.playCardHome = playCardHome
+        setBannerImageUrl()
     }
 
     fun setChannel(channel: DynamicHomeChannel.Channels) {
@@ -35,6 +36,11 @@ class PlayCardViewModel: HomeVisitable<HomeTypeFactory> {
 
     fun getPlayCardHome(): PlayCardHome? {
         return playCardHome
+    }
+
+    private fun setBannerImageUrl() {
+        val bannerUrl = playCardHome?.playGetCardHome?.data?.card?.imageUrl?: ""
+        this.channel?.banner?.imageUrl = bannerUrl
     }
 
     override fun type(typeFactory: HomeTypeFactory): Int {
