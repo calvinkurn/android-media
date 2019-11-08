@@ -40,13 +40,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/dc_header_action_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dc_action_text"
         android:textColor="#7A08C9"
-        app:typographyType="body_3"
+        android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@id/dc_header_count_down"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

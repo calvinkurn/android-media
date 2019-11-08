@@ -36,6 +36,7 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
+import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -45,6 +46,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
+import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -165,6 +167,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         initializeAbTestVariant();
 
+        GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
+        registerActivityLifecycleCallbacks(subscriber);
     }
 
     @Override
@@ -175,12 +179,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.deleteInstance();
         TokopediaUrl.Companion.deleteInstance();
         unregisterActivityLifecycleCallbacks(callback);
+        CoreLegacyDbFlowDatabase.reset();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         unregisterActivityLifecycleCallbacks(callback);
+        CoreLegacyDbFlowDatabase.reset();
     }
 
     private void createCustomSoundNotificationChannel() {

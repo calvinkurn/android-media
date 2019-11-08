@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +29,7 @@ class DynamicChannelThematicViewHolder(
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
     private val headerCountDown = itemView.findViewById<CountDownView>(R.id.dc_header_count_down)
-    private val headerActionText = itemView.findViewById<Typography>(R.id.dc_header_action_text)
+    private val headerActionText = itemView.findViewById<AppCompatTextView>(R.id.dc_header_action_text)
     private val bannerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_thematic_banner_container)
     private val bannerTitle = itemView.findViewById<Typography>(R.id.dc_thematic_banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.dc_thematic_banner_description)
@@ -94,6 +95,10 @@ class DynamicChannelThematicViewHolder(
     private fun setupBanner(banner: Banner?, channelData: Channel) {
         if (banner != null && banner.imageUrl.isNotEmpty()) {
             bannerContainer.visibility = View.VISIBLE
+
+            if (banner.applink.isNotEmpty()) {
+                bannerContainer.setOnClickListener(dcEventHandler.onClickMixBanner(channelData))
+            }
 
             bannerTitle.apply {
                 text = banner.title

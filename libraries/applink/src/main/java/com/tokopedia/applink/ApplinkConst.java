@@ -232,6 +232,7 @@ public interface ApplinkConst {
     String CREATE_PASSWORD = "tokopedia://createpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
+    String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
 
     String KYC_NO_PARAM = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";

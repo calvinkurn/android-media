@@ -44,6 +44,9 @@ public interface ConstantTransactionAnalytics {
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
         String VIEW_SOM = "viewSOM";
         String CLICK_RECOMMENDATION = "clickRecommendation";
+        String VIEW_COURIER_IRIS = "viewCourierIris";
+        String VIEW_TRADEIN = "viewTradeIn";
+        String CLICK_TRADEIN = "clickTradeIn";
     }
 
     interface EventCategory {
@@ -286,6 +289,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
         String VIEW_PROMO_LOGISTIC_TICKER = "view promo logistic ticker";
         String CLICK_X_ON_PROMO_STACKING_LOGISTIC = "click x on promo stacking logistic";
+        String VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT = "view information and warning ticker in checkout";
 
         //Promo not eligible bottomsheet
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
