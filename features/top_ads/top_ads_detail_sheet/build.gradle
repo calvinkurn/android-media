@@ -20,6 +20,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.libraries.coreNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -31,4 +32,5 @@ dependencies {
     }
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    compile project(path: ':libraries:core_network')
 }
