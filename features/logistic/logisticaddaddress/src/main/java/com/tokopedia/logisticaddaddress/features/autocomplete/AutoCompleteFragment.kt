@@ -57,29 +57,9 @@ class AutoCompleteFragment : Fragment(),
         rvResults.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         rvResults.adapter = adapter
         adapter.setActionListener(this)
-        fetchSavedAddress()
 
-        viewModel.autoCompleteList.observe(this, Observer {
-            when (it) {
-                is Success -> adapter.setData(it.data)
-                is Fail -> when (it.throwable) {
-                    is MessageErrorException -> adapter.setNoResult()
-                }
-            }
-        })
-        viewModel.validatedDistrict.observe(this, Observer {
-            when (it) {
-                is Success -> sendResult(it.data.latitude, it.data.longitude)
-            }
-        })
-        viewModel.savedAddress.observe(this, Observer {
-            when (it) {
-                is Success -> adapter.setEmptyData(it.data)
-                is Fail -> when (it.throwable) {
-                    is MessageErrorException -> adapter.setNoResult()
-                }
-            }
-        })
+        fetchSavedAddress()
+        setObservers()
     }
 
     override fun onSearchSubmitted(text: String?) {
@@ -134,6 +114,31 @@ class AutoCompleteFragment : Fragment(),
             it.finish()
         }
     }
+
+    private fun setObservers() {
+        viewModel.autoCompleteList.observe(this, Observer {
+            when (it) {
+                is Success -> adapter.setData(it.data)
+                is Fail -> when (it.throwable) {
+                    is MessageErrorException -> adapter.setNoResult()
+                }
+            }
+        })
+        viewModel.validatedDistrict.observe(this, Observer {
+            when (it) {
+                is Success -> sendResult(it.data.latitude, it.data.longitude)
+            }
+        })
+        viewModel.savedAddress.observe(this, Observer {
+            when (it) {
+                is Success -> adapter.setEmptyData(it.data)
+                is Fail -> when (it.throwable) {
+                    is MessageErrorException -> adapter.setNoResult()
+                }
+            }
+        })
+    }
+
 
     companion object {
         fun newInstance(): Fragment = AutoCompleteFragment().apply {
