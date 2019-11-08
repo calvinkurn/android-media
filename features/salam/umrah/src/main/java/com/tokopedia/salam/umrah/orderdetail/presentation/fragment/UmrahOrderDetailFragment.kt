@@ -234,13 +234,20 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     private fun renderMyUmrahWidget(data: MyUmrahWidgetModel) {
         if (data.header.isNotEmpty()) {
             my_umrah_widget.myUmrahModel = data
-            my_umrah_widget.buildView()
+            my_umrah_widget.buildView(trackingUmrahUtil)
         } else {
             my_umrah_widget.visibility = View.GONE
         }
     }
 
+
+
     override fun onItemClicked(buttonViewModel: UmrahOrderDetailButtonViewModel, position: Int) {
+        when(buttonViewModel.label){
+            LIHAT_LABEL -> trackingUmrahUtil.umrahOrderDetailInvoice()
+            LIHAT_DETAIL_LABEL -> trackingUmrahUtil.umrahOrderDetailDetailPDP()
+            LIHAT_E_VOUCHER_LABEL -> trackingUmrahUtil.umrahOrderDetailDetailEVoucher()
+        }
         RouteManager.route(context, "${buttonViewModel.buttonLink}")
     }
 
@@ -277,9 +284,13 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         this.setText(spannableString, TextView.BufferType.SPANNABLE)
     }
 
+
     companion object {
 
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
+        private const val LIHAT_LABEL = "Lihat"
+        private const val LIHAT_DETAIL_LABEL = "Lihat Detail"
+        private const val LIHAT_E_VOUCHER_LABEL = "Lihat E-Voucher"
 
         fun getInstance(orderId: String): UmrahOrderDetailFragment = UmrahOrderDetailFragment().also {
             it.arguments = Bundle().apply {

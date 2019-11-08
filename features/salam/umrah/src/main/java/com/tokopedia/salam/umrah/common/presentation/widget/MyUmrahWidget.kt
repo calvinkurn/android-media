@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
+import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_umrah_my_umrah.view.*
@@ -31,7 +32,7 @@ class MyUmrahWidget @JvmOverloads constructor(context: Context, attrs: Attribute
         }
     }
 
-    fun buildView() {
+    fun buildView(trackingUmrahUtil: TrackingUmrahUtil) {
         if (::myUmrahModel.isInitialized) {
             hideLoadingState()
 
@@ -40,7 +41,7 @@ class MyUmrahWidget @JvmOverloads constructor(context: Context, attrs: Attribute
             tg_umrah_next.text = myUmrahModel.nextActionText
             btn_my_umrah_detail.text = myUmrahModel.mainButtonText
             btn_my_umrah_detail.setOnClickListener {
-
+                trackingUmrahUtil.umrahOrderDetailUmrahSaya()
                 RouteManager.route(context, myUmrahModel.mainButtonLink)
             }
         } else {

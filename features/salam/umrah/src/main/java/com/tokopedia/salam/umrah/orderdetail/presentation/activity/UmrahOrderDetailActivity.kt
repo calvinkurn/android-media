@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.di.UmrahComponentInstance
 import com.tokopedia.salam.umrah.orderdetail.di.DaggerUmrahOrderDetailComponent
 import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
@@ -20,6 +21,9 @@ class UmrahOrderDetailActivity : BaseSimpleActivity(), HasComponent<UmrahOrderDe
 
     lateinit var userSession: UserSessionInterface
         @Inject set
+
+    @Inject
+    lateinit var trackingUmrahUtil: TrackingUmrahUtil
 
     override fun getComponent(): UmrahOrderDetailComponent =
             DaggerUmrahOrderDetailComponent.builder()
@@ -57,6 +61,11 @@ class UmrahOrderDetailActivity : BaseSimpleActivity(), HasComponent<UmrahOrderDe
         when (requestCode) {
             REQUEST_CODE_LOGIN -> if (userSession.isLoggedIn) recreate() else finish()
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        trackingUmrahUtil.umrahOrderDetailBack()
     }
 
     companion object {
