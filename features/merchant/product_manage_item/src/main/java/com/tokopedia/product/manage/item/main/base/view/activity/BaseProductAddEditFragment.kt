@@ -508,6 +508,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, hasOriginalVariantLevel1)
                     putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, hasOriginalVariantLevel2)
                     putExtra(ProductExtraConstant.EXTRA_HAS_WHOLESALE, hasWholesale)
+                    putExtra(ProductExtraConstant.EXTRA_IS_ADD, isAddStatus())
                     startActivityForResult(this, REQUEST_CODE_VARIANT)
                 }
             }

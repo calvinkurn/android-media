@@ -122,6 +122,13 @@ class LabelSwitch : BaseCustomView {
         }
     }
 
+    fun disableSwitch(){
+        switchStatus.isClickable = false
+        this.isClickable = false
+        this.isEnabled = false
+        switchStatus.isEnabled = false
+    }
+
     fun setListenerValue(listener: CompoundButton.OnCheckedChangeListener) {
         this.listener = listener
     }

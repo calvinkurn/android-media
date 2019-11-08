@@ -44,6 +44,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
     public static final int MAX_STOCK = 999999;
     public static final int MIN_STOCK = 1;
+    public static final int MIN_STOCK_EDIT = 0;
     private OnProductVariantDetailLeafFragmentListener listener;
     private LabelSwitch labelSwitchStatus;
 
@@ -65,6 +66,8 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         ProductVariantCombinationViewModel getProductVariantCombinationViewModel();
 
         String getVariantName();
+
+        boolean isAddStatus();
 
         @CurrencyTypeDef
         int getCurrencyTypeDef();
@@ -164,23 +167,37 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());
 
         counterInputViewStock.setVisibility(View.VISIBLE);
-        counterInputViewStock.setValue(productVariantCombinationViewModel.getStock());
+
+        if (listener.isAddStatus()) {
+            labelSwitchStatus.setChecked(true);
+            labelSwitchStatus.setClickable(false);
+            labelSwitchStatus.disableSwitch();
+            counterInputViewStock.setValue(1);
+            productVariantCombinationViewModel.setStock(1);
+
+        } else {
+            labelSwitchStatus.setChecked(productVariantCombinationViewModel.getStock() != 0);
+            counterInputViewStock.setValue(productVariantCombinationViewModel.getStock());
+        }
+
         counterInputViewStock.addTextChangedListener(new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 int stock = (int) counterInputViewStock.getDoubleValue();
 
+                String sString = StringUtils.omitNonNumeric(s.toString());
+                if (TextUtils.isEmpty(sString) || sString.equals("0")) {
+                    if (!listener.isAddStatus()) {
+                        stock = 1;
+                    }
+                }
+
                 checkStockValid(stock);
                 if (productVariantCombinationViewModel.getStock() == stock) {
                     return;
                 }
-                productVariantCombinationViewModel.setStock(stock);
-                if (stock == 0) {
-                    labelSwitchStatus.setChecked(false);
-                } else {
-                    labelSwitchStatus.setChecked(true);
-                }
 
+                productVariantCombinationViewModel.setStock(stock);
             }
         });
 
@@ -226,11 +243,18 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
     }
 
     private boolean checkStockValid(int stock) {
+        int minStock;
+        if (listener.isAddStatus()) {
+            minStock = MIN_STOCK;
+        } else {
+            minStock = MIN_STOCK_EDIT;
+        }
+
         if (listener.getProductVariantCombinationViewModel().isActive() &&
                 isStockLimited()) {
-            if (stock < MIN_STOCK || stock > MAX_STOCK) {
+            if (stock < minStock || stock > MAX_STOCK) {
                 counterInputViewStock.setError(getContext().getString(R.string.product_error_product_minimum_order_not_valid,
-                        getContext().getString(R.string.product_minimum_total_stock),
+                        String.valueOf(minStock),
                         getContext().getString(R.string.product_maximum_total_stock)));
                 return false;
             }
@@ -273,12 +297,10 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
     private void onLabelSwitchStatusChanged(boolean isChecked) {
         setStockLabel(isChecked);
-        productVariantCombinationViewModel.setActive(isChecked);
-
-        // counter input for stock only visible for stock limited only
-        if (((int) counterInputViewStock.getDoubleValue()) == 0) {
+        if (listener.isAddStatus() && ((int) counterInputViewStock.getDoubleValue()) == 0) {
             counterInputViewStock.setValue(1);
         }
+        productVariantCombinationViewModel.setActive(isChecked);
         counterInputViewStock.setEnabled(true);
 
     }
