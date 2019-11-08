@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.ResolvableApiException
@@ -34,7 +33,6 @@ import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerCom
 import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
 import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteActivity
-import com.tokopedia.logisticaddaddress.features.dropoff_picker.adapter.NearbyStoreAdapter
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.permissionchecker.PermissionCheckerHelper

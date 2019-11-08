@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.dropoff_picker.adapter
+package com.tokopedia.logisticaddaddress.features.dropoff_picker
 
 import android.view.LayoutInflater
 import android.view.View
