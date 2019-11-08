@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.common
+package com.tokopedia.discovery.common
 
 import androidx.lifecycle.Observer
 

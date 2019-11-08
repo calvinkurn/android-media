@@ -2,6 +2,7 @@ include 'libraries:inappupdate'
 
 include 'features:discovery:similarsearch'
 
+include 'features:discovery:productcard'
 include 'features:discovery:wishlist_common'
 
 include 'libraries:applink'

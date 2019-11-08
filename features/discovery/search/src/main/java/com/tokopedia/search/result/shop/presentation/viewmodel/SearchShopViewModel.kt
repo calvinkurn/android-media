@@ -8,7 +8,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.DispatcherProvider
+import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.Mapper
+import com.tokopedia.discovery.common.State
+import com.tokopedia.discovery.common.State.*
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
@@ -18,9 +21,6 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.search.result.common.Event
-import com.tokopedia.search.result.common.State
-import com.tokopedia.search.result.common.State.*
 import com.tokopedia.search.result.common.UseCase
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel

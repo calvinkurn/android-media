@@ -3,16 +3,17 @@ package com.tokopedia.search.result.presentation.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -23,13 +24,14 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
+import com.tokopedia.discovery.common.manager.SimilarSearchManager;
 import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -591,13 +593,29 @@ public class ProductListFragment
 
     @Override
     public void onLongClick(ProductItemViewModel item, int adapterPosition) {
-        if(getSearchParameter() == null) return;
+        if(getSearchParameter() == null || getActivity() == null) return;
+
         SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
-        startSimilarSearch(item.getProductID());
+
+        SimilarSearchManager.startSimilarSearch(getActivity(), createSimilarSearchSelectedProduct(item));
     }
 
-    public void startSimilarSearch(String productId) {
-        RouteManager.route(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
+    private SimilarSearchSelectedProduct createSimilarSearchSelectedProduct(ProductItemViewModel productItemViewModel) {
+        return new SimilarSearchSelectedProduct(
+                productItemViewModel.getProductID(),
+                productItemViewModel.getImageUrl(),
+                productItemViewModel.getProductName(),
+                productItemViewModel.getPrice(),
+                productItemViewModel.getShopCity(),
+                getStarCount(productItemViewModel),
+                productItemViewModel.getCountReview()
+        );
+    }
+
+    private int getStarCount(ProductItemViewModel productItemViewModel) {
+        return productItemViewModel.isTopAds()
+                ? Math.round(productItemViewModel.getRating() / 20)
+                : productItemViewModel.getRating();
     }
 
     private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {

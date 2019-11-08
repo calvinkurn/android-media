@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.common
+package com.tokopedia.discovery.common
 
 sealed class State<T>(
         val data: T? = null,

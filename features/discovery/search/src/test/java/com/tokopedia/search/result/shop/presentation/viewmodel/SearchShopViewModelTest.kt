@@ -2,6 +2,9 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.discovery.common.EventObserver
+import com.tokopedia.discovery.common.State.Error
+import com.tokopedia.discovery.common.State.Success
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.DataValue
@@ -11,9 +14,6 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.*
 import com.tokopedia.search.result.*
-import com.tokopedia.search.result.common.EventObserver
-import com.tokopedia.search.result.common.State.Error
-import com.tokopedia.search.result.common.State.Success
 import com.tokopedia.search.result.common.UseCase
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
@@ -483,7 +483,7 @@ internal class SearchShopViewModelTest : Spek({
             var searchShopFirstPagePerformanceMonitoringIsStarted = false
             var searchShopFirstPagePerformanceMonitoringIsEnded = false
             val searchShopFirstPagePerformanceMonitoringEventObserver = EventObserver<Boolean> {
-                when(it) {
+                when (it) {
                     true -> searchShopFirstPagePerformanceMonitoringIsStarted = true
                     false -> searchShopFirstPagePerformanceMonitoringIsEnded = true
                 }
@@ -1342,7 +1342,7 @@ internal class SearchShopViewModelTest : Spek({
             var searchShopFirstPagePerformanceMonitoringIsStarted = false
             var searchShopFirstPagePerformanceMonitoringIsEnded = false
             val searchShopFirstPagePerformanceMonitoringEventObserver = EventObserver<Boolean> {
-                when(it) {
+                when (it) {
                     true -> searchShopFirstPagePerformanceMonitoringIsStarted = true
                     false -> searchShopFirstPagePerformanceMonitoringIsEnded = true
                 }
