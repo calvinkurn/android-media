@@ -463,6 +463,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Override
     public void onDisablePromoDiscount() {
+        promoData.setPromoCode("");
         isCouponVoucherChanged = true;
         flightBookingReviewPresenter.onCancelAppliedVoucher();
         updateFinalTotal(null, getCurrentBookingReviewModel());
