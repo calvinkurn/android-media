@@ -55,7 +55,7 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
     override fun onBackPressed() {
 
         val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
-        if (promocheckoutlistfragment != null) {
+        if (promocheckoutlistfragment != null && promocheckoutlistfragment is PromoCheckoutListMarketplaceFragment) {
             if (promocheckoutlistfragment.childFragmentManager.backStackEntryCount > 0) {
                 promocheckoutlistfragment.childFragmentManager.popBackStack()
             } else
@@ -68,7 +68,7 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
 
     override fun onResume() {
         val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
-        if (promocheckoutlistfragment != null) {
+        if (promocheckoutlistfragment != null && promocheckoutlistfragment is PromoCheckoutListMarketplaceFragment) {
             if (promocheckoutlistfragment.childFragmentManager.backStackEntryCount > 0) {
                 promocheckoutlistfragment.childFragmentManager.findFragmentByTag(CHECKOUT_CATALOG_DETAIL_FRAGMENT)?.let { promocheckoutlistfragment.childFragmentManager.beginTransaction().remove(it).commit() }
                 promocheckoutlistfragment.childFragmentManager.popBackStack()
@@ -78,23 +78,10 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == PromoCheckoutListMarketplaceFragment.REQUEST_CODE_DETAIL_PROMO) {
-            if (resultCode == Activity.RESULT_OK) {
-                setResult(Activity.RESULT_OK, data)
-                finish()
-            } else {
-                val intent = Intent()
-                val bundle = data?.getExtras()
-                val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
-                intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
-                setResult(RESULT_CLASHING, intent)
-
-                if (clashingInfoDetailUiModel != null) {
-                    finish()
-                }
-            }
+        val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
+        if (promocheckoutlistfragment != null && promocheckoutlistfragment is PromoCheckoutListMarketplaceFragment) {
+            promocheckoutlistfragment.onActivityResult(requestCode, resultCode, data)
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 }
 

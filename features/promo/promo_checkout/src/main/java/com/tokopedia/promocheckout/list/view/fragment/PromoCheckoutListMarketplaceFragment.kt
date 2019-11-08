@@ -73,7 +73,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
         super.onItemClicked(promoCheckoutListModel)
-        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
+        activity?.startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
                 activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
     }
 
@@ -105,6 +105,26 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         intent.putExtra(EXTRA_CLASHING_DATA, clasingInfoDetailUiModel)
         activity?.setResult(RESULT_CLASHING, intent)
         activity?.finish()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_DETAIL_PROMO) {
+            if (resultCode == Activity.RESULT_OK) {
+                activity?.setResult(Activity.RESULT_OK, data)
+                activity?.finish()
+            } else {
+                val intent = Intent()
+                val bundle = data?.getExtras()
+                val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
+                intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
+                activity?.setResult(RESULT_CLASHING, intent)
+
+                if (clashingInfoDetailUiModel != null) {
+                    activity?.finish()
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun initInjector() {
