@@ -46,6 +46,8 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Success
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity.ARGS_RATING
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_create_review.*
 import java.util.*
@@ -197,7 +199,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 if (s.toString().isEmpty() && !shouldIncreaseProgressBar) {
                     shouldIncreaseProgressBar = true
                     stepper_review.progress = stepper_review.progress - 1
-                } else if(shouldIncreaseProgressBar) {
+                } else if (shouldIncreaseProgressBar) {
                     stepper_review.progress = stepper_review.progress + 1
                     shouldIncreaseProgressBar = false
                 }
@@ -385,6 +387,9 @@ class CreateReviewFragment : BaseDaggerFragment() {
                     setResult(Activity.RESULT_OK, intent)
                     startActivity(intent)
                 } else {
+                    val intent = Intent()
+                    intent.putExtra(ARGS_RATING, reviewClickAt.toFloat())
+                    setResult(InboxReputationDetailFragment.REQUEST_CODE_ON_SUCCESS_REVIEW, intent)
                     onBackPressed()
                 }
 
@@ -414,7 +419,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetReviewForm() {
-        NetworkErrorHelper.showEmptyState(context,review_root) {
+        NetworkErrorHelper.showEmptyState(context, review_root) {
             getReviewData()
         }
     }

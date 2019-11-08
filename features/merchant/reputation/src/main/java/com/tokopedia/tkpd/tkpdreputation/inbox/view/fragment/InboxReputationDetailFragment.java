@@ -73,6 +73,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     private static final int REQUEST_EDIT_REVIEW = 102;
     private static final int REQUEST_REPORT_REVIEW = 103;
 
+    public static final int REQUEST_CODE_ON_SUCCESS_REVIEW = 104;
     public static final int PUAS_SCORE = 2; // FROM API
 
     private RecyclerView listProduct;
@@ -578,6 +579,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_REPORT_REVIEW && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
                     .success_report_review));
+        } else if (requestCode == REQUEST_GIVE_REVIEW && resultCode == REQUEST_CODE_ON_SUCCESS_REVIEW) {
+            refreshPage();
+            getActivity().setResult(Activity.RESULT_OK);
+            showRatingDialog(data.getExtras());
+            NetworkErrorHelper.showSnackbar(getActivity(),
+                    getString(R.string.review_for) + " " + data.getExtras().getString
+                            (InboxReputationFormActivity.ARGS_REVIEWEE_NAME, "")
+                            + " " + getString(R.string.is_send));
         } else
             super.onActivityResult(requestCode, resultCode, data);
     }

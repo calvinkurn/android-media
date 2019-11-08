@@ -1482,7 +1482,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productStatsView.renderRating(productInfoP2.rating)
         attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
         partialVariantAndRateEstView.renderPriorityOrder(productInfoP2.shopCommitment)
-        imageReviewViewView.renderData(productInfoP2.imageReviews, productInfoP2.rating)
+        imageReviewViewView.renderData(productInfoP2)
         mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews)
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
