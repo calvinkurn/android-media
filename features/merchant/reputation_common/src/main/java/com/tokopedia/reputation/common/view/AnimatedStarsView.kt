@@ -26,9 +26,8 @@ class AnimatedStarsView @JvmOverloads constructor(
     }
 
     fun resetStars() {
-        if (!showingNormalAnim) {
-            morph()
-        }
+        showingNormalAnim = true
+        setImageDrawable(AnimatedVectorDrawableCompat.create(context, R.drawable.empty_star))
     }
 
     fun morph() {

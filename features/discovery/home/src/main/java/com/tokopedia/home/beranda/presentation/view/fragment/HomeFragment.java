@@ -1627,12 +1627,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onReviewClick(int position, int clickReviewAt, @NotNull String applink) {
+    public void onReviewClick(int position, int clickReviewAt, long delay, @NotNull String applink) {
         new Handler().postDelayed(() -> {
             Intent intent = RouteManager.getIntent(getContext(), applink);
             intent.putExtra(REVIEW_CLICK_AT, clickReviewAt);
             startActivityForResult(intent, REQUEST_CODE_REVIEW);
-        }, 500);
+        }, delay);
     }
 
     @Override

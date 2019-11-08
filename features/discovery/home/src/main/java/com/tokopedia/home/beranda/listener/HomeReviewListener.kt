@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.listener
 
 interface HomeReviewListener {
-    fun onReviewClick(position: Int, clickReviewAt: Int, applink:String)
+    fun onReviewClick(position: Int, clickReviewAt: Int, delay: Long, applink:String)
     fun onCloseClick()
 }

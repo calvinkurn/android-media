@@ -20,6 +20,8 @@ class ReviewViewHolder(
         private val categoryListener: HomeCategoryListener
 ) : AbstractViewHolder<ReviewViewModel>(itemView) {
 
+    var isPressed = false
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_item_review
@@ -31,6 +33,7 @@ class ReviewViewHolder(
         if (element.suggestedProductReview.suggestedProductReview.title.isEmpty()) {
             itemView.loading_review.visibility = View.VISIBLE
         } else {
+            isPressed = false
             itemView.loading_review.visibility = View.GONE
             itemView.review_title.text = String.format("%s %s",
                     element.suggestedProductReview.suggestedProductReview.title,
@@ -58,14 +61,31 @@ class ReviewViewHolder(
 
         ImageHandler.LoadImage(itemView.review_card_bg, cardBg)
         itemView.review_card_content_container.setOnClickListener{
-            HomePageTracking.homeReviewOnBlankSpaceClickTracker("", "")
-            reviewListener.onReviewClick(adapterPosition, 5, element.suggestedProductReview.suggestedProductReview.linkURL)
+            if (!isPressed) {
+                HomePageTracking.homeReviewOnBlankSpaceClickTracker("", "")
+                reviewListener.onReviewClick(
+                        adapterPosition,
+                        5,
+                        0,
+                        element.suggestedProductReview.suggestedProductReview.linkURL
+                )
+                isPressed = true
+            }
         }
-        itemView.animated_review.resetStars(false)
+
+        itemView.animated_review.resetStars()
         itemView.animated_review.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
-                HomePageTracking.homeReviewOnRatingChangedTracker("", "", position + 1)
-                reviewListener.onReviewClick(adapterPosition, position, element.suggestedProductReview.suggestedProductReview.linkURL)
+                if (!isPressed) {
+                    HomePageTracking.homeReviewOnRatingChangedTracker("", "", position + 1)
+                    reviewListener.onReviewClick(
+                            adapterPosition,
+                            position,
+                            500,
+                            element.suggestedProductReview.suggestedProductReview.linkURL
+                    )
+                    isPressed = true
+                }
             }
         })
 

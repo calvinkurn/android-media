@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity
 
+import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -7,6 +8,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment
@@ -16,18 +19,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationForm
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
     companion object {
-        fun newInstance(
-                context: Context,
-                productId: String,
-                shopId: String,
-                reputationId: String
-        ): Intent {
-            return Intent(context, CreateReviewActivity::class.java).apply {
-                putExtra(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId)
-                putExtra(InboxReputationFormActivity.ARGS_SHOP_ID, shopId)
-                putExtra(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId)
-            }
-        }
+        fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
     }
 
     override fun getNewFragment(): Fragment {
@@ -67,4 +59,16 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
         return (application as MainApplication).appComponent
     }
 
+    override fun onBackPressed() {
+        if (isTaskRoot) {
+            val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+
+            setResult(Activity.RESULT_OK, intent)
+            startActivity(intent)
+        } else {
+            super.onBackPressed()
+        }
+
+        finish()
+    }
 }

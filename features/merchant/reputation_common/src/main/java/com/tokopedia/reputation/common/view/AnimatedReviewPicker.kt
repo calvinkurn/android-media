@@ -148,11 +148,11 @@ class AnimatedReviewPicker @JvmOverloads constructor(
 
     private fun generateReviewText(index: Int) {
         when (index) {
-            1 -> txtReviewStatus.text = "Sangat Buruk"
-            2 -> txtReviewStatus.text = "Buruk"
-            3 -> txtReviewStatus.text = "Cukup"
-            4 -> txtReviewStatus.text = "Baik"
-            5 -> txtReviewStatus.text = "Memuaskan"
+            1 -> txtReviewStatus.text = resources.getString(R.string.rating_1_star)
+            2 -> txtReviewStatus.text = resources.getString(R.string.rating_2_star)
+            3 -> txtReviewStatus.text = resources.getString(R.string.rating_3_star)
+            4 -> txtReviewStatus.text = resources.getString(R.string.rating_4_star)
+            5 -> txtReviewStatus.text = resources.getString(R.string.rating_5_star)
         }
     }
 

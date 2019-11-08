@@ -27,6 +27,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -56,7 +57,6 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
-        private const val WRITE_REVIEW_MIN_LENGTH = 30
         private const val DEFAULT_REVIEW_ID = "0"
         private const val PRODUCT_ID_REVIEW = "PRODUCT_ID"
         private const val REVIEW_ID = "REVIEW_ID"
@@ -135,7 +135,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                     productRevGetForm = it.data
                     onSuccessGetReviewForm(it.data)
                 }
-                is CoroutineFail -> onErrorGetReviewForm(it.throwable)
+                is CoroutineFail -> onErrorGetReviewForm()
             }
         })
 
@@ -145,7 +145,6 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 is Fail -> {
                     stopLoading()
                     showToasterError(it.fail.message ?: "")
-                    onSuccessSubmitReview()
                 }
                 is Success -> {
                     stopLoading()
@@ -163,7 +162,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         anonymous_text.text = generateAnonymousText()
         animatedReviewPicker = view.findViewById(R.id.animatedReview)
         imgAnimationView = view.findViewById(R.id.img_animation_review)
-        animatedReviewPicker.resetStars(true)
+        animatedReviewPicker.resetStars()
         animatedReviewPicker.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
                 reviewClickAt = position
@@ -348,7 +347,11 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private fun generateAnonymousText(): String {
         if (reviewUserName.isNotEmpty()) {
             val firstName = reviewUserName.substringBefore(" ")
-            return firstName.replaceRange(1, firstName.length - 1, "***")
+
+            return getString(
+                    R.string.anonymous_review_prefix,
+                    firstName.replaceRange(1, firstName.length - 1, "***")
+            )
         }
 
         return ""
@@ -374,12 +377,17 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSubmitReview() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
-
         Handler(Looper.getMainLooper()).postDelayed({
             activity?.run {
-                setResult(Activity.RESULT_OK, intent)
-                startActivity(intent)
+                if (isTaskRoot) {
+                    val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+
+                    setResult(Activity.RESULT_OK, intent)
+                    startActivity(intent)
+                } else {
+                    onBackPressed()
+                }
+
                 finish()
             }
         }, 700)
@@ -405,9 +413,9 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onErrorGetReviewForm(t: Throwable) {
-//        NetworkErrorHelper.showEmptyState(context,review_root) {
-//            getReviewData()
-//        }
+    private fun onErrorGetReviewForm() {
+        NetworkErrorHelper.showEmptyState(context,review_root) {
+            getReviewData()
+        }
     }
 }

@@ -113,11 +113,11 @@ class AnimatedReputationView @JvmOverloads constructor(
 
     private fun generateReviewText(index: Int) {
         when (index) {
-            1 -> txt_desc_status.text = "Sangat Buruk"
-            2 -> txt_desc_status.text = "Buruk"
-            3 -> txt_desc_status.text = "Cukup"
-            4 -> txt_desc_status.text = "Baik"
-            5 -> txt_desc_status.text = "Memuaskan"
+            1 -> txt_desc_status.text = resources.getString(R.string.rating_1_star)
+            2 -> txt_desc_status.text = resources.getString(R.string.rating_2_star)
+            3 -> txt_desc_status.text = resources.getString(R.string.rating_3_star)
+            4 -> txt_desc_status.text = resources.getString(R.string.rating_4_star)
+            5 -> txt_desc_status.text = resources.getString(R.string.rating_5_star)
         }
     }
 
@@ -139,15 +139,11 @@ class AnimatedReputationView @JvmOverloads constructor(
     }
 
     //Reset stars
-    fun resetStars(shouldRedraw: Boolean = false) {
+    fun resetStars() {
         clickAt = 0
         lastReview = 0
         listOfStarsView.forEach {
-            if (shouldRedraw) {
-                it.reviewView.init()
-            } else {
-                it.reviewView.resetStars()
-            }
+            it.reviewView.resetStars()
             it.isAnimated = false
         }
     }

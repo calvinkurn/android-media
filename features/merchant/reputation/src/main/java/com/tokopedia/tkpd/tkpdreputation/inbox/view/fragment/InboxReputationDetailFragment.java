@@ -37,6 +37,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity;
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
@@ -268,7 +269,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     public void onGoToGiveReview(String productId, int shopId) {
         if (getContext() != null) {
             startActivityForResult(
-                    CreateReviewActivity.Companion.newInstance(getContext(), productId, Integer.toString(shopId, 10), reputationId),
+                    CreateReviewActivity.Companion.newInstance(getContext())
+                        .putExtra(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId)
+                        .putExtra(InboxReputationFormActivity.ARGS_SHOP_ID, Integer.toString(shopId, 10))
+                        .putExtra(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId)
+                        .putExtra(CreateReviewFragment.REVIEW_CLICK_AT, 5),
                     REQUEST_GIVE_REVIEW
             );
         }

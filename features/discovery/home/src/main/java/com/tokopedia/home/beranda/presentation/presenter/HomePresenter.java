@@ -223,21 +223,17 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void dismissReview() {
+        getView().onSuccessDismissReview();
+
         dismissHomeReviewUseCase.execute(RequestParams.EMPTY, new Subscriber<String>() {
             @Override
-            public void onCompleted() {
-            }
+            public void onCompleted() { }
 
             @Override
-            public void onError(Throwable e) {
-
-            }
+            public void onError(Throwable e) { }
 
             @Override
-            public void onNext(String s) {
-                getView().onSuccessDismissReview();
-
-            }
+            public void onNext(String s) { }
         });
     }
 

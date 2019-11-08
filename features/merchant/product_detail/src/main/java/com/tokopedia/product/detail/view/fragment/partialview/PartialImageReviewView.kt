@@ -4,6 +4,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Rating
@@ -40,10 +41,13 @@ class PartialImageReviewView private constructor(private val view: View,
             }
             review_count.text = context.getString(R.string.review_counter, rating.totalRating)
             review_rating.text = context.getString(R.string.counter_pattern_string, rating.ratingScore, 5)
+
+            if (rating.totalRating > 0) visible() else gone()
+
             if (imageReviews.isNotEmpty())
-                visible()
+                image_review_list.visible()
             else
-                gone()
+                image_review_list.gone()
         }
     }
 }
