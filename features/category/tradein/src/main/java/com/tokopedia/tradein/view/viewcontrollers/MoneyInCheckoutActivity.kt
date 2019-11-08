@@ -149,7 +149,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             when (it) {
                 is Success -> {
                     sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
-                            TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                            TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION_DROP,
                             TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
                             TradeInGTMConstants.SUCCESS)
                     val paymentPassData = PaymentPassData()
@@ -307,8 +307,16 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             if (isTimeSet && isCourierSet) {
                 moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
             } else if (!isCourierSet) {
+                sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                        TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                        TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
+                        TradeInGTMConstants.SUCCESS)
                 showMessage(getString(R.string.select_shipping))
             } else if (!isTimeSet) {
+                sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                        TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                        TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
+                        TradeInGTMConstants.SUCCESS)
                 showMessage(getString(R.string.select_fetch_time))
             }
         }
