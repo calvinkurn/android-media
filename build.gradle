@@ -74,7 +74,6 @@ allprojects {
         maven { url "$rootDir/node_modules/react-native/android" }
         flatDir {
             dirs '../aars'
-            dirs project(rootProject.ext.libraries.inappupdate).file('libs')
         }
         maven { url 'https://hansel.io/maven' }
     }
