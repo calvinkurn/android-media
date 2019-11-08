@@ -36,6 +36,7 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
+import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -175,12 +176,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.deleteInstance();
         TokopediaUrl.Companion.deleteInstance();
         unregisterActivityLifecycleCallbacks(callback);
+        CoreLegacyDbFlowDatabase.reset();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         unregisterActivityLifecycleCallbacks(callback);
+        CoreLegacyDbFlowDatabase.reset();
     }
 
     private void createCustomSoundNotificationChannel() {
