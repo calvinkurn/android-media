@@ -147,11 +147,13 @@ public class EventBookTicketActivity
                 if (detailsViewModel.getSchedulesViewModels().size() > 1) {
                     showEventDateCoachMark();
                     tvUbahJadwal.setVisibility(View.VISIBLE);
+                    tvDate.setVisibility(View.VISIBLE);
+                    tvDate.setText(Utils.getSingletonInstance().convertEpochToSelectedDateFormat(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
                 } else {
+                    tvDate.setVisibility(View.GONE);
                     tvUbahJadwal.setVisibility(View.GONE);
                 }
                 tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
-                tvDate.setText(Utils.getSingletonInstance().convertEpochToSelectedDateFormat(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
                 setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
             } else {
                 tvUbahJadwal.setVisibility(View.GONE);

@@ -5,7 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.net.URLEncoder;
+import android.text.TextUtils;
+
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UriUtil {
+
+    private final static String ENCODING = "UTF-8";
+    private final static String QUERY_PARAM_SEPRATOR = "&";
+
     /**
      * Build pattern uri to uri String
      *
@@ -128,14 +134,14 @@ public class UriUtil {
             if (uriSegmentSize == 0) {
                 uriSegmentSize = uriPattern.getQueryParameterNames().size();
                 if(uriSegmentSize > 0){
-                        Iterator itr = uriPattern.getQueryParameterNames().iterator();
-                        while (itr.hasNext()){
-                            String paramName = itr.next().toString();
-                            Object paramValue = uri.getQueryParameter(paramName);
-                            if(paramValue != null) {
-                                result.put(paramName, paramValue);
-                            }
+                    Iterator itr = uriPattern.getQueryParameterNames().iterator();
+                    while (itr.hasNext()){
+                        String paramName = itr.next().toString();
+                        Object paramValue = uri.getQueryParameter(paramName);
+                        if(paramValue != null) {
+                            result.put(paramName, paramValue);
                         }
+                    }
                 }
                 else {
                     return result;
@@ -176,6 +182,25 @@ public class UriUtil {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public static Map<String, String> uriQueryParamsToMap(@NonNull String url) {
+        Map<String, String> map = new HashMap<>();
+        try {
+            Uri uri = Uri.parse(url);
+            String query = uri.getQuery();
+            if (!TextUtils.isEmpty(query)) {
+                String[] pairs = query.split(QUERY_PARAM_SEPRATOR);
+                for (String pair : pairs) {
+                    int idx = pair.indexOf("=");
+                    map.put(URLDecoder.decode(pair.substring(0, idx), ENCODING), URLDecoder.decode(pair.substring(idx + 1), ENCODING));
+                }
+            }
+            return map;
+        } catch (Exception e) {
+
+        }
+        return map;
     }
 
 }

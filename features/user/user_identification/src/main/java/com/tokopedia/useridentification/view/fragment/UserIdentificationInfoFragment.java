@@ -323,8 +323,10 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private void goToFormActivity() {
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, String.valueOf(projectId));
-        startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
+        if(getActivity() != null){
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, String.valueOf(projectId));
+            startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
+        }
     }
 
     @Override

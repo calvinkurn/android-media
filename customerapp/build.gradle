@@ -410,6 +410,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.williamchart)
     implementation project(rootProject.ext.features.scanner)
+    implementation project(rootProject.ext.libraries.promotionsTarget)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
