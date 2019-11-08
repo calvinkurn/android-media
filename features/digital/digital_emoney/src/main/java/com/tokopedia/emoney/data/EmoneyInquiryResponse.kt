@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class EmoneyInquiryResponse(
-        @SerializedName("emoneyInquiry")
+        @SerializedName("rechargeEmoneyInquiry")
         @Expose
         val emoneyInquiry: EmoneyInquiry
 )
@@ -58,5 +58,6 @@ class EmoneyInquiryError(
         val title: String = "",
         @SerializedName("status")
         @Expose
-        val status: Int = 0
+        val status: Int = 0,
+        var needAction: Boolean = false
 )

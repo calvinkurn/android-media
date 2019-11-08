@@ -1,8 +1,8 @@
 package com.tokopedia.emoney.view.electronicmoney
 
 import android.content.Intent
-import android.util.Log
 import com.tokopedia.emoney.NFCUtils
+import com.tokopedia.emoney.R
 import com.tokopedia.emoney.data.AttributesEmoneyInquiry
 import com.tokopedia.emoney.data.EmoneyInquiry
 import com.tokopedia.emoney.data.EmoneyInquiryError
@@ -26,8 +26,7 @@ class BrizziCheckBalance(val brizziInstance: Brizzi, val listener: BrizziActionL
                 if (brizziCardObject.pendingBalance.toInt() == 0) {
                     listener.onSuccess(mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance")))
                 } else {
-                    listener.onSuccess(mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "ada pending balance", needAction = true)))
-                    Log.d("get Balance", brizziCardObject.balance + "-" + brizziCardObject.pendingBalance)
+                    sendCommandToCard(intent)
                 }
             }
         })
@@ -50,25 +49,23 @@ class BrizziCheckBalance(val brizziInstance: Brizzi, val listener: BrizziActionL
     }
 
     private fun handleError(brizziException: BrizziException) {
-        if (brizziException.errorCode == BRIZZI_TOKEN_EXPIRED) {
-            listener.processGetBalanceBrizzi()
-        } else if (brizziException.errorCode == BRIZZI_CARD_NOT_FOUND) {
-            listener.onErrorCardNotFound(ISSUER_ID_BRIZZI)
+        when {
+            brizziException.errorCode == BRIZZI_TOKEN_EXPIRED -> listener.processGetBalanceBrizzi(true)
+            brizziException.errorCode == BRIZZI_CARD_NOT_FOUND -> listener.onErrorCardNotFound(ISSUER_ID_BRIZZI)
+            else -> listener.onError(R.string.emoney_update_balance_failed)
         }
     }
 
     override fun sendCommandToCard(intent: Intent) {
         brizziInstance.doUpdateBalance(intent, System.currentTimeMillis().toString(), object : Callback {
             override fun OnFailure(brizziException: BrizziException?) {
-                Log.d("get failure update", brizziException?.errorCode + "-" + brizziException?.message)
                 brizziException?.let {
                     handleError(it)
                 }
             }
 
             override fun OnSuccess(brizziCardObject: BrizziCardObject) {
-                Log.d("get success update", brizziCardObject.balance + "-" + brizziCardObject.pendingBalance)
-                listener.onSuccess(mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Saldo sudah diperbarui")))
+                listener.onSuccess(mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Informasi saldo berhasil diperbarui")))
             }
         })
     }

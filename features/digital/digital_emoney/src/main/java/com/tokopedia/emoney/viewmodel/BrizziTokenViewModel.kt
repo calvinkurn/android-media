@@ -29,8 +29,12 @@ class BrizziTokenViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val data = withContext(Dispatchers.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, BrizziTokenResponse::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 30).build())
+                if (refresh) {
+                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                } else {
+                    graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 30).build())
+                }
             }.getSuccessData<BrizziTokenResponse>()
 
             tokenBrizzi.value = data.tokenResponse.token

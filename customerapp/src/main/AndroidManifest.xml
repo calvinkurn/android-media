@@ -321,20 +321,6 @@
             android:label="@string/flight_title_activity_phone_verification"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
-        <activity
-            android:name="com.tokopedia.emoney.view.activity.EmoneyCheckBalanceActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_tech_filter" />
-        </activity>
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.tokopedia.tkpd.provider"

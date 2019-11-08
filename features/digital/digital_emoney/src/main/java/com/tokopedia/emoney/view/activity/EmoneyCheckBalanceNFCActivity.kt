@@ -43,7 +43,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unifycomponents.Toaster
 import id.co.bri.sdk.Brizzi
 import javax.inject.Inject
 
@@ -70,7 +69,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
 
-
     override fun getNewFragment(): Fragment? {
         return null
     }
@@ -92,7 +90,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
             override fun onClick(operatorId: String, issuerId: Int) {
                 emoneyAnalytics.onClickTopupEmoney(getOperatorName(issuerId))
 
-                //TODO implement navigation page to digital product
                 val passData = DigitalCategoryDetailPassData.Builder()
                         .categoryId(ETOLL_CATEGORY_ID)
                         .operatorId(operatorId)
@@ -169,14 +166,15 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                 finish()
             } else {
                 // nfc enabled and process BRI NFC as default
-                processGetBalanceBrizzi()
+                processGetBalanceBrizzi(false)
             }
         }
     }
 
-    override fun processGetBalanceBrizzi() {
-        brizziTokenViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), false)
+    override fun processGetBalanceBrizzi(refresh: Boolean) {
+        brizziTokenViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
         brizziTokenViewModel.tokenBrizzi.observe(this, Observer { token ->
+            //TODO change key to use AuthKey
             brizziInstance.Init(token, "IlFDLgR31ACt7aqH")
             brizziInstance.setUserName("Tokopedia")
 
@@ -293,18 +291,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         eTollUpdateBalanceResultView.visibility = View.VISIBLE
         eTollUpdateBalanceResultView.showCardInfoFromApi(emoneyInquiry)
         emoneyInquiry.error?.let {
-            if (emoneyInquiry.attributesEmoneyInquiry?.issuer_id == ISSUER_ID_BRIZZI && emoneyInquiry.error.needAction) {
-                Toaster.make(findViewById(android.R.id.content), it.title,
-                        Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "update",
-                        View.OnClickListener {
-
-                            brizziInstance = Brizzi.getInstance()
-                            brizziInstance.setNfcAdapter(this)
-                            briBrizzi.sendCommandToCard(intent)
-                        })
-            } else {
-                NetworkErrorHelper.showGreenCloseSnackbar(this, it.title)
-            }
+            NetworkErrorHelper.showGreenCloseSnackbar(this, it.title)
         }
     }
 
@@ -420,8 +407,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         const val ISSUER_ID_BRIZZI = 2
 
         private val ETOLL_CATEGORY_ID = "34"
-        const val ETOLL_EMONEY_OPERATOR_ID = "578"
-        const val ETOLL_BRIZZI_OPERATOR_ID = "1015"
         const val OPERATOR_NAME_EMONEY = "emoney"
         const val OPERATOR_NAME_BRIZZI = "brizzi"
 

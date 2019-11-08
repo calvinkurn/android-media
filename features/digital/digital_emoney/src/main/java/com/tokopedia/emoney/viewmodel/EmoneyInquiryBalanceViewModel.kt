@@ -2,11 +2,8 @@ package com.tokopedia.emoney.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.emoney.NFCUtils
-import com.tokopedia.emoney.data.AttributesEmoneyInquiry
 import com.tokopedia.emoney.data.EmoneyInquiry
-import com.tokopedia.emoney.data.EmoneyInquiryError
 import com.tokopedia.emoney.data.EmoneyInquiryResponse
-import com.tokopedia.emoney.view.fragment.EmoneyCheckBalanceNFCFragment
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -24,47 +21,24 @@ class EmoneyInquiryBalanceViewModel @Inject constructor(private val graphqlRepos
                                 mapAttributesParam: HashMap<String, Any>,
                                 onSuccess: (HashMap<String, Any>, EmoneyInquiry) -> Unit,
                                 onError: (Throwable) -> Unit) {
-//        launchCatchError(block = {
-//            var mapParam = HashMap<String, kotlin.Any>()
-//            mapParam.put(TYPE_CARD, paramCommand)
-//            mapParam.put(ID_CARD, idCard)
-//            mapParam.put(ATTRIBUTES_CARD, mapAttributesParam)
-//
-//            val data = withContext(Dispatchers.IO) {
-//                val graphqlRequest = GraphqlRequest(rawQuery, EmoneyInquiryResponse::class.java, mapParam)
-//                graphqlRepository.getReseponse(listOf(graphqlRequest))
-//            }.getSuccessData<EmoneyInquiryResponse>()
-//
-//            data.emoneyInquiry.attributesEmoneyInquiry?.let {
-//                it.formattedCardNumber = NFCUtils.formatCardUID(it.cardNumber)
-//            }
-//            onSuccess(mapAttributesParam, data.emoneyInquiry)
-//        }) {
-//            onError(it)
-//        }
-        onSuccess(mapAttributesParam, successMockData())
-    }
+        launchCatchError(block = {
+            var mapParam = HashMap<String, kotlin.Any>()
+            mapParam.put(TYPE_CARD, paramCommand)
+            mapParam.put(ID_CARD, idCard)
+            mapParam.put(ATTRIBUTES_CARD, mapAttributesParam)
 
-    private fun successMockData(): EmoneyInquiry {
-        return EmoneyInquiry(
-                "1",
-                "",
-                AttributesEmoneyInquiry(
-                        "Top Up",
-                        "6032984075486468",
-                        "https://ecs7.tokopedia.net/img/recharge/operator/e-money.png",
-                        26000,
-                        "",
-                        1,
-                        NFCUtils.formatCardUID("6032984075486468"),
-                        EmoneyCheckBalanceNFCFragment.ISSUER_ID_EMONEY,
-                        EmoneyCheckBalanceNFCFragment.ETOLL_EMONEY_OPERATOR_ID
-                ), EmoneyInquiryError(
-                1010,
-                "Tidak ada pending balance",
-                0
-        )
-        )
+            val data = withContext(Dispatchers.IO) {
+                val graphqlRequest = GraphqlRequest(rawQuery, EmoneyInquiryResponse::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<EmoneyInquiryResponse>()
+
+            data.emoneyInquiry.attributesEmoneyInquiry?.let {
+                it.formattedCardNumber = NFCUtils.formatCardUID(it.cardNumber)
+            }
+            onSuccess(mapAttributesParam, data.emoneyInquiry)
+        }) {
+            onError(it)
+        }
     }
 
     companion object {
@@ -72,8 +46,8 @@ class EmoneyInquiryBalanceViewModel @Inject constructor(private val graphqlRepos
         const val ID_CARD = "id"
         const val ATTRIBUTES_CARD = "attributes"
 
-        const val PARAM_INQUIRY = "smartcard_inquiry"
-        const val PARAM_SEND_COMMAND = "smartcard_command"
+        const val PARAM_INQUIRY = "SMARTCARD_INQUIRY"
+        const val PARAM_SEND_COMMAND = "SMARTCARD_COMMAND"
 
         const val PARAM_CARD_UUID = "card_uuid"
         const val PARAM_ISSUER_ID = "card_issuer_id"
