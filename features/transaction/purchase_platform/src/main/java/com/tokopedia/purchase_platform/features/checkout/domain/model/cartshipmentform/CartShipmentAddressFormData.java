@@ -25,6 +25,9 @@ public class CartShipmentAddressFormData implements Parcelable {
     private int errorCode;
     private boolean isShowOnboarding;
     private boolean isMultiple;
+    private boolean isMultipleDisable;
+    private boolean isDropshipperDisable;
+    private boolean isOrderPrioritasDisable;
     private List<GroupAddress> groupAddress = new ArrayList<>();
     private String keroToken;
     private String keroDiscomToken;
@@ -80,6 +83,30 @@ public class CartShipmentAddressFormData implements Parcelable {
 
     public void setMultiple(boolean multiple) {
         isMultiple = multiple;
+    }
+
+    public boolean isMultipleDisable() {
+        return isMultipleDisable;
+    }
+
+    public void setMultipleDisable(boolean multipleDisable) {
+        isMultipleDisable = multipleDisable;
+    }
+
+    public boolean isDropshipperDisable() {
+        return isDropshipperDisable;
+    }
+
+    public void setDropshipperDisable(boolean dropshipperDisable) {
+        isDropshipperDisable = dropshipperDisable;
+    }
+
+    public boolean isOrderPrioritasDisable() {
+        return isOrderPrioritasDisable;
+    }
+
+    public void setOrderPrioritasDisable(boolean orderPrioritasDisable) {
+        isOrderPrioritasDisable = orderPrioritasDisable;
     }
 
     public List<GroupAddress> getGroupAddress() {
@@ -228,6 +255,9 @@ public class CartShipmentAddressFormData implements Parcelable {
         errorCode = in.readInt();
         isShowOnboarding = in.readByte() != 0;
         isMultiple = in.readByte() != 0;
+        isMultipleDisable = in.readByte() != 0;
+        isDropshipperDisable = in.readByte() != 0;
+        isOrderPrioritasDisable = in.readByte() != 0;
         groupAddress = in.createTypedArrayList(GroupAddress.CREATOR);
         keroToken = in.readString();
         keroDiscomToken = in.readString();
@@ -251,6 +281,9 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeInt(errorCode);
         dest.writeByte((byte) (isShowOnboarding ? 1 : 0));
         dest.writeByte((byte) (isMultiple ? 1 : 0));
+        dest.writeByte((byte) (isMultipleDisable ? 1 : 0));
+        dest.writeByte((byte) (isDropshipperDisable ? 1 : 0));
+        dest.writeByte((byte) (isOrderPrioritasDisable ? 1 : 0));
         dest.writeTypedList(groupAddress);
         dest.writeString(keroToken);
         dest.writeString(keroDiscomToken);

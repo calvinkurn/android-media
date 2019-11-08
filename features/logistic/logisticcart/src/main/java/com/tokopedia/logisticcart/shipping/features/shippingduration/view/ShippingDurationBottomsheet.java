@@ -1,37 +1,38 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.logisticcart.R;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationComponent;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingParam;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.logisticcart.R;
-import com.tokopedia.logisticcart.shipping.model.ShippingParam;
-import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent;
-import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationComponent;
-import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_PSL_CODE = "ARGUMENT_PSL_CODE";
     public static final String ARGUMENT_PRODUCTS = "ARGUMENT_PRODUCTS";
     public static final String ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING";
+    public static final String ARGUMENT_DISABLE_ORDER_PRIORITAS = "ARGUMENT_DISABLE_ORDER_PRIORITAS";
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
@@ -71,6 +73,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private boolean isChooseCourierTraceStopped;
 
     private boolean isDisableCourierPromo;
+    private boolean isDisableOrderPrioritas;
     private int mCartPosition = -1;
 
     @Inject
@@ -87,7 +90,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                                           RecipientAddressModel recipientAddressModel,
                                                           int cartPosition, int codHistory,
                                                           boolean isLeasing, String pslCode,
-                                                          ArrayList<Product> products, String cartString) {
+                                                          ArrayList<Product> products, String cartString,
+                                                          boolean isDisableOrderPrioritas) {
         ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData);
@@ -100,6 +104,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putString(ARGUMENT_PSL_CODE, pslCode);
         bundle.putParcelableArrayList(ARGUMENT_PRODUCTS, products);
         bundle.putString(ARGUMENT_CART_STRING, cartString);
+        bundle.putBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS, isDisableOrderPrioritas);
         shippingDurationBottomsheet.setArguments(bundle);
 
         return shippingDurationBottomsheet;
@@ -180,6 +185,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
             String pslCode = getArguments().getString(ARGUMENT_PSL_CODE, "");
             ArrayList<Product> products = getArguments().getParcelableArrayList(ARGUMENT_PRODUCTS);
             String cartString = getArguments().getString(ARGUMENT_CART_STRING);
+            isDisableOrderPrioritas = getArguments().getBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS);
             if (shipmentDetailData != null) {
                 // Called from checkout
                 presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
@@ -262,7 +268,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList, LogisticPromoViewModel promoViewModel) {
-        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationViewModelList, promoViewModel);
+        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationViewModelList, promoViewModel, isDisableOrderPrioritas);
         shippingDurationAdapter.initiateShowcase();
         updateHeight();
         boolean hasCourierPromo = checkHasCourierPromo(shippingDurationViewModelList);
