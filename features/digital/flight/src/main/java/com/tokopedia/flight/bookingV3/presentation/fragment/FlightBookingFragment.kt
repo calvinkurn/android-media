@@ -288,7 +288,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         launchLoadingPageJob.start()
-        bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_get_cart), "")
+        bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
+                "551249609fb3a145d677c429664e00ba3448c99",
+                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_get_cart))
         bookingViewModel.getProfile(GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile))
 
         setUpView()

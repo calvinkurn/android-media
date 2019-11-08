@@ -209,9 +209,9 @@ class FlightBookingMapper {
 
                 flightDetailViewModel.totalTransit = journey.routes.size - 1
                 flightDetailViewModel.isRefundable = if (journey.routes[0].refundable) RefundableEnum.REFUNDABLE else RefundableEnum.NOT_REFUNDABLE
-                flightDetailViewModel.adultNumericPrice = flight.adult * journey.fare.adultNumeric
-                flightDetailViewModel.childNumericPrice = flight.child * journey.fare.childNumeric
-                flightDetailViewModel.infantNumericPrice = flight.infant * journey.fare.infantNumeric
+                flightDetailViewModel.adultNumericPrice = journey.fare.adultNumeric
+                flightDetailViewModel.childNumericPrice = journey.fare.childNumeric
+                flightDetailViewModel.infantNumericPrice = journey.fare.infantNumeric
                 flightDetailViewModel.totalNumeric = flightDetailViewModel.adultNumericPrice + flightDetailViewModel.childNumericPrice + flightDetailViewModel.infantNumericPrice
                 flightDetailViewModel.countAdult = flight.adult
                 flightDetailViewModel.countChild = flight.child
@@ -225,6 +225,12 @@ class FlightBookingMapper {
                 for (route in journey.routes) {
                     val routeDetail = FlightDetailRouteViewModel()
                     routeDetail.airlineCode = route.airlineId
+
+                    routeDetail.airlineName = ""
+                    routeDetail.airlineLogo = ""
+                    routeDetail.departureAirportCode = ""
+                    routeDetail.departureAirportCity = ""
+                    routeDetail.departureAirportName = ""
 
                     for (includedItem in included) {
                         if (route.airlineId.equals(includedItem.id, true)) {

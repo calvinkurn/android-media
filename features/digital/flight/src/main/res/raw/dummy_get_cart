@@ -84,13 +84,13 @@
             "type" : 1,
             "price": "Rp. 20.000",
             "priceNumeric": 20000,
-            "detail": "CGK-DPS",
+            "description": "CGK-DPS",
             "journeyId": "33398866fbc21f3f6b1b896e8ba5df11-1",
             "itemId": "1",
             "key": "lalala",
             "items": [
             {
-                "id": "lalala",
+                "id": "lalalala",
                 "price": "Rp. 20.000",
                 "priceNumeric": 20000,
                 "description": "Bagasi Hemat",

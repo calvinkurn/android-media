@@ -60,7 +60,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     var retryCount = 0
 
-    fun getCart(rawQuery: String, cartId: String) {
+    fun getCart(rawQuery: String, cartId: String, dummy: String = "") {
         val params = mapOf(PARAM_CART_ID to cartId)
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
@@ -86,7 +86,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         }) {
             //            flightCartResult.value = Fail(it)
             val gson = Gson()
-            val data = gson.fromJson(rawQuery, FlightCart.Response::class.java).flightCart
+            val data = gson.fromJson(dummy, FlightCart.Response::class.java).flightCart
             flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
             flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
                     data.cartData.flight.child, data.cartData.flight.infant)

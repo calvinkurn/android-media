@@ -241,7 +241,7 @@ data class FlightCart(
             @Expose
             val priceNumeric: Int = 0,
 
-            @SerializedName("detail")
+            @SerializedName("description")
             @Expose
             val detail: String = "",
 
