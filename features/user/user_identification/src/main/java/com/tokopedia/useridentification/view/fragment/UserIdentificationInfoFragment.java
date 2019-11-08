@@ -3,13 +3,14 @@ package com.tokopedia.useridentification.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -322,7 +323,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private void goToFormActivity() {
-        RouteManager.route(getContext(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, String.valueOf(projectId));
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, String.valueOf(projectId));
+        startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
     }
 
     @Override
