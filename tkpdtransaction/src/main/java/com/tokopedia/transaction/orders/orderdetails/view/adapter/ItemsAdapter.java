@@ -62,14 +62,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int ITEM_DEFAULT = 4;
     private String Insurance_File_Name = "E-policy Asuransi";
     OrderListDetailPresenter presenter;
-    private String categoryDeals = "deal";
-    private String categoryEvents = "event";
+    public static String categoryDeals = "deal";
+    public static String categoryEvents = "event";
     SetEventDetails setEventDetails;
     private int position;
     private String orderId;
     private PermissionCheckerHelper permissionCheckerHelper;
     private int totalTicketCount;
-    private List<Body> retryBody;
 
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId) {
         this.context = context;
@@ -78,7 +77,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.presenter = presenter;
         this.setEventDetails = setEventDetails;
         this.orderId = orderId;
-        retryBody = new ArrayList<>();
     }
 
     @Override
@@ -165,9 +163,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void tapActionClicked(TextView view, ActionButton actionButton, Items item, int count) {
+    public void tapActionClicked(TextView view, ActionButton actionButton, Items item, int count, int pos) {
         if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) || actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
-            presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, position, true);
+            presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, pos, true);
         } else {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
@@ -207,6 +205,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView tvValidTill;
         private TextView tanggalEventsTitle, tanggalEvents, eventCity, eventAddress;
         private int index;
+
 
         public ItemViewHolder(View itemView, int itemType) {
             super(itemView);
@@ -314,7 +313,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
                     }
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label_events));
-                    dealImage.setOnClickListener(new View.OnClickListener() {
+                    customTicketView1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             RouteManager.route(context, ApplinkOMSConstant.INTERNAL_EVENTS + metaDataInfo1.getSeoUrl());
@@ -335,9 +334,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     progressBar.setVisibility(View.VISIBLE);
                     tapActionLayoutDeals.setVisibility(View.GONE);
                     customTicketView.setVisibility(View.GONE);
-                    for (int i = 0; i < item.getTapActions().size(); i++) {
-                        retryBody.add(item.getTapActions().get(i).getBody());
-                    }
                     presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                 } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
                     if (!TextUtils.isEmpty(item.getTrackingNumber())) {
@@ -365,11 +361,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getTapActions().get(i);
                         RedeemVoucherView redeemVoucherView;
-                        if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH) && retryBody != null && retryBody.size() > 0) {
-                            redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, retryBody.get(i), presenter, ItemsAdapter.this);
-                        } else {
-                            redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, ItemsAdapter.this);
-                        }
+                        redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
                         tapActionLayoutDeals.addView(redeemVoucherView);
                     }
                 }
@@ -379,9 +371,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     progressBar.setVisibility(View.VISIBLE);
                     tapActionLayoutEvents.setVisibility(View.GONE);
                     customTicketView.setVisibility(View.GONE);
-                    for (int i = 0; i < item.getTapActions().size(); i++) {
-                        retryBody.add(item.getTapActions().get(i).getBody());
-                    }
                     presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                 } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
                     if (!TextUtils.isEmpty(item.getTrackingNumber())) {
@@ -416,13 +405,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getTapActions().get(i);
                         TextView tapActionTextView = renderActionButtons(i, actionButton, item);
-                        RedeemVoucherView redeemVoucherView;
                         if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
-                            if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH) && retryBody != null && retryBody.size() > 0) {
-                                redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, retryBody.get(i), presenter, ItemsAdapter.this);
-                            } else {
-                                redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, ItemsAdapter.this);
-                            }
+                            RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
                             tapActionLayoutEvents.addView(redeemVoucherView);
                         } else {
                             if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {

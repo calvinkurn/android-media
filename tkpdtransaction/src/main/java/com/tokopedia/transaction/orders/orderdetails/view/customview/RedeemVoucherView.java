@@ -32,6 +32,7 @@ public class RedeemVoucherView extends LinearLayout {
     private SetTapActionDeals setTapActionDeals;
     private FrameLayout retryLoadingView;
     private Body body;
+    private int mPos;
     OrderListDetailPresenter presenter;
 
     public RedeemVoucherView(Context context) {
@@ -49,7 +50,7 @@ public class RedeemVoucherView extends LinearLayout {
         initView();
     }
 
-    public RedeemVoucherView(Context context, int voucherNumber, ActionButton actionButton, Items item, Body body, OrderListDetailPresenter presenter, SetTapActionDeals setTapActionDeals) {
+    public RedeemVoucherView(Context context, int voucherNumber, ActionButton actionButton, Items item, Body body, OrderListDetailPresenter presenter, int position, SetTapActionDeals setTapActionDeals) {
         super(context);
         this.context = context;
         this.voucherCount = voucherNumber;
@@ -57,6 +58,7 @@ public class RedeemVoucherView extends LinearLayout {
         this.item = item;
         this.body = body;
         this.presenter = presenter;
+        this.mPos = position;
         this.setTapActionDeals = setTapActionDeals;
         initView();
     }
@@ -83,17 +85,18 @@ public class RedeemVoucherView extends LinearLayout {
                     OmsDetailFragment.RETRY_COUNT++;
                     retryLoadingView.setVisibility(VISIBLE);
                     redeemVoucher.setVisibility(GONE);
-                    actionButton.setBody(body);
                 } else {
                     retryLoadingView.setVisibility(GONE);
                     redeemVoucher.setVisibility(VISIBLE);
                 }
-                setTapActionDeals.tapActionClicked(redeemVoucher, actionButton, item, OmsDetailFragment.RETRY_COUNT);
+                setTapActionDeals.tapActionClicked(redeemVoucher, actionButton, item, OmsDetailFragment.RETRY_COUNT, mPos);
             }
         });
     }
 
     private void renderRedeemButton(ActionButton actionButton) {
+        retryLoadingView.setVisibility(GONE);
+        redeemVoucher.setVisibility(VISIBLE);
         redeemVoucher.setText(actionButton.getLabel());
         GradientDrawable shape = (GradientDrawable) redeemVoucher.getBackground();
         if (HexValidator.validate(actionButton.getActionColor().getBackground())) {
@@ -157,7 +160,11 @@ public class RedeemVoucherView extends LinearLayout {
                         renderRetryButton(actionButton);
                     }
                 }, 30000);
-                presenter.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed));
+                if (item.getCategory().equalsIgnoreCase(ItemsAdapter.categoryDeals)) {
+                    presenter.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed_deals));
+                } else {
+                    presenter.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed_event));
+                }
             } else {
                 presenter.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_success));
             }
@@ -165,6 +172,6 @@ public class RedeemVoucherView extends LinearLayout {
     }
 
     public interface SetTapActionDeals {
-        void tapActionClicked(TextView view, ActionButton actionButton, Items item, int count);
+        void tapActionClicked(TextView view, ActionButton actionButton, Items item, int count, int position);
     }
 }

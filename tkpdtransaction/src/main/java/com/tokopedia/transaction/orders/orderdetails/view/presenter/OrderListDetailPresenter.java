@@ -27,6 +27,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.Body;
 import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.Flags;
@@ -47,6 +48,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +94,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public String pdfUri = " ";
     private boolean isdownloadable = false;
     private OrderDetails details;
+    private List<Body> retryBody = new ArrayList<>();
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -194,6 +197,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                 if (actionButtonList != null)
                                     if (flag) {
                                         view.setTapActionButton(position, actionButtonList);
+                                        for (int i=0; i< actionButtonList.size();i++) {
+                                            actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                                        }
                                     } else {
                                         view.setActionButton(position, actionButtonList);
                                     }
