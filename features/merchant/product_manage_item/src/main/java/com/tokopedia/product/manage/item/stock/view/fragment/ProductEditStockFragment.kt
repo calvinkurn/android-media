@@ -55,6 +55,9 @@ class ProductEditStockFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setDataStock(productStock)
+        if (isAddStatus) {
+            labelSwitchStock.disableSwitch()
+        }
 
         if (hasVariant) {
             decimalInputViewStock.text = MIN_STOCK_VARIANT
@@ -69,7 +72,6 @@ class ProductEditStockFragment : Fragment() {
             setStockLabel(isChecked)
         })
 
-        labelSwitchStock.setSwitchEnabled(!isAddStatus)
 
         texViewMenu?.run {
             text = getString(R.string.label_save)
