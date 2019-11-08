@@ -16,7 +16,10 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
-class PlayCardViewHolder(val view: View, val listener: HomeCategoryListener): AbstractViewHolder<PlayCardViewModel>(view) {
+class PlayCardViewHolder(
+        val view: View,
+        val listener: HomeCategoryListener
+): AbstractViewHolder<PlayCardViewModel>(view) {
 
     private val imgBanner = view.findViewById<ImageView>(R.id.imgBanner)
     private val chipPlayLive = view.findViewById<LinearLayout>(R.id.chipPlayLive)
@@ -26,15 +29,16 @@ class PlayCardViewHolder(val view: View, val listener: HomeCategoryListener): Ab
     private var playCardHome: PlayCardHome? = null
 
     override fun bind(element: PlayCardViewModel) {
-        element.getPlayCardHome()?.let { playCardHome ->
-            this.playCardHome = playCardHome
+        element.getPlayCardHome()?.let { viewModel ->
+            this.playCardHome = viewModel //flag to preventing re-hit
 
-            bindCard(playCardHome.playGetCardHome.data.card)
+            val appLink = viewModel.playGetCardHome.data.card.applink
+            bindCard(viewModel.playGetCardHome.data.card)
+
             itemView.setOnClickListener {
                 with(view.context) {
                     HomePageTracking.eventClickPlayBanner(this, element.getChannel())
-                    startActivity(RouteManager.getIntent(this,
-                            playCardHome.playGetCardHome.data.card.applink))
+                    startActivity(RouteManager.getIntent(this, appLink))
                 }
             }
         }

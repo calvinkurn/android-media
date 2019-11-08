@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase;
-import com.tokopedia.dynamicbanner.entity.PlayCard;
-import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;

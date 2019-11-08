@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.data.mapper;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory;
