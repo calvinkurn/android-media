@@ -42,6 +42,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.Rec
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
+import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
@@ -198,7 +199,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                     if (flag) {
                                         view.setTapActionButton(position, actionButtonList);
                                         for (int i=0; i< actionButtonList.size();i++) {
-                                            actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                                            if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH))
+                                            {
+                                                actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                                            }
                                         }
                                     } else {
                                         view.setActionButton(position, actionButtonList);

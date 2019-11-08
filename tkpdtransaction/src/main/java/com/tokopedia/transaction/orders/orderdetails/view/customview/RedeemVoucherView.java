@@ -71,11 +71,6 @@ public class RedeemVoucherView extends LinearLayout {
         if (actionButton.getControl().equalsIgnoreCase("refresh")) {
             renderRetryButton(actionButton);
         } else {
-            if (voucherCount > 0) {
-                voucherNumber.setText(String.format("%s %s", context.getResources().getString(R.string.event_ticket_voucher_number_multiple), (voucherCount + 1)));
-            } else {
-                voucherNumber.setText(context.getResources().getString(R.string.event_ticket_voucher_number));
-            }
             renderRedeemButton(actionButton);
         }
         redeemVoucher.setOnClickListener(new OnClickListener() {
@@ -98,6 +93,19 @@ public class RedeemVoucherView extends LinearLayout {
         retryLoadingView.setVisibility(GONE);
         redeemVoucher.setVisibility(VISIBLE);
         redeemVoucher.setText(actionButton.getLabel());
+        if (!TextUtils.isEmpty(actionButton.getHeader())) {
+            Gson gson = new Gson();
+            Header header = gson.fromJson(actionButton.getHeader(), Header.class);
+            if (!TextUtils.isEmpty(header.getItemLabel())) {
+                voucherNumber.setText(header.getItemLabel());
+            }
+        }else {
+            if (voucherCount > 0) {
+                voucherNumber.setText(String.format("%s %s", context.getResources().getString(R.string.event_ticket_voucher_number_multiple), (voucherCount + 1)));
+            } else {
+                voucherNumber.setText(context.getResources().getString(R.string.event_ticket_voucher_number));
+            }
+        }
         GradientDrawable shape = (GradientDrawable) redeemVoucher.getBackground();
         if (HexValidator.validate(actionButton.getActionColor().getBackground())) {
             shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
