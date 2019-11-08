@@ -14,6 +14,7 @@
     <string name="label_product_condition">Kondisi</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
     <string name="label_product_desc">Deskripsi Produk</string>
+    <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="transition_video_horizontal_scroll">transition_video_horizontal_scroll</string>
     <string name="transition_description">description_transition</string>
     <string name="title_activity_product_detail">Rincian Produk</string>
@@ -136,5 +137,6 @@
     <string name="pdp_etalase_empty_default_value">Semua  Etalase</string>
     <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
     <string name="recom_see_more_title">Lihat semua</string>
-
+  
+    <string name="image_preview_wishlist">Tambah ke Wishlist</string>
 </resources>

@@ -57,7 +57,8 @@ import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.imagepreview.ImagePreviewActivity
+//import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPDPActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -253,6 +254,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
         const val REQUEST_CODE_REPORT = 570
         const val REQUEST_CODE_SHOP_INFO = 998
+        const val REQUEST_CODE_IMAGE_PREVIEW = 999
 
         const val CART_MAX_COUNT = 99
         const val CART_ALPHA_ANIMATION_FROM = 1f
@@ -1195,6 +1197,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 if (resultCode == Activity.RESULT_OK)
                     showToastSuccessReport()
             }
+            REQUEST_CODE_IMAGE_PREVIEW -> {
+
+            }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
         }
@@ -1830,10 +1835,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
      * go to preview image activity to show larger image of Product
      */
     private fun onPictureProductClicked(position: Int) {
-        startActivity(ImagePreviewActivity.getCallingIntent(context!!,
-                getImageURIPaths(),
-                null,
-                position))
+        activity?.let {
+//            startActivity(ImagePreviewActivity.getCallingIntent(it, getImageURIPaths(), null, position))
+            val intent = ImagePreviewPDPActivity.createIntent(it, productId ?: "", false, getImageURIPaths(), null, position)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW)
+        }
     }
 
     private fun getImageURIPaths(): ArrayList<String> {
