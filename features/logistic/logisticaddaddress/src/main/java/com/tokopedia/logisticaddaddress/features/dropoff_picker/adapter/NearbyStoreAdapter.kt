@@ -82,7 +82,7 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun requestAutoComplete()
     }
 
-    class NearbiesViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    private class NearbiesViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(datum: DropoffNearbyModel) {
             val desc = "${datum.districtName}, ${datum.cityName}, ${datum.provinceName}"
             view.tv_location_title.text = datum.addrName
@@ -92,12 +92,11 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
     }
+    private class EmptyViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    private class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-    class EmptyViewHolder(val view: View) : RecyclerView.ViewHolder(view)
-    class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view)
-
-    interface DropoffVisitable
-    data class HeaderType(var text: String = "") : DropoffVisitable
-    data class EmptyType(var id: Int = 0) : DropoffVisitable
-    data class LoadingType(var id: Int = 0) : DropoffVisitable
+    internal interface DropoffVisitable
+    private data class HeaderType(var text: String = "") : DropoffVisitable
+    private data class EmptyType(var id: Int = 0) : DropoffVisitable
+    private data class LoadingType(var id: Int = 0) : DropoffVisitable
 }

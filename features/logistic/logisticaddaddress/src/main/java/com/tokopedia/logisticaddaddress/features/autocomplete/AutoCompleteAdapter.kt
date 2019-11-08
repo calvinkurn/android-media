@@ -87,19 +87,19 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     interface AutoCompleteVisitable
     data class LoadingType(val id: Int = 0) : AutoCompleteVisitable
     data class NoResultType(val id: Int = 0) : AutoCompleteVisitable
-    data class HeaderType(val id: Int = 0): AutoCompleteVisitable
+    data class HeaderType(val id: Int = 0) : AutoCompleteVisitable
 
-    class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    private class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    private class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindAutoComplete(item: AutoCompleteResultUi) {
             itemView.tv_autocomplete_title.text = item.structuredFormatting.mainText
             itemView.tv_autocomplete_desc.text = item.structuredFormatting.secondaryText
         }
+
         fun bindSavedAddress(item: AddressResultUi) {
             itemView.tv_autocomplete_title.text = item.addrName
             itemView.tv_autocomplete_desc.text = item.address1
         }
     }
-
-    class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
