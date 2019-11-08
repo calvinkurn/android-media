@@ -39,8 +39,6 @@ public class BrowseProductRouter {
     private static final String BROWSE_HOTLIST_ACTIVITY
             = "com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity";
 
-    private static final String BROWSE_HOTLIST_REVAMP_ACTIVITY
-            =  "com.tokopedia.discovery.newdiscovery.hotlistRevamp.view.activity.HotlistNavActivity";
 
     public enum GridType {
         GRID_1, GRID_2, GRID_3

@@ -1,6 +1,5 @@
 package com.tokopedia.applink
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -9,7 +8,6 @@ import android.text.TextUtils
 import android.webkit.URLUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 object DeepLinkChecker {
@@ -174,14 +172,13 @@ object DeepLinkChecker {
     }
 
     // function for enable Hansel
-    private fun getHotListClassName() = "com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity"
 
     private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalog.activity.CatalogDetailActivity"
 
     private fun getHotIntent(context: Context, url: String): Intent {
-        val intent = getIntentByClassName(context, getHotListClassName())
-        intent.putExtra("HOTLIST_URL", url)
-        return intent
+        val uri = Uri.parse(url)
+        uri.pathSegments[1]
+        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.HOME_HOTLIST + "/" + if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""))
     }
 
     private fun getCatalogIntent(context: Context, url: String): Intent {
