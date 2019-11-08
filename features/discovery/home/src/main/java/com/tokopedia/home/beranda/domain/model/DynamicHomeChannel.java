@@ -306,7 +306,7 @@ public class DynamicHomeChannel {
                                     "creative", grid.getName(),
                                     "creative_url", grid.getImageUrl(),
                                     "position", String.valueOf(i + 1)
-                            )
+                                    )
                     );
                 }
             }
@@ -693,7 +693,7 @@ public class DynamicHomeChannel {
                     "channelId", id,
                     "ecommerce", DataLayer.mapOf(
                             "promoView", DataLayer.mapOf(
-                                    "promotions", DataLayer.listOf(
+                                        "promotions", DataLayer.listOf(
                                             list.toArray(new Object[list.size()])
                                     )
                             )
