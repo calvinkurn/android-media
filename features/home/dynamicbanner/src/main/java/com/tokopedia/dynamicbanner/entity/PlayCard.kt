@@ -29,5 +29,5 @@ data class PlayCard(
         @Expose @SerializedName("created_date") var createdDate: String = "",
         @Expose @SerializedName("updated_date") var updatedDate: String = "",
         @Expose @SerializedName("campaign_name") var campaignName: String = "",
-        @Expose @SerializedName("total_view") var totalView: String = ""
+        @Expose @SerializedName("total_view") var totalView: String = "0"
 )
