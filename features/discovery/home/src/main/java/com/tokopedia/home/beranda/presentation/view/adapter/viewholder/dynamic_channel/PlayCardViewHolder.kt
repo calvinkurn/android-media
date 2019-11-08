@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -18,7 +17,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class PlayCardViewHolder(val view: View, val listener: HomeCategoryListener): AbstractViewHolder<PlayCardViewModel>(view) {
 
-    private val rootBanner = view.findViewById<RelativeLayout>(R.id.bannerPlay)
     private val imgBanner = view.findViewById<ImageView>(R.id.imgBanner)
     private val chipPlayLive = view.findViewById<LinearLayout>(R.id.chipPlayLive)
     private val chipPlayViewers = view.findViewById<LinearLayout>(R.id.chipPlayViewers)
@@ -31,9 +29,13 @@ class PlayCardViewHolder(val view: View, val listener: HomeCategoryListener): Ab
             this.playCardHome = playCardHome
 
             bindCard(playCardHome.playGetCardHome.data.card)
-            rootBanner.setOnClickListener {
+            itemView.setOnClickListener {
+                with(view.context) {
+                    startActivity(RouteManager.getIntent(this,
+                            playCardHome.playGetCardHome.data.card.applink))
+                }
+
                 element.getChannel()?.enhanceClickPlayBanner
-                RouteManager.route(view.context, playCardHome.playGetCardHome.data.card.applink)
             }
         }
 
@@ -58,9 +60,8 @@ class PlayCardViewHolder(val view: View, val listener: HomeCategoryListener): Ab
     }
 
     companion object {
-        @LayoutRes val LAYOUT = R.layout.item_home_play_card
-
         const val ROUNDED_RADIUS = 20f
+        @LayoutRes val LAYOUT = R.layout.item_home_play_card
     }
 
 }
