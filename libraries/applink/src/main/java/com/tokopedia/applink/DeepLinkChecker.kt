@@ -70,8 +70,8 @@ object DeepLinkChecker {
         path = path.replaceLastSlash()
         val uriWithoutParam = "$host$path"
         val excludedHostList = excludedHost.split(",".toRegex())
-            .filter { it.isNotEmpty() }
-            .map { it.replaceFirstWww().replaceLastSlash() }
+                .filter { it.isNotEmpty() }
+                .map { it.replaceFirstWww().replaceLastSlash() }
         for (excludedString in excludedHostList) {
             if (uriWithoutParam.startsWith(excludedString)) {
                 return true
@@ -89,8 +89,8 @@ object DeepLinkChecker {
         var path = uriData.path ?: return false
         path = path.replaceLastSlash()
         val excludedUrlList = excludedUrl.split(",".toRegex())
-            .filter { it.isNotEmpty() }
-            .map { it.replaceLastSlash() }
+                .filter { it.isNotEmpty() }
+                .map { it.replaceLastSlash() }
         for (excludedString in excludedUrlList) {
             if (path.endsWith(excludedString)) {
                 return true
@@ -139,7 +139,7 @@ object DeepLinkChecker {
 
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
-            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
+                (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
     }
 
     @JvmStatic
@@ -153,13 +153,21 @@ object DeepLinkChecker {
     }
 
     @JvmStatic
-    fun openPromoDetail(url: String, context: Context): Boolean {
-        return openIfExist(context, getPromoDetailIntent(context, url))
+    fun openPromoDetail(url: String, context: Context, defaultBundle: Bundle? = null): Boolean {
+        val intent = getPromoDetailIntent(context, url)
+        if (defaultBundle != null) {
+            intent.putExtras(defaultBundle)
+        }
+        return openIfExist(context, intent)
     }
 
     @JvmStatic
-    fun openPromoList(url: String, context: Context): Boolean {
-        return openIfExist(context, getPromoListIntent(context, url))
+    fun openPromoList(url: String, context: Context, defaultBundle: Bundle? = null): Boolean {
+        val intent = getPromoListIntent(context, url)
+        if (defaultBundle != null) {
+            intent.putExtras(defaultBundle)
+        }
+        return openIfExist(context, intent)
     }
 
     private fun openIfExist(context: Context, intent: Intent): Boolean {

@@ -134,6 +134,8 @@ class CartMapperData : ICartMapperData {
                         cartDigitalInfoData.crossSellingConfig = crossSellingConfig
                     }
                 }
+
+                attributesDigital.fintechProduct = fintechProduct
             }
 
             cartDigitalInfoData.additionalInfos = cartAdditionalInfoList
