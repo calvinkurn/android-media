@@ -56,7 +56,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -83,6 +82,7 @@ import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
@@ -1129,7 +1129,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @NonNull
     @Override
     public Fragment getFavoritedShopFragment(@NonNull String userId) {
-        return PeopleFavoritedShopFragment.createInstance(userId);
+        return ShopFollowingListFragment.createInstance(userId);
     }
 
     @Override
