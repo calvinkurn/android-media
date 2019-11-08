@@ -2,9 +2,7 @@ package com.tokopedia.flight.bookingV3.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel
-import com.tokopedia.flight.search.data.api.single.response.Amenity
+
 
 /**
  * @author by jessica on 2019-10-25

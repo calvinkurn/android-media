@@ -93,8 +93,11 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             flightPriceData.value = data.cartData.flight.priceDetail
             flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
             flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
-
         }
+    }
+
+    fun verifyCartData() {
+
     }
 
     fun updatePromoData(promoData: PromoStackingData) {
