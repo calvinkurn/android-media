@@ -523,6 +523,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     tradeInInfoData.setNewDevicePriceFmt(product.getTradeInInfo().getNewDevicePriceFmt());
                                     tradeInInfoData.setOldDevicePrice(product.getTradeInInfo().getOldDevicePrice());
                                     tradeInInfoData.setOldDevicePriceFmt(product.getTradeInInfo().getOldDevicePriceFmt());
+                                    tradeInInfoData.setDropOffEnable(product.getTradeInInfo().isDropOffEnable());
 
                                     productResult.setTradeInInfoData(tradeInInfoData);
                                 }
