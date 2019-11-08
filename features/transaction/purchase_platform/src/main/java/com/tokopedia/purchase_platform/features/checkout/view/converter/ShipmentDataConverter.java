@@ -86,6 +86,7 @@ public class ShipmentDataConverter {
                     recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN);
                 }
             }
+            return recipientAddressModel;
         }
         return null;
     }
