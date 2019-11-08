@@ -21,7 +21,7 @@ object DFInstallerLogUtil {
                            downloadTimes: Int = 1,
                            isSuccess: Boolean = false) {
         val messageStringBuilder = StringBuilder()
-        messageStringBuilder.append("P1$tag{$modulesName};")
+        messageStringBuilder.append("$tag{$modulesName};")
         messageStringBuilder.append("times_dl:{$downloadTimes};")
 
         if (errorCode?.isNotEmpty() == true) {
@@ -47,6 +47,6 @@ object DFInstallerLogUtil {
             )
             messageStringBuilder.append("play_srv:{$playServiceVersion}")
         } catch (e: Exception) { }
-        Timber.w(messageStringBuilder.toString())
+        Timber.w("P1#DFM#$messageStringBuilder")
     }
 }

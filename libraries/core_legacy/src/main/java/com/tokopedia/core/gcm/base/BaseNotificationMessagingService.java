@@ -47,7 +47,7 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     public void onNewToken(String newToken) {
         super.onNewToken(newToken);
         try {
-            Timber.w("P2" + "Notification New Token - " + newToken + " | "
+            Timber.w("P2#TOKEN_REFRESH#Notification New Token - " + newToken + " | "
                     + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "
                     + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                     + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL

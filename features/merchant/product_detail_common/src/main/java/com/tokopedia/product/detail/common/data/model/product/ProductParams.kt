@@ -5,11 +5,13 @@ import android.os.Parcelable
 
 data class ProductParams(var productId: String? = null,
                          var shopDomain: String? = null,
+                         var shopId: String? = null,
                          var productName: String? = null,
                          var productPrice: String? = null,
                          var productImage: String? = null): Parcelable {
 
     constructor(parcel: Parcel) : this(
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -20,6 +22,7 @@ data class ProductParams(var productId: String? = null,
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productId)
         parcel.writeString(shopDomain)
+        parcel.writeString(shopId)
         parcel.writeString(productName)
         parcel.writeString(productPrice)
         parcel.writeString(productImage)

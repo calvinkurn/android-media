@@ -21,7 +21,7 @@ public interface ProductManageView extends CustomerView {
 
     void onSuccessGetProductList(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage);
 
-    void onSuccessGetShopInfo(@NotNull boolean goldMerchant, @NotNull boolean officialStore, String shopDomain);
+    void onSuccessGetShopInfo(@NonNull boolean goldMerchant,@NonNull boolean officialStore, String shopDomain);
 
     void onErrorEditPrice(Throwable t, String productId, String price, String currencyId, String currencyText);
 

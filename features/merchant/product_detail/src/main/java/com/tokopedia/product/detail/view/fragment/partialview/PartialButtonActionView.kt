@@ -15,11 +15,15 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
+import androidx.core.widget.TextViewCompat.setTextAppearance
+
+
 
 class PartialButtonActionView private constructor(private val view: View,
                                                   private val listener: View.OnClickListener)
     : View.OnClickListener by listener {
     var promoTopAdsClick: (() -> Unit)? = null
+    var rincianTopAdsClick: (() -> Unit)? = null
     var buyNowClick: (() -> Unit)? = null
     var addToCartClick: (() -> Unit)? = null
     var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
@@ -36,6 +40,7 @@ class PartialButtonActionView private constructor(private val view: View,
     var isWarehouseProduct: Boolean = false
     var hasShopAuthority: Boolean = false
     var isLeasing: Boolean = false
+    var hasTopAdsActive: Boolean = false
     var preOrder: PreOrder? = PreOrder()
 
     companion object {
@@ -51,9 +56,10 @@ class PartialButtonActionView private constructor(private val view: View,
         }
     }
 
-    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, hasTopAdsActive: Boolean, preOrder: PreOrder?) {
         this.isWarehouseProduct = isWarehouseProduct
         this.hasShopAuthority = hasShopAuthority
+        this.hasTopAdsActive = hasTopAdsActive
         this.preOrder = preOrder
         renderButton()
     }
@@ -76,7 +82,7 @@ class PartialButtonActionView private constructor(private val view: View,
     private fun showNewCheckoutButton(preOrder: PreOrder?) {
         with(view) {
             btn_buy.visibility = View.GONE
-            btn_promote_topads.visibility = View.GONE
+            container_btn_promote_topads.visibility = View.GONE
             btn_topchat.visibility = View.VISIBLE
             tv_buy_now.text = context.getString(
                 if (preOrder?.isPreOrderActive() == true) {
@@ -137,13 +143,23 @@ class PartialButtonActionView private constructor(private val view: View,
 
     private fun showShopManageButton() {
         with(view) {
-            btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
             btn_buy.visibility = View.GONE
-            btn_promote_topads.visibility = View.VISIBLE
+            container_btn_promote_topads.visibility = View.VISIBLE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.GONE
             btn_buy_now.visibility = View.GONE
             btn_add_to_cart.visibility = View.GONE
+            if(hasTopAdsActive){
+                btn_promote_topads.setOnClickListener { rincianTopAdsClick?.invoke() }
+                btn_promote_topads.setText(context.getString(R.string.rincian_topads))
+                btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_grey_outline)
+                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPRincian)
+            } else{
+                btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
+                btn_promote_topads.setText(context.getString(R.string.promote_topads))
+                btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_green)
+                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPIklankan)
+            }
         }
     }
 
@@ -154,7 +170,7 @@ class PartialButtonActionView private constructor(private val view: View,
             tv_buy.text = context.getString(R.string.no_stock)
             btn_buy.isEnabled = false
             btn_buy.visibility = View.VISIBLE
-            btn_promote_topads.visibility = View.GONE
+            container_btn_promote_topads.visibility = View.GONE
             btn_byme.visibility = View.GONE
             btn_topchat.visibility = View.GONE
             btn_buy_now.visibility = View.GONE

@@ -25,6 +25,7 @@ class RestCloudDataStore(
 
     private fun getResponseJob(request: RestRequest): Deferred<Response<String>> {
         return when (request.requestType) {
+            RequestType.PATCH -> doPatch(request)
             RequestType.GET -> doGet(request)
             RequestType.POST -> doPost(request)
             RequestType.PUT -> doPut(request)
@@ -62,6 +63,38 @@ class RestCloudDataStore(
     private fun doGet(request: RestRequest): Deferred<Response<String>> {
         return mApi.getDeferred(request.url, request.queryParams,
                 request.headers)
+    }
+
+    /**
+     * Helper method to Invoke HTTP patch request
+     *
+     * @param request - Request object
+     * @return Observable which represent server response
+     */
+
+    private fun doPatch(request: RestRequest): Deferred<Response<String>> {
+        if (request.body != null && request.body is Map<*, *>) {
+            return mApi.patchDeferred(request.url,
+                    request.body as Map<String, String>,
+                    request.queryParams,
+                    request.headers)
+        } else {
+            val body: String = (if (request.body is String) {
+                request.body
+            } else {
+                try {
+                    CommonUtil.toJson(request.body)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
+                }
+            }) ?: throw RuntimeException("Invalid json object provided")
+
+            return mApi.patchDeferred(request.url,
+                    body,
+                    request.queryParams,
+                    request.headers)
+        }
     }
 
     /**

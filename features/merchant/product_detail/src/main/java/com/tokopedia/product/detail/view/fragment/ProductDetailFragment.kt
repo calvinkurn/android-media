@@ -29,11 +29,13 @@ import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.*
+import android.view.Menu
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -74,10 +76,7 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.product.Category
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
-import com.tokopedia.product.detail.common.data.model.product.ProductParams
-import com.tokopedia.product.detail.common.data.model.product.Wholesale
+import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
@@ -124,6 +123,7 @@ import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
+import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.tradein.model.TradeInParams
@@ -177,6 +177,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var partialVariantAndRateEstView: PartialVariantAndRateEstView
     lateinit var productDescrView: PartialProductDescrFullView
     lateinit var actionButtonView: PartialButtonActionView
+    lateinit var topAdsDetailSheet: TopAdsDetailSheet
     lateinit var productShopView: PartialShopView
     lateinit var attributeInfoView: PartialAttributeInfoView
     lateinit var imageReviewViewView: PartialImageReviewView
@@ -232,6 +233,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private lateinit var initToolBarMethod: () -> Unit
 
     var productInfo: ProductInfo? = null
+    var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
     var shopInfo: ShopInfo? = null
 
     private var refreshLayout: SwipeToRefresh? = null
@@ -467,6 +469,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             scrollToTradeInWidget()
         }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
+        if (GlobalConfig.isSellerApp()) {
+            val linearLayout = view.findViewById<ViewGroup>(R.id.layout_search)
+            linearLayout.hide()
+        }
+
         et_search.setOnClickListener {
             productDetailTracking.eventClickSearchBar()
             RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
@@ -590,6 +597,27 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
         }
+
+        actionButtonView.rincianTopAdsClick = {
+            context?.let {
+                topAdsDetailSheet.show(topAdsGetProductManage.data.adId)
+            }
+        }
+
+        topAdsDetailSheet.detailTopAdsClick = {
+            shopInfo?.let { shopInfo ->
+                val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo.shopCore.shopID)
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productInfo?.basic?.id?.toString())
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                                if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
+
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, applink), REQUEST_CODE_EDIT_PRODUCT)
+                }
+            }
+        }
+
         actionButtonView.promoTopAdsClick = {
             shopInfo?.let { shopInfo ->
                 val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
@@ -955,6 +983,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
         })
+        context?.let {
+            topAdsDetailSheet = TopAdsDetailSheet.newInstance(it)
+        }
     }
 
     private fun initShowSearchPDP() {
@@ -1385,7 +1416,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
             actionButtonView.renderData(!data.basic.isActive(),
                     (productInfoViewModel.isShopOwner(data.basic.shopID)
-                            || shopInfo.allowManage),
+                            || shopInfo.allowManage), (hasTopAds()),
                     data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
@@ -1419,6 +1450,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (productInfo != null && p2ShopData.nearestWarehouse.warehouseInfo.id.isNotBlank())
             headerView.updateStockAndPriceWarehouse(p2ShopData.nearestWarehouse, productInfo!!.campaign)
     }
+
+    private fun hasTopAds() =
+            topAdsGetProductManage.data.adId.isNotEmpty() && !topAdsGetProductManage.data.adId.equals("0")
 
     private fun renderProductInfo2(productInfoP2: ProductInfoP2General) {
         productDescrView.productSpecificationResponse = productInfoP2.productSpecificationResponse
@@ -1538,6 +1572,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productId = data.basic.id.toString()
         productInfo = data
         et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo?.category?.name)
+        topAdsGetProductManage = productInfoP1.topAdsGetProductManage
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
@@ -1641,7 +1676,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)
-                        || shopInfo?.allowManage == true),
+                        || shopInfo?.allowManage == true), hasTopAds(),
                 data.preorder)
         actionButtonView.visibility = !isAffiliate
         activity?.invalidateOptionsMenu()

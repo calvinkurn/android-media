@@ -357,7 +357,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         bottomSheet.setChild(viewBottomSheetDialog)
         bottomSheet.setCloseClickListener{
             analytics.eventClickSocmedButton()
-            bottomSheet.dismiss()
+            onDismissBottomSheet()
         }
 
         socmed_btn.setOnClickListener {
@@ -502,7 +502,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun onLoginGoogleClick() {
         if (activity != null) {
-            bottomSheet.dismiss()
+            onDismissBottomSheet()
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
             val intent = mGoogleSignInClient.signInIntent
@@ -514,10 +514,18 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun onLoginFacebookClick() {
 
         if (activity != null) {
-            bottomSheet.dismiss()
+            onDismissBottomSheet()
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
         }
+    }
+
+    private fun onDismissBottomSheet() {
+        try {
+            if (bottomSheet != null) {
+                bottomSheet.dismiss()
+            }
+        } catch (e: Exception) { }
     }
 
     override fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
