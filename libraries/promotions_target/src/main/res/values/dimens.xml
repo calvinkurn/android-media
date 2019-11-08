@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- font sizes where TP= tokopoints-->
+    <dimen name="tpromo_text_size_xxxsmall">8sp</dimen>
+    <dimen name="tp_text_size_xxsmall">10sp</dimen>
+    <dimen name="tp_text_size_xsmall">12sp</dimen>
+    <dimen name="tp_text_size_small">14sp</dimen>
+    <dimen name="tp_text_size_regular">16sp</dimen>
+    <dimen name="tp_text_size_medium">18sp</dimen>
+    <dimen name="tp_text_size_large">20sp</dimen>
+    <dimen name="tp_text_size_xlarge">22sp</dimen>
+    <dimen name="tp_text_size_xxlarge">24sp</dimen>
+
+    <!-- margin values-->
+    <dimen name="tp_margin_xsmall">4dp</dimen>
+    <dimen name="tp_margin_small">8dp</dimen>
+    <dimen name="tp_margin_regular">12dp</dimen>
+    <dimen name="tp_margin_medium">16dp</dimen>
+    <dimen name="tp_margin_large">24dp</dimen>
+    <dimen name="tp_margin_xlarge">32dp</dimen>
+    <dimen name="tp_margin_xxxlarge">64dp</dimen>
+    <dimen name="tp_margin_bottom_membership_and_egg">118dp</dimen>
+    <dimen name="tp_margin_bottom_egg">80dp</dimen>
+    <dimen name="tp_margin_top_error_button">42dp</dimen>
+
+    <!-- padding values-->
+    <dimen name="tp_padding_xxsmall">2dp</dimen>
+    <dimen name="tp_padding_xsmall">4dp</dimen>
+    <dimen name="tp_padding_small">8dp</dimen>
+    <dimen name="tpromo_padding_regular">12dp</dimen>
+    <dimen name="tp_padding_medium">16dp</dimen>
+    <dimen name="tp_padding_large">24dp</dimen>
+    <dimen name="tp_padding_xlarge">32dp</dimen>
+    <dimen name="tp_padding_xxlarge">48dp</dimen>
+
+    <dimen name="size_progress_bar">24dp</dimen>
+    <dimen name="height_submit_button">52dp</dimen>
+    <dimen name="tp_height_line_separator">2dp</dimen>
+    <dimen name="tp_height_bottom_membership_view">52dp</dimen>
+    <dimen name="tp_tnc_height">800dp</dimen>
+
+    <dimen name="tp_home_top_bg_height">176dp</dimen>
+    <dimen name="tp_toolbar_icon_wh">38dp</dimen>
+    <dimen name="tp_toolbar_icon_top_padding">5dp</dimen>
+    <dimen name="tp_toolbar_icon_side_padding">5dp</dimen>
+    <dimen name="tp_top_margin_big_image">62dp</dimen>
+
+    <dimen name="tp_coupon_card_xxlarge">280dp</dimen>
+    <dimen name="tp_coupon_card_xlarge">260dp</dimen>
+    <dimen name="tp_coupon_card_large">240dp</dimen>
+    <dimen name="tp_coupon_card_medium">220dp</dimen>
+    <dimen name="fontvs">12sp</dimen>
+    <dimen name="t_promo_image_height">148dp</dimen>
+
+    <dimen name="tpromo_default_stroke_width">7dp</dimen>
+    <dimen name="tpromo_default_background_stroke_width">3dp</dimen>
+</resources>
