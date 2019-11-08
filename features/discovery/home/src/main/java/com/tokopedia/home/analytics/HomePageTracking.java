@@ -382,8 +382,8 @@ public class HomePageTracking {
     }
 
     public static void eventClickSeeAllGifDCBannerChannel(Context context,
-                                                          String headerName,
-                                                          String channelId) {
+                                                         String headerName,
+                                                         String channelId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
@@ -1023,7 +1023,7 @@ public class HomePageTracking {
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
                     bannerChannel.getEnhanceImpressionBannerChannelMix()
-            );
+                    );
         }
     }
 
@@ -1187,7 +1187,7 @@ public class HomePageTracking {
     }
 
     private static List<Object> convertPromoEnhanceDynamicSprintLegoDataLayer(DynamicHomeChannel.Grid[] grids,
-                                                                              String headerName) {
+                                                                       String headerName) {
         List<Object> list = new ArrayList<>();
 
         if (grids != null) {
@@ -1213,7 +1213,7 @@ public class HomePageTracking {
     }
 
     public static HashMap<String, Object> getEnhanceImpressionProductChannelMix(DynamicHomeChannel.Channels channel,
-                                                                                String type){
+                                                                     String type){
         List<Object> list = convertProductEnhanceProductMixDataLayer(channel.getGrids(), channel.getHeader().getName(), type);
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW_IRIS,
