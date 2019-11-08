@@ -30,6 +30,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -304,6 +305,16 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
+    private double emptyDouble(String doubleRaw){
+        return TextUtils.isEmpty(doubleRaw) ? 0.0 :
+                Double.valueOf(PriceUtil.from(doubleRaw));
+    }
+
+    private double emptyInt(String intRaw){
+        return TextUtils.isEmpty(intRaw) ? 0 :
+                Double.valueOf(PriceUtil.from(intRaw));
+    }
+
     private void transactionBundle(Bundle bundle, Map<String, Object> ecommerce) {
         Object promotionObj;
         Map<String, Object> purchase = (Map<String, Object>) ecommerce.remove("purchase");
@@ -314,13 +325,12 @@ public class GTMAnalytics extends ContextAnalytics {
             Map<String, Object> actionField = (Map<String, Object>) purchase.remove("actionField");
 
             bundle.putString(FirebaseAnalytics.Param.TRANSACTION_ID, bruteForceCastToString(actionField.remove(PurchaseKey.KEY_ID)));
-            bundle.putString(FirebaseAnalytics.Param.AFFILIATION, (String) actionField.remove(PurchaseKey.KEY_AFFILIATION));
-            bundle.putDouble(FirebaseAnalytics.Param.VALUE, Double.valueOf((String) actionField.remove(PurchaseKey.KEY_REVENUE))); // Revenue
-            bundle.putDouble(FirebaseAnalytics.Param.TAX, Double.valueOf((String) actionField.remove(PurchaseKey.KEY_TAX)));
-            bundle.putDouble(FirebaseAnalytics.Param.SHIPPING, Double.valueOf((String) actionField.remove(PurchaseKey.KEY_SHIPPING)));
-            bundle.putString(FirebaseAnalytics.Param.COUPON, (String) actionField.remove(PurchaseKey.KEY_AFFILIATION));
+            bundle.putString(FirebaseAnalytics.Param.AFFILIATION, bruteForceCastToString(actionField.remove(PurchaseKey.KEY_AFFILIATION)));
+            bundle.putDouble(FirebaseAnalytics.Param.VALUE, emptyDouble(bruteForceCastToString(actionField.remove(PurchaseKey.KEY_REVENUE)))); // Revenue
+            bundle.putDouble(FirebaseAnalytics.Param.TAX, emptyDouble(bruteForceCastToString(actionField.remove(PurchaseKey.KEY_TAX))));
+            bundle.putDouble(FirebaseAnalytics.Param.SHIPPING, emptyDouble(bruteForceCastToString(actionField.remove(PurchaseKey.KEY_SHIPPING))));
+            bundle.putString(FirebaseAnalytics.Param.COUPON, bruteForceCastToString(actionField.remove(PurchaseKey.KEY_COUPON)));
         }
-
 
         // get products
         promotionObj = purchase.get("products");
@@ -403,7 +413,7 @@ public class GTMAnalytics extends ContextAnalytics {
             Map<String, Object> actionField = (Map<String, Object>) checkout.remove("actionField");
 
             String step = bruteForceCastToString(actionField.get("step"));
-            String option = (String) actionField.get("option");
+            String option = bruteForceCastToString(actionField.get("option"));
 
             bundle.putString(FirebaseAnalytics.Param.CHECKOUT_STEP, step);
             bundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, option);
@@ -446,7 +456,7 @@ public class GTMAnalytics extends ContextAnalytics {
         String id = bruteForceCastToString(value.remove(CheckoutKey.KEY_ID));
         String name = (String) value.remove(CheckoutKey.KEY_NAME);
         String brand = (String) value.remove(CheckoutKey.KEY_BRAND);
-        String category = (String) value.remove(CheckoutKey.KEY_CAT);
+        String category = bruteForceCastToString(value.remove(CheckoutKey.KEY_CAT));
         String variant = (String) value.remove(CheckoutKey.KEY_VARIANT);
         String priceString = bruteForceCastToString(value.remove(CheckoutKey.KEY_PRICE));
         double price = TextUtils.isEmpty(priceString) ? 0.0 :
@@ -522,6 +532,18 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         return product1;
 
+    }
+
+    private String emptyString(Object string){
+        if(string instanceof String){
+            return emptyString(string);
+        }else{
+            return bruteForceCastToString(string);
+        }
+    }
+
+    private String emptyString(String string){
+        return !TextUtils.isEmpty(string) ? string : "";
     }
 
     private Bundle atcMap(Map<String, Object> value) {
@@ -1002,6 +1024,10 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent("campaignTrack", bundle, context);
     }
 
+    public static String GENERAL_EVENT_KEYS[] = new String[]{
+            KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT
+    };
+
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
         pushGeneral(params);
 
@@ -1012,6 +1038,11 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
         bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
         bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            if (!Arrays.asList(GENERAL_EVENT_KEYS).contains(entry.getKey()))
+                bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
+        }
 
         logEvent(params.get(KEY_EVENT) + "", bundle, context);
     }

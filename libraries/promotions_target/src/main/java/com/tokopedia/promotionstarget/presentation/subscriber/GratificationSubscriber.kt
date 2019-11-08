@@ -6,16 +6,17 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import androidx.annotation.NonNull
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
 import com.tokopedia.promotionstarget.data.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
-import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.data.di.components.AppModule
 import com.tokopedia.promotionstarget.data.di.components.DaggerPromoTargetComponent
+import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.domain.presenter.DialogManagerPresenter
-import com.tokopedia.promotionstarget.presentation.ui.dialog.TargetPromotionsDialog
+import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
 import com.tokopedia.promotionstarget.domain.usecase.ClaimPopGratificationUseCase
+import com.tokopedia.promotionstarget.presentation.ui.dialog.TargetPromotionsDialog
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
@@ -34,6 +35,17 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     private val mapOfDialogs = ConcurrentHashMap<Activity, Pair<TargetPromotionsDialog, Dialog>>()
     private val scope = CoroutineScope(job)
     private var weakOldClaimCouponApi: WeakReference<ClaimCouponApi>? = null
+
+    companion object {
+        private val EXCLUDED_ACTIVITY_CLASS_NAMES = mutableSetOf<String>()
+
+        @JvmStatic
+        fun addActivityNameToExclude(@NonNull activityName: String) {
+            if (!TextUtils.isEmpty(activityName)) {
+                EXCLUDED_ACTIVITY_CLASS_NAMES.add(activityName)
+            }
+        }
+    }
 
 
     private val ceh = CoroutineExceptionHandler { _, exception ->
@@ -55,11 +67,15 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     }
 
     private fun processOnActivityCreated(activity: Activity?, intent: Intent?) {
-        if (activity != null && intent != null) {
-            val gratificationData = shouldOpenTargetedPromotionsDialog(activity, intent)
-            if (gratificationData != null) {
-                cancelAll()
-                showGratificationDialog(activity, gratificationData, intent)
+        val canonicalClassName = activity?.javaClass?.canonicalName
+        if (activity != null && intent != null && !TextUtils.isEmpty(canonicalClassName)) {
+            val isActivityAllowed = !EXCLUDED_ACTIVITY_CLASS_NAMES.contains(canonicalClassName)
+            if (isActivityAllowed) {
+                val gratificationData = shouldOpenTargetedPromotionsDialog(activity, intent)
+                if (gratificationData != null) {
+                    cancelAll()
+                    showGratificationDialog(activity, gratificationData, intent)
+                }
             }
         }
     }
@@ -71,11 +87,13 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    fun clearMaps(activity: Activity) {
+    fun clearMaps(activity: Activity, removeSubscriber: Boolean = true) {
 
         mapOfJobs[activity]?.cancel()
         mapOfJobs.remove(activity)
-        mapOfDialogs[activity]?.first?.removeAutoApplyLiveDataObserver()
+        if (removeSubscriber) {
+            mapOfDialogs[activity]?.first?.removeAutoApplyLiveDataObserver()
+        }
         mapOfDialogs.remove(activity)
     }
 
@@ -144,7 +162,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                     val response = presenter.getGratificationAndShowDialog(gratificationData)
                     val canShowDialog = response.popGratification?.isShow
                     if (canShowDialog != null && canShowDialog) {
-                        val couponDetail = presenter.composeApi(gratificationData)
+                        val couponDetail = presenter.composeApi(response)
                         withContext(Dispatchers.Main) {
                             if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
                                 show(weakActivity, response, couponDetail, gratificationData, intent)
