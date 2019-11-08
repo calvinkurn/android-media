@@ -118,7 +118,6 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         val rv = findViewById<RecyclerView>(R.id.rv_dropoff)
         rv.layoutManager = LinearLayoutManager(this)
         rv.setHasFixedSize(true)
-        rv.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         rv.adapter = mNearbyAdapter
         mNearbyAdapter.setActionListener(adapterListener)
 
