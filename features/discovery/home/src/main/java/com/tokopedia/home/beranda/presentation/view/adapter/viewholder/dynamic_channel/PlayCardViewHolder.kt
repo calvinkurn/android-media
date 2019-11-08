@@ -32,12 +32,18 @@ class PlayCardViewHolder(
         element.getPlayCardHome()?.let { viewModel ->
             this.playCardHome = viewModel //flag to preventing re-hit
 
-            val appLink = viewModel.playGetCardHome.data.card.applink
             bindCard(viewModel.playGetCardHome.data.card)
 
+            //impression tracker
+            HomePageTracking.eventEnhanceImpressionPlayBanner(view.context, element.getChannel())
+
             itemView.setOnClickListener {
+                val appLink = viewModel.playGetCardHome.data.card.applink
                 with(view.context) {
+                    //event click tracker
                     HomePageTracking.eventClickPlayBanner(this, element.getChannel())
+
+                    //start applink
                     startActivity(RouteManager.getIntent(this, appLink))
                 }
             }

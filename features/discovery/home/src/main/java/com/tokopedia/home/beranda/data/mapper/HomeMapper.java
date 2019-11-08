@@ -223,7 +223,6 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                         case DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER:
                             HomeVisitable playBanner = mappingPlayChannel(channel, new HashMap<>(), homeData.isCache());
                             if (!list.contains(playBanner)) list.add(playBanner);
-                            HomePageTracking.eventEnhanceImpressionPlayBanner(context, channel);
                             break;
                     }
                 }
