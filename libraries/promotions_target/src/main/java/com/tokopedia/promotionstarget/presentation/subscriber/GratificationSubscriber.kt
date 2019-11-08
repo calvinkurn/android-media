@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import androidx.annotation.NonNull
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.promotionstarget.BuildConfig
 import com.tokopedia.promotionstarget.data.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.components.AppModule
@@ -20,6 +22,7 @@ import com.tokopedia.promotionstarget.presentation.ui.dialog.TargetPromotionsDia
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
@@ -49,6 +52,9 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
 
     private val ceh = CoroutineExceptionHandler { _, exception ->
+        if (BuildConfig.DEBUG) {
+            Log.wtf("Gratification", exception.localizedMessage)
+        }
     }
 
     init {
@@ -63,6 +69,12 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     }
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val waitingForLogin = savedInstanceState.getBoolean(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN)
+            if (waitingForLogin) {
+                activity?.intent?.putExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
+            }
+        }
         processOnActivityCreated(activity, activity?.intent)
     }
 
@@ -87,13 +99,21 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    fun clearMaps(activity: Activity, removeSubscriber: Boolean = true) {
+    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+        super.onActivitySaveInstanceState(activity, outState)
+        if (activity != null) {
+            val waitingForLogin = activity.intent?.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
+            if (waitingForLogin != null && waitingForLogin) {
+                outState?.putBoolean(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
+            }
+        }
+    }
+
+    fun clearMaps(activity: Activity) {
 
         mapOfJobs[activity]?.cancel()
         mapOfJobs.remove(activity)
-        if (removeSubscriber) {
-            mapOfDialogs[activity]?.first?.removeAutoApplyLiveDataObserver()
-        }
+        mapOfDialogs[activity]?.first?.removeAutoApplyLiveDataObserver()
         mapOfDialogs.remove(activity)
     }
 
@@ -158,7 +178,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         val weakActivity = WeakReference(activity)
         scope.launch(Dispatchers.IO + ceh) {
             supervisorScope {
-                val childJob = launch {
+                val childJob = launch(ceh) {
                     val response = presenter.getGratificationAndShowDialog(gratificationData)
                     val canShowDialog = response.popGratification?.isShow
                     if (canShowDialog != null && canShowDialog) {
@@ -218,6 +238,10 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             dialogPair.second.dismiss()
         }
         mapOfDialogs.clear()
+    }
+
+    private fun getUniqueId(): String {
+        return UUID.randomUUID().toString()
     }
 }
 
