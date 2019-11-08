@@ -173,7 +173,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             tg_umrah_order_travel.text = metaData.travelAgent
             tg_booking_code.text = metaData.bookingCode
             btn_show_detail_booking.setOnClickListener {
-                trackingUmrahUtil.umrahOrderDetailLihatDetail()
+                trackingUmrahUtil.umrahOrderDetailDetailPDP()
                 RouteManager.route(context, data.items[0].productUrl)
             }
         }

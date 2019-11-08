@@ -30,12 +30,12 @@ class TrackingUmrahUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun umrahOrderDetailUmrahSaya(){
+    fun umrahOrderDetailUmrahSaya(state: String){
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = UMRAH_CLICK_EVENT
         map[EVENT_CATEGORY] = UMRAH_CLICK_CATEGORY_ORDER_DETAIL
         map[EVENT_ACTION] = UMRAH_CLICK_ACTION_ORDER_DETAIL_WIDGET_UMROH_SAYA
-        map[EVENT_LABEL] = ""
+        map[EVENT_LABEL] = state
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
