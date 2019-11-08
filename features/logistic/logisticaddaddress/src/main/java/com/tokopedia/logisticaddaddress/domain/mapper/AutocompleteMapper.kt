@@ -5,6 +5,7 @@ import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteRe
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.Data
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.PredictionsItem
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.StructuredFormatting
+import com.tokopedia.logisticaddaddress.domain.model.dropoff.AddressResponse
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.*
 import javax.inject.Inject
 
@@ -33,6 +34,19 @@ class AutocompleteMapper @Inject constructor() {
                     it.terms,
                     it.structuredFormatting,
                     it.description, it.placeId
+            )
+        }
+    }
+
+    fun mapAddress(response: AddressResponse): List<AddressResultUi> {
+        val data = response.keroAddressCorner.data
+        return data.map {
+            AddressResultUi(
+                    it.addrId,
+                    it.addrName,
+                    it.address1,
+                    it.latitude,
+                    it.longitude
             )
         }
     }

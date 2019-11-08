@@ -56,6 +56,7 @@ class AutoCompleteFragment : Fragment(),
         rvResults.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         rvResults.adapter = adapter
         adapter.setActionListener(this)
+        viewModel.getSavedAddress()
 
         viewModel.autoCompleteList.observe(this, Observer {
             when (it) {
