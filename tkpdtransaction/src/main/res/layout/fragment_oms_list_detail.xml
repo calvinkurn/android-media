@@ -209,6 +209,7 @@
             </RelativeLayout>
 
             <View
+                android:id="@+id/divider_above_info_label"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
