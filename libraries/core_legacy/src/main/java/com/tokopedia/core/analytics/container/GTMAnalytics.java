@@ -60,6 +60,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private final Iris iris;
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
+    private String clientIdString = "";
 
     // have status that describe pending.
 
@@ -697,8 +698,11 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public String getClientIDString() {
         try {
-            Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
-            return GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
+            if(TextUtils.isEmpty(clientIdString)) {
+                Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+                clientIdString = GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
+            }
+            return clientIdString;
         } catch (Exception e) {
             e.printStackTrace();
             return "";
