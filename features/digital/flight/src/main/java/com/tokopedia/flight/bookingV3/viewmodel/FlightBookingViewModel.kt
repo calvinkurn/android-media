@@ -63,26 +63,35 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun getCart(rawQuery: String, cartId: String, dummy: String = "") {
         val params = mapOf(PARAM_CART_ID to cartId)
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, FlightCart.Response::class.java, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<FlightCart.Response>().flightCart
+//            val data = withContext(Dispatchers.Default) {
+//                val graphqlRequest = GraphqlRequest(rawQuery, FlightCart.Response::class.java, params)
+//                graphqlRepository.getReseponse(listOf(graphqlRequest))
+//            }.getSuccessData<FlightCart.Response>().flightCart
 
-            if (data.cartData.id.isNotBlank()) {
-                flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
-                flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
-                        data.cartData.flight.child, data.cartData.flight.infant)
-                flightPriceData.value = data.cartData.flight.priceDetail
-                flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
-                flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
-            } else {
-                if (data.meta.needRefresh && data.meta.maxRetry >= retryCount) {
-                    retryCount++
-                    getCart(rawQuery, cartId)
-                } else {
-//                    flightCartResult.value = Fail()
-                }
-            }
+//            if (data.cartData.id.isNotBlank()) {
+//                flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
+//                flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
+//                        data.cartData.flight.child, data.cartData.flight.infant)
+//                flightPriceData.value = data.cartData.flight.priceDetail
+//                flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
+//                flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
+//            } else {
+//                if (data.meta.needRefresh && data.meta.maxRetry >= retryCount) {
+//                    retryCount++
+//                    getCart(rawQuery, cartId)
+//                } else {
+////                    flightCartResult.value = Fail()
+//                }
+//            }
+
+            val gson = Gson()
+            val data = gson.fromJson(dummy, FlightCart.Response::class.java).flightCart
+            flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
+            flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
+                    data.cartData.flight.child, data.cartData.flight.infant)
+            flightPriceData.value = data.cartData.flight.priceDetail
+            flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
+            flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
         }) {
             //            flightCartResult.value = Fail(it)
             val gson = Gson()
@@ -100,7 +109,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     }
 
-    fun updatePromoData(promoData: PromoStackingData) {
+    fun updatePromoData(promoData: PromoData) {
         flightPromoResult.value?.let {
             it.promoData = promoData
             flightPromoResult.value = it

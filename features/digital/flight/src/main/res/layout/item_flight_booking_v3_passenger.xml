@@ -34,31 +34,38 @@
         android:maxLines="1"
         android:ellipsize="end"
         />
-    
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_edit_passenger"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+
+    <LinearLayout
+        android:id="@+id/layout_edit_passenger"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="@id/tv_passenger_name"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:background="@color/Green_G500"
-        />
+        android:padding="@dimen/dp_2">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_edit_passenger_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Isi Data"
-        app:layout_constraintTop_toTopOf="@id/iv_edit_passenger"
-        app:layout_constraintBottom_toBottomOf="@id/iv_edit_passenger"
-        app:layout_constraintEnd_toStartOf="@id/iv_edit_passenger"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
-        app:typographyType="body_2"
-        android:textColor="@color/Green_G500"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_edit_passenger_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Isi Data"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            app:typographyType="body_2"
+            android:textColor="@color/Green_G500"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_edit_passenger"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            tools:background="@color/Green_G500"
+            />
+
+    </LinearLayout>
+    
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_passenger_info"

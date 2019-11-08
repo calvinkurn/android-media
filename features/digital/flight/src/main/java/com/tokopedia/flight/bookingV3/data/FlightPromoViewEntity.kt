@@ -1,7 +1,6 @@
 package com.tokopedia.flight.bookingV3.data
 
 import com.tokopedia.promocheckout.common.view.model.PromoData
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 
 /**
  * @author by jessica on 2019-11-01
@@ -10,6 +9,6 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 data class FlightPromoViewEntity (
         var isCouponEnable: Boolean = false,
         var isCouponActive: Int = 0,
-        var promoData: PromoStackingData = PromoStackingData()
+        var promoData: PromoData = PromoData()
 )
 

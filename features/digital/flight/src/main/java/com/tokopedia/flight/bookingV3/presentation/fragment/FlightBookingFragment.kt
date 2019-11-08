@@ -1,6 +1,7 @@
 package com.tokopedia.flight.bookingV3.presentation.fragment
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragme
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.flight.booking.di.FlightBookingComponent
+import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
@@ -37,6 +39,7 @@ import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
+import com.tokopedia.flight.review.domain.verifybooking.model.response.Promo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -76,7 +79,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     var departureId: String = ""
     var returnId: String = ""
-    private lateinit var paramViewModel: FlightBookingParamViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -86,12 +88,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        val args: Bundle = savedInstanceState ?: arguments
-//        departureId = args.getString(EXTRA_FLIGHT_DEPARTURE_ID)
-//        returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID, "")
-//        paramViewModel = FlightBookingParamViewModel()
-//        paramViewModel.searchParam = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -187,6 +183,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
             rv_insurance_list.setHasFixedSize(true)
             rv_insurance_list.adapter = flightInsuranceAdapter
             flightInsuranceAdapter.listener = object : FlightInsuranceAdapter.ViewHolder.ActionListener {
+                override fun onClickInsuranceTnc(tncUrl: String, tncTitle: String) {
+                    startActivity(FlightInsuranceWebviewActivity.getCallingIntent(activity, tncUrl, tncTitle))
+                }
+
                 override fun onInsuranceChecked(insurance: FlightCart.Insurance, checked: Boolean) {
                     bookingViewModel.onInsuranceChanges(insurance, checked)
                 }
@@ -325,29 +325,29 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun renderPromoTicker(flightVoucher: FlightPromoViewEntity) {
-        flight_promo_ticker_view.state = flightVoucher.promoData.state
+        flight_promo_ticker_view.state = when (flightVoucher.promoData.state) {
+            TickerCheckoutView.State.EMPTY -> TickerPromoStackingCheckoutView.State.EMPTY
+            TickerCheckoutView.State.ACTIVE -> TickerPromoStackingCheckoutView.State.ACTIVE
+            TickerCheckoutView.State.FAILED -> TickerPromoStackingCheckoutView.State.FAILED
+            else -> TickerPromoStackingCheckoutView.State.EMPTY
+        }
         flight_promo_ticker_view.title = flightVoucher.promoData.title
         flight_promo_ticker_view.desc = flightVoucher.promoData.description
         flight_promo_ticker_view.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onResetPromoDiscount() {
                 isCouponChanged = true
-                bookingViewModel.onCancelAppliedVoucher(GraphqlHelper.loadRawString(resources,
-                        R.raw.promo_checkout_flight_cancel_voucher))
-                //todoo("not implemented") To change body of created functions use File | Settings | File Templates.
+                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = ""))
             }
 
             override fun onClickUsePromo() {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
-                intent.putExtra("EXTRA_COUPON_ACTIVE", flightVoucher.isCouponActive)
-                intent.putExtra("EXTRA_CART_ID", cartId)
-                startActivityForResult(intent, REQUST_CODE_PROMO_LIST)
+                intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, flightVoucher.isCouponActive)
+                intent.putExtra(COUPON_EXTRA_CART_ID, cartId)
+                startActivityForResult(intent, COUPON_EXTRA_LIST_ACTIVITY_RESULT)
             }
 
             override fun onDisablePromoDiscount() {
-                isCouponChanged = true
-                bookingViewModel.onCancelAppliedVoucher(GraphqlHelper.loadRawString(resources,
-                        R.raw.promo_checkout_flight_cancel_voucher))
-//        updateFinalTotal(null, getCurrentBookingReviewModel())
+                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = ""))
             }
 
             override fun onClickDetailPromo() {
@@ -443,24 +443,30 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 }
             }
 
-            REQUST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
+            COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> if (resultCode == RESULT_OK) {
                 data?.let {
-                    var promoData = PromoStackingData()
-                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(EXTRA_PROMO_DATA)
+                    var promoData = PromoData()
+                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA)
                     when (promoData.state) {
-                        TickerPromoStackingCheckoutView.State.EMPTY -> {
+                        TickerCheckoutView.State.EMPTY -> {
                             promoData.promoCode = ""
-                            flight_promo_ticker_view.state = TickerPromoStackingCheckoutView.State.EMPTY
-                            flight_promo_ticker_view.actionListener?.onDisablePromoDiscount()
-                        }
-                        TickerPromoStackingCheckoutView.State.FAILED -> {
-                            promoData.promoCode = ""
+                            promoData.state = TickerCheckoutView.State.EMPTY
                             bookingViewModel.updatePromoData(promoData)
                         }
-                        TickerPromoStackingCheckoutView.State.ACTIVE -> {
+                        TickerCheckoutView.State.FAILED -> {
+                            promoData.promoCode = ""
+                            promoData.state = TickerCheckoutView.State.FAILED
                             bookingViewModel.updatePromoData(promoData)
                         }
-                        else -> { }
+                        TickerCheckoutView.State.ACTIVE -> {
+                            promoData.state = TickerCheckoutView.State.ACTIVE
+                            bookingViewModel.updatePromoData(promoData)
+                        }
+                        else -> {
+                            promoData.promoCode = ""
+                            promoData.state = TickerCheckoutView.State.EMPTY
+                            bookingViewModel.updatePromoData(promoData)
+                        }
                     }
                 }
             }
@@ -469,12 +475,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     companion object {
 
+        const val COUPON_EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
+        const val COUPON_EXTRA_CART_ID = "EXTRA_CART_ID"
+        const val COUPON_EXTRA_COUPON_CODE = "EXTRA_KUPON_CODE"
+        const val COUPON_EXTRA_IS_USE = "EXTRA_IS_USE"
+        const val COUPON_EXTRA_LIST_ACTIVITY_RESULT = 3121
+        const val COUPON_EXTRA_DETAIL_ACTIVITY_RESULT = 3122
+        const val COUPON_EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
+
         const val REQUEST_CODE_PASSENGER = 1
         const val REQUEST_CODE_CONTACT_FORM = 12
-
-        private val EXTRA_SEARCH_PASS_DATA = "EXTRA_SEARCH_PASS_DATA"
-        private val EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID"
-        private val EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID"
 
         fun newInstance(): FlightBookingFragment {
             return FlightBookingFragment()

@@ -1,5 +1,11 @@
 package com.tokopedia.flight.bookingV3.presentation.adapter
 
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,19 +51,20 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
                 cb_insurance.isChecked = insurance.defaultChecked
 
                 if (insurance.benefits.isEmpty()) insurance_highlight_benefit_container.hide()
-                else renderHighlightBenefit(insurance.benefits)
+                else renderHighlightBenefit(insurance.benefits, insurance.tncUrl, insurance.name, listener ?: null)
 
                 listener?.onInsuranceChecked(insurance, insurance.defaultChecked)
                 cb_insurance.setOnCheckedChangeListener { _, checked -> listener?.onInsuranceChecked(insurance, checked) }
             }
         }
 
-        private fun renderHighlightBenefit(list: List<FlightCart.Benefit>) {
+        private fun renderHighlightBenefit(list: List<FlightCart.Benefit>, tncUrl: String, name: String, listener: ActionListener?) {
             with(view) {
                 insurance_highlight_benefit_container.show()
                 val highlightedBenefit = list[0]
                 tv_insurance_highlight.text = highlightedBenefit.title
-                tv_insurance_highlight_detail.text = highlightedBenefit.description
+                tv_insurance_highlight_detail.text = setUpTncText(highlightedBenefit.description, tncUrl, name, listener)
+                tv_insurance_highlight_detail.movementMethod = LinkMovementMethod.getInstance()
                 iv_insurance.loadImage(highlightedBenefit.icon)
                 if (list.size > 1) renderMoreBenefit(list.subList(1, list.size))
                 else {
@@ -67,6 +74,32 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
                     rv_more_benefits.hide()
                 }
             }
+        }
+
+        private fun setUpTncText(description: String, tncUrl: String, title: String, listener: ActionListener?): SpannableStringBuilder{
+            val color = itemView.resources.getColor(R.color.Green_G500)
+            var fullText = String.format("%s. ", description)
+            if (tncUrl != null && tncUrl.length > 0) {
+                fullText += "Pelajari"
+            }
+            val stopIndex = fullText.length
+            val descriptionStr = SpannableStringBuilder(fullText)
+            val clickableSpan = object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    if (listener != null && tncUrl != null && tncUrl.isNotEmpty()) {
+                        listener.onClickInsuranceTnc(tncUrl, title)
+                    }
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = color
+                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+                }
+            }
+            descriptionStr.setSpan(clickableSpan, description.length + 2, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            return descriptionStr
         }
 
         private fun renderMoreBenefit(list: List<FlightCart.Benefit>) {
@@ -89,6 +122,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
 
         interface ActionListener {
             fun onInsuranceChecked(insurance: FlightCart.Insurance, checked: Boolean)
+            fun onClickInsuranceTnc(tncUrl: String, tncTitle: String)
         }
 
         companion object {

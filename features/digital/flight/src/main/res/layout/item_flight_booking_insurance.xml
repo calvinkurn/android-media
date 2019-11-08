@@ -108,7 +108,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_12"
                 android:background="#f3f4f5"
-                app:layout_constraintTop_toBottomOf="@id/tv_insurance_highlight_detail"/>
+                app:layout_constraintTop_toBottomOf="@id/tv_insurance_highlight_detail" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_insurance_highlight_see_more"
@@ -130,19 +130,18 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_12"
                 android:background="#f3f4f5"
-                app:layout_constraintTop_toBottomOf="@id/tv_insurance_highlight_see_more"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/tv_insurance_highlight_see_more" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_more_benefits"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                app:layout_constraintTop_toBottomOf="@id/seperator_3"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/seperator_3" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </LinearLayout>

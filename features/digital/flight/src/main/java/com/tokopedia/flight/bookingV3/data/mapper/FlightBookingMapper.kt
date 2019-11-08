@@ -101,7 +101,7 @@ class FlightBookingMapper {
         }
 
         fun mapToFlightPromoViewEntity(voucher: FlightCart.Voucher): FlightPromoViewEntity {
-            val promoData = PromoStackingData()
+            val promoData = PromoData()
             voucher.let {
                 if (it.autoApply.success) {
                     if (!(it.isCouponActive == DEFAULT_IS_COUPON_ZERO &&
@@ -111,7 +111,7 @@ class FlightBookingMapper {
                         promoData.description = it.autoApply.messageSuccess
                         promoData.title = it.autoApply.titleDescription
                         promoData.amount = it.autoApply.discountedAmount
-                        promoData.state = TickerPromoStackingCheckoutView.State.ACTIVE
+                        promoData.state = TickerCheckoutView.State.ACTIVE
                     }
                 }
             }
