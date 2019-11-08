@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.HomeData;
+import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.Spotlight;
 import com.tokopedia.home.beranda.domain.model.SpotlightItem;
 import com.tokopedia.home.beranda.domain.model.Ticker;
@@ -72,8 +73,8 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
         }
 
         if (homeData.getHomeFlag() != null) {
-            if (mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()) != null) {
-                list.add(mappingOvoTokpoint(homeData.getHomeFlag().getHasTokopoints(), homeData.isCache()));
+            if (mappingOvoTokpoint(homeData.getHomeFlag().getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS), homeData.isCache()) != null) {
+                list.add(mappingOvoTokpoint(homeData.getHomeFlag().getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS), homeData.isCache()));
             }
         }
 
@@ -84,7 +85,8 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                 && !homeData.getDynamicHomeIcon().getDynamicIcon().isEmpty()) {
             list.add(mappingDynamicIcon(
                     homeData.getDynamicHomeIcon().getDynamicIcon(),
-                    homeData.isCache()
+                    homeData.isCache(),
+                    homeData.getHomeFlag().getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)
             ));
         }
 
@@ -289,8 +291,10 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
     }
 
     private HomeVisitable mappingDynamicIcon(List<DynamicHomeIcon.DynamicIcon> iconList,
-                                                boolean isCache) {
+                                                boolean isCache,
+                                             boolean dynamicIconWrap) {
         DynamicIconSectionViewModel viewModelDynamicIcon = new DynamicIconSectionViewModel();
+        viewModelDynamicIcon.setDynamicIconWrap(dynamicIconWrap);
         for (DynamicHomeIcon.DynamicIcon icon : iconList) {
             viewModelDynamicIcon.addItem(new HomeIconItem(icon.getId(), icon.getName(), icon.getImageUrl(), icon.getApplinks(), icon.getUrl(), icon.getBu_identifier()));
         }

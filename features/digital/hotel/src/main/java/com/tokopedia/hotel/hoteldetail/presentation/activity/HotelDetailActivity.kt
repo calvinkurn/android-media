@@ -5,11 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.hoteldetail.di.DaggerHotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailFragment
+import java.util.*
 
 /**
  * @author by furqan on 22/04/19
@@ -23,8 +25,8 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
     private var checkInDate: String = ""
     private var checkOutDate: String = ""
     private var propertyId: Int = 0
-    private var roomCount: Int = 0
-    private var adultCount: Int = 0
+    private var roomCount: Int = 1
+    private var adultCount: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
@@ -35,6 +37,12 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                 checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT)
                 roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT).toInt()
                 adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT).toInt()
+            } else if (!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && uri.getQueryParameter(PARAM_SHOW_ROOM).toInt() == 1) {
+                    val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
+                    val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
+                    val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
+                    checkInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, tomorrow)
+                    checkOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
             }
         } else {
             with(intent) {
@@ -74,6 +82,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
         const val PARAM_CHECK_IN = "check_in"
         const val PARAM_CHECK_OUT = "check_out"
+        const val PARAM_SHOW_ROOM = "show_room"
         const val PARAM_ROOM_COUNT = "room"
         const val PARAM_ADULT_COUNT = "adult"
 
