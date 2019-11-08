@@ -23,8 +23,11 @@ class BrizziCheckBalance(val brizziInstance: Brizzi, val listener: BrizziActionL
             }
 
             override fun OnSuccess(brizziCardObject: BrizziCardObject) {
+                val emoneyInquiry = mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance"))
+                listener.logBrizziStatus(true, emoneyInquiry)
+
                 if (brizziCardObject.pendingBalance.toInt() == 0) {
-                    listener.onSuccess(mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance")))
+                    listener.onSuccess(emoneyInquiry)
                 } else {
                     sendCommandToCard(intent)
                 }
@@ -65,13 +68,15 @@ class BrizziCheckBalance(val brizziInstance: Brizzi, val listener: BrizziActionL
             }
 
             override fun OnSuccess(brizziCardObject: BrizziCardObject) {
-                listener.onSuccess(mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Informasi saldo berhasil diperbarui")))
+                val emoneyInquiry = mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Informasi saldo berhasil diperbarui"))
+                listener.logBrizziStatus(false, emoneyInquiry)
+                listener.onSuccess(emoneyInquiry)
             }
         })
     }
 
     companion object {
-        private const val ISSUER_ID_BRIZZI = 2
+        const val ISSUER_ID_BRIZZI = 2
         const val ETOLL_BRIZZI_OPERATOR_ID = "1015"
         const val BRIZZI_TOKEN_EXPIRED = "61"
         const val BRIZZI_CARD_NOT_FOUND = "21"

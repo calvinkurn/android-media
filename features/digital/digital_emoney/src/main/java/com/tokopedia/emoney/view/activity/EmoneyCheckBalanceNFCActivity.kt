@@ -37,7 +37,7 @@ import com.tokopedia.emoney.view.compoundview.ETollUpdateBalanceResultView
 import com.tokopedia.emoney.view.compoundview.NFCDisabledView
 import com.tokopedia.emoney.view.compoundview.TapETollCardView
 import com.tokopedia.emoney.view.electronicmoney.*
-import com.tokopedia.emoney.viewmodel.BrizziTokenViewModel
+import com.tokopedia.emoney.viewmodel.BrizziViewModel
 import com.tokopedia.emoney.viewmodel.EmoneyInquiryBalanceViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -54,7 +54,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     private lateinit var pendingIntent: PendingIntent
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var emoneyInquiryBalanceViewModel: EmoneyInquiryBalanceViewModel
-    private lateinit var brizziTokenViewModel: BrizziTokenViewModel
+    private lateinit var brizziViewModel: BrizziViewModel
     private lateinit var brizziInstance: Brizzi
     private lateinit var mandiriCheckBalance: MandiriElectronicMoney
     private lateinit var briBrizzi: BriElectronicMoney
@@ -80,7 +80,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         emoneyInquiryBalanceViewModel = viewModelProvider.get(EmoneyInquiryBalanceViewModel::class.java)
-        brizziTokenViewModel = viewModelProvider.get(BrizziTokenViewModel::class.java)
+        brizziViewModel = viewModelProvider.get(BrizziViewModel::class.java)
 
         eTollUpdateBalanceResultView = findViewById(R.id.view_update_balance_result)
         nfcDisabledView = findViewById(R.id.view_nfc_disabled)
@@ -172,8 +172,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     override fun processGetBalanceBrizzi(refresh: Boolean) {
-        brizziTokenViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
-        brizziTokenViewModel.tokenBrizzi.observe(this, Observer { token ->
+        brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
+        brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
             //TODO change key to use AuthKey
             brizziInstance.Init(token, "IlFDLgR31ACt7aqH")
             brizziInstance.setUserName("Tokopedia")
@@ -264,6 +264,34 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                 mapAttributes,
                 this::onSuccessInquiryBalance,
                 this::onErrorInquiryBalance)
+    }
+
+    override fun logBrizziStatus(firstLogInquiry: Boolean, emoneyInquiry: EmoneyInquiry) {
+        if (firstLogInquiry) {
+            emoneyInquiry.attributesEmoneyInquiry?.let {
+                logBrizzi(0, it.cardNumber, "success", it.lastBalance.toDouble())
+            }
+        } else {
+            brizziViewModel.inquiryIdBrizzi.observe(this, Observer {
+                if (it > -1) {
+                    emoneyInquiry.attributesEmoneyInquiry?.let { attributeInquiry ->
+                        logBrizzi(it, attributeInquiry.cardNumber, "success",
+                                attributeInquiry.lastBalance.toDouble())
+                    }
+                }
+            })
+        }
+    }
+
+    private fun logBrizzi(inquiryId: Int, cardNumber: String, status: String, lastBalance: Double) {
+        var mapParam = HashMap<String, Any>()
+        mapParam.put(BrizziViewModel.ISSUER_ID, BrizziCheckBalance.ISSUER_ID_BRIZZI)
+        mapParam.put(BrizziViewModel.INQUIRY_ID, inquiryId)
+        mapParam.put(BrizziViewModel.CARD_NUMBER, cardNumber)
+        mapParam.put(BrizziViewModel.RC, status)
+        mapParam.put(BrizziViewModel.LAST_BALANCE, lastBalance)
+        brizziViewModel.logDataBrizzi(GraphqlHelper.loadRawString(resources, R.raw.mutation_emoney_log_brizzi),
+                mapParam)
     }
 
     private fun onErrorInquiryBalance(throwable: Throwable) {

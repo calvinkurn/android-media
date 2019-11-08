@@ -12,6 +12,7 @@ interface EmoneyActionListener {
 interface BrizziActionListener : EmoneyActionListener {
     fun onSuccess(emoneyInquiry: EmoneyInquiry)
     fun processGetBalanceBrizzi(refresh: Boolean)
+    fun logBrizziStatus(firstLogInquiry: Boolean, emoneyInquiry: EmoneyInquiry)
 }
 
 interface MandiriActionListener : EmoneyActionListener {
