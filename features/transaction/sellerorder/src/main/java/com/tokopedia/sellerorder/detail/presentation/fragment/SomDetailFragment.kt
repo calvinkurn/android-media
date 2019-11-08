@@ -49,6 +49,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PENOLAKAN
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_PILIH_PRODUK_KOSONG
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OFFICE_CLOSED
+import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_COURIER_PROBLEM_OTHERS
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_BUYER_NO_RESPONSE
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_COURIER_PROBLEM
 import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_OTHER
@@ -56,6 +57,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.VALUE_REASON_SHOP_CLOSED
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetCourierProblemsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetStockEmptyAdapter
@@ -66,20 +68,20 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.bottomsheet_secondary.*
 import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
-import kotlinx.android.synthetic.main.bottomsheet_shop_closed.*
 import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
+import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import java.text.SimpleDateFormat as SimpleDateFormat1
 
 /**
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener  {
+class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener, SomBottomSheetCourierProblemsAdapter.ActionListener  {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -94,6 +96,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private lateinit var somBottomSheetRejectOrderAdapter:  SomBottomSheetRejectOrderAdapter
     private lateinit var somBottomSheetRejectReasonsAdapter:  SomBottomSheetRejectReasonsAdapter
     private lateinit var somBottomSheetStockEmptyAdapter: SomBottomSheetStockEmptyAdapter
+    private lateinit var somBottomSheetCourierProblemsAdapter: SomBottomSheetCourierProblemsAdapter
     private lateinit var dialogUnify: DialogUnify
     private lateinit var bottomSheetUnify: BottomSheetUnify
 
@@ -222,7 +225,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                         layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
                         adapter = somBottomSheetRejectReasonsAdapter
                     }
-                    viewBottomSheet.extra_notes_wrapper?.visibility = View.GONE
+                    viewBottomSheet.tf_extra_notes?.visibility = View.GONE
 
                     bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
                     bottomSheetUnify.setChild(viewBottomSheet)
@@ -327,7 +330,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             }
 
             btn_secondary?.setOnClickListener {
-                somBottomSheetRejectOrderAdapter = SomBottomSheetRejectOrderAdapter(this, hasRadioBtn = false, hasReasonEditText = false)
+                somBottomSheetRejectOrderAdapter = SomBottomSheetRejectOrderAdapter(this, hasRadioBtn = false)
                 showTextOnlyBottomSheet()
                 bottomSheetUnify.clearHeader(true)
                 bottomSheetUnify.clearClose(true)
@@ -354,7 +357,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             adapter = somBottomSheetRejectOrderAdapter
         }
         viewBottomSheet.fl_btn_primary?.visibility = View.GONE
-        viewBottomSheet.extra_notes_wrapper?.visibility = View.GONE
+        viewBottomSheet.tf_extra_notes?.visibility = View.GONE
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
         bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
@@ -425,10 +428,56 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         when (rejectReason.reasonCode) {
             1 -> setProductEmpty(rejectReason.reasonCode.toString())
             4 -> setShopClosed(rejectReason.reasonCode.toString())
-            7 -> {}
+            7 -> setCourierProblems(rejectReason.reasonCode.toString(), rejectReason.listChild)
             15 -> {}
             14 -> {}
         }
+    }
+
+    private fun setProductEmpty(rCode: String) {
+        // ini penentu previous bottomsheetnya dismissed apa nggak?
+        bottomSheetUnify.dismiss()
+        somBottomSheetStockEmptyAdapter = SomBottomSheetStockEmptyAdapter()
+        bottomSheetUnify = BottomSheetUnify()
+        if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
+        viewBottomSheet.rv_bottomsheet_secondary?.apply {
+            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+            adapter = somBottomSheetStockEmptyAdapter }
+
+        viewBottomSheet.tf_extra_notes?.setLabelStatic(true)
+        viewBottomSheet.tf_extra_notes?.textFiedlLabelText?.text = getString(R.string.empty_stock_extra_note)
+        viewBottomSheet.tf_extra_notes?.setPlaceholder(getString(R.string.empty_stock_extra_placeholder))
+
+        // viewBottomSheet.extra_notes_wrapper?.hint = getString(R.string.empty_stock_extra_note)
+        // viewBottomSheet.extra_notes_input?.hint = getString(R.string.empty_stock_extra_placeholder)
+
+        viewBottomSheet.fl_btn_primary?.visibility = View.VISIBLE
+        viewBottomSheet.fl_btn_primary?.setOnClickListener {
+            bottomSheetUnify.dismiss()
+            val orderRejectRequest = SomRejectRequest()
+            orderRejectRequest.orderId = detailResponse.orderId.toString()
+            orderRejectRequest.rCode = rCode
+            var strListPrd = ""
+            var indexPrd = 0
+            somBottomSheetStockEmptyAdapter.getListProductEmptied().forEach {
+                if (indexPrd > 0) strListPrd += "~"
+                strListPrd += it.id
+                indexPrd++
+            }
+            orderRejectRequest.listPrd = strListPrd
+            orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
+            somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
+            observingRejectOrder()
+        }
+
+        bottomSheetUnify.setFullPage(true)
+        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+        bottomSheetUnify.setChild(viewBottomSheet)
+        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        bottomSheetUnify.setTitle(TITLE_PILIH_PRODUK_KOSONG)
+        somBottomSheetStockEmptyAdapter.listProduct = detailResponse.listProduct.toMutableList()
+        somBottomSheetStockEmptyAdapter.notifyDataSetChanged()
     }
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
@@ -478,7 +527,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     closedNote = viewBottomSheet.tf_shop_closed_notes?.textFieldInput?.text.toString(),
                     closeEnd = viewBottomSheet.tf_end_shop_closed?.textFieldInput?.text.toString()
             )
-            println("++ orderRejectRequest = $orderRejectRequest")
             somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
             observingRejectOrder()
         }
@@ -495,19 +543,16 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         }
     }
 
-    private fun setProductEmpty(rCode: String) {
-        // ini penentu previous bottomsheetnya dismissed apa nggak?
+    private fun setCourierProblems(rCode: String, listChild: List<SomReasonRejectData.Data.SomRejectReason.Child>) {
         bottomSheetUnify.dismiss()
-        somBottomSheetStockEmptyAdapter = SomBottomSheetStockEmptyAdapter()
+        somBottomSheetCourierProblemsAdapter = SomBottomSheetCourierProblemsAdapter(this)
+        somBottomSheetCourierProblemsAdapter.reasonCode = rCode
         bottomSheetUnify = BottomSheetUnify()
         if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
         viewBottomSheet.rv_bottomsheet_secondary?.apply {
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-            adapter = somBottomSheetStockEmptyAdapter }
-
-        viewBottomSheet.extra_notes_wrapper?.hint = getString(R.string.empty_stock_extra_note)
-        viewBottomSheet.extra_notes_input?.hint = getString(R.string.empty_stock_extra_placeholder)
+            adapter = somBottomSheetCourierProblemsAdapter }
 
         viewBottomSheet.fl_btn_primary?.visibility = View.VISIBLE
         viewBottomSheet.fl_btn_primary?.setOnClickListener {
@@ -515,15 +560,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             val orderRejectRequest = SomRejectRequest()
             orderRejectRequest.orderId = detailResponse.orderId.toString()
             orderRejectRequest.rCode = rCode
-            var strListPrd = ""
-            var indexPrd = 0
-            somBottomSheetStockEmptyAdapter.getListProductEmptied().forEach {
-                if (indexPrd > 0) strListPrd += "~"
-                strListPrd += it.id
-                indexPrd++
-            }
-            orderRejectRequest.listPrd = strListPrd
-            orderRejectRequest.reason = viewBottomSheet.extra_notes_input?.text.toString()
+            orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
             somDetailViewModel.rejectOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_order), orderRejectRequest)
             observingRejectOrder()
         }
@@ -532,9 +569,19 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
         bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
-        bottomSheetUnify.setTitle(TITLE_PILIH_PRODUK_KOSONG)
-        somBottomSheetStockEmptyAdapter.listProduct = detailResponse.listProduct.toMutableList()
-        somBottomSheetStockEmptyAdapter.notifyDataSetChanged()
+        bottomSheetUnify.setTitle(TITLE_COURIER_PROBLEM)
+        somBottomSheetCourierProblemsAdapter.listChildCourierProblems = listChild.toMutableList()
+        somBottomSheetCourierProblemsAdapter.notifyDataSetChanged()
+    }
+
+    override fun onChooseOptionCourierProblem(optionCourierProblem: SomReasonRejectData.Data.SomRejectReason.Child) {
+        if (optionCourierProblem.reasonText.equals(VALUE_COURIER_PROBLEM_OTHERS, ignoreCase = true)) {
+            bottomSheetUnify.tf_extra_notes?.visibility = View.VISIBLE
+            bottomSheetUnify.tf_extra_notes?.setLabelStatic(true)
+            bottomSheetUnify.tf_extra_notes?.setPlaceholder(getString(R.string.placeholder_reject_reason))
+        } else {
+            bottomSheetUnify.tf_extra_notes?.visibility = View.GONE
+        }
     }
 
     private fun observingRejectOrder() {

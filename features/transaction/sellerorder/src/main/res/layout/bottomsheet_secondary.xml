@@ -11,7 +11,15 @@
         android:layout_height="wrap_content"
         android:visibility="visible"/>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tf_extra_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_below="@id/rv_bottomsheet_secondary"
+        android:visibility="gone"/>
+
+    <!--<com.google.android.material.textfield.TextInputLayout
         android:id="@+id/extra_notes_wrapper"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
@@ -30,7 +38,7 @@
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/sp_14" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>-->
 
     <FrameLayout
         android:id="@+id/fl_btn_primary"

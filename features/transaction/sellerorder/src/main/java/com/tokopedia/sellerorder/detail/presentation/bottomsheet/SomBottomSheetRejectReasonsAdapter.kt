@@ -28,7 +28,6 @@ class SomBottomSheetRejectReasonsAdapter(private var listener: ActionListener): 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.rb_reject.visibility = View.GONE
-        holder.itemView.reject_reason.visibility = View.GONE
         holder.itemView.label_reject.text = listRejectReasons[position].reasonText
         holder.itemView.setOnClickListener {
             listener.onRejectReasonItemClick(listRejectReasons[position])
