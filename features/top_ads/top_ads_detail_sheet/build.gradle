@@ -32,5 +32,4 @@ dependencies {
     }
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    compile project(path: ':libraries:core_network')
 }
