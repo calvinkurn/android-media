@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_marketplace" translatable="false">marketplace</string>
+    <string name="host_hotlist" translatable="false">hot</string>
+    <string name="host_hotlist_revamp" translatable="false">hotlist</string>
     <!--
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"

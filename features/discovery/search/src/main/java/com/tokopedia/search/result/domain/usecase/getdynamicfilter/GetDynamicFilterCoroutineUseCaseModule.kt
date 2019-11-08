@@ -16,7 +16,7 @@ class GetDynamicFilterCoroutineUseCaseModule {
 
     @Provides
     @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_SHOP_USE_CASE)
-    fun provideGetDynamicFilterUseCase(
+    internal fun provideGetDynamicFilterUseCase(
             @Named(SearchConstant.DynamicFilter.DYNAMIC_FILTER_REPOSITORY) repository: Repository<DynamicFilterModel>): UseCase<DynamicFilterModel> {
         return GetDynamicFilterCoroutineUseCase(repository)
     }
