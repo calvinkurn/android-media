@@ -49,6 +49,7 @@ import javax.inject.Inject
 class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>() {
 
     companion object {
+
     }
 
     private var shouldShowCartAnimation = false
@@ -88,7 +89,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         initView()
         initializeSearchToolbar()
         initializeStickyLogin(view)
-        viewModel.getProductP1()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

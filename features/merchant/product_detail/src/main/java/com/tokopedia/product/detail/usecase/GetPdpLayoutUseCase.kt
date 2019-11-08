@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT
 import com.tokopedia.usecase.RequestParams
@@ -18,7 +17,7 @@ class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String
     companion object {
         fun createParams(productId: String): RequestParams =
                 RequestParams.create().apply {
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+                    putString("productId", productId)
                 }
     }
 
@@ -39,7 +38,7 @@ class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String
 
         if (data == null) {
             throw RuntimeException()
-        } else if (error.isNotEmpty() || error.first().message.isNotEmpty()) {
+        } else if (error.isNotEmpty()) {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
 

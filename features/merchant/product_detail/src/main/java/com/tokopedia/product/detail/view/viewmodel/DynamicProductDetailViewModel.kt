@@ -56,22 +56,21 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         launchCatchError(block = {
             val pdpLayout = getPdpLayout("77777")
             productLayout.value = Success(pdpLayout)
-            getProductAllDataUseCase.execute({
-                val productInfoP1 = ProductInfoP1()
-                productInfo = (it as Success).data.data ?: ProductInfo()
-                productInfoP1.productInfo = (it as Success).data.data ?: ProductInfo()
-                productSnapshotDataModel.value = Success(productInfoP1.convertToSnapshotData())
-            }, {
-                productInfoP1.value = Fail(it)
-                productLayout.value = Fail(it)
-            })
 
+            productSnapshotDataModel.value = Success(getPdpData(14285907).convertToSnapshotData())
         }) {
-
+            productLayout.value = Fail(it)
         }
+
+
+    }
+    private suspend fun getPdpData(productId:Int): ProductInfoP1 {
+        getProductAllDataUseCase.productId = productId
+        val pdpData = Success(getProductAllDataUseCase.executeOnBackground()).data
+        return ProductInfoP1((pdpData as Success).data.data ?: ProductInfo())
     }
 
-    suspend fun getPdpLayout(productId: String): ProductDetailLayout {
+    private suspend fun getPdpLayout(productId: String): ProductDetailLayout {
         getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId)
         getPdpLayoutUseCase.isFromCacheFirst = false
         return getPdpLayoutUseCase.executeOnBackground()

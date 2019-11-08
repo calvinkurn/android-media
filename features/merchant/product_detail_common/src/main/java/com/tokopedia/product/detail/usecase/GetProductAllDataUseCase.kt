@@ -11,12 +11,14 @@ import javax.inject.Inject
 class GetProductAllDataUseCase @Inject constructor(private val getProductInfoP1UseCase: GetProductInfoP1UseCase)
     : UseCase<Result<ProductInfo.Response>>() {
 
+    var productId: Int = 0
+
     override suspend fun executeOnBackground(): Result<ProductInfo.Response> {
         var dataP1: Result<ProductInfo.Response> = Success(ProductInfo.Response())
 
         supervisorScope {
             try {
-                getProductInfoP1UseCase.params = GetProductInfoP1UseCase.createParams(179098219, "", "")
+                getProductInfoP1UseCase.params = GetProductInfoP1UseCase.createParams(productId, "", "")
                 dataP1 = Success(getProductInfoP1UseCase.executeOnBackground())
 
             } catch (e: Throwable) {
