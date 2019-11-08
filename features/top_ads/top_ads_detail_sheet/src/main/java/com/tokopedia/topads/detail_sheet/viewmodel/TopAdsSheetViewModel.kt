@@ -9,7 +9,6 @@ import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestCacheStrategy
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.topads.detail_sheet.UrlConstant.BASE_REST_URL
 import com.tokopedia.topads.detail_sheet.UrlConstant.PARAM_AD_ID
 import com.tokopedia.topads.detail_sheet.UrlConstant.PARAM_END_DATE
@@ -30,6 +29,7 @@ import com.tokopedia.topads.detail_sheet.data.ActionRequest
 import com.tokopedia.topads.detail_sheet.data.Bulk
 import java.text.SimpleDateFormat
 import java.util.*
+import com.tokopedia.authentication.AuthHelper
 
 /**
  * Author errysuprayogi on 22,October,2019
@@ -61,7 +61,7 @@ class TopAdsSheetViewModel @Inject constructor(private val restRepository: RestR
                                 PARAM_START_DATE to startDate,
                                 PARAM_END_DATE to endDate
                         )
-                        AuthUtil.generateParamsNetwork(
+                        AuthHelper.generateParamsNetwork(
                                 userSession.userId, userSession.deviceId, queryMap)
                         val restRequest = RestRequest.Builder(
                                 urlMap[PATH_TOPADS_GROUP_PRODUCT] ?: "",
