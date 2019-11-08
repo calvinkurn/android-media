@@ -1,24 +1,23 @@
-package com.tokopedia.feedplus.data.pojo.onboarding
+package com.tokopedia.interest_pick_common.data
 
 import com.google.gson.annotations.Expose
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
 
 data class Meta(
 
-	@SerializedName("assets")
+        @SerializedName("assets")
 	@Expose
 	val assets: Assets = Assets(),
 
-	@SerializedName("minPicked")
+        @SerializedName("minPicked")
 	@Expose
 	val minPicked: Int = 0,
 
-	@SerializedName("isEnabled")
+        @SerializedName("isEnabled")
 	@Expose
 	val isEnabled: Boolean = false,
 
-	@SerializedName("source")
+        @SerializedName("source")
 	@Expose
 	val source: String = ""
 )

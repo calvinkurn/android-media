@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.view.viewmodel.onboarding
+package com.tokopedia.interest_pick_common.view.viewmodel
 
 /**
  * @author by yoasfs on 2019-09-20

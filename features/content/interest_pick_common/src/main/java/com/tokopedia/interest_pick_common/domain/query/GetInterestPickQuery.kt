@@ -1,4 +1,4 @@
-package com.tokopedia.interestpick.domain.query
+package com.tokopedia.interest_pick_common.domain.query
 
 /**
  * @author by yoasfs on 2019-11-05
@@ -31,4 +31,6 @@ object GetInterestPickQuery {
             }
         """.trimIndent()
     }
+
+    const val QUERY_GET_INTEREST_PICK = "QUERY_GET_INTEREST_PICK"
 }
