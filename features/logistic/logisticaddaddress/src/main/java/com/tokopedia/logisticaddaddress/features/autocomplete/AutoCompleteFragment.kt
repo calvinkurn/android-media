@@ -24,6 +24,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
+const val DEBOUNCE_DELAY = 400L
+
 class AutoCompleteFragment : Fragment(),
         SearchInputView.Listener, AutoCompleteAdapter.ActionListener {
 
@@ -47,15 +49,17 @@ class AutoCompleteFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        searchInput = view.findViewById(R.id.search_input_autocomplete)
-        searchInput.setDelayTextChanged(400)
-        searchInput.setListener(this)
 
-        val rvResults = view.findViewById<RecyclerView>(R.id.rv_autocomplete)
-        rvResults.layoutManager = LinearLayoutManager(context)
-        rvResults.setHasFixedSize(true)
-        rvResults.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-        rvResults.adapter = adapter
+        with(view.findViewById<SearchInputView>(R.id.search_input_autocomplete)) {
+            setDelayTextChanged(DEBOUNCE_DELAY)
+            searchInput.setListener(this@AutoCompleteFragment)
+        }
+        with(view.findViewById<RecyclerView>(R.id.rv_autocomplete)) {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            adapter = adapter
+        }
         adapter.setActionListener(this)
 
         fetchSavedAddress()
