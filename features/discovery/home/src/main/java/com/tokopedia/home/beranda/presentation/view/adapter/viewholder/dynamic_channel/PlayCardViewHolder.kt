@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.dynamicbanner.entity.PlayCard
 import com.tokopedia.dynamicbanner.entity.PlayCardHome
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -31,11 +32,10 @@ class PlayCardViewHolder(val view: View, val listener: HomeCategoryListener): Ab
             bindCard(playCardHome.playGetCardHome.data.card)
             itemView.setOnClickListener {
                 with(view.context) {
+                    HomePageTracking.eventClickPlayBanner(this, element.getChannel())
                     startActivity(RouteManager.getIntent(this,
                             playCardHome.playGetCardHome.data.card.applink))
                 }
-
-                element.getChannel()?.enhanceClickPlayBanner
             }
         }
 
