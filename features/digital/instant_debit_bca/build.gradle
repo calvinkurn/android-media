@@ -45,7 +45,7 @@ dependencies {
 project.ext {
     artifactId = 'instant-debit-bca'
     groupId = 'com.tokopedia.digital'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="instant_debit_bca-release"
 }
 

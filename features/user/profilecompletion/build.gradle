@@ -64,7 +64,7 @@ dependencies {
 project.ext {
     artifactId = 'profile-compilation'
     groupId = 'com.tokopedia.user'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="profilecompletion-release"
 }
 

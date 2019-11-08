@@ -18,7 +18,7 @@ buildscript {
 project.ext {
     artifactId = 'abstraction'
     groupId = 'com.tokopedia.abstraction'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="tkpdabstraction-release"
 }
 

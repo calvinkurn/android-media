@@ -46,7 +46,7 @@ dependencies {
 project.ext {
     artifactId = 'setting-bank'
     groupId = 'com.tokopedia.user'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "settingbank-release"
 }
 

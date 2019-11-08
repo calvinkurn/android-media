@@ -60,7 +60,7 @@ dependencies {
 project.ext {
     artifactId = 'pm-subscribe'
     groupId = 'com.tokopedia.merchant'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="power_merchant_subscribe-release"
 }
 

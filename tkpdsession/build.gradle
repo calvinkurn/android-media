@@ -71,7 +71,7 @@ dependencies {
 project.ext {
     artifactId = 'session'
     groupId = 'com.tokopedia.session'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="tkpdsession-release"
 }
 

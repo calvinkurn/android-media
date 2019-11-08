@@ -92,7 +92,7 @@ dependencies {
 project.ext {
     artifactId = 'product-detail'
     groupId = 'com.tokopedia.merchant'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "product_detail-release"
 }
 

@@ -63,7 +63,7 @@ dependencies {
 project.ext {
     artifactId = 'tradein'
     groupId = 'com.tokopedia.category'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "tradein-release"
 }
 

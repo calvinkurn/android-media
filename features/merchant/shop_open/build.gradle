@@ -70,7 +70,7 @@ dependencies {
 project.ext {
     artifactId = 'shop-open'
     groupId = 'com.tokopedia.merchant'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="shop_open-release"
 }
 

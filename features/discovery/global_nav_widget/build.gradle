@@ -38,7 +38,7 @@ dependencies {
 project.ext {
     artifactId = 'global-nav-widget'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "globalnavwidget-release"
 }
 

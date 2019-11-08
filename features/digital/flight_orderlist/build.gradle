@@ -73,7 +73,7 @@ dependencies {
 project.ext {
     artifactId = 'flight-orderlist'
     groupId = 'com.tokopedia.travel'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="travelflightorderlist-release"
 }
 

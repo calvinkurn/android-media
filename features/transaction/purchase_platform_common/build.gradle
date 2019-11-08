@@ -28,7 +28,7 @@ dependencies {
 project.ext {
     artifactId = 'purchase-platform-common'
     groupId = 'com.tokopedia.purchase_platform'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "purchaseplatformcommon-release"
 }
 
