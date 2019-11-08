@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AddressResultUi
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
 import kotlinx.android.synthetic.main.item_autocomplete_result.view.*
 
@@ -29,7 +30,10 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         when (holder) {
             is ResultViewHolder -> {
                 if (item is AutoCompleteResultUi) {
-                    holder.bind(item)
+                    holder.bindAutoComplete(item)
+                    holder.itemView.setOnClickListener { listener?.onResultClicked(item) }
+                } else if (item is AddressResultUi) {
+                    holder.bindSavedAddress(item)
                     holder.itemView.setOnClickListener { listener?.onResultClicked(item) }
                 }
             }
@@ -38,6 +42,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int = when (data[position]) {
         is AutoCompleteResultUi -> R.layout.item_autocomplete_result
+        is AddressResultUi -> R.layout.item_autocomplete_result
         is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
         is NoResultType -> R.layout.item_autocomplete_no_result
         else -> throw RuntimeException("View type not found!!")
@@ -48,6 +53,12 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     fun setData(items: List<AutoCompleteResultUi>) {
+        data.clear()
+        data.addAll(items)
+        notifyDataSetChanged()
+    }
+
+    fun setEmptyData(items: List<AddressResultUi>) {
         data.clear()
         data.addAll(items)
         notifyDataSetChanged()
@@ -66,7 +77,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     interface ActionListener {
-        fun onResultClicked(data: AutoCompleteResultUi)
+        fun onResultClicked(data: AutoCompleteVisitable)
     }
 
     interface AutoCompleteVisitable
@@ -74,9 +85,13 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     data class NoResultType(val id: Int = 0) : AutoCompleteVisitable
 
     class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: AutoCompleteResultUi) {
+        fun bindAutoComplete(item: AutoCompleteResultUi) {
             itemView.tv_autocomplete_title.text = item.structuredFormatting.mainText
             itemView.tv_autocomplete_desc.text = item.structuredFormatting.secondaryText
+        }
+        fun bindSavedAddress(item: AddressResultUi) {
+            itemView.tv_autocomplete_title.text = item.addrName
+            itemView.tv_autocomplete_desc.text = item.address1
         }
     }
 

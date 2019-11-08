@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AddressResultUi
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -52,7 +53,6 @@ class AutoCompleteFragment : Fragment(),
 
         val rvResults = view.findViewById<RecyclerView>(R.id.rv_autocomplete)
         rvResults.layoutManager = LinearLayoutManager(context)
-        rvResults.hasFixedSize()
         rvResults.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         rvResults.adapter = adapter
         adapter.setActionListener(this)
@@ -71,6 +71,14 @@ class AutoCompleteFragment : Fragment(),
                 is Success -> sendResult(it.data.latitude, it.data.longitude)
             }
         })
+        viewModel.savedAddress.observe(this, Observer {
+            when (it) {
+                is Success -> adapter.setEmptyData(it.data)
+                is Fail -> when (it.throwable) {
+                    is MessageErrorException -> adapter.setNoResult()
+                }
+            }
+        })
     }
 
     override fun onSearchSubmitted(text: String?) {
@@ -81,8 +89,12 @@ class AutoCompleteFragment : Fragment(),
         text?.let { fetchData(it) }
     }
 
-    override fun onResultClicked(data: AutoCompleteResultUi) {
-        viewModel.getLatlng(data.placeId)
+    override fun onResultClicked(data: AutoCompleteAdapter.AutoCompleteVisitable) {
+        if (data is AutoCompleteResultUi) {
+            viewModel.getLatlng(data.placeId)
+        } else if (data is AddressResultUi) {
+            sendResult(data.latitude, data.longitude)
+        }
     }
 
     private fun initInjector() {
