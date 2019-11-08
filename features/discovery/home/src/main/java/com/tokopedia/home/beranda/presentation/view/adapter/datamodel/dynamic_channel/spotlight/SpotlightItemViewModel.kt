@@ -10,24 +10,24 @@ class SpotlightItemViewModel(val id: Int, val title: String, val description: St
 
     fun getEnhanceClickSpotlightHomePage(position: Int, channelId: String): Map<String, Any> {
         return DataLayer.mapOf(
-                "event", "promoClick",
-                "eventCategory", "homepage",
-                "eventAction", "click on banner spotlight",
-                "eventLabel", title,
-                "channelId", channelId,
-                "ecommerce", DataLayer.mapOf(
+            "event", "promoClick",
+            "eventCategory", "homepage",
+            "eventAction", "click on banner spotlight",
+            "eventLabel", title,
+            "channelId", channelId,
+            "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(
-                DataLayer.mapOf(
-                        "id", id.toString(),
-                        "name", promoName,
-                        "position", (position + 1).toString(),
-                        "creative", title,
-                        "creative_url", backgroundImageUrl
+                    "promotions", DataLayer.listOf(
+                        DataLayer.mapOf(
+                                "id", "${channelId}_$id",
+                                "name", promoName,
+                                "position", (position + 1).toString(),
+                                "creative", title,
+                                "creative_url", backgroundImageUrl
+                        )
+                    )
                 )
-        )
-        )
-        )
+            )
         )
     }
 }

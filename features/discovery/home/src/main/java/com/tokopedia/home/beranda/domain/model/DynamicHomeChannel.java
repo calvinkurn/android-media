@@ -230,12 +230,14 @@ public class DynamicHomeChannel {
                                                             getGrids()[position].getPrice()
                                                     )),
                                                     "list", "/ - p1 - lego product - " + getHeader().getName(),
-                                                    "position", String.valueOf(position + 1)
+                                                    "position", String.valueOf(position + 1),
+                                                    "dimension83", getGrids()[position].getFreeOngkir().isActive() ? "bebas ongkir" : "none / other",
+                                                    "dimension84", id,
+                                                    "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
                                             )
                                     )
                             )
-                    ),
-                    "attribution", getHomeAttribution(position + 1, getGrids()[position].getId())
+                    )
             );
         }
 
@@ -408,7 +410,6 @@ public class DynamicHomeChannel {
                     "eventCategory", "homepage",
                     "eventAction", "impression on lego product",
                     "eventLabel", "",
-                    channelId, id,
                     "ecommerce", DataLayer.mapOf(
                             "curencyCode", "IDR",
                             "impressions", DataLayer.listOf(
@@ -460,7 +461,8 @@ public class DynamicHomeChannel {
                                     )),
                                     "list", "/ - p1 - lego product - " + getHeader().getName(),
                                     "position", String.valueOf(i + 1),
-                                    "dimension83", grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none/other"
+                                    "dimension83", grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none/other",
+                                    "dimension84", id
                             )
                     );
                 }
@@ -468,7 +470,7 @@ public class DynamicHomeChannel {
             return list;
         }
 
-        private List<Object> convertPromoEnhanceBannerChannelMix() {
+        private List<Object> convertPromoEnhanceBannerChannelMix(String channelId) {
             List<Object> list = new ArrayList<>();
 
             /**
@@ -476,7 +478,7 @@ public class DynamicHomeChannel {
              */
             list.add(
                     DataLayer.mapOf(
-                            "id", getBanner().getId(),
+                            "id", channelId + "_" + getBanner().getId(),
                             "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().name,
                             "creative", getBanner().getAttribution(),
                             "creative_url", getBanner().getImageUrl(),
@@ -537,22 +539,22 @@ public class DynamicHomeChannel {
                     "event", "promoClick",
                     "eventCategory", "homepage",
                     "eventAction", "lego banner click",
-                    "eventLabel", grid.getAttribution(),
                     channelId, id,
+                    "eventLabel", grid.getAttribution(),
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
-                                                    "id", grid.getId(),
+                                                    "id", id + "_" + grid.getId(),
                                                     "name", getPromoName(),
                                                     "creative", grid.getAttribution(),
                                                     "creative_url", grid.getImageUrl(),
-                                                    "position", String.valueOf(position)
+                                                    "position", String.valueOf(position),
+                                                    "attribution", getHomeAttribution(position, grid.getAttribution())
                                             )
                                     )
                             )
-                    ),
-                    "attribution", getHomeAttribution(position, grid.getAttribution())
+                    )
             );
         }
 
@@ -567,16 +569,16 @@ public class DynamicHomeChannel {
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
-                                                    "id", grid.getId(),
+                                                    "id", id + "_" + grid.getId(),
                                                     "name", getPromoName(),
                                                     "creative", grid.getAttribution(),
                                                     "creative_url", grid.getImageUrl(),
-                                                    "position", String.valueOf(position)
+                                                    "position", String.valueOf(position),
+                                                    "attribution", getHomeAttribution(position, grid.getAttribution())
                                             )
                                     )
                             )
-                    ),
-                    "attribution", getHomeAttribution(position, grid.getAttribution())
+                    )
             );
         }
 
@@ -586,7 +588,7 @@ public class DynamicHomeChannel {
                     "eventCategory", "homepage",
                     "eventAction", "click on product dynamic channel mix",
                     "eventLabel", getHeader().name,
-                    "channelId", id,
+                    channelId, id,
                     "ecommerce", DataLayer.mapOf(
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(
@@ -603,7 +605,8 @@ public class DynamicHomeChannel {
                                                     "variant", "none / other",
                                                     "position", String.valueOf(gridPosition+1),
                                                     "attribution", getHomeAttribution(gridPosition + 1, getGrids()[gridPosition].getId()),
-                                                    "dimension83", isFreeOngkir ? "bebas ongkir" : "none/other"
+                                                    "dimension83", isFreeOngkir ? "bebas ongkir" : "none/other",
+                                                    "dimension84", id
                                             )
                                     )
                             )
@@ -642,12 +645,12 @@ public class DynamicHomeChannel {
                     "eventCategory", "homepage",
                     "eventAction", "click on banner dynamic channel mix",
                     "eventLabel", getHeader().name,
-                    "channelId", id,
+                    channelId, id,
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
-                                                    "id", banner.getId(),
+                                                    "id", id + "_" + banner.getId(),
                                                     "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().getName(),
                                                     "creative", banner.getAttribution(),
                                                     "creative_url", banner.getImageUrl(),
@@ -664,13 +667,13 @@ public class DynamicHomeChannel {
                     "event", "promoClick",
                     "eventCategory", "homepage",
                     "eventAction", "click "+getBanner().getCta().getText()+" on dynamic channel mix",
+                    channelId, id,
                     "eventLabel", getHeader().name,
-                    "channelId", id,
                     "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
-                                                    "id", banner.getId(),
+                                                    "id", id + "_" + banner.getId(),
                                                     "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().getName(),
                                                     "creative", banner.getAttribution(),
                                                     "creative_url", banner.getImageUrl(),
@@ -684,13 +687,12 @@ public class DynamicHomeChannel {
         }
 
         public HashMap<String, Object> getEnhanceImpressionBannerChannelMix() {
-            List<Object> list = convertPromoEnhanceBannerChannelMix();
+            List<Object> list = convertPromoEnhanceBannerChannelMix(id);
             return (HashMap<String, Object>) DataLayer.mapOf(
                     "event", "promoView",
                     "eventCategory", "homepage",
                     "eventAction", "impression on banner dynamic channel mix",
                     "eventLabel", "",
-                    "channelId", id,
                     "ecommerce", DataLayer.mapOf(
                             "promoView", DataLayer.mapOf(
                                         "promotions", DataLayer.listOf(
