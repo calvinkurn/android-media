@@ -7,10 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
 import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -34,6 +32,7 @@ import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerCom
 import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
 import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteActivity
+import com.tokopedia.logisticaddaddress.utils.bitmapDescriptorFromVector
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -248,7 +247,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         mMarkerList.forEach {
-            it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green))
+            it.setIcon(bitmapDescriptorFromVector(this, R.drawable.ic_map_store_green))
         }
     }
 
@@ -303,9 +302,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             val tag = it.tag
             if (tag is DropoffNearbyModel) {
                 if (tag.addrId == datum.addrId) {
-                    it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_white))
+                    it.setIcon(bitmapDescriptorFromVector(this, R.drawable.ic_map_store_white_big))
                 } else {
-                    it.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green))
+                    it.setIcon(bitmapDescriptorFromVector(this, R.drawable.ic_map_store_green))
                 }
             }
         }
@@ -321,11 +320,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mMap?.clear()
         mMap?.addMarker(MarkerOptions()
                 .position(mLastLocation)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_self_map_green)))
+                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_pin_map)))
         for (datum in data) {
             val marker = mMap?.addMarker(MarkerOptions()
                     .position(getLatLng(datum.latitude, datum.longitude))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_store_map_green)))
+                    .icon(bitmapDescriptorFromVector(this, R.drawable.ic_map_store_green)))
             marker?.let {
                 it.tag = datum
                 mMarkerList.add(it)
