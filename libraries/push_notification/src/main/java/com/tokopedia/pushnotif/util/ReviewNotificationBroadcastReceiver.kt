@@ -12,6 +12,7 @@ import com.tokopedia.pushnotif.factory.ReviewNotificationFactory
 class ReviewNotificationBroadcastReceiver : BroadcastReceiver() {
     companion object {
         const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
+        const val REVIEW_NOTIFICATION_ID = "REVIEW_NOTIFICATION_ID"
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {

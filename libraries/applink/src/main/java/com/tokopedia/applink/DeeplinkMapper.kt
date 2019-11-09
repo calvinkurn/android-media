@@ -10,7 +10,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
 import com.tokopedia.config.GlobalConfig
@@ -48,13 +47,9 @@ object DeeplinkMapper {
                         getRegisteredNavigationDeals(deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
-<<<<<<< HEAD
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW,true) ->
                         getCreateReviewInternal(deeplink)
-=======
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
-
->>>>>>> 913c0681aafa8da293460b6b30671f2368bca7b8
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){

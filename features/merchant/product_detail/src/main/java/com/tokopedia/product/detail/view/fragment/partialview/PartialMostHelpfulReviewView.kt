@@ -1,9 +1,9 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.customview.RatingView
 import com.tokopedia.kotlin.extensions.view.gone

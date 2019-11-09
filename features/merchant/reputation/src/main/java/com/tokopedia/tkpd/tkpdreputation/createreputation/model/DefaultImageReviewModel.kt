@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.model
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import com.tokopedia.tkpd.tkpdreputation.R
 
 data class DefaultImageReviewModel(

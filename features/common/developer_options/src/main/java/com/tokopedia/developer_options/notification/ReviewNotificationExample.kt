@@ -4,8 +4,8 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.NotificationCompat
 import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
 import com.tokopedia.developer_options.R
 import com.tokopedia.pushnotif.ApplinkNotificationHelper
 import com.tokopedia.pushnotif.Constant
@@ -26,7 +26,7 @@ object ReviewNotificationExample {
         if (ApplinkNotificationHelper.allowGroup()) {
             notifReview.setGroupSummary(true)
             notifReview.setGroup("reviews")
-            notifReview.setGroupAlertBehavior(Notification.GROUP_ALERT_CHILDREN)
+            notifReview.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
         }
         return notifReview.build()
     }

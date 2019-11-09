@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.BaseImageReviewViewModel
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.DefaultImageReviewModel

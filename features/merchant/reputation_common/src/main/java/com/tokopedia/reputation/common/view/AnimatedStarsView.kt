@@ -1,9 +1,9 @@
 package com.tokopedia.reputation.common.view
 
 import android.content.Context
-import android.support.graphics.drawable.AnimatedVectorDrawableCompat
-import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.tokopedia.reputation.common.R
 
 class AnimatedStarsView @JvmOverloads constructor(

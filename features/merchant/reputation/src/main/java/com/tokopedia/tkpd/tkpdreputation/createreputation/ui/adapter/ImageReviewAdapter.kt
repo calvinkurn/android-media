@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.BaseImageReviewViewModel
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.DefaultImageReviewModel

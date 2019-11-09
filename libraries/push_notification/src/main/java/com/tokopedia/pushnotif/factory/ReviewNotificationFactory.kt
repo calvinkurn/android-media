@@ -5,17 +5,16 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
-import android.text.TextUtils
 import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.pushnotif.ApplinkNotificationHelper
 import com.tokopedia.pushnotif.Constant
@@ -50,7 +49,7 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         if (ApplinkNotificationHelper.allowGroup()) {
             setGroupSummary(true)
             setGroup("reviews")
-            setGroupAlertBehavior(Notification.GROUP_ALERT_CHILDREN)
+            setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
         }
         if (isAllowBell!!) {
             setSound(ringtoneUri)
@@ -103,6 +102,7 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         val createReviewRoute = RouteManager.getIntent(context, resultViewModel.applinkNotificationModel.applinks)
         createReviewRoute.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         createReviewRoute.putExtra(ReviewNotificationBroadcastReceiver.REVIEW_CLICK_AT, 5)
+        createReviewRoute.putExtra(ReviewNotificationBroadcastReceiver.REVIEW_NOTIFICATION_ID, resultReviewModel.notificationId)
 
         return PendingIntent.getActivity(
                 context,
@@ -185,12 +185,13 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
     private fun loadImageBitmap(imgUrl: String, reviewPosition: Int) {
         Handler(Looper.getMainLooper()).post {
             Glide.with(context.applicationContext)
-                    .load(imgUrl)
                     .asBitmap()
+                    .load(imgUrl)
                     .error(R.drawable.ic_big_notif_customerapp)
-                    .into(object : SimpleTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap,
-                                                     glideAnimation: GlideAnimation<in Bitmap>?) {
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onLoadCleared(placeholder: Drawable?) { }
+
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             notificationBuilder
                                     .setContentIntent(generatePendingIntent(resultReviewModel))
                                     .setCustomContentView(setupSimpleRemoteWithHandler(resultReviewModel.applinkNotificationModel.title, resultReviewModel.applinkNotificationModel.desc, resource))

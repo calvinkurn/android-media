@@ -2,9 +2,6 @@ package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment
 
 import android.animation.Animator
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -18,12 +15,15 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -50,7 +50,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationForm
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_create_review.*
-import java.util.*
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
@@ -63,6 +62,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val PRODUCT_ID_REVIEW = "PRODUCT_ID"
         private const val REVIEW_ID = "REVIEW_ID"
         const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
+        const val REVIEW_NOTIFICATION_ID = "REVIEW_NOTIFICATION_ID"
 
         private const val IMAGE_REVIEW_GREY_BG = "https://ecs7.tokopedia.net/android/others/1_2reviewbg.png"
         private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
@@ -333,17 +333,19 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun renderBackgroundTransition(url: String) {
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(bitmap: Bitmap,
-                                                 glideAnimation: GlideAnimation<in Bitmap>?) {
-                        val drawable = BitmapDrawable(context?.resources, bitmap)
-                        transitionDrawable(drawable)
-                    }
-                })
+        context?.run {
+            Glide.with(this)
+                    .asBitmap()
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            transitionDrawable(BitmapDrawable(context?.resources, resource))
+                        }
+                    })
+        }
     }
 
     private fun generateAnonymousText(): String {

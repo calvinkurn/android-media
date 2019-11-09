@@ -5,7 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -38,20 +38,24 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
             reputationId = bundle?.getString(InboxReputationFormActivity.ARGS_REPUTATION_ID) ?: ""
         }
 
-        val reviewClickAt = bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, 0) ?: 0
-
-        return CreateReviewFragment.createInstance(productId, reputationId, reviewClickAt)
+        return CreateReviewFragment.createInstance(
+                productId,
+                reputationId,
+                bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, 0) ?: 0
+        )
 
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mNotificationManager =
-                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        mNotificationManager.cancel(777)
-        supportActionBar?.let {
-            it.elevation = 0f
+
+        intent.extras?.run {
+            (applicationContext
+                    .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                    .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
         }
+
+        supportActionBar?.elevation = 0f
     }
 
 
