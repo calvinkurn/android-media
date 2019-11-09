@@ -1,15 +1,24 @@
 package com.tokopedia.product.manage.item.utils;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.utils.constant.ProductStockTypeDef;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.core.analytics.AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY;
+import static com.tokopedia.core.analytics.AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE;
+import static com.tokopedia.core.analytics.AppEventTracking.AddProduct.FIELDS_MANDATORY_PRODUCT_NAME;
+import static com.tokopedia.core.analytics.AppEventTracking.AddProduct.FIELDS_MANDATORY_STOCK_STATUS;
+import static com.tokopedia.core.analytics.AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT;
 
 /**
  * Created by zulfikarrahman on 5/10/17.
@@ -28,6 +37,9 @@ public class AnalyticsMapper {
         if (viewModel.getProductStock() == ProductStockTypeDef.TYPE_ACTIVE) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_STOCK_MANAGEMENT);
         }
+        if( !viewModel.getProductSku().isEmpty()){
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_SKU_PRODUCT);
+        }
         if (viewModel.isProductFreeReturn()) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_FREE_RETURN);
         }
@@ -37,13 +49,28 @@ public class AnalyticsMapper {
         if (viewModel.getProductVideo() != null && viewModel.getProductVideo().size() > 0) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PRODUCT_VIDEO);
         }
+        if (viewModel.getProductEtalase().getEtalaseId() > 0) {
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_ETALASE);
+        }
+        if (viewModel.isProductMustInsurance()) {
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_INSURANCE);
+        }
         if (viewModel.getProductPreorder().getPreorderStatus() > 0) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
+            if (viewModel.getProductPreorder().getPreorderProcessTime() > 0) {
+                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER_PROCESS_TIME);
+            }
+            if (viewModel.getProductPreorder().getPreorderTimeUnit() > 0) {
+                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER_TIME_UNIT);
+            }
         }
         if (isShare) {
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_SHARE);
         }
-
+        if (null != viewModel.getProductSizeChart()) {
+            if (!viewModel.getProductSizeChart().getFilePath().isEmpty())
+                listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PRODUCT_SIZE_CHART);
+        }
         if (viewModel.hasVariant()) {
             boolean hasCustomVariantLv1 = false;
             boolean hasCustomVariantLv2 = false;
@@ -84,5 +111,25 @@ public class AnalyticsMapper {
         }
 
         return listOfFields;
+    }
+
+    public static List<String> getAllInvalidateDataFieldFromViewModel(ProductViewModel viewModel){
+        List<String> listInvalidDataField = new ArrayList<>();
+        if (TextUtils.isEmpty(viewModel.getProductName())) {
+            listInvalidDataField.add(FIELDS_MANDATORY_PRODUCT_NAME);
+        }
+        if (viewModel.getProductCategory().getCategoryId() <= 0) {
+            listInvalidDataField.add(FIELDS_MANDATORY_CATEGORY);
+        }
+        if (viewModel.getProductPrice() <= 0) {
+            listInvalidDataField.add(FIELDS_MANDATORY_PRICE);
+        }
+        if (viewModel.getProductWeight() <= 0) {
+            listInvalidDataField.add(FIELDS_MANDATORY_WEIGHT);
+        }
+        if (!viewModel.isProductStatusActive()){
+            listInvalidDataField.add(FIELDS_MANDATORY_STOCK_STATUS);
+        }
+        return listInvalidDataField;
     }
 }

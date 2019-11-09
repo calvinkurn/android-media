@@ -45,31 +45,30 @@ class AttributesDigital() : Parcelable {
 
     var postPaidPopupAttribute: PostPaidPopupAttribute? = null
 
-    protected constructor(`in`: Parcel): this() {
-        userId = `in`.readString()
-        clientNumber = `in`.readString()
-        icon = `in`.readString()
-        price = `in`.readString()
-        categoryName = `in`.readString()
-        operatorName = `in`.readString()
-        pricePlain = `in`.readLong()
-        isInstantCheckout = `in`.readByte().toInt() != 0
-        isNeedOtp = `in`.readByte().toInt() != 0
-        smsState = `in`.readString()
-        isEnableVoucher = `in`.readByte().toInt() != 0
-        voucherAutoCode = `in`.readString()
-        isCouponActive = `in`.readInt()
-        userInputPrice = `in`.readParcelable(UserInputPriceDigital::class.java.classLoader)
-        autoApplyVoucher = `in`.readParcelable(CartAutoApplyVoucher::class.java.classLoader)
-        defaultPromoTab = `in`.readString()
-        postPaidPopupAttribute = `in`.readParcelable(PostPaidPopupAttribute::class.java.classLoader)
+    var fintechProduct: List<FintechProduct>? = null
+
+    constructor(parcel: Parcel) : this() {
+        userId = parcel.readString()
+        clientNumber = parcel.readString()
+        icon = parcel.readString()
+        price = parcel.readString()
+        categoryName = parcel.readString()
+        operatorName = parcel.readString()
+        pricePlain = parcel.readLong()
+        isInstantCheckout = parcel.readByte() != 0.toByte()
+        isNeedOtp = parcel.readByte() != 0.toByte()
+        smsState = parcel.readString()
+        isEnableVoucher = parcel.readByte() != 0.toByte()
+        voucherAutoCode = parcel.readString()
+        isCouponActive = parcel.readInt()
+        userInputPrice = parcel.readParcelable(UserInputPriceDigital::class.java.classLoader)
+        autoApplyVoucher = parcel.readParcelable(CartAutoApplyVoucher::class.java.classLoader)
+        defaultPromoTab = parcel.readString()
+        postPaidPopupAttribute = parcel.readParcelable(PostPaidPopupAttribute::class.java.classLoader)
+        fintechProduct = parcel.createTypedArrayList(FintechProduct)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(parcel: Parcel, i: Int) {
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(userId)
         parcel.writeString(clientNumber)
         parcel.writeString(icon)
@@ -77,25 +76,31 @@ class AttributesDigital() : Parcelable {
         parcel.writeString(categoryName)
         parcel.writeString(operatorName)
         parcel.writeLong(pricePlain)
-        parcel.writeByte((if (isInstantCheckout) 1 else 0).toByte())
-        parcel.writeByte((if (isNeedOtp) 1 else 0).toByte())
+        parcel.writeByte(if (isInstantCheckout) 1 else 0)
+        parcel.writeByte(if (isNeedOtp) 1 else 0)
         parcel.writeString(smsState)
-        parcel.writeByte((if (isEnableVoucher) 1 else 0).toByte())
+        parcel.writeByte(if (isEnableVoucher) 1 else 0)
         parcel.writeString(voucherAutoCode)
         parcel.writeInt(isCouponActive)
-        parcel.writeParcelable(userInputPrice, i)
-        parcel.writeParcelable(autoApplyVoucher, i)
+        parcel.writeParcelable(userInputPrice, flags)
+        parcel.writeParcelable(autoApplyVoucher, flags)
         parcel.writeString(defaultPromoTab)
-        parcel.writeParcelable(postPaidPopupAttribute, i)
+        parcel.writeParcelable(postPaidPopupAttribute, flags)
+        parcel.writeTypedList(fintechProduct)
+    }
+
+    override fun describeContents(): Int {
+        return 0
     }
 
     companion object CREATOR : Parcelable.Creator<AttributesDigital> {
-        override fun createFromParcel(`in`: Parcel): AttributesDigital {
-            return AttributesDigital(`in`)
+        override fun createFromParcel(parcel: Parcel): AttributesDigital {
+            return AttributesDigital(parcel)
         }
 
         override fun newArray(size: Int): Array<AttributesDigital?> {
             return arrayOfNulls(size)
         }
     }
+
 }
