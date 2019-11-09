@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.manager.FilterSortManager
@@ -52,6 +53,8 @@ internal class ShopListFragment:
 
         private const val SHOP = "shop"
 
+        private const val SEARCH_SHOP_TRACE = "search_shop_trace"
+
         @JvmStatic
         fun newInstance(): ShopListFragment {
             return ShopListFragment()
@@ -65,6 +68,7 @@ internal class ShopListFragment:
     private var refreshLayout: SwipeRefreshLayout? = null
     private var searchShopViewModel: SearchShopViewModel? = null
     private var searchViewModel: SearchViewModel? = null
+    private var performanceMonitoring: PerformanceMonitoring? = null
     private val filterTrackingData by lazy {
         FilterTrackingData(
                 FilterEventTracking.Event.CLICK_SEARCH_RESULT,
@@ -178,6 +182,10 @@ internal class ShopListFragment:
         searchShopViewModel?.getEmptySearchTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isTrackEmptySearch ->
             trackEventEmptySearch(isTrackEmptySearch)
         })
+
+        searchShopViewModel?.getSearchShopFirstPagePerformanceMonitoringEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isStartPerformanceMonitoring ->
+            triggerPerformanceMonitoring(isStartPerformanceMonitoring)
+        })
     }
 
     private fun updateAdapter(searchShopLiveData: State<List<Visitable<*>>>?) {
@@ -281,6 +289,25 @@ internal class ShopListFragment:
                 SearchTracking.eventSearchNoResult(activity, keyword, screenName, selectedFilterMap)
             }
         }
+    }
+
+    private fun triggerPerformanceMonitoring(isStartPerformanceMonitoring: Boolean) {
+        if (isStartPerformanceMonitoring) {
+            startPerformanceMonitoring()
+        }
+        else {
+            stopPerformanceMonitoring()
+        }
+    }
+
+    private fun startPerformanceMonitoring() {
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_SHOP_TRACE)
+    }
+
+    private fun stopPerformanceMonitoring() {
+        performanceMonitoring?.stopTrace()
+
+        performanceMonitoring = null
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {

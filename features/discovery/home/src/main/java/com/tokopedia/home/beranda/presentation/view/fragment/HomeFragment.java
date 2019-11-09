@@ -12,26 +12,25 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.gms.location.LocationServices;
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -73,13 +72,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
@@ -93,13 +93,11 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
-import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.HomeMainToolbar;
-import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
@@ -110,10 +108,6 @@ import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.v2.home.model.pojo.DynamicHomeChannel;
-import com.tokopedia.v2.home.model.pojo.HomeData;
-import com.tokopedia.v2.home.model.vo.Resource;
-import com.tokopedia.v2.home.viewModel.HomePageViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -162,11 +156,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Inject
     PermissionCheckerHelper permissionCheckerHelper;
 
-    @Inject
-    ViewModelProvider.Factory viewModelFactory;
-
-    HomePageViewModel homePageViewModel;
-
     RemoteConfig remoteConfig;
 
     private UserSessionInterface userSession;
@@ -205,7 +194,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Snackbar homeSnackbar;
     private SharedPreferences sharedPrefs;
 
-
     private int[] positionSticky = new int[2];
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
 
@@ -228,7 +216,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 4;
-        homePageViewModel = ViewModelProviders.of(this, viewModelFactory).get(HomePageViewModel.class);
     }
 
     @Override
@@ -365,14 +352,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        homePageViewModel.getHomeData().observe(getViewLifecycleOwner(), homeDataResource -> {
-            if(homeDataResource.getStatus() == Resource.Status.SUCCESS){
-                HomeData homeData = homeDataResource.getData();
-                DynamicHomeChannel channel = homeData.getDynamicHomeChannel();
-            }
-        });
-
-        homePageViewModel.getData();
     }
 
     @Override
@@ -470,10 +449,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         refreshLayout.post(new Runnable() {
             @Override
             public void run() {
-                if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
-                    ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
-                }
-
                 if (presenter != null) {
                     presenter.getSearchHint();
                     presenter.getHomeData();
@@ -592,7 +567,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void configureHomeFlag(HomeFlag homeFlag) {
-        floatingTextButton.setVisibility(homeFlag.getHasRecomNavButton() && showRecomendation ? View.VISIBLE : View.GONE);
+        floatingTextButton.setVisibility(homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation ? View.VISIBLE : View.GONE);
     }
 
     private void onGoToSell() {
@@ -1313,39 +1288,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private ArrayList<ShowCaseObject> buildShowCase() {
-        if (homeMainToolbar == null)
-            return null;
-        ArrayList<ShowCaseObject> list = new ArrayList<>();
-        int statusBarHeight = ViewHelper.getStatusBarHeight(getActivity());
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            statusBarHeight = 0;
-        }
-        list.add(new ShowCaseObject(homeMainToolbar.getBtnNotification(),
-                getString(R.string.sc_notif_title),
-                getString(R.string.sc_notif_desc))
-                .withCustomTarget(new int[]{
-                        homeMainToolbar.getBtnNotification().getLeft(),
-                        homeMainToolbar.getBtnNotification().getTop()
-                                + statusBarHeight,
-                        homeMainToolbar.getBtnNotification().getRight(),
-                        homeMainToolbar.getBtnNotification().getBottom()
-                                + statusBarHeight
-                }));
-        list.add(new ShowCaseObject(homeMainToolbar.getBtnWishlist(),
-                getString(R.string.sc_wishlist_title),
-                getString(R.string.sc_wishlist_desc))
-                .withCustomTarget(new int[]{
-                        homeMainToolbar.getBtnWishlist().getLeft(),
-                        homeMainToolbar.getBtnWishlist().getTop()
-                                + statusBarHeight,
-                        homeMainToolbar.getBtnWishlist().getRight(),
-                        homeMainToolbar.getBtnWishlist().getBottom()
-                                + statusBarHeight
-                }));
-        return list;
-    }
-
     private boolean isUserLoggedIn() {
         return userSession.isLoggedIn();
     }
@@ -1536,7 +1478,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
         this.tickerDetail = tickerDetail;
         updateStickyState();
-        stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
     }
 
     @Override
@@ -1566,6 +1507,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (stickyLoginView.isShowing()) {
             positionSticky = stickyLoginView.getLocation();
+            stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
         }
 
         FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
@@ -1589,6 +1531,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         } else {
             params.setMargins(0, 0, 0, 0);
         }
+    }
+
+    @Override
+    public int getWindowWidth() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        return width;
     }
 
     @Override

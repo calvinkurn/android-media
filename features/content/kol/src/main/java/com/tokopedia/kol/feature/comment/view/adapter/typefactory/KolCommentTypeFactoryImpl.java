@@ -42,7 +42,7 @@ public class KolCommentTypeFactoryImpl extends BaseAdapterTypeFactory
         AbstractViewHolder viewHolder;
 
         if (type == KolCommentViewHolder.LAYOUT)
-            viewHolder = new KolCommentViewHolder(view, viewHolderListener);
+            viewHolder = new KolCommentViewHolder(view, viewHolderListener, true);
         else if (type == KolCommentHeaderViewHolder.LAYOUT)
             viewHolder = new KolCommentHeaderViewHolder(view, viewListener);
         else viewHolder = super.createViewHolder(view, type);

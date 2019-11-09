@@ -1,8 +1,9 @@
 package com.tokopedia.purchase_platform.features.cart.view;
 
 import android.os.Build;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -10,40 +11,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
-import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
-import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetRemoveMacroInsuranceProductSubscriber;
-import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetSubscriberUpdateInsuranceProductData;
-import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase;
-import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase;
-import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetInsuranceCartSubscriber;
-import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.ResetAndRefreshCartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndRefreshCartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePrice;
-import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.DeleteCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetRecentViewUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateAndReloadCartUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase;
-import com.tokopedia.purchase_platform.features.cart.view.subscriber.AddToCartSubscriber;
-import com.tokopedia.purchase_platform.features.cart.view.subscriber.CheckPromoFirstStepAfterClashSubscriber;
-import com.tokopedia.purchase_platform.features.cart.view.subscriber.ClearCacheAutoApplyAfterClashSubscriber;
-import com.tokopedia.purchase_platform.features.cart.view.subscriber.ClearCacheAutoApplySubscriber;
-import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetRecentViewSubscriber;
-import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetRecommendationSubscriber;
-import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetWishlistSubscriber;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewItemHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecommendationItemHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
@@ -53,17 +20,12 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException;
-import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest;
-import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
-import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.RemoveInsuranceData;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceData;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceDataCart;
@@ -73,6 +35,44 @@ import com.tokopedia.purchase_platform.common.data.model.response.insurance.enti
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartDigitalProduct;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase;
+import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase;
+import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
+import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest;
+import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
+import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.ResetAndRefreshCartListData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndRefreshCartListData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePriceData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.DeleteCartListUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListSimplifiedUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetRecentViewUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateAndReloadCartUseCase;
+import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.purchase_platform.features.cart.view.subscriber.AddToCartSubscriber;
+import com.tokopedia.purchase_platform.features.cart.view.subscriber.CheckPromoFirstStepAfterClashSubscriber;
+import com.tokopedia.purchase_platform.features.cart.view.subscriber.ClearCacheAutoApplyAfterClashSubscriber;
+import com.tokopedia.purchase_platform.features.cart.view.subscriber.ClearCacheAutoApplySubscriber;
+import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetInsuranceCartSubscriber;
+import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetRecentViewSubscriber;
+import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetRecommendationSubscriber;
+import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetRemoveMacroInsuranceProductSubscriber;
+import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetSubscriberUpdateInsuranceProductData;
+import com.tokopedia.purchase_platform.features.cart.view.subscriber.GetWishlistSubscriber;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewItemHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecommendationItemHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -114,11 +114,10 @@ public class CartListPresenter implements ICartListPresenter {
     public static final String ITEM_REQUEST = "5";
 
     private ICartListView view;
-    private final GetCartListUseCase getCartListUseCase;
+    private final GetCartListSimplifiedUseCase getCartListSimplifiedUseCase;
     private final CompositeSubscription compositeSubscription;
     private final DeleteCartListUseCase deleteCartListUseCase;
     private final UpdateCartUseCase updateCartUseCase;
-    private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final AddWishListUseCase addWishListUseCase;
@@ -140,10 +139,9 @@ public class CartListPresenter implements ICartListPresenter {
     private boolean insuranceChecked = true;
 
     @Inject
-    public CartListPresenter(GetCartListUseCase getCartListUseCase,
+    public CartListPresenter(GetCartListSimplifiedUseCase getCartListSimplifiedUseCase,
                              DeleteCartListUseCase deleteCartListUseCase,
                              UpdateCartUseCase updateCartUseCase,
-                             ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                              CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
                              CheckPromoStackingCodeMapper checkPromoStackingCodeMapper,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
@@ -161,11 +159,10 @@ public class CartListPresenter implements ICartListPresenter {
                              GetInsuranceCartUseCase getInsuranceCartUseCase,
                              RemoveInsuranceProductUsecase removeInsuranceProductUsecase,
                              UpdateInsuranceProductDataUsecase updateInsuranceProductDataUsecase) {
-        this.getCartListUseCase = getCartListUseCase;
+        this.getCartListSimplifiedUseCase = getCartListSimplifiedUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartListUseCase = deleteCartListUseCase;
         this.updateCartUseCase = updateCartUseCase;
-        this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
@@ -247,14 +244,7 @@ public class CartListPresenter implements ICartListPresenter {
             view.showProgressLoading();
         }
 
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(
-                GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
-        );
-        requestParams.putString(GetCartListUseCase.PARAM_SELECTED_CART_ID, cartId);
-
-        compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
+        compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -427,7 +417,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processUpdateCartDataPromoMerchant
-            (List<CartItemData> cartItemDataList, ShopGroupData shopGroupData) {
+            (List<CartItemData> cartItemDataList, ShopGroupAvailableData shopGroupAvailableData) {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
@@ -449,7 +439,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberUpdateCartPromoMerchant(shopGroupData))
+                        .subscribe(getSubscriberUpdateCartPromoMerchant(shopGroupAvailableData))
         );
     }
 
@@ -482,7 +472,7 @@ public class CartListPresenter implements ICartListPresenter {
         );
     }
 
-    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromoMerchant(ShopGroupData shopGroupData) {
+    private Subscriber<UpdateCartData> getSubscriberUpdateCartPromoMerchant(ShopGroupAvailableData shopGroupAvailableData) {
         return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
@@ -510,7 +500,7 @@ public class CartListPresenter implements ICartListPresenter {
                     if (!data.isSuccess()) {
                         view.showToastMessageRed(data.getMessage());
                     } else {
-                        view.showMerchantVoucherListBottomsheet(shopGroupData);
+                        view.showMerchantVoucherListBottomsheet(shopGroupAvailableData);
                     }
                 }
             }
@@ -560,7 +550,7 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processToUpdateAndReloadCartData() {
         List<CartItemData> cartItemDataList = new ArrayList<>();
-        for (CartItemData data : view.getAllCartDataList()) {
+        for (CartItemData data : view.getAllAvailableCartDataList()) {
             if (!data.isError()) {
                 cartItemDataList.add(data);
             }
@@ -579,10 +569,6 @@ public class CartListPresenter implements ICartListPresenter {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
                 view.getGeneratedAuthParamNetwork(paramUpdate));
-        requestParams.putObject(
-                UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
-                view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
-        );
 
         compositeSubscription.add(
                 updateAndReloadCartUseCase.createObservable(requestParams)
@@ -633,10 +619,10 @@ public class CartListPresenter implements ICartListPresenter {
         // Collect all Cart Item, if has no error and selected
         List<CartItemHolderData> allCartItemDataList = new ArrayList<>();
         for (CartShopHolderData cartShopHolderData : dataList) {
-            if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
-                if (!cartShopHolderData.getShopGroupData().isError()) {
+            if (cartShopHolderData.getShopGroupAvailableData().getCartItemDataList() != null) {
+                if (!cartShopHolderData.getShopGroupAvailableData().isError()) {
                     if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
-                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupAvailableData().getCartItemDataList()) {
                             if (!cartItemHolderData.getCartItemData().isError()) {
                                 if (cartItemHolderData.isSelected()) {
                                     allCartItemDataList.add(cartItemHolderData);
@@ -647,7 +633,7 @@ public class CartListPresenter implements ICartListPresenter {
                         }
                     }
                 } else {
-                    errorProductCount += cartShopHolderData.getShopGroupData().getCartItemDataList().size();
+                    errorProductCount += cartShopHolderData.getShopGroupAvailableData().getCartItemDataList().size();
                 }
             }
         }
@@ -683,26 +669,26 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
 
-                List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
+                List<WholesalePriceData> wholesalePriceDataList = data.getCartItemData().getOriginData().getWholesalePriceData();
                 boolean hasCalculateWholesalePrice = false;
-                if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                if (wholesalePriceDataList != null && wholesalePriceDataList.size() > 0) {
                     double subTotalWholesalePrice = 0;
                     double itemCashback = 0;
-                    for (WholesalePrice wholesalePrice : wholesalePrices) {
-                        if (itemQty >= wholesalePrice.getQtyMin()) {
-                            subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
+                    for (WholesalePriceData wholesalePriceData : wholesalePriceDataList) {
+                        if (itemQty >= wholesalePriceData.getQtyMin()) {
+                            subTotalWholesalePrice = itemQty * wholesalePriceData.getPrdPrc();
                             hasCalculateWholesalePrice = true;
                             String wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                    wholesalePrice.getPrdPrc(), false);
+                                    wholesalePriceData.getPrdPrc(), false);
                             data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePriceFormatted);
                             break;
                         }
                     }
                     if (!hasCalculateWholesalePrice) {
-                        if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
-                            subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
+                        if (itemQty > wholesalePriceDataList.get(wholesalePriceDataList.size() - 1).getPrdPrc()) {
+                            subTotalWholesalePrice = itemQty * wholesalePriceDataList.get(wholesalePriceDataList.size() - 1).getPrdPrc();
                             String wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                    wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc(), false);
+                                    wholesalePriceDataList.get(wholesalePriceDataList.size() - 1).getPrdPrc(), false);
                             data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePriceFormatted);
                         } else {
                             subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
@@ -789,9 +775,10 @@ public class CartListPresenter implements ICartListPresenter {
             totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false);
         }
         view.updateCashback(totalCashback);
-        boolean selectAllItem = view.getAllCartDataList().size() == allCartItemDataList.size() + errorProductCount &&
+        boolean selectAllItem = view.getAllAvailableCartDataList().size() == allCartItemDataList.size() + errorProductCount &&
                 allCartItemDataList.size() > 0 && insuranceChecked;
-        view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString, selectAllItem);
+        boolean unselectAllItem = allCartItemDataList.size() == 0;
+        view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString, selectAllItem, unselectAllItem, dataList.isEmpty());
 
     }
 
@@ -832,32 +819,6 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribe(getSubscriberCheckPromoCodeFromSuggestion(isAutoApply))
         );
 
-    }
-
-    @Override
-    public void processResetAndRefreshCartData() {
-        view.renderLoadGetCartData();
-        view.showProgressLoading();
-        TKPDMapParam<String, String> paramResetCart = new TKPDMapParam<>();
-        paramResetCart.put(PARAM_LANG, "id");
-        paramResetCart.put(PARAM_STEP, "4");
-
-        TKPDMapParam<String, String> paramGetCart = new TKPDMapParam<>();
-        paramGetCart.put(PARAM_LANG, "id");
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(ResetCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_RESET_CART,
-                view.getGeneratedAuthParamNetwork(paramResetCart));
-        requestParams.putObject(ResetCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
-                view.getGeneratedAuthParamNetwork(paramGetCart));
-
-        compositeSubscription.add(
-                resetCartGetCartListUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberResetRefreshCart())
-        );
     }
 
     @NonNull
@@ -1010,7 +971,7 @@ public class CartListPresenter implements ICartListPresenter {
         List<CartShopHolderData> cartShopHolderDataList = view.getAllShopDataList();
 
         if (cartShopHolderDataList.size() == 1) {
-            for (CartItemHolderData cartItemHolderData : cartShopHolderDataList.get(0).getShopGroupData().getCartItemDataList()) {
+            for (CartItemHolderData cartItemHolderData : cartShopHolderDataList.get(0).getShopGroupAvailableData().getCartItemDataList()) {
                 if (!cartItemHolderData.isSelected()) {
                     checklistCondition = ITEM_CHECKED_PARTIAL_ITEM;
                     break;
@@ -1024,12 +985,12 @@ public class CartListPresenter implements ICartListPresenter {
                     allSelectedItemShopCount++;
                 } else {
                     int selectedItem = 0;
-                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupAvailableData().getCartItemDataList()) {
                         if (!cartItemHolderData.isSelected()) {
                             selectedItem++;
                         }
                     }
-                    if (!selectPartialShopAndItem && selectedItem != cartShopHolderData.getShopGroupData().getCartItemDataList().size()) {
+                    if (!selectPartialShopAndItem && selectedItem != cartShopHolderData.getShopGroupAvailableData().getCartItemDataList().size()) {
                         selectPartialShopAndItem = true;
                     }
                 }

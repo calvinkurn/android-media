@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
 
@@ -50,4 +51,12 @@ interface ActionListener {
     fun onSimilarProductUrlClicked(similarProductUrl: String)
 
     fun onSelectAllClicked()
+
+    fun onDeleteAllDisabledProduct();
+
+    fun onDeleteDisabledItem(data: CartItemData)
+
+    fun onSeeErrorProductsClicked()
+
+    fun onTickerDescriptionUrlClicked(url: String)
 }
