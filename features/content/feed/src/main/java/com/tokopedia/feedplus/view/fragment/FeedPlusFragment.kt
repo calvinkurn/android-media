@@ -318,7 +318,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
 
     private fun prepareView() {
-        adapter.itemTreshold = 2
+        adapter.itemTreshold = 1
         layoutManager = NpaLinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL,
                 false)

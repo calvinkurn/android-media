@@ -2,22 +2,24 @@ package com.tokopedia.officialstore.official.data.model.dynamic_channel
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 data class Grid(
-        val freeOngkir: FreeOngkir?,
-        val id: Long,
-        val name: String,
-        val applink: String,
-        val price: String,
-        val slashedPrice: String,
-        val discount: String,
-        val imageUrl: String,
-        val label: String,
-        val soldPercentage: Long,
-        val attribution: String,
-        val productClickUrl: String,
-        val impression: String,
-        val cashback: String
+        @Expose @SerializedName("freeOngkir") val freeOngkir: FreeOngkir?,
+        @Expose @SerializedName("id") val id: Long,
+        @Expose @SerializedName("name") val name: String,
+        @Expose @SerializedName("applink") val applink: String,
+        @Expose @SerializedName("price") val price: String,
+        @Expose @SerializedName("slashedPrice") val slashedPrice: String,
+        @Expose @SerializedName("discount") val discount: String,
+        @Expose @SerializedName("imageUrl") val imageUrl: String,
+        @Expose @SerializedName("label") val label: String,
+        @Expose @SerializedName("soldPercentage") val soldPercentage: Long,
+        @Expose @SerializedName("attribution") val attribution: String,
+        @Expose @SerializedName("productClickUrl") val productClickUrl: String,
+        @Expose @SerializedName("impression") val impression: String,
+        @Expose @SerializedName("cashback") val cashback: String
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
