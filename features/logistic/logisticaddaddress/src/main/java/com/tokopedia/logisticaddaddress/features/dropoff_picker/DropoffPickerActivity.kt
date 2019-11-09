@@ -114,11 +114,14 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             finish()
         }
 
-        val rv = findViewById<RecyclerView>(R.id.rv_dropoff)
-        rv.layoutManager = LinearLayoutManager(this)
-        rv.setHasFixedSize(true)
-        rv.addItemDecoration(SimpleVerticalDivider(this, R.layout.item_nearby_location))
-        rv.adapter = mNearbyAdapter
+        with(findViewById<RecyclerView>(R.id.rv_dropoff)) {
+            layoutManager = LinearLayoutManager(this@DropoffPickerActivity)
+            setHasFixedSize(true)
+            addItemDecoration(SimpleVerticalDivider(this@DropoffPickerActivity,
+                    R.layout.item_nearby_location))
+            adapter = mNearbyAdapter
+        }
+
         mNearbyAdapter.setActionListener(adapterListener)
 
         mNearbiesBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
@@ -126,11 +129,6 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mDetailBehavior = BottomSheetBehavior.from(mStoreDetail)
         mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ContextCompat.getColor(this,
-                    com.tokopedia.design.R.color.green_600)
-        }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         mPermissionChecker = PermissionCheckerHelper()
