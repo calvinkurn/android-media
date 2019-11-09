@@ -108,7 +108,7 @@
         <activity
             android:name=".features.autocomplete.AutoCompleteActivity"
             android:label="@string/title_autocomplete_page"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/LogisticTheme" />
 
         <service
             android:name=".service.ManagePeopleAddressService"
