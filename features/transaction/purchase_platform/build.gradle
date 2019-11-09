@@ -41,6 +41,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.lottie
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
@@ -112,15 +113,17 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.basemvvm)
+    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.otp)
     //-------------------------------------------------------------------//
 
 }
 
 project.ext {
-    artifactId = "purchase_platform"
-    groupId = "com.tokopedia.purchase_platform"
+    artifactId = 'purchase-platform'
+    groupId = 'com.tokopedia.transaction'
     versionName = "0.0.1"
-    artifactName = "purchaseplatform-release"
+    artifactName = "purchase_platform-release"
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"
