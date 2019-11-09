@@ -10,12 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.SimpleVerticalDivider
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AddressResultUi
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
@@ -36,8 +36,6 @@ class AutoCompleteFragment : Fragment(),
 
     private val adapter: AutoCompleteAdapter = AutoCompleteAdapter()
 
-    lateinit var searchInput: SearchInputView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -52,13 +50,13 @@ class AutoCompleteFragment : Fragment(),
 
         with(view.findViewById<SearchInputView>(R.id.search_input_autocomplete)) {
             setDelayTextChanged(DEBOUNCE_DELAY)
-            searchInput.setListener(this@AutoCompleteFragment)
+            setListener(this@AutoCompleteFragment)
         }
         with(view.findViewById<RecyclerView>(R.id.rv_autocomplete)) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-            adapter = adapter
+            addItemDecoration(SimpleVerticalDivider(context, R.layout.item_autocomplete_result))
+            adapter = this@AutoCompleteFragment.adapter
         }
         adapter.setActionListener(this)
 

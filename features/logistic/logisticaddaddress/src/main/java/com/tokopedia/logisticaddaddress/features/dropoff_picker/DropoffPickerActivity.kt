@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.SimpleVerticalDivider
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
@@ -116,6 +117,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         val rv = findViewById<RecyclerView>(R.id.rv_dropoff)
         rv.layoutManager = LinearLayoutManager(this)
         rv.setHasFixedSize(true)
+        rv.addItemDecoration(SimpleVerticalDivider(this, R.layout.item_nearby_location))
         rv.adapter = mNearbyAdapter
         mNearbyAdapter.setActionListener(adapterListener)
 
