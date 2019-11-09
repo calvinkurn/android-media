@@ -14,4 +14,10 @@ internal class DividerAdapterDelegate: BaseAdapterDelegate<DividerViewModel, Div
         val itemView = LayoutInflater.from(parent.context).inflate(DividerViewHolder.LAYOUT, parent, false)
         return DividerViewHolder(itemView)
     }
+
+    override fun onBindViewHolder(item: DividerViewModel, viewHolder: BaseViewHolder<DividerViewModel>) {
+        viewHolder.setFullSpanStaggeredGrid()
+
+        super.onBindViewHolder(item, viewHolder)
+    }
 }

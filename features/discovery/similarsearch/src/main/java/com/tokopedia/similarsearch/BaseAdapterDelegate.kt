@@ -9,7 +9,7 @@ internal abstract class BaseAdapterDelegate<T, VH: BaseViewHolder<T>>: AdapterDe
         onBindViewHolder(items[position] as T, viewHolder as VH)
     }
 
-    private fun onBindViewHolder(item: T, viewHolder: BaseViewHolder<T>) {
+    protected open fun onBindViewHolder(item: T, viewHolder: BaseViewHolder<T>) {
         viewHolder.bind(item)
     }
 }

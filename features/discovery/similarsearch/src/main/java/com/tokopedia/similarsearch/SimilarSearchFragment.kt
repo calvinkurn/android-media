@@ -5,13 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
+import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
+import java.lang.Error
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
 
@@ -22,9 +29,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
     }
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
-    private var swipeRefreshLayoutSimilarSearch: SwipeRefreshLayout? = null
     private var similarSearchAdapter: SimilarSearchAdapter? = null
-//    private var recyclerViewSimilarSearch: RecyclerView? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     override fun getScreenName(): String {
@@ -38,36 +43,40 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.let {
-            initViewModel(it)
-            initViews(it)
-        }
+        initViewModel()
+        initViews()
+        observeViewModelData()
 
         similarSearchViewModel?.onViewCreated()
     }
 
-    private fun initViewModel(activity: FragmentActivity) {
-        similarSearchViewModel = ViewModelProviders.of(activity).get(SimilarSearchViewModel::class.java)
+    private fun initViewModel() {
+        activity?.let { activity ->
+            similarSearchViewModel = ViewModelProviders.of(activity).get(SimilarSearchViewModel::class.java)
+        }
     }
 
-    private fun initViews(activity: FragmentActivity) {
+    private fun initViews() {
         bindSelectedProductView()
         bindRecyclerView()
     }
 
     private fun bindSelectedProductView() {
         view?.let { view ->
-            val selectedProductViewListener = object : SimilarSearchSelectedProductViewListener {
-                override fun getSelectedProduct(): SimilarSearchSelectedProduct? {
-                    return similarSearchViewModel?.similarSearchSelectedProduct
-                }
+            val selectedProductViewListener = createSelectedProductViewListener(view)
+            SimilarSearchSelectedProductView(selectedProductViewListener).bindSelectedProductView()
+        }
+    }
 
-                override fun getFragmentView(): View {
-                    return view
-                }
+    private fun createSelectedProductViewListener(view: View): SimilarSearchSelectedProductViewListener {
+        return object : SimilarSearchSelectedProductViewListener {
+            override fun getSelectedProduct(): SimilarSearchSelectedProduct? {
+                return similarSearchViewModel?.similarSearchSelectedProduct
             }
 
-            SimilarSearchSelectedProductView(selectedProductViewListener).bindSelectedProductView()
+            override fun getFragmentView(): View {
+                return view
+            }
         }
     }
 
@@ -75,12 +84,43 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
         similarSearchAdapter = SimilarSearchAdapter()
 
         recyclerViewSimilarSearch?.adapter = similarSearchAdapter
-        recyclerViewSimilarSearch?.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).also {
+        recyclerViewSimilarSearch?.layoutManager = createRecyclerViewSimilarSearchLayoutManager()
+    }
+
+    private fun createRecyclerViewSimilarSearchLayoutManager(): RecyclerView.LayoutManager {
+        return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).also {
             it.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         }
+    }
 
-        similarSearchAdapter?.updateList(mutableListOf<Any>().also {
-            it.add(DividerViewModel())
+    private fun observeViewModelData() {
+        similarSearchViewModel?.getSimilarSearchLiveData()?.observe(viewLifecycleOwner, Observer {
+            updateAdapter(it)
         })
+    }
+
+    private fun updateAdapter(similarSearchLiveData: State<List<Any>>) {
+        when(similarSearchLiveData) {
+            is State.Success -> {
+                updateAdapterList(similarSearchLiveData)
+            }
+            is State.Error -> {
+                showRetryLayout(similarSearchLiveData)
+            }
+        }
+    }
+
+    private fun updateAdapterList(similarSearchLiveData: State<List<Any>>) {
+        similarSearchAdapter?.updateList(similarSearchLiveData.data ?: listOf())
+    }
+
+    private fun showRetryLayout(similarSearchLiveData: State<List<Any>>) {
+        activity?.let { activity ->
+            val retryClickedListener = NetworkErrorHelper.RetryClickedListener {
+//                similarSearchViewModel?.onViewClickRetry()
+            }
+
+            NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.similarsearch
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
 internal class SimilarSearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -10,7 +11,9 @@ internal class SimilarSearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
 
     init {
         adapterDelegatesManager
+                .addDelegate(SimilarProductItemAdapterDelegate())
                 .addDelegate(DividerAdapterDelegate())
+                .addDelegate(LoadingMoreAdapterDelegate())
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -30,9 +33,11 @@ internal class SimilarSearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     fun updateList(newList: List<Any>) {
+        val diffResult = DiffUtil.calculateDiff(SimilarSearchDiffUtilCallback(list, newList))
+
         list.clear()
         list.addAll(newList)
 
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 }
