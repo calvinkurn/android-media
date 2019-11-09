@@ -195,8 +195,6 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
-import com.tokopedia.profile.ProfileModuleRouter;
-import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
@@ -318,7 +316,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoyaltyModuleRouter,
         ITkpdLoyaltyModuleRouter,
         GamificationRouter,
-        ProfileModuleRouter,
         ReactNativeRouter,
         ImageUploaderRouter,
         ITransactionOrderDetailRouter,
@@ -1527,7 +1524,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {
-        return ProfileActivity.Companion.createIntent(context, userId);
+        return RouteManager.getIntent(context, ApplinkConst.PROFILE, userId);
     }
 
     @Override
@@ -1899,11 +1896,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId,
                                       String source) {
         return TalkDetailsActivity.getCallingIntent(talkId, shopId, context, source);
-    }
-
-    @Override
-    public Fragment getFavoritedShopFragment(String userId) {
-        return ShopFollowingListFragment.createInstance(userId);
     }
 
     @Override
