@@ -8,6 +8,7 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -47,15 +48,20 @@ class DynamicIconDelegateAdapter : ViewTypeDelegateAdapter {
 
         fun bind(item: DynamicIconDataModel){
             startSnapHelper.attachToRecyclerView(recyclerView)
-            recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            setDecoration()
+            if(item.dynamicIconWrap){
+                recyclerView.layoutManager = GridLayoutManager(itemView.context, 5, GridLayoutManager.VERTICAL, false)
+            } else {
+                recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                setDecoration()
+            }
+
             recyclerView.adapter = object : RecyclerView.Adapter<DynamicIconViewHolder>(){
                 override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconViewHolder {
                     return DynamicIconViewHolder(parent)
                 }
 
                 override fun getItemCount(): Int {
-                    return item.dynamicIcons.size
+                    return if(item.dynamicIconWrap && item.dynamicIcons.size > 10) 10 else item.dynamicIcons.size
                 }
 
                 override fun onBindViewHolder(holder: DynamicIconViewHolder, position: Int) {

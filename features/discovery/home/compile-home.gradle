@@ -7,6 +7,7 @@ include ':features:discovery:home'
 include ':features:payment:common_payment'
 include ':features:discovery:home_dependencies_no_op'
 //include ':features:promo:loyalty'
+include ':features:home:dynamicbanner'
 
 include ':features:user:otp'
 include ':features:discovery:wishlist_common'

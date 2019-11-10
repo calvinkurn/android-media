@@ -125,7 +125,9 @@
     }
   }
   homeFlag{
-    hasTokopoints
-    hasRecomNavButton
+    flags(name: "has_recom_nav_button,dynamic_icon_wrap,has_tokopoints"){
+      name
+      is_active
+    }
   }
 }

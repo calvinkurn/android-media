@@ -9,6 +9,7 @@ import com.tokopedia.v2.home.base.HomeRepository
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
 import com.tokopedia.v2.home.model.pojo.DynamicHomeIcon
 import com.tokopedia.v2.home.model.pojo.HomeData
+import com.tokopedia.v2.home.model.pojo.HomeFlagType
 import com.tokopedia.v2.home.model.vo.BannerDataModel
 import com.tokopedia.v2.home.model.vo.DynamicIconDataModel
 import com.tokopedia.v2.home.model.vo.Resource
@@ -42,7 +43,7 @@ class HomePageViewModel @Inject constructor (
         val list = mutableListOf<ModelViewType>()
         homeData?.let {
             list.add(BannerDataModel(homeData.banner))
-            list.add(DynamicIconDataModel(mappingDynamicIcons(homeData.dynamicHomeIcon), false))
+            list.add(DynamicIconDataModel(mappingDynamicIcons(homeData.dynamicHomeIcon), homeData.homeFlag.getFlag(HomeFlagType.DYNAMIC_ICON_WRAP)))
         }
         return list
     }
