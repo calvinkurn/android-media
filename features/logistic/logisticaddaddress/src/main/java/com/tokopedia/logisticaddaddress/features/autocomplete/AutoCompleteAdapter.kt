@@ -80,6 +80,10 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onResultClicked(data: AutoCompleteVisitable)
     }
 
+    /**
+     *  Set as inner class and private to hide access from outside of the class while having access
+     *  to member of the adapter, e.g. listener
+     * */
     private inner class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private inner class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

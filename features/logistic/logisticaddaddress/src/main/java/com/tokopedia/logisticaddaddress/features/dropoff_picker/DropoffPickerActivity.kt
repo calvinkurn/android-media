@@ -48,9 +48,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private val GREEN_ARGB = 0x40388E3C
 
-    lateinit var mPermissionChecker: PermissionCheckerHelper
-    lateinit var mFusedLocationClient: FusedLocationProviderClient
-    lateinit var mLocationCallback: LocationCallback
+    private lateinit var mPermissionChecker: PermissionCheckerHelper
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private lateinit var mLocationCallback: LocationCallback
 
     private var mMap: GoogleMap? = null
     private var mMapFragment: SupportMapFragment? = null
@@ -60,13 +60,13 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private val mNearbyAdapter: NearbyStoreAdapter = NearbyStoreAdapter()
     private val mMarkerList: MutableList<Marker> = arrayListOf()
 
-    lateinit var mSearchInput: SearchInputView
-    lateinit var mSearchText: EditText
-    lateinit var mDisabledLocationView: View
-    lateinit var mNoPermissionsView: View
-    lateinit var mButtonActivate: UnifyButton
-    lateinit var mButtonGrant: UnifyButton
-    lateinit var mStoreDetail: LocationDetailBottomSheet
+    private lateinit var mSearchInput: SearchInputView
+    private lateinit var mSearchText: EditText
+    private lateinit var mDisabledLocationView: View
+    private lateinit var mNoPermissionsView: View
+    private lateinit var mButtonActivate: UnifyButton
+    private lateinit var mButtonGrant: UnifyButton
+    private lateinit var mStoreDetail: LocationDetailBottomSheet
 
     @Inject
     lateinit var dropoffMapper: GetStoreMapper
