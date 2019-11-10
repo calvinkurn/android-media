@@ -153,6 +153,7 @@
     <string name="product_variant_item_picker_add_variant_error_length_to_long">Opsi varian maksimal memiliki %1$d karakter</string>
     <string name="product_variant_item_picker_add_variant_error_name_existed">Nama varian sudah ada</string>
     <string name="product_variant_stock_empty">Kosong</string>
+    <string name="product_variant_stock_nonactive">Nonaktif</string>
     <string name="product_variant_stock_available">Tersedia</string>
     <string name="product_variant_stock_limited">Stok Terbatas</string>
     <string name="product_variant_stock_always_available">Selalu Tersedia</string>

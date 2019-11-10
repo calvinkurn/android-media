@@ -52,7 +52,7 @@
                     android:layout_marginLeft="@dimen/padding_ms"
                     android:layout_marginStart="@dimen/padding_ms"
                     android:layout_gravity="center_vertical"
-                    android:text="@string/product_variant_status_not_available"
+                    android:text="@string/product_variant_stock_nonactive"
                     android:background="@color/tkpd_yellow_status"
                     style="@style/TextView.Micro"
                     android:visibility="gone"
