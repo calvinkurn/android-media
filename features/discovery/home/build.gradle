@@ -47,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.stickyLogin)
+    implementation project(rootProject.ext.features.dynamicBanner)
 
     // lib
 

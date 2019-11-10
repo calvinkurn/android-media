@@ -45,6 +45,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_HOME_WIDGET = "home_widget";
         public static final String LAYOUT_BANNER_ORGANIC = "banner_organic";
         public static final String LAYOUT_BANNER_CAROUSEL = "banner_carousel";
+        public static final String LAYOUT_PLAY_BANNER = "play_widget";
 
         public static final String channelId = "channelId";
 
@@ -703,6 +704,60 @@ public class DynamicHomeChannel {
                     ),
                     "attribution", getHomeAttribution(1, getHeader().getName())
             );
+        }
+
+        public Map<String, Object> getEnhanceClickPlayBanner() {
+            List<Object> list = convertPromoEnhancePlayBanner();
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage-cmp",
+                    "eventAction", id + " - click on play dynamic banner",
+                    "eventLabel", "Play-CMP_OTHERS_indonesian-idol",
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            list.toArray(new Object[list.size()])
+                                    )
+                            )
+
+                    )
+            );
+        }
+
+        public Map<String, Object> getEnhanceImpressionPlayBanner() {
+            List<Object> list = convertPromoEnhancePlayBanner();
+            return DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "homepage-cmp",
+                    "eventAction", "impression on play dynamic banner",
+                    "eventLabel", "Play-CMP_OTHERS_indonesian-idol",
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            list.toArray(new Object[list.size()])
+                                    )
+                            )
+
+                    )
+            );
+        }
+
+        private List<Object> convertPromoEnhancePlayBanner() {
+            List<Object> list = new ArrayList<>();
+
+            /**
+             * Banner always in position 1 because only 1 banner shown
+             */
+            list.add(
+                    DataLayer.mapOf(
+                            "id", getBanner().getId(),
+                            "name", "/ - p1 - play dynamic banner - " + getHeader().name,
+                            "creative", "Play-CMP_OTHERS_indonesian-idol",
+                            "creative_url", getBanner().getImageUrl(),
+                            "position", String.valueOf(1)
+                    )
+            );
+            return list;
         }
 
         public void setPromoName(String promoName) {

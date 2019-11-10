@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
+import com.tokopedia.dynamicbanner.di.PlayCardModule;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -46,7 +47,7 @@ import javax.inject.Named;
  * @author by errysuprayogi on 11/28/17.
  */
 
-@Module(includes = { TopAdsWishlistModule.class})
+@Module(includes = {TopAdsWishlistModule.class, PlayCardModule.class})
 public class HomeModule {
 
     @HomeScope

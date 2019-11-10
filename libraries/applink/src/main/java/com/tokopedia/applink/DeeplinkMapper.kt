@@ -9,6 +9,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
+import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
@@ -44,6 +45,8 @@ object DeeplinkMapper {
                         getRegisteredNavigationMarketplace(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.DEALS_HOME) ->
                         getRegisteredNavigationDeals(deeplink)
+                    deeplink.startsWithPattern(ApplinkConst.PROFILE) ->
+                        getRegisteredNavigationContent(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
                         getRegisteredHotlist(context,deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
