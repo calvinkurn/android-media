@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -31,8 +30,8 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.SimpleVerticalDivider
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
-import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteActivity
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 import com.tokopedia.logisticaddaddress.utils.bitmapDescriptorFromVector
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
@@ -59,12 +58,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private val mNearbyAdapter: NearbyStoreAdapter = NearbyStoreAdapter()
     private val mMarkerList: MutableList<Marker> = arrayListOf()
 
-    private lateinit var mSearchInput: SearchInputView
-    private lateinit var mSearchText: EditText
     private lateinit var mDisabledLocationView: View
     private lateinit var mNoPermissionsView: View
-    private lateinit var mButtonActivate: UnifyButton
-    private lateinit var mButtonGrant: UnifyButton
     private lateinit var mStoreDetail: LocationDetailBottomSheet
 
     @Inject
@@ -78,29 +73,22 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dropoff_picker)
-
-        DaggerDropoffPickerComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+        initInjector()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar_search)
         setSupportActionBar(toolbar)
-        mSearchInput = findViewById(R.id.search_input_dropoff)
         mDisabledLocationView = findViewById(R.id.view_gps_empty)
         mNoPermissionsView = findViewById(R.id.view_no_permissions)
-        mButtonActivate = findViewById(R.id.button_activate_gps)
-        mButtonActivate.setOnClickListener {
-            checkAndRequestLocation()
+        with(findViewById<UnifyButton>(R.id.button_activate_gps)) {
+            setOnClickListener {
+                checkAndRequestLocation()
+            }
         }
-        mButtonGrant = findViewById(R.id.button_grant_permission)
-        mButtonGrant.setOnClickListener {
-            checkForPermission()
+        with(findViewById<UnifyButton>(R.id.button_grant_permission)) {
+            setOnClickListener {
+                checkForPermission()
+            }
         }
-        mSearchInput.setOnClickListener(goToAutoComplete)
-        mSearchText = mSearchInput.searchTextView
-        mSearchText.setOnClickListener(goToAutoComplete)
-        mSearchText.isCursorVisible = false
-        mSearchText.isFocusable = false
         mStoreDetail = findViewById(R.id.bottom_sheet_detail)
         mStoreDetail.setOnCancelClickListener { mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN }
         mStoreDetail.setOnOkClickListener { _, data ->
@@ -111,7 +99,13 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
         }
-
+        val searchInput = findViewById<SearchInputView>(R.id.search_input_dropoff)
+        searchInput.setOnClickListener(goToAutoComplete)
+        with(searchInput.searchTextView) {
+            setOnClickListener(goToAutoComplete)
+            isCursorVisible = false
+            isFocusable = false
+        }
         with(findViewById<RecyclerView>(R.id.rv_dropoff)) {
             layoutManager = LinearLayoutManager(this@DropoffPickerActivity)
             setHasFixedSize(true)
@@ -193,6 +187,12 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                 }
             }
         }
+    }
+
+    private fun initInjector() {
+        DaggerDropoffPickerComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
     }
 
     private fun setObservers() {
