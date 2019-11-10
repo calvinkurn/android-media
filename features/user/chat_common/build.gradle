@@ -39,8 +39,8 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    implementation 'io.reactivex:rxkotlin:0.60.0'
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation rootProject.ext.miscDependencies.rxKotlin
 }
 
 project.ext {

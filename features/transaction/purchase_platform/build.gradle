@@ -41,7 +41,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.lottie
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
@@ -113,8 +112,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.basemvvm)
-    implementation project(rootProject.ext.features.profileCompletion)
-    implementation project(rootProject.ext.features.otp)
     //-------------------------------------------------------------------//
 
 }
