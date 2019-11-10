@@ -17,8 +17,8 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.SimpleVerticalDivider
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AddressResultUi
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.AddressResultUi
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.AutoCompleteResultUi
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

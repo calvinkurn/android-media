@@ -12,9 +12,9 @@ import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictRes
 import com.tokopedia.logisticaddaddress.data.query.AutoCompleteQuery
 import com.tokopedia.logisticaddaddress.data.query.GetAddressQuery
 import com.tokopedia.logisticaddaddress.data.query.GetDistrictQuery
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AddressResultUi
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.AddressResultUi
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.AutoCompleteResultUi
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

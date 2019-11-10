@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AddressResultUi
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.AddressResultUi
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.AutoCompleteResultUi
 import kotlinx.android.synthetic.main.item_autocomplete_result.view.*
 
 class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

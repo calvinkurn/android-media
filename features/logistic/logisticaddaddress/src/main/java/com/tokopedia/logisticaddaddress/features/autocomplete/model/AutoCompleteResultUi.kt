@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete
+package com.tokopedia.logisticaddaddress.features.autocomplete.model
 
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.MatchedSubstringsItem
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.StructuredFormatting

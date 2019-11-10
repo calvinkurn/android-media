@@ -7,6 +7,8 @@ import com.tokopedia.logisticaddaddress.domain.model.autocomplete.PredictionsIte
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.StructuredFormatting
 import com.tokopedia.logisticaddaddress.data.entity.response.AddressResponse
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.*
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.AddressResultUi
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.AutoCompleteResultUi
 import javax.inject.Inject
 
 /**
