@@ -30,7 +30,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.SimpleVerticalDivider
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteActivity
 import com.tokopedia.logisticaddaddress.utils.bitmapDescriptorFromVector
 import com.tokopedia.logisticaddaddress.utils.getLatLng

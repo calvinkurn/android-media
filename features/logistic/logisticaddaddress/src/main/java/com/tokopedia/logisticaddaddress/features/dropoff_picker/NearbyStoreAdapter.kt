@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.*
 import com.tokopedia.logisticaddaddress.utils.toKilometers
 import kotlinx.android.synthetic.main.item_empty_nearby_location.view.*
 import kotlinx.android.synthetic.main.item_nearby_location.view.*
 
-class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val mData: MutableList<DropoffVisitable> = mutableListOf()
     private var mListener: ActionListener? = null
@@ -44,7 +44,6 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         is EmptyType -> R.layout.item_empty_nearby_location
         is HeaderType -> R.layout.item_dropoff_list_header
         is LoadingType -> LoadingViewholder.LAYOUT
-        else -> throw RuntimeException("View type does not match")
     }
 
     fun setData(item: List<DropoffNearbyModel>) {
@@ -79,11 +78,10 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun requestAutoComplete()
     }
 
-    internal interface DropoffVisitable
-    private data class HeaderType(var text: String = "") : DropoffVisitable
-    private data class EmptyType(var id: Int = 0) : DropoffVisitable
-    private data class LoadingType(var id: Int = 0) : DropoffVisitable
-
+    /**
+     *  Set as inner class and private to hide access from outside of the class while having access
+     *  to member of the adapter, e.g. listener
+     * */
     private inner class NearbyStoreViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(datum: DropoffNearbyModel) {
             val desc = "${datum.districtName}, ${datum.cityName}, ${datum.provinceName}"
@@ -95,7 +93,6 @@ class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
     }
-
-    private class EmptyViewHolder(val view: View) : RecyclerView.ViewHolder(view)
-    private class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    private inner class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    private inner class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
 }

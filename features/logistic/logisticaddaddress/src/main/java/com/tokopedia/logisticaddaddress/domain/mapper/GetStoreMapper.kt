@@ -1,8 +1,8 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.Data
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffNearbyModel
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffUiModel
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffUiModel
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel
 import javax.inject.Inject

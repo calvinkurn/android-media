@@ -1,6 +1,4 @@
-package com.tokopedia.logisticaddaddress.domain.model.dropoff
-
-import com.tokopedia.logisticaddaddress.features.dropoff_picker.NearbyStoreAdapter
+package com.tokopedia.logisticaddaddress.features.dropoff_picker.model
 
 data class DropoffUiModel(val nearbyStores: List<DropoffNearbyModel>, val radius: Int)
 
@@ -24,4 +22,9 @@ data class DropoffNearbyModel(var addrId: Int = 0,
                               var status: Int = 0,
                               var storeCode: String = "",
                               var storeDistance: String = "",
-                              var type: Int = 0) : NearbyStoreAdapter.DropoffVisitable
+                              var type: Int = 0) : DropoffVisitable()
+
+sealed class DropoffVisitable
+data class HeaderType(var id: Int = 0) : DropoffVisitable()
+data class EmptyType(var id: Int = 0) : DropoffVisitable()
+data class LoadingType(var id: Int = 0) : DropoffVisitable()

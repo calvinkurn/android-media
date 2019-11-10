@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffUiModel
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffUiModel
 import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
 import com.tokopedia.logisticaddaddress.domain.query.LocationQuery
 import com.tokopedia.usecase.coroutines.Fail
