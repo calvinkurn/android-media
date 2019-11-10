@@ -1,35 +1,26 @@
-package com.tokopedia.logisticaddaddress.domain.model.dropoff
+package com.tokopedia.logisticaddaddress.data.entity.response
 
 import com.google.gson.annotations.SerializedName
 
-data class AddressResponse(
-        @SerializedName("keroAddressCorner")
-        var keroAddressCorner: KeroAddressCorner = KeroAddressCorner()
+data class GetStoreResponse(
+        @SerializedName("keroAddressStoreLocation")
+        var keroAddressStoreLocation: KeroAddressStoreLocation = KeroAddressStoreLocation()
 )
 
-data class KeroAddressCorner(
-        @SerializedName("data")
-        var `data`: List<DataAddress> = listOf(),
+data class KeroAddressStoreLocation(
         @SerializedName("config")
         var config: String = "",
+        @SerializedName("data")
+        var `data`: List<Data> = listOf(),
+        @SerializedName("global_radius")
+        var globalRadius: Int = 0,
         @SerializedName("server_process_time")
         var serverProcessTime: String = "",
         @SerializedName("status")
-        var status: String = "",
-        @SerializedName("token")
-        var token: Token = Token(),
-        @SerializedName("has_next")
-        var hasNext: Boolean = false
+        var status: String = ""
 )
 
-data class Token(
-        @SerializedName("district_recommendation")
-        var districtRecommendation: String = "",
-        @SerializedName("ut")
-        var ut: String = ""
-)
-
-data class DataAddress(
+data class Data(
         @SerializedName("addr_id")
         var addrId: Int = 0,
         @SerializedName("addr_name")
@@ -48,22 +39,12 @@ data class DataAddress(
         var district: Int = 0,
         @SerializedName("district_name")
         var districtName: String = "",
-        @SerializedName("is_active")
-        var isActive: Boolean = false,
-        @SerializedName("is_corner")
-        var isCorner: Boolean = false,
-        @SerializedName("is_primary")
-        var isPrimary: Boolean = false,
-        @SerializedName("is_whitelist")
-        var isWhitelist: Boolean = false,
         @SerializedName("latitude")
         var latitude: String = "",
         @SerializedName("longitude")
         var longitude: String = "",
-        @SerializedName("partner_id")
-        var partnerId: Int = 0,
-        @SerializedName("partner_name")
-        var partnerName: String = "",
+        @SerializedName("opening_hours")
+        var openingHours: String = "",
         @SerializedName("phone")
         var phone: String = "",
         @SerializedName("postal_code")
@@ -76,6 +57,10 @@ data class DataAddress(
         var receiverName: String = "",
         @SerializedName("status")
         var status: Int = 0,
+        @SerializedName("store_code")
+        var storeCode: String = "",
+        @SerializedName("store_distance")
+        var storeDistance: String = "",
         @SerializedName("type")
         var type: Int = 0
 )

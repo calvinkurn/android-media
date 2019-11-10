@@ -7,11 +7,11 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.AddressResponse
+import com.tokopedia.logisticaddaddress.data.entity.response.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
-import com.tokopedia.logisticaddaddress.domain.query.AutoCompleteQuery
-import com.tokopedia.logisticaddaddress.domain.query.GetAddressQuery
-import com.tokopedia.logisticaddaddress.domain.query.GetDistrictQuery
+import com.tokopedia.logisticaddaddress.data.query.AutoCompleteQuery
+import com.tokopedia.logisticaddaddress.data.query.GetAddressQuery
+import com.tokopedia.logisticaddaddress.data.query.GetDistrictQuery
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AddressResultUi
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutoCompleteResultUi
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.domain.query
+package com.tokopedia.logisticaddaddress.data.query
 
 object AutoCompleteQuery {
     val keroAutoCompleteGeocode = """

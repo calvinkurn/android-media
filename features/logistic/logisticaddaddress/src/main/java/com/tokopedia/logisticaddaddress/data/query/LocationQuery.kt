@@ -1,7 +1,7 @@
-package com.tokopedia.logisticaddaddress.domain.query
+package com.tokopedia.logisticaddaddress.data.query
 
 import com.google.gson.Gson
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
+import com.tokopedia.logisticaddaddress.data.entity.response.GetStoreResponse
 
 object LocationQuery {
     val keroAddressStoreLocation = """

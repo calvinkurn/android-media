@@ -3,8 +3,8 @@ package com.tokopedia.logisticaddaddress.di.dropoff_picker
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.AddressResponse
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
+import com.tokopedia.logisticaddaddress.data.entity.response.AddressResponse
+import com.tokopedia.logisticaddaddress.data.entity.response.GetStoreResponse
 import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
 import dagger.Module
 import dagger.Provides
