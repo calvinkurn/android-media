@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.v2.home.base.HomeRepository
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
 import com.tokopedia.v2.home.model.pojo.DynamicHomeIcon
@@ -13,10 +12,9 @@ import com.tokopedia.v2.home.model.pojo.HomeFlagType
 import com.tokopedia.v2.home.model.vo.BannerDataModel
 import com.tokopedia.v2.home.model.vo.DynamicIconDataModel
 import com.tokopedia.v2.home.model.vo.Resource
+import com.tokopedia.v2.home.model.vo.TickerDataModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -43,6 +41,9 @@ class HomePageViewModel @Inject constructor (
         val list = mutableListOf<ModelViewType>()
         homeData?.let {
             list.add(BannerDataModel(homeData.banner))
+            if(homeData.ticker.tickers.isNotEmpty()){
+                list.add(TickerDataModel(homeData.ticker.tickers))
+            }
             list.add(DynamicIconDataModel(mappingDynamicIcons(homeData.dynamicHomeIcon), homeData.homeFlag.getFlag(HomeFlagType.DYNAMIC_ICON_WRAP)))
         }
         return list

@@ -3,6 +3,7 @@ package com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets
 import android.content.Context
 import android.graphics.Point
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
+import com.tokopedia.home.beranda.helper.StartSnapHelper
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CarouselDecoration
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
 import com.tokopedia.v2.home.base.adapterdelegate.ViewTypeDelegateAdapter
@@ -43,21 +45,24 @@ class DynamicIconDelegateAdapter : ViewTypeDelegateAdapter {
     }
 
     inner class DynamicIconSectionViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.layout_dynamic_icon_section)) {
-        private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START, true) }
+        private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.CENTER, false) }
         private val recyclerView = itemView.list
+        private val SINGLE_ROW_LAYOUT = R.layout.layout_use_case_and_dynamic_icon
+        private val DUAL_ROW_LAYOUT = R.layout.layout_dynamic_icon_two_row
 
         fun bind(item: DynamicIconDataModel){
-            startSnapHelper.attachToRecyclerView(recyclerView)
+            var layout = SINGLE_ROW_LAYOUT
             if(item.dynamicIconWrap){
+                layout = DUAL_ROW_LAYOUT
                 recyclerView.layoutManager = GridLayoutManager(itemView.context, 5, GridLayoutManager.VERTICAL, false)
             } else {
                 recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 setDecoration()
             }
-
+            startSnapHelper.attachToRecyclerView(recyclerView)
             recyclerView.adapter = object : RecyclerView.Adapter<DynamicIconViewHolder>(){
                 override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconViewHolder {
-                    return DynamicIconViewHolder(parent)
+                    return DynamicIconViewHolder(parent.inflate(layout))
                 }
 
                 override fun getItemCount(): Int {
@@ -90,7 +95,7 @@ class DynamicIconDelegateAdapter : ViewTypeDelegateAdapter {
         }
 
 
-        inner class DynamicIconViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.layout_use_case_and_dynamic_icon)){
+        inner class DynamicIconViewHolder(view: View) : RecyclerView.ViewHolder(view){
             val icon: AppCompatImageView = itemView.icon
             val title: TextView = itemView.title
             val container: LinearLayout = itemView.container
