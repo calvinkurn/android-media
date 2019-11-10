@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -45,8 +46,6 @@ const val REQUEST_CODE_LOCATION: Int = 1
 const val REQUEST_CODE_AUTOCOMPLETE: Int = 2
 
 class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
-
-    private val GREEN_ARGB = 0x40388E3C
 
     private lateinit var mPermissionChecker: PermissionCheckerHelper
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -253,9 +252,10 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private fun drawCircle(radius: Int) {
         if (radius > 0) {
+            val circleColor = ContextCompat.getColor(this, R.color.polygon_map)
             mMap?.addCircle(CircleOptions().center(mLastLocation)
                     .radius(radius * 1000.0)
-                    .fillColor(GREEN_ARGB)
+                    .fillColor(circleColor)
                     .strokeWidth(0.0f))
         }
     }
