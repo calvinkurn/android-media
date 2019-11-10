@@ -17,6 +17,7 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.SimpleVerticalDivider
 import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerComponent
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.AutoCompleteVisitable
 import com.tokopedia.logisticaddaddress.features.autocomplete.model.SavedAddress
 import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
 import com.tokopedia.network.exception.MessageErrorException
@@ -78,7 +79,7 @@ class AutoCompleteFragment : Fragment(),
         }
     }
 
-    override fun onResultClicked(data: AutoCompleteAdapter.AutoCompleteVisitable) {
+    override fun onResultClicked(data: AutoCompleteVisitable) {
         if (data is SuggestedPlace) {
             viewModel.getLatLng(data.placeId)
         } else if (data is SavedAddress) {

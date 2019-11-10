@@ -1,12 +1,21 @@
 package com.tokopedia.logisticaddaddress.features.autocomplete.model
 
-import com.google.gson.annotations.SerializedName
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete.MatchedSubstringsItem
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete.StructuredFormatting
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete.TermsItem
-import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteAdapter
+sealed class AutoCompleteVisitable
 
 data class SuggestedPlace(
         val mainText: String = "",
         val secondaryText: String = "",
-        val placeId: String = "") : AutoCompleteAdapter.AutoCompleteVisitable
+        val placeId: String = "") : AutoCompleteVisitable()
+
+data class SavedAddress(
+        var addrId: Int = 0,
+        var addrName: String = "",
+        var address1: String = "",
+        var latitude: String = "",
+        var longitude: String = ""
+) : AutoCompleteVisitable()
+
+
+data class LoadingType(val id: Int = 0) : AutoCompleteVisitable()
+data class NoResultType(val id: Int = 0) : AutoCompleteVisitable()
+data class HeaderType(val id: Int = 0) : AutoCompleteVisitable()

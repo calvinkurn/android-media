@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SavedAddress
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.*
 import kotlinx.android.synthetic.main.item_autocomplete_result.view.*
 
 class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -46,7 +45,6 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         is LoadingType -> LoadingViewholder.LAYOUT
         is HeaderType -> R.layout.item_autocomplete_header
         is NoResultType -> R.layout.item_autocomplete_no_result
-        else -> throw RuntimeException("View type not found!!")
     }
 
     fun setActionListener(listener: ActionListener) {
@@ -82,13 +80,8 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onResultClicked(data: AutoCompleteVisitable)
     }
 
-    interface AutoCompleteVisitable
-    data class LoadingType(val id: Int = 0) : AutoCompleteVisitable
-    data class NoResultType(val id: Int = 0) : AutoCompleteVisitable
-    data class HeaderType(val id: Int = 0) : AutoCompleteVisitable
-
-    private class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    private class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    private inner class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    private inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private inner class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindAutoComplete(item: SuggestedPlace) {
             itemView.tv_autocomplete_title.text = item.mainText
