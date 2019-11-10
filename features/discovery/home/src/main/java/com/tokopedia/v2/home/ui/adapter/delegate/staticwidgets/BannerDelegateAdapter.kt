@@ -1,4 +1,4 @@
-package com.tokopedia.v2.home.ui.adapter.delegate
+package com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.home_banner.view.*
 import java.util.*
 
 class BannerDelegateAdapter : ViewTypeDelegateAdapter {
+
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         return BannerViewHolder(parent)
     }
@@ -27,6 +28,10 @@ class BannerDelegateAdapter : ViewTypeDelegateAdapter {
         if(payload.isNotEmpty() && holder is BannerViewHolder){
             holder.bind(item as BannerDataModel)
         }
+    }
+
+    override fun isForViewType(item: ModelViewType): Boolean {
+        return item is BannerDataModel
     }
 
     inner class BannerViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(

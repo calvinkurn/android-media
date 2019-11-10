@@ -6,5 +6,4 @@ package com.tokopedia.v2.home.base.adapterdelegate
 interface ModelViewType {
     fun getPrimaryKey(): Int
     fun isContentsTheSame(other: ModelViewType): Boolean
-    fun getViewType(): Int
 }

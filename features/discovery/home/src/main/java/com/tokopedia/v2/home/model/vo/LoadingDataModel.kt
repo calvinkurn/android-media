@@ -11,8 +11,4 @@ class LoadingDataModel : ModelViewType {
     override fun getPrimaryKey(): Int {
         return 0
     }
-
-    override fun getViewType(): Int {
-        return R.layout.item_loading
-    }
 }

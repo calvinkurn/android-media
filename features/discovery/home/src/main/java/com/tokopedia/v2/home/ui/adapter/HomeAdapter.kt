@@ -1,20 +1,18 @@
 package com.tokopedia.v2.home.ui.adapter
 
-import androidx.collection.SparseArrayCompat
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.v2.home.base.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
-import com.tokopedia.v2.home.base.adapterdelegate.ViewTypeDelegateAdapter
-import com.tokopedia.v2.home.ui.adapter.delegate.BannerDelegateAdapter
-import com.tokopedia.v2.home.ui.adapter.delegate.LoadingDelegateAdapter
+import com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets.BannerDelegateAdapter
+import com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets.DynamicIconDelegateAdapter
 
 class HomeAdapter : BaseAdapterDelegate() {
 
-    override var delegateAdapters = SparseArrayCompat<ViewTypeDelegateAdapter>()
+//    override var delegateAdapters = SparseArrayCompat<ViewTypeDelegateAdapter>()
 
     init {
-        delegateAdapters.put(AdapterConstants.LOADING, LoadingDelegateAdapter())
-        delegateAdapters.put(AdapterConstants.BANNER, BannerDelegateAdapter())
+        delegateManager.addType(BannerDelegateAdapter())
+        delegateManager.addType(DynamicIconDelegateAdapter())
     }
 
     override fun diffUtil(oldList: List<ModelViewType>, newList: List<ModelViewType>): DiffUtil.Callback {

@@ -133,9 +133,7 @@ class HomeFragment : BaseDaggerFragment(){
     private fun initData(){
         homeViewModel.homeData.observe(viewLifecycleOwner, Observer { res ->
             if(res.status == Resource.Status.SUCCESS && res.data != null){
-                adapter.submitList(listOf(
-                        BannerDataModel(res.data.banner)
-                ))
+                adapter.submitList(res.data)
             }
         })
         homeViewModel.getData()

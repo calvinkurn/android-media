@@ -6,57 +6,56 @@ import com.google.gson.annotations.SerializedName
 class DynamicHomeIcon (
         @Expose
         @SerializedName("useCaseIcon")
-        val useCaseIcon: List<UseCaseIcon>?,
+        val useCaseIcon: List<DynamicIcon> = listOf(),
 
         @Expose
         @SerializedName("dynamicIcon")
-        val dynamicIcon: List<DynamicIcon>?
+        val dynamicIcon: List<DynamicIcon> = listOf()
 )
-
-data class UseCaseIcon(
+open class UseCaseIcon(
         @Expose
         @SerializedName("id")
-        val id: String?,
+        val id: String = "-1",
 
         @Expose
         @SerializedName("applinks")
-        val applinks: String?,
-        
+        val applinks: String = "",
+
         @Expose
         @SerializedName("imageUrl")
-        val imageUrl: String?,
-        
+        val imageUrl: String = "",
+
         @Expose
         @SerializedName("name")
-        val name: String?,
-        
+        val name: String = "",
+
         @Expose
         @SerializedName("url")
-        val url: String?
+        val url: String = ""
 )
 
 data class DynamicIcon(
         @Expose
         @SerializedName("id")
-        val id: String?,
+        val id: String = "-1",
 
         @Expose
         @SerializedName("applinks")
-        val applinks: String?,
+        val applinks: String = "",
 
         @Expose
         @SerializedName("imageUrl")
-        val imageUrl: String?,
+        val imageUrl: String = "",
 
         @Expose
         @SerializedName("name")
-        val name: String?,
+        val name: String = "",
 
         @Expose
         @SerializedName("url")
-        val url: String?,
+        val url: String = "",
 
         @Expose
         @SerializedName("bu_identifier")
-        val bu_identifier: String?
+        val bu_identifier: String = ""
 )

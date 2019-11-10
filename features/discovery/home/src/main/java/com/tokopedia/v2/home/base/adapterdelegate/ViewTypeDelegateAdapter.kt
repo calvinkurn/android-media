@@ -7,4 +7,5 @@ interface ViewTypeDelegateAdapter {
     fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder
     fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: ModelViewType)
     fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: ModelViewType, payload: List<Any>)
+    fun isForViewType(item: ModelViewType): Boolean
 }
