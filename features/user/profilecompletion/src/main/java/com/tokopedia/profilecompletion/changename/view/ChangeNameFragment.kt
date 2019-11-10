@@ -61,6 +61,10 @@ class ChangeNameFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initListener()
         initObserver()
+
+        if (oldName.isNotEmpty()) {
+            changeNameTextName?.setText(oldName)
+        }
     }
 
     private fun initListener() {
