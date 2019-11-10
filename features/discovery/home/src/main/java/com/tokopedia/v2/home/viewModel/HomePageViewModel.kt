@@ -9,6 +9,7 @@ import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
 import com.tokopedia.v2.home.model.pojo.DynamicHomeIcon
 import com.tokopedia.v2.home.model.pojo.HomeData
 import com.tokopedia.v2.home.model.pojo.HomeFlagType
+import com.tokopedia.v2.home.model.pojo.Tickers
 import com.tokopedia.v2.home.model.vo.BannerDataModel
 import com.tokopedia.v2.home.model.vo.DynamicIconDataModel
 import com.tokopedia.v2.home.model.vo.Resource
@@ -41,8 +42,15 @@ class HomePageViewModel @Inject constructor (
         val list = mutableListOf<ModelViewType>()
         homeData?.let {
             list.add(BannerDataModel(homeData.banner))
-            if(homeData.ticker.tickers.isNotEmpty()){
-                list.add(TickerDataModel(homeData.ticker.tickers))
+            if(!homeData.ticker.tickers.isNotEmpty()){
+//                homeData.ticker.tickers
+                list.add(TickerDataModel(
+                        listOf(
+                                Tickers(message = "JNE ERROR!", id = "12", color = "#FF0000"),
+                                Tickers(message = "JNE ERROR 2!", id = "13", color = "#FF0000"),
+                                Tickers(message = "JNE ERROR 3!", id = "14", color = "#FF0000")
+                        )
+                ))
             }
             list.add(DynamicIconDataModel(mappingDynamicIcons(homeData.dynamicHomeIcon), homeData.homeFlag.getFlag(HomeFlagType.DYNAMIC_ICON_WRAP)))
         }

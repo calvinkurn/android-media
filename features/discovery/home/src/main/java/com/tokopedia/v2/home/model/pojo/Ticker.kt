@@ -2,12 +2,11 @@ package com.tokopedia.v2.home.model.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import java.util.ArrayList
 
 data class Ticker (
     @SerializedName("tickers")
     @Expose
-    val tickers: ArrayList<Tickers>,
+    val tickers: List<Tickers> = listOf(),
 
     @SerializedName("meta")
     @Expose
@@ -17,63 +16,63 @@ data class Ticker (
 data class Tickers(
         @SerializedName("redirect_url")
         @Expose
-        val redirectUrl: String,
+        val redirectUrl: String = "",
 
         @SerializedName("created_by")
         @Expose
-        val createdBy: String,
+        val createdBy: String = "",
         
         @SerializedName("created_on")
         @Expose
-        val createdOn: String,
+        val createdOn: String = "",
         
         @SerializedName("expire_time")
         @Expose
-        val expireTime: String,
+        val expireTime: String = "",
         
         @SerializedName("id")
         @Expose
-        val id: String,
+        val id: String = "-1",
         
         @SerializedName("message")
         @Expose
-        val message: String,
+        val message: String = "",
         
         @SerializedName("title")
         @Expose
-        val title: String,
+        val title: String = "",
         
         @SerializedName("layout")
         @Expose
-        val layout: String,
+        val layout: String = "",
         
         @SerializedName("target")
         @Expose
-        val target: String,
+        val target: String = "",
         
         @SerializedName("device")
         @Expose
-        val device: String,
+        val device: String = "",
         
         @SerializedName("updated_on")
         @Expose
-        val updatedOn: String,
+        val updatedOn: String = "",
         
         @SerializedName("updated_by")
         @Expose
-        val updatedBy: String,
+        val updatedBy: String = "",
         
         @SerializedName("ticker_type")
         @Expose
-        val ticker_type: String,
+        val ticker_type: String = "",
         
         @SerializedName("color")
         @Expose
-        val color: String,
+        val color: String = "",
         
         @SerializedName("status")
         @Expose
-        val status: String
+        val status: String = ""
 )
 
 data class Meta(

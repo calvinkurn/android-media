@@ -17,6 +17,10 @@ import com.tokopedia.v2.home.base.adapterdelegate.inflate
 import com.tokopedia.v2.home.model.pojo.Tickers
 import com.tokopedia.v2.home.model.vo.TickerDataModel
 import kotlinx.android.synthetic.main.layout_ticker_home.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.channels.ticker
 import java.util.*
 
 class TickerDelegateAdapter : ViewTypeDelegateAdapter{
@@ -41,7 +45,10 @@ class TickerDelegateAdapter : ViewTypeDelegateAdapter{
             parent.inflate(R.layout.layout_ticker_home)){
 
         val textMessage = itemView.ticker_message
+        val textSwitch = itemView.text_switch
         val closeButton = itemView.btn_close
+        @ObsoleteCoroutinesApi
+        val tickerChannel = ticker(delayMillis = 5000)
 
         private val SLIDE_DELAY: Long = 5000
         internal var hasStarted = false
@@ -50,12 +57,12 @@ class TickerDelegateAdapter : ViewTypeDelegateAdapter{
 
         fun bind(item: TickerDataModel){
             val ticker = item.tickers.first()
-            textMessage.text = ticker.message
-            textMessage.movementMethod = TickerLinkMovementMethod(
-                    ticker.id
-            )
-            StripedUnderlineUtil.stripUnderlines(textMessage)
-            ViewCompat.setBackgroundTintList(closeButton, ColorStateList.valueOf(Color.parseColor(ticker.color)))
+
+            textSwitch.setInAnimation(itemView.context, android.R.anim.slide_out_right)
+            textSwitch.setOutAnimation(itemView.context, android.R.anim.slide_in_left)
+//            textMessage.text = ticker.message
+
+//            ViewCompat.setBackgroundTintList(closeButton, ColorStateList.valueOf(Color.parseColor(ticker.color)))
             if (!hasStarted)
                 timer.scheduleAtFixedRate(SwitchTicker(item.tickers), 0, SLIDE_DELAY)
         }
@@ -83,9 +90,9 @@ class TickerDelegateAdapter : ViewTypeDelegateAdapter{
                         i = 0
                     val ticker = tickers[i]
                     tickerId = ticker.id
-                    textMessage.text = ticker.message
+                    textSwitch.setText(ticker.message)
                     StripedUnderlineUtil.stripUnderlines(textMessage)
-                    ViewCompat.setBackgroundTintList(closeButton, ColorStateList.valueOf(Color.parseColor(ticker.color)))
+//                    ViewCompat.setBackgroundTintList(closeButton, ColorStateList.valueOf(Color.parseColor(ticker.color)))
                 }
             }
         }

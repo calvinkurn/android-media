@@ -5,6 +5,7 @@ import com.tokopedia.v2.home.base.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
 import com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets.BannerDelegateAdapter
 import com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets.DynamicIconDelegateAdapter
+import com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets.TickerDelegateAdapter
 
 class HomeAdapter : BaseAdapterDelegate() {
 
@@ -12,6 +13,7 @@ class HomeAdapter : BaseAdapterDelegate() {
 
     init {
         delegateManager.addType(BannerDelegateAdapter())
+        delegateManager.addType(TickerDelegateAdapter())
         delegateManager.addType(DynamicIconDelegateAdapter())
     }
 
