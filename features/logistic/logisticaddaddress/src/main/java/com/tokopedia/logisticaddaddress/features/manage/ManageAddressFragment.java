@@ -45,6 +45,7 @@ import static com.tokopedia.logisticaddaddress.common.AddressConstants.KERO_TOKE
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.REQUEST_CODE_PARAM_CREATE;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.REQUEST_CODE_PARAM_EDIT;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.SCREEN_NAME_USER_NEW;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * Created by Fajar Ulin Nuha on 13/11/18.
