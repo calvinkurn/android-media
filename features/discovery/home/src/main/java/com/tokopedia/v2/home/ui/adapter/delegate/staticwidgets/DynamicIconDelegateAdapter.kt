@@ -45,7 +45,7 @@ class DynamicIconDelegateAdapter : ViewTypeDelegateAdapter {
     }
 
     inner class DynamicIconSectionViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.layout_dynamic_icon_section)) {
-        private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.CENTER, false) }
+        private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START, false) }
         private val recyclerView = itemView.list
         private val SINGLE_ROW_LAYOUT = R.layout.layout_use_case_and_dynamic_icon
         private val DUAL_ROW_LAYOUT = R.layout.layout_dynamic_icon_two_row
