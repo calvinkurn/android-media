@@ -23,13 +23,6 @@ open class GetDistrictMapper @Inject constructor() {
         return GetDistrictResponseUiModel(dataUiModel)
     }
 
-    fun mapLean(response: GetDistrictResponse): GetDistrictDataUiModel {
-        val data = response.keroPlacesGetDistrict.data
-        return data?.let {
-            mapData(it)
-        } ?: GetDistrictDataUiModel()
-    }
-
     private fun mapData(data: Data): GetDistrictDataUiModel {
         return GetDistrictDataUiModel(
                 title = data.title,

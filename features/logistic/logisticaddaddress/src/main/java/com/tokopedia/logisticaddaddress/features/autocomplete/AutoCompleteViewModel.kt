@@ -4,17 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
 import com.tokopedia.logisticaddaddress.data.entity.response.AddressResponse
-import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
 import com.tokopedia.logisticaddaddress.data.query.AutoCompleteQuery
 import com.tokopedia.logisticaddaddress.data.query.GetAddressQuery
 import com.tokopedia.logisticaddaddress.data.query.GetDistrictQuery
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.AddressResultUi
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.AutoCompleteResultUi
+import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
+import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
+import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.SavedAddress
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.ValidatedDistrict
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,17 +26,16 @@ class AutoCompleteViewModel
         private val autoCompleteUseCase: GraphqlUseCase<AutocompleteResponse>,
         private val getDistrictUseCase: GraphqlUseCase<GetDistrictResponse>,
         private val getSavedAddressUseCase: GraphqlUseCase<AddressResponse>,
-        private val autoCompleteMapper: AutocompleteMapper,
-        private val getDistrictMapper: GetDistrictMapper) : BaseViewModel(dispatcher) {
+        private val mapper: AutoCompleteMapper) : BaseViewModel(dispatcher) {
 
-    private val mAutoCompleteList = MutableLiveData<Result<List<AutoCompleteResultUi>>>()
-    val autoCompleteList: LiveData<Result<List<AutoCompleteResultUi>>>
+    private val mAutoCompleteList = MutableLiveData<Result<List<SuggestedPlace>>>()
+    val autoCompleteList: LiveData<Result<List<SuggestedPlace>>>
         get() = mAutoCompleteList
-    private val mValidatedDistrict = MutableLiveData<Result<GetDistrictDataUiModel>>()
-    val validatedDistrict: LiveData<Result<GetDistrictDataUiModel>>
+    private val mValidatedDistrict = MutableLiveData<Result<ValidatedDistrict>>()
+    val validatedDistrict: LiveData<Result<ValidatedDistrict>>
         get() = mValidatedDistrict
-    private val mSavedAddress = MutableLiveData<Result<List<AddressResultUi>>>()
-    val savedAddress: LiveData<Result<List<AddressResultUi>>>
+    private val mSavedAddress = MutableLiveData<Result<List<SavedAddress>>>()
+    val savedAddress: LiveData<Result<List<SavedAddress>>>
         get() = mSavedAddress
 
     fun getAutoCompleteList(keyword: String) {
@@ -49,12 +47,12 @@ class AutoCompleteViewModel
 
         autoCompleteUseCase.execute(
                 {
-                    mAutoCompleteList.value = Success(autoCompleteMapper.mapLean(it))
+                    mAutoCompleteList.value = Success(mapper.mapAutoComplete(it))
                 },
                 { mAutoCompleteList.value = Fail(it) })
     }
 
-    fun getLatlng(placeId: String) {
+    fun getLatLng(placeId: String) {
         getDistrictUseCase.setTypeClass(GetDistrictResponse::class.java)
         getDistrictUseCase.setGraphqlQuery(GetDistrictQuery.keroPlacesGetDistrict)
         getDistrictUseCase.setRequestParams(mapOf(
@@ -63,7 +61,7 @@ class AutoCompleteViewModel
 
         getDistrictUseCase.execute(
                 {
-                    mValidatedDistrict.value = Success(getDistrictMapper.mapLean(it))
+                    mValidatedDistrict.value = Success(mapper.mapValidate(it))
                 },
                 { mValidatedDistrict.value = Fail(it) }
         )
@@ -80,7 +78,7 @@ class AutoCompleteViewModel
 
         getSavedAddressUseCase.execute(
                 {
-                    mSavedAddress.value = Success(autoCompleteMapper.mapAddress(it))
+                    mSavedAddress.value = Success(mapper.mapAddress(it))
                 },
                 {
                     mSavedAddress.value = Fail(it)

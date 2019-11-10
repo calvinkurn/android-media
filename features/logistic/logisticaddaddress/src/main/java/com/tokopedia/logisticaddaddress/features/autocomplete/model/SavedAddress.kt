@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.features.autocomplete.model
 
 import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteAdapter
 
-data class AddressResultUi(
+data class SavedAddress(
         var addrId: Int = 0,
         var addrName: String = "",
         var address1: String = "",

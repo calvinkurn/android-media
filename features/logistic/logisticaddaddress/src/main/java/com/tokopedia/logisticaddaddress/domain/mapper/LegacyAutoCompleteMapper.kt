@@ -5,17 +5,13 @@ import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteRe
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.Data
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.PredictionsItem
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.StructuredFormatting
-import com.tokopedia.logisticaddaddress.data.entity.response.AddressResponse
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.*
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.AddressResultUi
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.AutoCompleteResultUi
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompletePredictionUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteResponseUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteStructuredFormattingUiModel
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 2019-05-20.
- */
-class AutocompleteMapper @Inject constructor() {
-
+class LegacyAutoCompleteMapper @Inject constructor() {
     fun map(response: GraphqlResponse?): AutocompleteResponseUiModel {
         var dataUiModel = AutocompleteDataUiModel()
         val responseAutocomplete: AutocompleteResponse? = response?.getData(AutocompleteResponse::class.java)
@@ -25,32 +21,6 @@ class AutocompleteMapper @Inject constructor() {
             }
         }
         return AutocompleteResponseUiModel(dataUiModel)
-    }
-
-    fun mapLean(response: AutocompleteResponse): List<AutoCompleteResultUi> {
-        val dataResponse = response.keroMapsAutocomplete.data.predictions
-        return dataResponse.map {
-            AutoCompleteResultUi(
-                    it.types,
-                    it.matchedSubstrings,
-                    it.terms,
-                    it.structuredFormatting,
-                    it.description, it.placeId
-            )
-        }
-    }
-
-    fun mapAddress(response: AddressResponse): List<AddressResultUi> {
-        val data = response.keroAddressCorner.data
-        return data.map {
-            AddressResultUi(
-                    it.addrId,
-                    it.addrName,
-                    it.address1,
-                    it.latitude,
-                    it.longitude
-            )
-        }
     }
 
     private fun mapData(data: Data): AutocompleteDataUiModel {
