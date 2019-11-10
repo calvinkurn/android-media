@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.adapter;
+package com.tokopedia.logisticaddaddress.features.manage.adapter;
 
 import android.view.View;
 

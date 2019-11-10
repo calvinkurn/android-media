@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.adapter;
+package com.tokopedia.logisticaddaddress.features.manage.adapter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;

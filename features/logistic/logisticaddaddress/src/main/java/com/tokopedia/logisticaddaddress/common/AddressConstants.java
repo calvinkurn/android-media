@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress;
+package com.tokopedia.logisticaddaddress.common;
 
 /**
  * Created by Fajar Ulin Nuha on 09/10/18.

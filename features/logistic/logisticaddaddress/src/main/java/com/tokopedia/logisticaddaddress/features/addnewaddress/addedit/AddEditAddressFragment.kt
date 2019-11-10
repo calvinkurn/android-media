@@ -28,13 +28,12 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.logisticaddaddress.AddressConstants
-import com.tokopedia.logisticaddaddress.AddressConstants.ANA_NEGATIVE
-import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_NEGATIVE
+import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
-import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration

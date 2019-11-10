@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
+import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel

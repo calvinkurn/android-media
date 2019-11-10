@@ -17,7 +17,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.logisticaddaddress.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 
