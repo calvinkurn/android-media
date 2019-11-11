@@ -2945,15 +2945,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromSetTradeInPinpoint(Intent data) {
         // Todo : update address to indomaret address and reload SAF
-        shipmentPresenter.changeShippingAddress(true, true);
-//        if (data != null) {
-//            LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
-//            RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-//            recipientAddressModel.setLocationDataModel(locationDataModel);
-//            recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
-//            recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
+        if (data != null) {
+            LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
+            RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+            recipientAddressModel.setLocationDataModel(locationDataModel);
+            recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
+            recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
+            shipmentPresenter.changeShippingAddress(true, true);
+
 //            shipmentAdapter.updateSelectedAddress(recipientAddressModel, true);
-//        }
+        }
     }
 
     @Override
