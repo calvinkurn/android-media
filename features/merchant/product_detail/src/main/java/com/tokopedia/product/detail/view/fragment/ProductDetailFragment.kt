@@ -57,7 +57,6 @@ import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-//import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPDPActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder

@@ -12,5 +12,7 @@ interface ImagePreviewPDPView {
     fun onSuccessAddWishlist()
     fun onSuccessRemoveWishlist()
     fun onErrorAddWishlist(throwable: Throwable)
+    fun onErrorRemoveWishlist(throwable: Throwable)
     fun showMessage(message: String)
+    fun showErrorMessage(message: String)
 }

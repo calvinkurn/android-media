@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -22,10 +23,10 @@ import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPDPV
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_image_preview_pdp.*
-import kotlinx.android.synthetic.main.item_rates_estimation_service.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * created by rival on 07/11/19
@@ -75,10 +76,8 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
         if (userSession.isLoggedIn) {
             if (isWishlisted) {
                 btnAddToWishlist?.text = resources.getString(R.string.image_preview_remove_wishlist)
-//                btnAddToWishlist?.buttonType = UnifyButton.Type.TRANSACTION
             } else {
                 btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
-//                btnAddToWishlist?.buttonType = UnifyButton.Type.MAIN
             }
         } else {
             btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
@@ -156,7 +155,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
                 },
                 onErrorRemoveWishList = {
                     hideLoading()
-                    onErrorAddWishlist(Throwable(it))
+                    onErrorRemoveWishlist(Throwable(it))
                 }
         )
     }
@@ -175,18 +174,30 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
 
     override fun onSuccessAddWishlist() {
         isWishlisted = true
+        showMessage(resources.getString(R.string.image_preview_add_wishlist_success))
     }
 
     override fun onSuccessRemoveWishlist() {
         isWishlisted = false
+        showMessage(resources.getString(R.string.image_preview_remove_wishlist_success))
     }
 
     override fun onErrorAddWishlist(throwable: Throwable) {
-        showMessage(throwable.message.toString())
+        showErrorMessage(throwable.message.toString())
+    }
+
+    override fun onErrorRemoveWishlist(throwable: Throwable) {
+        showErrorMessage(throwable.message.toString())
     }
 
     override fun showMessage(message: String) {
+        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPDPContainer)
+        Toaster.make(rootView, message, Toaster.toasterLength, Toaster.TYPE_NORMAL)
+    }
 
+    override fun showErrorMessage(message: String) {
+        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPDPContainer)
+        Toaster.make(rootView, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
     }
 
     companion object {
