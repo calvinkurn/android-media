@@ -1,0 +1,12 @@
+{
+  suggestedProductReview{
+    title
+    description
+    imageUrl
+    linkURL
+    dismissable
+    dismissURL
+    orderID
+    productID
+  }
+}

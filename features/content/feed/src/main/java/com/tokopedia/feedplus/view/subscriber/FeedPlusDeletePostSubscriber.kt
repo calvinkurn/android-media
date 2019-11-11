@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.view.subscriber
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.feedplus.view.listener.FeedPlus
-import com.tokopedia.profile.view.listener.ProfileContract
 import rx.Subscriber
 
 
