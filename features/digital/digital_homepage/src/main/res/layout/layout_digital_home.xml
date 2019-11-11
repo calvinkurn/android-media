@@ -48,6 +48,7 @@
                     app:siv_search_hint="@string/digital_home_search_view_hint" />
 
                 <ImageView
+                    android:id="@+id/digital_homepage_order_list"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center_vertical"

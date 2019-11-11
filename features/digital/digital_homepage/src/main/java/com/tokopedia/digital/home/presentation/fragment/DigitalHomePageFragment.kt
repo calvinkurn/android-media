@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
@@ -81,6 +82,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 calculateToolbarView(getRecyclerView(view).computeVerticalScrollOffset())
             }
         })
+
+        digital_homepage_order_list.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.DIGITAL_ORDER)
+        }
     }
 
     private fun hideStatusBar() {
