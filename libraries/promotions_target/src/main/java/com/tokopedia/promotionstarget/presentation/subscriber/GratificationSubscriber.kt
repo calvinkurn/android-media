@@ -6,10 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import androidx.annotation.NonNull
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.promotionstarget.BuildConfig
 import com.tokopedia.promotionstarget.data.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.components.AppModule
@@ -22,7 +20,6 @@ import com.tokopedia.promotionstarget.presentation.ui.dialog.TargetPromotionsDia
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
@@ -52,9 +49,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
 
     private val ceh = CoroutineExceptionHandler { _, exception ->
-        if (BuildConfig.DEBUG) {
-            Log.wtf("Gratification", exception.localizedMessage)
-        }
     }
 
     init {
@@ -178,7 +172,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         val weakActivity = WeakReference(activity)
         scope.launch(Dispatchers.IO + ceh) {
             supervisorScope {
-                val childJob = launch(ceh) {
+                val childJob = launch {
                     val response = presenter.getGratificationAndShowDialog(gratificationData)
                     val canShowDialog = response.popGratification?.isShow
                     if (canShowDialog != null && canShowDialog) {
@@ -240,9 +234,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         mapOfDialogs.clear()
     }
 
-    private fun getUniqueId(): String {
-        return UUID.randomUUID().toString()
-    }
 }
 
 data class GratificationData(val popSlug: String, val page: String)
