@@ -44,7 +44,7 @@ class ShopFollowingListPresenter @Inject constructor(
                 addRequestWithParam(userId, page)
             }.executeOnBackground()
             view.run {
-                onSuccessGetKolFollowingList(userFollow.convertToViewModel(page))
+                onSuccessGetKolFollowingList(userFollow.convertToUiModel(page))
                 hideLoading()
             }
         }
@@ -58,7 +58,7 @@ class ShopFollowingListPresenter @Inject constructor(
                 addRequestWithParam(userId, page)
             }.executeOnBackground()
             view.run {
-                onSuccessLoadMoreKolFollowingList(userFollow.convertToViewModel(page))
+                onSuccessLoadMoreKolFollowingList(userFollow.convertToUiModel(page))
                 hideLoading()
             }
         }
@@ -96,16 +96,16 @@ class ShopFollowingListPresenter @Inject constructor(
         job.cancel()
     }
 
-    private fun GetShopFollowingData.convertToViewModel(currentPage: Int): ShopFollowingResultViewModel = userShopFollow.result.let { result ->
+    private fun GetShopFollowingData.convertToUiModel(currentPage: Int): ShopFollowingResultViewModel = userShopFollow.result.let { result ->
         ShopFollowingResultViewModel(
                 isCanLoadMore = result.haveNext,
                 totalCount = result.totalCount.toInt(),
-                followingViewModelList = result.userShopFollowDetail.map { it.convertToViewModel() },
+                followingViewModelList = result.userShopFollowDetail.map { it.convertToUiModel() },
                 currentPage = currentPage
         )
     }
 
-    private fun UserShopFollowDetail.convertToViewModel(): ShopFollowingViewModel = ShopFollowingViewModel(
+    private fun UserShopFollowDetail.convertToUiModel(): ShopFollowingViewModel = ShopFollowingViewModel(
             id = shopID.toInt(),
             name = shopName,
             avatarUrl = logo,

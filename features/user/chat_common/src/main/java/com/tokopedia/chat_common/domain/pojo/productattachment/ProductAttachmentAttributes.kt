@@ -12,4 +12,7 @@ class ProductAttachmentAttributes {
     @Expose
     val productProfile: ProductProfile = ProductProfile()
 
+    fun isBannedProduct(): Boolean {
+        return productProfile.playStoreData.isBanned()
+    }
 }

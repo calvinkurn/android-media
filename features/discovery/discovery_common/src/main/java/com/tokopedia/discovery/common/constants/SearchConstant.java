@@ -136,6 +136,7 @@ public interface SearchConstant {
     }
 
     interface SimilarSearch {
+        String QUERY = "SIMILAR_SEARCH_QUERY";
         String SIMILAR_SEARCH_SELECTED_PRODUCT = "SIMILAR_SEARCH_SELECTED_PRODUCT";
     }
 }

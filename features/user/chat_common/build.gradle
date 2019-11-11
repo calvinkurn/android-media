@@ -41,6 +41,8 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation 'io.reactivex:rxkotlin:0.60.0'
+
+    implementation rootProject.ext.unifyDependencies.components
 }
 
 project.ext {

@@ -5,4 +5,9 @@
     <string name="path_edit_post_shop" translatable="false">/content-shop/.*\\/edit</string>
     <string name="path_hashtag_page_landing" translatable="false">/explore-hashtag/.*\\/</string>
     <string name="path_post_shop_picker" translatable="false">/content-shop/picker</string>
+
+    <string name="host_profile" translatable="false">people</string>
+    <string name="path_profile_detail" translatable="false">/.*\</string>
+
+    <string name="applink_title_profile">Profile</string>
 </resources>
