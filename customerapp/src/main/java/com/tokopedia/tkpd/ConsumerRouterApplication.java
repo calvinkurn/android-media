@@ -908,7 +908,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToUserPaymentList(Activity activity) {
-        RouteManager.route(context, ApplinkConstInternalPayment.PAYMENT_SETTING);
+        RouteManager.route(activity, ApplinkConstInternalPayment.PAYMENT_SETTING);
     }
 
     @Override
