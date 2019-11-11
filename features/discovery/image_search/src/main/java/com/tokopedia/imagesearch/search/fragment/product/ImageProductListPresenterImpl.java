@@ -214,12 +214,14 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
         final boolean hasNextPage = toIndex < presentedDataList.size();
 
         long delay = LOAD_MORE_DELAY_MS;
+
+        if (page == 0) {
+            delay = 0;
+            responseList.add(categoryFilterModel);
+            if (presentedDataList.size() == 0) responseList.add(createEmptyModel());
+        }
+
         if (fromIndex < presentedDataList.size()) {
-            if (page == 0) {
-                delay = 0;
-                responseList.add(categoryFilterModel);
-                if (presentedDataList.size() == 0) responseList.add(createEmptyModel());
-            }
             responseList.addAll(presentedDataList.subList(fromIndex, toIndex));
         }
 
