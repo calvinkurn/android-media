@@ -230,41 +230,39 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             inputFieldCount = enquiryData.size
 
             // Show first input field (guaranteed to have an input field)
-            val firstField = enquiryData[0]
-            input_field_1.setLabel(firstField.text)
-            input_field_1.setHint(firstField.placeholder)
-
-            input_field_1.ac_input.setOnTouchListener { _, event ->
-                if (event.action == MotionEvent.ACTION_UP) {
-                    voucherGameAnalytics.eventInputNumber()
-                }
-                false
-            }
+            setupEnquiryField(input_field_1, enquiryData[0])
 
             // Hide second field if there is only one field, setup second field otherwise
             when (inputFieldCount) {
                 1 -> input_field_2.visibility = View.GONE
-                2 -> {
-                    val secondField = enquiryData[1]
-                    input_field_2.setLabel(secondField.text)
-                    input_field_2.setHint(secondField.placeholder)
-                }
+                2 -> setupEnquiryField(input_field_2, enquiryData[1])
             }
             input_field_container.visibility = View.VISIBLE
+        }
+    }
 
-            // Enquire if all required fields are filled
-            input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener {
-                override fun onFinishInput() {
-                    enquireFields()
-                }
-            })
-            if (inputFieldCount == 2) {
-                input_field_2.setListener(object : VoucherGameInputFieldWidget.ActionListener {
-                    override fun onFinishInput() {
-                        enquireFields()
-                    }
-                })
+    private fun setupEnquiryField(field: VoucherGameInputFieldWidget, data: VoucherGameEnquiryFields) {
+        field.visibility = View.VISIBLE
+        field.setLabel(data.text)
+        field.setHint(data.placeholder)
+
+        field.ac_input.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                voucherGameAnalytics.eventInputNumber()
             }
+            false
+        }
+
+        // Enquire if all required fields are filled
+        field.setListener(object : VoucherGameInputFieldWidget.ActionListener {
+            override fun onFinishInput() {
+                enquireFields()
+            }
+        })
+
+        // TODO: Remove placholder text
+        if (data.style == "select_dropdown") {
+            field.setupDropdownBottomSheet(data.dataCollections, fragmentManager)
         }
     }
 
