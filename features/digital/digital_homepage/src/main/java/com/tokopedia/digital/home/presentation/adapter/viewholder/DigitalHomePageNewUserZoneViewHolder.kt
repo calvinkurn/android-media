@@ -19,7 +19,7 @@ class DigitalHomePageNewUserZoneViewHolder(itemView: View?, val onItemBindListen
             element.data?.section?.run {
                 itemView.digital_homepage_new_user_zone_shimmering.hide()
                 itemView.digital_homepage_new_user_zone_container.show()
-                ImageHandler.loadImageFit2(itemView.context, itemView.digital_homepage_new_user_zone_image, items[0].mediaUrl)
+                ImageHandler.LoadImage(itemView.digital_homepage_new_user_zone_image, items[0].mediaUrl)
                 itemView.setOnClickListener { onItemBindListener.onSectionItemClicked(items[0], adapterPosition, NEW_USER_BANNER_CLICK) }
             }
         } else {
