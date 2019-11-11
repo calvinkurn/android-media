@@ -16,6 +16,7 @@ import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
+import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -142,6 +143,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             cartItem.metaData.email = contactEmail
             cartItem.metaData.phone = contactPhone
             cartItem.metaData.country = contactCountry
+            cartItem.metaData.ipAddress = FlightRequestUtil.getLocalIpAddress()
+            cartItem.metaData.userAgent = FlightRequestUtil.getUserAgentForApiCall()
 
             for (passenger in flightPassengersData.value as List) {
                 val flightVerifyPassenger = FlightVerifyParam.Passenger()

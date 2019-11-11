@@ -23,6 +23,7 @@ import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivi
 import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel
@@ -30,6 +31,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
+import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPassengerAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPriceAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightInsuranceAdapter
@@ -70,7 +72,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
     var isCouponChanged = false
-    val cartId = "5512496d20a2d4767415f3fac767d8be811fc51"
+    val cartId = "5512496709d8a0cfa8ecdc0c8639d69092a7a60"
 
     lateinit var flightRouteAdapter: FlightJourneyAdapter
     lateinit var flightInsuranceAdapter: FlightInsuranceAdapter
@@ -160,7 +162,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 //                    recheck price
                 }
                 is Fail -> {
-
+                    showErrorDialog()
                 }
             }
         })
@@ -498,6 +500,25 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun showErrorDialog() {
+            if (activity != null) {
+                val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.setTitle("error")
+                dialog.setDescription("errorrrr")
+                dialog.setPrimaryCTAText("jhrhrhr")
+                dialog.setSecondaryCTAText("heheheee")
+
+                dialog.setPrimaryCTAClickListener {
+                    //                    do action
+                    dialog.dismiss()
+                }
+
+                dialog.setSecondaryCTAClickListener(dialog::dismiss)
+
+                dialog.show()
+            }
     }
 
     companion object {
