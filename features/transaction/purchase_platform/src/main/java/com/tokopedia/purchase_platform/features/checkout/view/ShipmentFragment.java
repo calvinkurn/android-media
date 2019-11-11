@@ -1223,19 +1223,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
-        if (shipmentAdapter.hasAppliedPromoStackCode()) {
-            setCornerId(selectedAddress.getCornerId());
-        }
-        if (!TextUtils.isEmpty(selectedAddress.getCornerId()) && shipmentPresenter.getCodData() != null) {
-            shipmentAdapter.removeNotifierData();
-            shipmentPresenter.getShipmentButtonPaymentModel().setCod(false);
-            onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
-        }
-        shipmentPresenter.setRecipientAddressModel(selectedAddress);
-        shipmentAdapter.updateSelectedAddress(selectedAddress, false);
-        onDataDisableToCheckout(null);
-        shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId(), getCheckoutLeasingId());
+    public void renderChangeAddressSuccess() {
+//        if (shipmentAdapter.hasAppliedPromoStackCode()) {
+//            setCornerId(selectedAddress.getCornerId());
+//        }
+//        if (!TextUtils.isEmpty(selectedAddress.getCornerId()) && shipmentPresenter.getCodData() != null) {
+//            shipmentAdapter.removeNotifierData();
+//            shipmentPresenter.getShipmentButtonPaymentModel().setCod(false);
+//            onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
+//        }
+//        shipmentPresenter.setRecipientAddressModel(selectedAddress);
+//        shipmentAdapter.updateSelectedAddress(selectedAddress, false);
+//        onDataDisableToCheckout(null);
+        shipmentPresenter.processInitialLoadCheckoutPage(
+                true, isOneClickShipment(), isTradeIn(), true,
+                shipmentAdapter.getAddressShipmentData().getCornerId(), getDeviceId(), getCheckoutLeasingId()
+        );
     }
 
     @Override
@@ -1407,8 +1410,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         if (isOneClickShipment() || (shipmentPresenter.getCodData() != null && shipmentPresenter.getCodData().isCod())) {
                             newAddress.setDisableMultipleAddress(true);
                         }
-                        shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null, false).getChangeAddressRequestData());
-                        shipmentPresenter.changeShippingAddress(newAddress, isOneClickShipment());
+//                        shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null, false).getChangeAddressRequestData());
+                        shipmentPresenter.changeShippingAddress(isOneClickShipment());
                     }
                 }
                 break;
@@ -2942,8 +2945,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromSetTradeInPinpoint(Intent data) {
         // Todo : update address to indomaret address and reload SAF
-        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-        shipmentPresenter.changeShippingAddress(recipientAddressModel, true);
+        shipmentPresenter.changeShippingAddress(true);
 //        if (data != null) {
 //            LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
 //            RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
@@ -2966,7 +2968,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
         if (recipientAddressModel.getSelectedTabIndex() == 0) {
             // Todo : update address to normal address and reload SAF
-            shipmentPresenter.changeShippingAddress(recipientAddressModel, true);
+            shipmentPresenter.changeShippingAddress(true);
         }
 //        onNeedUpdateViewItem(shipmentItemTradeInPosition);
 //        shipmentAdapter.updateShipmentCostModel();

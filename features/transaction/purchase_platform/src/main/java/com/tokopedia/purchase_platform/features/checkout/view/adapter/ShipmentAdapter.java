@@ -1359,6 +1359,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static class RequestData {
 
         private List<DataCheckoutRequest> checkoutRequestData;
+
+        // Todo : remove `changeAddressRequestData` since already generated on presenter
         private List<DataChangeAddressRequest> changeAddressRequestData;
 
         @Inject

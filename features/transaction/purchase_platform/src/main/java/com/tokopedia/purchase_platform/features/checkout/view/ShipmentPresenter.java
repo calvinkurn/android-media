@@ -1653,10 +1653,26 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void changeShippingAddress(final RecipientAddressModel recipientAddressModel,
-                                      boolean isOneClickShipment) {
+    public void changeShippingAddress(boolean isOneClickShipment) {
         getView().showLoading();
-        String changeAddressRequestJsonString = new Gson().toJson(changeAddressRequestList);
+        List<DataChangeAddressRequest> dataChangeAddressRequests = new ArrayList<>();
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                    DataChangeAddressRequest dataChangeAddressRequest = new DataChangeAddressRequest();
+                    dataChangeAddressRequest.setQuantity(cartItemModel.getQuantity());
+                    dataChangeAddressRequest.setProductId(cartItemModel.getProductId());
+                    dataChangeAddressRequest.setNotes(cartItemModel.getNoteToSeller());
+                    dataChangeAddressRequest.setAddressId(recipientAddressModel != null ?
+                            Integer.parseInt(recipientAddressModel.getId()) :
+                            Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId()));
+                    dataChangeAddressRequest.setCartId(cartItemModel.getCartId());
+                    dataChangeAddressRequests.add(dataChangeAddressRequest);
+                }
+            }
+        }
+
+        String changeAddressRequestJsonString = new Gson().toJson(dataChangeAddressRequests);
 
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("carts", changeAddressRequestJsonString);
@@ -1695,7 +1711,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 getView().hideLoading();
                                 if (setShippingAddressData.isSuccess()) {
                                     getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
-                                    getView().renderChangeAddressSuccess(recipientAddressModel);
+                                    getView().renderChangeAddressSuccess();
                                 } else {
                                     if (setShippingAddressData.getMessages() != null &&
                                             setShippingAddressData.getMessages().size() > 0) {

@@ -41,6 +41,7 @@ public class ShipmentDataRequestConverter {
             List<ShopProductCheckoutRequest> shopProductCheckoutRequestList = new ArrayList<>();
             if (recipientAddress != null) {
                 // Single address
+                // Todo : remove `changeAddressRequestData`
                 List<DataChangeAddressRequest> changeAddressRequestData = new ArrayList<>();
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
                     if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
@@ -55,6 +56,7 @@ public class ShipmentDataRequestConverter {
             } else {
                 // Multiple address
                 List<DataCheckoutRequest> checkoutRequestData = new ArrayList<>();
+                // Todo : remove `changeAddressRequestData`
                 List<DataChangeAddressRequest> changeAddressRequestData = new ArrayList<>();
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
                     shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel, isTradeInPickup));

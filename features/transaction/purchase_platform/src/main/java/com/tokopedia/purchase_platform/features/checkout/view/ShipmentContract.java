@@ -103,7 +103,7 @@ public interface ShipmentContract {
 
         void renderEditAddressSuccess(String latitude, String longitude);
 
-        void renderChangeAddressSuccess(RecipientAddressModel recipientAddressModel);
+        void renderChangeAddressSuccess();
 
         void renderCancelAutoApplyCouponSuccess(String variant);
 
@@ -342,7 +342,7 @@ public interface ShipmentContract {
                                        boolean isFromMultipleAddress, boolean isOneClickShipment,
                                        boolean isTradeIn, String cornerId, String deviceId, String type);
 
-        void changeShippingAddress(RecipientAddressModel recipientAddressModel, boolean isOneClickShipment);
+        void changeShippingAddress(boolean isOneClickShipment);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 
