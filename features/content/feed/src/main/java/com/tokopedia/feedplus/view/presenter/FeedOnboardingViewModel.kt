@@ -41,68 +41,37 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
         val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
     }
 
-    val PARAM_SOURC = "source"
-    val PARAM_ACTION = "action"
-    val PARAM_INTEREST_ID = "interestID"
-
     val onboardingResp = MutableLiveData<Result<OnboardingViewModel>> ()
 
     val submitInterestPickResp = MutableLiveData<Result<SubmitInterestResponseViewModel>>()
 
     fun getOnboardingData(source: String, forceRefresh: Boolean) {
-        launchCatchError(block = {
-            val resultDeffered = getInterestPickUseCase.apply {
-                clearRequest()
-                addRequestWithParam(source)
-            }.executeOnBackground()
-            onboardingResp.value = Success(resultDeffered.convertToViewModel())
-        }){
-            it.printStackTrace()
+        getInterestPickUseCase.apply {
+            clearRequest()
+            addRequestWithParam(source)
+        }.execute({
+            onboardingResp.value = Success(it.convertToViewModel())
+        }, {
             onboardingResp.value = Fail(it)
-        }
+        })
     }
 
     fun submitInterestPickData(dataList: List<InterestPickDataViewModel>, source: String, requestInt: Int) {
-        launchCatchError(block = {
-//            val result = submitInterestPickDeferred(dataList.map { it.id }, source, requestInt)
-            val idList = dataList.map { it.id }
+        val idList = dataList.map { it.id }
+        submitInterestPickUseCase.apply {
+            clearRequest()
+            addRequestWithParam(idList)
+        }.execute({
             val resultData = SubmitInterestResponseViewModel()
-            val result = submitInterestPickUseCase.apply {
-                clearRequest()
-                addRequestWithParam(idList)
-            }.executeOnBackground().apply {
-                resultData.source = source
-                resultData.requestInt = requestInt
-                resultData.idList = idList
-                resultData.success = this.feedInterestUserUpdate.success
-                resultData.error = this.feedInterestUserUpdate.error
-            }
-            submitInterestPickResp.value = Success(resultData)
-        }) {
-            it.printStackTrace()
-            submitInterestPickResp.value = Fail(it)
-        }
-    }
-
-    private suspend fun submitInterestPickDeferred(idList: List<Int>, source: String, requestInt: Int): Deferred<SubmitInterestResponseViewModel> {
-        return async(Dispatchers.IO) {
-            var resultData = SubmitInterestResponseViewModel()
             resultData.source = source
             resultData.requestInt = requestInt
             resultData.idList = idList
-            val param = mapOf(PARAM_ACTION to "", PARAM_INTEREST_ID to idList)
-            val request = GraphqlRequest(rawQueries[RawQueryKeyConstant.MUTATION_SUBMIT_INTEREST_ID],
-                    SubmitInterestResponse::class.java, param)
-            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-            val requests = mutableListOf(request)
-            val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
-            if (gqlResponse.getError(SubmitInterestResponse::class.java)?.isNotEmpty() != true) {
-                val result = (gqlResponse.getData(SubmitInterestResponse::class.java) as SubmitInterestResponse)
-                resultData.success = result.feedInterestUserUpdate.success
-                resultData.error = result.feedInterestUserUpdate.error
-            }
-            resultData
-        }
+            resultData.success = it.feedInterestUserUpdate.success
+            resultData.error = it.feedInterestUserUpdate.error
+            submitInterestPickResp.value = Success(resultData)
+        }, {
+            submitInterestPickResp.value = Fail(it)
+        })
     }
 
     private fun OnboardingData.convertToViewModel(): OnboardingViewModel = feedUserOnboardingInterests.let { result ->
@@ -123,7 +92,7 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
     }
 
     private fun mappingOnboardingListData(pojoList: List<DataItem>) : MutableList<InterestPickDataViewModel> {
-        val dataList: MutableList<InterestPickDataViewModel> = ArrayList()
+        val dataList: MutableList<InterestPickDataViewModel> = mutableListOf()
         for (pojo in pojoList) {
             dataList.add(InterestPickDataViewModel(
                     pojo.id,

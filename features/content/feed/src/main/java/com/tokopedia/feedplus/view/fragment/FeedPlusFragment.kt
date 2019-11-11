@@ -1621,7 +1621,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         } else {
             finishLoading()
             clearData()
-            val feedOnboardingData: MutableList<InterestPickDataViewModel> = ArrayList()
+            val feedOnboardingData: MutableList<InterestPickDataViewModel> = mutableListOf()
             feedOnboardingData.addAll(data.dataList)
             data.dataList = feedOnboardingData
             adapter.addItem(data)

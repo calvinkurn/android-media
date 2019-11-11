@@ -46,10 +46,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'interest-pick'
+    artifactId = 'interest-pick-common'
     groupId = 'com.tokopedia.content'
     versionName = "1.0.0"
-    artifactName = "interest_pick-release"
+    artifactName = "interest_pick_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

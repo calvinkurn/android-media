@@ -44,7 +44,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener, val sour
         }
     }
 
-    private val list: MutableList<InterestPickDataViewModel> = arrayListOf()
+    private val list: MutableList<InterestPickDataViewModel> = mutableListOf()
     private var selectedListId : List<Int> = arrayListOf()
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): Holder {
