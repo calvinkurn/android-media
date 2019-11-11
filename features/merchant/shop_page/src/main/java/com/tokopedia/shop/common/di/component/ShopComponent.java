@@ -12,7 +12,6 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
-import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.common.di.module.ShopModule;
 import com.tokopedia.shop.common.di.scope.ShopScope;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase;
@@ -40,8 +39,6 @@ public interface ShopComponent {
     CacheApiInterceptor cacheApiInterceptor();
 
     ShopApi getShopApi();
-
-    ShopWSApi ShopWSApi();
 
     AbstractionRouter getAbstractionRouter();
 

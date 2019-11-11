@@ -106,8 +106,6 @@ import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
 import com.tokopedia.product.manage.list.applink.ProductManageApplinkModuleLoader;
-import com.tokopedia.profile.applink.ProfileApplinkModule;
-import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
@@ -170,7 +168,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         ShopAppLinkModule.class,
         GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
-        ProfileApplinkModule.class,
         CreatePostModule.class,
         KolApplinkModule.class,
         ExploreApplinkModule.class,
@@ -230,7 +227,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ShopAppLinkModuleLoader(),
                     new GroupChatApplinkModuleLoader(),
                     new GamificationApplinkModuleLoader(),
-                    new ProfileApplinkModuleLoader(),
                     new CreatePostModuleLoader(),
                     new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
