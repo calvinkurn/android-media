@@ -36,7 +36,7 @@ class SponsorHelper(
             sponsorLayout.hide()
         } else {
             sponsorLayout.show()
-            ImageHandler.loadImage2(sponsorImage, adsImageUrl, R.drawable.loading_page)
+            ImageHandler.loadImage2(sponsorImage, adsImageUrl, com.tokopedia.abstraction.R.drawable.loading_page)
             viewModel?.let { infoViewModel ->
                 sponsorImage.setOnClickListener {
                     listener.openRedirectUrl(generateLink(

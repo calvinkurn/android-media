@@ -46,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.tokopedia.carouselproductcard.CarouselProductCardView
             android:id="@+id/product_recom_4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

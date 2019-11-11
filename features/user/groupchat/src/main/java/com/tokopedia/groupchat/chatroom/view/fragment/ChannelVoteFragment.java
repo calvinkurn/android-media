@@ -192,9 +192,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     private void checkDateTime() {
         if (MethodChecker.isTimezoneNotAutomatic(getActivity()) && snackBar == null) {
-            snackBar = SnackbarManager.make(getActivity(), getString(R.string.check_timezone),
+            snackBar = SnackbarManager.make(getActivity(), getString(com.tokopedia.abstraction.R.string.check_timezone),
                     Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.action_check, new View.OnClickListener() {
+                    .setAction(com.tokopedia.abstraction.R.string.action_check, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if (getActivity() != null && isAdded()) {
@@ -286,7 +286,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         if (getActivity() != null) {
             progressBarWithTimer.setVisibility(View.GONE);
             voteStatus.setText(R.string.vote_has_ended);
-            voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
+            voteStatus.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.black_54));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 ImageHandler.loadImageWithIdWithoutPlaceholder(iconVote, R.drawable.ic_timer_inactive);
             } else {
@@ -357,7 +357,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void showHasVoted() {
         canVote = true;
         View view = getLayoutInflater().inflate(R.layout.has_voted_bottom_sheet_dialog, null);
-        TextView title = view.findViewById(R.id.title);
+        TextView title = view.findViewById(com.tokopedia.design.R.id.title);
         title.setText(R.string.has_voted);
         channelInfoDialog.setContentView(view);
         channelInfoDialog.show();
@@ -449,7 +449,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
         if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
             voteLayoutManager = new GridLayoutManager(getActivity(), 2);
-            itemDecoration = new GridVoteItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), (int) getActivity().getResources().getDimension(R.dimen.dp_16), 2, voteInfoViewModel.getListOption().size());
+            itemDecoration = new GridVoteItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), (int) getActivity().getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), 2, voteInfoViewModel.getListOption().size());
         } else {
             voteLayoutManager = new LinearLayoutManager(getActivity());
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);

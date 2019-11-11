@@ -1,12 +1,10 @@
 package com.tokopedia.autocomplete.repository;
 
-import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.autocomplete.domain.interactor.SearchMapper;
 import com.tokopedia.autocomplete.domain.model.SearchData;
-import com.tokopedia.autocomplete.domain.model.SearchResponse;
 import com.tokopedia.autocomplete.network.AutocompleteCache;
 import com.tokopedia.autocomplete.network.BrowseApi;
+import com.tokopedia.cachemanager.CacheManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Action1;
 
 public class AutoCompleteDataSource {
 
@@ -33,18 +30,9 @@ public class AutoCompleteDataSource {
     public Observable<List<SearchData>> getUniverseAutoComplete(HashMap<String, Object> param) {
         return browseApi.getUniverseAutoComplete(param)
                 .debounce(300, TimeUnit.MILLISECONDS)
-                .doOnNext(new Action1<Response<SearchResponse>>() {
-                    @Override
-                    public void call(Response<SearchResponse> response) {
-                        int tenMinute = 600000;
-                        Gson gson = new Gson();
-                        cacheManager.save(
-                                AutocompleteCache.Key.UNIVERSEARCH,
-                                gson.toJson(response.body()),
-                                tenMinute
-                        );
-                    }
-
+                .doOnNext(response -> {
+                    int tenMinute = 600000;
+                    cacheManager.put(AutocompleteCache.Key.UNIVERSEARCH, response.body(), tenMinute);
                 })
                 .map(autoCompleteMapper);
     }

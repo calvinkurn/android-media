@@ -8,7 +8,15 @@ public class Header {
     @Expose
     private String contentType;
 
+    @SerializedName("itemLabel")
+    @Expose
+    private String itemLabel;
+
     public String getContentType() {
         return contentType;
+    }
+
+    public String getItemLabel() {
+        return itemLabel;
     }
 }

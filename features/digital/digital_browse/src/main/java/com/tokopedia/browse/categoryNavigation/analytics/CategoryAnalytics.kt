@@ -1,13 +1,13 @@
 package com.tokopedia.browse.categoryNavigation.analytics
 
-import android.content.Context
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
-import com.tokopedia.browse.categoryNavigation.view.CategoryBrowseActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import java.util.HashMap
 
 class CategoryAnalytics {
 
@@ -70,8 +70,7 @@ class CategoryAnalytics {
     // 54
 
 
-    fun eventPromoView(product: ChildItem, position: Int) {
-        val tracker = getTracker()
+    fun eventPromoView(trackingQueue: TrackingQueue, product: ChildItem, position: Int) {
         val map = DataLayer.mapOf(
                 "event", "promoView",
                 "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
@@ -86,7 +85,7 @@ class CategoryAnalytics {
                 "creative_url", product.iconImageUrl,
                 "position", (position + 1).toString())))
         ))
-        tracker.sendEnhanceEcommerceEvent(map)
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
     // 55
@@ -112,8 +111,7 @@ class CategoryAnalytics {
 
     //56
 
-    fun eventCategoryLevelOneView(product: CategoriesItem, position: Int) {
-        val tracker = getTracker()
+    fun eventCategoryLevelOneView(trackingQueue: TrackingQueue, product: CategoriesItem, position: Int) {
         val map = DataLayer.mapOf(
                 "event", "promoView",
                 "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
@@ -128,7 +126,7 @@ class CategoryAnalytics {
                 "creative_url", product.iconImageUrl,
                 "position", (position + 1).toString())))
         ))
-        tracker.sendEnhanceEcommerceEvent(map)
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
     // 57
@@ -169,8 +167,7 @@ class CategoryAnalytics {
 
     //59
 
-    fun eventDropDownPromoView(product: ChildItem, position: Int) {
-        val tracker = getTracker()
+    fun eventDropDownPromoView(trackingQueue: TrackingQueue, product: ChildItem, position: Int) {
         val map = DataLayer.mapOf(
                 "event", "promoView",
                 "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
@@ -185,7 +182,7 @@ class CategoryAnalytics {
                 "creative_url", product.iconImageUrl,
                 "position", (position + 1).toString())))
         ))
-        tracker.sendEnhanceEcommerceEvent(map)
+        trackingQueue.putEETracking(map as HashMap<String, Any>?)
     }
 
     //60
@@ -212,9 +209,7 @@ class CategoryAnalytics {
 
     // 61
 
-    fun eventBannerInsideLevelTwoView(product: ChildItem, position: Int) {
-
-        val tracker = getTracker()
+    fun eventBannerInsideLevelTwoView(trackingQueue: TrackingQueue, product: ChildItem, position: Int) {
         val map = DataLayer.mapOf(
                 "event", "promoView",
                 "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
@@ -229,7 +224,7 @@ class CategoryAnalytics {
                 "creative_url", product.iconImageUrl,
                 "position", (position + 1).toString())))
         ))
-        tracker.sendEnhanceEcommerceEvent(map)
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
     // 62
@@ -257,9 +252,7 @@ class CategoryAnalytics {
 
     //63
 
-    fun eventHotlistBannerView(product: ListItem, position: Int) {
-
-        val tracker = getTracker()
+    fun eventHotlistBannerView(trackingQueue: TrackingQueue, product: ListItem, position: Int) {
         val map = DataLayer.mapOf(
                 "event", "promoView",
                 "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
@@ -274,7 +267,7 @@ class CategoryAnalytics {
                 "creative_url", product.imgSquare,
                 "position", (position + 1).toString())))
         ))
-        tracker.sendEnhanceEcommerceEvent(map)
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
 
     }
 

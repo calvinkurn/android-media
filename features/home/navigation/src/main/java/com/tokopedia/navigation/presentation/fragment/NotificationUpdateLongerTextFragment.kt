@@ -132,6 +132,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
 
             bottomSheet?.let {
                 bottomSheetBehavior.peekHeight = bottomSheet.height
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
                 containerLayout?.parent?.requestLayout()
             }
         }
