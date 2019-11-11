@@ -375,6 +375,7 @@ public interface ApplinkConst {
         String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
         String PARAM_HAS_TITLEBAR = "titlebar";
         String PARAM_URL = "url";
+        String HOST = "groupchat";
     }
 
     interface Profile {

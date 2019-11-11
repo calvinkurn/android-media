@@ -8,6 +8,10 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPlay
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
@@ -94,10 +98,12 @@ object DeeplinkMapper {
      * If not found, return current deeplink, means it registered
      */
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
-        return when (deeplink) {
+         when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+            ApplinkConst.GROUPCHAT_LIST -> return ApplinkConstInternalPlay.GROUPCHAT_LIST
+            ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
             ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
             ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
@@ -111,6 +117,23 @@ object DeeplinkMapper {
             ApplinkConst.PINJAMAN_ONLINE_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
             else -> ""
         }
+        when {
+            specialNavigationMapper(deeplink, ApplinkConst.Play.HOST) -> {
+                return UriUtil.buildUri(ApplinkConstInternalPlay.GROUPCHAT_DETAIL, getSegments(deeplink).first())
+            }
+        }
+        return ""
+    }
+
+    private fun getSegments(deeplink: String): List<String> {
+        return Uri.parse(deeplink).pathSegments
+    }
+
+    private fun specialNavigationMapper(deeplink: String, host: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return uri.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME
+                && uri.host == host
+                && uri.pathSegments.size > 0
     }
 
     /**

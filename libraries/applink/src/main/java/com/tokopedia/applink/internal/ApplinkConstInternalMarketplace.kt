@@ -153,5 +153,4 @@ object ApplinkConstInternalMarketplace {
     // ChatSearchActivity
     @JvmField
     val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
-
 }
