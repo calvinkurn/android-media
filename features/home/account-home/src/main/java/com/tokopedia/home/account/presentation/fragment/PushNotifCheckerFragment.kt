@@ -25,7 +25,6 @@ class PushNotifCheckerFragment : BaseDaggerFragment(), PushNotifCheckerContract.
 
     private val progressBar: ProgressBar? by lazy { activity?.findViewById(R.id.progress_push_notif) as? ProgressBar }
     private val imgPushNotifStatus: ImageView? by lazy { activity?.findViewById(R.id.img_push_notif_status) as? ImageView }
-    companion object { }
 
     override fun getScreenName(): String = "Push Notification Troubleshooter"
 
@@ -100,4 +99,8 @@ class PushNotifCheckerFragment : BaseDaggerFragment(), PushNotifCheckerContract.
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
 }
