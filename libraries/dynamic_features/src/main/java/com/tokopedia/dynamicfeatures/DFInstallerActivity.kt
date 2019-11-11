@@ -18,6 +18,10 @@ import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
+import kotlinx.coroutines.*
+import java.io.File
+import java.lang.Exception
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -32,7 +36,7 @@ import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
  * This activity will install the "shop_settings_sellerapp" module with progress bar,
  * and after the module is successfully installed, it will bring the user to ShopNotesActivity
  */
-class DFInstallerActivity : BaseSimpleActivity() {
+class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
 
     private lateinit var manager: SplitInstallManager
 
@@ -50,10 +54,12 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var applink: String
     private var imageUrl: String? = null
     private var moduleSize = 0L
+    private var usableSpaceBeforeDownload = 0L
 
     private var errorList: MutableList<String> = mutableListOf()
     private var downloadTimes = 0
     private var successInstall = false
+    private var job = Job()
 
     companion object {
         private const val EXTRA_NAME = "dfname"
@@ -118,15 +124,15 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private fun initializeViews() {
         progressBar = findViewById(R.id.progress_bar)
         progressBar.getProgressDrawable().setColorFilter(
-                ContextCompat.getColor(this, R.color.tkpd_main_green),
-                android.graphics.PorterDuff.Mode.MULTIPLY)
+            ContextCompat.getColor(this, R.color.tkpd_main_green),
+            android.graphics.PorterDuff.Mode.MULTIPLY)
         progressText = findViewById(R.id.progress_text)
         progressTextPercent = findViewById(R.id.progress_text_percent)
         imageView = findViewById(R.id.image)
 
         progressBar.getProgressDrawable().setColorFilter(
-                ContextCompat.getColor(this, R.color.tkpd_main_green),
-                android.graphics.PorterDuff.Mode.MULTIPLY);
+            ContextCompat.getColor(this, R.color.tkpd_main_green),
+            android.graphics.PorterDuff.Mode.MULTIPLY);
         buttonDownload = findViewById(R.id.button_download)
 
         buttonDownload.setOnClickListener {
@@ -138,34 +144,42 @@ class DFInstallerActivity : BaseSimpleActivity() {
     }
 
     private fun loadAndLaunchModule(name: String) {
-        moduleSize = 0
-        displayProgress()
-        progressText.text = getString(R.string.downloading_x, moduleNameTranslated)
+        launch {
+            moduleSize = 0
+            displayProgress()
+            progressText.text = getString(R.string.downloading_x, moduleNameTranslated)
 
-        // Skip loading if the module already is installed. Perform success action directly.
-        if (manager.installedModules.contains(name)) {
-            onSuccessfulLoad(name, launch = true)
-            return
-        }
+            // Skip loading if the module already is installed. Perform success action directly.
+            if (manager.installedModules.contains(name)) {
+                onSuccessfulLoad(name, launch = true)
+                return@launch
+            }
 
-        // Create request to install a feature module by name.
-        val request = SplitInstallRequest.newBuilder()
+            // Create request to install a feature module by name.
+            val request = SplitInstallRequest.newBuilder()
                 .addModule(name)
                 .build()
 
-        // Load and install the requested feature module.
-        manager.startInstall(request).addOnSuccessListener {
-            if (it == 0) {
-                onSuccessfulLoad(moduleName, true)
-            } else {
-                sessionId = it
+            if (usableSpaceBeforeDownload == 0L) {
+                usableSpaceBeforeDownload = withContext(Dispatchers.IO) {
+                    DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
+                }
             }
-        }.addOnFailureListener { exception ->
-            val errorCode = (exception as? SplitInstallException)?.errorCode
-            sessionId = null
-            hideProgress()
-            val message = getString(R.string.error_for_module_x, moduleName)
-            showFailedMessage(message, errorCode?.toString() ?: exception.toString())
+
+            // Load and install the requested feature module.
+            manager.startInstall(request).addOnSuccessListener {
+                if (it == 0) {
+                    onSuccessfulLoad(moduleName, true)
+                } else {
+                    sessionId = it
+                }
+            }.addOnFailureListener { exception ->
+                val errorCode = (exception as? SplitInstallException)?.errorCode
+                sessionId = null
+                hideProgress()
+                val message = getString(R.string.error_for_module_x, moduleName)
+                showFailedMessage(message, errorCode?.toString() ?: exception.toString())
+            }
         }
     }
 
@@ -220,7 +234,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
             SplitInstallSessionStatus.INSTALLING -> {
                 updateProgressMessage(
-                        getString(R.string.installing_x, moduleNameTranslated)
+                    getString(R.string.installing_x, moduleNameTranslated)
                 )
             }
             SplitInstallSessionStatus.FAILED -> {
@@ -295,7 +309,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         progressText.text = String.format("%.2f KB / %.2f KB",
-                (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
+            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
         button_download.visibility = View.INVISIBLE
     }
@@ -328,9 +342,14 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        DFInstallerLogUtil.logStatus(this, "DFM",
-                moduleName, moduleSize,
-                errorList, downloadTimes, successInstall)
+        val applicationContext = this.applicationContext
+        DFInstallerLogUtil.logStatus(applicationContext, "DFM",
+            moduleName, usableSpaceBeforeDownload, moduleSize,
+            errorList, downloadTimes, successInstall)
+        job.cancel()
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, _ -> }
 
 }
