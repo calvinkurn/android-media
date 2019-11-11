@@ -5,7 +5,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
@@ -18,7 +17,7 @@ import javax.inject.Named
  * Created by Irfan Khoirul on 2019-07-10.
  */
 
-class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") private val queryString: String,
+open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") private val queryString: String,
                                               private val gson: Gson,
                                               private val graphqlUseCase: GraphqlUseCase,
                                               private val addToCartDataMapper: AddToCartDataMapper) : UseCase<AddToCartDataModel>() {

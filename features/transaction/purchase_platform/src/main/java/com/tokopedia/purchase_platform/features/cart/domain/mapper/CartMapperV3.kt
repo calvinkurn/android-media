@@ -233,10 +233,10 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
         }
     }
 
-    private fun mapCartItemDatErrorState(cartItemData: CartItemData, isDisabledAllProduct: Boolean, shopData: Any) {
-        cartItemData.let {
-        }
-    }
+//    private fun mapCartItemDatErrorState(cartItemData: CartItemData, isDisabledAllProduct: Boolean, shopData: Any) {
+//        cartItemData.let {
+//        }
+//    }
 
     private fun mapCartItemDataError(cartDetail: CartDetail, it: CartItemData) {
         if (cartDetail.errors != null && cartDetail.errors.size > 0) {
