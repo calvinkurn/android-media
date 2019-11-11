@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kol.feature.post.data.query.LikeKolPostQueryProvider
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase.Companion.MUTATION_LIKE_KOL_POST
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase.Companion.MUTATION_LIKE_KOL_POST
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.presenter.FeedShopPresenter

@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.view.presenter;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -24,8 +23,8 @@ import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSub
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.feedcomponent.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.usecase.RequestParams;
@@ -33,7 +32,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 

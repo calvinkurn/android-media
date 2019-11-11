@@ -1,8 +1,8 @@
 package com.tokopedia.kol.feature.video.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.video.domain.usecase.GetVideoDetailUseCase
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract

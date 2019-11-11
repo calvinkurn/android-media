@@ -3,7 +3,7 @@ package com.tokopedia.kol.feature.post.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase;
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.subscriber.DeletePostSubscriber;
 import com.tokopedia.kol.feature.post.view.subscriber.GetKolPostSubscriber;

@@ -1,4 +1,4 @@
-package com.tokopedia.kol.feature.post.data.pojo.likekolpost
+package com.tokopedia.feedcomponent.data.pojo.like
 
 import com.google.gson.annotations.SerializedName
 

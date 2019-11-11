@@ -9,4 +9,8 @@ object ApplinkConstInternalContent {
     const val SHOP_POST_EDIT = "$INTERNAL_CONTENT/content-shop/{id}/edit"
     const val HASHTAG_PAGE = "$INTERNAL_CONTENT/explore-hashtag/{hashtag}/"
     const val SHOP_POST_PICKER = "$INTERNAL_CONTENT/content-shop/picker"
+
+    const val HOST_PROFILE = "people"
+    const val INTERNAL_PROFILE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PROFILE"
+    const val PROFILE = "$INTERNAL_PROFILE/{user_id}"
 }

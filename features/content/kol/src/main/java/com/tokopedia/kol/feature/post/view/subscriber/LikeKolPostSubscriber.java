@@ -2,7 +2,7 @@ package com.tokopedia.kol.feature.post.view.subscriber;
 
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.kol.common.network.GraphqlErrorHandler;
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 
 import rx.Subscriber;

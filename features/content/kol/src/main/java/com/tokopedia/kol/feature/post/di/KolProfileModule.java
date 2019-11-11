@@ -30,7 +30,7 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 
-import static com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase.MUTATION_LIKE_KOL_POST;
+import static com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase.MUTATION_LIKE_KOL_POST;
 
 /**
  * @author by milhamj on 12/02/18.
