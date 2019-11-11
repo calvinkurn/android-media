@@ -127,7 +127,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
     }
 
     override fun addWishlist() {
-        showLoadin()
+        showLoading()
         viewModel.addWishList(
                 productId,
                 onSuccessAddWishlist = {
@@ -144,7 +144,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
     }
 
     override fun removeWishlist() {
-        showLoadin()
+        showLoading()
         viewModel.removeWishList(
                 productId,
                 onSuccessRemoveWishlist = {
@@ -160,7 +160,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
         )
     }
 
-    override fun showLoadin() {
+    override fun showLoading() {
         progressBar?.show()
     }
 
