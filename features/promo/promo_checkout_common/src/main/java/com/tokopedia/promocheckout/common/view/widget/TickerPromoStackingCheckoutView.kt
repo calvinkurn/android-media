@@ -11,8 +11,8 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.R
-import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.*
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.*
 
 
 class TickerPromoStackingCheckoutView @JvmOverloads constructor(
