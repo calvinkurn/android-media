@@ -30,7 +30,7 @@ class PlayQuizAnnouncementViewHolder(itemView: View,
 
     init {
         icon = itemView.findViewById(R.id.icon)
-        title = itemView.findViewById(R.id.title)
+        title = itemView.findViewById(com.tokopedia.design.R.id.title)
         content = itemView.findViewById(R.id.content)
     }
 

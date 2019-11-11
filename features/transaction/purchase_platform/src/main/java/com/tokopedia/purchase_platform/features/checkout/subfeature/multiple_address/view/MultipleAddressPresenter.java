@@ -12,7 +12,7 @@ import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_add
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.usecase.GetCartMultipleAddressListUseCase;
@@ -108,7 +108,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             @Override
             public void onNext(CartListData cartListData) {
                 view.hideInitialLoading();
-                if (cartListData != null && cartListData.getShopGroupDataList().size() > 0) {
+                if (cartListData != null && cartListData.getShopGroupAvailableDataList().size() > 0) {
                     MultipleAddressPresenter.this.cartListData = cartListData;
                     view.renderCartData(cartListData);
                 } else {
@@ -156,8 +156,8 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
             CartListData cartListData, RecipientAddressModel recipientAddressModel) {
 
         List<CartItemData> cartItemDataList = new ArrayList<>();
-        for (ShopGroupData shopGroupData : cartListData.getShopGroupDataList()) {
-            for (CartItemHolderData cartItemHolderData : shopGroupData.getCartItemDataList()) {
+        for (ShopGroupAvailableData shopGroupAvailableData : cartListData.getShopGroupAvailableDataList()) {
+            for (CartItemHolderData cartItemHolderData : shopGroupAvailableData.getCartItemDataList()) {
                 cartItemDataList.add(cartItemHolderData.getCartItemData());
             }
         }
@@ -170,7 +170,7 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
                             recipientAddressModel,
                             cartItemDataList.get(i).getOriginData(),
                             cartItemDataList.get(i).getUpdatedData(),
-                            cartItemDataList.get(i).getErrorData())
+                            cartItemDataList.get(i).getMessageErrorData())
             );
             addressAdapterData.setProductImageUrl(
                     cartItemDataList.get(i).getOriginData().getProductImage()

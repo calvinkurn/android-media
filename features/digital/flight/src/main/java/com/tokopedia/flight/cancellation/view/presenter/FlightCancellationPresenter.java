@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationGetCancelablePassengerUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 
 import java.util.ArrayList;
 import java.util.HashMap;

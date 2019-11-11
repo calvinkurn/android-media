@@ -71,6 +71,20 @@ constructor(
         return params
     }
 
+    fun getOfficialStoreRecomParams(pageNumber: Int,
+                                    pageName: String,
+                                    categoryIds: String): RequestParams {
+        val params = RequestParams.create()
+
+        params.putInt(PAGE_NUMBER, pageNumber)
+        params.putString(CATEGORY_IDS, categoryIds)
+        params.putString(X_SOURCE, RECENTVIEW)
+        params.putString(PAGE_NAME, pageName)
+        params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
+        params.putBoolean(OFFICIAL_STORE, true)
+        return params
+    }
+
     companion object {
         val USER_ID = "userID"
         val X_SOURCE = "xSource"
@@ -82,5 +96,8 @@ constructor(
         val DEFAULT_VALUE_X_DEVICE = "android"
         val DEFAULT_PAGE_NAME = ""
         val PRODUCT_IDS = "productIDs"
+        val OFFICIAL_STORE = "os"
+        val RECENTVIEW = "recentview"
+        val CATEGORY_IDS = "categoryIDs"
     }
 }

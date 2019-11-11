@@ -13,6 +13,7 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase;
 import com.tokopedia.user_identification_common.util.AppSchedulerProvider;
@@ -47,6 +48,7 @@ public class UserIdentificationCommonModule {
         return new UploadImageUseCase<>(uploadImageRepository, generateHostRepository, gson, userSession, AttachmentImageModel.class, imageUploaderUtils);
     }
 
+
     @UserIdentificationCommonScope
     @Provides
     CompositeSubscription provideCompositeSubscription() {
@@ -58,11 +60,13 @@ public class UserIdentificationCommonModule {
     UserIdentificationUploadImage.Presenter provideUploadImagePresenter(UploadImageUseCase<AttachmentImageModel> uploadImageUseCase,
                                                                         UploadIdentificationUseCase uploadIdentificationUseCase,
                                                                         RegisterIdentificationUseCase registerIdentificationUseCase,
+                                                                        GetKtpStatusUseCase getKtpStatusUseCase,
                                                                         UserSession userSession,
                                                                         CompositeSubscription compositeSubscription) {
         return new UserIdentificationUploadImagePresenter(uploadImageUseCase,
                 uploadIdentificationUseCase,
                 registerIdentificationUseCase,
+                getKtpStatusUseCase,
                 userSession,
                 compositeSubscription,
                 new AppSchedulerProvider());

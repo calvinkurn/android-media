@@ -438,6 +438,12 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         bottomSheetViewInfoPromoCode.show();
     }
 
+    @Override
+    public void cachePromoCode(String promoCode) {
+        dPresenter.cachePromoCodeData(promoCode,getResources());
+
+    }
+
     private void handleErrorEmptyState(String message) {
         if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
         adapter.clearDataList();

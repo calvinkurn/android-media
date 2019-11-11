@@ -35,25 +35,14 @@ class ProfileActivity : BaseSimpleActivity() {
             intent.putExtra(EXTRA_PARAM_USER_ID, userId)
             return intent
         }
-
-        fun createIntentFromFeed(context: Context?, userId: String, postId: Int): Intent {
-            val intent = Intent(context, ProfileActivity::class.java)
-            intent.putExtra(EXTRA_PARAM_USER_ID, userId)
-            intent.putExtra(EXTRA_PARAM_POST_ID, postId)
-            return intent
-        }
-    }
-
-    object DeeplinkIntent {
-        @DeepLink(ApplinkConst.PROFILE)
-        @JvmStatic
-        fun createIntent(context: Context?, extras: Bundle): Intent {
-            return createIntent(context, extras.getString(EXTRA_PARAM_USER_ID, ZERO))
-        }
     }
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
+        intent.data?.let { uri ->
+            val userId = uri.lastPathSegment
+            userId?.let { intent.putExtra(EXTRA_PARAM_USER_ID, userId) }
+        }
         intent.extras.let {
             bundle.putAll(it)
         }
