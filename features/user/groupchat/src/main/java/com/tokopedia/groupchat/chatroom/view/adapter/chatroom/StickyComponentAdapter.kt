@@ -168,8 +168,10 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
 
     private fun dismissItem(position: Int): () -> Unit {
         return {
-            list.removeAt(position)
-            notifyItemRemoved(position)
+            if(list.size > position) {
+                list.removeAt(position)
+                notifyItemRemoved(position)
+            }
         }
     }
 }

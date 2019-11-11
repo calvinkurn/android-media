@@ -579,12 +579,20 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onSuccessDownloadAllAsset() {
-        renderViewCrackEgg();
-        showToolTip();
-        widgetTokenOnBoarding.showHandOnboarding();
-        trackingLuckyEggView();
-        if (fpmRender != null)
-            fpmRender.stopTrace();
+        if (getActivity() == null) {
+            return;
+        }
+
+        getActivity().runOnUiThread(() -> {
+            hideLoading();
+            renderViewCrackEgg();
+            showToolTip();
+            widgetTokenOnBoarding.showHandOnboarding();
+            trackingLuckyEggView();
+            if (fpmRender != null)
+                fpmRender.stopTrace();
+        });
+
     }
 
     @Override
@@ -621,7 +629,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                         }
 
                         @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) { }
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
 
                         @Override
                         public void onLoadFailed(@Nullable Drawable errorDrawable) {

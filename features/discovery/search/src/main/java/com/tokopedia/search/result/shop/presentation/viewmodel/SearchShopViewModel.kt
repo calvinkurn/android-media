@@ -13,7 +13,6 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
@@ -30,7 +29,6 @@ import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewMo
 import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.convertValuesToString
-import com.tokopedia.search.utils.exists
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -68,6 +66,7 @@ internal class SearchShopViewModel(
     private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val emptySearchTrackingEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val searchShopFirstPagePerformanceMonitoringEventLiveData = MutableLiveData<Event<Boolean>>()
 
     init {
         setSearchParameterUniqueId()
@@ -130,13 +129,21 @@ internal class SearchShopViewModel(
     }
 
     private suspend fun trySearchShop() {
+        startSearchShopFirstPagePerformanceMonitoring()
+
         updateSearchShopLiveDataStateToLoading()
 
         val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
 
         processSearchShopFirstPageSuccess(searchShopModel)
 
+        endSearchShopFirstPagePerformanceMonitoring()
+
         getDynamicFilter()
+    }
+
+    private fun startSearchShopFirstPagePerformanceMonitoring() {
+        searchShopFirstPagePerformanceMonitoringEventLiveData.postValue(Event(true))
     }
 
     private fun updateSearchShopLiveDataStateToLoading() {
@@ -330,6 +337,10 @@ internal class SearchShopViewModel(
         if (isEmptySearchShop) {
             emptySearchTrackingEventLiveData.postValue(Event(true))
         }
+    }
+
+    private fun endSearchShopFirstPagePerformanceMonitoring() {
+        searchShopFirstPagePerformanceMonitoringEventLiveData.postValue(Event(false))
     }
 
     private fun catchSearchShopException(e: Throwable?) {
@@ -592,5 +603,9 @@ internal class SearchShopViewModel(
 
     fun getEmptySearchTrackingEventLiveData(): LiveData<Event<Boolean>> {
         return emptySearchTrackingEventLiveData
+    }
+
+    fun getSearchShopFirstPagePerformanceMonitoringEventLiveData(): LiveData<Event<Boolean>> {
+        return searchShopFirstPagePerformanceMonitoringEventLiveData
     }
 }

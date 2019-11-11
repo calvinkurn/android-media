@@ -79,7 +79,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
     }
 
     override fun type(dynamicIconSectionViewModel: DynamicIconSectionViewModel): Int {
-        return DynamicIconSectionViewHolder.LAYOUT
+        return if(dynamicIconSectionViewModel.dynamicIconWrap) DynamicIconTwoRowsSectionViewHolder.LAYOUT else DynamicIconSectionViewHolder.LAYOUT
     }
 
     override fun type(topAdsDynamicChannelModel: TopAdsDynamicChannelModel): Int {
@@ -119,6 +119,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
     fun type(retryModel: RetryModel): Int {
         return RetryViewHolder.LAYOUT
+    }
+
+    override fun type(playCard: PlayCardViewModel): Int {
+        return PlayCardViewHolder.LAYOUT
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -185,6 +189,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(fragmentManager, view)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
+            DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
             SellViewHolder.LAYOUT -> viewHolder = SellViewHolder(view, listener)
             OvoViewHolder.LAYOUT, OvoViewHolder.NON_LOGIN_LAYOUT -> viewHolder = OvoViewHolder(view, listener)
             DynamicChannelHeroViewHolder.LAYOUT -> viewHolder = DynamicChannelHeroViewHolder(view, listener)
@@ -199,6 +204,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             GeolocationPromptViewHolder.LAYOUT -> viewHolder = GeolocationPromptViewHolder(view, listener)
             BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener, countDownListener)
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener, countDownListener)
+            PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

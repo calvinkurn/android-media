@@ -26,6 +26,7 @@
     <string name="title_close">Tutup</string>
     <string name="title_add_account_bank">Tambah Rekening</string>
     <string name="title_set_account_bank">Atur Rekening</string>
+    <string name="title_set_rekening_utama">Rekening Utama</string>
 
 
     <string name="title_info_withdrawal_1">Minimum Penarikan</string>
@@ -55,6 +56,7 @@
     <string name="alert_not_verified_yet_negative">Tidak</string>
     <string name="label_analytics_success_withdraw">success withdrawal</string>
     <string name="saldo_refund">Saldo Refund</string>
+    <string name="tab_saldo_refund">Refund</string>
     <string name="saldo_seller">Saldo Penghasilan</string>
     <string name="nominal_withdrawal">Nominal Penarikan</string>
     <string name="saldo_withdrawal_all">Tarik Semua</string>
@@ -81,5 +83,45 @@
     <string name="process_time_withdraw_body_one">BCA, BRI, BNI, CIMB, Mandiri paling lama 24 jam</string>
     <string name="process_time_withdraw_body_two">Bank lain - paling lama 2 hari kerja (tidak termasuk Sabtu/Minggu/Libur)</string>
     <string name="saldolock_info_text">Tidak bisa tarik Saldo Penghasilan karena belum lunasi tagihan Modal Toko. Bantuan? Klik di sini</string>
+    <string name="saldo_withdraw_tnc_original">Dengan klik tombol di bawah, kamu telah setuju dengan</string>
+    <string name="saldo_withdraw_tnc_clickable">ketentuan penarikan saldo.</string>
+    <string name="saldo_withdraw_tnc_title">Ketentuan penarikan saldo</string>
+    <string name="saldo_exceeding_withdraw_balance">Nominal melebihi saldo milikmu</string>
+    <string name="swd_continue_pull">Lanjut Tarik</string>
+    <string name="swd_back">Kembali</string>
+    <string name="max_saldo_withdraw_hint">Maks. penarikan saldo %s</string>
+    <string name="min_saldo_withdraw_hint">Min. penarikan %s</string>
+
+    <string name="withdraw_with_more">Tarik saldo makin untung</string>
+    <string name="account_in_progress">Bank %s (Dalam Proses)</string>
+    <string name="active_bri_Account">Bank %s (<b>Aktif</b>)</string>
+    <string name="active_bri_Account_point">Bank %1$s (Points: <b>%2$d</b>)</string>
+    <string name="bri_cek">cek</string>
+    <string name="swd_label_new">BARU</string>
+    <string name="swd_bank_added_success">Rekening tujuan berhasil ditambahkan</string>
+
+    <string name="backto_saldo_dtl">Kembali Ke Detail Saldo</string>
+    <string name="backto_shop">Belanja di Tokopedia</string>
+    <string name="ttl_total">Total Penarikan</string>
+    <string name="dstn_actn">Rekening Tujuan</string>
+    <string name="ttl_withdraw_dtl">Detail penarikan saldo</string>
+    <string name="withdrawal_being_processed">Penarikanmu sedang diproses, harap tunggu maks. 1x24 jam di hari kerja</string>
+    <string name="noincome_to_withdraw">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
+    <string name="sucs_pg_ttl">Penarikan Diproses</string>
+
+
+    <string name="swd_admin_fee">Dikenai biaya admin %s</string>
+
+    <string name="swd_program_tarik_saldo">Program Tarik Saldo</string>
+    <string name="swd_program_tarik_saldo_description">Gabung program dan nikmati berbagai macam keuntungan setiap penarikan</string>
+    <string name="swd_program_tarik_btn">Cek Sekarang</string>
+
+    <string name="swd_rekening_premium">Rekening Premium</string>
+    <string name="swd_rekening_premium_btn">Lihat Program</string>
+    <string name="swd_rekening_premium_description">Saldo hanya bisa ditarik ke bank tertentu, sesuai Rekening Premium yang kamu ikuti.</string>
+
+    <string name="swd_refund_empty_msg">Kamu tidak punya Saldo Refund untuk ditarik</string>
+    <string name="admin_fee_msg">Dikenai biaya admin %s</string>
+    <string name="swd_penghasilan_empty_msg">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
 
 </resources>

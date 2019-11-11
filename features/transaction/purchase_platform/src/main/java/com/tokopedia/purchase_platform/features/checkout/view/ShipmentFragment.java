@@ -4,13 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -135,7 +136,6 @@ import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -921,10 +921,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 builder.state(TickerPromoStackingCheckoutView.State.EMPTY);
             }
 
-            if (autoApplyStackData.getVoucherOrders() != null) {
-                if (autoApplyStackData.getVoucherOrders().size() > 0) {
-                    for (int i = 0; i < autoApplyStackData.getVoucherOrders().size(); i++) {
-                        VoucherOrdersItemData voucherOrdersItemData = autoApplyStackData.getVoucherOrders().get(i);
+            if (autoApplyStackData.getVoucherOrdersItemDataList() != null) {
+                if (autoApplyStackData.getVoucherOrdersItemDataList().size() > 0) {
+                    for (int i = 0; i < autoApplyStackData.getVoucherOrdersItemDataList().size(); i++) {
+                        VoucherOrdersItemData voucherOrdersItemData = autoApplyStackData.getVoucherOrdersItemDataList().get(i);
                         if (shipmentAdapter.getShipmentCartItemModelList() != null) {
                             for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
                                 if (shipmentCartItemModel.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
@@ -1600,12 +1600,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsScreenName(String screenName) {
         checkoutAnalyticsCourierSelection.sendScreenName(getActivity(), screenName);
-        if (screenName.equalsIgnoreCase(ConstantTransactionAnalytics.ScreenName.ONE_CLICK_SHIPMENT) ||
-                screenName.equalsIgnoreCase(ConstantTransactionAnalytics.ScreenName.CHECKOUT)) {
-            Map<String, String> params = new HashMap<>();
-            params.put("deeplinkUrl", ApplinkConst.CHECKOUT);
-            checkoutAnalyticsCourierSelection.sendScreenNameV5(screenName, params);
-        }
     }
 
     @Override
@@ -1651,6 +1645,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsOnViewPromoManualApply(String type) {
         checkoutAnalyticsCourierSelection.eventViewPromoManualApply(type);
+    }
+
+    @Override
+    public void sendAnalyticsViewInformationAndWarningTickerInCheckout(String tickerId) {
+        checkoutAnalyticsCourierSelection.eventViewInformationAndWarningTickerInCheckout(tickerId);
     }
 
     @Override
@@ -2493,7 +2492,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel) {
         if (getActivity() != null) {
-            checkoutAnalyticsCourierSelection.eventClickGantiNomor();
+            checkoutAnalyticsCourierSelection.eventClickGantiNomor(isTradeIn());
             Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                     shipmentPresenter.getRecipientAddressModel(), shipmentPresenter.getKeroToken(),
                     CartAddressChoiceActivity.TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN);
@@ -2657,7 +2656,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 dataCheckoutRequests,
                 hasInsurance,
                 EnhancedECommerceActionField.STEP_4,
-                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                isTradeIn() ? ConstantTransactionAnalytics.EventAction.CLICK_BAYAR : ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
 
