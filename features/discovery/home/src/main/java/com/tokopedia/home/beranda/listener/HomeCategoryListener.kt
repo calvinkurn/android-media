@@ -79,5 +79,7 @@ interface HomeCategoryListener {
 
     fun putEEToIris(data: HashMap<String, Any>)
 
+    fun onGetPlayBanner(adapterPosition: Int)
+
     fun getWindowWidth(): Int
 }
