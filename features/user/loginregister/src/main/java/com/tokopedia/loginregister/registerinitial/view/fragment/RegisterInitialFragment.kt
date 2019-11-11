@@ -1072,7 +1072,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     override fun onDestroy() {
         super.onDestroy()
-        analytics.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
