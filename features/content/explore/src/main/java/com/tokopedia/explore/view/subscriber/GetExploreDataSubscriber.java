@@ -88,15 +88,17 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
 
     private List<ExploreImageViewModel> convertToKolPostViewModelList(List<PostKol> postKolList) {
         List<ExploreImageViewModel> kolPostViewModelList = new ArrayList<>();
+        int i = 0;
         for (PostKol postKol : postKolList) {
             if (!postKol.getContent().isEmpty()) {
-                kolPostViewModelList.add(convertToKolPostViewModel(postKol));
+                kolPostViewModelList.add(convertToKolPostViewModel(postKol, i));
+                i++;
             }
         }
         return kolPostViewModelList;
     }
 
-    private ExploreImageViewModel convertToKolPostViewModel(PostKol postKol) {
+    private ExploreImageViewModel convertToKolPostViewModel(PostKol postKol, int pos) {
         Content content = getContent(postKol);
         Tag tag = getKolTag(content);
         List<String> imageList = new ArrayList<>();
@@ -129,7 +131,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 convertToTrackingViewModel(postKol.getTracking())
         );
 
-        return new ExploreImageViewModel(getImageUrl(content), kolPostViewModel);
+        return new ExploreImageViewModel(getImageUrl(content), kolPostViewModel, pos);
     }
 
     private String checkType(PostKol postKol, Content content) {

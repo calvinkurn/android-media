@@ -55,6 +55,8 @@ object DeeplinkMapper {
                         getRegisteredHotlist(context,deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
+                    deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW,true) ->
+                        getCreateReviewInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(context, deeplink)
                     else -> {
@@ -134,6 +136,13 @@ object DeeplinkMapper {
         return uri.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME
                 && uri.host == host
                 && uri.pathSegments.size > 0
+    }
+
+    private fun getCreateReviewInternal(deeplink: String): String {
+        val segments = Uri.parse(deeplink).pathSegments
+        val reputationId = segments[segments.size - 2]
+        val productId = segments.last()
+        return UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId)
     }
 
     /**

@@ -146,8 +146,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
-            analytics.initCashShield(this)
-            analytics.sendCashShield(this)
         }
     }
 
@@ -1074,7 +1072,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     override fun onDestroy() {
         super.onDestroy()
-        analytics.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -3,36 +3,12 @@ package com.tokopedia.gallery
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
 
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
-import com.tokopedia.gallery.customview.GalleryItemDecoration
-import com.tokopedia.gallery.domain.GetImageReviewUseCase
-import com.tokopedia.gallery.presenter.ReviewGalleryPresenter
-import com.tokopedia.gallery.presenter.ReviewGalleryPresenterImpl
-import com.tokopedia.gallery.tracking.ImageReviewGalleryTracking
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.graphql.domain.GraphqlUseCase
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * For navigate: use ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY
