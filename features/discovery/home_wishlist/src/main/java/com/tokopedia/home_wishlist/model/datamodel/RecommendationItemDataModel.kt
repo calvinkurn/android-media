@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactory
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
-class RecommendationItemDataModel(
+data class RecommendationItemDataModel(
         val title: String,
         val recommendationItem: RecommendationItem
 ) : WishlistDataModel {
@@ -19,5 +19,23 @@ class RecommendationItemDataModel(
 
     override fun type(typeFactory: WishlistTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun hashCode(): Int {
+        var result = title.hashCode()
+        result = 31 * result + recommendationItem.hashCode()
+        return result
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RecommendationItemDataModel
+
+        if (title != other.title) return false
+        if (recommendationItem != other.recommendationItem) return false
+
+        return true
     }
 }

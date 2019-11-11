@@ -19,12 +19,12 @@ class EmptyWishlistViewHolder(
     private val retry: UnifyButton by lazy { view.findViewById<UnifyButton>(R.id.retry_button) }
 
     override fun bind(element: EmptyWishlistDataModel, listener: SmartListener) {
-        retry.setOnClickListener {
+        retry?.setOnClickListener {
             RouteManager.route(it.context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
         }
     }
 
     companion object{
-        val LAYOUT = R.layout.layout_empty_state
+        val LAYOUT = R.layout.layout_wishlist_empty_state
     }
 }

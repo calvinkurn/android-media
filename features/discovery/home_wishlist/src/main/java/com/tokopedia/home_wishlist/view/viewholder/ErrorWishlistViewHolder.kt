@@ -27,6 +27,6 @@ class ErrorWishlistViewHolder(
     }
 
     companion object{
-        val LAYOUT = R.layout.layout_error_state
+        val LAYOUT = R.layout.layout_wishlist_error_state
     }
 }

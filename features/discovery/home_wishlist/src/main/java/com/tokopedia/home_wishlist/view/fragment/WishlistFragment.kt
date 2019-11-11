@@ -197,7 +197,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 setDescription(getString(R.string.wishlist_message_delete_alert))
                 setPrimaryCTAText(getString(R.string.wishlist_delete))
                 setSecondaryCTAText(getString(R.string.wishlist_cancel))
-                setPrimaryCTAClickListener { onBulkDelete() }
+                setPrimaryCTAClickListener { onBulkDelete();dismiss() }
                 setSecondaryCTAClickListener {
                     dismiss()
                 }
@@ -214,7 +214,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 if(viewModel.wishlistState.value == Status.EMPTY){
                     viewModel.getRecommendationOnEmptyWishlist(page + 1)
                 }else{
-                    if(menu?.findItem(R.id.cancel)?.isVisible == false) viewModel.getNextPageWishlistData()
+                    viewModel.getNextPageWishlistData()
                 }
             }
         }
@@ -245,10 +245,12 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         viewModel.wishlistState.observe(viewLifecycleOwner, Observer { state ->
             if(state.isEmpty() || state.isLoading() || state.isError()){
                 if(state.isLoading()) endlessRecyclerViewScrollListener?.resetState()
-                if(state.isEmpty() || state.isError()) searchView.hide()
+                if(state.isEmpty() || state.isError()){
+                    searchView.hide()
+                    menu?.findItem(R.id.cancel)?.isVisible = false
+                    menu?.findItem(R.id.manage)?.isVisible = false
+                }
                 swipeToRefresh?.isRefreshing = false
-                menu?.findItem(R.id.cancel)?.isVisible = false
-                menu?.findItem(R.id.manage)?.isVisible = false
             } else {
                 // success state
                 swipeToRefresh?.isRefreshing = false
@@ -307,14 +309,15 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         }
     }
 
-    override fun onDeleteClick(dataModel: WishlistDataModel, adapterPosition: Int) {
+    override fun onDeleteClick(dataModel: WishlistDataModel, position: Int) {
         dialogUnify.apply {
             setTitle(getString(R.string.wishlist_delete_title))
             setDescription(getString(R.string.wishlist_message_delete_alert))
             setPrimaryCTAText(getString(R.string.wishlist_delete))
             setSecondaryCTAText(getString(R.string.wishlist_cancel))
             setPrimaryCTAClickListener {
-                viewModel.removeWishlistedProduct(adapterPosition)
+                viewModel.removeWishlistedProduct(position)
+                dismiss()
             }
             setSecondaryCTAClickListener {
                 dismiss()
