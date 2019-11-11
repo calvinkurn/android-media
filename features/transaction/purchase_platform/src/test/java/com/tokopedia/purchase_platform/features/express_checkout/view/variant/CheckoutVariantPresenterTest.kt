@@ -86,8 +86,8 @@ class CheckoutVariantPresenterTest {
         presenter.loadExpressCheckoutData(atcRequestParam)
 
         //Then
-//        Mockito.verify(view).showLoading()
-//        Mockito.verify(doAtcExpressUseCase).setParams(atcRequestParam)
+        Mockito.verify(view).showLoading()
+        Mockito.verify(doAtcExpressUseCase).setParams(atcRequestParam)
     }
 
     /**
