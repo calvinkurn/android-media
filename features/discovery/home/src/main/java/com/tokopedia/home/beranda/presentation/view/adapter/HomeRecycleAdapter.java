@@ -9,12 +9,14 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.dynamicbanner.entity.PlayCardHome;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 
 import java.util.List;
 
@@ -271,4 +273,12 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     public boolean isRetryShown() {
         return visitables.contains(retryModel);
     }
+
+    public void setPlayData(PlayCardHome playContentBanner, int adapterPosition) {
+        if (visitables.get(adapterPosition) instanceof PlayCardViewModel) {
+            ((PlayCardViewModel) visitables.get(adapterPosition)).setPlayCardHome(playContentBanner);
+        }
+        notifyItemChanged(adapterPosition);
+    }
+
 }

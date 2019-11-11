@@ -5,13 +5,13 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedcomponent.view.subscriber.TrackPostClickSubscriber
 import com.tokopedia.feedplus.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.profile.view.subscriber.TrackPostClickSubscriber
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject

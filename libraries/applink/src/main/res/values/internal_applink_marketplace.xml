@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_marketplace" translatable="false">marketplace</string>
+    <string name="host_hotlist" translatable="false">hot</string>
+    <string name="host_hotlist_revamp" translatable="false">hotlist</string>
     <!--
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
@@ -40,6 +42,7 @@
     <string name="path_shop_settings_address" translatable="false">/shop-settings-address</string>
     <string name="path_shop_settings_info" translatable="false">/shop-settings-info</string>
     <string name="path_shop_settings_etalase" translatable="false">/shop-settings-etalase</string>
+    <string name="path_shop_settings_etalase_add" translatable="false">/shop-settings-etalase/add</string>
     <string name="path_shop_settings_notes" translatable="false">/shop-settings-notes</string>
     <string name="path_shop_setting_shipping" translatable="false">/shop-setting-shipping</string>
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>

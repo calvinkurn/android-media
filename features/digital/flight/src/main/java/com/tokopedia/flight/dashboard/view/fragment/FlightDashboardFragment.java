@@ -449,12 +449,21 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
         if (oneWayTripAppCompatButton.isSelected()) {
+            String departureCode = getCurrentDashboardViewModel().getDepartureAirport().getAirportCode();
+            if (TextUtils.isEmpty(departureCode)) {
+                departureCode = getCurrentDashboardViewModel().getDepartureAirport().getCityCode();
+            }
+            String arrivalCode = getCurrentDashboardViewModel().getArrivalAirport().getAirportCode();
+            if (TextUtils.isEmpty(arrivalCode)) {
+                arrivalCode = getCurrentDashboardViewModel().getArrivalAirport().getCityCode();
+            }
+
             FlightCalendarOneWayWidget flightCalendarDialog = FlightCalendarOneWayWidget.Companion.newInstance(
                     TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
                     TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, maxDate),
                     TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate),
-                    getCurrentDashboardViewModel().getDepartureAirport().getAirportCode(),
-                    getCurrentDashboardViewModel().getArrivalAirport().getAirportCode(),
+                    departureCode,
+                    arrivalCode,
                     getCurrentDashboardViewModel().getFlightClass().getId());
             flightCalendarDialog.setListener(dateSelected -> {
                 Calendar calendarSelected = Calendar.getInstance();

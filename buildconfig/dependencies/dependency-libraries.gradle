@@ -62,7 +62,7 @@ ext {
             videoplayer             : ":libraries:videoplayer",
             youtubeApi              : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil             : ":libraries:youtubeutil",
-
+            promotionsTarget        : ":libraries:promotions_target",
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator"

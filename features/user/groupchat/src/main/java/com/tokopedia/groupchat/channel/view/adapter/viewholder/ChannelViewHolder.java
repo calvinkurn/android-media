@@ -31,7 +31,7 @@ public class ChannelViewHolder extends AbstractViewHolder<ChannelViewModel> {
         super(itemView);
         image = itemView.findViewById(R.id.product_image);
         profile = itemView.findViewById(R.id.prof_pict);
-        title = itemView.findViewById(R.id.title);
+        title = itemView.findViewById(com.tokopedia.design.R.id.title);
         subtitle = itemView.findViewById(R.id.subtitle);
         name = itemView.findViewById(R.id.name);
         participant = itemView.findViewById(R.id.participant);
@@ -46,9 +46,10 @@ public class ChannelViewHolder extends AbstractViewHolder<ChannelViewModel> {
         title.setText(element.getTitle());
         subtitle.setText(element.getDescription());
 
-        ImageHandler.loadImage2(image, element.getImage(), R.drawable.loading_page);
-        ImageHandler.loadImageCircle2(profile.getContext(), profile, element.getAdminPicture(), R
-                .drawable.loading_page);
+        ImageHandler.loadImage2(image, element.getImage(),
+                com.tokopedia.design.R.drawable.loading_page);
+        ImageHandler.loadImageCircle2(profile.getContext(), profile, element.getAdminPicture(),
+                com.tokopedia.design.R.drawable.loading_page);
 
     }
 }

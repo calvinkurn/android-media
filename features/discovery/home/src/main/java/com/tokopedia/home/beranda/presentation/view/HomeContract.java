@@ -7,6 +7,7 @@ import androidx.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
@@ -94,6 +95,8 @@ public interface HomeContract {
         void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail);
 
         void hideStickyLogin();
+
+        void setPlayContentBanner(PlayCardHome playContentBanner, int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -143,5 +146,7 @@ public interface HomeContract {
         void getFeedTabData();
 
         void getStickyContent();
+
+        void getPlayBanner(int adapterPosition);
     }
 }

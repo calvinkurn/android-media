@@ -49,6 +49,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.stickyLogin)
+    implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
