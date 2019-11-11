@@ -17,17 +17,17 @@ class SpotlightItemViewModel(val id: Int, val title: String, val description: St
             "channelId", channelId,
             "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
-                        DataLayer.mapOf(
-                                "id", "${channelId}_$id",
-                                "name", promoName,
-                                "position", (position + 1).toString(),
-                                "creative", title,
-                                "creative_url", backgroundImageUrl
-                        )
-                    )
+                "promotions", DataLayer.listOf(
+                DataLayer.mapOf(
+                        "id", id.toString(),
+                        "name", promoName,
+                        "position", (position + 1).toString(),
+                        "creative", title,
+                        "creative_url", backgroundImageUrl
                 )
-            )
+        )
+        )
+        )
         )
     }
 }

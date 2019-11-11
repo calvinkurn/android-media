@@ -139,8 +139,6 @@ public class HomePageTracking {
     public static final String FIELD_CREATIVE = "creative";
     public static final String FIELD_CREATIVE_URL = "creative_url";
     public static final String FIELD_POSITION = "position";
-    public static final String FIELD_DIMENSION83 = "dimension83";
-    public static final String FIELD_DIMENSION84 = "dimension84";
     public static final String FIELD_PRICE = "price";
     public static final String FIELD_BRAND = "brand";
     public static final String FIELD_CATEGORY = "category";
@@ -1029,6 +1027,24 @@ public class HomePageTracking {
         }
     }
 
+    public static void eventEnhanceImpressionPlayBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(
+                    bannerChannel.getEnhanceImpressionPlayBanner()
+            );
+        }
+    }
+
+    public static void eventClickPlayBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(
+                    bannerChannel.getEnhanceClickPlayBanner()
+            );
+        }
+    }
+
     public static void eventEnhanceImpressionBannerGif(Context context, DynamicHomeChannel.Channels bannerChannel) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
@@ -1067,11 +1083,12 @@ public class HomePageTracking {
                             EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                             EVENT_ACTION, EVENT_LEGO_BANNER_CLICK,
                             EVENT_LABEL, bannerChannel.getName(),
+                            CHANNEL_ID, bannerChannel.getId(),
                             ECOMMERCE, DataLayer.mapOf(
                                     PROMO_CLICK, DataLayer.mapOf(
                                             PROMOTIONS, DataLayer.listOf(
                                                     DataLayer.mapOf(
-                                                            FIELD_ID, bannerChannel.getId() + "_" +bannerChannel.getBanner().getId(),
+                                                            FIELD_ID, bannerChannel.getBanner().getId(),
                                                             FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
                                                             FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
                                                             FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
@@ -1127,12 +1144,13 @@ public class HomePageTracking {
             DynamicHomeChannel.Grid[] grid,
             int position
     ) {
-        List<Object> list = convertProductEnhanceSprintSaleDataLayer(grid, channelId);
+        List<Object> list = convertProductEnhanceSprintSaleDataLayer(grid);
         return (HashMap<String, Object>) DataLayer.mapOf(
                 "event", "productView",
                 "eventCategory", "homepage",
                 "eventAction", "sprint sale impression",
                 "eventLabel", "",
+                CHANNEL_ID, channelId,
                 "ecommerce", DataLayer.mapOf(
                         "currencyCode", "IDR",
                         "impressions", DataLayer.listOf(
@@ -1142,7 +1160,7 @@ public class HomePageTracking {
         );
     }
 
-    private static List<Object> convertProductEnhanceSprintSaleDataLayer(DynamicHomeChannel.Grid[] grids, String channelId) {
+    private static List<Object> convertProductEnhanceSprintSaleDataLayer(DynamicHomeChannel.Grid[] grids) {
         List<Object> list = new ArrayList<>();
 
         if (grids != null) {
@@ -1150,7 +1168,7 @@ public class HomePageTracking {
                 DynamicHomeChannel.Grid grid = grids[i];
                 list.add(
                         DataLayer.mapOf(
-                                FIELD_NAME, channelId + "_" + grid.getName(),
+                                FIELD_NAME, grid.getName(),
                                 FIELD_ID, grid.getId(),
                                 FIELD_PRICE, Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
                                         grid.getPrice()
@@ -1170,12 +1188,13 @@ public class HomePageTracking {
     public static HashMap<String, Object> getIrisEnhanceImpressionDynamicSprintLegoHomePage(String channelId,
                                                                                             DynamicHomeChannel.Grid[] grids,
                                                                                             String headerName) {
-        List<Object> list = convertPromoEnhanceDynamicSprintLegoDataLayer(grids, channelId, headerName);
+        List<Object> list = convertPromoEnhanceDynamicSprintLegoDataLayer(grids, headerName);
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW_IRIS,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_IMPRESSION_ON_LEGO_PRODUCT,
                 EVENT_LABEL, LABEL_EMPTY,
+                CHANNEL_ID, channelId,
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(
@@ -1186,7 +1205,6 @@ public class HomePageTracking {
     }
 
     private static List<Object> convertPromoEnhanceDynamicSprintLegoDataLayer(DynamicHomeChannel.Grid[] grids,
-                                                                       String channelId,
                                                                        String headerName) {
         List<Object> list = new ArrayList<>();
 
@@ -1204,9 +1222,7 @@ public class HomePageTracking {
                                 FIELD_CATEGORY, NONE_OTHER,
                                 FIELD_VARIANT, NONE_OTHER,
                                 LIST, "/ - p1 - lego product - " + headerName,
-                                FIELD_POSITION, String.valueOf(i + 1),
-                                FIELD_DIMENSION83, grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none / other",
-                                FIELD_DIMENSION84, channelId
+                                FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );
             }
@@ -1216,12 +1232,13 @@ public class HomePageTracking {
 
     public static HashMap<String, Object> getEnhanceImpressionProductChannelMix(DynamicHomeChannel.Channels channel,
                                                                      String type){
-        List<Object> list = convertProductEnhanceProductMixDataLayer(channel.getGrids(), channel.getId(), channel.getHeader().getName(), type);
+        List<Object> list = convertProductEnhanceProductMixDataLayer(channel.getGrids(), channel.getHeader().getName(), type);
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW_IRIS,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_IMPRESSION_ON_PRODUCT_DYNAMIC_CHANNEL_MIX,
                 EVENT_LABEL, LABEL_EMPTY,
+                CHANNEL_ID, channel.getId(),
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(
@@ -1242,11 +1259,12 @@ public class HomePageTracking {
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
                 EVENT_LABEL, "",
+                CHANNEL_ID, channel.getId(),
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_VIEW, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, channel.getId() + "_" + channel.getBanner().getId(),
+                                                FIELD_ID, channel.getBanner().getId(),
                                                 FIELD_NAME, String.format(PROMOTIONS_NAME, channel.getHeader().getName()),
                                                 FIELD_CREATIVE, channel.getBanner().getAttribution(),
                                                 FIELD_CREATIVE_URL, channel.getBanner().getImageUrl(),
@@ -1259,7 +1277,7 @@ public class HomePageTracking {
         );
     }
 
-    private static List<Object> convertProductEnhanceProductMixDataLayer(DynamicHomeChannel.Grid[] grids, String channelId, String headerName, String type) {
+    private static List<Object> convertProductEnhanceProductMixDataLayer(DynamicHomeChannel.Grid[] grids, String headerName, String type) {
         List<Object> list = new ArrayList<>();
 
         if (grids != null) {
@@ -1276,9 +1294,7 @@ public class HomePageTracking {
                                 FIELD_CATEGORY, NONE_OTHER,
                                 FIELD_VARIANT, NONE_OTHER,
                                 LIST, "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
-                                FIELD_POSITION, String.valueOf(i + 1),
-                                FIELD_DIMENSION83, grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none / other",
-                                FIELD_DIMENSION84, channelId
+                                FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );
             }
@@ -1336,7 +1352,6 @@ public class HomePageTracking {
 
         List<Object> list = convertPromoEnhanceLegoBannerDataLayer(
                 grids,
-                channelId,
                 promoName);
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PROMO_VIEW_IRIS,
@@ -1349,7 +1364,8 @@ public class HomePageTracking {
                                         list.toArray(new Object[list.size()])
                                 )
                         )
-                )
+                ),
+                CHANNEL_ID, channelId
         );
     }
 
@@ -1366,7 +1382,6 @@ public class HomePageTracking {
 
         List<Object> list = convertPromoEnhanceLegoBannerDataLayer(
                 grids,
-                channelId,
                 promoName);
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, EVENT_PROMO_VIEW_IRIS,
@@ -1379,11 +1394,12 @@ public class HomePageTracking {
                                         list.toArray(new Object[list.size()])
                                 )
                         )
-                )
+                ),
+                CHANNEL_ID, channelId
         );
     }
 
-    private static List<Object> convertPromoEnhanceLegoBannerDataLayer(DynamicHomeChannel.Grid[] grids, String promoName, String channelId) {
+    private static List<Object> convertPromoEnhanceLegoBannerDataLayer(DynamicHomeChannel.Grid[] grids, String promoName) {
         List<Object> list = new ArrayList<>();
 
         if (grids != null) {
@@ -1391,7 +1407,7 @@ public class HomePageTracking {
                 DynamicHomeChannel.Grid grid = grids[i];
                 list.add(
                         DataLayer.mapOf(
-                                FIELD_ID, channelId + "_" + grid.getId(),
+                                FIELD_ID, grid.getId(),
                                 FIELD_NAME, promoName,
                                 FIELD_CREATIVE, grid.getAttribution(),
                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
@@ -1407,12 +1423,13 @@ public class HomePageTracking {
             String channelId,
             List<SpotlightItemViewModel> spotlights,
             int position) {
-        List<Object> list = convertPromoEnhanceSpotlight(spotlights, channelId, position);
+        List<Object> list = convertPromoEnhanceSpotlight(spotlights, position);
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, EVENT_PROMO_VIEW_IRIS,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_IMPRESSION_ON_BANNER_SPOTLIGHT,
                 EVENT_LABEL, LABEL_EMPTY,
+                CHANNEL_ID, channelId,
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_VIEW, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
@@ -1424,7 +1441,6 @@ public class HomePageTracking {
     }
 
     private static List<Object> convertPromoEnhanceSpotlight(List<SpotlightItemViewModel> spotlights,
-                                                             String channelId,
                                                              int position) {
         List<Object> list = new ArrayList<>();
         String promoName = String.format(
@@ -1437,7 +1453,7 @@ public class HomePageTracking {
                 SpotlightItemViewModel item = spotlights.get(i);
                 list.add(
                         DataLayer.mapOf(
-                                FIELD_ID, channelId + "_" + item.getId(),
+                                FIELD_ID, String.valueOf(item.getId()),
                                 FIELD_NAME, promoName,
                                 FIELD_CREATIVE, item.getTitle(),
                                 FIELD_CREATIVE_URL, item.getBackgroundImageUrl(),

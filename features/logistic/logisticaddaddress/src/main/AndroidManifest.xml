@@ -91,7 +91,7 @@
             android:name=".features.dropoff_picker.DropoffPickerActivity"
             android:label="@string/title_dropoff_picker"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/LogisticTheme">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -104,6 +104,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".features.autocomplete.AutoCompleteActivity"
+            android:label="@string/title_autocomplete_page"
+            android:theme="@style/LogisticTheme" />
 
         <service
             android:name=".service.ManagePeopleAddressService"

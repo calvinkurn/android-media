@@ -1,18 +1,13 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
-import android.app.Activity
-import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteGeocodeMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteMapper
+import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
+import com.tokopedia.logisticaddaddress.domain.mapper.LegacyAutoCompleteMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutocompleteGeocodeUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.AutocompleteUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.AutocompleteSubscriber
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -24,7 +19,7 @@ import javax.inject.Inject
 class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompleteGeocodeUseCase: AutocompleteGeocodeUseCase,
                                                            private val autoCompleteGeocodeMapper: AutocompleteGeocodeMapper,
                                                            private val autocompleteUseCase: AutocompleteUseCase,
-                                                           private val autoCompleteMapper: AutocompleteMapper)
+                                                           private val autoCompleteMapper: LegacyAutoCompleteMapper)
     : BaseDaggerPresenter<AutocompleteBottomSheetListener>() {
 
     fun getAutocompleteGeocode(lat: Double?, long: Double?) {

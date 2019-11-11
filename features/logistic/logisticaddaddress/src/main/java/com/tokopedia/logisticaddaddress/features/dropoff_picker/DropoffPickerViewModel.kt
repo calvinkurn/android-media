@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.DropoffUiModel
-import com.tokopedia.logisticaddaddress.domain.model.dropoff.GetStoreResponse
-import com.tokopedia.logisticaddaddress.domain.query.LocationQuery
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffUiModel
+import com.tokopedia.logisticaddaddress.data.entity.response.GetStoreResponse
+import com.tokopedia.logisticaddaddress.data.query.LocationQuery
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,12 +23,12 @@ class DropoffPickerViewModel
     val storeData: LiveData<Result<DropoffUiModel>>
         get() = mStoreResponse
 
-    fun getStores(latlng: String) {
+    fun getStores(latLng: String) {
         getStoreUseCase.setTypeClass(GetStoreResponse::class.java)
         getStoreUseCase.setRequestParams(
                 mapOf(
                         "query" to mapOf(
-                                "latlng" to latlng,
+                                "latlng" to latLng,
                                 "type" to 3
                         )
                 ))

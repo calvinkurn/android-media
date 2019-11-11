@@ -98,6 +98,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private static final String KEY_URI_PARAMETER = "idem_potency_key";
     private static final String KEY_URI_PARAMETER_EQUAL = "idem_potency_key=";
     public static final String CATEGORY_GIFT_CARD = "Gift-card";
+    public static int RETRY_COUNT = 0;
 
     @Inject
     OrderListDetailPresenter presenter;
@@ -513,7 +514,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-
+        Toaster.INSTANCE.showNormalWithAction(mainView, message, Snackbar.LENGTH_INDEFINITE, "Oke", v1 -> {
+        });
     }
 
     @Override

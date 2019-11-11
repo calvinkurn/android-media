@@ -115,6 +115,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_SETTINGS_ETALASE = "$SHOP_SETTINGS_BASE-etalase"
 
+    @JvmField
+    val SHOP_SETTINGS_ETALASE_ADD = "$SHOP_SETTINGS_ETALASE/add"
+
     //ShopSettingsAddressActivity
     @JvmField
     val SHOP_SETTINGS_ADDRESS = "$SHOP_SETTINGS_BASE-address"
