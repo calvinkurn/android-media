@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment
 
 import android.animation.Animator
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -334,17 +335,13 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     private fun renderBackgroundTransition(url: String) {
         context?.run {
+            val customTarget = BackgroundCustomTarget(this)
+            customTarget.callback = ::transitionDrawable
             Glide.with(this)
                     .asBitmap()
                     .load(url)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onLoadCleared(placeholder: Drawable?) {}
-
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            transitionDrawable(BitmapDrawable(context?.resources, resource))
-                        }
-                    })
+                    .into(customTarget)
         }
     }
 
@@ -423,6 +420,15 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private fun onErrorGetReviewForm() {
         NetworkErrorHelper.showEmptyState(context, review_root) {
             getReviewData()
+        }
+    }
+
+    class BackgroundCustomTarget(private val context: Context) : CustomTarget<Bitmap>() {
+        var callback: ((Drawable)-> Unit)? = null
+        override fun onLoadCleared(placeholder: Drawable?) {}
+
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+            callback?.invoke(BitmapDrawable(context.resources, resource))
         }
     }
 }

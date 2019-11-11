@@ -61,7 +61,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/img_review"
-                tools:src="@drawable/com_facebook_profile_picture_blank_portrait"/>
+                tools:src="@drawable/com_facebook_profile_picture_blank_portrait" />
 
             <ImageView
                 android:id="@+id/review_bg"
@@ -72,8 +72,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/animatedReview"
                 app:layout_constraintBottom_toBottomOf="@+id/animatedReview"
-                tools:src="@drawable/green_rating_bg"
-                />
+                tools:src="@drawable/green_rating_bg" />
 
             <com.tokopedia.reputation.common.view.AnimatedReputationView
                 android:id="@+id/animatedReview"
@@ -139,7 +138,7 @@
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 app:layout_constraintTop_toBottomOf="@+id/rv_img_review"
-                android:background="@color/pale_grey"/>
+                android:background="@color/pale_grey" />
 
             <LinearLayout
                 android:id="@+id/container_anonymous"
@@ -154,13 +153,12 @@
                 <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                     android:id="@+id/anonymous_cb"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/anonymous_text"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Kirim sebagai K**a"/>
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
@@ -206,13 +204,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-    <ProgressBar
-        android:id="@+id/progressBarReview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        />
+        <ProgressBar
+            android:id="@+id/progressBarReview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
