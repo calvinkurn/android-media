@@ -4,23 +4,25 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class AddPointsItemDecoration : RecyclerView.ItemDecoration() {
+class AddPointsItemDecoration(val boundarySpacing: Int, val defaultSpacing: Int) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val itemPosition = parent.getChildAdapterPosition(view)
 
         when {
-            itemPosition % 4 == 0 -> {
-                outRect.left = 22
+           /* itemPosition % 4 == 0 -> {
+                outRect.left = boundarySpacing
             }
-            (itemPosition - 3) % 4 == 0 -> {
-                outRect.right = 22
+            itemPosition % 4 == 1 -> {
+                outRect.left = boundarySpacing
             }
-            else -> {
-                outRect.left = 28
-                outRect.right = 28
+            itemPosition % 4 == 2 -> {
+                outRect.left = boundarySpacing
+            }*/
+            itemPosition % 4 == 3 -> {
+               // outRect.left = boundarySpacing
+                outRect.right = boundarySpacing
             }
         }
     }
-
 }

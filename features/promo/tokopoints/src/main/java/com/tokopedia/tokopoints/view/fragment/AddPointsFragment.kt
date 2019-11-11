@@ -1,43 +1,51 @@
 package com.tokopedia.tokopoints.view.fragment
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
-import com.tokopedia.tokopoints.view.adapter.AddPointAdapterVH
+import com.tokopedia.tokopoints.view.adapter.AddPointGridViewHolder
 import com.tokopedia.tokopoints.view.adapter.AddPointsAdapter
-import com.tokopedia.tokopoints.view.adapter.AddPointsItemDecoration
 import com.tokopedia.tokopoints.view.contract.TokopointAddPointContract
-import com.tokopedia.tokopoints.view.model.addpointsection.CategoriesItem
+import com.tokopedia.tokopoints.view.model.addpointsection.SectionsItem
+import com.tokopedia.tokopoints.view.model.addpointsection.SheetHowToGetV2
 import com.tokopedia.tokopoints.view.presenter.AddPointPresenter
 import kotlinx.android.synthetic.main.tp_add_point_section.*
 import kotlinx.android.synthetic.main.tp_add_point_section.view.*
-import java.util.*
 import javax.inject.Inject
 
-class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract.View, AddPointAdapterVH.ListenerItemClick {
-
-    override fun onClickItem(appLink: String?) {
-        RouteManager.route(context, appLink)
-    }
+class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract.View, AddPointGridViewHolder.ListenerItemClick {
 
     @Inject
     lateinit var addPointPresenter: AddPointPresenter
 
     private val addPointsAdapter: AddPointsAdapter by lazy { AddPointsAdapter(ArrayList(), this) }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        initInjector()
-        addPointPresenter.attachView(this)
-        setStyle(STYLE_NORMAL, com.tokopedia.design.R.style.TransparentBottomSheetDialogTheme)
         super.onCreate(savedInstanceState)
+        initInjector()
+        setStyle(STYLE_NORMAL, com.tokopedia.design.R.style.TransparentBottomSheetDialogTheme)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.setOnShowListener {
+            val d = dialog as BottomSheetDialog
+            val bottomSheet = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.let {
+                BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+        return dialog
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,19 +54,24 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        addPointPresenter.attachView(this)
         initView(view)
         addPointPresenter.getRewardPoint(resources)
     }
 
     private fun initView(view: View) {
-        view.rv_section.layoutManager = GridLayoutManager(context, 4)
-        view.rv_section.addItemDecoration(AddPointsItemDecoration())
+        view.rv_section.layoutManager = LinearLayoutManager(context)
         view.rv_section.adapter = addPointsAdapter
+        view.rv_section.setHasFixedSize(true)
     }
 
-    override fun inflatePointsData(item: ArrayList<CategoriesItem>) {
+    override fun inflatePointsData(item: SheetHowToGetV2) {
+
+        view?.tvTitleAddPoint?.text = item.title
+        view?.tvDescription?.text = item.subTitle
+
         addPointsAdapter.item.clear()
-        addPointsAdapter.item.addAll(item)
+        addPointsAdapter.item.addAll(item.sections as ArrayList<SectionsItem>)
         addPointsAdapter.notifyDataSetChanged()
         populateAddPointContainer()
     }
@@ -77,4 +90,12 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
                 .inject(this)
     }
 
+    override fun onDestroy() {
+        addPointPresenter.detachView()
+        super.onDestroy()
+    }
+
+    override fun onClickItem(appLink: String?) {
+        RouteManager.route(context, appLink)
+    }
 }
