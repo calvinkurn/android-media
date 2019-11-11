@@ -17,11 +17,12 @@ import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelInfoAdapter
 import kotlinx.android.synthetic.main.detail_header_item.view.*
+import kotlinx.android.synthetic.main.detail_header_resi_item.view.*
 
 /**
  * Created by fwidjaja on 2019-10-03.
  */
-class SomDetailHeaderViewHolder(itemView: View) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
+class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
     private val somDetailLabelInfoAdapter = SomDetailLabelInfoAdapter()
     private val viewPool = RecyclerView.RecycledViewPool()
 
@@ -65,6 +66,16 @@ class SomDetailHeaderViewHolder(itemView: View) : SomDetailAdapter.BaseViewHolde
             itemView.header_invoice?.text = item.dataObject.invoice
             itemView.header_see_invoice?.setOnClickListener {
                 RouteManager.route(it.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, item.dataObject.invoiceUrl))
+            }
+
+            if (item.dataObject.awb.isNotEmpty()) {
+                itemView.layout_resi?.visibility = View.VISIBLE
+                itemView.header_resi_value?.text = item.dataObject.awb
+                itemView.header_copy_resi?.setOnClickListener {
+                    actionListener.onTextCopied(itemView.context.getString(R.string.awb_label), itemView.context.getString(R.string.resi_tersalin))
+                }
+            } else {
+                itemView.layout_resi?.visibility = View.GONE
             }
         }
     }

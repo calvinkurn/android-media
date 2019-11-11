@@ -2,9 +2,13 @@ package com.tokopedia.sellerorder.detail.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.Observer
@@ -65,6 +69,7 @@ import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewMode
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -78,7 +83,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-/**
+/**x
  * Created by fwidjaja on 2019-09-30.
  */
 class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener, SomBottomSheetCourierProblemsAdapter.ActionListener  {
@@ -254,7 +259,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.deadline.text,
                 detailResponse.deadline.color,
                 detailResponse.listLabelInfo,
-                detailResponse.orderId.toString())
+                detailResponse.orderId.toString(),
+                detailResponse.shipment.awb,
+                detailResponse.shipment.awbUploadProofText)
 
         // products
         val dataProducts = SomDetailProducts(detailResponse.listProduct)
@@ -432,6 +439,12 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             15 -> setBuyerNoResponse(rejectReason.reasonCode.toString())
             14 -> setOtherReason(rejectReason.reasonCode.toString())
         }
+    }
+
+    override fun onTextCopied(label: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.primaryClip = ClipData.newPlainText(label, str)
+        showCommonToaster(str)
     }
 
     private fun setProductEmpty(rCode: String) {
@@ -676,6 +689,13 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         val toasterError = Toaster
         view?.let { v ->
             toasterError.make(v, message, LENGTH_SHORT, TYPE_ERROR, ACTION_OK)
+        }
+    }
+
+    private fun showCommonToaster(message: String) {
+        val toasterCommon = Toaster
+        view?.let { v ->
+            toasterCommon.make(v, message, LENGTH_SHORT, TYPE_NORMAL)
         }
     }
 

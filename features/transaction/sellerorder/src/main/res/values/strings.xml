@@ -39,8 +39,12 @@
     <string name="daftar_produk">Daftar Produk</string>
     <string name="buyer">Nama Pembeli</string>
     <string name="purchasing_date">Tanggal Pembelian</string>
+    <string name="nomor_resi">Nomor Resi</string>
     <string name="deadline">Batas Respons</string>
     <string name="lihat_caps">LIHAT</string>
+    <string name="salin_caps">SALIN</string>
+    <string name="awb_label">awb</string>
+    <string name="resi_tersalin">Nomor resi sudah tersalin</string>
     <string name="detail_pengiriman">Detail Pengiriman</string>
     <string name="kurir_pengiriman">Kurir Pengiriman</string>
     <string name="alamat_pengiriman">Alamat Pengiriman</string>
@@ -57,6 +61,7 @@
     <string name="accept_order">accept_order</string>
     <string name="kembali">Kembali</string>
     <string name="placeholder_reject_reason">Contoh: Kurir menolak paket saya</string>
+
 
     <string name="chat">Chat</string>
     <string name="harus_sesuai">Harus Sesuai</string>

@@ -187,13 +187,21 @@
             android:id="@+id/header_see_invoice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="LIHAT"
+            tools:text="@string/lihat_caps"
             android:text="@string/lihat_caps"
             android:textColor="@color/g_500"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_divider_2"
+            app:layout_constraintTop_toTopOf="@id/header_invoice"
+            app:layout_constraintBottom_toBottomOf="@id/header_invoice"
             android:layout_marginTop="@dimen/dp_16"/>
+
+        <include
+            android:id="@+id/layout_resi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/detail_header_resi_item"
+            app:layout_constraintTop_toBottomOf="@+id/header_invoice" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

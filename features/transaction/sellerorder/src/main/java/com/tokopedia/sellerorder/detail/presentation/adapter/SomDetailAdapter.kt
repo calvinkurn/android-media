@@ -25,6 +25,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
 
     interface ActionListener {
         fun onShowBottomSheetInfo(title: String, resIdDesc: Int)
+        fun onTextCopied(label: String, str: String)
     }
 
     companion object {
@@ -39,7 +40,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         return when (viewType) {
             LAYOUT_HEADER -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.detail_header_item, parent, false)
-                SomDetailHeaderViewHolder(view)
+                SomDetailHeaderViewHolder(view, actionListener)
             }
             LAYOUT_PRODUCTS -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.detail_products_item, parent, false)

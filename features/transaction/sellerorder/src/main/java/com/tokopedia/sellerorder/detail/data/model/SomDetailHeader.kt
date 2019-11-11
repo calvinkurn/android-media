@@ -12,4 +12,6 @@ data class SomDetailHeader (
         val deadlineText: String = "",
         val deadlineColor: String = "",
         val listLabelOrder: List<SomDetailOrder.Data.GetSomDetail.LabelInfo> = listOf(),
-        val orderId: String = "")
+        val orderId: String = "",
+        val awb: String = "",
+        val awbUploadProofText: String = "")

@@ -178,7 +178,15 @@ data class SomDetailOrder (
 
                     @SerializedName("is_same_day")
                     @Expose
-                    val isSameDay: Int = 0)
+                    val isSameDay: Int = 0,
+
+                    @SerializedName("awb")
+                    @Expose
+                    val awb: String = "",
+
+                    @SerializedName("awb_upload_proof_text")
+                    @Expose
+                    val awbUploadProofText: String = "")
 
             data class Receiver(
                     @SerializedName("name")
