@@ -2941,14 +2941,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onResultFromSetTradeInPinpoint(Intent data) {
-        if (data != null) {
-            LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
-            RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-            recipientAddressModel.setLocationDataModel(locationDataModel);
-            recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
-            recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
-            shipmentAdapter.updateSelectedAddress(recipientAddressModel, true);
-        }
+        // Todo : update address to indomaret address and reload SAF
+        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+        shipmentPresenter.changeShippingAddress(recipientAddressModel, true);
+//        if (data != null) {
+//            LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
+//            RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+//            recipientAddressModel.setLocationDataModel(locationDataModel);
+//            recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
+//            recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
+//            shipmentAdapter.updateSelectedAddress(recipientAddressModel, true);
+//        }
     }
 
     @Override
@@ -2960,8 +2963,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onTradeInAddressTabChanged(int shipmentItemTradeInPosition) {
-        onNeedUpdateViewItem(shipmentItemTradeInPosition);
-        shipmentAdapter.updateShipmentCostModel();
-        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+        if (recipientAddressModel.getSelectedTabIndex() == 0) {
+            // Todo : update address to normal address and reload SAF
+            shipmentPresenter.changeShippingAddress(recipientAddressModel, true);
+        }
+//        onNeedUpdateViewItem(shipmentItemTradeInPosition);
+//        shipmentAdapter.updateShipmentCostModel();
+//        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
     }
 }
