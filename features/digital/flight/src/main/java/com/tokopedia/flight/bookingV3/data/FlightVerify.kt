@@ -20,7 +20,7 @@ data class FlightVerify(
     data class Response(
             @SerializedName("flightVerify")
             @Expose
-            val flightCart: FlightVerifyMetaAndData = FlightVerifyMetaAndData()
+            val flightVerify: FlightVerifyMetaAndData = FlightVerifyMetaAndData()
     )
 
     data class FlightVerifyMetaAndData(
@@ -93,7 +93,7 @@ data class FlightVerify(
     data class CartConfiguration(
             @SerializedName("price")
             @Expose
-            val price: Int = 0
+            var price: Int = 0
     )
 
     data class Promo(

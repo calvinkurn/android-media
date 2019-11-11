@@ -70,7 +70,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
     var isCouponChanged = false
-    val cartId = ""
+    val cartId = "5512496d20a2d4767415f3fac767d8be811fc51"
 
     lateinit var flightRouteAdapter: FlightJourneyAdapter
     lateinit var flightInsuranceAdapter: FlightInsuranceAdapter
@@ -79,6 +79,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     var departureId: String = ""
     var returnId: String = ""
+    var totalCartPrice: Int = 0
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -141,16 +142,37 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightAmenityPriceData.observe(this, Observer {
             renderAmenityPriceData(it)
         })
+
+        bookingViewModel.flightCheckoutResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    //proceed to payment page
+                }
+                is Fail -> {
+
+                }
+            }
+        })
+
+        bookingViewModel.flightVerifyResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+//                    recheck price
+                }
+                is Fail -> {
+
+                }
+            }
+        })
     }
 
     private fun setUpTimer(timeStamp: Date) {
         countdown_timeout.setListener {
-            Log.d("TIMEOUT", timeStamp.toString())
+            //call get cart again
         }
         countdown_timeout.cancel()
         countdown_timeout.setExpiredDate(timeStamp)
         countdown_timeout.start()
-        Log.d("TIMEOUT", "STARTTTT")
     }
 
     private fun renderData(cart: FlightCartViewEntity) {
@@ -205,6 +227,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             flightPriceAdapter.listener = object : FlightBookingPriceAdapter.PriceListener {
                 override fun onPriceChangeListener(totalPrice: String, totalPriceNumeric: Int) {
                     tv_total_payment_amount.text = totalPrice
+                    totalCartPrice = totalPriceNumeric
                 }
             }
         }
@@ -289,7 +312,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         launchLoadingPageJob.start()
         bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
-                "551249609fb3a145d677c429664e00ba3448c99",
+                cartId,
                 GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_get_cart))
         bookingViewModel.getProfile(GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile))
 
@@ -317,6 +340,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
         switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
             bookingViewModel.onTravellerAsPassenger(on)
         }
+        button_submit.setOnClickListener { bookingViewModel.verifyCartData(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart),
+                totalPrice = totalCartPrice, cartId = cartId, contactName = widget_traveller_info.getContactName(),
+                contactEmail = widget_traveller_info.getContactEmail(), contactPhone = widget_traveller_info.getContactPhoneNum(),
+                contactCountry = "ID") }
     }
 
     fun renderAutoApplyPromo(flightVoucher: FlightPromoViewEntity) {

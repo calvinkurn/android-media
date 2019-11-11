@@ -10,133 +10,133 @@ import com.google.gson.annotations.SerializedName
 data class FlightVerifyParam(
         @SerializedName("cartItems")
         @Expose
-        val cartItems: List<CartItem> = listOf(),
+        var cartItems: MutableList<CartItem> = mutableListOf(),
 
         @SerializedName("promoCode")
         @Expose
-        val promoCode: String = ""
+        var promoCode: String = ""
 ) {
     data class CartItem(
             @SerializedName("productID")
             @Expose
-            val productId: Int = 0,
+            var productId: Int = 0,
 
             @SerializedName("quantity")
             @Expose
-            val quantity: Int = 0,
+            var quantity: Int = 0,
 
             @SerializedName("metaData")
             @Expose
-            val metaData: MetaData = MetaData(),
+            var metaData: MetaData = MetaData(),
 
             @SerializedName("configuration")
             @Expose
-            val configuration: FlightVerify.CartConfiguration = FlightVerify.CartConfiguration()
+            var configuration: FlightVerify.CartConfiguration = FlightVerify.CartConfiguration()
     )
 
     data class MetaData(
             @SerializedName("cartID")
             @Expose
-            val cartId: String = "",
+            var cartId: String = "",
 
             @SerializedName("contactName")
             @Expose
-            val contactName: String = "",
+            var contactName: String = "",
 
             @SerializedName("email")
             @Expose
-            val email: String = "",
+            var email: String = "",
 
             @SerializedName("phone")
             @Expose
-            val phone: String = "",
+            var phone: String = "",
 
             @SerializedName("country")
             @Expose
-            val country: String = "",
+            var country: String = "",
 
             @SerializedName("ipAddress")
             @Expose
-            val ipAddress: String = "",
+            var ipAddress: String = "",
 
             @SerializedName("userAgent")
             @Expose
-            val userAgent: String = "",
+            var userAgent: String = "",
 
             @SerializedName("passengers")
             @Expose
-            val passengers: List<FlightCart.Passenger> = listOf(),
+            var passengers: MutableList<Passenger> = mutableListOf(),
 
             @SerializedName("insurances")
             @Expose
-            val insurances: List<String> = listOf()
+            var insurances: MutableList<String> = mutableListOf()
     )
 
         data class Passenger(
                 @SerializedName("type")
                 @Expose
-                val type: Int = 0,
+                var type: Int = 0,
 
                 @SerializedName("title")
                 @Expose
-                val title: Int = 0,
+                var title: Int = 0,
 
                 @SerializedName("firstName")
                 @Expose
-                val firstName: String = "",
+                var firstName: String = "",
 
                 @SerializedName("lastName")
                 @Expose
-                val lastName: String = "",
+                var lastName: String = "",
 
                 @SerializedName("dob")
                 @Expose
-                val dob: String = "",
+                var dob: String = "",
 
                 @SerializedName("nationality")
                 @Expose
-                val nationality: String = "",
+                var nationality: String = "",
 
                 @SerializedName("passportNumber")
                 @Expose
-                val passportNumber: String = "",
+                var passportNumber: String = "",
 
                 @SerializedName("passportCountry")
                 @Expose
-                val passportCountry: String = "",
+                var passportCountry: String = "",
 
                 @SerializedName("passportExpire")
                 @Expose
-                val passportExpire: String = "",
+                var passportExpire: String = "",
 
                 @SerializedName("amenities")
                 @Expose
-                val amenities: List<Amenity> = listOf()
+                var amenities: MutableList<Amenity> = mutableListOf()
         )
 
         data class Amenity(
                 @SerializedName("journeyID")
                 @Expose
-                val journeyId: String = "",
+                var journeyId: String = "",
 
                 @SerializedName("departureAirportID")
                 @Expose
-                val departureAirportId: String = "",
+                var departureAirportId: String = "",
 
                 @SerializedName("arrivalAirportID")
                 @Expose
-                val arrivalAirportId: String = "",
+                var arrivalAirportId: String = "",
 
                 @SerializedName("type")
                 @Expose
-                val type: Int = 0,
+                var type: Int = 0,
 
                 @SerializedName("key")
                 @Expose
-                val key: String = "",
+                var key: String = "",
 
                 @SerializedName("itemID")
                 @Expose
-                val itemId: String = ""
+                var itemId: String = ""
         )
 }

@@ -5,6 +5,6 @@ package com.tokopedia.flight.bookingV3.data
  */
 
 data class FlightBookingParam (
-        var totalPassenger: Int = 2,
+        var isDomestic: Boolean = true,
         var insurances: MutableList<FlightCart.Insurance> = arrayListOf()
 )

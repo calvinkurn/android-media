@@ -94,7 +94,7 @@ class FlightBookingMapper {
             }
 
             val now = Calendar.getInstance()
-            now.add(Calendar.SECOND, flightCart.cartData.flight.repriceTime)
+            now.add(Calendar.MINUTE, flightCart.meta.refreshTime)
 
             return FlightCartViewEntity(journeySummaries = journies, insurances = flightCart.cartData.flight.insuranceOptions,
                     luggageModels = luggageMetaModels, mealModels = mealMetaModels, orderDueTimeStamp = now.time)
