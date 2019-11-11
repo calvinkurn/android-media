@@ -98,6 +98,7 @@ object DeeplinkDFMapper {
     private val DFM_REFERRAL = "im_referral"
     private val DFM_WALLET = "fintech_wallet"
     private val DFM_PROFILE = "profile"
+    @JvmField
     val DFM_ONBOARDING = "onboarding"
 
     private var manager: SplitInstallManager? = null

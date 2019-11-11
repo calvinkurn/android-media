@@ -13,12 +13,24 @@ import kotlinx.coroutines.launch
  * Also handle the unify logging
  */
 class DFInstaller {
-    private var manager: SplitInstallManager? = null
     internal var sessionId: Int? = null
 
     companion object {
+        private var manager: SplitInstallManager? = null
         const val TAG_LOG_DFM_BG = "DFM Background"
         const val TAG_LOG_DFM_BG_UNINSTALL = "DFM BGUninstall"
+        @JvmStatic
+        fun isInstalled(application: Application, moduleName: String):Boolean {
+            initManager(application)
+            val manager = manager ?: return false
+            return manager.installedModules.contains(moduleName)
+        }
+
+        private fun initManager(context: Context) {
+            if (manager == null) {
+                manager = SplitInstallManagerFactory.create(context)
+            }
+        }
     }
 
     private var listener: SplitInstallListener? = null
@@ -93,12 +105,6 @@ class DFInstaller {
             val errorCode = (it as? SplitInstallException)?.errorCode
             logFailedStatus(TAG_LOG_DFM_BG_UNINSTALL, applicationContext, moduleNameToUninstall,
                 errorCode?.toString() ?: it.toString())
-        }
-    }
-
-    private fun initManager(context: Context) {
-        if (manager == null) {
-            manager = SplitInstallManagerFactory.create(context)
         }
     }
 
