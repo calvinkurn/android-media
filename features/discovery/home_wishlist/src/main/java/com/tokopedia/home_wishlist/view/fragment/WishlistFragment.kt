@@ -147,7 +147,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         observeAction()
     }
 
-    override fun getScreenName(): String = getString(R.string.home_recom_screen_name)
+    override fun getScreenName(): String = getString(R.string.wishlist_global)
 
     override fun initInjector() {
         getComponent(WishlistComponent::class.java).inject(this)
