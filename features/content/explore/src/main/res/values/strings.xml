@@ -4,4 +4,9 @@
     <string name="search_your_inspiration">Cari inspirasi kamu</string>
     <string name="explore_empty_result">Maaf, halaman yang kamu cari tidak dapat ditemukan</string>
     <string name="af_empty_hashtag_post">Oops, Tidak ada post terkait!</string>
+
+    <string name="coachmark_explore_title_1">Cek promosi affiliate di Feed</string>
+    <string name="coachmark_explore_content_1">Kini kamu bisa lihat semua promosi affiliate tentang produkmu dari filter ini.</string>
+    <string name="coachmark_explore_title_2">Share promosi affiliate ke follower</string>
+    <string name="coachmark_explore_content_2">Biar toko makin tepercaya, screenshot promosi ini dan post ke Feed tokomu.</string>
 </resources>
