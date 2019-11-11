@@ -1029,7 +1029,7 @@ public class HomePageTracking {
     }
 
     public static void eventEnhanceImpressionPlayBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
-        ContextAnalytics tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
                     bannerChannel.getEnhanceImpressionPlayBanner()
@@ -1038,7 +1038,7 @@ public class HomePageTracking {
     }
 
     public static void eventClickPlayBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
-        ContextAnalytics tracker = getTracker(context);
+        ContextAnalytics tracker = getTracker();
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
                     bannerChannel.getEnhanceClickPlayBanner()
@@ -1597,6 +1597,15 @@ public class HomePageTracking {
         return list;
     }
 
+    public static void sendTokopointTrackerClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        HomePageTracking.EVENT_TOKO_POINT,
+                        HomePageTracking.CATEGORY_HOMEPAGE_TOKOPOINTS,
+                        HomePageTracking.ACTION_CLICK_POINT,
+                        HomePageTracking.LABEL_TOKOPOINTS));
+    }
+
     public static void homeReviewImpression(
             TrackingQueue trackingQueue,
             SuggestedProductReviewResponse reviewData,
@@ -1627,15 +1636,6 @@ public class HomePageTracking {
                 )
             )
         ));
-    }
-
-    public static void sendTokopointTrackerClick() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        HomePageTracking.EVENT_TOKO_POINT,
-                        HomePageTracking.CATEGORY_HOMEPAGE_TOKOPOINTS,
-                        HomePageTracking.ACTION_CLICK_POINT,
-                        HomePageTracking.LABEL_TOKOPOINTS));
     }
 
     public static void homeReviewOnCloseTracker(String orderId, String productId) {
