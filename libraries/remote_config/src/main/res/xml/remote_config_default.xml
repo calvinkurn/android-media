@@ -259,6 +259,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_customer_hotel_enable_booking_for_today</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>nonb_1_ttl</key>
         <value>Bebas Beli Apa Saja</value>
     </entry>
@@ -329,6 +333,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_customer_travel_enable_cross_sell</key>
+        <value>false</value>
+    </entry>
+    <entry>
         <key>app_enable_category_revamp</key>
         <value>true</value>
     </entry>
@@ -337,7 +345,15 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_enable_officialstore_native</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_mainapp_merchant_freeongkir_title</key>
         <value>Pengiriman ini berpotensi Bebas Ongkir</value>
+    </entry>
+    <entry>
+        <key>app_hotlist_nav_enable</key>
+        <value>true</value>
     </entry>
 </defaultsMap>

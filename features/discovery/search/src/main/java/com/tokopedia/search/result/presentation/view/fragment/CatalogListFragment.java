@@ -2,10 +2,10 @@ package com.tokopedia.search.result.presentation.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -207,12 +207,12 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        catalogAdapter.onSaveInstanceState(outState);
         saveDataToBundle(outState);
     }
 
     private void saveDataToBundle(Bundle outState) {
         outState.putString(EXTRA_SHARE_URL, getShareUrl());
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
     }
 
     @Override
@@ -368,11 +368,8 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
-
-        if(catalogAdapter != null) {
-            catalogAdapter.onRestoreInstanceState(savedInstanceState);
-        }
     }
 
     @Override

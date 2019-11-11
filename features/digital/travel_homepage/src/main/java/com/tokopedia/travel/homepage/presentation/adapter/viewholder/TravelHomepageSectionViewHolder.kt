@@ -1,6 +1,6 @@
 package com.tokopedia.travel.homepage.presentation.adapter.viewholder
 
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -51,6 +51,8 @@ class TravelHomepageSectionViewHolder(itemView: View,
                         val layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                         list_recycler_view.layoutManager = layoutManager
                         list_recycler_view.adapter = orderAdapter
+                    } else {
+                        orderAdapter.updateList(element.list)
                     }
                 }
             } else {

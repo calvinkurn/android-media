@@ -3,7 +3,9 @@ package com.tokopedia.settingnotif.usersetting.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.usersetting.domain.pojo.*
+import com.tokopedia.settingnotif.usersetting.domain.pojo.ChildSetting
+import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.domain.pojo.SettingSections
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 
 interface SettingFieldTypeFactory : AdapterTypeFactory {
@@ -13,8 +15,6 @@ interface SettingFieldTypeFactory : AdapterTypeFactory {
     fun type(parentSetting: ParentSetting): Int
 
     fun type(childSetting: ChildSetting): Int
-
-    fun type(pushNotifierTroubleshooterSetting: PushNotifierTroubleshooterSetting): Int
 
     fun createViewHolder(
             parent: View,

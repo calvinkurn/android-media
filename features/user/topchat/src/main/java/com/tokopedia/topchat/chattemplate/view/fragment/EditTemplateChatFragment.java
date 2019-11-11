@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
-import com.tokopedia.topchat.chattemplate.di.TemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
@@ -115,6 +114,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         int i = item.getItemId();
         if (i == R.id.action_organize) {
             if (allowDelete == ENABLE_DELETE) {
+                analytics.trackDeleteTemplateChat();
                 showDialogDelete();
             } else {
                 showError(new MessageErrorException(getActivity().getString(R.string
@@ -134,6 +134,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        analytics.trackConfirmDeleteTemplateChat();
                         presenter.deleteTemplate(getArguments().getInt(InboxMessageConstant.PARAM_POSITION));
                         dialog.dismiss();
                     }
@@ -196,9 +197,23 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int mode = getMode();
+                switch (mode) {
+                    case TemplateChatFragment.CREATE:
+                        analytics.trackCreateSaveTemplateChat();
+                        break;
+                    case TemplateChatFragment.EDIT:
+                        analytics.trackEditSaveTemplateChat();
+                        break;
+                }
                 presenter.submitText(editText.getText().toString(), message, list);
             }
         });
+    }
+
+    private int getMode() {
+        if (getArguments() == null) return -2;
+        return getArguments().getInt(InboxMessageConstant.PARAM_MODE, -2);
     }
 
     private void showErrorAndProceed(Integer integer, TextView proceed) {

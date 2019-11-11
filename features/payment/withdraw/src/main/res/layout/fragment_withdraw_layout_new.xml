@@ -7,10 +7,9 @@
     android:id="@+id/mainView"
     android:scrollbars="none">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <ImageView
             android:id="@+id/ivButtonLeft"
@@ -146,7 +145,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/saldo_title" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_bank"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -170,14 +169,14 @@
             app:tabTextColor="@color/black_38">
 
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="@string/tab_saldo_refund"
                 android:textAlignment="textStart" />
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -200,7 +199,7 @@
             app:layout_constraintStart_toStartOf="@+id/saldo_title"
             app:layout_constraintTop_toBottomOf="@+id/withdrawal_all_tv">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/total_withdrawal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -345,18 +344,18 @@
             app:layout_constraintTop_toBottomOf="@+id/iv_emptySaldo"
             app:typographyType="heading_2" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/editable_group"
             android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="wrapper_total_withdrawal,title_choose_bank,recycler_view_bank,withdrawal_all_tv,view_divider3,saldo_withdraw_hint,title_nominal_withdrawal,view_divider,view_divider2,saldo_title,tv_info,total_saldo_value,ivButtonLeft,withdraw_button" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/emptyGroup"
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="empty_saldo_description,iv_emptySaldo" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

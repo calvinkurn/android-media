@@ -1,7 +1,7 @@
 package com.tokopedia.profilecompletion.addpin.view.activity
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -32,10 +32,7 @@ class AddPinActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionSettin
 
     override fun onBackPressed() {
         if(fragment != null && fragment is AddPinFragment){
-            if(!(fragment as AddPinFragment).onBackPressedFromConfirm()){
-                (fragment as AddPinFragment).onBackPressed()
-                super.onBackPressed()
-            }
+            if(!(fragment as AddPinFragment).onBackPressedFromConfirm()) super.onBackPressed()
         }else{
             super.onBackPressed()
         }

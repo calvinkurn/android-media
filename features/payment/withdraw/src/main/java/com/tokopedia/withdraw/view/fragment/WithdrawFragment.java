@@ -1,21 +1,13 @@
 package com.tokopedia.withdraw.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.Group;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -31,9 +23,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Group;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
@@ -57,6 +62,7 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.webview.TkpdWebView;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.constant.WithdrawConstant;
@@ -75,6 +81,7 @@ import com.tokopedia.withdraw.view.presenter.WithdrawPresenter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -151,6 +158,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private Group editableGroup;
     private Group emptyScreenGroup;
     private CheckEligible checkEligible;
+    private final String PARAM_HEADER_GC_TOKEN = "X-User-Token";
 
 
     private TextView tvEmptySaldo;
@@ -193,6 +201,25 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         View view = inflater.inflate(R.layout.fragment_withdraw_layout_new, container, false);
 
         wrapperTotalWithdrawal = view.findViewById(R.id.wrapper_total_withdrawal);
+        CloseableBottomSheetDialog saldoWithdrawInfoDialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        saldoWithdrawInfoDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+
+                FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+
+                if (bottomSheet != null) {
+                    BottomSheetBehavior.from(bottomSheet)
+                            .setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }
+        });
+
+        BottomSheetDialog confirmPassword = new BottomSheetDialog(getActivity());
+        View confirmPasswordView = getLayoutInflater().inflate(R.layout.layout_confirm_password, null);
+        confirmPassword.setContentView(confirmPasswordView);
+
         bankRecyclerView = view.findViewById(R.id.recycler_view_bank);
         withdrawButton = view.findViewById(R.id.withdraw_button);
         withdrawAll = view.findViewById(R.id.withdrawal_all_tv);
@@ -218,6 +245,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         return view;
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -876,10 +904,10 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private void openTermsAndConditionBottomSheet() {
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View view = getLayoutInflater().inflate(R.layout.swd_layout_withdraw_tnc, null, true);
-        WebView webView = view.findViewById(R.id.catalog_webview);
+        TkpdWebView webView = view.findViewById(R.id.swd_tnc_webview);
         ImageView closeBtn = view.findViewById(R.id.close_button);
         Typography titleView = view.findViewById(R.id.title_closeable);
-        webView.loadUrl(WithdrawConstant.WEB_TNC_URL);
+        webView.loadAuthUrl(WithdrawConstant.WEB_TNC_URL, userSession);
         closeBtn.setOnClickListener((v) -> bottomSheet.dismiss());
         titleView.setText(getString(R.string.saldo_withdraw_tnc_title));
         bottomSheet.setCustomContentView(view, getString(R.string.saldo_withdraw_tnc_title), false);

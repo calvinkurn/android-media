@@ -1,6 +1,6 @@
 package com.tokopedia.groupchat.room.view.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +23,7 @@ class OverflowMenuAdapter: RecyclerView.Adapter<OverflowMenuAdapter.OverflowMenu
         private val icon: ImageView = itemView.findViewById(R.id.icon)
 
         private val check: ImageView = itemView.findViewById(R.id.check)
-        private val title: TextView = itemView.findViewById(R.id.title)
+        private val title: TextView = itemView.findViewById(com.tokopedia.design.R.id.title)
 
         fun bind(model: OverflowMenuButtonViewModel) {
             icon.showWithCondition(model.image!=0)

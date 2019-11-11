@@ -17,21 +17,13 @@ public class ActionButton {
     @Expose
     private int weight;
 
-    @SerializedName("uriWeb")
-    @Expose
-    private String uriWeb;
-
-    @SerializedName("mappingUri")
-    @Expose
-    private String mappingUri;
-
     @SerializedName("label")
     @Expose
     private String label;
 
     @SerializedName("uri")
     @Expose
-    private String uri;
+    private String uri ="";
 
     @SerializedName("control")
     @Expose
@@ -63,7 +55,7 @@ public class ActionButton {
 
     @SerializedName("popup")
     @Expose
-    private ActionButtonPopUp actionButtonPopUp;
+    private ActionButtonPopUp actionButtonPopUp = new ActionButtonPopUp();
 
     public Body getBody() {
         return Body;
@@ -89,21 +81,6 @@ public class ActionButton {
         this.weight = weight;
     }
 
-    public String getUriWeb() {
-        return uriWeb;
-    }
-
-    public void setUriWeb(String uriWeb) {
-        this.uriWeb = uriWeb;
-    }
-
-    public String getMappingUri() {
-        return mappingUri;
-    }
-
-    public void setMappingUri(String mappingUri) {
-        this.mappingUri = mappingUri;
-    }
 
     public String getLabel() {
         return label;
@@ -187,6 +164,6 @@ public class ActionButton {
 
     @Override
     public String toString() {
-        return "ActionButton [Body = " + Body + ", Value = " + Value + ", weight = " + weight + ", uriWeb = " + uriWeb + ", mappingUri = " + mappingUri + ", label = " + label + ", uri = " + uri + ", Control = " + Control + ", Name = " + Name + ", buttonType = " + buttonType + ", Header = " + Header + ", method = " + method + ", key = " + key + "]";
+        return "ActionButton [Body = " + Body + ", Value = " + Value + ", weight = " + weight + ", label = " + label + ", uri = " + uri + ", Control = " + Control + ", Name = " + Name + ", buttonType = " + buttonType + ", Header = " + Header + ", method = " + method + ", key = " + key + "]";
     }
 }

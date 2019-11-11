@@ -1,9 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,8 +29,8 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
         ) {
 
     companion object {
-        private const val TYPE_SIX_GRID_LEGO = 0
-        private const val TYPE_THREE_GRID_LEGO = 1
+        private const val TYPE_SIX_GRID_LEGO = 3
+        private const val TYPE_THREE_GRID_LEGO = 4
 
         @LayoutRes
         val LAYOUT = R.layout.home_dc_lego_banner

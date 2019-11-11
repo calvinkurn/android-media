@@ -1,8 +1,8 @@
-package com.tokopedia.flight.country.database
+package com.tokopedia.common.travel.database
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 /**
  * Created by nabillasabbaha on 12/03/19.

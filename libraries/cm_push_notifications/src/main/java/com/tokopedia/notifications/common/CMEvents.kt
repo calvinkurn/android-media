@@ -3,6 +3,7 @@ package com.tokopedia.notifications.common
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -27,9 +28,12 @@ object PersistentEvent {
 }
 
 object IrisAnalyticsEvents {
-    public const val PUSH_RECEIVED = "pushReceived"
+    const val PUSH_RECEIVED = "pushReceived"
     const val PUSH_CLICKED = "pushClicked"
     const val PUSH_DISMISSED = "pushDismissed"
+    const val INAPP_RECEIVED = "inappReceived"
+    const val INAPP_CLICKED = "inappClicked"
+    const val INAPP_DISMISSED = "inappDismissed"
 
     private const val EVENT_NAME = "event"
     private const val EVENT_TIME = "event_time"
@@ -41,12 +45,13 @@ object IrisAnalyticsEvents {
     private const val PUSH_TYPE = "push_type"
     private const val IS_SILENT = "is_silent"
     private const val CLICKED_ELEMENT_ID="clicked_element_id"
+    private const val INAPP_TYPE="inapp_type"
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, baseNotificationModel)
-            irisAnalytics.saveEvent(values)
+            irisAnalytics.sendEvent(values)
         }
     }
 
@@ -58,7 +63,7 @@ object IrisAnalyticsEvents {
                 values[CLICKED_ELEMENT_ID] = elementID
 
             }
-            irisAnalytics.saveEvent(values)
+            irisAnalytics.sendEvent(values)
         }
 
     }
@@ -78,6 +83,46 @@ object IrisAnalyticsEvents {
             values[IS_SILENT] = false
         }
         values[EVENT_MESSAGE_ID] = baseNotificationModel.campaignUserToken?.let { it } ?: ""
+
+        return values
+
+    }
+
+    fun sendPushEvent(context: Context, eventName: String, cmInApp: CMInApp) {
+        val irisAnalytics = IrisAnalytics(context)
+        if (irisAnalytics != null) {
+            val values = addBaseValues(context, eventName, cmInApp)
+            irisAnalytics.sendEvent(values)
+        }
+    }
+
+    fun sendPushEvent(context: Context, eventName: String, cmInApp: CMInApp, elementID: String?) {
+        val irisAnalytics = IrisAnalytics(context)
+        if (irisAnalytics != null) {
+            val values = addBaseValues(context, eventName, cmInApp)
+
+            elementID?.let {
+                values[CLICKED_ELEMENT_ID] = elementID
+            }
+
+
+            irisAnalytics.sendEvent(values)
+        }
+
+    }
+
+    fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {
+        val values = HashMap<String, Any>()
+
+        values[EVENT_NAME] = eventName
+        values[EVENT_TIME] = CMNotificationUtils.currentLocalTimeStamp
+        values[CAMPAIGN_ID] = cmInApp.campaignId.toString()
+        values[NOTIFICATION_ID] = cmInApp.id.toString()
+        values[SOURCE] = CMNotificationUtils.getApplicationName(context)
+        values[PARENT_ID] = cmInApp.parentId
+        values[IS_SILENT] = false
+        values[INAPP_TYPE] = cmInApp.type.let { cmInApp.type } ?: ""
+        values[EVENT_MESSAGE_ID] = cmInApp.campaignUserToken?.let { it } ?: ""
 
         return values
 

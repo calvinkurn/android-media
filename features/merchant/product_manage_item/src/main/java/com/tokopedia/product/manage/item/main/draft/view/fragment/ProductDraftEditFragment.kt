@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.item.main.draft.view.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +9,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.common.util.AddEditPageType
 import com.tokopedia.product.manage.item.common.util.ProductStatus
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment
@@ -20,6 +21,7 @@ import com.tokopedia.product.manage.item.utils.convertToProductAddViewModel
 
 open class ProductDraftEditFragment : BaseProductAddEditFragment<ProductDraftPresenterImpl, ProductDraftView>(), ProductDraftView{
 
+    override var addEditPageType: AddEditPageType = AddEditPageType.DRAFT_EDIT
     override var statusUpload = ProductStatus.EDIT
     private var tkpdProgressDialog: TkpdProgressDialog? = null
     private var draftProductId: Long = 0

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraintLayoutShopHeader"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewShopCountQuery"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_22"
+        android:textColor="@color/shop_total_count_text_color"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:gravity="center_vertical"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:text="&quot;Putri&quot;" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewShopCountFoundIn"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_22"
+        android:textColor="@color/shop_total_count_text_color"
+        android:gravity="center_vertical"
+        android:text="@string/shop_total_count_found_in"
+        app:typographyType="body_2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/textViewShopCountQuery" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewShopCount"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_22"
+        android:textColor="@color/shop_total_count_text_color"
+        android:gravity="center_vertical"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/textViewShopCountFoundIn"
+        tools:text="1233" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewShopCountShop"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_22"
+        android:textColor="@color/shop_total_count_text_color"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:gravity="center_vertical"
+        android:text="@string/shop_total_count_shop"
+        app:typographyType="body_2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/textViewShopCount" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

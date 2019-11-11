@@ -1,9 +1,9 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,6 +17,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.logisticcart.R;
@@ -31,7 +32,6 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +144,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     protected String title() {
-        return getString(R.string.title_shipment_courier_bottomsheet);
+        return getString(R.string.title_bottomsheet_shipment_duration);
     }
 
     @Override

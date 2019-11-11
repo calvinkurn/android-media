@@ -4,9 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -24,6 +25,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
@@ -34,6 +36,7 @@ import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -181,6 +184,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         cityName = cityView.findViewById(R.id.textview_holder_small);
         cityImageView = cityView.findViewById(R.id.image_holder_small);
 
+        tvEmailID.setOnClickListener(this);
+        tvTelephone.setOnClickListener(this);
         btnGoToPayment.setOnClickListener(this);
         infoEmail.setOnClickListener(this);
         infoMoreinfo.setOnClickListener(this);
@@ -329,11 +334,31 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     @Override
     public boolean validateAllFields() {
+        boolean isEmailValid = validateEmail();
+        boolean isPhoneNumberValid = validatePhone();
         boolean result = true;
         for (int i= 0; i<formsList.size(); i++) {
             result = result && eventReviewTicketPresenter.validateEditText(formsList.get(i));
         }
-        return result;
+        return result && isEmailValid && isPhoneNumberValid;
+    }
+
+    private boolean validateEmail() {
+        if (TextUtils.isEmpty(tvEmailID.getText())) {
+            Toaster.INSTANCE.showError(mainContent, "Email belum dilengkapi dengan benar", Toaster.LENGTH_LONG);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private boolean validatePhone() {
+        if (TextUtils.isEmpty(tvTelephone.getText())) {
+            Toaster.INSTANCE.showError(mainContent, "Nomor telepon belum dilengkapi dengan benar", Toaster.LENGTH_LONG);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -341,18 +366,18 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PAYMENT_REQUEST_CODE) {
             switch (resultCode) {
-                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
+                case PaymentConstant.PAYMENT_SUCCESS:
                     getActivity().setResult(PAYMENT_SUCCESS);
                     eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                     finish();
                     break;
-                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
+                case PaymentConstant.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
                     eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
                     break;
-                case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
+                case PaymentConstant.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
                     eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
                     break;
@@ -455,6 +480,16 @@ public class ReviewTicketActivity extends EventBaseActivity implements
             eventReviewTicketPresenter.proceedToPayment();
         } else if (v.getId() == R.id.update_email) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (!validateEmail()) {
+                tvEmailID.setEnabled(true);
+                tvEmailID.setTextIsSelectable(true);
+                tvEmailID.setFocusable(true);
+                tvEmailID.setFocusableInTouchMode(true);
+                tvEmailID.setSelection(tvEmailID.getText().length());
+                tvEmailID.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvEmailID.requestFocus();
+                imm.showSoftInput(tvEmailID, InputMethodManager.SHOW_IMPLICIT);
+            }
             if (!tvEmailID.isEnabled()) {
                 tvTelephone.setEnabled(false);
                 tvTelephone.setTextIsSelectable(false);
@@ -472,9 +507,9 @@ public class ReviewTicketActivity extends EventBaseActivity implements
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(tvEmailID.getWindowToken(), 0);
                 }
-                tvEmailID.setEnabled(false);
+                tvEmailID.setEnabled(true);
                 tvEmailID.setTextIsSelectable(false);
-                tvEmailID.setFocusable(false);
+                tvEmailID.setFocusable(true);
                 tvEmailID.setInputType(InputType.TYPE_NULL);
                 tvEmailID.clearFocus();
                 mainContent.requestFocus();
@@ -483,6 +518,16 @@ public class ReviewTicketActivity extends EventBaseActivity implements
             eventReviewTicketPresenter.updateEmail(tvEmailID.getText().toString());
         } else if (v.getId() == R.id.update_number) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (!validatePhone()) {
+                tvTelephone.setEnabled(true);
+                tvTelephone.setTextIsSelectable(true);
+                tvTelephone.setFocusable(true);
+                tvTelephone.setFocusableInTouchMode(true);
+                tvTelephone.setSelection(tvTelephone.getText().length());
+                tvTelephone.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvTelephone.requestFocus();
+                imm.showSoftInput(tvTelephone, InputMethodManager.SHOW_IMPLICIT);
+            }
             if (!tvTelephone.isEnabled()) {
                 tvEmailID.setEnabled(false);
                 tvEmailID.setTextIsSelectable(false);
@@ -500,9 +545,9 @@ public class ReviewTicketActivity extends EventBaseActivity implements
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(tvTelephone.getWindowToken(), 0);
                 }
-                tvTelephone.setEnabled(false);
+                tvTelephone.setEnabled(true);
                 tvTelephone.setTextIsSelectable(false);
-                tvTelephone.setFocusable(false);
+                tvTelephone.setFocusable(true);
                 tvTelephone.setInputType(InputType.TYPE_NULL);
                 tvTelephone.clearFocus();
                 mainContent.requestFocus();
@@ -522,6 +567,28 @@ public class ReviewTicketActivity extends EventBaseActivity implements
                 eventReviewTicketPresenter.clickDismissTooltip();
             } else if (v.getId() == R.id.goto_promo) {
                 eventReviewTicketPresenter.clickGoToPromo();
+            }
+        } else if (v.getId() == R.id.tv_visitor_names) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (tvEmailID.isEnabled()) {
+                tvEmailID.setTextIsSelectable(true);
+                tvEmailID.setFocusable(true);
+                tvEmailID.setFocusableInTouchMode(true);
+                tvEmailID.setSelection(tvEmailID.getText().length());
+                tvEmailID.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvEmailID.requestFocus();
+                imm.showSoftInput(tvEmailID, InputMethodManager.SHOW_IMPLICIT);
+            }
+        } else if (v.getId() == R.id.tv_telephone) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (tvTelephone.isEnabled()) {
+                tvTelephone.setTextIsSelectable(true);
+                tvTelephone.setFocusable(true);
+                tvTelephone.setFocusableInTouchMode(true);
+                tvTelephone.setSelection(tvTelephone.getText().length());
+                tvTelephone.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvTelephone.requestFocus();
+                imm.showSoftInput(tvTelephone, InputMethodManager.SHOW_IMPLICIT);
             }
         }
     }

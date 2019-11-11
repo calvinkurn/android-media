@@ -17,11 +17,6 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
 
     interface SettingFieldAdapterListener {
         fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
-        fun goToPushNotificationCheckerPage()
-    }
-
-    override fun goToPushNotificationChecker() {
-        settingFieldAdapterListener.goToPushNotificationCheckerPage()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {

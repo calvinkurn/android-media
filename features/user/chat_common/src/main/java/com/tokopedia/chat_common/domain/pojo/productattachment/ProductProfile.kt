@@ -23,6 +23,9 @@ class ProductProfile {
     @SerializedName("category_breadcrumb")
     @Expose
     val category: String = ""
+    @SerializedName("category_id")
+    @Expose
+    val categoryId: Int = 0
     @SerializedName("variant")
     @Expose
     val variant: Any? = null
@@ -35,4 +38,10 @@ class ProductProfile {
     @SerializedName("shop_id")
     @Expose
     val shopId: Int = 0
+    @SerializedName("free_ongkir")
+    @Expose
+    val freeShipping: FreeShipping = FreeShipping()
+    @SerializedName("playstore_product_data")
+    @Expose
+    val playStoreData: PlayStoreData = PlayStoreData()
 }

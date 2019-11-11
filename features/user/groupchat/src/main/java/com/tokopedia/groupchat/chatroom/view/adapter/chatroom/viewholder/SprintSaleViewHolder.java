@@ -1,10 +1,10 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder;
 
 import android.os.Build;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -106,7 +106,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
         }
 
         sprintSaleTitle.setText(R.string.title_sprintsale_finished);
-        sprintSaleTitle.setTextColor(MethodChecker.getColor(sprintSaleTitle.getContext(), R.color.black_54));
+        sprintSaleTitle.setTextColor(MethodChecker.getColor(sprintSaleTitle.getContext(), com.tokopedia.design.R.color.black_54));
     }
 
 }

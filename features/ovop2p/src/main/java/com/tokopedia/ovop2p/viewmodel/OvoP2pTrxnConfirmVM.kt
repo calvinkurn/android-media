@@ -1,10 +1,9 @@
 package com.tokopedia.ovop2p.viewmodel
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.Context
 import android.text.TextUtils
+import androidx.lifecycle.ViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
@@ -14,13 +13,13 @@ import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.viewStates.*
 import rx.Subscriber
 
-class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(application) {
+class OvoP2pTrxnConfirmVM : ViewModel() {
 
     var txnConfirmMutableLiveData = MutableLiveData<TransferConfirmState>()
     private var transferConfirmSubscriber: Subscriber<GraphqlResponse>? = null
 
     fun makeTransferConfirmCall(context: Context, transferReqMap: HashMap<String, Any>) {
-        OvoP2pUtil.executeOvoP2pTransferConfirm(context, getTransferConfirmSubscriber(), transferReqMap)
+        OvoP2pUtil.executeOvoP2pTransferConfirm(context, getTransferConfirmSubscriber(context), transferReqMap)
     }
 
     override fun onCleared() {
@@ -30,13 +29,13 @@ class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun getTransferConfirmSubscriber(): Subscriber<GraphqlResponse> {
+    fun getTransferConfirmSubscriber(context:Context): Subscriber<GraphqlResponse> {
         transferConfirmSubscriber = object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
             }
 
             override fun onError(e: Throwable) {
-                txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(getApplication<Application>().resources.getString(R.string.general_error))
+                txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(context.resources.getString(R.string.general_error))
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -56,7 +55,7 @@ class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(applicati
                         }
                     }
                 } ?: run {
-                    txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(getApplication<Application>().resources.getString(R.string.general_error))
+                    txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(context.resources.getString(R.string.general_error))
                 }
             }
         }
