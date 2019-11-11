@@ -27,7 +27,7 @@ public interface UserIdentificationInfo {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getInfo();
+        void getInfo(int projectId);
         void getStatus();
     }
 }

@@ -32,8 +32,8 @@ public class UserIdentificationInfoPresenter extends BaseDaggerPresenter<UserIde
     }
 
     @Override
-    public void getInfo() {
-        getUserProjectInfoUseCase.execute(GetUserProjectInfoUseCase.getRequestParam(),
+    public void getInfo(int projectId) {
+        getUserProjectInfoUseCase.execute(GetUserProjectInfoUseCase.getRequestParam(projectId),
                 new GetUserProjectInfoSubcriber(getView().getUserProjectInfoListener()));
     }
 
