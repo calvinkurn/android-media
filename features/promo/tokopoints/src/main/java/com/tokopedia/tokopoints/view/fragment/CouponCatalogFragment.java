@@ -63,17 +63,17 @@ import static com.tokopedia.tokopoints.R.layout.tp_fragment_coupon_catalog;
 
 
 import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.tokopoints.view.util.CommanUtilsKt.getLessDisplayData;
+import static com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE;
+import static com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING;
 
 public class CouponCatalogFragment extends BaseDaggerFragment implements CouponCatalogContract.View, View.OnClickListener {
     private static final String FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail";
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
-    private static final String UTF_ENCODING = "UTF-8";
-    private static final String COUPON_MIME_TYPE = "text/html";
-    private static final String LIST_TAG_START = "<li>";
-    private static final String LIST_TAG_END = "</li>";
-    private static final int MAX_POINTS_TO_SHOW = 4;
+
+
     private static final int REQUEST_CODE_LOGIN = 1;
     private ViewFlipper mContainerMain;
     private ServerErrorView serverErrorView;
@@ -737,24 +737,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 mCouponName);
     }
 
-    private String getLessDisplayData(String data, Typography seeMore) {
-        String[] totalString = data.split(LIST_TAG_START);
-        String displayString = totalString[0] + LIST_TAG_START;
-        if (totalString.length > MAX_POINTS_TO_SHOW + 1) {
-            for (int i = 1; i < MAX_POINTS_TO_SHOW; i++) {
-                displayString = displayString.concat(totalString[i] + LIST_TAG_START);
-            }
-            displayString = displayString.concat(totalString[MAX_POINTS_TO_SHOW]);
-            String lastString = totalString[totalString.length - 1];
-            if (lastString.contains(LIST_TAG_END)) {
-                displayString = displayString + LIST_TAG_END + totalString[totalString.length - 1].split(LIST_TAG_END)[1];
-            }
-        } else {
-            displayString = data;
-            seeMore.setVisibility(View.GONE);
-        }
-        return displayString;
-    }
+
 
     private void loadWebViewInBottomsheet(String data, String title) {
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());

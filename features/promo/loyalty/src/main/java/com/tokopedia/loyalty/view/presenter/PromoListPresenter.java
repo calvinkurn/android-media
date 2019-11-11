@@ -1,11 +1,16 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.content.res.Resources;
 import android.util.Log;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.loyalty.R;
+import com.tokopedia.loyalty.domain.entity.response.promocodesave.PromoCacheResponse;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
 import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
@@ -15,7 +20,12 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import javax.inject.Inject;
 
@@ -117,6 +127,33 @@ public class PromoListPresenter implements IPromoListPresenter {
                 "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
         );
         promoTrackingUtil.eventClickPromoListItem(view.getActivityContext(), dataLayerSinglePromoCodeList, promoData.getTitle());
+    }
+
+    @Override
+    public void cachePromoCodeData(String promoData, Resources resources) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("promoCode", promoData);
+
+        com.tokopedia.graphql.data.model.GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.tokopoints_promo_cache),
+                PromoCacheResponse.class,
+                variables, false);
+        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
+        graphqlUseCase.clearRequest();
+        graphqlUseCase.addRequest(request);
+        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(GraphqlResponse saveCoupon) {
+            }
+        });
     }
 
 

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
+import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -32,10 +33,8 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
@@ -168,7 +167,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.HOT:
                     screenName = AppScreen.SCREEN_BROWSE_HOT_LIST;
                     sendCampaignGTM(activity, uriData.toString(), screenName);
-                    openHotProduct(linkSegment, uriData, defaultBundle);
+                    openHotProduct(linkSegment, uriData);
                     break;
                 case DeepLinkChecker.HOT_LIST:
                     screenName = AppScreen.SCREEN_HOME_HOTLIST;
@@ -540,7 +539,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                 bundle,
                                 ApplinkConst.SHOP_INFO,
                                 shopId);
-                    } else if(isShopHome(linkSegment)){
+                    } else if (isShopHome(linkSegment)) {
                         RouteManager.route(context,
                                 bundle,
                                 ApplinkConst.SHOP_HOME,
@@ -672,18 +671,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-    private void openHotProduct(List<String> linkSegment, Uri uriData, Bundle bundle) {
-        if (isHotBrowse(linkSegment, uriData)) {
-            return;
+    private void openHotProduct(List<String> linkSegment, Uri uriData) {
+        if (linkSegment.size() > 1) {
+            RouteManager.route(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.HOME_HOTLIST + "/" + linkSegment.get(1)));
+            context.finish();
         }
-
-        Intent intent = BrowseProductRouter.getHotlistIntent(context, uriData.toString());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-        context.finish();
     }
 
     private void openHomepage(Bundle defaultBundle) {
