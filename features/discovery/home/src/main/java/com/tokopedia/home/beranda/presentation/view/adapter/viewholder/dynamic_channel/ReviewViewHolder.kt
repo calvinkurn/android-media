@@ -53,8 +53,8 @@ class ReviewViewHolder(
                         categoryListener.trackingQueue,
                         element.suggestedProductReview.suggestedProductReview,
                         adapterPosition,
-                        "",
-                        ""
+                        element.suggestedProductReview.suggestedProductReview.orderId,
+                        element.suggestedProductReview.suggestedProductReview.productId
                 )
             }
         })
@@ -62,7 +62,10 @@ class ReviewViewHolder(
         ImageHandler.LoadImage(itemView.review_card_bg, cardBg)
         itemView.review_card_content_container.setOnClickListener{
             if (!isPressed) {
-                HomePageTracking.homeReviewOnBlankSpaceClickTracker("", "")
+                HomePageTracking.homeReviewOnBlankSpaceClickTracker(
+                        element.suggestedProductReview.suggestedProductReview.orderId,
+                        element.suggestedProductReview.suggestedProductReview.productId
+                )
                 reviewListener.onReviewClick(
                         adapterPosition,
                         5,
@@ -77,7 +80,11 @@ class ReviewViewHolder(
         itemView.animated_review.setListener(object : AnimatedReputationView.AnimatedReputationListener {
             override fun onClick(position: Int) {
                 if (!isPressed) {
-                    HomePageTracking.homeReviewOnRatingChangedTracker("", "", position + 1)
+                    HomePageTracking.homeReviewOnRatingChangedTracker(
+                            element.suggestedProductReview.suggestedProductReview.orderId,
+                            element.suggestedProductReview.suggestedProductReview.productId,
+                            position + 1
+                    )
                     reviewListener.onReviewClick(
                             adapterPosition,
                             position,
@@ -90,7 +97,10 @@ class ReviewViewHolder(
         })
 
         itemView.ic_close_review.setOnClickListener{
-            HomePageTracking.homeReviewOnCloseTracker("", "")
+            HomePageTracking.homeReviewOnCloseTracker(
+                    element.suggestedProductReview.suggestedProductReview.orderId,
+                    element.suggestedProductReview.suggestedProductReview.productId
+            )
             reviewListener.onCloseClick()
         }
     }

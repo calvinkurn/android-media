@@ -6,5 +6,7 @@
     linkURL
     dismissable
     dismissURL
+    orderID
+    productID
   }
 }

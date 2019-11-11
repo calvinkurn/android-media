@@ -13,6 +13,7 @@ class ReviewNotificationBroadcastReceiver : BroadcastReceiver() {
     companion object {
         const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
         const val REVIEW_NOTIFICATION_ID = "REVIEW_NOTIFICATION_ID"
+        const val REVIEW_APPLINK_EXTRA = "REVIEW_APPLINK_EXTRA"
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -26,7 +27,7 @@ class ReviewNotificationBroadcastReceiver : BroadcastReceiver() {
         }
 
         context?.let {
-            val createReviewRoute = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CREATE_REVIEW, "123", "123")
+            val createReviewRoute = RouteManager.getIntent(context, intent?.getStringExtra(REVIEW_APPLINK_EXTRA))
             createReviewRoute.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             createReviewRoute.putExtra(REVIEW_CLICK_AT, reviewPosition)
 

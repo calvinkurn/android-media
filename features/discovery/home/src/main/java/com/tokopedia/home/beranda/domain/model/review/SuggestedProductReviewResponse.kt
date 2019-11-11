@@ -15,5 +15,9 @@ data class SuggestedProductReviewResponse(
         @SerializedName("linkURL")
         val linkURL: String = "",
         @SerializedName("title")
-        val title: String = ""
+        val title: String = "",
+        @SerializedName("orderID")
+        val orderId: String = "",
+        @SerializedName("productID")
+        val productId: String = ""
 )

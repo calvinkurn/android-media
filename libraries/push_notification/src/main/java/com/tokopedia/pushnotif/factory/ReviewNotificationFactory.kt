@@ -75,6 +75,7 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
                 .setContentIntent(generatePendingIntent(resultReviewModel))
                 .setCustomBigContentView(
                         setupRemoteLayout(
+                                applinkNotificationModel.applinks,
                                 title,
                                 resultReviewModel.applinkNotificationModel.desc,
                                 resultReviewModel.applinkNotificationModel.thumbnail))
@@ -147,7 +148,12 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
     }
 
     // This function is use for load review for the first time, (getBitmap should run on another thread)
-    private fun setupRemoteLayout(title: String, desc: String, imageUrl: String): RemoteViews {
+    private fun setupRemoteLayout(
+            applink: String,
+            title: String,
+            desc: String,
+            imageUrl: String
+    ): RemoteViews {
         notificationLayout = RemoteViews(packageName, R.layout.notification_review_layout)
         notificationLayout.setTextViewText(R.id.rate_title, title)
         notificationLayout.setTextViewText(R.id.rate_message, desc)
@@ -158,6 +164,8 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
             val truePosition = index + 1
             val intent = Intent(context, ReviewNotificationBroadcastReceiver::class.java)
             intent.action = "$truePosition"
+            intent.putExtra(ReviewNotificationBroadcastReceiver.REVIEW_APPLINK_EXTRA, applink)
+
             notificationLayout.setOnClickPendingIntent(starId,
                     PendingIntent.getBroadcast(
                             context,
