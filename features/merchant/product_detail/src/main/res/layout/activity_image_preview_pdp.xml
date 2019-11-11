@@ -14,16 +14,18 @@
     android:layout_marginRight="@dimen/dp_20"
     android:layout_marginBottom="@dimen/dp_20"
     android:gravity="center"
-    android:text="@string/image_preview_wishlist"
     android:textAllCaps="false"
-    app:unifyButtonType="transaction"
     app:backgroundTint="@color/colorPrimary"
     app:layout_constraintBottom_toBottomOf="parent"/>
   
   <ProgressBar
     android:id="@+id/progressBar"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
     android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

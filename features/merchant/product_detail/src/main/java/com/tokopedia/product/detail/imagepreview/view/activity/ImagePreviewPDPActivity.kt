@@ -12,14 +12,18 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.imagepreview.di.DaggerImagePreviewPDPComponent
 import com.tokopedia.product.detail.imagepreview.view.listener.ImagePreviewPDPView
 import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPDPViewModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_image_preview_pdp.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 /**
  * created by rival on 07/11/19
@@ -37,7 +41,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
     lateinit var userSession: UserSessionInterface
 
     private var productId: String = ""
-    private var isWishlisted: Boolean = false
+    private var isWishlisted by Delegates.notNull<Boolean>()
 
     override fun layoutId(): Int {
         return R.layout.activity_image_preview_pdp
@@ -50,10 +54,11 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
         val extraData = intent?.extras
         if (extraData != null) {
             productId = extraData.getString(PRODUCT_ID) as String
-            isWishlisted = extraData.getBoolean(IS_WISHLISTED)
+            isWishlisted = extraData.getBoolean(IS_WISHLISTED, false)
         }
 
         initInjector()
+        updateView()
         initListener()
     }
 
@@ -64,22 +69,32 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
                 .inject(this)
     }
 
+    private fun updateView() {
+        if (userSession.isLoggedIn) {
+            if (isWishlisted) {
+                btnAddToWishlist?.text = resources.getString(R.string.image_preview_remove_wishlist)
+//                btnAddToWishlist?.buttonType = UnifyButton.Type.TRANSACTION
+            } else {
+                btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
+//                btnAddToWishlist?.buttonType = UnifyButton.Type.MAIN
+            }
+        } else {
+            btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
+            btnAddToWishlist?.buttonType = UnifyButton.Type.MAIN
+        }
+    }
+
     private fun initListener() {
         btnAddToWishlist?.setOnClickListener {
             if (userSession.isLoggedIn) {
                 if (isWishlisted) {
-                    addWishlist()
-                } else {
                     removeWishlist()
+                } else {
+                    addWishlist()
                 }
             } else {
                 gotoLogin()
             }
-        }
-
-        findViewById<Button>(R.id.ivDownload)?.setOnClickListener {
-            // TODO add result
-            finish()
         }
     }
 
@@ -98,13 +113,14 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
         showLoadin()
         viewModel.addWishList(
                 productId,
-                onErrorAddWishList = {
-                    hideLoading()
-                    onErrorAddWishlist(Throwable(it))
-                },
                 onSuccessAddWishlist = {
                     hideLoading()
                     onSuccessAddWishlist()
+                    updateView()
+                },
+                onErrorAddWishList = {
+                    hideLoading()
+                    onErrorAddWishlist(Throwable(it))
                 }
         )
     }
@@ -116,6 +132,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
                 onSuccessRemoveWishlist = {
                     hideLoading()
                     onSuccessRemoveWishlist()
+                    updateView()
                 },
                 onErrorRemoveWishList = {
                     hideLoading()
@@ -125,11 +142,11 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
     }
 
     override fun showLoadin() {
-
+        progressBar?.show()
     }
 
     override fun hideLoading() {
-
+        progressBar?.hide()
     }
 
     override fun gotoLogin() {
@@ -145,7 +162,6 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
     }
 
     override fun onErrorAddWishlist(throwable: Throwable) {
-        isWishlisted = false
         showMessage(throwable.message.toString())
     }
 
@@ -154,6 +170,8 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
     }
 
     companion object {
+
+        private const val KEY_WISHLIST_BUTTON = "image_preview_pdp_wishlist_butotn"
 
         private const val PRODUCT_ID = "productId"
         private const val IS_WISHLISTED = "isWishlisted"

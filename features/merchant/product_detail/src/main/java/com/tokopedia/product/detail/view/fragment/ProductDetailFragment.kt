@@ -1837,7 +1837,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onPictureProductClicked(position: Int) {
         activity?.let {
 //            startActivity(ImagePreviewActivity.getCallingIntent(it, getImageURIPaths(), null, position))
-            val intent = ImagePreviewPDPActivity.createIntent(it, productId ?: "", false, getImageURIPaths(), null, position)
+            val intent = ImagePreviewPDPActivity.createIntent(it, productId ?: "", true, getImageURIPaths(), null, position)
             startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW)
         }
     }

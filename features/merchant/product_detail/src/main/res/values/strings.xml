@@ -138,5 +138,6 @@
     <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
     <string name="recom_see_more_title">Lihat semua</string>
   
-    <string name="image_preview_wishlist">Tambah ke Wishlist</string>
+    <string name="image_preview_add_wishlist">Tambah ke Wishlist</string>
+    <string name="image_preview_remove_wishlist">Hapus dari Wishlist</string>
 </resources>
