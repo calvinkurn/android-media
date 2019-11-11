@@ -90,4 +90,5 @@
     <string name="catalog_complete_specifications">Spesifikasi lengkap</string>
     <string name="bullet_string">• %1$s</string>
     <string name="description">Deskripsi</string>
+    <string name="buka_browser">Buka Browser</string>
 </resources>

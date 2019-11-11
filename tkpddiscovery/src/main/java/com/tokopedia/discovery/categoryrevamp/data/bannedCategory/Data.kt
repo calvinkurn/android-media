@@ -1,8 +1,9 @@
 package com.tokopedia.discovery.categoryrevamp.data.bannedCategory
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-class Data {
+class Data : Serializable {
 
     @SerializedName("id")
     var id: Int? = null
@@ -27,15 +28,15 @@ class Data {
     @SerializedName("isBanned")
     var isBanned: Int = 0
 
-    @SerializedName("is_adult")
+    @SerializedName("isAdult")
     var isAdult: Int = 0
 
     override fun toString(): String {
         return "Data{" +
                 "banned_message = '" + bannedMessage + '\''.toString() +
                 ",app_redirection = '" + appRedirection + '\''.toString() +
-                ",is_banned = '" + isBanned + '\''.toString() +
-                ",is_adult = '" + isAdult + '\''.toString() +
+                ",isBanned = '" + isBanned + '\''.toString() +
+                ",isAdult = '" + isAdult + '\''.toString() +
                 "}"
     }
 }

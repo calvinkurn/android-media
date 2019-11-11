@@ -4,7 +4,9 @@ package com.tokopedia.discovery.categoryrevamp.view.fragments
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.NestedScrollView
@@ -30,6 +32,7 @@ import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.SubCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
+import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
@@ -57,6 +60,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_product_nav.*
+import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import rx.Subscriber
 import javax.inject.Inject
@@ -158,6 +162,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     var pageCount = 0
     var isPagingAllowed: Boolean = true
+    private var bannedData: Data? = null
 
     private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
     private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
@@ -165,12 +170,15 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     companion object {
         private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+        private val EXTRA_BANNED_DATA = "BANNED_DATA"
+
         @JvmStatic
-        fun newInstance(departmentid: String, departmentName: String): Fragment {
+        fun newInstance(departmentid: String, departmentName: String, data: Data): Fragment {
             val fragment = ProductNavFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, departmentid)
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
+            bundle.putSerializable(EXTRA_BANNED_DATA, data)
             fragment.arguments = bundle
             return fragment
         }
@@ -188,6 +196,16 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
+                mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
+                mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
+                bannedData = it.getSerializable(EXTRA_BANNED_DATA) as Data?
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -199,21 +217,18 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         categoryNavComponent.inject(this)
-        arguments?.let {
-            if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
-                mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
-                mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
+        if (bannedData == null || bannedData?.isBanned == 0) {
+            initView()
+            observeData()
+            setUpAdapter()
+            setUpNavigation()
+            if (userVisibleHint) {
+                setUpVisibleFragmentListener()
             }
-        }
-        initView()
-        observeData()
-        setUpAdapter()
-        setUpNavigation()
-        if (userVisibleHint) {
-            setUpVisibleFragmentListener()
+        } else {
+            showBannedDataScreen()
         }
     }
-
 
     override fun getAdapter(): BaseCategoryAdapter? {
         return productNavListAdapter
@@ -392,6 +407,23 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         }
     }
 
+    private fun showBannedDataScreen() {
+        layout_banned_screen.visibility = View.VISIBLE
+        swipe_refresh_layout.visibility = View.GONE
+        catAnalyticsInstance.eventBukaView(bannedData?.appRedirection.toString(), mDepartmentId)
+        if (bannedData != null && bannedData!!.displayButton && CategoryNavActivity.isBannedNavigationEnabled(activity as Context)) {
+            category_btn_banned_navigation.visibility = View.VISIBLE
+            category_btn_banned_navigation.setOnClickListener() {
+                catAnalyticsInstance.eventBukaClick(bannedData?.appRedirection.toString(), mDepartmentId)
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(bannedData?.appRedirection))
+                startActivity(browserIntent)
+            }
+        }
+        txt_header.text = bannedData?.bannedMsgHeader
+        txt_sub_header.text = bannedData?.bannedMessage
+
+    }
+
     private fun initQuickFilter(list: ArrayList<Filter>) {
         quickFilterList.clear()
         quickFilterList.addAll(list)
@@ -416,7 +448,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun initView() {
-
+        layout_banned_screen.visibility = View.GONE
+        swipe_refresh_layout.visibility = View.VISIBLE
         userSession = UserSession(activity)
         gcmHandler = GCMHandler(activity)
 
@@ -425,7 +458,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
             fetchProductData(getProductListParamMap(getPage()))
             productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
-            productNavViewModel.fetchQuickFilters(getQuickFilterParams())        }
+            productNavViewModel.fetchQuickFilters(getQuickFilterParams())
+        }
         attachScrollListener()
     }
 

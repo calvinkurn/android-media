@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
@@ -118,6 +117,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BANNED_NAVIGATION, true)
         }
+
         @JvmStatic
         fun isCategoryRevampEnabled(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -142,12 +142,13 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         return if (uri == null) SearchParameter() else SearchParameter(uri.toString())
     }
 
-     fun initInjector() {
+    fun initInjector() {
         categoryNavComponent = DaggerCategoryNavComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication)
                         .baseAppComponent).build()
-         categoryNavComponent.inject(this)
+        categoryNavComponent.inject(this)
     }
+
     private fun initSwitchButton() {
 
         icon_sort.setOnClickListener {
@@ -222,44 +223,32 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
             when (it) {
                 is Success -> {
                     progressBar.visibility = View.GONE
-                    if(it.data.isBanned == 1) {
-                       setBannedPage(it.data)
-                    }else {
-                        layout_banned_screen.visibility = View.GONE
+                    layout_banned_screen.visibility = View.GONE
+                    if (it.data.isBanned == 1) {
+                        searchNavContainer?.visibility = View.GONE
+                    } else {
                         searchNavContainer?.visibility = View.VISIBLE
-                        initViewPager()
-                        loadSection()
-                        initSwitchButton()
-                        initBottomSheetListener()
                     }
+                    initViewPager()
+                    loadSection(it.data)
+                    initSwitchButton()
+                    initBottomSheetListener()
                 }
                 is Fail -> {
                     progressBar.visibility = View.GONE
-                    setBannedPage(null)
+                    setErrorPage()
                 }
             }
         })
         categoryNavViewModel.fetchBannedCheck(getSubCategoryParam())
     }
 
-    private fun setBannedPage(data :Data?){
-        layout_banned_screen.visibility = View.VISIBLE
-        if (data != null && data.displayButton && isBannedNavigationEnabled(this))  {
-            category_btn_banned_navigation.visibility = View.VISIBLE
-            category_btn_banned_navigation.setOnClickListener() {
-                var browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(data?.appRedirection))
-                startActivity(browserIntent)
-            }
-        }
-
+    private fun setErrorPage() {
         searchNavContainer?.visibility = View.GONE
-        if(data == null) {
-            txt_header.text = "There is some error on server"
-            txt_no_data_description.text = "try again"
-        }else {
-            txt_header.text = data?.bannedMsgHeader
-            txt_no_data_description.text = data?.bannedMessage
-        }
+        layout_banned_screen.visibility = View.VISIBLE
+        txt_header.text = "There is some error on server"
+        txt_sub_header.text = "try again"
+
     }
 
     private fun getSubCategoryParam(): RequestParams {
@@ -322,8 +311,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         }
     }
 
-    private fun loadSection() {
-        populateTab(categorySectionItemList)
+    private fun loadSection(data: Data) {
+        populateTab(categorySectionItemList, data)
 
         categorySectionPagerAdapter = CategoryNavigationPagerAdapter(supportFragmentManager)
         categorySectionPagerAdapter?.setData(categorySectionItemList)
@@ -333,14 +322,14 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         setActiveTab()
     }
 
-    private fun populateTab(searchSectionItemList: ArrayList<CategorySectionItem>) {
+    private fun populateTab(searchSectionItemList: ArrayList<CategorySectionItem>, data: Data) {
         initFragments()
-        addFragmentsToList(searchSectionItemList)
+        addFragmentsToList(searchSectionItemList, data)
 
     }
 
-    private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>) {
-        searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName)))
+    private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>, data: Data) {
+        searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName, data)))
         searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
     }
 
@@ -401,7 +390,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         }
     }
 
-    private fun moveToAutoCompleteActivity(departMentName : String) {
+    private fun moveToAutoCompleteActivity(departMentName: String) {
         RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + departMentName)
     }
 
