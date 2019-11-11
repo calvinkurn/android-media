@@ -159,6 +159,10 @@ public class ShipmentDataConverter {
             locationDataModel.setProvinceName(tradeInAddress.getProvinceName());
             locationDataModel.setReceiverName(tradeInAddress.getReceiverName());
             locationDataModel.setStatus(tradeInAddress.getStatus());
+
+            recipientAddress.setDropOffAddressName(locationDataModel.getAddrName());
+            recipientAddress.setDropOffAddressDetail(locationDataModel.getAddress1());
+            recipientAddress.setLocationDataModel(locationDataModel);
         }
 
         return recipientAddress;
