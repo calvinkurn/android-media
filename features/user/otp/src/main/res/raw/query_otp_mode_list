@@ -1,0 +1,19 @@
+query otp_mode_list($otpType: String!, $email: String){
+    OTPModeList(otpType: $otpType, email: $email) {
+        success
+        message
+        errorMessage
+        modeLists {
+            modeCode
+            modeText
+            otpListText
+            afterOtpListText
+            afterOtpListTextHtml
+            otpListImgUrl
+            usingPopUp
+            popUpHeader
+            popUpBody
+            countdown
+        }
+    }
+}
