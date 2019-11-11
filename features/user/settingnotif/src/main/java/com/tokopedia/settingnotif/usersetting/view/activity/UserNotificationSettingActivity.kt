@@ -23,7 +23,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     private fun bindView() {
-        fragmentContainer = findViewById(R.id.parent_view)
+        fragmentContainer = findViewById(parentViewResourceID)
     }
 
     private fun setupView() {
@@ -44,5 +44,9 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
                 .replace(R.id.parent_view, fragment, settingType.name)
                 .commit()
     }
+
+    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 
 }
