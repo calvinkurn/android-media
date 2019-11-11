@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
-import com.tokopedia.home.beranda.helper.StartSnapHelper
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CarouselDecoration
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
 import com.tokopedia.v2.home.base.adapterdelegate.ViewTypeDelegateAdapter
 import com.tokopedia.v2.home.base.adapterdelegate.inflate
 import com.tokopedia.v2.home.model.vo.DynamicIconDataModel
+import com.tokopedia.v2.home.ui.ext.setSafeOnClickListener
 import kotlinx.android.synthetic.main.layout_dynamic_icon_section.view.*
 import kotlinx.android.synthetic.main.layout_use_case_and_dynamic_icon.view.*
 
@@ -52,7 +52,7 @@ class DynamicIconDelegateAdapter : ViewTypeDelegateAdapter {
 
         fun bind(item: DynamicIconDataModel){
             var layout = SINGLE_ROW_LAYOUT
-            if(item.dynamicIconWrap){
+            if(!item.dynamicIconWrap){
                 layout = DUAL_ROW_LAYOUT
                 recyclerView.layoutManager = GridLayoutManager(itemView.context, 5, GridLayoutManager.VERTICAL, false)
             } else {
@@ -103,7 +103,7 @@ class DynamicIconDelegateAdapter : ViewTypeDelegateAdapter {
             fun bind(item: DynamicIconDataModel.IconDataModel){
                 title.text = item.name
                 ImageHandler.loadImageThumbs(itemView.context, icon, item.imageUrl)
-                container.setOnClickListener { view ->
+                container.setSafeOnClickListener { view ->
 
                 }
             }

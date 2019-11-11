@@ -2,20 +2,22 @@ package com.tokopedia.home.beranda.presentation.view
 
 import android.content.Context
 import android.content.Intent
-import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.tokopedia.home.R
+import com.tokopedia.v2.home.ui.fragment.HomeFragment
 
-class HomeActivity : BaseSimpleActivity() {
-    override fun getNewFragment(): Fragment? {
-        return com.tokopedia.v2.home.ui.fragment.HomeFragment()
-//        return HomeFragment.newInstance(false)
-    }
+class HomeActivity : AppCompatActivity() {
 
     companion object{
         fun newInstance(context: Context) = Intent(context, HomeActivity::class.java)
     }
 
-
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.home_activity)
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, HomeFragment(), "home")
+                .commit()
+    }
 }

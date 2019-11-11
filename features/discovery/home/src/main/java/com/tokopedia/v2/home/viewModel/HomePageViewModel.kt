@@ -4,16 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.v2.home.base.HomeRepository
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
 import com.tokopedia.v2.home.model.pojo.DynamicHomeIcon
 import com.tokopedia.v2.home.model.pojo.HomeData
 import com.tokopedia.v2.home.model.pojo.HomeFlagType
 import com.tokopedia.v2.home.model.pojo.Tickers
-import com.tokopedia.v2.home.model.vo.BannerDataModel
-import com.tokopedia.v2.home.model.vo.DynamicIconDataModel
-import com.tokopedia.v2.home.model.vo.Resource
-import com.tokopedia.v2.home.model.vo.TickerDataModel
+import com.tokopedia.v2.home.model.vo.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,6 +19,7 @@ import javax.inject.Named
 
 class HomePageViewModel @Inject constructor (
         private val homeRepository: HomeRepository,
+        private val userSessionInterface: UserSessionInterface,
         @Named("Main") val dispatcher: CoroutineDispatcher
 ): BaseViewModel(dispatcher) {
 
@@ -51,6 +50,13 @@ class HomePageViewModel @Inject constructor (
                                 Tickers(message = "JNE ERROR 3!", id = "14", color = "#FF0000")
                         )
                 ))
+            }
+            if(homeData.homeFlag.getFlag(HomeFlagType.HAS_TOKOPOINTS)){
+               list.add(
+                   if(userSessionInterface.isLoggedIn)
+                       WalletDataModel()
+                   else WalletNonLoginDataModel()
+               )
             }
             list.add(DynamicIconDataModel(mappingDynamicIcons(homeData.dynamicHomeIcon), homeData.homeFlag.getFlag(HomeFlagType.DYNAMIC_ICON_WRAP)))
         }

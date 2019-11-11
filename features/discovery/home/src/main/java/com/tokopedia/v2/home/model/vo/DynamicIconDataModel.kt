@@ -7,7 +7,7 @@ data class DynamicIconDataModel (
         val dynamicIconWrap: Boolean
 ): ModelViewType{
     override fun getPrimaryKey(): Int {
-        return 2
+        return 5
     }
 
     override fun isContentsTheSame(other: ModelViewType): Boolean {

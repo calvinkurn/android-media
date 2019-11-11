@@ -3,10 +3,10 @@ package com.tokopedia.v2.home.ui.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.v2.home.base.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
-import com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets.BannerDelegateAdapter
-import com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets.DynamicIconDelegateAdapter
-import com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets.TickerDelegateAdapter
+import com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets.*
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
+@ObsoleteCoroutinesApi
 class HomeAdapter : BaseAdapterDelegate() {
 
 //    override var delegateAdapters = SparseArrayCompat<ViewTypeDelegateAdapter>()
@@ -15,6 +15,8 @@ class HomeAdapter : BaseAdapterDelegate() {
         delegateManager.addType(BannerDelegateAdapter())
         delegateManager.addType(TickerDelegateAdapter())
         delegateManager.addType(DynamicIconDelegateAdapter())
+        delegateManager.addType(WalletDelegateAdapter())
+        delegateManager.addType(WalletNonLoginDelegateAdapter())
     }
 
     override fun diffUtil(oldList: List<ModelViewType>, newList: List<ModelViewType>): DiffUtil.Callback {
