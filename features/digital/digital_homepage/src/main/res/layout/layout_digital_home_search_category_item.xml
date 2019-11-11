@@ -20,6 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="Digital Home" />
 </LinearLayout>

@@ -25,27 +25,13 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:navigationIcon="@drawable/ic_system_action_back_grayscale_24">
 
-            <LinearLayout
+            <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
+                android:id="@+id/digital_homepage_search_view_search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
-                    android:id="@+id/digital_homepage_search_view_search_bar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    app:siv_search_hint="@string/digital_home_search_view_hint" />
-
-                <ImageView
-                    android:layout_width="@dimen/dp_30"
-                    android:layout_height="@dimen/dp_30"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="@dimen/dp_8"
-                    app:srcCompat="@drawable/ic_warning_alert" />
-
-            </LinearLayout>
+                android:layout_gravity="center_vertical"
+                android:paddingRight="@dimen/dp_16"
+                app:siv_search_hint="@string/digital_home_search_view_hint" />
 
         </androidx.appcompat.widget.Toolbar>
 
