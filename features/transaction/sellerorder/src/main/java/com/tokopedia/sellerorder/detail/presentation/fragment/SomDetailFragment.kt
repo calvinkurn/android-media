@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.Observer
@@ -17,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.dialog.DialogUnify
@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
+import com.tokopedia.sellerorder.common.util.SomConsts.BASE_URL_UPLOAD_PROOF_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_RADIO_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
@@ -43,6 +44,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_OTHER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.QUERY_INVOICE_URL_UPLOAD_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_COLON
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_END
 import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_START
@@ -445,6 +447,14 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.primaryClip = ClipData.newPlainText(label, str)
         showCommonToaster(str)
+    }
+
+    override fun onInvalidResiUpload() {
+        // TODO: need backend provide shop_id to make url for upload_proof_awb
+        /*val awlUploadProofUrl = BASE_URL_UPLOAD_PROOF_AWB + detailResponse.orderId + "/" + QUERY_INVOICE_URL_UPLOAD_AWB + detailResponse.invoice
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.UPLOAD_AWB)
+        intent.putExtra(EXTRA_URL_UPLOAD, data.getAwbUploadProofUrl())
+        startActivity(intent)*/
     }
 
     private fun setProductEmpty(rCode: String) {

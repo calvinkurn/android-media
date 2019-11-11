@@ -221,7 +221,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             } else {
                 tickerList.first().let {
                     ticker_info?.visibility = View.VISIBLE
-                    ticker_info?.setHtmlDescription(it.body)
+                    ticker_info?.setHtmlDescription(it.shortDesc)
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {

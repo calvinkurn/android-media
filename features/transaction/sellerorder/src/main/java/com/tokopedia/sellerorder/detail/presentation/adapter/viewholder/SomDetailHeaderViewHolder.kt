@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
@@ -16,6 +17,7 @@ import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelInfoAdapter
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.detail_header_item.view.*
 import kotlinx.android.synthetic.main.detail_header_resi_item.view.*
 
@@ -76,6 +78,21 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
             } else {
                 itemView.layout_resi?.visibility = View.GONE
+            }
+
+            if (item.dataObject.awbUploadProofText.isNotEmpty()) {
+                // TODO : need investigate why ticker only show 1 line :(
+                val completeDesc = item.dataObject.awbUploadProofText + " " + itemView.context.getString(R.string.additional_invalid_resi)
+                itemView.ticker_invalid_resi?.apply {
+                    visibility = View.VISIBLE
+                    setHtmlDescription(completeDesc)
+                    tickerShape = Ticker.SHAPE_FULL
+                    tickerType = Ticker.TYPE_ERROR
+                    closeButtonVisibility = View.GONE
+                    setOnClickListener { actionListener.onInvalidResiUpload() }
+                }
+            } else {
+                itemView.ticker_invalid_resi?.visibility = View.GONE
             }
         }
     }

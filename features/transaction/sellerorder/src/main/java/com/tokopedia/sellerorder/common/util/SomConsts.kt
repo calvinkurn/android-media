@@ -77,4 +77,7 @@ object SomConsts {
 
     const val START_DATE = "start_date"
     const val END_DATE = "end_date"
+
+    const val BASE_URL_UPLOAD_PROOF_AWB = "https://m.tokopedia.com/myorder/list/uploadawb/"
+    const val QUERY_INVOICE_URL_UPLOAD_AWB = "?invoice="
 }

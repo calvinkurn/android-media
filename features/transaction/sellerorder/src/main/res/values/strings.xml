@@ -61,7 +61,7 @@
     <string name="accept_order">accept_order</string>
     <string name="kembali">Kembali</string>
     <string name="placeholder_reject_reason">Contoh: Kurir menolak paket saya</string>
-
+    <string name="additional_invalid_resi"><br><font color="#03ac0e">Unggah Sekarang</font></br></string>
 
     <string name="chat">Chat</string>
     <string name="harus_sesuai">Harus Sesuai</string>
