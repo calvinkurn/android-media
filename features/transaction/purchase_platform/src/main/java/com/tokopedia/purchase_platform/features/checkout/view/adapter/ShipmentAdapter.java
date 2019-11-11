@@ -624,6 +624,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return recipientAddressModel;
     }
 
+    public int getRecipientAddressModelPosition() {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            if (shipmentDataList.get(i) instanceof RecipientAddressModel) {
+                return i;
+            }
+        }
+        return RecyclerView.NO_POSITION;
+    }
+
     public int getTickerAnnouncementHolderDataIndex() {
         return shipmentDataList.indexOf(tickerAnnouncementHolderData);
     }

@@ -1242,6 +1242,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void renderChangeAddressFailed() {
+        RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
+        if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
+            recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN);
+        } else if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN) {
+            recipientAddressModel.setLocationDataModel(null);
+        }
+        onNeedUpdateViewItem(shipmentAdapter.getRecipientAddressModelPosition());
+    }
+
+    @Override
     public List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList,
                                                                 boolean isAnalyticsPurpose) {
         ShipmentAdapter.RequestData requestData = shipmentAdapter.getRequestData(null, shipmentCartItemModelList, isAnalyticsPurpose);
@@ -1411,7 +1422,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             newAddress.setDisableMultipleAddress(true);
                         }
 //                        shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null, false).getChangeAddressRequestData());
-                        shipmentPresenter.changeShippingAddress(isOneClickShipment(), false);
+                        shipmentPresenter.changeShippingAddress(newAddress, isOneClickShipment(), false, false);
                     }
                 }
                 break;
@@ -2951,7 +2962,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             recipientAddressModel.setLocationDataModel(locationDataModel);
             recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
             recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
-            shipmentPresenter.changeShippingAddress(true, true);
+            shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true);
 
 //            shipmentAdapter.updateSelectedAddress(recipientAddressModel, true);
         }
@@ -2969,7 +2980,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
         if (recipientAddressModel.getSelectedTabIndex() == 0) {
             // Todo : update address to normal address and reload SAF
-            shipmentPresenter.changeShippingAddress(true, false);
+            shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true);
         }
 //        onNeedUpdateViewItem(shipmentItemTradeInPosition);
 //        shipmentAdapter.updateShipmentCostModel();

@@ -105,6 +105,8 @@ public interface ShipmentContract {
 
         void renderChangeAddressSuccess();
 
+        void renderChangeAddressFailed();
+
         void renderCancelAutoApplyCouponSuccess(String variant);
 
         void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff);
@@ -342,7 +344,7 @@ public interface ShipmentContract {
                                        boolean isFromMultipleAddress, boolean isOneClickShipment,
                                        boolean isTradeIn, String cornerId, String deviceId, String type);
 
-        void changeShippingAddress(boolean isOneClickShipment, boolean isTradeInDropOff);
+        void changeShippingAddress(RecipientAddressModel newRecipientAddressModel, boolean isOneClickShipment, boolean isTradeInDropOff, boolean isHandleFallback);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 

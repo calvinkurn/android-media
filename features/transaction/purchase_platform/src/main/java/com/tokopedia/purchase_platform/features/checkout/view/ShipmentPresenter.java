@@ -1653,7 +1653,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void changeShippingAddress(boolean isOneClickShipment, boolean isTradeInDropOff) {
+    public void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
+                                      boolean isOneClickShipment,
+                                      boolean isTradeInDropOff,
+                                      boolean isHandleFallback) {
         getView().showLoading();
         List<DataChangeAddressRequest> dataChangeAddressRequests = new ArrayList<>();
         if (shipmentCartItemModelList != null) {
@@ -1665,11 +1668,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     dataChangeAddressRequest.setNotes(cartItemModel.getNoteToSeller());
                     dataChangeAddressRequest.setCartId(cartItemModel.getCartId());
                     if (isTradeInDropOff) {
-                        dataChangeAddressRequest.setAddressId(recipientAddressModel != null ? recipientAddressModel.getLocationDataModel().getAddrId() : 0);
+                        dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
+                                newRecipientAddressModel.getLocationDataModel().getAddrId() : 0
+                        );
                     } else {
-                        dataChangeAddressRequest.setAddressId(recipientAddressModel != null ?
-                                Integer.parseInt(recipientAddressModel.getId()) :
-                                Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId()));
+                        dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
+                                Integer.parseInt(newRecipientAddressModel.getId()) :
+                                Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId())
+                        );
                     }
                     dataChangeAddressRequests.add(dataChangeAddressRequest);
                 }
@@ -1702,30 +1708,42 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onError(Throwable e) {
-                                getView().hideLoading();
-                                e.printStackTrace();
-                                getView().showToastError(
-                                        ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
-                                );
+                                if (getView() != null) {
+                                    getView().hideLoading();
+                                    e.printStackTrace();
+                                    getView().showToastError(
+                                            ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
+                                    );
+                                    if (isHandleFallback) {
+                                        getView().renderChangeAddressFailed();
+                                    }
+                                }
                             }
 
                             @Override
                             public void onNext(SetShippingAddressData setShippingAddressData) {
-
-                                getView().hideLoading();
-                                if (setShippingAddressData.isSuccess()) {
-                                    getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
-                                    getView().renderChangeAddressSuccess();
-                                } else {
-                                    if (setShippingAddressData.getMessages() != null &&
-                                            setShippingAddressData.getMessages().size() > 0) {
-                                        StringBuilder stringBuilder = new StringBuilder();
-                                        for (String errorMessage : setShippingAddressData.getMessages()) {
-                                            stringBuilder.append(errorMessage).append(" ");
-                                        }
-                                        getView().showToastError(stringBuilder.toString());
+                                if (getView() != null) {
+                                    getView().hideLoading();
+                                    if (setShippingAddressData.isSuccess()) {
+                                        getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
+                                        getView().renderChangeAddressSuccess();
                                     } else {
-                                        getView().showToastError(getView().getActivityContext().getString(R.string.label_change_address_failed));
+                                        if (setShippingAddressData.getMessages() != null &&
+                                                setShippingAddressData.getMessages().size() > 0) {
+                                            StringBuilder stringBuilder = new StringBuilder();
+                                            for (String errorMessage : setShippingAddressData.getMessages()) {
+                                                stringBuilder.append(errorMessage).append(" ");
+                                            }
+                                            getView().showToastError(stringBuilder.toString());
+                                            if (isHandleFallback) {
+                                                getView().renderChangeAddressFailed();
+                                            }
+                                        } else {
+                                            getView().showToastError(getView().getActivityContext().getString(R.string.label_change_address_failed));
+                                            if (isHandleFallback) {
+                                                getView().renderChangeAddressFailed();
+                                            }
+                                        }
                                     }
                                 }
                             }
