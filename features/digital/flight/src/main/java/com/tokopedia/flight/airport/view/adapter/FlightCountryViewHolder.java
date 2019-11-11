@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel;
 
 /**
@@ -14,13 +13,13 @@ import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel
 
 public class FlightCountryViewHolder extends AbstractViewHolder<FlightCountryAirportViewModel> {
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_country;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_country;
 
     private TextView countryTextView;
 
     public FlightCountryViewHolder(View itemView) {
         super(itemView);
-        countryTextView = (TextView) itemView.findViewById(R.id.country);
+        countryTextView = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.country);
     }
 
     @Override

@@ -8,6 +8,29 @@
     <string name="hotel_e_voucher">E-voucher</string>
     <string name="title_digital_topup">Digital Topup</string>
     <string name="title_activity_developer_options">DeveloperOptions</string>
+    <string name="title_flight_travel">Tiket Pesawat</string>
+    <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
+    <string name="flight_order_list">Daftar Transaksi</string>
+    <string name="activity_label_flight_cancellation">Isi Data Pembatalan</string>
+    <string name="select_passenger_toolbar_title">Pilih Penumpang</string>
+    <string name="search_flight">Search Flight</string>
+    <string name="filter">Filter</string>
+    <string name="flight_classes_toolbar_title">Kelas Penerbangan</string>
+    <string name="flight_booking_toolbar_title">Isi Data Penumpang</string>
+    <string name="flight_booking_luggage_toolbar_title">Bagasi</string>
+    <string name="flight_booking_passenger_toolbar_title">Data Penumpang</string>
+    <string name="activity_label_flight_nationality">Kewarganegaraan</string>
+    <string name="flight_booking_list_passenger_title">Daftar Penumpang</string>
+    <string name="activity_label_flight_issuing_country">Negara Penerbit</string>
+    <string name="activity_label_flight_review">Rincian Pesanan</string>
+    <string name="activity_label_flight_review_cancellation">Rincian Pembatalan Pesanan</string>
+    <string name="flight_cancellation_refund_detail_toolbar_title">Pembatalan Pesanan</string>
+    <string name="flight_passenger_update_title">Ubah Data Penumpang</string>
+    <string name="flight_cancellation_terms_and_condition_title">Syarat dan Ketentuan</string>
+    <string name="flight_cancellation_list_title">Detail Pembatalan</string>
+    <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
+    <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
+    <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
 
     <!--Profile completion-->
     <string name="title_module_setting_profile">Data Diri Module</string>

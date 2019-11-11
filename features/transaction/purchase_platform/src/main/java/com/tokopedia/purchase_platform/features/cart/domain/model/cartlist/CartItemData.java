@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.domain.model.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProduct;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProductData;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class CartItemData implements Parcelable {
 
     private OriginData originData;
     private UpdatedData updatedData;
-    private MessageErrorData errorData;
+    private MessageErrorData messageErrorData;
     private boolean singleChild;
     private boolean parentHasErrorOrWarning;
     private boolean isError;
@@ -24,7 +24,7 @@ public class CartItemData implements Parcelable {
     private String warningMessageDescription;
     private String errorMessageTitle;
     private String errorMessageDescription;
-    private SimilarProduct similarProduct;
+    private SimilarProductData similarProductData;
     private boolean isDisableAllProducts;
     private boolean isFulfillment;
 
@@ -92,12 +92,12 @@ public class CartItemData implements Parcelable {
         this.errorMessageDescription = errorMessageDescription;
     }
 
-    public SimilarProduct getSimilarProduct() {
-        return similarProduct;
+    public SimilarProductData getSimilarProductData() {
+        return similarProductData;
     }
 
-    public void setSimilarProduct(SimilarProduct similarProduct) {
-        this.similarProduct = similarProduct;
+    public void setSimilarProductData(SimilarProductData similarProductData) {
+        this.similarProductData = similarProductData;
     }
 
     public OriginData getOriginData() {
@@ -116,12 +116,12 @@ public class CartItemData implements Parcelable {
         this.updatedData = updatedData;
     }
 
-    public MessageErrorData getErrorData() {
-        return errorData;
+    public MessageErrorData getMessageErrorData() {
+        return messageErrorData;
     }
 
-    public void setErrorData(MessageErrorData errorData) {
-        this.errorData = errorData;
+    public void setMessageErrorData(MessageErrorData messageErrorData) {
+        this.messageErrorData = messageErrorData;
     }
 
     public boolean isParentHasErrorOrWarning() {
@@ -179,7 +179,7 @@ public class CartItemData implements Parcelable {
         private String category;
         private String categoryForAnalytics;
         private String categoryId;
-        private List<WholesalePrice> wholesalePrice;
+        private List<WholesalePriceData> wholesalePriceData;
         private String trackerAttribution;
         private String trackerListName;
         private String originalRemark;
@@ -455,12 +455,12 @@ public class CartItemData implements Parcelable {
             this.productInvenageByUserText = productInvenageByUserText;
         }
 
-        public List<WholesalePrice> getWholesalePrice() {
-            return wholesalePrice;
+        public List<WholesalePriceData> getWholesalePriceData() {
+            return wholesalePriceData;
         }
 
-        public void setWholesalePrice(List<WholesalePrice> wholesalePrice) {
-            this.wholesalePrice = wholesalePrice;
+        public void setWholesalePriceData(List<WholesalePriceData> wholesalePriceData) {
+            this.wholesalePriceData = wholesalePriceData;
         }
 
         public String getWholesalePriceFormatted() {
@@ -676,7 +676,7 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.category);
             dest.writeString(this.categoryForAnalytics);
             dest.writeString(this.categoryId);
-            dest.writeTypedList(this.wholesalePrice);
+            dest.writeTypedList(this.wholesalePriceData);
             dest.writeString(this.trackerAttribution);
             dest.writeString(this.trackerListName);
             dest.writeString(this.productCashBack);
@@ -727,7 +727,7 @@ public class CartItemData implements Parcelable {
             this.category = in.readString();
             this.categoryForAnalytics = in.readString();
             this.categoryId = in.readString();
-            this.wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
+            this.wholesalePriceData = in.createTypedArrayList(WholesalePriceData.CREATOR);
             this.trackerAttribution = in.readString();
             this.trackerListName = in.readString();
             this.productCashBack = in.readString();
@@ -980,7 +980,7 @@ public class CartItemData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.originData, flags);
         dest.writeParcelable(this.updatedData, flags);
-        dest.writeParcelable(this.errorData, flags);
+        dest.writeParcelable(this.messageErrorData, flags);
         dest.writeByte(this.singleChild ? (byte) 1 : (byte) 0);
         dest.writeByte(this.parentHasErrorOrWarning ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
@@ -989,7 +989,7 @@ public class CartItemData implements Parcelable {
         dest.writeString(this.warningMessageDescription);
         dest.writeString(this.errorMessageTitle);
         dest.writeString(this.errorMessageDescription);
-        dest.writeParcelable(this.similarProduct, flags);
+        dest.writeParcelable(this.similarProductData, flags);
         dest.writeByte(this.isDisableAllProducts ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
     }
@@ -997,7 +997,7 @@ public class CartItemData implements Parcelable {
     protected CartItemData(Parcel in) {
         this.originData = in.readParcelable(OriginData.class.getClassLoader());
         this.updatedData = in.readParcelable(UpdatedData.class.getClassLoader());
-        this.errorData = in.readParcelable(MessageErrorData.class.getClassLoader());
+        this.messageErrorData = in.readParcelable(MessageErrorData.class.getClassLoader());
         this.singleChild = in.readByte() != 0;
         this.parentHasErrorOrWarning = in.readByte() != 0;
         this.isError = in.readByte() != 0;
@@ -1006,7 +1006,7 @@ public class CartItemData implements Parcelable {
         this.warningMessageDescription = in.readString();
         this.errorMessageTitle = in.readString();
         this.errorMessageDescription = in.readString();
-        this.similarProduct = in.readParcelable(SimilarProduct.class.getClassLoader());
+        this.similarProductData = in.readParcelable(SimilarProductData.class.getClassLoader());
         this.isDisableAllProducts = in.readByte() != 0;
         this.isFulfillment = in.readByte() != 0;
     }

@@ -25,10 +25,6 @@ public abstract class TransactionAnalytics {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
-    public void sendScreenNameV5(String screenName, Map<String, String> params) {
-        TrackApp.getInstance().getGTM().sendScreenV5(screenName, params);
-    }
-
     protected void sendEventCategoryActionLabel(String event, String eventCategory,
                                       String eventAction, String eventLabel) {
 
@@ -45,9 +41,5 @@ public abstract class TransactionAnalytics {
 
     protected void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
-    }
-
-    void sendEnhancedEcommerceV5(String eventName, Bundle data) {
-        TrackApp.getInstance().getGTM().pushEECommerce(eventName, data);
     }
 }

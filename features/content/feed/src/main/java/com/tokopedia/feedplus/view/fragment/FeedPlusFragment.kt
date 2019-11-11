@@ -318,7 +318,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
 
     private fun prepareView() {
-        adapter.itemTreshold = 2
+        adapter.itemTreshold = 1
         layoutManager = NpaLinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL,
                 false)
@@ -652,13 +652,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     fun scrollToTop() {
-        if (recyclerView != null) {
+        if (::recyclerView.isInitialized) {
             recyclerView.scrollToPosition(0)
         }
     }
 
     private fun triggerClearNewFeedNotification() {
-        if (context != null && context!!.applicationContext != null) {
+        if (context?.applicationContext != null) {
             val intent = Intent(BROADCAST_FEED)
             intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true)
             LocalBroadcastManager.getInstance(context!!.applicationContext).sendBroadcast(intent)
@@ -668,7 +668,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
         registerNewFeedReceiver()
-        if (userVisibleHint && presenter != null) {
+        if (userVisibleHint && ::presenter.isInitialized) {
             loadData(userVisibleHint)
         }
     }
@@ -699,7 +699,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun loadData(isVisibleToUser: Boolean) {
-        if (isVisibleToUser && isAdded && activity != null && presenter != null) {
+        if (isVisibleToUser && isAdded && activity != null && ::presenter.isInitialized) {
             if (!isLoadedOnce) {
                 feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
                 isLoadedOnce = !isLoadedOnce
@@ -1722,14 +1722,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             visitable.header.followCta.authorType,
                             trackingPostModel)
                 }
-                onAffiliateTrackClicked(visitable.tracking, false)
 
             } else if (visitable is BannerViewModel) {
                 val (itemViewModels) = visitable
                 val trackingBannerModels = ArrayList<TrackingBannerModel>()
                 for ((_, _, _, trackingBannerModel, tracking) in itemViewModels) {
                     trackingBannerModels.add(trackingBannerModel)
-                    onAffiliateTrackClicked(tracking, false)
                 }
                 analytics.eventBannerImpression(trackingBannerModels, userId)
             } else if (visitable is FeedRecommendationViewModel) {
@@ -1737,7 +1735,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val trackingList = ArrayList<TrackingRecommendationModel>()
                 for ((_, _, _, _, _, _, _, _, _, _, trackingRecommendationModel, tracking) in cards) {
                     trackingList.add(trackingRecommendationModel)
-                    onAffiliateTrackClicked(tracking, false)
                 }
                 analytics.eventRecommendationImpression(
                         trackingList,
@@ -1749,7 +1746,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         trackingList,
                         userId
                 )
-                onAffiliateTrackClicked(tracking, false)
             }
         }
     }

@@ -66,37 +66,7 @@ public class PurchaseTracking extends TrackingUtils {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_FINISH_TX);
         TrackApp.getInstance().getGTM().clearEnhanceEcommerce();
 
-        marketplacev5(context, purchaseBundlePair);
-    }
 
-    private static void marketplacev5(Context context, Pair<Purchase, Bundle> purchaseBundlePair) {
-        Purchase purchase = purchaseBundlePair.getFirst();
-        Bundle ecommerceBundle = new Bundle();
-        ecommerceBundle.putString(AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory());
-        ecommerceBundle.putString(AppEventTracking.EVENT_ACTION, purchase.getEventAction());
-        ecommerceBundle.putString(AppEventTracking.EVENT_LABEL, purchase.getEventLabel());
-        ecommerceBundle.putString(Purchase.PAYMENT_ID, purchase.getPaymentId());
-        ecommerceBundle.putString(Purchase.PAYMENT_TYPE, purchase.getPaymentType());
-        ecommerceBundle.putString(Purchase.SHOP_ID, purchase.getShopId());
-        ecommerceBundle.putString(Purchase.LOGISTIC_TYPE, purchase.getLogisticType());
-        ecommerceBundle.putString(Purchase.CURRENT_SITE, purchase.getCurrentSite());
-        ecommerceBundle.putString(Purchase.USER_ID, purchase.getUserId());
-        Object transactionID = purchase.getTransactionID();
-        ecommerceBundle.putString(FirebaseAnalytics.Param.TRANSACTION_ID, transactionID instanceof String ? ((String) transactionID) : "");
-        Object affiliation = purchase.getAffiliation();
-        ecommerceBundle.putString(FirebaseAnalytics.Param.AFFILIATION, affiliation instanceof String ? ((String) affiliation) : "");
-        Object revenue = purchase.getRevenue();
-        ecommerceBundle.putDouble(FirebaseAnalytics.Param.VALUE, revenue instanceof String ? Double.parseDouble(((String) revenue)) : 0);
-        Object tax = purchase.getTax();
-        ecommerceBundle.putFloat(FirebaseAnalytics.Param.TAX, tax instanceof String ? Float.parseFloat(((String) tax)) : 0);
-        Object shipping = purchase.getShipping();
-        ecommerceBundle.putFloat(FirebaseAnalytics.Param.SHIPPING, shipping instanceof String ? Float.parseFloat(((String) shipping)) : 0);
-        ecommerceBundle.putString(FirebaseAnalytics.Param.CURRENCY, purchase.getCurrency());
-        Object couponCode = purchase.getCouponCode();
-        ecommerceBundle.putString(FirebaseAnalytics.Param.COUPON, couponCode instanceof String ? ((String) couponCode) : "");
-        ecommerceBundle.putParcelableArrayList(ITEMS, purchaseBundlePair.getSecond().getParcelableArrayList("products"));
-        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE, ecommerceBundle);
-        TrackApp.getInstance().getGTM().sendScreenV5(AppScreen.SCREEN_FINISH_TX);
     }
 
     public static void digital(Context context, Purchase purchase) {

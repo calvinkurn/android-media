@@ -28,6 +28,12 @@
         </activity>
 
         <activity
+            android:name="com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity"
+            android:label="@string/saldo_detail_title_activity_people_deposit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent"/>
+
+        <activity
             android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
             android:label="@string/saldo_detail_title_header_saldo_intro"
             android:screenOrientation="portrait"

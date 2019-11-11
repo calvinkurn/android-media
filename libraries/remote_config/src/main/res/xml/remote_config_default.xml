@@ -329,10 +329,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_customer_enable_cashshield</key>
-        <value>false</value>
-    </entry>
-    <entry>
         <key>android_customer_travel_enable_cross_sell</key>
         <value>false</value>
     </entry>
@@ -342,6 +338,10 @@
     </entry>
     <entry>
         <key>app_enable_catalog_revamp</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_enable_officialstore_native</key>
         <value>true</value>
     </entry>
     <entry>

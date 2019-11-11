@@ -44,6 +44,8 @@ public interface ConstantTransactionAnalytics {
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
         String VIEW_SOM = "viewSOM";
         String CLICK_RECOMMENDATION = "clickRecommendation";
+        String VIEW_TRADEIN = "viewTradeIn";
+        String CLICK_TRADEIN = "clickTradeIn";
     }
 
     interface EventCategory {

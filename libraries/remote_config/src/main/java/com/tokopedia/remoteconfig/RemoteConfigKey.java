@@ -154,7 +154,6 @@ public class RemoteConfigKey {
     public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
 
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
-    public static final String ENABLE_CASHSHIELD = "android_customer_enable_cashshield";
 
     public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
 
@@ -175,4 +174,6 @@ public class RemoteConfigKey {
 
     public static final String GTM_REFRESH_IN_BACKGROUND = "android_gtm_refresh_in_background";
     public static final String ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW = "enable_customer_user_agent_in_webview";
+
+    public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 }
