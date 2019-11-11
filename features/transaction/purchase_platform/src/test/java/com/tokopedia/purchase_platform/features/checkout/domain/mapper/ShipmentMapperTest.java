@@ -1,10 +1,10 @@
 package com.tokopedia.purchase_platform.features.checkout.domain.mapper;
 
 import com.google.gson.Gson;
-import com.tokopedia.UnitTestFileUtils;
-import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.purchase_platform.UnitTestFileUtils;
 import com.tokopedia.purchase_platform.common.base.MapperUtil;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 
 import org.junit.Assert;
 import org.junit.Before;
