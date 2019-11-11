@@ -30,6 +30,18 @@ object ApplinkConstInternalGlobal {
     val PARAM_EMAIL = "email"
     @JvmField
     val PARAM_SOURCE = "source"
+    @JvmField
+    val PARAM_NAME = "name"
+    @JvmField
+    val PARAM_PASS = "pass"
+    @JvmField
+    val PARAM_TOKEN = "token"
+    @JvmField
+    val PARAM_ACTION = "action"
+    @JvmField
+    val PARAM_IS_SMART_LOGIN = "isSmartLogin"
+    @JvmField
+    val PARAM_IS_PENDING = "isPending"
 
     //VerificationActivity Param
     @JvmField
@@ -150,6 +162,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
 
+    // ValidatorActivity
+    // tokopedia-android-internal://global/otp-validator
+    @JvmField
+    val OTP_VALIDATOR = "$INTERNAL_GLOBAL/otp-validator"
+
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
@@ -232,6 +249,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
 
+    // ChangeEmailActivity
+    // tokopedia-android-internal://global/change-email-register
+    @JvmField
+    val CHANGE_EMAIL_REGISTER = "$INTERNAL_GLOBAL/change-email-register"
+
+    // RegisterEmailActivity
+    // tokopedia-android-internal://global/email-register
+    @JvmField
+    val EMAIL_REGISTER = "$INTERNAL_GLOBAL/email-register"
 
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"

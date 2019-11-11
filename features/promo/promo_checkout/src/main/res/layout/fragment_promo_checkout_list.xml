@@ -79,16 +79,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
                 android:visibility="gone"
                 tools:visibility="gone">
 
-                <TextView
-                    android:visibility="gone"
-                    style="@style/TextView.Micro.BlackSecondary"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    app:typographyType="heading_4"
+                    android:visibility="visible"
+                    android:ellipsize="end"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:maxLines="2"
+                    android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
+                    android:textColor="@color/promo_checkout_catalogtitle_color"
                     android:text="@string/promo_title_category" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -98,7 +102,7 @@
                     android:clipToPadding="false"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_promo_last_seen" />
+                    tools:listitem="@layout/item_last_seen_promo_history" />
             </LinearLayout>
 
             <include

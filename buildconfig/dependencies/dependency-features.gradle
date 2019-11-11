@@ -77,6 +77,7 @@ ext {
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
 
             accountHome                     : ":features:home:account-home",
+            dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",

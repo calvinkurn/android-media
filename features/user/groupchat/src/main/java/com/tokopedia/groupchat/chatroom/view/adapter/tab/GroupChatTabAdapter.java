@@ -31,7 +31,7 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
 
         public ViewHolder(View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.title);
+            title = itemView.findViewById(com.tokopedia.design.R.id.title);
             highlight = itemView.findViewById(R.id.highlight);
             mainLayout = itemView.findViewById(R.id.main_layout);
             dot = itemView.findViewById(R.id.dot);
@@ -73,7 +73,7 @@ public class GroupChatTabAdapter extends RecyclerView.Adapter<GroupChatTabAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.title.setText(listTab.get(position).getTitle());
         if (listTab.get(position).isActive()) {
-            holder.title.setTextColor(MethodChecker.getColor(holder.title.getContext(), R.color.tkpd_main_green));
+            holder.title.setTextColor(MethodChecker.getColor(holder.title.getContext(), com.tokopedia.design.R.color.tkpd_main_green));
             holder.highlight.setVisibility(View.VISIBLE);
         } else {
             holder.title.setTextColor(MethodChecker.getColor(holder.title.getContext(), R.color.black_38));

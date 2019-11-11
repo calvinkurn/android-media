@@ -58,6 +58,10 @@
     <string name="form_final_info">Sebelum klik “Unggah”, pastikan foto yang Anda ambil sudah
         benar dan terlihat jelas.\n\nDengan mengunggah, saya menyatakan bahwa data yang saya
         berikan adalah benar dan telah menyetujui Syarat &amp; Ketentuan.</string>
+
+    <string name="form_reupload_info">Dengan mengunggah, saya menyatakan bahwa data yang saya
+        berikan adalah benar dan telah menyetujui Syarat &amp; Ketentuan.</string>
+
     <string name="terms_and_condition">Syarat &amp; Ketentuan</string>
     <string name="upload_button">Unggah</string>
     <string name="upload_button_tradein">Unggah dan Beli Sekarang</string>
@@ -78,5 +82,8 @@
 
     <string name="camera_recapture_text">Foto Ulang</string>
     <string name="camera_next_button">Lanjut</string>
+    <string name="user_identification_common_retake_photo">Foto Ulang KTP</string>
+    <string name="user_identification_final_ktp_not_valid">Foto KTP belum terlihat jelas.</string>
+    <string name="user_identification_final_retake_ktp">Ambil ulang foto sekarang.</string>
 
 </resources>
