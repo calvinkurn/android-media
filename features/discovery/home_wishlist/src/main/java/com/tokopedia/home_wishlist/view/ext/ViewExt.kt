@@ -2,6 +2,7 @@ package com.tokopedia.home_wishlist.view.ext
 
 import android.util.TypedValue
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_wishlist.util.SafeClickListener
 
 private fun View.addRipple() = with(TypedValue()) {
@@ -19,4 +20,8 @@ fun View.setSafeOnClickListener(onSafeClick: (View) -> Unit) {
         onSafeClick(it)
     }
     setOnClickListener(safeClickListener)
+}
+
+fun RecyclerView.isScrollable(): Boolean{
+    return computeHorizontalScrollRange() > width || computeVerticalScrollRange() > height
 }

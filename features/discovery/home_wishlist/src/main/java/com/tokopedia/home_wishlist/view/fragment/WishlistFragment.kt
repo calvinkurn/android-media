@@ -37,6 +37,7 @@ import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.custom.CustomSearchView
 import com.tokopedia.home_wishlist.view.custom.SpaceBottomItemDecoration
+import com.tokopedia.home_wishlist.view.ext.isScrollable
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_PRODUCT_ID
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_UPDATED_POSITION
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.REQUEST_FROM_PDP
@@ -90,13 +91,13 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private val swipeToRefresh by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
     private val containerDelete by lazy { view?.findViewById<FrameLayout>(R.id.container_delete) }
     private val deleteButton by lazy { view?.findViewById<UnifyButton>(R.id.delete_button) }
-    private val collapsingToolbar by lazy { view?.findViewById<CollapsingToolbarLayout>(R.id.collapsingToolbar) }
     private lateinit var searchView: CustomSearchView
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private val itemDecorationBottom by lazy { SpaceBottomItemDecoration() }
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
     internal var menu: Menu? = null
     private var modeBulkDelete = false
+    private var isInitialPage: Boolean = true
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -256,6 +257,15 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 swipeToRefresh?.isRefreshing = false
                 searchView.show()
                 menu?.findItem(R.id.manage)?.isVisible = true
+
+                if(isInitialPage) {
+                    isInitialPage = false
+                    Handler().postDelayed({
+                        if(recyclerView?.isScrollable() == true){
+                            updateScrollFlagForSearchView(false)
+                        }
+                    }, 1500)
+                }
             }
         })
         viewModel.getWishlistData(shouldShowInitialPage = true)
@@ -282,14 +292,13 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun updateScrollFlagForSearchView(isSearch: Boolean){
-        val layoutParam = collapsingToolbar?.layoutParams as AppBarLayout.LayoutParams
-        layoutParam.let{
-            if(isSearch){
-                layoutParam.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
-            }else {
-                layoutParam.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
-            }
+        val layoutParam = searchView.layoutParams as AppBarLayout.LayoutParams
+        if(isSearch){
+            layoutParam.scrollFlags = 0
+        }else {
+            layoutParam.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
         }
+        searchView.layoutParams = layoutParam
     }
 
     override fun onProductClick(dataModel: WishlistDataModel, position: Int) {

@@ -12,28 +12,20 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:background="@android:color/white"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:elevation="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingToolbar"
+        app:elevation="0dp">
+
+
+        <com.tokopedia.home_wishlist.view.custom.CustomSearchView
+            android:id="@+id/wishlist_search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways">
+            android:fitsSystemWindows="true"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginRight="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_8"/>
 
-            <com.tokopedia.home_wishlist.view.custom.CustomSearchView
-                android:id="@+id/wishlist_search_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                android:layout_marginLeft="@dimen/dp_6"
-                android:layout_marginStart="@dimen/dp_6"
-                android:layout_marginRight="@dimen/dp_6"
-                android:layout_marginEnd="@dimen/dp_6"
-                android:layout_marginBottom="@dimen/dp_8"/>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
