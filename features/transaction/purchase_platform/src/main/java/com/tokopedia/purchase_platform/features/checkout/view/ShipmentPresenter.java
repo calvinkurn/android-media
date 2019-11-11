@@ -1653,7 +1653,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void changeShippingAddress(boolean isOneClickShipment) {
+    public void changeShippingAddress(boolean isOneClickShipment, boolean isTradeInDropOff) {
         getView().showLoading();
         List<DataChangeAddressRequest> dataChangeAddressRequests = new ArrayList<>();
         if (shipmentCartItemModelList != null) {
@@ -1663,10 +1663,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     dataChangeAddressRequest.setQuantity(cartItemModel.getQuantity());
                     dataChangeAddressRequest.setProductId(cartItemModel.getProductId());
                     dataChangeAddressRequest.setNotes(cartItemModel.getNoteToSeller());
-                    dataChangeAddressRequest.setAddressId(recipientAddressModel != null ?
-                            Integer.parseInt(recipientAddressModel.getId()) :
-                            Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId()));
                     dataChangeAddressRequest.setCartId(cartItemModel.getCartId());
+                    if (isTradeInDropOff) {
+                        dataChangeAddressRequest.setAddressId(recipientAddressModel != null ? recipientAddressModel.getLocationDataModel().getAddrId() : 0);
+                    } else {
+                        dataChangeAddressRequest.setAddressId(recipientAddressModel != null ?
+                                Integer.parseInt(recipientAddressModel.getId()) :
+                                Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId()));
+                    }
                     dataChangeAddressRequests.add(dataChangeAddressRequest);
                 }
             }

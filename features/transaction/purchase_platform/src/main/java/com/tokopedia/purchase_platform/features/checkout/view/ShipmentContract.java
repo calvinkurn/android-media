@@ -342,7 +342,7 @@ public interface ShipmentContract {
                                        boolean isFromMultipleAddress, boolean isOneClickShipment,
                                        boolean isTradeIn, String cornerId, String deviceId, String type);
 
-        void changeShippingAddress(boolean isOneClickShipment);
+        void changeShippingAddress(boolean isOneClickShipment, boolean isTradeInDropOff);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 

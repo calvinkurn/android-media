@@ -1411,7 +1411,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             newAddress.setDisableMultipleAddress(true);
                         }
 //                        shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null, false).getChangeAddressRequestData());
-                        shipmentPresenter.changeShippingAddress(isOneClickShipment());
+                        shipmentPresenter.changeShippingAddress(isOneClickShipment(), false);
                     }
                 }
                 break;
@@ -2945,7 +2945,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromSetTradeInPinpoint(Intent data) {
         // Todo : update address to indomaret address and reload SAF
-        shipmentPresenter.changeShippingAddress(true);
+        shipmentPresenter.changeShippingAddress(true, true);
 //        if (data != null) {
 //            LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
 //            RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
@@ -2968,7 +2968,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
         if (recipientAddressModel.getSelectedTabIndex() == 0) {
             // Todo : update address to normal address and reload SAF
-            shipmentPresenter.changeShippingAddress(true);
+            shipmentPresenter.changeShippingAddress(true, false);
         }
 //        onNeedUpdateViewItem(shipmentItemTradeInPosition);
 //        shipmentAdapter.updateShipmentCostModel();
