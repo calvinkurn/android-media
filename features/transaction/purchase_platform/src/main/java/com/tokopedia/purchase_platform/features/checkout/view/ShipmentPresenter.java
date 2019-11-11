@@ -620,8 +620,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setCartPromoSuggestionHolderData(cartShipmentAddressFormData.getCartPromoSuggestionHolderData());
         }
 
-        setShipmentCartItemModelList(getView()
-                .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
+        setShipmentCartItemModelList(getView().getShipmentDataConverter().getShipmentItems(
+                cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
+        );
 
         this.codData = cartShipmentAddressFormData.getCod();
         if (this.codData != null && this.codData.isCod()) {
