@@ -35,7 +35,7 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:text="@string/recom_see_more_title"
+            android:text="@string/wishlist_see_more_title"
             android:textColor="@color/green_500"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:typographyType="heading_5"

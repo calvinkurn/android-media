@@ -75,8 +75,8 @@ object WishlistTracking {
     private const val EVENT_ACTION_CLICK_PRODUCT = "click product"
     private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation"
     private const val EVENT_ACTION_CLICK_ICON_SHARE = "click icon share"
-    private const val EVENT_ACTION_ADD_TO_CART = "click add to cart on primary product"
-    private const val EVENT_ACTION_ADD_TO_CART_NON_LOGIN = "click add to cart on primary product - non login"
+    private const val EVENT_ACTION_ADD_TO_CART = "click add, cart on primary product"
+    private const val EVENT_ACTION_ADD_TO_CART_NON_LOGIN = "click add, cart on primary product - non login"
     private const val EVENT_ACTION_BUY = "click buy on primary product"
     private const val EVENT_ACTION_BUY_NON_LOGIN = "click buy on primary product - non login"
     private const val EVENT_ACTION_CLICK_BACK = "click back"
@@ -198,13 +198,13 @@ object WishlistTracking {
     fun clickBuy(wishlistItem: WishlistItem, cartId: String){
         getTracker().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT to EVENT_CLICK_WISHLIST,
-                        EVENT_CATEGORY to EVENT_WISHLIST_PAGE,
-                        EVENT_ACTION to EVENT_ACTION_CLICK_BUY,
-                        EVENT_LABEL to wishlistItem.id,
-                        ECOMMERCE to DataLayer.mapOf(
-                                ECOMMERCE_CURRENCY_CODE to VALUE_IDR,
-                                ECOMMERCE_ADD to convertProductToBuy(
+                        EVENT, EVENT_CLICK_WISHLIST,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_BUY,
+                        EVENT_LABEL, wishlistItem.id,
+                        ECOMMERCE, DataLayer.mapOf(
+                                ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                                ECOMMERCE_ADD, convertProductToBuy(
                                         item = wishlistItem,
                                         cartId = cartId,
                                         list = IMPRESSION_LIST
@@ -217,13 +217,13 @@ object WishlistTracking {
     fun productClick(wishlistItem: WishlistItem, position: String){
         getTracker().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT to EVENT_PRODUCT_CLICK,
-                        EVENT_CATEGORY to EVENT_WISHLIST_PAGE,
-                        EVENT_ACTION to EVENT_ACTION_CLICK_PRODUCT,
-                        EVENT_LABEL to position,
-                        ECOMMERCE to DataLayer.mapOf(
-                                ECOMMERCE_CURRENCY_CODE to VALUE_IDR,
-                                ECOMMERCE_CLICK to DataLayer.listOf(
+                        EVENT, EVENT_PRODUCT_CLICK,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT,
+                        EVENT_LABEL, position,
+                        ECOMMERCE, DataLayer.mapOf(
+                                ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                                ECOMMERCE_CLICK, DataLayer.listOf(
                                         convertWishlistItemToDataClickObject(
                                                 item = wishlistItem,
                                                 list = IMPRESSION_LIST,
@@ -236,13 +236,13 @@ object WishlistTracking {
     }
 
     fun impressionProduct(trackingQueue: TrackingQueue, wishlistItem: WishlistItem, position: String){
-        val map = mapOf(
-                EVENT to EVENT_PRODUCT_VIEW,
-                EVENT_CATEGORY to EVENT_WISHLIST_PAGE,
-                EVENT_LABEL to VALUE_EMPTY,
-                ECOMMERCE to DataLayer.listOf(
-                        ECOMMERCE_CURRENCY_CODE to VALUE_IDR,
-                        ECOMMERCE_IMPRESSIONS to DataLayer.listOf(
+        val map = DataLayer.mapOf(
+                EVENT, EVENT_PRODUCT_VIEW,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_LABEL, VALUE_EMPTY,
+                ECOMMERCE, DataLayer.listOf(
+                        ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                        ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                                 convertWishlistItemToDataImpressionObject(
                                         item = wishlistItem,
                                         list = IMPRESSION_LIST,
@@ -257,23 +257,23 @@ object WishlistTracking {
     fun removeWishlist(productId: Int){
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        EVENT to EVENT_PRODUCT_VIEW,
-                        EVENT_CATEGORY to EVENT_WISHLIST_PAGE,
-                        EVENT_LABEL to productId.toString(),
-                        EVENT_ACTION to EVENT_ACTION_REMOVE_WISHLIST
+                        EVENT, EVENT_PRODUCT_VIEW,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_LABEL, productId.toString(),
+                        EVENT_ACTION, EVENT_ACTION_REMOVE_WISHLIST
                 )
         )
     }
 
     fun impressionRecommendation(trackingQueue: TrackingQueue, item: RecommendationItem, position: Int){
-        val map = mapOf(
-                EVENT to EVENT_PRODUCT_VIEW,
-                EVENT_CATEGORY to EVENT_WISHLIST_PAGE,
-                EVENT_ACTION to EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
-                EVENT_LABEL to VALUE_EMPTY,
-                ECOMMERCE to DataLayer.listOf(
-                        ECOMMERCE_CURRENCY_CODE to VALUE_IDR,
-                        ECOMMERCE_IMPRESSIONS to DataLayer.listOf(
+        val map = DataLayer.mapOf(
+                EVENT, EVENT_PRODUCT_VIEW,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
+                EVENT_LABEL, VALUE_EMPTY,
+                ECOMMERCE, DataLayer.listOf(
+                        ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                        ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                                 convertRecommendationItemToDataImpressionObject(
                                         item = item,
                                         list = IMPRESSION_LIST,
@@ -288,12 +288,12 @@ object WishlistTracking {
     fun clickRecommendation(item: RecommendationItem, position: Int){
         getTracker().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT to EVENT_PRODUCT_CLICK,
-                        EVENT_CATEGORY to EVENT_WISHLIST_PAGE,
-                        EVENT_ACTION to EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
-                        EVENT_LABEL to VALUE_EMPTY,
-                        ECOMMERCE to DataLayer.mapOf(
-                                ECOMMERCE_CLICK to DataLayer.listOf(
+                        EVENT, EVENT_PRODUCT_CLICK,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
+                        EVENT_LABEL, VALUE_EMPTY,
+                        ECOMMERCE, DataLayer.mapOf(
+                                ECOMMERCE_CLICK, DataLayer.listOf(
                                         convertRecommendationItemToDataClickObject(
                                                 item = item,
                                                 list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) "- product topads" else ""),
@@ -308,10 +308,10 @@ object WishlistTracking {
     fun clickWishlistIconRecommendation(productId: String, isTopAds: Boolean, recomTitle: String, isAdd: Boolean){
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        EVENT to EVENT_CLICK_WISHLIST,
-                        EVENT_CATEGORY to EVENT_WISHLIST_PAGE,
-                        EVENT_LABEL to String.format(EVENT_LABEL_RECOM_WISHLIST, productId, if(isTopAds) "topads" else "general", recomTitle),
-                        EVENT_ACTION to if(isAdd) EVENT_ACTION_CLICK_ADD_WISHLIST else EVENT_ACTION_CLICK_REMOVE_WISHLIST
+                        EVENT, EVENT_CLICK_WISHLIST,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_LABEL, String.format(EVENT_LABEL_RECOM_WISHLIST, productId, if(isTopAds) "topads" else "general", recomTitle),
+                        EVENT_ACTION, if(isAdd) EVENT_ACTION_CLICK_ADD_WISHLIST else EVENT_ACTION_CLICK_REMOVE_WISHLIST
                 )
         )
     }
@@ -319,10 +319,10 @@ object WishlistTracking {
     fun clickEmptyWishlistIconRecommendation(productId: String, isTopAds: Boolean, recomTitle: String, isAdd: Boolean){
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        EVENT to EVENT_CLICK_WISHLIST,
-                        EVENT_CATEGORY to EVENT_WISHLIST_PAGE,
-                        EVENT_LABEL to String.format(EVENT_LABEL_RECOM_WISHLIST_EMPTY_WISHLIST, productId, if(isTopAds) "topads" else "general", recomTitle),
-                        EVENT_ACTION to if(isAdd) EVENT_ACTION_CLICK_ADD_WISHLIST else EVENT_ACTION_CLICK_REMOVE_WISHLIST
+                        EVENT, EVENT_CLICK_WISHLIST,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_LABEL, String.format(EVENT_LABEL_RECOM_WISHLIST_EMPTY_WISHLIST, productId, if(isTopAds) "topads" else "general", recomTitle),
+                        EVENT_ACTION, if(isAdd) EVENT_ACTION_CLICK_ADD_WISHLIST else EVENT_ACTION_CLICK_REMOVE_WISHLIST
                 )
         )
     }

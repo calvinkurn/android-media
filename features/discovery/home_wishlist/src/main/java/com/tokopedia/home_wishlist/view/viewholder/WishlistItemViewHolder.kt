@@ -8,6 +8,7 @@ import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.view.custom.WishlistCardView
+import com.tokopedia.home_wishlist.view.ext.setSafeOnClickListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardModel
@@ -38,7 +39,7 @@ class WishlistItemViewHolder(
                             )
                     )
             )
-            productCardView.setAddToCartButtonVisible(true)
+            productCardView.setAddToCartButtonVisible(!element.isOnBulkRemoveProgress)
             productCardView.setDeleteButtonVisible(!element.isOnBulkRemoveProgress)
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
@@ -54,32 +55,30 @@ class WishlistItemViewHolder(
                 if(element.isOnAddToCartProgress) disableAddToCartButton()
                 else enableAddToCartButton()
             }
-
             checkBox.isChecked = element.isOnChecked
             checkBox.visibility = if(element.isOnBulkRemoveProgress) View.VISIBLE else View.GONE
-
             checkBox.setOnClickListener {
                 (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
             }
 
-            view.setOnClickListener {
+            view.setSafeOnClickListener {
                 if(element.isOnBulkRemoveProgress) {
-                    (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
+                    (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, !checkBox.isChecked)
                 }
             }
 
             setOnClickListener {
-                if(element.isOnBulkRemoveProgress) (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, checkBox.isChecked)
+                if(element.isOnBulkRemoveProgress) (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, !checkBox.isChecked)
                 else (listener as WishlistListener).onProductClick(element, adapterPosition)
             }
 
-            setAddToCartButtonOnClickListener(View.OnClickListener {
+            setAddToCartButtonOnClickListener {
                 (listener as WishlistListener).onAddToCartClick(element, adapterPosition)
-            })
+            }
 
-            setDeleteButtonOnClickListener(View.OnClickListener {
+            setDeleteButtonOnClickListener {
                 (listener as WishlistListener).onDeleteClick(element, adapterPosition)
-            })
+            }
         }
     }
 
@@ -90,6 +89,7 @@ class WishlistItemViewHolder(
                 checkBox.isChecked = bundle.getBoolean("isOnChecked")
             }
             if(bundle.containsKey("isOnAddToCartProgress")){
+                element.isOnAddToCartProgress = bundle.getBoolean("isOnAddToCartProgress")
                 if(bundle.getBoolean("isOnAddToCartProgress")){
                     productCardView.disableAddToCartButton()
                 } else {
@@ -98,8 +98,8 @@ class WishlistItemViewHolder(
 
             }
             if(bundle.containsKey("isOnBulkRemoveProgress")){
+                element.isOnBulkRemoveProgress = bundle.getBoolean("isOnBulkRemoveProgress")
                 checkBox.visibility = if(bundle.getBoolean("isOnBulkRemoveProgress")) View.VISIBLE else View.GONE
-                productCardView.setDeleteButtonVisible(!bundle.getBoolean("isOnBulkRemoveProgress"))
             }
 
         }

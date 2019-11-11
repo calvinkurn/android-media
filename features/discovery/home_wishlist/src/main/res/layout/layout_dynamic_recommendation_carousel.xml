@@ -3,7 +3,16 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_4"
         xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Neutral_N50"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -35,7 +44,7 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:text="@string/recom_see_more_title"
+            android:text="@string/wishlist_see_more_title"
             android:textColor="@color/green_500"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:typographyType="heading_5"
@@ -64,4 +73,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Neutral_N50"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

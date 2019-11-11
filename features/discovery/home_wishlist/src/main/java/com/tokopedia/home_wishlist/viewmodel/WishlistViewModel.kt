@@ -70,6 +70,7 @@ open class WishlistViewModel @Inject constructor(
     val loadMoreWishlistAction = SingleObserverLiveEvent<Event<LoadMoreWishlistActionData>>()
     val addWishlistRecommendationActionData = SingleObserverLiveEvent<Event<AddWishlistRecommendationData>>()
     val removeWishlistRecommendationActionData = SingleObserverLiveEvent<Event<RemoveWishlistRecommendationData>>()
+    val bulkSelectActionData = SingleObserverLiveEvent<Event<Int>>().apply { value = Event(0) }
 
     private fun loadInitialPage(){
         wishlistData.value = listOf(LoadingDataModel())
@@ -89,7 +90,6 @@ open class WishlistViewModel @Inject constructor(
         keywordSearch = keyword
         currentPage = 0
         currentPage++
-        val cura = currentPage
 
         wishlistState.value = Status.LOADING
         launchCatchError(block = {
@@ -587,7 +587,8 @@ open class WishlistViewModel @Inject constructor(
                     }
                 }
             }
-            wishlistData.value = wishlistDataTemp
+            bulkSelectActionData.value = Event(listVisitableMarked.size)
+            wishlistData.value = wishlistDataTemp.copy()
         }
     }
 
