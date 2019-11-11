@@ -7,18 +7,35 @@ class ImagePreviewTracking {
     private val tracker = TrackApp.getInstance().gtm
 
     fun onSuccessAdd() {
-
+        tracker.sendGeneralEvent(EVENT.CLICK_PDP, CATEGORY.PDP, ACTION.ADD_WISLIST_LOGIN, LABEL.EMPTY)
     }
 
     fun onSuccessRemove() {
-
+        tracker.sendGeneralEvent(EVENT.CLICK_PDP, CATEGORY.PDP, ACTION.REMOVE_WISLIST_LOGIN, LABEL.EMPTY)
     }
 
-    fun onFailedAdd() {
-
+    fun onAddWishlistNonLogin() {
+        tracker.sendGeneralEvent(EVENT.CLICK_PDP, CATEGORY.PDP, ACTION.ADD_WISLIST_NON_LOGIN, LABEL.EMPTY)
     }
 
-    fun onFailedRemove() {
+    companion object {
+        object EVENT {
+            const val CLICK_PDP = "clickPDP"
+        }
+
+        object CATEGORY {
+            const val PDP = "product detail page"
+        }
+
+        object ACTION {
+            const val ADD_WISLIST_NON_LOGIN = "add wishlist - product page - non login"
+            const val ADD_WISLIST_LOGIN = "add wishlist - product page - login"
+            const val REMOVE_WISLIST_LOGIN = "remove wishlist - product page - login"
+        }
+
+        object LABEL {
+            const val EMPTY = ""
+        }
 
     }
 }

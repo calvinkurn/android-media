@@ -239,6 +239,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
 
+    private var isWishlisted = false
+
     override val isUserSessionActive: Boolean
         get() = if (!::productInfoViewModel.isInitialized) false else productInfoViewModel.isUserSessionActive()
 
@@ -1198,7 +1200,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     showToastSuccessReport()
             }
             REQUEST_CODE_IMAGE_PREVIEW -> {
-
+                if (data != null) {
+                    val isWishlisted = data.getBooleanExtra(ImagePreviewPDPActivity.RESPONSE_CODE_IMAGE_RPEVIEW, false)
+                    updateWishlist(isWishlisted)
+                }
             }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
@@ -1293,7 +1298,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun renderProductInfoP2Login(p2Login: ProductInfoP2Login) {
         shopInfo?.let { updateWishlist(it, p2Login.isWishlisted) }
         p2Login.pdpAffiliate?.let { renderAffiliate(it) }
-
+        isWishlisted = p2Login.isWishlisted
         actionButtonView.renderData(p2Login.isExpressCheckoutType)
     }
 
@@ -1512,6 +1517,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
                 fab_detail.show()
             }
+            isWishlisted = wishlisted
         }
     }
 
@@ -1753,6 +1759,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onSuccessRemoveWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         productInfoViewModel.p2Login.value?.isWishlisted = false
+        isWishlisted = false
         updateWishlist(false)
         //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", false)
@@ -1774,6 +1781,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onSuccessAddWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         productInfoViewModel.p2Login.value?.isWishlisted = true
+        isWishlisted = true
         updateWishlist(true)
         productDetailTracking.eventBranchAddToWishlist(productInfo, (UserSession(activity)).userId)
         //TODO clear cache
@@ -1836,8 +1844,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
      */
     private fun onPictureProductClicked(position: Int) {
         activity?.let {
-//            startActivity(ImagePreviewActivity.getCallingIntent(it, getImageURIPaths(), null, position))
-            val intent = ImagePreviewPDPActivity.createIntent(it, productId ?: "", true, getImageURIPaths(), null, position)
+            val intent = ImagePreviewPDPActivity.createIntent(it, productId ?: "", isWishlisted, getImageURIPaths(), null, position)
             startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW)
         }
     }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -14,13 +15,14 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.imagepreview.data.ImagePreviewTracking
 import com.tokopedia.product.detail.imagepreview.di.DaggerImagePreviewPDPComponent
 import com.tokopedia.product.detail.imagepreview.view.listener.ImagePreviewPDPView
 import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPDPViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_image_preview_pdp.*
+import kotlinx.android.synthetic.main.item_rates_estimation_service.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -94,8 +96,24 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
                 }
             } else {
                 gotoLogin()
+                ImagePreviewTracking().onAddWishlistNonLogin()
             }
         }
+
+        findViewById<ImageView>(R.id.ivClose)?.setOnClickListener {
+            setResult()
+        }
+    }
+
+    override fun onBackPressed() {
+        setResult()
+    }
+
+    private fun setResult() {
+        val intent = Intent()
+        intent.putExtra(RESPONSE_CODE_IMAGE_RPEVIEW, isWishlisted)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -117,6 +135,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
                     hideLoading()
                     onSuccessAddWishlist()
                     updateView()
+                    ImagePreviewTracking().onSuccessAdd()
                 },
                 onErrorAddWishList = {
                     hideLoading()
@@ -133,6 +152,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
                     hideLoading()
                     onSuccessRemoveWishlist()
                     updateView()
+                    ImagePreviewTracking().onSuccessRemove()
                 },
                 onErrorRemoveWishList = {
                     hideLoading()
@@ -177,6 +197,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
         private const val IS_WISHLISTED = "isWishlisted"
 
         private const val REQUEST_CODE_LOGIN = 561
+        const val RESPONSE_CODE_IMAGE_RPEVIEW = "responseImagePreview"
 
         @JvmStatic
         @JvmOverloads
