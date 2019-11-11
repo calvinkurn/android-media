@@ -158,6 +158,8 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
 
+    public static final String APP_HOTLIST_NAV_ENABLE = "app_hotlist_nav_enable";
+
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
@@ -175,4 +177,6 @@ public class RemoteConfigKey {
 
     public static final String GTM_REFRESH_IN_BACKGROUND = "android_gtm_refresh_in_background";
     public static final String ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW = "enable_customer_user_agent_in_webview";
+
+    public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 }
