@@ -28,6 +28,6 @@ public interface UserIdentificationInfo {
 
     interface Presenter extends CustomerPresenter<View> {
         void getInfo(int projectId);
-        void getStatus();
+        void getStatus(int projectId);
     }
 }

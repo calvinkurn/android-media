@@ -38,8 +38,8 @@ public class UserIdentificationInfoPresenter extends BaseDaggerPresenter<UserIde
     }
 
     @Override
-    public void getStatus() {
-        getApprovalStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam(),
+    public void getStatus(int projectId) {
+        getApprovalStatusUseCase.execute(GetApprovalStatusUseCase.getRequestParam(projectId),
                 new GetApprovalStatusSubscriber(getView().getApprovalStatusListener()));
     }
 }

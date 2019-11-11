@@ -135,7 +135,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             hideLoading();
             showStatusBlacklist();
         } else {
-            presenter.getStatus();
+            presenter.getStatus(projectId);
         }
     }
 
