@@ -998,6 +998,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
                     labelChooseDurationTradeIn.setVisibility(View.VISIBLE);
                     tvChooseDurationTradeIn.setVisibility(View.VISIBLE);
+                    tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+                    tvTradeInShippingPriceDetail.setVisibility(View.GONE);
                 } else {
                     llCourierRecommendationStateLoading.setVisibility(View.GONE);
                     llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
