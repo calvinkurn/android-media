@@ -8,13 +8,9 @@ internal class SimilarSearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
 
     private val list: MutableList<Any> = mutableListOf()
     private val adapterDelegatesManager = AdapterDelegatesManager()
-
-    init {
-        adapterDelegatesManager
-                .addDelegate(SimilarProductItemAdapterDelegate())
-                .addDelegate(DividerAdapterDelegate())
-                .addDelegate(LoadingMoreAdapterDelegate())
-    }
+            .addDelegate(SimilarProductItemAdapterDelegate())
+            .addDelegate(DividerAdapterDelegate())
+            .addDelegate(LoadingMoreAdapterDelegate())
 
     override fun getItemViewType(position: Int): Int {
         return adapterDelegatesManager.getItemViewType(list, position)
