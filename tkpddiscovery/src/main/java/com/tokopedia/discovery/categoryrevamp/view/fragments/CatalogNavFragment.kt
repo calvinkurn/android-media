@@ -327,4 +327,6 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
 
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {
     }
+    override fun onShareButtonClicked() {
+    }
 }
