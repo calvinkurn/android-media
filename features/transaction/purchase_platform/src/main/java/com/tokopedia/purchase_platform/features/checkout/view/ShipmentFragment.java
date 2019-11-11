@@ -1248,6 +1248,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN);
         } else if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_TRADE_IN) {
             recipientAddressModel.setLocationDataModel(null);
+            recipientAddressModel.setDropOffAddressDetail("");
+            recipientAddressModel.setDropOffAddressName("");
         }
         onNeedUpdateViewItem(shipmentAdapter.getRecipientAddressModelPosition());
     }
