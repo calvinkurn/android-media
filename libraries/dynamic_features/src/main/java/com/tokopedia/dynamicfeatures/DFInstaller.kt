@@ -47,7 +47,7 @@ class DFInstaller {
             val manager = manager ?: return@launch
 
             moduleSize = 0
-            usableSpaceBeforeDownload = DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
+
             val requestBuilder = SplitInstallRequest.newBuilder()
 
             val moduleNameToDownload = mutableListOf<String>()
@@ -60,6 +60,8 @@ class DFInstaller {
 
             if (moduleNameToDownload.isEmpty()) return@launch
             val request = requestBuilder.build()
+
+            usableSpaceBeforeDownload = DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
 
             unregisterListener()
             registerListener(application, moduleNameToDownload)
