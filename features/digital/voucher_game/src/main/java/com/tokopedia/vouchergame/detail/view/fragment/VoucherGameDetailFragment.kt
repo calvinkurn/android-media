@@ -260,8 +260,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             }
         })
 
-        // TODO: Remove placholder text
-        if (data.style == "select_dropdown") {
+        if (data.style == INPUT_DROPDOWN_PARAM) {
             field.setupDropdownBottomSheet(data.dataCollections, fragmentManager)
         }
     }
@@ -553,6 +552,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         const val EXTRA_INPUT_FIELD_1 = "EXTRA_INPUT_FIELD_1"
         const val EXTRA_INPUT_FIELD_2 = "EXTRA_INPUT_FIELD_2"
         const val TAG_VOUCHER_GAME_INFO = "voucherGameInfo"
+
+        const val INPUT_DROPDOWN_PARAM = "select_dropdown"
 
         fun newInstance(voucherGameExtraParam: VoucherGameExtraParam,
                         voucherGameOperatorAttributes: VoucherGameOperatorAttributes): Fragment {
