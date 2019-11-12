@@ -60,7 +60,6 @@ import javax.inject.Inject;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
 
-//import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -106,9 +105,9 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private boolean isSellerEnabled;
     private SaldoTransactionHistoryFragment saldoHistoryFragment;
 
-    private float sellerSaldoBalance;
-    private float buyerSaldoBalance;
-    private float totalSaldoBalance;
+    private long sellerSaldoBalance;
+    private long buyerSaldoBalance;
+    private long totalSaldoBalance;
     private LinearLayout saldoTypeLL;
     private LinearLayout merchantDetailLL;
 
@@ -517,12 +516,12 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public float getSellerSaldoBalance() {
+    public long getSellerSaldoBalance() {
         return sellerSaldoBalance;
     }
 
     @Override
-    public float getBuyerSaldoBalance() {
+    public long getBuyerSaldoBalance() {
         return buyerSaldoBalance;
     }
 
@@ -678,13 +677,13 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setBuyerSaldoBalance(float balance, String text) {
+    public void setBuyerSaldoBalance(long balance, String text) {
         buyerSaldoBalance = balance;
         buyerBalanceTV.setText(text);
     }
 
     @Override
-    public void setSellerSaldoBalance(float amount, String formattedAmount) {
+    public void setSellerSaldoBalance(long amount, String formattedAmount) {
         sellerSaldoBalance = amount;
         sellerBalanceTV.setText(formattedAmount);
     }
