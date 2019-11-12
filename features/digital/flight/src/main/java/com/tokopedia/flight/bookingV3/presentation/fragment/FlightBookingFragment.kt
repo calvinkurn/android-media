@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -27,7 +28,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
@@ -40,14 +40,13 @@ import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPriceAda
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightInsuranceAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
-import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.data.model.FlightException
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
-import com.tokopedia.flight.review.domain.verifybooking.model.response.Promo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -55,12 +54,13 @@ import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerType
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -169,6 +169,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     it.data.data.cartItems[0]?.let { cart ->
                         if (cart.configuration.price != cart.oldPriceNumeric) {
                             showRepriceTag(cart)
+                            renderRepricePrice(cart)
                         } else {
                             //show popup check detail
                         }
@@ -181,6 +182,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun renderRepricePrice(cart: FlightVerify.FlightVerifyCart) {
+        bookingViewModel.updateFlightPriceData(cart.priceDetail)
+        bookingViewModel.updateFlightDetailPriceData(cart.newPrice)
+    }
+
     private fun showRepriceTag(cart: FlightVerify.FlightVerifyCart) {
         val bottomSheet = BottomSheetUnify()
         val viewBottomSheetDialog = View.inflate(context, R.layout.layout_flight_booking_reprice_bottom_sheet, null)
@@ -189,9 +195,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bottomSheet.setCloseClickListener {
             bottomSheet.dismiss()
         }
-
         val continueToPayButton = viewBottomSheetDialog.findViewById(R.id.button_continue_pay) as UnifyButton
-        val findNewTicketButton = viewBottomSheetDialog.findViewById(R.id.find_new_ticket) as UnifyButton
+        val findNewTicketButton = viewBottomSheetDialog.findViewById(R.id.button_find_new_ticket) as UnifyButton
+        val oldPriceTextView = viewBottomSheetDialog.findViewById(R.id.tv_before_reprice_amount) as AppCompatTextView
+        val newPriceTextView = viewBottomSheetDialog.findViewById(R.id.tv_after_reprice_amount) as AppCompatTextView
+        val tickerBookingPromo = viewBottomSheetDialog.findViewById(R.id.ticker_booking_promo) as Ticker
+
+        oldPriceTextView.text = cart.oldPrice
+        newPriceTextView.text = FlightCurrencyFormatUtil.convertToIdrPrice(cart.configuration.price)
+        tickerBookingPromo.tickerType = if (cart.promoEligibility.success) Ticker.TYPE_ANNOUNCEMENT else Ticker.TYPE_WARNING
+        tickerBookingPromo.setTextDescription(cart.promoEligibility.message)
 
         continueToPayButton.setOnClickListener {
             Log.d("HEHE", "continue to Pay")
@@ -202,6 +215,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             Log.d("HEHE", "findNewTicket")
             bottomSheet.dismiss()
         }
+        bottomSheet.show(fragmentManager, "harga tiket berubah")
     }
 
     private fun setUpTimer(timeStamp: Date) {
@@ -387,7 +401,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     contactEmail = widget_traveller_info.getContactEmail(),
                     contactPhone = widget_traveller_info.getContactPhoneNum(),
                     contactCountry = "ID",
-                    dummy = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_verify_cart))
+                    dummy = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_verify_cart),
+                    checkVoucherQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher),
+                    dummyCheckVoucher = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_check_voucher))
         }
     }
 

@@ -20,13 +20,13 @@
                                     "adult": "Rp14.900",
                                     "child": "Rp15.000",
                                     "infant": "Rp15.000",
-                                    "adultNumeric": 14900,
-                                    "childNumeric": 15000,
-                                    "infantNumeric": 15000
+                                    "adultNumeric": 149000,
+                                    "childNumeric": 150000,
+                                    "infantNumeric": 150000
                                 }
                             }
                         ],
-                        "oldPrice": "Rp15.000",
+                        "oldPrice": "Rp 150.000",
                         "oldPriceNumeric": 150000,
                         "priceDetail": [
                             {

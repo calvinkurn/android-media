@@ -7,7 +7,6 @@
     android:background="@color/white"
     android:orientation="vertical"
     android:paddingTop="@dimen/dp_2"
-    android:paddingBottom="@dimen/dp_2"
     tools:ignore="MissingDefaultResource">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -54,7 +53,7 @@
             app:typographyType="body_2" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/after_reprice_amount"
+            android:id="@+id/tv_after_reprice_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -65,9 +64,13 @@
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_booking_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16" />
+        android:layout_marginTop="@dimen/dp_16"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_continue_pay"
@@ -75,7 +78,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:text="Lanjut Bayar"
-        app:unifyButtonSize="medium"
         app:unifyButtonType="transaction" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -84,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:text="Cari Tiket Lain"
-        app:unifyButtonSize="medium"
         app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost" />
+        app:unifyButtonVariant="ghost"
+        android:layout_marginBottom="@dimen/dp_16"/>
 </LinearLayout>

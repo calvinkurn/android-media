@@ -77,7 +77,14 @@ data class FlightVerify(
 
             @SerializedName("priceDetail")
             @Expose
-            val priceDetail: List<FlightCart.PriceDetail> = listOf()
+            val priceDetail: List<FlightCart.PriceDetail> = listOf(),
+
+            var promoEligibility: PromoEligibility = PromoEligibility()
+    )
+
+    data class PromoEligibility(
+            var message: String = "",
+            var success: Boolean = false
     )
 
     data class CartMetaData(
