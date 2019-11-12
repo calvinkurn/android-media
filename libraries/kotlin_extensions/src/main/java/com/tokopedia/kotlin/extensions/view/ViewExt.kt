@@ -6,24 +6,20 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
-import androidx.annotation.DimenRes
-import androidx.annotation.StringRes
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.DimenRes
+import androidx.annotation.StringRes
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
-import android.graphics.drawable.GradientDrawable
-
-
 
 
 /**
@@ -282,6 +278,16 @@ fun View.isNotVisibleOnTheScreen(listener: ViewHintListener) {
 
 }
 
+fun View.isVisibleOnTheScreen(listener: ViewVisibilityListener) {
+    viewTreeObserver.addOnScrollChangedListener {
+        if (getVisiblePercent(this@isVisibleOnTheScreen) == -1) {
+            listener.onViewNotVisible()
+        } else {
+            listener.onViewVisible()
+        }
+    }
+}
+
 fun getVisiblePercent(v: View): Int {
     if (v.isShown) {
         val r = Rect()
@@ -327,6 +333,11 @@ fun getScreenHeight(): Int {
 
 interface ViewHintListener {
     fun onViewHint()
+}
+
+interface ViewVisibilityListener {
+    fun onViewNotVisible()
+    fun onViewVisible()
 }
 
 fun View.addOneTimeGlobalLayoutListener(onGlobalLayout: () -> Unit) {

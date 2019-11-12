@@ -1,25 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <com.tokopedia.product.detail.view.widget.PictureScrollingView
+        android:id="@+id/view_picture_search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:fitsSystemWindows="true"
+        app:layout_collapseMode="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:scrimAnimationDuration="50"
+        tools:visibility="visible" />
 
-        <com.tokopedia.product.detail.view.widget.PictureScrollingView
-            android:id="@+id/view_picture_search_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:layout_collapseMode="none"
-            app:scrimAnimationDuration="50"
-            tools:visibility="gone" />
-        <include layout="@layout/partial_product_detail_header" />
-    </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:clickable="true"
+        android:visibility="visible"
+        app:backgroundTint="@color/white"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/base_header"
+        app:layout_constraintTop_toBottomOf="@+id/view_picture_search_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_wishlist_unchecked"
+        tools:visibility="visible" />
+
+    <include
+        layout="@layout/partial_product_detail_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_picture_search_bar" />
+</androidx.constraintlayout.widget.ConstraintLayout>

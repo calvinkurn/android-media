@@ -10,6 +10,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -26,7 +27,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSocialProofDataModel
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
@@ -35,6 +41,7 @@ import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -69,14 +76,30 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private lateinit var remoteConfig: RemoteConfig
     private var useVariant = true
+    private var productId: String? = null
+    private var warehouseId: String? = null
+    private var productKey: String? = null
+    private var shopDomain: String? = null
+
 
     //View
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(::onPictureProductClicked, childFragmentManager) }
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(::onPictureProductClicked, childFragmentManager, onViewClickListener) }
     private var menu: Menu? = null
     private lateinit var varToolbar: Toolbar
     private lateinit var actionButtonView: PartialButtonActionView
     private lateinit var stickyLoginView: StickyLoginView
+    private var hashMapLayout: Map<String, Any>? = null
+    private val socialProofMap by lazy {
+        hashMapLayout?.get("social_proof")
+    }
 
+    private val snapshotMap by lazy {
+        hashMapLayout?.get("product_snapshot")
+    }
+
+    private val shopInfoMap by lazy {
+        hashMapLayout?.get("shop_info")
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
@@ -119,7 +142,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     override fun loadData(page: Int) {
-        viewModel.getProductP1()
+        productId = "1383900"
+        if (productId != null || (productKey != null && shopDomain != null)) {
+            viewModel.getProductP1(ProductParams(productId, shopDomain, productKey), true)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater?) {
@@ -132,30 +158,65 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+//        viewModel.productSnapshotDataModel.observe(this, Observer {
+//            when (it) {
+//                is Success -> {
+//                    renderList(listOf(it.data, it.data))
+//                }
+//                is Fail -> {
+//                    Log.e("p1", "p1 ${it.throwable.message}")
+//
+//                }
+//            }
+//        })
+
         viewModel.productLayout.observe(this, Observer {
-            when(it) {
-                is Success ->{
-                    Log.e("datanya","${it.data}")
+            when (it) {
+                is Success -> {
+                    hashMapLayout = DynamicProductDetailMapper.hashMapLayout(it.data)
+                    renderList(it.data)
                 }
                 is Fail -> {
-                    Log.e("datanya","${it.throwable.message}")
+                    Log.e("p1", "p1 ${it.throwable.message}")
+
                 }
             }
         })
 
-        viewModel.productSnapshotDataModel.observe(this, Observer {
+        viewModel.productInfoP1.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    renderList(listOf(it.data))
+                    (snapshotMap as ProductSnapshotDataModel).productInfoP1 = it.data.productInfo
+                    (snapshotMap as ProductSnapshotDataModel).media = it.data.productInfo.media
+                    (socialProofMap as ProductSocialProofDataModel).productInfo = it.data.productInfo
+                    adapter.notifyDataSetChanged()
                 }
                 is Fail -> {
+                    Log.e("p1", "p1 ${it.throwable.message}")
 
                 }
             }
+        })
+
+        viewModel.p2Login.observe(this, Observer {
+            Toast.makeText(context, "${it.cartType}", Toast.LENGTH_LONG).show()
+
         })
 
         viewModel.p2ShopDataResp.observe(this, Observer {
-            Log.e("p2","${it}")
+
+            (shopInfoMap as ProductShopInfoDataModel).shopInfo = it.shopInfo
+            (snapshotMap as ProductSnapshotDataModel).shopInfo = it.shopInfo ?: ShopInfo()
+            (snapshotMap as ProductSnapshotDataModel).nearestWarehouse = it.nearestWarehouse
+            adapter.notifyDataSetChanged()
+        })
+
+        viewModel.p2General.observe(this, Observer {
+            Log.e("p2 general", "${it}")
+        })
+
+        viewModel.productInfoP3resp.observe(this, Observer {
+            Log.e("p3 ", "${it}")
         })
     }
 

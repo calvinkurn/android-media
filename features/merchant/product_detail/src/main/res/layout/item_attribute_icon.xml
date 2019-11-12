@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_attribute_icon"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ic_attribute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dp_2"
+        android:contentDescription="@string/product_detail_discussion"
+        app:srcCompat="@drawable/ic_product_detail_discussion" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_attribute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        android:gravity="center_horizontal"
+        android:textColor="@color/tkpd_main_green"
+        app:fontSize="micro"
+        tools:text="0 Diskusi" />
+</LinearLayout>

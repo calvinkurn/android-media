@@ -5,6 +5,7 @@
     android:id="@+id/base_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@+id/view_picture_search_bar"
     android:background="@android:color/background_light"
     android:paddingBottom="@dimen/dp_8">
 
