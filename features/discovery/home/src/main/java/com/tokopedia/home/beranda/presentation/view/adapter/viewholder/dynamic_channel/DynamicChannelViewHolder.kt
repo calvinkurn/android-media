@@ -99,8 +99,10 @@ abstract class DynamicChannelViewHolder(itemView: View,
             /**
              * Requirement:
              * Only show `see all` button when it is exist
+             * Don't show `see all` button on dynamic channel mix carousel
              */
-            if (isHasSeeMoreApplink(channel)) {
+            if (isHasSeeMoreApplink(channel) &&
+                    getLayoutType(element.channel) != TYPE_BANNER_CAROUSEL) {
                 seeAllButton.visibility = View.VISIBLE
                 seeAllButton.setOnClickListener {
                     listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))

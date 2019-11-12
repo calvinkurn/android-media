@@ -119,18 +119,19 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
                 } else if (!isPowerMerchant()) {
                     showRegularMerchantBottomSheet(FEATURE_ETALASE)
                 } else {
-                    ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
-                            .setAction(R.string.title_retry) {
-                                saveAddEditEtalase()
-                            }.show()
+                    showToasterErrorAddEdit(throwable)
                 }
             } else {
-                ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
-                        .setAction(R.string.title_retry) {
-                            saveAddEditEtalase()
-                        }.show()
+                showToasterErrorAddEdit(throwable)
             }
         }
+    }
+
+    private fun showToasterErrorAddEdit(throwable: Throwable?) {
+        ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
+                .setAction(R.string.title_retry) {
+                    saveAddEditEtalase()
+                }.show()
     }
 
     private fun isIdlePowerMerchant(): Boolean {
