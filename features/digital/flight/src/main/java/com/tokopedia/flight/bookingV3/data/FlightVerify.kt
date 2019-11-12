@@ -65,7 +65,7 @@ data class FlightVerify(
 
             @SerializedName("newPrice")
             @Expose
-            val newPrice: FlightCart.NewPrice = FlightCart.NewPrice(),
+            val newPrice: List<FlightCart.NewPrice> = listOf(),
 
             @SerializedName("oldPrice")
             @Expose

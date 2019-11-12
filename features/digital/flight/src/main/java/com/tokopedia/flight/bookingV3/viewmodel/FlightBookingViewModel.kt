@@ -92,15 +92,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 //                    flightCartResult.value = Fail()
                 }
             }
-
-//            val gson = Gson()
-//            val data = gson.fromJson(dummy, FlightCart.Response::class.java).flightCart
-//            flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
-//            flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
-//                    data.cartData.flight.child, data.cartData.flight.infant)
-//            flightPriceData.value = data.cartData.flight.priceDetail
-//            flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
-//            flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
         }) {
             //            flightCartResult.value = Fail(it)
             val gson = Gson()
@@ -115,7 +106,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun verifyCartData(query: String, totalPrice: Int, cartId: String, contactName: String,
-                       contactEmail: String, contactPhone: String, contactCountry: String) {
+                       contactEmail: String, contactPhone: String, contactCountry: String, dummy: String) {
         val bookingVerifyParam = createVerifyParam(totalPrice, cartId, contactName, contactEmail, contactPhone, contactCountry)
         val params = mapOf(PARAM_VERIFY_CART to bookingVerifyParam)
         launchCatchError(block = {
@@ -126,7 +117,11 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
             flightVerifyResult.value = Success(data)
         }) {
-            flightVerifyResult.value = Fail(it)
+
+            val gson = Gson()
+            val data = gson.fromJson(dummy, FlightVerify.Response::class.java).flightVerify
+            flightVerifyResult.value = Success(data)
+//            flightVerifyResult.value = Fail(it)
         }
     }
 

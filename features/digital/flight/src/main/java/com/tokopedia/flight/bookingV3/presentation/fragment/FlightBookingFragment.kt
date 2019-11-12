@@ -24,6 +24,7 @@ import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragme
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel
@@ -31,12 +32,17 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
+import com.tokopedia.flight.bookingV3.data.FlightVerify
+import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingErrorCodeMapper
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPassengerAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPriceAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightInsuranceAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
+import com.tokopedia.flight.common.constant.FlightErrorConstant
+import com.tokopedia.flight.common.data.model.FlightError
+import com.tokopedia.flight.common.data.model.FlightException
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
@@ -45,7 +51,6 @@ import com.tokopedia.flight.review.domain.verifybooking.model.response.Promo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
@@ -54,6 +59,8 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -159,13 +166,42 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightVerifyResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-//                    recheck price
+                    it.data.data.cartItems[0]?.let { cart ->
+                        if (cart.configuration.price != cart.oldPriceNumeric) {
+                            showRepriceTag(cart)
+                        } else {
+                            //show popup check detail
+                        }
+                    }
                 }
                 is Fail -> {
-                    showErrorDialog()
+                    showErrorDialog(it.throwable)
                 }
             }
         })
+    }
+
+    private fun showRepriceTag(cart: FlightVerify.FlightVerifyCart) {
+        val bottomSheet = BottomSheetUnify()
+        val viewBottomSheetDialog = View.inflate(context, R.layout.layout_flight_booking_reprice_bottom_sheet, null)
+        bottomSheet.setTitle("Harga tiket berubah")
+        bottomSheet.setChild(viewBottomSheetDialog)
+        bottomSheet.setCloseClickListener {
+            bottomSheet.dismiss()
+        }
+
+        val continueToPayButton = viewBottomSheetDialog.findViewById(R.id.button_continue_pay) as UnifyButton
+        val findNewTicketButton = viewBottomSheetDialog.findViewById(R.id.find_new_ticket) as UnifyButton
+
+        continueToPayButton.setOnClickListener {
+            Log.d("HEHE", "continue to Pay")
+            bottomSheet.dismiss()
+        }
+
+        findNewTicketButton.setOnClickListener {
+            Log.d("HEHE", "findNewTicket")
+            bottomSheet.dismiss()
+        }
     }
 
     private fun setUpTimer(timeStamp: Date) {
@@ -342,10 +378,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
         switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
             bookingViewModel.onTravellerAsPassenger(on)
         }
-        button_submit.setOnClickListener { bookingViewModel.verifyCartData(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart),
-                totalPrice = totalCartPrice, cartId = cartId, contactName = widget_traveller_info.getContactName(),
-                contactEmail = widget_traveller_info.getContactEmail(), contactPhone = widget_traveller_info.getContactPhoneNum(),
-                contactCountry = "ID") }
+        button_submit.setOnClickListener {
+            bookingViewModel.verifyCartData(
+                    GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart),
+                    totalPrice = totalCartPrice,
+                    cartId = cartId,
+                    contactName = widget_traveller_info.getContactName(),
+                    contactEmail = widget_traveller_info.getContactEmail(),
+                    contactPhone = widget_traveller_info.getContactPhoneNum(),
+                    contactCountry = "ID",
+                    dummy = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_verify_cart))
+        }
     }
 
     fun renderAutoApplyPromo(flightVoucher: FlightPromoViewEntity) {
@@ -502,23 +545,30 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showErrorDialog() {
-            if (activity != null) {
-                val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-                dialog.setTitle("error")
-                dialog.setDescription("errorrrr")
-                dialog.setPrimaryCTAText("jhrhrhr")
-                dialog.setSecondaryCTAText("heheheee")
+    private fun showErrorDialog(e: Throwable) {
+        Log.d("ERROR", e.message)
+        if (e is FlightException) {
+            val errors = e.errorList
+            if (errors.contains(FlightError(FlightBookingErrorCodeMapper.mapToFlightErrorCode(errors[0].id.toInt())))) {
+                if (activity != null) {
+                    val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+                    dialog.setTitle("error")
+                    dialog.setDescription("errorrrr")
+                    dialog.setPrimaryCTAText("jhrhrhr")
+                    dialog.setSecondaryCTAText("heheheee")
 
-                dialog.setPrimaryCTAClickListener {
-                    //                    do action
-                    dialog.dismiss()
+                    dialog.setPrimaryCTAClickListener {
+                        //                    do action
+                        dialog.dismiss()
+                    }
+
+                    dialog.setSecondaryCTAClickListener(dialog::dismiss)
+
+                    dialog.show()
                 }
-
-                dialog.setSecondaryCTAClickListener(dialog::dismiss)
-
-                dialog.show()
             }
+        }
+
     }
 
     companion object {
