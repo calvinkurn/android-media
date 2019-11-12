@@ -16,12 +16,17 @@ class BannerOfficialStoreAdapter(bannerImageUrls: List<String> , onPromoClickLis
     }
 
     override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
-        Glide.with(holder.itemView.context)
-                .load(bannerImageUrls[position])
-                .dontAnimate()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .into(holder.bannerImage)
+        try {
+            Glide.with(holder.itemView.context)
+                    .load(bannerImageUrls[position])
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .override(com.bumptech.glide.request.target.Target.SIZE_ORIGINAL, com.bumptech.glide.request.target.Target.SIZE_ORIGINAL)
+                    .centerCrop()
+                    .into(holder.bannerImage)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         holder.bannerImage.setOnClickListener(this.getBannerImageOnClickListener(position))
     }
