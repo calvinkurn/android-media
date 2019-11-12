@@ -11,5 +11,5 @@ data class PriceValidation(
         val isUpdated: Boolean = false,
 
         @SerializedName("message")
-        val message: Message
+        val message: Message? = null
 )

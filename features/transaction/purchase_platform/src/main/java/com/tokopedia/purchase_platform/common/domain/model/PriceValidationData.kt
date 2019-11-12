@@ -9,7 +9,7 @@ import android.os.Parcelable
 
 data class PriceValidationData(
         var isUpdated: Boolean = false,
-        var message: MessageData?
+        var message: MessageData? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),

@@ -5,9 +5,12 @@ import com.tokopedia.purchase_platform.common.base.IMapperUtil;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.model.ErrorReporter;
 import com.tokopedia.purchase_platform.common.domain.model.ErrorReporterText;
+import com.tokopedia.purchase_platform.common.domain.model.MessageData;
+import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.CheckoutDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.CheckoutResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.ErrorReporterResponse;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Message;
 
 import javax.inject.Inject;
 
@@ -31,6 +34,22 @@ public class CheckoutMapper implements ICheckoutMapper {
         checkoutData.setJsonResponse(new Gson().toJson(checkoutResponse));
         checkoutData.setError(checkoutDataResponse.getSuccess() != 1);
         checkoutData.setErrorMessage(checkoutDataResponse.getError());
+
+        if (checkoutDataResponse.getData().getPriceValidation() != null && checkoutDataResponse.getData().getPriceValidation().isUpdated() &&
+                checkoutDataResponse.getData().getPriceValidation().getMessage() != null) {
+            Message message = checkoutDataResponse.getData().getPriceValidation().getMessage();
+            MessageData messageData = new MessageData();
+            messageData.setTitle(message.getTitle());
+            messageData.setDesc(message.getDesc());
+            messageData.setAction(message.getAction());
+
+            PriceValidationData priceValidationData = new PriceValidationData();
+            priceValidationData.setUpdated(true);
+            priceValidationData.setMessage(messageData);
+
+            checkoutData.setPriceValidationData(priceValidationData);
+        }
+
         ErrorReporterResponse errorReporterResponse = checkoutResponse.getErrorReporter();
         ErrorReporter errorReporter = new ErrorReporter();
         errorReporter.setEligible(errorReporterResponse.getEligible());
@@ -40,6 +59,7 @@ public class CheckoutMapper implements ICheckoutMapper {
         errorReporterText.setSubmitButton(errorReporterResponse.getTexts().getSubmitButton());
         errorReporterText.setCancelButton(errorReporterResponse.getTexts().getCancelButton());
         errorReporter.setTexts(errorReporterText);
+
         checkoutData.setErrorReporter(errorReporter);
         if (!checkoutData.isError()
                 && !mapperUtil.isEmpty(checkoutDataResponse.getData())
