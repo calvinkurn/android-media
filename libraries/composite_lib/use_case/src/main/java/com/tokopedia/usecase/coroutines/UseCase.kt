@@ -11,7 +11,7 @@ abstract class UseCase<out T : Any>(
 
     protected var parentJob = SupervisorJob()
     private val localScope = CoroutineScope(mainDispatchers + parentJob)
-    protected var requestParams = RequestParams.EMPTY
+    protected var useCaseRequestParams: RequestParams = RequestParams.EMPTY
 
     abstract suspend fun executeOnBackground(): T
 
@@ -23,10 +23,10 @@ abstract class UseCase<out T : Any>(
         }
     }
 
-    fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit, requestParams: RequestParams = RequestParams.EMPTY) {
+    fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit, useCaseRequestParams: RequestParams = RequestParams.EMPTY) {
         cancelJobs()
         localScope.launchCatchError(block = {
-            this.requestParams = requestParams
+            this.useCaseRequestParams = useCaseRequestParams
             val result = executeCatchError()
             when (result) {
                 is Success -> onSuccess(result.data)
