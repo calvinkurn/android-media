@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
@@ -100,7 +101,6 @@ import com.tokopedia.purchase_platform.common.data.model.response.insurance.enti
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
-import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
@@ -141,11 +141,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.logisticcart.cod.view.CodActivity.EXTRA_COD_DATA;
 import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
@@ -236,6 +242,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private boolean hasInsurance = false;
     private boolean isInsuranceEnabled = false;
 
+    private Subscription delayScrollToFirstShopSubscription;
+
     public static ShipmentFragment newInstance(String defaultSelectedTabPromo,
                                                boolean isAutoApplyPromoCodeApplied,
                                                boolean isOneClickShipment,
@@ -314,6 +322,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        delayScrollToFirstShopSubscription.unsubscribe();
         shipmentPresenter.detachView();
     }
 
@@ -534,9 +543,42 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             sendEEStep2();
         }
 
-        rvShipment.post(() -> {
-            rvShipment.smoothScrollToPosition(shipmentAdapter.getFirstShopPosition());
-        });
+        if (isReloadAfterPriceChangeHigher) {
+            delayScrollToFirstShop();
+        }
+    }
+
+    private void delayScrollToFirstShop() {
+        delayScrollToFirstShopSubscription = Observable.timer(1000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        if (!isUnsubscribed()) {
+                            if (rvShipment.getLayoutManager() != null) {
+                                LinearSmoothScroller linearSmoothScroller = new LinearSmoothScroller(rvShipment.getContext()) {
+                                    @Override
+                                    protected int getVerticalSnapPreference() {
+                                        return SNAP_TO_START;
+                                    }
+                                };
+                                linearSmoothScroller.setTargetPosition(shipmentAdapter.getFirstShopPosition());
+                                rvShipment.getLayoutManager().startSmoothScroll(linearSmoothScroller);
+                            }
+                        }
+                    }
+                });
     }
 
     private void sendEEStep2() {
@@ -851,7 +893,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderCheckoutPriceUpdated(com.tokopedia.purchase_platform.common.domain.model.MessageData messageData) {
         if (getActivity() != null) {
-            DialogUnify priceValidationDialog = new DialogUnify(getActivity(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
+            DialogUnify priceValidationDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
             priceValidationDialog.setTitle(messageData.getTitle());
             priceValidationDialog.setDescription(messageData.getDesc());
             priceValidationDialog.setPrimaryCTAText(messageData.getAction());
@@ -860,7 +902,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 public Unit invoke() {
                     shipmentPresenter.processInitialLoadCheckoutPage(
                             true, isOneClickShipment(), isTradeIn(), true,
-                            false, null, getDeviceId(), getCheckoutLeasingId()
+                            true, null, getDeviceId(), getCheckoutLeasingId()
                     );
                     priceValidationDialog.dismiss();
                     return Unit.INSTANCE;
