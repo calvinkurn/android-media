@@ -17,33 +17,40 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.imagepreview.data.ImagePreviewTracking
-import com.tokopedia.product.detail.imagepreview.di.DaggerImagePreviewPDPComponent
-import com.tokopedia.product.detail.imagepreview.view.listener.ImagePreviewPDPView
-import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPDPViewModel
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.product.detail.imagepreview.di.DaggerImagePreviewPdpComponent
+import com.tokopedia.product.detail.imagepreview.view.listener.ImagePreviewPdpView
+import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPdpViewModel
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_image_preview_pdp.*
+import kotlinx.android.synthetic.main.product_card_layout_v2_list.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
-import com.tokopedia.unifycomponents.Toaster
 
 /**
  * created by rival on 07/11/19
  * image preview with wishlist button
  */
 
-class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
+class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    val viewModel by lazy { viewModelProvider.get(ImagePreviewPDPViewModel::class.java) }
+    val viewModel by lazy { viewModelProvider.get(ImagePreviewPdpViewModel::class.java) }
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var productId: String = ""
+    @Inject
+    lateinit var imagePreviewTracking: ImagePreviewTracking
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
+    private var productId: String = "0"
     private var isWishlisted by Delegates.notNull<Boolean>()
 
     override fun layoutId(): Int {
@@ -52,11 +59,10 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        findViewById<Button>(R.id.ivDownload)?.hide()
 
         val extraData = intent?.extras
         if (extraData != null) {
-            productId = extraData.getString(PRODUCT_ID) as String
+            productId = extraData.getString(PRODUCT_ID) ?: "0"
             isWishlisted = extraData.getBoolean(IS_WISHLISTED, false)
         }
 
@@ -66,13 +72,21 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
     }
 
     private fun initInjector() {
-        DaggerImagePreviewPDPComponent.builder()
+        DaggerImagePreviewPdpComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
     }
 
     private fun updateView() {
+        findViewById<Button>(R.id.ivDownload)?.hide()
+
+        if (remoteConfig.getBoolean(KEY_WISHLIST_BUTTON, false)) {
+            buttonWishlist?.show()
+        } else {
+            buttonWishlist?.hide()
+        }
+
         if (userSession.isLoggedIn) {
             if (isWishlisted) {
                 btnAddToWishlist?.text = resources.getString(R.string.image_preview_remove_wishlist)
@@ -81,7 +95,6 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
             }
         } else {
             btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
-            btnAddToWishlist?.buttonType = UnifyButton.Type.MAIN
         }
     }
 
@@ -95,7 +108,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
                 }
             } else {
                 gotoLogin()
-                ImagePreviewTracking().onAddWishlistNonLogin()
+                imagePreviewTracking.onAddWishlistNonLogin()
             }
         }
 
@@ -117,7 +130,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
+            when (requestCode) {
                 REQUEST_CODE_LOGIN -> {
                     startActivity(RouteManager.getIntent(applicationContext, ApplinkConst.WISHLIST))
                     finish()
@@ -134,7 +147,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
                     hideLoading()
                     onSuccessAddWishlist()
                     updateView()
-                    ImagePreviewTracking().onSuccessAdd()
+                    imagePreviewTracking.onSuccessAdd()
                 },
                 onErrorAddWishList = {
                     hideLoading()
@@ -151,7 +164,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
                     hideLoading()
                     onSuccessRemoveWishlist()
                     updateView()
-                    ImagePreviewTracking().onSuccessRemove()
+                    imagePreviewTracking.onSuccessRemove()
                 },
                 onErrorRemoveWishList = {
                     hideLoading()
@@ -202,7 +215,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
 
     companion object {
 
-        private const val KEY_WISHLIST_BUTTON = "image_preview_pdp_wishlist_butotn"
+        private const val KEY_WISHLIST_BUTTON = "android_customer_image_preview_wishlist_pdp"
 
         private const val PRODUCT_ID = "productId"
         private const val IS_WISHLISTED = "isWishlisted"
@@ -221,7 +234,7 @@ class ImagePreviewPDPActivity : ImagePreviewActivity(), ImagePreviewPDPView {
                 position: Int = 0,
                 title: String? = null,
                 description: String? = null): Intent {
-            val intent = Intent(context, ImagePreviewPDPActivity::class.java)
+            val intent = Intent(context, ImagePreviewPdpActivity::class.java)
             val bundle = Bundle()
             bundle.putString(TITLE, title)
             bundle.putString(DESCRIPTION, description)

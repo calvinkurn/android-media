@@ -57,7 +57,7 @@ import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPDPActivity
+import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -1200,7 +1200,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             REQUEST_CODE_IMAGE_PREVIEW -> {
                 if (data != null) {
-                    val isWishlisted = data.getBooleanExtra(ImagePreviewPDPActivity.RESPONSE_CODE_IMAGE_RPEVIEW, false)
+                    isWishlisted = data.getBooleanExtra(ImagePreviewPdpActivity.RESPONSE_CODE_IMAGE_RPEVIEW, false)
                     updateWishlist(isWishlisted)
                 }
             }
@@ -1843,7 +1843,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
      */
     private fun onPictureProductClicked(position: Int) {
         activity?.let {
-            val intent = ImagePreviewPDPActivity.createIntent(it, productId ?: "", isWishlisted, getImageURIPaths(), null, position)
+            val intent = ImagePreviewPdpActivity.createIntent(it, productId ?: "", isWishlisted, getImageURIPaths(), null, position)
             startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW)
         }
     }

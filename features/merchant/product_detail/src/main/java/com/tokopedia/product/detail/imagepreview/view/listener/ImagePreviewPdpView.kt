@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.imagepreview.view.listener
 
-interface ImagePreviewPDPView {
+interface ImagePreviewPdpView {
     fun showLoading()
     fun hideLoading()
 

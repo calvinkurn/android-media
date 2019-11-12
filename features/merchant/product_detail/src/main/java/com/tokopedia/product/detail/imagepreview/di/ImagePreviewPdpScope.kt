@@ -6,4 +6,4 @@ import javax.inject.Scope
 @Scope
 @Retention
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-annotation class ImagePreviewPDPScope
+annotation class ImagePreviewPdpScope
