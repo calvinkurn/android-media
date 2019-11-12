@@ -54,10 +54,9 @@ class AutoCompleteFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        searchTextView = with(view.findViewById<SearchInputView>(R.id.search_input_autocomplete)) {
+        searchTextView = (view.findViewById<SearchInputView>(R.id.search_input_autocomplete)).apply {
             setDelayTextChanged(DEBOUNCE_DELAY)
             setListener(this@AutoCompleteFragment)
-            this
         }
         with(view.findViewById<RecyclerView>(R.id.rv_autocomplete)) {
             layoutManager = LinearLayoutManager(context)
