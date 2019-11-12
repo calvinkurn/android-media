@@ -204,12 +204,12 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     }
 
     override fun showMessage(message: String) {
-        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPDPContainer)
+        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
         Toaster.make(rootView, message, Toaster.toasterLength, Toaster.TYPE_NORMAL)
     }
 
     override fun showErrorMessage(message: String) {
-        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPDPContainer)
+        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
         Toaster.make(rootView, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
     }
 
