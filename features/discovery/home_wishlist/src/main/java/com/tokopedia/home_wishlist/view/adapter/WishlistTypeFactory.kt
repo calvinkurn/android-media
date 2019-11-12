@@ -19,6 +19,7 @@ interface WishlistTypeFactory {
     fun type(recommendationCarouselItemDataModel: RecommendationCarouselItemDataModel): Int
     fun type(recommendationItemDataModel: RecommendationItemDataModel): Int
     fun type(emptyWishlistDataModel: EmptyWishlistDataModel): Int
+    fun type(emptyWishlistDataModel: EmptySearchWishlistDataModel): Int
     fun type(loadingDataModel: LoadingDataModel): Int
     fun type(loadingMoreModel: LoadMoreDataModel): Int
     fun createViewHolder(view: View, type: Int): SmartAbstractViewHolder<*>

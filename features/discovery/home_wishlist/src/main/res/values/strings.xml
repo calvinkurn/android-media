@@ -25,4 +25,6 @@
     <string name="wishlist_message_delete_alert">Yakin kamu mau menghapus produk ini dari Wishlist?</string>
     <string name="wishlist_delete_title">Hapus Wishlist</string>
     <string name="hapus_wishlist">Hapus Wishlist</string>
+    <string name="wishlist_search_not_found">Oops, wishlist tidak ditemukan</string>
+    <string name="wishlist_search_not_found_description">Hasil pencarian untuk %s tidak ditemukan</string>
 </resources>

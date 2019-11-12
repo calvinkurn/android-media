@@ -27,7 +27,6 @@ class WishlistRepository @Inject constructor(
         private const val PARAM_PAGE = "page"
         private const val PARAM_QUERY = "query"
         private const val DEFAULT_COUNT = 20
-        const val DEFAULT_START_PAGE = 1
     }
 
     suspend fun getData(keyword: String, page: Int) : WishlistEntityData{
@@ -60,7 +59,7 @@ class WishlistRepository @Inject constructor(
         return mappingWishlistRepositoryItem(data.getSuccessData<WishlistResponse>().wishlist)
     }
 
-    fun mappingWishlistRepositoryItem(data: Wishlist): WishlistEntityData {
+    private fun mappingWishlistRepositoryItem(data: Wishlist): WishlistEntityData {
         return WishlistEntityData(
                 isSuccess = true,
                 hasNextPage = data.hasNextPage,

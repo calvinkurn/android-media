@@ -22,6 +22,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.BulkRemoveWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.coroutines.CancellationException
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -102,7 +103,9 @@ open class WishlistViewModel @Inject constructor(
 
             if(data.items.isEmpty()){
                 wishlistState.value = Status.EMPTY
-                wishlistData.value = listOf(EmptyWishlistDataModel())
+                wishlistData.value = listOf(
+                        if(keyword.isEmpty()) EmptyWishlistDataModel() else EmptySearchWishlistDataModel(keyword)
+                )
                 getRecommendationOnEmptyWishlist(0)
             } else {
                 wishlistState.value = Status.SUCCESS
@@ -126,7 +129,12 @@ open class WishlistViewModel @Inject constructor(
             }
         }){
             it.printStackTrace()
-            wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
+            if(it is CancellationException){
+                wishlistData.value = listOf(ErrorWishlistDataModel("Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti."))
+            }else {
+                wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
+            }
+
             wishlistState.value = Status.ERROR
             currentPage--
         }

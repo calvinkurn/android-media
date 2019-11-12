@@ -50,6 +50,10 @@ class WishlistTypeFactoryImpl(private val appExecutors: SmartExecutors) : Wishli
         return ErrorWishlistViewHolder.LAYOUT
     }
 
+    override fun type(emptyWishlistDataModel: EmptySearchWishlistDataModel): Int {
+        return EmptySearchWishlistViewHolder.LAYOUT
+    }
+
     /**
      * This override function from [BaseAdapterTypeFactory]
      * It return viewHolder
@@ -62,6 +66,7 @@ class WishlistTypeFactoryImpl(private val appExecutors: SmartExecutors) : Wishli
             LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(view)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             EmptyWishlistViewHolder.LAYOUT -> EmptyWishlistViewHolder(view)
+            EmptySearchWishlistViewHolder.LAYOUT -> EmptySearchWishlistViewHolder(view)
             ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view)
             RecommendationItemViewHolder.LAYOUT -> RecommendationItemViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)

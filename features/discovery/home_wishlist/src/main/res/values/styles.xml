@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Wishlist.Theme.White" parent="Theme.White">
+    <style name="Wishlist.Theme.White" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="toolbarTheme">@style/Toolbar.Wishlist</item>
     </style>
 
@@ -11,6 +11,9 @@
     </style>
     <style name="CheckBox.Wishlist" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
         <item name="colorAccent">#03AC0E</item>
-
+    </style>
+    <style name="Wishlist.TextAppearance" parent="android:TextAppearance">
+        <item name="android:textSize">22dp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

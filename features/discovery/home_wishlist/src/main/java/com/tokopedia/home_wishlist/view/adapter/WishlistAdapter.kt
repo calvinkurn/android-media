@@ -69,7 +69,7 @@ class WishlistAdapter(
             }
 
             override fun areItemsTheSame(oldItem: WishlistDataModel, newItem: WishlistDataModel): Boolean {
-                return oldItem::class == newItem::class || oldItem.getUniqueIdentity() == newItem.getUniqueIdentity() || oldItem.hashCode() == newItem.hashCode()
+                return oldItem.getUniqueIdentity() == newItem.getUniqueIdentity() || (oldItem.hashCode() == newItem.hashCode() && oldItem::class == newItem::class)
             }
 
             override fun areContentsTheSame(oldItem: WishlistDataModel, newItem: WishlistDataModel): Boolean {
@@ -91,6 +91,7 @@ class WishlistAdapter(
             is RecommendationCarouselDataModel,
             is LoadingDataModel,
             is EmptyWishlistDataModel,
+            is EmptySearchWishlistDataModel,
             is ErrorWishlistDataModel,
             is RecommendationTitleDataModel-> layout.isFullSpan = true
         }

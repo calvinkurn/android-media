@@ -84,7 +84,7 @@ class WishlistModule {
     @Named("wishlistQuery")
     fun provideWishlistQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
-                    R.raw.query_get_wishlist)
+                    R.raw.query_wishlist)
 
     @Provides
     @Named("atcMutation")

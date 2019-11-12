@@ -1,6 +1,8 @@
 package com.tokopedia.home_wishlist.view.fragment
 
+import android.animation.AnimatorInflater
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -13,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
@@ -52,6 +53,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.android.synthetic.main.fragment_home_wishlist.*
+import kotlinx.android.synthetic.main.fragment_home_wishlist.view.*
 import javax.inject.Inject
 
 
@@ -119,7 +122,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         super.onCreate(savedInstanceState)
         activity?.let {
             trackingQueue = TrackingQueue(it)
-            (it as AppCompatActivity).supportActionBar?.elevation = 0f
+//            (it as AppCompatActivity).supportActionBar?.elevation = 0f
         }
     }
 
@@ -132,17 +135,16 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
-//                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
-//                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
-//                        false)
-//                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-//                viewModel.updateWishlist(id.toInt(), position, wishlistStatusFromPdp)
             }
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            app_bar_layout.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation)
+        };
         initView(view)
         loadData()
         observeAction()
@@ -177,7 +179,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         swipeToRefresh?.setOnRefreshListener{
             if(!modeBulkDelete) {
                 endlessRecyclerViewScrollListener?.resetState()
-                viewModel.getWishlistData()
+                viewModel.getWishlistData(searchView.searchText)
             }
         }
         searchView = view.findViewById(R.id.wishlist_search_view)
@@ -247,9 +249,10 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             if(state.isEmpty() || state.isLoading() || state.isError()){
                 if(state.isLoading()) endlessRecyclerViewScrollListener?.resetState()
                 if(state.isEmpty() || state.isError()){
-                    searchView.hide()
+                    if(searchView.searchText.isEmpty()) searchView.hide()
                     menu?.findItem(R.id.cancel)?.isVisible = false
                     menu?.findItem(R.id.manage)?.isVisible = false
+                    container_delete.hide()
                 }
                 swipeToRefresh?.isRefreshing = false
             } else {
@@ -292,13 +295,13 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun updateScrollFlagForSearchView(isSearch: Boolean){
-        val layoutParam = searchView.layoutParams as AppBarLayout.LayoutParams
+        val layoutParam = collapsing_toolbar.layoutParams as AppBarLayout.LayoutParams
         if(isSearch){
             layoutParam.scrollFlags = 0
         }else {
-            layoutParam.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+            layoutParam.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
         }
-        searchView.layoutParams = layoutParam
+        collapsing_toolbar.layoutParams = layoutParam
     }
 
     override fun onProductClick(dataModel: WishlistDataModel, position: Int) {
