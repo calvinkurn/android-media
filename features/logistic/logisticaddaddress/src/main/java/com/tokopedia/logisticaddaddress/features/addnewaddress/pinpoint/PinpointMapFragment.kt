@@ -6,18 +6,24 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import com.google.android.gms.location.*
-import com.google.android.gms.maps.*
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -43,6 +49,13 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
+import rx.Emitter
+import rx.Observable
+import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.subscriptions.CompositeSubscription
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -75,6 +88,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var isChangesRequested: Boolean = false
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var continueWithLocation: Boolean? = false
+
+    private var composite = CompositeSubscription()
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -237,7 +252,19 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBehavior?.isHideable = false
         this.googleMap?.setOnCameraMoveListener { onMapDraggedListener() }
-        this.googleMap?.setOnCameraIdleListener { onMapIdleListener() }
+        this.googleMap?.let {
+            watchPin(it).subscribe(object : Subscriber<Boolean>() {
+                override fun onNext(t: Boolean?) {
+                    onMapIdleListener()
+                }
+
+                override fun onCompleted() {
+                }
+
+                override fun onError(e: Throwable?) {
+                }
+            }).toCompositeSubs()
+        }
     }
 
     private fun onMapDraggedListener() {
@@ -656,5 +683,20 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     override fun onDetach() {
         super.onDetach()
         presenter.detachView()
+        composite.unsubscribe()
+    }
+
+    private fun watchPin(maps: GoogleMap): Observable<Boolean> =
+            Observable.create({ emitter: Emitter<Boolean> ->
+                maps.setOnCameraIdleListener {
+                    emitter.onNext(true)
+                }
+            }, Emitter.BackpressureMode.LATEST)
+                    .debounce(1000, TimeUnit.MILLISECONDS)
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+
+    private fun Subscription.toCompositeSubs() {
+        composite.add(this)
     }
 }
