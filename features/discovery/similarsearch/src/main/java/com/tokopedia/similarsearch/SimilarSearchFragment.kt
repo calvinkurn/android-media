@@ -59,6 +59,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
     private fun initViews() {
         bindSelectedProductView()
         bindRecyclerView()
+        disableSwipeRefreshLayout()
     }
 
     private fun bindSelectedProductView() {
@@ -93,6 +94,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
         }
     }
 
+    private fun disableSwipeRefreshLayout() {
+        swipeToRefreshSimilarSearch?.isEnabled = false
+    }
+
     private fun observeViewModelData() {
         similarSearchViewModel?.getSimilarSearchLiveData()?.observe(viewLifecycleOwner, Observer {
             updateAdapter(it)
@@ -100,27 +105,22 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
     }
 
     private fun updateAdapter(similarSearchLiveData: State<List<Any>>) {
-        when(similarSearchLiveData) {
+        when (similarSearchLiveData) {
+            is State.Loading -> {
+                swipeToRefreshSimilarSearch?.isRefreshing = true
+                updateAdapterList(similarSearchLiveData)
+            }
             is State.Success -> {
+                swipeToRefreshSimilarSearch?.isRefreshing = false
                 updateAdapterList(similarSearchLiveData)
             }
             is State.Error -> {
-                showRetryLayout(similarSearchLiveData)
+
             }
         }
     }
 
     private fun updateAdapterList(similarSearchLiveData: State<List<Any>>) {
         similarSearchAdapter?.updateList(similarSearchLiveData.data ?: listOf())
-    }
-
-    private fun showRetryLayout(similarSearchLiveData: State<List<Any>>) {
-        activity?.let { activity ->
-            val retryClickedListener = NetworkErrorHelper.RetryClickedListener {
-//                similarSearchViewModel?.onViewClickRetry()
-            }
-
-            NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
-        }
     }
 }

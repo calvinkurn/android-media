@@ -11,6 +11,7 @@ internal class SimilarSearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
             .addDelegate(SimilarProductItemAdapterDelegate())
             .addDelegate(DividerAdapterDelegate())
             .addDelegate(LoadingMoreAdapterDelegate())
+            .addDelegate(EmptyResultAdapterDelegate())
 
     override fun getItemViewType(position: Int): Int {
         return adapterDelegatesManager.getItemViewType(list, position)

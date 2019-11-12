@@ -8,15 +8,22 @@
         android:id="@+id/cardViewSelectedProductSimilarSearch"
         layout="@layout/similar_search_selected_product_layout" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSimilarSearch"
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipeToRefreshSimilarSearch"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
-        android:clipToPadding="false"
-        android:descendantFocusability="blocksDescendants"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cardViewSelectedProductSimilarSearch"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSimilarSearch"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            android:clipToPadding="false"
+            android:descendantFocusability="blocksDescendants" />
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

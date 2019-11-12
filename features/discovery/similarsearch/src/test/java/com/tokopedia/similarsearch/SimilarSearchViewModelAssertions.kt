@@ -8,6 +8,10 @@ internal fun State<List<Any>>?.shouldHaveCorrectViewModelListWithLoadingMore(sim
 
     this.shouldNotBeNull()
 
+    val expectedDataSize = 2 + similarProductItemList.size
+    (this?.data?.size ?: 0).shouldBe(expectedDataSize,
+            "Unexpected data size. Actual ${this?.data?.size ?: 0}, expected: $expectedDataSize")
+
     this.shouldHaveDividerViewModel(0)
     this.shouldHaveSimilarProductItemModel(1, similarProductItemList)
     this.shouldHaveLoadingMoreViewModel(lastIndex)
@@ -42,6 +46,32 @@ private fun State<List<Any>>?.shouldHaveLoadingMoreViewModel(position: Int) {
     list[position].shouldBeInstanceOf<LoadingMoreModel>()
 }
 
+internal fun State<List<Any>>?.shouldHaveCorrectViewModelListWithoutLoadingMore(similarProductItemList: List<Product>) {
+    this.shouldNotBeNull()
+
+    val expectedDataSize = 1 + similarProductItemList.size
+    (this?.data?.size ?: 0).shouldBe(expectedDataSize,
+            "Unexpected data size. Actual ${this?.data?.size ?: 0}, expected: $expectedDataSize")
+
+    this.shouldHaveDividerViewModel(0)
+    this.shouldHaveSimilarProductItemModel(1, similarProductItemList)
+}
+
 internal fun State<List<Any>>?.shouldBeNullOrEmpty() {
     this?.data.isNullOrEmpty().shouldBe(true, "Data should be null")
+}
+
+internal fun State<List<Any>>?.shouldHaveCorrectEmptyResultView() {
+    this.shouldNotBeNull()
+
+    this?.data?.size ?: 0 shouldBe 2
+
+    this.shouldHaveDividerViewModel(0)
+    this.shouldHaveEmptyResultViewModel(1)
+}
+
+private fun State<List<Any>>?.shouldHaveEmptyResultViewModel(position: Int) {
+    val list = this?.data as List<Any>
+
+    list[position].shouldBeInstanceOf<EmptyResultViewModel>()
 }

@@ -26,6 +26,7 @@ include "libraries:kotlin_extensions"
 include "libraries:remote_config"
 include "libraries:track"
 include "libraries:tracking_optimizer"
+include "libraries:promotions_target"
 
 // search dependencies - tkpdxxx
 include "tkpdabstraction"

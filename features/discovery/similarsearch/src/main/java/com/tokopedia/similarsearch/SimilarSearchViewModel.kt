@@ -20,6 +20,9 @@ internal class SimilarSearchViewModel(
 
     private var hasLoadData = false
     private val similarSearchLiveData = MutableLiveData<State<List<Any>>>()
+    private val similarSearchViewModelList = mutableListOf<Any>()
+    private val similarProductModelList = mutableListOf<Product>()
+    private val loadingMoreModel = LoadingMoreModel()
 
     fun onViewCreated() {
         if (!hasLoadData) {
@@ -50,26 +53,84 @@ internal class SimilarSearchViewModel(
             return
         }
 
-        val resultList = mutableListOf<Any>()
+        similarProductModelList.addAll(similarProductModel.getProductList())
 
-        resultList.add(DividerViewModel())
-        resultList.addAll(getProductListForOnePage(similarProductModel))
-        resultList.add(LoadingMoreModel())
+        initFirstPageSimilarSearchViewModelList()
 
-        similarSearchLiveData.postValue(Success(resultList))
+        if (similarProductModelList.isEmpty()) {
+            addEmptyResultView()
+        }
+        else {
+            processSimilarProductListForOnePage()
+        }
+
+        postSuccessData()
     }
 
-    private fun getProductListForOnePage(similarProductModel: SimilarProductModel): List<Product> {
-        val similarProductItemList = similarProductModel.getProductList()
-        val itemCount = min(similarProductItemList.size, SIMILAR_PRODUCT_ITEM_SIZE_PER_PAGE)
+    private fun initFirstPageSimilarSearchViewModelList() {
+        similarSearchViewModelList.clear()
+        similarSearchViewModelList.add(DividerViewModel())
+    }
 
-        return similarProductItemList.subList(0, itemCount)
+    private fun addEmptyResultView() {
+        similarSearchViewModelList.add(EmptyResultViewModel())
+    }
+
+    private fun processSimilarProductListForOnePage() {
+        val productList = getProductListForOnePage()
+
+        if (productList.isNotEmpty()) {
+            appendSimilarProductList(productList)
+            appendLoadingMoreView()
+        }
+    }
+
+    private fun appendSimilarProductList(productList: List<Product>) {
+        similarSearchViewModelList.addAll(productList)
+    }
+
+    private fun appendLoadingMoreView() {
+        if (getHasNextPage()) {
+            similarSearchViewModelList.add(loadingMoreModel)
+        }
+    }
+
+    fun getHasNextPage(): Boolean {
+        return similarProductModelList.size > 0
+    }
+
+    private fun postSuccessData() {
+        similarSearchLiveData.postValue(Success(similarSearchViewModelList))
+    }
+
+    private fun getProductListForOnePage(): List<Product> {
+        val itemCount = min(similarProductModelList.size, SIMILAR_PRODUCT_ITEM_SIZE_PER_PAGE)
+
+        val productListForOnePage = similarProductModelList.subList(0, itemCount).toList()
+
+        for (i in 0 until itemCount) {
+            similarProductModelList.removeAt(0)
+        }
+
+        return productListForOnePage
     }
 
     private fun catchGetSimilarProductsError(throwable: Throwable?) {
         throwable?.printStackTrace()
 
         similarSearchLiveData.postValue(Error(""))
+    }
+
+    fun onViewLoadMore() {
+        if (!getHasNextPage()) return
+
+        removeLoadingMoreModel()
+        processSimilarProductListForOnePage()
+        postSuccessData()
+    }
+
+    private fun removeLoadingMoreModel() {
+        similarSearchViewModelList.remove(loadingMoreModel)
     }
 
     fun getSimilarSearchLiveData(): LiveData<State<List<Any>>> {
