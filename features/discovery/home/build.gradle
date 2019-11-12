@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -49,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.stickyLogin)
+    implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
@@ -102,6 +101,8 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.features.reputationCommon)
+
 }
 
 project.ext {

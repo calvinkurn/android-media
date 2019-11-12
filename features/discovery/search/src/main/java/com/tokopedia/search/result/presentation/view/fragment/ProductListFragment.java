@@ -3,16 +3,17 @@ package com.tokopedia.search.result.presentation.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -30,6 +31,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -78,7 +80,6 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -110,7 +111,6 @@ public class ProductListFragment
         GlobalNavListener,
         BannerAdsListener,
         EmptyStateListener,
-        WishListActionListener,
         RecommendationListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
@@ -200,7 +200,6 @@ public class ProductListFragment
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         presenter.initInjector(this);
-        presenter.setWishlistActionListener(this);
 
         return inflater.inflate(R.layout.search_result_product_fragment_layout, null);
     }
@@ -489,6 +488,7 @@ public class ProductListFragment
     @Override
     public void onPause() {
         super.onPause();
+        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey(), SCREEN_SEARCH_PAGE_PRODUCT_TAB);
         trackingQueue.sendAll();
     }
 
@@ -596,8 +596,11 @@ public class ProductListFragment
         startSimilarSearch(item.getProductID());
     }
 
-    public void startSimilarSearch(String productId) {
-        RouteManager.route(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
+    private void startSimilarSearch(String productId) {
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
+        intent.putExtra(SearchConstant.SimilarSearch.QUERY, getQueryKey());
+
+        startActivity(intent);
     }
 
     private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
@@ -748,31 +751,58 @@ public class ProductListFragment
     }
 
     @Override
-    public void onErrorAddWishList(String errorMessage, String productId) {
+    public void errorAddWishList(String errorMessage, String productId) {
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessAddWishlist(String productId) {
-        searchTracking.eventSuccessAddWishlistSearchResultProduct(getQueryKey(), productId);
-        adapter.updateWishlistStatus(productId, true);
-        enableWishlistButton(productId);
+    public void successAddWishlist(ProductItemViewModel productItemViewModel) {
+        trackSuccessAddWishlist(productItemViewModel);
+
+        adapter.updateWishlistStatus(productItemViewModel.getProductID(), true);
+        enableWishlistButton(productItemViewModel.getProductID());
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
+    private void trackSuccessAddWishlist(ProductItemViewModel productItemViewModel) {
+        WishlistTrackingModel wishlistTrackingModel = createWishlistTrackingModel(productItemViewModel);
+        wishlistTrackingModel.setAddWishlist(true);
+
+        SearchTracking.eventSuccessWishlistSearchResultProduct(wishlistTrackingModel);
+    }
+
+    private WishlistTrackingModel createWishlistTrackingModel(ProductItemViewModel productItemViewModel) {
+        WishlistTrackingModel wishlistTrackingModel = new WishlistTrackingModel();
+
+        wishlistTrackingModel.setProductId(productItemViewModel.getProductID());
+        wishlistTrackingModel.setTopAds(productItemViewModel.isTopAds());
+        wishlistTrackingModel.setKeyword(getQueryKey());
+        wishlistTrackingModel.setUserLoggedIn(userSession.isLoggedIn());
+
+        return wishlistTrackingModel;
+    }
+
     @Override
-    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+    public void errorRemoveWishlist(String errorMessage, String productId) {
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessRemoveWishlist(String productId) {
-        searchTracking.eventSuccessRemoveWishlistSearchResultProduct(getQueryKey(), productId);
-        adapter.updateWishlistStatus(productId, false);
-        enableWishlistButton(productId);
+    public void successRemoveWishlist(ProductItemViewModel productItemViewModel) {
+        trackSuccessRemoveWishlist(productItemViewModel);
+
+        adapter.updateWishlistStatus(productItemViewModel.getProductID(), false);
+        enableWishlistButton(productItemViewModel.getProductID());
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+    }
+
+    private void trackSuccessRemoveWishlist(ProductItemViewModel productItemViewModel) {
+        WishlistTrackingModel wishlistTrackingModel = createWishlistTrackingModel(productItemViewModel);
+        wishlistTrackingModel.setAddWishlist(false);
+
+        SearchTracking.eventSuccessWishlistSearchResultProduct(wishlistTrackingModel);
     }
 
     @Override
@@ -1140,22 +1170,11 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction) {
-        searchTracking.sendGeneralEventWithUserId(
-                SearchEventTracking.Event.CLICK_WISHLIST,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                generateWishlistClickEventActionNonLogin(wishlistAction),
-                generateWishlistClickEventLabelNonLogin(productId)
-        );
-    }
+    public void sendTrackingWishlistNonLogin(ProductItemViewModel productItemViewModel) {
+        WishlistTrackingModel wishlistTrackingModel = createWishlistTrackingModel(productItemViewModel);
+        wishlistTrackingModel.setAddWishlist(!productItemViewModel.isWishlisted());
 
-    private String generateWishlistClickEventActionNonLogin(boolean isWishlisted) {
-        String action = isWishlisted ? "add" : "remove";
-        return action + " wishlist - non logged in";
-    }
-
-    private String generateWishlistClickEventLabelNonLogin(String productId) {
-        return productId + " - " + getQueryKey();
+        SearchTracking.eventSuccessWishlistSearchResultProduct(wishlistTrackingModel);
     }
 
     @Override
