@@ -67,7 +67,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var dropoffMapper: GetStoreMapper
 
     @Inject
-    private lateinit var tracker: DropOffAnalytics
+    lateinit var tracker: DropOffAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

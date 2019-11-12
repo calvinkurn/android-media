@@ -6,7 +6,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
 
-internal class DropOffAnalytics @Inject constructor(){
+class DropOffAnalytics @Inject constructor(){
 
     private fun sendTracker(event: String, eventCategory: String, eventAction: String,
                             eventLabel: String) {

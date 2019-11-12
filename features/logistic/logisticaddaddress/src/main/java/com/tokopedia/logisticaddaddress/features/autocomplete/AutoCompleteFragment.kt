@@ -32,7 +32,7 @@ class AutoCompleteFragment : Fragment(),
         SearchInputView.Listener, AutoCompleteAdapter.ActionListener {
 
     @Inject
-    private lateinit var tracker: DropOffAnalytics
+    lateinit var tracker: DropOffAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
