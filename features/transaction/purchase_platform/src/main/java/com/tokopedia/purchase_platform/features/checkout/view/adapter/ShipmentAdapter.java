@@ -3,8 +3,10 @@ package com.tokopedia.purchase_platform.features.checkout.view.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -925,6 +927,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getShipmentCostPosition() {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCostModel) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public int getFirstShopPosition() {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                 return i;
             }
         }
