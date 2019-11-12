@@ -171,7 +171,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                             showRepriceTag(cart)
                             renderRepricePrice(cart)
                         } else {
-                            //show popup check detail
+                            showCheckBookingDetailPopUp()
                         }
                     }
                 }
@@ -207,15 +207,34 @@ class FlightBookingFragment : BaseDaggerFragment() {
         tickerBookingPromo.setTextDescription(cart.promoEligibility.message)
 
         continueToPayButton.setOnClickListener {
-            Log.d("HEHE", "continue to Pay")
+            showCheckBookingDetailPopUp()
             bottomSheet.dismiss()
         }
 
         findNewTicketButton.setOnClickListener {
-            Log.d("HEHE", "findNewTicket")
             bottomSheet.dismiss()
         }
         bottomSheet.show(fragmentManager, "harga tiket berubah")
+    }
+
+    private fun showCheckBookingDetailPopUp() {
+        if (activity != null) {
+            val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle("Sudah cek detail pesananmu?")
+            dialog.setDescription("Pastikan detail pesananmu benar, karena tidak bisa diubah setelah lanjut bayar")
+            dialog.setPrimaryCTAText("Lanjut Bayar")
+            dialog.setSecondaryCTAText("Cek Ulang")
+
+            dialog.setPrimaryCTAClickListener {
+                bookingViewModel.checkOutCart(cartId, totalCartPrice)
+            }
+
+            dialog.setSecondaryCTAClickListener{
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
     }
 
     private fun setUpTimer(timeStamp: Date) {

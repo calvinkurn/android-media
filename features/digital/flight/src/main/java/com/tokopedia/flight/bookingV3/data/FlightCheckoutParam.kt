@@ -10,28 +10,28 @@ import com.google.gson.annotations.SerializedName
 data class FlightCheckoutParam(
         @SerializedName("cartItems")
         @Expose
-        val cartItems: List<CartItem> = listOf(),
+        val cartItems: MutableList<CartItem> = mutableListOf(),
 
         @SerializedName("promoCode")
         @Expose
-        val promoCode: String = ""
+        var promoCode: String = ""
 ) {
     data class CartItem(
             @SerializedName("productID")
             @Expose
-            val productId: Int = 0,
+            var productId: Int = 0,
 
             @SerializedName("quantity")
             @Expose
-            val quantity: Int = 0,
+            var quantity: Int = 0,
 
             @SerializedName("metaData")
             @Expose
-            val metaData: MetaData = MetaData(),
+            var metaData: MetaData = MetaData(),
 
             @SerializedName("configuration")
             @Expose
-            val configuration: FlightVerify.CartConfiguration = FlightVerify.CartConfiguration()
+            var configuration: FlightVerify.CartConfiguration = FlightVerify.CartConfiguration()
     )
 
     data class MetaData(

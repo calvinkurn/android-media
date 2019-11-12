@@ -420,6 +420,30 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         return phoneRawString
     }
 
+    fun checkOutCart(cartId: String, price: Int) {
+        val checkoutParam = createCheckoutParam(cartId, price)
+
+        checkoutParam.promoCode
+    }
+
+    private fun createCheckoutParam(cartId: String, price: Int): FlightCheckoutParam {
+        val checkoutParam = FlightCheckoutParam()
+        val cartItem = FlightCheckoutParam.CartItem()
+        cartItem.productId = 27
+        cartItem.quantity = 1
+        cartItem.metaData = FlightCheckoutParam.MetaData(cartId,
+                (flightVerifyResult.value as Success<FlightVerify.FlightVerifyMetaAndData>).data.data.cartItems[0].metaData.invoiceId,
+                FlightRequestUtil.getLocalIpAddress(),
+                FlightRequestUtil.getUserAgentForApiCall(),
+                4)
+        cartItem.configuration.price = price
+
+        checkoutParam.cartItems.add(cartItem)
+        checkoutParam.promoCode = (flightPromoResult.value as FlightPromoViewEntity).promoData.promoCode
+
+        return checkoutParam
+    }
+
     companion object {
         val PARAM_CART_ID = "cartID"
         val PARAM_VERIFY_CART = "data"
