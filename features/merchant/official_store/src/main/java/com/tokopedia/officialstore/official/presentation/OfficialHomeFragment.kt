@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.official.presentation
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -272,7 +273,16 @@ class OfficialHomeFragment :
                         super.onScrolled(recyclerView, dx, dy)
                         totalScroll += dy
 
-                        scrollListener.onContentScrolled(dy, totalScroll)
+
+                        if (!isScrolling) {
+                            isScrolling = true
+                            scrollListener.onContentScrolled(dy, totalScroll)
+
+                            Handler().postDelayed({
+                                isScrolling = false
+                            }, 500)
+                        }
+
                     }
 
                 })
@@ -281,7 +291,9 @@ class OfficialHomeFragment :
 
     }
 
-    override fun getScreenName(): String {
+    var isScrolling = false
+
+            override fun getScreenName(): String {
         return ""
     }
 
