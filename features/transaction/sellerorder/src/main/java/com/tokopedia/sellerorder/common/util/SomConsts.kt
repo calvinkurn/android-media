@@ -45,6 +45,7 @@ object SomConsts {
 
     const val KEY_ACCEPT_ORDER = "accept_order"
     const val KEY_REJECT_ORDER = "reject_order"
+    const val KEY_TRACK_SELLER = "track_seller"
 
     const val KEY_REASON_EMPTY_STOCK = "empty_stock"
     const val KEY_REASON_SHOP_CLOSED = "shop_closed"

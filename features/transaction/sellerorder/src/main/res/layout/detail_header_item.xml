@@ -220,7 +220,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/header_invoice"
             app:layout_constraintBottom_toBottomOf="@id/header_invoice"
-            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"/>
 

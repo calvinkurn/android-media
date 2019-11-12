@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailShipping
@@ -28,6 +29,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 itemView.tv_receiver_notes.visibility = View.GONE
                 itemView.tv_notes_label.visibility = View.GONE
             }
+
             if (item.dataObject.isFreeShipping) {
                 itemView.label_harus_sesuai.visibility = View.VISIBLE
                 itemView.ic_harus_sesuai.visibility = View.VISIBLE
@@ -45,6 +47,36 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             } else {
                 itemView.label_harus_sesuai.visibility = View.GONE
                 itemView.ic_harus_sesuai.visibility = View.GONE
+            }
+
+            // booking online - driver
+            if (item.dataObject.driverName.isEmpty()) itemView.card_driver.visibility = View.GONE
+            else {
+                if (item.dataObject.driverName.isNotEmpty()) {
+                    itemView.tv_driver_name.text = item.dataObject.driverName
+                }
+
+                if (item.dataObject.driverPhoto.isNotEmpty()) {
+                    itemView.iv_driver.loadImageCircle(item.dataObject.driverPhoto)
+                } else {
+                    itemView.iv_driver.setImageResource(R.drawable.ic_driver_default)
+                }
+
+                if (item.dataObject.driverPhone.isNotEmpty()) {
+                    itemView.tv_driver_phone.text = item.dataObject.driverPhone
+                    itemView.driver_call_btn.setOnClickListener {
+                        actionListener.onDialPhone(item.dataObject.driverPhone)
+                    }
+                } else {
+                    itemView.tv_driver_phone.visibility = View.GONE
+                    itemView.driver_call_btn.visibility = View.GONE
+                }
+
+                if (item.dataObject.driverLicense.isNotEmpty()) {
+                    itemView.tv_driver_license.text = item.dataObject.driverLicense
+                } else {
+                    itemView.tv_driver_license.visibility = View.GONE
+                }
             }
         }
     }

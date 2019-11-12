@@ -61,6 +61,10 @@ data class SomDetailOrder (
             @Expose
             val shipment: Shipment = Shipment(),
 
+            @SerializedName("booking_info")
+            @Expose
+            val bookingInfo: BookingInfo = BookingInfo(),
+
             @SerializedName("receiver")
             @Expose
             val receiver: Receiver = Receiver(),
@@ -187,6 +191,34 @@ data class SomDetailOrder (
                     @SerializedName("awb_upload_proof_text")
                     @Expose
                     val awbUploadProofText: String = "")
+
+            data class BookingInfo(
+                    @SerializedName("driver")
+                    @Expose
+                    val driver: Driver = Driver()) {
+
+                data class Driver(
+                        @SerializedName("name")
+                        @Expose
+                        val name: String = "",
+
+                        @SerializedName("phone")
+                        @Expose
+                        val phone: String = "",
+
+                        @SerializedName("photo")
+                        @Expose
+                        val photo: String = "",
+
+                        @SerializedName("license_number")
+                        @Expose
+                        val licenseNumber: String = "",
+
+                        @SerializedName("tracking_url")
+                        @Expose
+                        val trackingUrl: String = ""
+                )
+            }
 
             data class Receiver(
                     @SerializedName("name")
@@ -323,6 +355,10 @@ data class SomDetailOrder (
                     @SerializedName("type")
                     @Expose
                     val type: String = "",
+
+                    @SerializedName("url")
+                    @Expose
+                    val url: String = "",
 
                     @SerializedName("title")
                     @Expose

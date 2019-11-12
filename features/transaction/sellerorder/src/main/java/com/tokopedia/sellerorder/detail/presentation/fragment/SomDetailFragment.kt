@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.dialog.DialogUnify
@@ -28,7 +27,6 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.convertStrObjToHashMap
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
-import com.tokopedia.sellerorder.common.util.SomConsts.BASE_URL_UPLOAD_PROOF_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_RADIO_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
@@ -85,6 +83,9 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import android.net.Uri
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
+
 
 /**x
  * Created by fwidjaja on 2019-09-30.
@@ -280,6 +281,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             val indexValueEnd = getAllNotes.indexOf(RECEIVER_NOTES_END)
             notesValue = getAllNotes.substring(indexValueStart+1, indexValueEnd-1)
         }
+
         val dataShipping = SomDetailShipping(
                 detailResponse.shipment.name + " - " + detailResponse.shipment.productName,
                 detailResponse.paymentSummary.shippingPriceText,
@@ -288,7 +290,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.receiver.street,
                 detailResponse.receiver.district + ", " + detailResponse.receiver.city + " " + detailResponse.receiver.postal,
                 notesValue,
-                detailResponse.flagOrderMeta.flagFreeShipping)
+                detailResponse.flagOrderMeta.flagFreeShipping,
+                detailResponse.bookingInfo.driver.photo,
+                detailResponse.bookingInfo.driver.name,
+                detailResponse.bookingInfo.driver.phone,
+                detailResponse.bookingInfo.driver.licenseNumber)
 
         val dataPayments = SomDetailPayments(
                 detailResponse.paymentSummary.productsPriceText,
@@ -317,21 +323,29 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
                 if (buttonResp.key.equals(KEY_ACCEPT_ORDER, true)) {
                     setActionAcceptOrder(buttonResp)
+
+                } else if (buttonResp.key.equals(KEY_TRACK_SELLER, true)) {
+                    setActionGoToTrackingPage(buttonResp)
                 }
             }
 
-            btn_secondary?.setOnClickListener {
-                somBottomSheetRejectOrderAdapter = SomBottomSheetRejectOrderAdapter(this, hasRadioBtn = false)
-                showTextOnlyBottomSheet()
-                bottomSheetUnify.clearHeader(true)
-                bottomSheetUnify.clearClose(true)
-                val mapKey = HashMap<String, String>()
-                detailResponse.button.filterIndexed { index, _ -> (index != 0) }.forEach { btn ->
-                    mapKey[btn.key] = btn.displayName
+            if (detailResponse.button.size > 1) {
+                btn_secondary?.visibility = View.VISIBLE
+                btn_secondary?.setOnClickListener {
+                    somBottomSheetRejectOrderAdapter = SomBottomSheetRejectOrderAdapter(this, hasRadioBtn = false)
+                    showTextOnlyBottomSheet()
+                    bottomSheetUnify.clearHeader(true)
+                    bottomSheetUnify.clearClose(true)
+                    val mapKey = HashMap<String, String>()
+                    detailResponse.button.filterIndexed { index, _ -> (index != 0) }.forEach { btn ->
+                        mapKey[btn.key] = btn.displayName
 
+                    }
+                    somBottomSheetRejectOrderAdapter.mapKey = mapKey
+                    somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
                 }
-                somBottomSheetRejectOrderAdapter.mapKey = mapKey
-                somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
+            } else {
+                btn_secondary?.visibility = View.GONE
             }
 
         } else {
@@ -359,6 +373,21 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 }
             }
             dialogUnify.show()
+        }
+    }
+
+    private fun setActionGoToTrackingPage(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+        btn_primary?.setOnClickListener {
+            var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", detailResponse.orderId.toString())
+
+            val trackingUrl: String?
+            val uri = Uri.parse(buttonResp.url)
+            trackingUrl = uri.getQueryParameter("url")
+
+            val uriBuilder = Uri.Builder()
+            uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl)
+            routingAppLink += uriBuilder.toString()
+            RouteManager.route(context, routingAppLink)
         }
     }
 
@@ -735,5 +764,12 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             }
             datePicker.setCloseClickListener { datePicker.dismiss() }
         }
+    }
+
+    override fun onDialPhone(strPhoneNo: String) {
+        val intent = Intent(Intent.ACTION_DIAL)
+        val phone = "tel:$strPhoneNo"
+        intent.data = Uri.parse(phone)
+        startActivity(intent)
     }
 }

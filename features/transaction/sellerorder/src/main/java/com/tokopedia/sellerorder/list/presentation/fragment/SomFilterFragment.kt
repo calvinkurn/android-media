@@ -137,13 +137,15 @@ class SomFilterFragment : BaseDaggerFragment() {
             datePicker.show(fragmentManager, "")
             datePicker.datePickerButton.setOnClickListener {
                 val resultDate = datePicker.getDate()
+                val monthInt = resultDate[1]+1
+                var monthStr = monthInt.toString()
+                if (monthStr.length == 1) monthStr = "0$monthStr"
                 when { flag.equals(START_DATE, true) -> {
-                            // TODO : Ask Indhry
-                            currentFilterParams?.startDate = "${resultDate[0]}/${resultDate[1]+1}/${resultDate[2]}"
+                            currentFilterParams?.startDate = "${resultDate[0]}/$monthStr/${resultDate[2]}"
                             et_start_date.setText("${resultDate[0]} ${convertMonth(resultDate[1])} ${resultDate[2]}")
                         }
                        flag.equals(END_DATE, true) -> {
-                           currentFilterParams?.endDate = "${resultDate[0]}/${resultDate[1]+1}/${resultDate[2]}"
+                           currentFilterParams?.endDate = "${resultDate[0]}/$monthStr/${resultDate[2]}"
                            et_end_date.setText("${resultDate[0]} ${convertMonth(resultDate[1])} ${resultDate[2]}")
                        } }
                 datePicker.dismiss()
@@ -282,7 +284,8 @@ class SomFilterFragment : BaseDaggerFragment() {
         if (!statusTextFilled) {
             label_substatus.setText(R.string.subtitle_status)
         }
-        currentFilterParams?.startDate = getCalculatedFormattedDate("dd/MM/yyyy", intervalDays)
+        // TODO : should be flag first timer!!
+        // currentFilterParams?.startDate = getCalculatedFormattedDate("dd/MM/yyyy", intervalDays)
 
         println("++ currentFilterParams.startDate = ${currentFilterParams?.startDate}")
         println("++ currentFilterParams.endDate = ${currentFilterParams?.endDate}")

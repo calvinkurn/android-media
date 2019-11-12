@@ -219,6 +219,8 @@ dependencies {
     })
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     //implementation project(rootProject.ext.features.shopSettings)
+    // for staging-only
+    // implementation "com.tokopedia.url:url:1.0.2"
     implementation project(rootProject.ext.features.sellerorder)
 //
 //    implementation project(rootProject.ext.libraries.logger)

@@ -97,4 +97,9 @@
     <string name="other_reason_resp_label">Alasan penolakan lainnya</string>
     <string name="other_reason_resp_placeholder">Contoh: Saya tidak bisa menerima...</string>
 
+    <string name="tv_driver_name_example">Idwan Wangsa</string>
+    <string name="tv_driver_phone_example">081234567890</string>
+    <string name="tv_driver_license_example">B 1408 TMB</string>
+    <string name="tv_driver_call_btn">Hubungi</string>
+
 </resources>

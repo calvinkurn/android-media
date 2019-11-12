@@ -289,7 +289,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             var intervalDays = -60
             if (keySelected == STATUS_ALL_ORDER) intervalDays = -90
-            paramOrder.startDate = getCalculatedFormattedDate("dd/MM/yyyy", intervalDays)
+            // paramOrder.startDate = getCalculatedFormattedDate("dd/MM/yyyy", intervalDays)
 
             println("++ paramOrder.startDate = ${paramOrder.startDate}")
             println("++ paramOrder.endDate = ${paramOrder.endDate}")

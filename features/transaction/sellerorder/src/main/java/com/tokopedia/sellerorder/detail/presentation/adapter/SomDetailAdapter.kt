@@ -27,6 +27,7 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onShowBottomSheetInfo(title: String, resIdDesc: Int)
         fun onTextCopied(label: String, str: String)
         fun onInvalidResiUpload()
+        fun onDialPhone(strPhoneNo: String)
     }
 
     companion object {
