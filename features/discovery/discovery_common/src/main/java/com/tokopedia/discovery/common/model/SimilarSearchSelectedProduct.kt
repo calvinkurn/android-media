@@ -6,6 +6,7 @@ import android.os.Parcelable
 data class SimilarSearchSelectedProduct(
         val id: String = "",
         val imageUrl: String = "",
+        val isWishlisted: Boolean = false,
         val name: String = "",
         val price: String = "",
         val location: String = "",
@@ -16,6 +17,7 @@ data class SimilarSearchSelectedProduct(
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
+            parcel.readByte() != 0.toByte(),
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -25,6 +27,7 @@ data class SimilarSearchSelectedProduct(
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(imageUrl)
+        parcel.writeByte(if (isWishlisted) 1 else 0)
         parcel.writeString(name)
         parcel.writeString(price)
         parcel.writeString(location)

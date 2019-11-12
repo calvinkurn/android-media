@@ -602,6 +602,7 @@ public class ProductListFragment
         return new SimilarSearchSelectedProduct(
                 productItemViewModel.getProductID(),
                 productItemViewModel.getImageUrl(),
+                productItemViewModel.isWishlisted(),
                 productItemViewModel.getProductName(),
                 productItemViewModel.getPrice(),
                 productItemViewModel.getShopCity(),

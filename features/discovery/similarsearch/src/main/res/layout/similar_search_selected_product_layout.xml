@@ -43,11 +43,9 @@
             android:background="@drawable/similar_search_wishlist_background"
             android:padding="@dimen/dp_4"
             android:scaleType="fitXY"
-            android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/similar_search_wishlist_icon"
-            tools:visibility="visible" />
+            app:srcCompat="@drawable/similar_search_ic_wishlist_inactive" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewProductName"

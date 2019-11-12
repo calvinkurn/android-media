@@ -5,11 +5,17 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 
 internal class SimilarSearchViewModelFactory(
         private val dispatcherProvider: DispatcherProvider,
         private val similarSearchSelectedProduct: SimilarSearchSelectedProduct,
-        private val getSimilarProductsUseCase: UseCase<SimilarProductModel>
+        private val getSimilarProductsUseCase: UseCase<SimilarProductModel>,
+        private val addWishlistUseCase: AddWishListUseCase,
+        private val removeWishListUseCase: RemoveWishListUseCase,
+        private val userSession: UserSessionInterface
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -25,7 +31,10 @@ internal class SimilarSearchViewModelFactory(
         return SimilarSearchViewModel(
                 dispatcherProvider,
                 similarSearchSelectedProduct,
-                getSimilarProductsUseCase
+                getSimilarProductsUseCase,
+                addWishlistUseCase,
+                removeWishListUseCase,
+                userSession
         )
     }
 }

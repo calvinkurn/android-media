@@ -5,17 +5,25 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.discovery.common.DispatcherProvider
+import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.*
 import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlin.math.min
 
 internal class SimilarSearchViewModel(
         dispatcherProvider: DispatcherProvider,
         val similarSearchSelectedProduct: SimilarSearchSelectedProduct,
-        private val getSimilarProductsUseCase: UseCase<SimilarProductModel>
+        private val getSimilarProductsUseCase: UseCase<SimilarProductModel>,
+        private val addWishlistUseCase: AddWishListUseCase,
+        private val removeWishListUseCase: RemoveWishListUseCase,
+        private val userSession: UserSessionInterface
 ): BaseViewModel(dispatcherProvider.ui()) {
 
     private var hasLoadData = false
@@ -23,6 +31,7 @@ internal class SimilarSearchViewModel(
     private val similarSearchViewModelList = mutableListOf<Any>()
     private val similarProductModelList = mutableListOf<Product>()
     private val loadingMoreModel = LoadingMoreModel()
+    private val routeToLoginPageEventLiveData = MutableLiveData<Event<Boolean>>()
 
     fun onViewCreated() {
         if (!hasLoadData) {
@@ -141,5 +150,42 @@ internal class SimilarSearchViewModel(
 
     fun getSimilarSearchLiveData(): LiveData<State<List<Any>>> {
         return similarSearchLiveData
+    }
+
+    fun onViewToggleWishlistSelectedProduct() {
+        if (!userSession.isLoggedIn) {
+            routeToLoginPageEventLiveData.postValue(Event(true))
+            return
+        }
+
+        addWishlistUseCase.createObservable(
+                similarSearchSelectedProduct.id,
+                userSession.userId,
+                createSelectedProductWishlistActionListener()
+        )
+    }
+
+    private fun createSelectedProductWishlistActionListener(): WishListActionListener {
+        return object : WishListActionListener {
+            override fun onSuccessRemoveWishlist(productId: String?) {
+
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+
+            }
+
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+
+            }
+        }
+    }
+
+    fun getRouteToLoginPageEventLiveData(): LiveData<Event<Boolean>> {
+        return routeToLoginPageEventLiveData
     }
 }

@@ -19,6 +19,7 @@ internal class SimilarSearchSelectedProductView(
         if (similarSearchSelectedProduct == null) return
 
         initImageProduct(similarSearchSelectedProduct)
+        initButtonWishlist(similarSearchSelectedProduct)
         initProductName(similarSearchSelectedProduct)
         initProductPrice(similarSearchSelectedProduct)
         initShopLocation(similarSearchSelectedProduct)
@@ -28,6 +29,15 @@ internal class SimilarSearchSelectedProductView(
 
     private fun initImageProduct(similarSearchSelectedProduct: SimilarSearchSelectedProduct) {
         ImageHandler.loadImageRounded2(context, fragmentView.imageProduct, similarSearchSelectedProduct.imageUrl, 8f)
+    }
+
+    private fun initButtonWishlist(similarSearchSelectedProduct: SimilarSearchSelectedProduct) {
+        if (similarSearchSelectedProduct.isWishlisted) {
+            fragmentView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_active)
+        }
+        else {
+            fragmentView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_inactive)
+        }
     }
 
     private fun initProductName(similarSearchSelectedProduct: SimilarSearchSelectedProduct) {
