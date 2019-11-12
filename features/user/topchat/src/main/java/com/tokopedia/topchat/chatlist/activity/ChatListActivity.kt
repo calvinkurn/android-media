@@ -91,9 +91,11 @@ class ChatListActivity : BaseTabActivity()
         initInjector()
         initTabList()
         super.onCreate(savedInstanceState)
+        setupViewModel()
         initTabLayout()
         setObserver()
         initData()
+        initOnBoarding()
     }
 
     private fun initTabList() {
