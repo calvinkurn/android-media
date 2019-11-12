@@ -400,7 +400,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         invalid_button?.visibility = View.GONE
 
         invalid_ic_search_btn?.setOnClickListener {
-            currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
         }
     }
 
@@ -415,7 +415,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         invalid_button?.visibility = View.GONE
 
         invalid_ic_search_btn?.setOnClickListener {
-            currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
         }
     }
 
