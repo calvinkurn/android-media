@@ -61,7 +61,7 @@ object DFInstallerLogUtil {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getStorageStatsManager(context: Context): StorageStatsManager? {
         if (storageStatsManager == null) {
-            ContextCompat.getSystemService(
+            storageStatsManager = ContextCompat.getSystemService(
                 context,
                 StorageStatsManager::class.java
             )

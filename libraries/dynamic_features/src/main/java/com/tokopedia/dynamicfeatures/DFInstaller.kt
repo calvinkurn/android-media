@@ -16,7 +16,7 @@ class DFInstaller {
     internal var sessionId: Int? = null
 
     companion object {
-        private var manager: SplitInstallManager? = null
+        internal var manager: SplitInstallManager? = null
         const val TAG_LOG_DFM_BG = "DFM Background"
         const val TAG_LOG_DFM_BG_UNINSTALL = "DFM BGUninstall"
         @JvmStatic
@@ -26,7 +26,7 @@ class DFInstaller {
             return manager.installedModules.contains(moduleName)
         }
 
-        private fun initManager(context: Context) {
+        internal fun initManager(context: Context) {
             if (manager == null) {
                 manager = SplitInstallManagerFactory.create(context)
             }
