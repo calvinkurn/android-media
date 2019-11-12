@@ -94,8 +94,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     // config collapse & expand tablayout
-    override fun onContentScrolled(dy: Int, totalScrollY: Int) {
-        tabLayout?.adjustTabCollapseOnScrolled(dy, totalScrollY)
+    override fun onContentScrolled(dy: Int) {
+        tabLayout?.adjustTabCollapseOnScrolled(dy)
     }
 
     // from: GlobalNav, to show notification maintoolbar

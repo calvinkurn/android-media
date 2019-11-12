@@ -1,5 +1,5 @@
 package com.tokopedia.officialstore.common
 
 interface RecyclerViewScrollListener {
-    fun onContentScrolled(dy: Int, totalScrollY: Int)
+    fun onContentScrolled(dy: Int)
 }

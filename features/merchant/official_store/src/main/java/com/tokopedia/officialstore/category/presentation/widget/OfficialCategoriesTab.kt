@@ -94,18 +94,13 @@ class OfficialCategoriesTab(context: Context,
         tabMinHeight = resources.getDimensionPixelSize(R.dimen.os_tab_min_height)
     }
 
-    private var isScrolled = false
-
     private fun adjustCollapseExpandTab(isCollapse: Boolean) {
-        if (isScrolled != isCollapse) {
-            if (isCollapse) {
-                hideIconForAllTabs()
-                adjustTabLayoutHeight(tabMinHeight)
-            } else {
-                showIconForAllTabs()
-                adjustTabLayoutHeight(tabMaxHeight)
-            }
-            isScrolled = isCollapse
+        if (isCollapse) {
+            hideIconForAllTabs()
+            adjustTabLayoutHeight(tabMinHeight)
+        } else {
+            showIconForAllTabs()
+            adjustTabLayoutHeight(tabMaxHeight)
         }
     }
 
@@ -161,7 +156,7 @@ class OfficialCategoriesTab(context: Context,
         return view
     }
 
-    fun adjustTabCollapseOnScrolled(dy: Int, totalScrollY: Int) {
+    fun adjustTabCollapseOnScrolled(dy: Int) {
         if (dy == 0) {
             return
         }
@@ -171,8 +166,6 @@ class OfficialCategoriesTab(context: Context,
         } else {
             totalScrollUp = 0
         }
-
-        Log.e("Meyta", "$dy, $totalScrollUp, $totalScrollY")
 
         adjustCollapseExpandTab(totalScrollUp in 0..10)
     }

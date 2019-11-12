@@ -78,8 +78,8 @@ class OfficialHomeFragment :
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
-    private var totalScroll = 0
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
+    private var isScrolling = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -271,16 +271,14 @@ class OfficialHomeFragment :
                 recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
-                        totalScroll += dy
-
 
                         if (!isScrolling) {
                             isScrolling = true
-                            scrollListener.onContentScrolled(dy, totalScroll)
+                            scrollListener.onContentScrolled(dy)
 
                             Handler().postDelayed({
                                 isScrolling = false
-                            }, 500)
+                            }, 200)
                         }
 
                     }
@@ -291,9 +289,7 @@ class OfficialHomeFragment :
 
     }
 
-    var isScrolling = false
-
-            override fun getScreenName(): String {
+    override fun getScreenName(): String {
         return ""
     }
 
