@@ -6,7 +6,7 @@ import com.tokopedia.track.TrackAppUtils
 internal class DropOffAnalytics {
 
     private fun sendTracker(event: String, eventCategory: String, eventAction: String,
-                        eventLabel: String) {
+                            eventLabel: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 event, eventCategory, eventAction, eventLabel))
     }
@@ -17,7 +17,115 @@ internal class DropOffAnalytics {
     }
 
     fun trackUserClickNantiSaja() {
-
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.CLICK_NANTI_SAJA)
     }
 
+    fun trackUserClickIzinkan() {
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.CLICK_IZINKAN)
+    }
+
+    fun trackClickSearchBarGpsOff(keyword: String) {
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.CLICK_SEARCHBAR_GPS_OFF,
+                keyword)
+    }
+
+    fun trackClickActivateGps() {
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.CLICK_AKTIFKAN_GPS)
+    }
+
+    fun trackSelectStoreListFirst(addressTitle: String, addressValue: String, storeType: String) {
+        val label = "$addressTitle - $addressValue - $storeType"
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.SELECT_STORE_LIST_NEAREST,
+                label)
+    }
+
+    fun trackClickMap() {
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.CLICK_MAP)
+    }
+
+    fun trackClickSearchBarGpsOn(keyword: String) {
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.CLICK_SEARCHBAR_GPS_ON,
+                keyword)
+    }
+
+    fun trackSelectStoreListAll(addressTitle: String, addressValue: String, storeType: String) {
+        val label = "$addressTitle - $addressValue - $storeType"
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.SELECT_STORE_LIST_ALL,
+                label)
+    }
+
+    fun trackSelectIndomaretMap(addressTitle: String, addressValue: String, storeType: String) {
+        val label = "$addressTitle - $addressValue - $storeType"
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.SELECT_INDOMARET_MAP,
+                label)
+    }
+
+    fun trackClickBatalOnDetail(addressTitle: String, addressValue: String, storeType: String) {
+        val label = "$addressTitle - $addressValue - $storeType"
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.CLICK_BATAL_DETAIL,
+                label)
+    }
+
+    fun trackClickPilihOnDetail(addressTitle: String, addressValue: String, storeType: String) {
+        val label = "$addressTitle - $addressValue - $storeType"
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.CLICK_PILIH_DETAIL,
+                label)
+    }
+
+    fun trackSearchKeyword(keyword: String) {
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.SEARCH_KEYWORD,
+                keyword)
+    }
+
+    fun trackSelectLandmarkFromKeyword(keyword: String, addressTitle: String, addressValue: String) {
+        val label = "$keyword - $addressTitle - $addressValue"
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.SELECT_LANDMARK_FROM_KEYWORD,
+                label)
+    }
+}
+
+private object Category {
+    const val LOCATION_SELECTION = "click - nanti saja button on gps pop up"
+}
+
+private object Action {
+    const val CLICK_NANTI_SAJA = "click - nanti saja button on gps pop up"
+    const val CLICK_IZINKAN = "click - izinkan button on gps pop up"
+    const val CLICK_SEARCHBAR_GPS_OFF = "click - search bar - gps inactive"
+    const val CLICK_SEARCHBAR_GPS_ON = "click - search bar - gps active"
+    const val CLICK_AKTIFKAN_GPS = "click - aktifkan gps button"
+    const val SELECT_STORE_LIST_NEAREST = "click - select indomart from list - nearest"
+    const val SELECT_STORE_LIST_ALL = "click - select indomart from list - show all"
+    const val CLICK_MAP = "click - map"
+    const val SELECT_INDOMARET_MAP = "click - select indomart from map"
+    const val CLICK_BATAL_DETAIL = "click - batal button on select indomart from map"
+    const val CLICK_PILIH_DETAIL = "click - pilih button on select indomart from map"
+    const val SEARCH_KEYWORD = "click - search landmark from keyword"
+    const val SELECT_LANDMARK_FROM_KEYWORD = "click - select landmark indomart from keyword"
 }
