@@ -8,7 +8,6 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_BANNER_CLICK
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
-import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.layout_digital_home_subscription_item.view.*
 
 class DigitalItemSubscriptionAdapter(val items: List<DigitalHomePageSectionModel.Item>, val onItemBindListener: OnItemBindListener)
