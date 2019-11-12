@@ -35,6 +35,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_COURIER_PROBLEM_OFFICE_CLOSED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_COURIER_PROBLEM_UNMATCHED_COST
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REASON_BUYER_NO_RESPONSE
@@ -313,28 +314,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             rl_btn_detail?.visibility = View.VISIBLE
             detailResponse.button.first().let { buttonResp ->
                 btn_primary?.text = buttonResp.displayName
-                btn_primary?.setOnClickListener { v ->
-                    dialogUnify = DialogUnify(v.context, HORIZONTAL_ACTION, NO_IMAGE)
-                    dialogUnify.setTitle(buttonResp.title)
-                    dialogUnify.setDescription(buttonResp.content)
-                    if (buttonResp.key.equals(getString(R.string.accept_order), true)) {
-                        dialogUnify.setPrimaryCTAText(getString(R.string.terima_pesanan))
-                        dialogUnify.setPrimaryCTAClickListener {
 
-                            val mapParam = buttonResp.param.convertStrObjToHashMap()
-                            if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
-                                somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
-                                        mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
-                                dialogUnify.dismiss()
-                            }
-                        }
-
-                        dialogUnify.setSecondaryCTAText(getString(R.string.kembali))
-                        dialogUnify.setSecondaryCTAClickListener {
-                            dialogUnify.dismiss()
-                        }
-                    }
-                    dialogUnify.show()
+                if (buttonResp.key.equals(KEY_ACCEPT_ORDER, true)) {
+                    setActionAcceptOrder(buttonResp)
                 }
             }
 
@@ -357,6 +339,29 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         }
     }
 
+    private fun setActionAcceptOrder(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+        btn_primary?.setOnClickListener { v ->
+            dialogUnify = DialogUnify(v.context, HORIZONTAL_ACTION, NO_IMAGE).apply {
+                setTitle(buttonResp.title)
+                setDescription(buttonResp.content)
+                setPrimaryCTAText(getString(R.string.terima_pesanan))
+                setPrimaryCTAClickListener {
+                    val mapParam = buttonResp.param.convertStrObjToHashMap()
+                    if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
+                        somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
+                                mapParam[PARAM_ORDER_ID].toString(), mapParam[PARAM_SHOP_ID].toString())
+                        dialogUnify.dismiss()
+                    }
+                }
+                setSecondaryCTAText(getString(R.string.kembali))
+                setSecondaryCTAClickListener {
+                    dialogUnify.dismiss()
+                }
+            }
+            dialogUnify.show()
+        }
+    }
+
     private fun showTextOnlyBottomSheet() {
         bottomSheetUnify = BottomSheetUnify()
         if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
@@ -376,8 +381,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         bottomSheetUnify.dismiss()
         println("++ KEY = $key")
         if (key.equals(KEY_REJECT_ORDER, true)) {
-            somDetailViewModel.getRejectReasons(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_reason))
-            observingRejectReasons()
+            setActionRejectOrder()
 
         } else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
             // besok lanjut bikin adapter untuk beberapa layout khusus untuk reject order
@@ -395,6 +399,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             // somBottomSheetRejectOrderAdapter.listRejectTypeData = listRejectTypeData
             // somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
         }
+    }
+
+    private fun setActionRejectOrder() {
+        somDetailViewModel.getRejectReasons(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_reason))
+        observingRejectReasons()
     }
 
     private fun createOptionsCourierProblems(): HashMap<String, String> {

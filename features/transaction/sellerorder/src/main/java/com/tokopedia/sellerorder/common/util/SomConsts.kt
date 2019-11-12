@@ -42,6 +42,8 @@ object SomConsts {
     const val ACTION_OK = "OK"
     const val RESULT_ACCEPT_ORDER = "result_accept_order"
     const val RESULT_REJECT_ORDER = "result_reject_order"
+
+    const val KEY_ACCEPT_ORDER = "accept_order"
     const val KEY_REJECT_ORDER = "reject_order"
 
     const val KEY_REASON_EMPTY_STOCK = "empty_stock"

@@ -58,7 +58,6 @@
     <string name="total_price_label">Total Pembayaran</string>
     <string name="show_bottomsheet">Show Bottomsheet</string>
     <string name="tolak_pesanan">Tolak Pesanan</string>
-    <string name="accept_order">accept_order</string>
     <string name="kembali">Kembali</string>
     <string name="placeholder_reject_reason">Contoh: Kurir menolak paket saya</string>
     <string name="additional_invalid_resi"><br><font color="#03ac0e">Unggah Sekarang</font></br></string>
