@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,21 +28,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
+        tools:text="Keranjang"
         android:layout_marginStart="@dimen/dp_16"
         style="@style/TitleTextAppearance"/>
 
     <Button
-        android:layout_toLeftOf="@+id/btn_remove"
-        android:layout_centerVertical="true"
         android:id="@+id/btn_chuck"
+        style="@style/MenuTextAppearance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/MenuTextAppearance"
-        android:textColor="@color/font_black_primary_70"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/btn_remove"
+        android:layout_alignWithParentIfMissing="true"
         android:background="@null"
-        android:text="Open Chuck"/>
+        android:text="Open Chuck"
+        android:textColor="@color/font_black_primary_70"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <Button
+        android:visibility="visible"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"

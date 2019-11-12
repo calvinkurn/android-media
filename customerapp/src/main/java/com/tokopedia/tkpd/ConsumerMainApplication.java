@@ -46,6 +46,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
+import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -166,6 +167,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         initializeAbTestVariant();
 
+        GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
+        registerActivityLifecycleCallbacks(subscriber);
     }
 
     @Override

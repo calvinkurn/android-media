@@ -21,8 +21,8 @@ class OfficialCategoriesTab(context: Context,
                             attributes: AttributeSet) : TabLayout(context, attributes) {
 
     private val DEFAULT_ANIMATION_DURATION: Long = 300
-    private val MAX_TAB_COLLAPSE_SCROLL_RANGE = 200
-    private val SCROLL_UP_THRESHOLD_BEFORE_EXPAND = 500
+    private val MAX_TAB_COLLAPSE_SCROLL_RANGE = 100
+    private val SCROLL_UP_THRESHOLD_BEFORE_EXPAND = 100
 
     private val categoriesItemTab = ArrayList<CategoriesItemTab>()
 

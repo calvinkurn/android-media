@@ -101,11 +101,11 @@ public class ChannelCloseableBottomSheetDialog extends BottomSheetDialog {
 
     private View inflateCustomView(View view, String title, boolean isCloseable) {
         View contentView = inflateBasicView(view, title);
-        ImageView closeButton = contentView.findViewById(R.id.close_button);
+        ImageView closeButton = contentView.findViewById(com.tokopedia.design.R.id.close_button);
         if (!isCloseable) {
             closeButton.setVisibility(View.GONE);
-            contentView.findViewById(R.id.view_separator).setVisibility(View.GONE);
-            ((TextView)contentView.findViewById(R.id.title_closeable)).setVisibility(View.GONE);
+            contentView.findViewById(com.tokopedia.design.R.id.view_separator).setVisibility(View.GONE);
+            ((TextView)contentView.findViewById(com.tokopedia.design.R.id.title_closeable)).setVisibility(View.GONE);
         } else {
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -122,7 +122,7 @@ public class ChannelCloseableBottomSheetDialog extends BottomSheetDialog {
     private View inflateBasicView(View view, String title) {
         View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
                 .channel_closeable_bottom_sheet_dialog, null);
-        FrameLayout frameLayout = contentView.findViewById(R.id.container);
+        FrameLayout frameLayout = contentView.findViewById(com.tokopedia.analytics.R.id.container);
         frameLayout.addView(view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,8 +133,8 @@ public class ChannelCloseableBottomSheetDialog extends BottomSheetDialog {
         });
 
         if(!TextUtils.isEmpty(title)){
-            contentView.findViewById(R.id.title_closeable).setVisibility(View.VISIBLE);
-            ((TextView)contentView.findViewById(R.id.title_closeable)).setText(title);
+            contentView.findViewById(com.tokopedia.design.R.id.title_closeable).setVisibility(View.VISIBLE);
+            ((TextView)contentView.findViewById(com.tokopedia.design.R.id.title_closeable)).setText(title);
         }
 
         return contentView;
@@ -146,7 +146,7 @@ public class ChannelCloseableBottomSheetDialog extends BottomSheetDialog {
         if (inflater != null) {
             View contentView = ((Activity) context).getLayoutInflater().inflate(R.layout
                     .channel_closeable_bottom_sheet_dialog, null);
-            FrameLayout frameLayout = contentView.findViewById(R.id.container);
+            FrameLayout frameLayout = contentView.findViewById(com.tokopedia.analytics.R.id.container);
             View view = inflater.inflate(layoutResId, null);
             frameLayout.addView(view);
             super.setContentView(contentView);
