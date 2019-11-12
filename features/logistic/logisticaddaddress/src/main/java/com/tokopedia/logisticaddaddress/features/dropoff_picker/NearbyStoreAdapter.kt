@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.*
+import com.tokopedia.logisticaddaddress.utils.getDescription
 import com.tokopedia.logisticaddaddress.utils.toKilometers
 import kotlinx.android.synthetic.main.item_empty_nearby_location.view.*
 import kotlinx.android.synthetic.main.item_nearby_location.view.*
@@ -74,7 +75,7 @@ internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     interface ActionListener {
-        fun onItemClicked(view: View)
+        fun onItemClicked(view: View, position: Int)
         fun requestAutoComplete()
     }
 
@@ -84,15 +85,18 @@ internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
      * */
     private inner class NearbyStoreViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(datum: DropoffNearbyModel) {
-            val desc = "${datum.districtName}, ${datum.cityName}, ${datum.provinceName}"
             view.tv_location_title.text = datum.addrName
-            view.tv_location_desc.text = desc
+            view.tv_location_desc.text = datum.getDescription()
             view.tv_distance.text = datum.storeDistance.toKilometers()
-            view.setOnClickListener { mListener?.onItemClicked(it) }
+            view.setOnClickListener { mListener?.onItemClicked(it, adapterPosition) }
             view.tag = datum
         }
 
     }
     private inner class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view)
     private inner class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    companion object {
+        const val NEAREST_ITEM = 1
+    }
 }

@@ -1,9 +1,12 @@
 package com.tokopedia.logisticaddaddress.features.dropoff_picker
 
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
+import com.tokopedia.logisticaddaddress.utils.getDescription
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import javax.inject.Inject
 
-internal class DropOffAnalytics {
+internal class DropOffAnalytics @Inject constructor(){
 
     private fun sendTracker(event: String, eventCategory: String, eventAction: String,
                             eventLabel: String) {
@@ -49,6 +52,12 @@ internal class DropOffAnalytics {
                 label)
     }
 
+    fun trackExpandList() {
+        sendTracker("",
+                Category.LOCATION_SELECTION,
+                Action.EXPAND_LIST)
+    }
+
     fun trackClickMap() {
         sendTracker("",
                 Category.LOCATION_SELECTION,
@@ -70,24 +79,24 @@ internal class DropOffAnalytics {
                 label)
     }
 
-    fun trackSelectIndomaretMap(addressTitle: String, addressValue: String, storeType: String) {
-        val label = "$addressTitle - $addressValue - $storeType"
+    fun trackSelectIndoMaretMap(model: DropoffNearbyModel) {
+        val label = "${model.addrName} - ${model.getDescription()} - ${model.type}"
         sendTracker("",
                 Category.LOCATION_SELECTION,
                 Action.SELECT_INDOMARET_MAP,
                 label)
     }
 
-    fun trackClickBatalOnDetail(addressTitle: String, addressValue: String, storeType: String) {
-        val label = "$addressTitle - $addressValue - $storeType"
+    fun trackClickBatalOnDetail(model: DropoffNearbyModel) {
+        val label = "${model.addrName} - ${model.getDescription()} - ${model.type}"
         sendTracker("",
                 Category.LOCATION_SELECTION,
                 Action.CLICK_BATAL_DETAIL,
                 label)
     }
 
-    fun trackClickPilihOnDetail(addressTitle: String, addressValue: String, storeType: String) {
-        val label = "$addressTitle - $addressValue - $storeType"
+    fun trackClickPilihOnDetail(model: DropoffNearbyModel) {
+        val label = "${model.addrName} - ${model.getDescription()} - ${model.type}"
         sendTracker("",
                 Category.LOCATION_SELECTION,
                 Action.CLICK_PILIH_DETAIL,
@@ -123,6 +132,7 @@ private object Action {
     const val SELECT_STORE_LIST_NEAREST = "click - select indomart from list - nearest"
     const val SELECT_STORE_LIST_ALL = "click - select indomart from list - show all"
     const val CLICK_MAP = "click - map"
+    const val EXPAND_LIST = "click - expand list button"
     const val SELECT_INDOMARET_MAP = "click - select indomart from map"
     const val CLICK_BATAL_DETAIL = "click - batal button on select indomart from map"
     const val CLICK_PILIH_DETAIL = "click - pilih button on select indomart from map"

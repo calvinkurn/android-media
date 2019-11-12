@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 
 internal fun String.toKilometers(): String {
     var number = 0.0
@@ -34,3 +35,6 @@ internal fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorRes
         BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 }
+
+internal fun DropoffNearbyModel.getDescription(): String =
+        "${this.districtName}, ${this.cityName}, ${this.provinceName}"
