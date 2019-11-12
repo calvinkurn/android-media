@@ -17,6 +17,7 @@
 
     <string name="path_emoney_brizzi" translatable="false">/smartcard/emoneybrizzi</string>
     <string name="path_emoney" translatable="false">/smartcard/emoney</string>
+    <string name="path_smartcard" translatable="false">/smartcard</string>
     <string name="title_digital_emoney">Uang Elektronik</string>
 
     <string name="title_voucher_game">Cari Voucher</string>
