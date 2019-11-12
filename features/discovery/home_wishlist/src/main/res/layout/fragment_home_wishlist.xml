@@ -1,86 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:background="@color/white"
-        android:stateListAnimator="@animator/appbar_elevation"
-        app:liftOnScroll="true">
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            app:layout_scrollFlags="snap"
-            app:layout_collapseParallaxMultiplier="0.5"
-            android:theme="@style/Toolbar.Wishlist"
-            app:titleTextAppearance="@style/ThemeOverlay.AppCompat.ActionBar"/>
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-                <com.tokopedia.home_wishlist.view.custom.CustomSearchView
-                    android:id="@+id/wishlist_search_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fitsSystemWindows="true"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="@dimen/dp_6"
-                    android:layout_marginStart="@dimen/dp_6"
-                    android:layout_marginRight="@dimen/dp_6"
-                    android:layout_marginEnd="@dimen/dp_6"
-                    android:layout_marginBottom="@dimen/dp_8"
-                    app:layout_collapseMode="parallax" />
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-
-    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            tools:listitem="@layout/layout_wishlist_item"
-            tools:visibility="visible"/>
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-    <FrameLayout
-        android:id="@+id/container_delete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_delete_wishlist"
-        android:visibility="gone"
-        android:layout_gravity="bottom">
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/delete_button"
+        android:background="@android:color/white">
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hapus_wishlist"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:enabled="false"
-            app:unifyButtonVariant="filled"
-            app:unifyButtonType="main"/>
-    </FrameLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            android:fitsSystemWindows="true"
+            android:background="@color/white"
+            android:stateListAnimator="@animator/appbar_elevation"
+            app:elevation="@dimen/dp_4">
+            <com.tokopedia.home_wishlist.view.custom.CustomSearchView
+                android:id="@+id/wishlist_search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="?attr/actionBarSize"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginStart="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_6"
+                android:layout_marginEnd="@dimen/dp_6"
+                android:layout_marginBottom="@dimen/dp_4"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                tools:listitem="@layout/layout_wishlist_item"
+                tools:visibility="visible"/>
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+        <FrameLayout
+            android:id="@+id/container_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_delete_wishlist"
+            android:visibility="gone"
+            android:layout_gravity="bottom">
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/delete_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hapus_wishlist"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:enabled="false"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonType="main"/>
+        </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        app:titleTextAppearance="@style/Wishlist.TextAppearance"
+        app:theme="@style/Toolbar.Wishlist">
+    </androidx.appcompat.widget.Toolbar>
+</FrameLayout>
