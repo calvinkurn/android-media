@@ -2,7 +2,10 @@ package com.tokopedia.tokopoints.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -35,6 +38,9 @@ public class CouponDetailActivity extends BaseSimpleActivity implements HasCompo
         forDeeplink();
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_detail));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(0f);
+        }
     }
 
     private void forDeeplink() {
