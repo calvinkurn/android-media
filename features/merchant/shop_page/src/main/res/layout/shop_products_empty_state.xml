@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_retry"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewEmptyTitle"
+        android:text="Tokomu masih kosong, nih"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/font_black_primary_70"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewEmptyContent"
+        android:text="Yuk, isi toko dengan produk-produk terbaikmu dan \nmulai berjualan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/font_black_secondary_54"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+</LinearLayout>
