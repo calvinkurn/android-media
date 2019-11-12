@@ -44,6 +44,10 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
         return DigitalHomePageSpotlightViewHolder.LAYOUT
     }
 
+    fun type(digitalHomePageSubscriptionModel: DigitalHomePageSubscriptionModel): Int {
+        return DigitalHomePageSubscriptionViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
             DigitalHomePageBannerViewHolder.LAYOUT -> return DigitalHomePageBannerViewHolder(parent, onItemBindListener)
@@ -54,6 +58,7 @@ class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
             DigitalHomePageTrustMarkViewHolder.LAYOUT -> return DigitalHomePageTrustMarkViewHolder(parent, onItemBindListener)
             DigitalHomePageNewUserZoneViewHolder.LAYOUT -> return DigitalHomePageNewUserZoneViewHolder(parent, onItemBindListener)
             DigitalHomePageSpotlightViewHolder.LAYOUT -> return DigitalHomePageSpotlightViewHolder(parent, onItemBindListener)
+            DigitalHomePageSubscriptionViewHolder.LAYOUT -> return DigitalHomePageSubscriptionViewHolder(parent, onItemBindListener)
         }
         return super.createViewHolder(parent, type)
     }

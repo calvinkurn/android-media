@@ -21,6 +21,9 @@ class GetSortListHomePageUseCase {
         val spotLight = DigitalHomePageSpotlightModel()
         spotLight.isLoadFromCloud = loadFromCloud
 
+        val subscription = DigitalHomePageSubscriptionModel()
+        subscription.isLoadFromCloud = loadFromCloud
+
         val category = DigitalHomePageCategoryModel()
         category.isLoadFromCloud = loadFromCloud
 
@@ -29,6 +32,7 @@ class GetSortListHomePageUseCase {
                 trustMark,
                 newUserZone,
                 spotLight,
+//                subscription,
                 category
         )
     }

@@ -205,6 +205,37 @@ class DigitalHomePageViewModel  @Inject constructor(
         }
     }
 
+    fun getSubscriptionList(rawQuery: String, isLoadFromCloud: Boolean) {
+        val param = mapOf(SECTION_TYPE to SUBSCRIPTION_PARAM)
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default){
+                val graphqlRequest = GraphqlRequest(rawQuery, DigitalHomePageSubscriptionModel::class.java, param)
+                val graphqlCacheStrategy = getCacheStrategy(isLoadFromCloud)
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+            }.getSuccessData<DigitalHomePageSubscriptionModel>()
+            digitalHomePageList.value?.let {
+                val updatedList = it.toMutableList()
+                if (data.data != null) {
+                    updatedList[SUBSCRIPTION_ORDER] = data
+                    updatedList[SUBSCRIPTION_ORDER].isEmpty = false
+                } else {
+                    updatedList[SUBSCRIPTION_ORDER].isEmpty = true
+                }
+                updatedList[SUBSCRIPTION_ORDER].isLoaded = true
+                updatedList[SUBSCRIPTION_ORDER].isSuccess = true
+                digitalHomePageList.value = updatedList
+            }
+        }){
+            digitalHomePageList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[SUBSCRIPTION_ORDER].isLoaded = true
+                updatedList[SUBSCRIPTION_ORDER].isSuccess = false
+                digitalHomePageList.value = updatedList
+                checkIfAllError()
+            }
+        }
+    }
+
     private fun getCacheStrategy(fromCloud: Boolean): GraphqlCacheStrategy {
         return if (fromCloud) {
             GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
@@ -232,7 +263,8 @@ class DigitalHomePageViewModel  @Inject constructor(
         const val TRUST_MARK_ORDER = 2
         const val NEW_USER_ZONE_ORDER = 3
         const val SPOTLIGHT_ORDER = 4
-        const val CATEGORY_ORDER = 5
+        const val SUBSCRIPTION_ORDER = 5
+        const val CATEGORY_ORDER = 6
         const val PROMO_ORDER = 6
 
         const val SECTION_TYPE = "sectionType"
@@ -240,5 +272,6 @@ class DigitalHomePageViewModel  @Inject constructor(
         const val TRUST_MARK_PARAM = "TRUSTMARK"
         const val NEW_USER_ZONE_PARAM = "NEW_USER_ZONE"
         const val SPOTLIGHT_PARAM = "SPOTLIGHT"
+        const val SUBSCRIPTION_PARAM = "SUBSCRIPTION_SUGGESTION"
     }
 }

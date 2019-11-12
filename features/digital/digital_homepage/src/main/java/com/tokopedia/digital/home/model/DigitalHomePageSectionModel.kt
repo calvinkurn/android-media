@@ -71,3 +71,9 @@ class DigitalHomePageSpotlightModel: DigitalHomePageSectionModel() {
         return typeFactory.type(this)
     }
 }
+
+class DigitalHomePageSubscriptionModel: DigitalHomePageSectionModel() {
+    override fun type(typeFactory: DigitalHomePageTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}
