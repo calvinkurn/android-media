@@ -23,8 +23,8 @@ import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPdpV
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.activity_image_preview_pdp.*
-import kotlinx.android.synthetic.main.product_card_layout_v2_list.*
+import kotlinx.android.synthetic.main.activity_image_preview_pdp.btnAddToWishlist
+import kotlinx.android.synthetic.main.activity_image_preview_pdp.progressBar
 import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -82,9 +82,9 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
         findViewById<Button>(R.id.ivDownload)?.hide()
 
         if (remoteConfig.getBoolean(KEY_WISHLIST_BUTTON, false)) {
-            buttonWishlist?.show()
+            btnAddToWishlist?.show()
         } else {
-            buttonWishlist?.hide()
+            btnAddToWishlist?.hide()
         }
 
         if (userSession.isLoggedIn) {
