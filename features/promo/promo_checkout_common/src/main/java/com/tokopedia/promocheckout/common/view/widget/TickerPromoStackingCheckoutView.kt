@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.core.content.ContextCompat
@@ -57,6 +58,12 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             title = styledAttributes.getString(R.styleable.TickerCheckoutView_title) ?: ""
             counterCoupons = styledAttributes.getString(R.styleable.TickerCheckoutView_counter) ?: ""
             desc = styledAttributes.getString(R.styleable.TickerCheckoutView_desc) ?: ""
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                bg_button_coupon.clipToOutline = true
+                bg_active_down.clipToOutline = true
+                bg_active_up.clipToOutline = true
+            }
 
         } finally {
             styledAttributes.recycle()
