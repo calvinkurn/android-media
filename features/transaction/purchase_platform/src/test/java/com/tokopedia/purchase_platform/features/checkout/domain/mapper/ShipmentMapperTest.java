@@ -2,7 +2,6 @@ package com.tokopedia.purchase_platform.features.checkout.domain.mapper;
 
 import com.google.gson.Gson;
 import com.tokopedia.purchase_platform.UnitTestFileUtils;
-import com.tokopedia.purchase_platform.common.base.MapperUtil;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 
@@ -24,10 +23,9 @@ public class ShipmentMapperTest {
 
     @Before
     public void setUp() {
-        MapperUtil mapperUtil = new MapperUtil();
         unitTestFileUtils = new UnitTestFileUtils();
         gson = new Gson();
-        shipmentMapper = new ShipmentMapper(mapperUtil);
+        shipmentMapper = new ShipmentMapper();
     }
 
 

@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.di
 
-import com.tokopedia.purchase_platform.common.base.IMapperUtil
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformCommonModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
@@ -45,8 +44,8 @@ class MultipleAddressModule {
 
     @Provides
     @MultipleAddressScope
-    fun provideICartMapper(mapperUtil: IMapperUtil): ICartMapper {
-        return CartMapper(mapperUtil)
+    fun provideICartMapper(): ICartMapper {
+        return CartMapper()
     }
 
     @Provides

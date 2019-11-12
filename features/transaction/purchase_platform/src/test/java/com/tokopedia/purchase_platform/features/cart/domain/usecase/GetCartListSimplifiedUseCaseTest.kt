@@ -28,9 +28,10 @@ class GetCartListSimplifiedUseCaseTest : Spek({
 
     Feature("GetCartListSimplifiedUseCase") {
 
-        Scenario("success") {
+        lateinit var subscriber: AssertableSubscriber<CartListData>
+        lateinit var onErrorEvents: List<Throwable>
 
-            lateinit var subscriber: AssertableSubscriber<CartListData>
+        Scenario("success") {
 
             Given("success response") {
                 every { graphqlUseCase.createObservable(any()) } returns
@@ -41,34 +42,43 @@ class GetCartListSimplifiedUseCaseTest : Spek({
                 subscriber = usecase.createObservable(RequestParams.EMPTY).test()
             }
 
-            Then("should complete with 1 CartListData") {
-                subscriber.assertValueCount(1).assertValue(CartListData()).assertCompleted()
+            Then("should has 1 value") {
+                subscriber.assertValueCount(1)
+            }
+
+            Then("value should be empty CartListData") {
+                subscriber.assertValue(CartListData())
+            }
+
+            Then("should complete") {
+                subscriber.assertCompleted()
             }
         }
 
         Scenario("fail") {
 
-            lateinit var subscriber: AssertableSubscriber<CartListData>
+            val errorMessages = listOf("error message", "other message")
 
             Given("error response with message") {
                 every { graphqlUseCase.createObservable(any()) } returns
-                        Observable.just(GraphqlResponse(mapOf(ShopGroupSimplifiedGqlResponse::class.java to ShopGroupSimplifiedGqlResponse(ShopGroupSimplifiedResponse("FAIL", errorMessages = arrayListOf("error message", "other message")))), null, false))
+                        Observable.just(GraphqlResponse(mapOf(ShopGroupSimplifiedGqlResponse::class.java to ShopGroupSimplifiedGqlResponse(ShopGroupSimplifiedResponse("FAIL", errorMessages = errorMessages))), null, false))
             }
 
             When("create observable") {
                 subscriber = usecase.createObservable(RequestParams.EMPTY).test()
             }
 
-            Then("should error with 1 custom message") {
-                val onErrorEvents = subscriber.onErrorEvents
+            Then("should has 1 error") {
+                onErrorEvents = subscriber.onErrorEvents
                 assertEquals(1, onErrorEvents.size)
-                assertEquals("error message, other message", (onErrorEvents.first() as ResponseErrorException).message)
+            }
+
+            Then("should contains custom error message") {
+                assertEquals(errorMessages.joinToString(), (onErrorEvents.first() as ResponseErrorException).message)
             }
         }
 
         Scenario("unexpected fail") {
-
-            lateinit var subscriber: AssertableSubscriber<CartListData>
 
             Given("error response without message") {
                 every { graphqlUseCase.createObservable(any()) } returns
@@ -79,9 +89,12 @@ class GetCartListSimplifiedUseCaseTest : Spek({
                 subscriber = usecase.createObservable(RequestParams.EMPTY).test()
             }
 
-            Then("should error with 1 default message") {
-                val onErrorEvents = subscriber.onErrorEvents
+            Then("should has 1 error") {
+                onErrorEvents = subscriber.onErrorEvents
                 assertEquals(1, onErrorEvents.size)
+            }
+
+            Then("should contains custom error message") {
                 assertEquals("Terjadi kesalahan, ulangi beberapa saat lagi", (onErrorEvents.first() as ResponseErrorException).message)
             }
         }

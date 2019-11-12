@@ -43,3 +43,15 @@ object Utils {
         return px.roundToInt()
     }
 }
+
+internal fun convertToString(stringList: List<String>?): String {
+    return if (stringList.isNullOrEmpty()) {
+        ""
+    } else {
+        stringList.joinToString()
+    }
+}
+
+internal fun isNullOrEmpty(string: String?): Boolean = string.isNullOrEmpty()
+
+internal fun <T> isNullOrEmpty(list: List<T>?): Boolean = list.isNullOrEmpty()
