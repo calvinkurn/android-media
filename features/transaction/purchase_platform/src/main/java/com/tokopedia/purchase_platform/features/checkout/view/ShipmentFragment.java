@@ -2980,11 +2980,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onTradeInAddressTabChanged(int shipmentItemTradeInPosition) {
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
-        if (recipientAddressModel.getSelectedTabIndex() == 0 && recipientAddressModel.getLocationDataModel() != null) {
+        if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
             // Todo : update address to normal address and reload SAF
-            shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true);
+            if (recipientAddressModel.getLocationDataModel() != null) {
+                shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true);
+            }
+        } else {
+            onNeedUpdateViewItem(shipmentItemTradeInPosition);
         }
-//        onNeedUpdateViewItem(shipmentItemTradeInPosition);
 //        shipmentAdapter.updateShipmentCostModel();
 //        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
     }
