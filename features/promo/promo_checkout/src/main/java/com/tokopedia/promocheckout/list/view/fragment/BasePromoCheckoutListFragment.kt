@@ -255,6 +255,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
                 .inject(this)
     }
 
+    override fun onClickRedeemCoupon(catalog_id: Int?, slug: String?, title: String, creativeName: String, position: Int) {
+    }
+
     override fun onDestroyView() {
         promoCheckoutListPresenter.detachView()
         super.onDestroyView()
