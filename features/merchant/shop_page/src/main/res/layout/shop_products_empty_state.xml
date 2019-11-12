@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:backgroundTint="@color/white"
     android:gravity="center"
-    android:paddingTop="@dimen/dp_45"
+    android:paddingTop="@dimen/dp_50"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography

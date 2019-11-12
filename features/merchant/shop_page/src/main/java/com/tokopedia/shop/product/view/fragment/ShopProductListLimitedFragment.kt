@@ -546,12 +546,12 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             bottom_action_view.visibility = View.GONE
             bottom_action_view.hide()
         } else {
+            shopProductAdapter.removeElement(emptyDataViewModel)
             shopProductAdapter.isNeedToShowEtalase = true
             bottom_action_view.visibility = View.VISIBLE
             bottom_action_view.show()
             isLoadingInitialData = false
         }
-        shopProductAdapter.removeElement(emptyDataViewModel)
         shopProductAdapter.notifyDataSetChanged()
         shopProductAdapter.refreshSticky()
         if (activity is ShopPageActivity) {
