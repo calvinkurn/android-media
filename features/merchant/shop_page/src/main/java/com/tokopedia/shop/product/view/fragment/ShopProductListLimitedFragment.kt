@@ -398,13 +398,13 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyOwnShopModel = EmptyOwnShopModel()
-        emptyOwnShopModel.iconRes = R.drawable.ic_empty_list_product
+//        emptyOwnShopModel.iconRes = R.drawable.ic_empty_list_product
         if (shopInfo != null && viewModel.isMyShop(shopInfo!!.shopCore.shopID)) {
-            if (isCurrentlyShowAllEtalase) {
+//            if (isCurrentlyShowAllEtalase) {
                 emptyOwnShopModel.title = getString(R.string.shop_product_limited_empty_products_title_owner)
-            } else {
-                emptyOwnShopModel.title = getString(R.string.shop_product_limited_empty_product_title_owner_at_etalase)
-            }
+//            } else {
+//                emptyOwnShopModel.title = getString(R.string.shop_product_limited_empty_product_title_owner_at_etalase)
+//            }
             emptyOwnShopModel.content = getString(R.string.shop_product_limited_empty_products_content_owner)
 //            emptyModel.buttonTitle = getString(R.string.shop_page_label_add_product)
             if (shopInfo != null) {
@@ -538,6 +538,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 //                shopProductAdapter.isNeedToShowEtalase = false
 //                shopProductAdapter.clearAllNonDataElement()
 //            }
+
+            shopProductAdapter.removeElement(emptyDataViewModel)
             shopProductAdapter.isNeedToShowEtalase = true
             shopProductAdapter.addElement(emptyDataViewModel)
 
@@ -549,6 +551,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             bottom_action_view.show()
             isLoadingInitialData = false
         }
+        shopProductAdapter.removeElement(emptyDataViewModel)
         shopProductAdapter.notifyDataSetChanged()
         shopProductAdapter.refreshSticky()
         if (activity is ShopPageActivity) {
