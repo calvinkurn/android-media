@@ -13,5 +13,6 @@
     <string name="similar_search_selected_product_review_count">(%s)</string>
     <string name="similar_search_selected_product_buy">Beli</string>
     <string name="similar_search_selected_product_add_to_cart">Tambah ke Keranjang</string>
+    <string name="similar_search_title">Mungkin kamu suka</string>
 
 </resources>

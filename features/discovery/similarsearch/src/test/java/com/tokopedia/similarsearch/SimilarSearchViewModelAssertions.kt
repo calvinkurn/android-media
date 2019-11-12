@@ -8,12 +8,12 @@ internal fun State<List<Any>>?.shouldHaveCorrectViewModelListWithLoadingMore(sim
 
     this.shouldNotBeNull()
 
-    val expectedDataSize = 2 + similarProductItemList.size
-    (this?.data?.size ?: 0).shouldBe(expectedDataSize,
-            "Unexpected data size. Actual ${this?.data?.size ?: 0}, expected: $expectedDataSize")
+    // Divider + Title + Loading More + SimilarProductList size
+    this.shouldHaveCorrectDataSize(3 + similarProductItemList.size)
 
     this.shouldHaveDividerViewModel(0)
-    this.shouldHaveSimilarProductItemModel(1, similarProductItemList)
+    this.shouldHaveTitleViewModel(1)
+    this.shouldHaveSimilarProductItemModel(2, similarProductItemList)
     this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
@@ -23,10 +23,21 @@ private fun State<List<Any>>?.shouldNotBeNull() {
     }
 }
 
+private fun State<List<Any>>?.shouldHaveCorrectDataSize(expectedDataSize: Int) {
+    (this?.data?.size ?: 0).shouldBe(expectedDataSize,
+            "Unexpected data size. Actual ${this?.data?.size ?: 0}, expected: $expectedDataSize")
+}
+
 private fun State<List<Any>>?.shouldHaveDividerViewModel(position: Int) {
     val list = this?.data as List<Any>
 
     list[position].shouldBeInstanceOf<DividerViewModel>()
+}
+
+private fun State<List<Any>>?.shouldHaveTitleViewModel(position: Int) {
+    val list = this?.data as List<Any>
+
+    list[position].shouldBeInstanceOf<TitleViewModel>()
 }
 
 private fun State<List<Any>>?.shouldHaveSimilarProductItemModel(fromIndex: Int, similarProductItemList: List<Product>) {
@@ -49,12 +60,12 @@ private fun State<List<Any>>?.shouldHaveLoadingMoreViewModel(position: Int) {
 internal fun State<List<Any>>?.shouldHaveCorrectViewModelListWithoutLoadingMore(similarProductItemList: List<Product>) {
     this.shouldNotBeNull()
 
-    val expectedDataSize = 1 + similarProductItemList.size
-    (this?.data?.size ?: 0).shouldBe(expectedDataSize,
-            "Unexpected data size. Actual ${this?.data?.size ?: 0}, expected: $expectedDataSize")
+    // Divider + Title + SimilarProductList size
+    this.shouldHaveCorrectDataSize(2 + similarProductItemList.size)
 
     this.shouldHaveDividerViewModel(0)
-    this.shouldHaveSimilarProductItemModel(1, similarProductItemList)
+    this.shouldHaveTitleViewModel(1)
+    this.shouldHaveSimilarProductItemModel(2, similarProductItemList)
 }
 
 internal fun State<List<Any>>?.shouldBeNullOrEmpty() {
@@ -64,7 +75,8 @@ internal fun State<List<Any>>?.shouldBeNullOrEmpty() {
 internal fun State<List<Any>>?.shouldHaveCorrectEmptyResultView() {
     this.shouldNotBeNull()
 
-    this?.data?.size ?: 0 shouldBe 2
+    // Divider + Empty Result
+    this.shouldHaveCorrectDataSize(2)
 
     this.shouldHaveDividerViewModel(0)
     this.shouldHaveEmptyResultViewModel(1)

@@ -3,21 +3,21 @@ package com.tokopedia.similarsearch
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-internal class DividerAdapterDelegate: BaseAdapterDelegate<DividerViewModel, DividerViewHolder>() {
+internal class TitleAdapterDelegate: BaseAdapterDelegate<TitleViewModel, TitleViewHolder>() {
 
     override fun isForViewType(items: List<Any>, position: Int): Boolean {
-        return items[position] is DividerViewModel
+        return items[position] is TitleViewModel
     }
 
     override fun getViewHolderLayout(): Int {
-        return DividerViewHolder.LAYOUT
+        return TitleViewHolder.LAYOUT
     }
 
     override fun onCreateViewHolder(inflatedView: View): RecyclerView.ViewHolder {
-        return DividerViewHolder(inflatedView)
+        return TitleViewHolder(inflatedView)
     }
 
-    override fun onBindViewHolder(item: DividerViewModel, viewHolder: BaseViewHolder<DividerViewModel>) {
+    override fun onBindViewHolder(item: TitleViewModel, viewHolder: BaseViewHolder<TitleViewModel>) {
         viewHolder.setFullSpanStaggeredGrid()
 
         super.onBindViewHolder(item, viewHolder)

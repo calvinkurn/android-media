@@ -61,6 +61,7 @@ internal class SimilarSearchViewModel(
             addEmptyResultView()
         }
         else {
+            addTitleView()
             processSimilarProductListForOnePage()
         }
 
@@ -76,6 +77,10 @@ internal class SimilarSearchViewModel(
         similarSearchViewModelList.add(EmptyResultViewModel())
     }
 
+    private fun addTitleView() {
+        similarSearchViewModelList.add(TitleViewModel())
+    }
+
     private fun processSimilarProductListForOnePage() {
         val productList = getProductListForOnePage()
 
@@ -83,6 +88,18 @@ internal class SimilarSearchViewModel(
             appendSimilarProductList(productList)
             appendLoadingMoreView()
         }
+    }
+
+    private fun getProductListForOnePage(): List<Product> {
+        val itemCount = min(similarProductModelList.size, SIMILAR_PRODUCT_ITEM_SIZE_PER_PAGE)
+
+        val productListForOnePage = similarProductModelList.subList(0, itemCount).toList()
+
+        for (i in 0 until itemCount) {
+            similarProductModelList.removeAt(0)
+        }
+
+        return productListForOnePage
     }
 
     private fun appendSimilarProductList(productList: List<Product>) {
@@ -103,18 +120,6 @@ internal class SimilarSearchViewModel(
         similarSearchLiveData.postValue(Success(similarSearchViewModelList))
     }
 
-    private fun getProductListForOnePage(): List<Product> {
-        val itemCount = min(similarProductModelList.size, SIMILAR_PRODUCT_ITEM_SIZE_PER_PAGE)
-
-        val productListForOnePage = similarProductModelList.subList(0, itemCount).toList()
-
-        for (i in 0 until itemCount) {
-            similarProductModelList.removeAt(0)
-        }
-
-        return productListForOnePage
-    }
-
     private fun catchGetSimilarProductsError(throwable: Throwable?) {
         throwable?.printStackTrace()
 
@@ -126,6 +131,7 @@ internal class SimilarSearchViewModel(
 
         removeLoadingMoreModel()
         processSimilarProductListForOnePage()
+
         postSuccessData()
     }
 

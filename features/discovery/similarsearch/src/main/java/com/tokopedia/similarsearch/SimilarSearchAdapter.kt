@@ -10,6 +10,7 @@ internal class SimilarSearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
     private val adapterDelegatesManager = AdapterDelegatesManager()
             .addDelegate(SimilarProductItemAdapterDelegate())
             .addDelegate(DividerAdapterDelegate())
+            .addDelegate(TitleAdapterDelegate())
             .addDelegate(LoadingMoreAdapterDelegate())
             .addDelegate(EmptyResultAdapterDelegate())
 

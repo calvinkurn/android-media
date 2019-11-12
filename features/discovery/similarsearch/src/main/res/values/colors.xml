@@ -12,5 +12,6 @@
     <color name="similar_search_price_color">#fa591d</color>
     <color name="similar_search_location_color">#ae31353b</color>
     <color name="similar_search_review_count_color">#7031353b</color>
+    <color name="similar_search_title_color">#f531353b</color>
 
 </resources>
