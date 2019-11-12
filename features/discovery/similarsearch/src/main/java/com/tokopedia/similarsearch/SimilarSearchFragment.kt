@@ -4,21 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
-import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
-import java.lang.Error
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
 
@@ -30,6 +24,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
     private var similarSearchAdapter: SimilarSearchAdapter? = null
+    private var recyclerViewLayoutManager: RecyclerView.LayoutManager? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     override fun getScreenName(): String {
@@ -57,12 +52,12 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
     }
 
     private fun initViews() {
-        bindSelectedProductView()
-        bindRecyclerView()
+        initSelectedProductView()
+        initRecyclerView()
         disableSwipeRefreshLayout()
     }
 
-    private fun bindSelectedProductView() {
+    private fun initSelectedProductView() {
         view?.let { view ->
             val selectedProductViewListener = createSelectedProductViewListener(view)
             SimilarSearchSelectedProductView(selectedProductViewListener).bindSelectedProductView()
@@ -81,16 +76,29 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
         }
     }
 
-    private fun bindRecyclerView() {
+    private fun initRecyclerView() {
         similarSearchAdapter = SimilarSearchAdapter()
+        recyclerViewLayoutManager = createRecyclerViewSimilarSearchLayoutManager()
+        endlessRecyclerViewScrollListener = createEndlessRecyclerViewScrollListener()
 
         recyclerViewSimilarSearch?.adapter = similarSearchAdapter
-        recyclerViewSimilarSearch?.layoutManager = createRecyclerViewSimilarSearchLayoutManager()
+        recyclerViewSimilarSearch?.layoutManager = recyclerViewLayoutManager
+        endlessRecyclerViewScrollListener?.let {
+            recyclerViewSimilarSearch?.addOnScrollListener(it)
+        }
     }
 
     private fun createRecyclerViewSimilarSearchLayoutManager(): RecyclerView.LayoutManager {
         return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).also {
             it.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        }
+    }
+
+    private fun createEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
+        return object: EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                similarSearchViewModel?.onViewLoadMore()
+            }
         }
     }
 
@@ -109,10 +117,12 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
             is State.Loading -> {
                 swipeToRefreshSimilarSearch?.isRefreshing = true
                 updateAdapterList(similarSearchLiveData)
+                updateScrollListener()
             }
             is State.Success -> {
                 swipeToRefreshSimilarSearch?.isRefreshing = false
                 updateAdapterList(similarSearchLiveData)
+                updateScrollListener()
             }
             is State.Error -> {
 
@@ -122,5 +132,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
 
     private fun updateAdapterList(similarSearchLiveData: State<List<Any>>) {
         similarSearchAdapter?.updateList(similarSearchLiveData.data ?: listOf())
+    }
+
+    private fun updateScrollListener() {
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(similarSearchViewModel?.getHasNextPage() ?: false)
     }
 }
