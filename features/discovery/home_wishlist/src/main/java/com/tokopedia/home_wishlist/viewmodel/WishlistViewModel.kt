@@ -228,7 +228,7 @@ open class WishlistViewModel @Inject constructor(
             val tempListVisitable = wishlistData.value.copy().toMutableList()
 
             tempListVisitable[productPosition] = tempWishlist
-            wishlistData.value = tempListVisitable
+            wishlistData.value = tempListVisitable.copy()
 
             wishlistItemCandidateToAddToCart.let {
                 val addToCartRequestParams = AddToCartRequestParams()
@@ -269,16 +269,17 @@ open class WishlistViewModel @Inject constructor(
                                 )
                         )
                         tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
+                        wishlistData.value = tempListVisitable.copy()
                     }
 
                     override fun onCompleted() {
                         tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
-                        wishlistData.value = tempListVisitable
+                        wishlistData.value = tempListVisitable.copy()
                     }
 
                     override fun onError(e: Throwable) {
                         tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
-                        wishlistData.value = tempListVisitable
+                        wishlistData.value = tempListVisitable.copy()
                         addToCartActionData.value = Event(
                                 AddToCartActionData(
                                         position = productPosition,
