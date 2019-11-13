@@ -216,7 +216,9 @@ data class FlightCart(
             val priceNumeric: Int = 0,
 
             val priceDetailId: String = ""
-    )
+    ) {
+            fun idEqualsToInsuranceId(other: Insurance): Boolean = other.id == priceDetailId
+    }
 
     data class Amenity(
             @SerializedName("departureAirportID")

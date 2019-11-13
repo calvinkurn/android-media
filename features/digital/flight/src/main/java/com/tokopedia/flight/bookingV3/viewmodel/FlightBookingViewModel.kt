@@ -2,19 +2,23 @@ package com.tokopedia.flight.bookingV3.viewmodel
 
 
 import android.util.Log
+import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
 import com.tokopedia.flight.booking.data.cloud.entity.Amenity
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -31,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.lang.Exception
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 /**
@@ -47,7 +52,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     val profileResult = MutableLiveData<Result<ProfileInfo>>() //profileData from userSession
     val flightPassengersData = MutableLiveData<List<FlightBookingPassengerViewModel>>() //passengerData
     val flightCancelVoucherSuccess = MutableLiveData<Boolean>() //voucher cancel success
-    val flightCheckVoucher = MutableLiveData<FlightVoucher>() //checkVoucher
+    val errorToastMessageData = MutableLiveData<Int>()
 
     //priceListData
     val flightPriceData = MutableLiveData<List<FlightCart.PriceDetail>>()
@@ -103,34 +108,115 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
-    fun verifyCartData(query: String, totalPrice: Int, cartId: String, contactName: String,
+    fun getCartId(): String = flightBookingParam.cartId
+
+    fun verifyCartData(query: String, totalPrice: Int, contactName: String,
                        contactEmail: String, contactPhone: String, contactCountry: String,
                        dummy: String, checkVoucherQuery: String, dummyCheckVoucher: String) {
-        val bookingVerifyParam = createVerifyParam(totalPrice, cartId, contactName, contactEmail, contactPhone, contactCountry)
-        val params = mapOf(PARAM_VERIFY_CART to bookingVerifyParam)
-        launchCatchError(block = {
-//            val data = async {
+
+        if (validateFields(contactName, contactEmail, contactPhone)) {
+            val bookingVerifyParam = createVerifyParam(totalPrice, getCartId(), contactName, contactEmail, contactPhone, contactCountry)
+            val params = mapOf(PARAM_VERIFY_CART to bookingVerifyParam)
+
+            launchCatchError(block = {
+                //            val data = async {
 //                withContext(Dispatchers.Default) {
 //                    val graphqlRequest = GraphqlRequest(query, FlightVerify.Response::class.java, params)
 //                    graphqlRepository.getReseponse(listOf(graphqlRequest))
 //                }.getSuccessData<FlightVerify.Response>().flightVerify
 //            }
 
-            val gson = Gson()
-            val data = gson.fromJson(dummy, FlightVerify.Response::class.java).flightVerify
-            val checkPromoData = async { checkVoucher(checkVoucherQuery, cartId, dummyCheckVoucher) }
+                val gson = Gson()
+                val data = gson.fromJson(dummy, FlightVerify.Response::class.java).flightVerify
+                val checkPromoData = async { checkVoucher(checkVoucherQuery, getCartId(), dummyCheckVoucher) }
 
-            data.data.cartItems[0].promoEligibility = checkPromoData.await()
+                data.data.cartItems[0].promoEligibility = checkPromoData.await()
 
-            flightVerifyResult.value = Success(data)
-        }) {
+                flightVerifyResult.value = Success(data)
+            }) {
 
-            val gson = Gson()
-            val data = gson.fromJson(dummy, FlightVerify.Response::class.java).flightVerify
-            flightVerifyResult.value = Success(data)
+                val gson = Gson()
+                val data = gson.fromJson(dummy, FlightVerify.Response::class.java).flightVerify
+                flightVerifyResult.value = Success(data)
 //            flightVerifyResult.value = Fail(it)
+            }
+        } else {
+
         }
     }
+
+    private fun validateFields(contactName: String, contactEmail: String, contactPhone: String): Boolean {
+        var isValid = true
+
+        if (contactName.isEmpty()) {
+            isValid = false
+            errorToastMessageData.value = R.string.flight_booking_contact_name_empty_error
+        } else if (contactName.isNotEmpty() && !isAlphabetAndSpaceOnly(contactName)) {
+            isValid = false
+            errorToastMessageData.value = R.string.flight_booking_contact_name_alpha_space_error
+        } else if (contactEmail.isEmpty()) {
+            isValid = false
+            errorToastMessageData.value = R.string.flight_booking_contact_email_empty_error
+        } else if (!isValidEmail(contactEmail)) {
+            isValid = false
+            errorToastMessageData.value = R.string.flight_booking_contact_email_invalid_error
+        } else if (!isEmailWithoutProhibitSymbol(contactEmail)) {
+            isValid = false
+            errorToastMessageData.value = R.string.flight_booking_contact_email_invalid_error
+        } else if (contactPhone.isEmpty()) {
+            isValid = false
+            errorToastMessageData.value = R.string.flight_booking_contact_phone_empty_error
+        } else if (contactPhone.isNotEmpty() && !isNumericOnly(contactPhone)) {
+            isValid = false
+            errorToastMessageData.value = R.string.flight_booking_contact_phone_invalid_error
+        } else if (contactPhone.length > 13) {
+            isValid = false
+            errorToastMessageData.value = R.string.flight_booking_contact_phone_max_length_error
+        } else if (contactPhone.length < 9) {
+            isValid = false
+            errorToastMessageData.value = R.string.flight_booking_contact_phone_min_length_error
+        } else {
+            val passengerViewModels = flightPassengersData.value ?: listOf()
+            if (!isAllPassengerFilled(passengerViewModels)) {
+                isValid = false
+                errorToastMessageData.value = R.string.flight_booking_passenger_not_fullfilled_error
+            }
+        }
+        return isValid
+    }
+
+    private fun isAllPassengerFilled(passengerViewModels: List<FlightBookingPassengerViewModel>): Boolean {
+        var isvalid = true
+        for (flightBookingPassengerViewModel in passengerViewModels) {
+            if (flightBookingPassengerViewModel.passengerFirstName == null) {
+                isvalid = false
+                break
+            } else if (flightBookingPassengerViewModel.passengerLastName == null) {
+                isvalid = false
+                break
+            }
+        }
+        return isvalid
+    }
+
+    private fun isNumericOnly(expression: String): Boolean {
+        val pattern = Pattern.compile("^[0-9\\s]*$")
+        val matcher = pattern.matcher(expression)
+        return matcher.matches()
+    }
+
+    private fun isAlphabetAndSpaceOnly(string: String): Boolean {
+        val pattern = Pattern.compile("^[a-zA-Z\\s]*$")
+        val matcher = pattern.matcher(string)
+        return matcher.matches()
+    }
+
+    private fun isEmailWithoutProhibitSymbol(contactEmail: String): Boolean =
+            !contactEmail.contains("+")
+
+    private fun isValidEmail(contactEmail: String): Boolean =
+            Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() &&
+                    !contactEmail.contains(".@") && !contactEmail.contains("@.")
 
     fun createVerifyParam(totalPrice: Int, cartId: String, contactName: String,
                           contactEmail: String, contactPhone: String, contactCountry: String): FlightVerifyParam {
@@ -190,7 +276,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             for (insurance in flightOtherPriceData.value as List) {
                 cartItem.metaData.insurances.add(insurance.priceDetailId)
             }
-
 
             flightVerifyParam.cartItems.add(cartItem)
             flightVerifyParam.promoCode = (flightPromoResult.value as FlightPromoViewEntity).promoData.promoCode
@@ -420,10 +505,38 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         return phoneRawString
     }
 
-    fun checkOutCart(cartId: String, price: Int) {
-        val checkoutParam = createCheckoutParam(cartId, price)
+    fun setSearchParam(depatureId: String, arrivalId: String, searchParam: FlightSearchPassDataViewModel) {
+        flightBookingParam.departureId = depatureId
+        flightBookingParam.returnId = arrivalId
+        flightBookingParam.searchParam = searchParam
+    }
 
-        checkoutParam.promoCode
+    fun addToCart(query: String, getCartQuery: String, dummy: String) {
+        //if add to cart success -> proceed to getCart with the id.
+        launchCatchError(block = {
+            val addToCartData = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(query, FlightAddToCartData.Response::class.java)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<FlightAddToCartData.Response>()
+
+            flightBookingParam.cartId = addToCartData.addToCartData.id
+            getCart(getCartQuery, getCartId(), dummy)
+        })
+        {
+//            flightCartResult.value = Fail(it)
+            getCart(getCartQuery, getCartId(), dummy)
+        }
+    }
+
+    fun getDepartureId(): String = flightBookingParam.departureId
+    fun getReturnId(): String = flightBookingParam.returnId
+
+    fun checkOutCart(price: Int, dummy: String) {
+        val checkoutParam = createCheckoutParam(getCartId(), price)
+
+        val gson = Gson()
+        val data = gson.fromJson(dummy, FlightCheckoutData.Response::class.java).flightCheckout
+        flightCheckoutResult.value = Success(data)
     }
 
     private fun createCheckoutParam(cartId: String, price: Int): FlightCheckoutParam {

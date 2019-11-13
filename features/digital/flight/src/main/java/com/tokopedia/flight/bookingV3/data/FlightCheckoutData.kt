@@ -52,6 +52,10 @@ data class FlightCheckoutData(
             @Expose
             val profileCode: String = "",
 
+            @SerializedName("transactionID")
+            @Expose
+            val transactionId: String = "",
+
             @SerializedName("transactionCode")
             @Expose
             val transactionCode: String = "",
