@@ -459,6 +459,8 @@ public class DynamicHomeChannel {
                                     "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
                                             grid.getPrice()
                                     )),
+                                    "brand", "none / other",
+                                    "variant", "none / other",
                                     "list", "/ - p1 - lego product - " + getHeader().getName(),
                                     "position", String.valueOf(i + 1),
                                     "dimension83", grid.getFreeOngkir().isActive() ? "bebas ongkir" : "none/other",
