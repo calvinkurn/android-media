@@ -23,6 +23,7 @@ import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTrack
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -59,12 +60,16 @@ class ChangeNameFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initListener()
-        initObserver()
 
         if (oldName.isNotEmpty()) {
             changeNameTextName?.setText(oldName)
+            changeNameTextName?.text?.length?.let {
+                changeNameTextName?.setSelection(it)
+            }
         }
+
+        initObserver()
+        initListener()
     }
 
     private fun initListener() {
