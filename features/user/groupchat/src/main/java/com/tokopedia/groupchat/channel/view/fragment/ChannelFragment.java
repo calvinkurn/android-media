@@ -56,8 +56,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
 
     @Inject
     GroupChatAnalytics analytics;
-
     SwipeRefreshLayout swipeRefreshLayout;
+    RecyclerView recyclerView;
     private String lastCursor;
 
     public static Fragment createInstance() {
@@ -92,15 +92,8 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_channel_list, container, false);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        recyclerView = view.findViewById(R.id.recycler_view);
         return view;
-    }
-
-
-    @Override
-    public RecyclerView getRecyclerView(View view) {
-        RecyclerView recyclerView = super.getRecyclerView(view);
-        recyclerView.addItemDecoration(new ItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med)));
-        return recyclerView;
     }
 
     @Override
@@ -109,8 +102,9 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public RecyclerView getRecyclerView(View view) {
+        recyclerView.addItemDecoration(new ItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_med)));
+        return recyclerView;
     }
 
     @Override
@@ -142,7 +136,7 @@ public class ChannelFragment extends BaseListFragment<ChannelViewModel, ChannelT
     protected BaseListAdapter<ChannelViewModel, ChannelTypeFactory> createAdapterInstance() {
         BaseListAdapter<ChannelViewModel, ChannelTypeFactory> adapter = super.createAdapterInstance();
         ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
-        errorNetworkModel.setIconDrawableRes(R.drawable.ic_empty_state);
+        errorNetworkModel.setIconDrawableRes(com.tokopedia.design.R.drawable.ic_empty_state);
         errorNetworkModel.setOnRetryListener(this);
         adapter.setErrorNetworkModel(errorNetworkModel);
         return adapter;

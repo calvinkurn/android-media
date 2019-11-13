@@ -24,5 +24,7 @@ interface BaseChatTypeFactory {
 
     fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int
 
+    fun type(bannedAttachmentViewModel: BannedProductAttachmentViewModel): Int
+
     fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*>
 }

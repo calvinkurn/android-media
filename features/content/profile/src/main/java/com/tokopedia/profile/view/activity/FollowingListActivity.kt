@@ -11,7 +11,6 @@ import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListAc
 import com.tokopedia.kol.feature.following_list.view.fragment.KolFollowingListFragment
 import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingListEmptyListener
-import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.adapter.FollowingListTabAdapter
 import com.tokopedia.profile.view.viewmodel.FollowingListTabItem

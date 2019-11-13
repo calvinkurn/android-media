@@ -37,6 +37,10 @@ query getProductMostHelpfulReview($productID: Int!, $userID: Int){
                 totalLike
                 totalDislike
                 likeStatus
+                isShowable
+            }
+            productVariant{
+                name
             }
         }
     }

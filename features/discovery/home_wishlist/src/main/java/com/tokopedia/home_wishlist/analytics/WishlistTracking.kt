@@ -202,7 +202,7 @@ object WishlistTracking {
     fun clickSeeCart(){
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        EVENT, VALUE_EMPTY,
+                        EVENT, EVENT_CLICK_WISHLIST,
                         EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
                         EVENT_ACTION, EVENT_ACTION_CLICK_SEE_CART
                 )
@@ -212,7 +212,7 @@ object WishlistTracking {
     fun clickConfirmRemoveWishlist(productId: String){
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        EVENT, VALUE_EMPTY,
+                        EVENT, EVENT_CLICK_WISHLIST,
                         EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
                         EVENT_LABEL, productId,
                         EVENT_ACTION, EVENT_ACTION_REMOVE_WISHLIST
@@ -223,7 +223,7 @@ object WishlistTracking {
     fun clickConfirmBulkRemoveWishlist(trackingQueue: TrackingQueue, productIds: List<String>){
         productIds.forEach { id ->
             val data = DataLayer.mapOf(
-                    EVENT, VALUE_EMPTY,
+                    EVENT, EVENT_CLICK_WISHLIST,
                     EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
                     EVENT_LABEL, String.format(EVENT_LABEL_REMOVE_BULK_WISHLIST, id),
                     EVENT_ACTION, EVENT_ACTION_REMOVE_WISHLIST
@@ -235,7 +235,7 @@ object WishlistTracking {
     fun clickCancelDeleteWishlist(){
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        EVENT, VALUE_EMPTY,
+                        EVENT, EVENT_CLICK_WISHLIST,
                         EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
                         EVENT_LABEL, VALUE_EMPTY,
                         EVENT_ACTION, EVENT_ACTION_CANCEL_REMOVE_WISHLIST
@@ -252,13 +252,13 @@ object WishlistTracking {
                         EVENT_LABEL, position,
                         ECOMMERCE, DataLayer.mapOf(
                                 ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
-                                ECOMMERCE_CLICK, DataLayer.listOf(
+                                ECOMMERCE_CLICK,
                                         convertWishlistItemToDataClickObject(
                                                 item = wishlistItem,
                                                 list = IMPRESSION_LIST,
                                                 position = position
                                         )
-                                )
+
                         )
                 )
         )
@@ -269,7 +269,7 @@ object WishlistTracking {
                 EVENT, EVENT_PRODUCT_VIEW,
                 EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
                 EVENT_LABEL, VALUE_EMPTY,
-                ECOMMERCE, DataLayer.listOf(
+                ECOMMERCE, DataLayer.mapOf(
                         ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                         ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                                 convertWishlistItemToDataImpressionObject(
@@ -289,7 +289,7 @@ object WishlistTracking {
                 EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
                 EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
                 EVENT_LABEL, VALUE_EMPTY,
-                ECOMMERCE, DataLayer.listOf(
+                ECOMMERCE, DataLayer.mapOf(
                         ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                         ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                                 convertRecommendationItemToDataImpressionObject(

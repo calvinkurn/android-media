@@ -158,7 +158,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     override fun onPause() {
         super.onPause()
-        if(!this::trackingQueue.isInitialized && trackingQueue != null) trackingQueue.sendAll()
+        if(this::trackingQueue.isInitialized && trackingQueue != null) trackingQueue.sendAll()
     }
 
     override fun getScreenName(): String = getString(R.string.wishlist_global)
