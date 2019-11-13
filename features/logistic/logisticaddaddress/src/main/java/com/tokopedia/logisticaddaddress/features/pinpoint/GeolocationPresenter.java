@@ -33,6 +33,9 @@ import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.di.ActivityContext;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
+import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper;
+import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillResponseUiModel;
 import com.tokopedia.logisticaddaddress.utils.LocationCache;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
@@ -43,6 +46,8 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * Created by Fajar Ulin Nuha on 29/10/18.
@@ -62,6 +67,8 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     private final GoogleApiClient googleApiClient;
     private final LocationRequest locationRequest;
     private UserSession userSession;
+    private AutofillUseCase autofillUseCase;
+    private GeolocationMapper mapper;
 
     private Context context;
 
@@ -73,11 +80,14 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
 
     @Inject
     public GeolocationPresenter(@ActivityContext Context context, RetrofitInteractorImpl retrofitInteractor,
-                                UserSession userSession, GoogleMapFragment googleMapFragment) {
+                                UserSession userSession, AutofillUseCase autofillUseCase,
+                                GoogleMapFragment googleMapFragment, GeolocationMapper geolocationMapper) {
         this.context = context;
         this.userSession = userSession;
         this.view = googleMapFragment;
         this.retrofitInteractor = retrofitInteractor;
+        this.autofillUseCase = autofillUseCase;
+        this.mapper = geolocationMapper;
         this.locationRequest = LocationRequest.create()
                 .setInterval(DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS)
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
@@ -243,6 +253,32 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         }
     }
 
+    @Override
+    public void getReverseGeocoding(String latitude, String longitude) {
+        String keyword = String.format("%s,%s", latitude, longitude);
+        view.setLoading(true);
+        autofillUseCase.execute(keyword)
+                .subscribe(new Subscriber<AutofillResponseUiModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        view.setLoading(false);
+                        view.setValuePointer("Error");
+                    }
+
+                    @Override
+                    public void onNext(AutofillResponseUiModel autofillResponseUiModel) {
+                        view.setLoading(false);
+                        view.setValuePointer(autofillResponseUiModel.getData().getFormattedAddress());
+                        setNewLocationPass(mapper.map(autofillResponseUiModel));
+                    }
+                });
+    }
+
     private void setAutoCompleteBoundary() {
         view.generateBoundsFromCamera();
     }
@@ -386,6 +422,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     @Override
     public void onDestroy() {
         retrofitInteractor.unSubscribe();
+        autofillUseCase.unsubscribe();
     }
 
     private RetrofitInteractor.GenerateLatLongListener latLongListener() {

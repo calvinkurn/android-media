@@ -69,6 +69,8 @@ public interface GeolocationContract {
         void showDetailDestination(View view);
 
         void setManualDestination(String s);
+
+        void setLoading(boolean active);
     }
 
     interface GeolocationPresenter {
@@ -106,6 +108,8 @@ public interface GeolocationContract {
         void initDefaultLocation();
 
         void onCameraChange(Context context, CameraPosition cameraPosition);
+
+        void getReverseGeocoding(String latitude, String longitude);
 
         void prepareAutoCompleteView();
 
