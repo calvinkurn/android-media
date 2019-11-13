@@ -734,9 +734,7 @@ open class WishlistViewModel @Inject constructor(
     private fun getWishlistPositionOnMark() = listVisitableMarked.map { it.key }
 
     private fun mappingWishlistToVisitable(list: List<WishlistItem>): MutableList<WishlistDataModel>{
-        return list.mapIndexed{index, it ->
-            WishlistItemDataModel(it.copy(name = (((currentPage-1)*20)+index).toString()))
-        }.toMutableList()
+        return list.map{ WishlistItemDataModel( productItem = it) }.toMutableList()
     }
 
     private fun mappingRecommendationToWishlist(
