@@ -251,7 +251,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun goToHargaFinal() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE, null)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE)
 
         if (tradeInParams != null && selectedProductInfo != null) {
             tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
@@ -264,7 +264,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     fun goToTradeInHome() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.TRADEIN, null)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.TRADEIN)
 
         if (tradeInParams != null && selectedProductInfo != null) {
             tradeInParams!!.setPrice(selectedProductInfo!!.basic.price.toInt())
