@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.text.SearchInputView
@@ -231,6 +230,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 setSecondaryCTAText(getString(R.string.wishlist_cancel))
                 setPrimaryCTAClickListener { onBulkDelete();dismiss() }
                 setSecondaryCTAClickListener {
+                    WishlistTracking.clickCancelDeleteWishlist()
                     dismiss()
                 }
                 setCancelable(false)
@@ -374,6 +374,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 dismiss()
             }
             setSecondaryCTAClickListener {
+                WishlistTracking.clickCancelDeleteWishlist()
                 dismiss()
             }
             setCancelable(false)
@@ -405,14 +406,22 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         if(action.peekContent().isSuccess){
             when(action.peekContent()){
                 is AddToCartActionData -> {
-                    showToaster(getString(R.string.wishlist_success_atc), getString(R.string.wishlist_see)){ RouteManager.route(context, ApplinkConst.CART) }
+                    WishlistTracking.clickBuy(cartId = (action.peekContent() as AddToCartActionData).cartId.toString(), wishlistItem = (action.peekContent() as AddToCartActionData).item)
+                    showToaster(getString(R.string.wishlist_success_atc), getString(R.string.wishlist_see)){
+                        WishlistTracking.clickSeeCart()
+                        RouteManager.route(context, ApplinkConst.CART)
+                    }
                 }
                 is AddWishlistRecommendationData -> showToaster(getString(R.string.wishlist_success_add))
                 is BulkRemoveWishlistActionData -> {
+                    WishlistTracking.clickConfirmBulkRemoveWishlist(trackingQueue, (action.peekContent() as BulkRemoveWishlistActionData).productIds)
                     showToaster(getString(R.string.wishlist_success_remove), "Ok")
                     resetBulkMode()
                 }
-                is RemoveWishlistActionData -> showToaster(getString(R.string.wishlist_success_remove), "Ok")
+                is RemoveWishlistActionData -> {
+                    WishlistTracking.clickConfirmRemoveWishlist(productId = (action.peekContent() as RemoveWishlistActionData).productId.toString())
+                    showToaster(getString(R.string.wishlist_success_remove), "Ok")
+                }
                 is RemoveWishlistRecommendationData -> showToaster(getString(R.string.wishlist_success_remove), "Ok")
             }
         }else {

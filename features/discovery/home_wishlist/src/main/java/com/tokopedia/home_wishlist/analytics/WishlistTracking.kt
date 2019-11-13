@@ -1,7 +1,6 @@
 package com.tokopedia.home_wishlist.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
@@ -53,40 +52,26 @@ object WishlistTracking {
 
     private const val EVENT_PRODUCT_VIEW = "productView"
     private const val EVENT_PRODUCT_CLICK = "productClick"
-    private const val EVENT_ADD_TO_CART = "addToCart"
     private const val EVENT_CLICK_WISHLIST = "clickWishlist"
     private const val EVENT_LABEL_RECOM_WISHLIST = "%s - %s - %s"
+    private const val EVENT_LABEL_REMOVE_BULK_WISHLIST = "%s - general - multiple remove"
     private const val EVENT_LABEL_RECOM_WISHLIST_EMPTY_WISHLIST = "%s - %s - %s - empty_wishlist"
 
     private const val EVENT_WISHLIST_PAGE = "wishlist page"
     private const val IMPRESSION_LIST = "/wishlist"
     private const val IMPRESSION_LIST_RECOMMENDATION = "/wishlist - rekomendasi untuk anda - %s%s"
 
-    private const val EVENT_ACTION_REMOVE_WISHLIST = "remove wishlist - wishlist"
+    private const val EVENT_ACTION_REMOVE_WISHLIST = "remove wishlist - wishlist - login"
+    private const val EVENT_ACTION_CANCEL_REMOVE_WISHLIST = "click batalkan hapus wishlist"
     private const val EVENT_ACTION_CLICK_REMOVE_WISHLIST = "click remove wishlist on product recommendation"
     private const val EVENT_ACTION_CLICK_ADD_WISHLIST = "click add wishlist on product recommendation"
 
     private const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN = "impression on product recommendation"
-    private const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN = "impression - product recommendation - non login"
-    private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_WISHLIST_NON_LOGIN = "add - wishlist on product recommendation - non login"
-    private const val EVENT_ACTION_CLICK_SEE_MORE = "click - see more on widget %s"
-    private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_WISHLIST_LOGIN = "%s - wishlist on product recommendation"
-    private const val EVENT_ACTION_CLICK_PRIMARY_PRODUCT_NON_LOGIN = "click add wishlist on primary product - non login"
     private const val EVENT_ACTION_CLICK_PRODUCT = "click product"
     private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation"
-    private const val EVENT_ACTION_CLICK_ICON_SHARE = "click icon share"
-    private const val EVENT_ACTION_ADD_TO_CART = "click add, cart on primary product"
-    private const val EVENT_ACTION_ADD_TO_CART_NON_LOGIN = "click add, cart on primary product - non login"
-    private const val EVENT_ACTION_BUY = "click buy on primary product"
-    private const val EVENT_ACTION_BUY_NON_LOGIN = "click buy on primary product - non login"
-    private const val EVENT_ACTION_CLICK_BACK = "click back"
-    private const val EVENT_ACTION_CLICK_SEE_CART = "click see cart"
+    private const val EVENT_ACTION_CLICK_SEE_CART = "click - cek keranjang on wishlist"
     private const val EVENT_ACTION_CLICK_BUY = "click - beli - app only"
-    private const val EVENT_ACTION_IMPRESSION_PRIMARY_PRODUCT = "impression primary product"
-
-    private const val CUSTOM_DIMENSION_PAGE_SOURCE = "pageSource"
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
-    private const val CUSTOM_DIMENSION_PRODUCT_ID = "productId"
 
     private fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
@@ -214,6 +199,50 @@ object WishlistTracking {
         )
     }
 
+    fun clickSeeCart(){
+        getTracker().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, VALUE_EMPTY,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_SEE_CART
+                )
+        )
+    }
+
+    fun clickConfirmRemoveWishlist(productId: String){
+        getTracker().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, VALUE_EMPTY,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_LABEL, productId,
+                        EVENT_ACTION, EVENT_ACTION_REMOVE_WISHLIST
+                )
+        )
+    }
+
+    fun clickConfirmBulkRemoveWishlist(trackingQueue: TrackingQueue, productIds: List<String>){
+        productIds.forEach { id ->
+            val data = DataLayer.mapOf(
+                    EVENT, VALUE_EMPTY,
+                    EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                    EVENT_LABEL, String.format(EVENT_LABEL_REMOVE_BULK_WISHLIST, id),
+                    EVENT_ACTION, EVENT_ACTION_REMOVE_WISHLIST
+            )
+            trackingQueue.putEETracking(data as HashMap<String, Any>?)
+        }
+    }
+
+    fun clickCancelDeleteWishlist(){
+        getTracker().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, VALUE_EMPTY,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_LABEL, VALUE_EMPTY,
+                        EVENT_ACTION, EVENT_ACTION_CANCEL_REMOVE_WISHLIST
+                )
+        )
+    }
+
     fun productClick(wishlistItem: WishlistItem, position: String){
         getTracker().sendGeneralEvent(
                 DataLayer.mapOf(
@@ -252,17 +281,6 @@ object WishlistTracking {
                 )
         )
         trackingQueue.putEETracking(map as HashMap<String, Any>)
-    }
-
-    fun removeWishlist(productId: Int){
-        getTracker().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        EVENT, EVENT_PRODUCT_VIEW,
-                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                        EVENT_LABEL, productId.toString(),
-                        EVENT_ACTION, EVENT_ACTION_REMOVE_WISHLIST
-                )
-        )
     }
 
     fun impressionRecommendation(trackingQueue: TrackingQueue, item: RecommendationItem, position: Int){

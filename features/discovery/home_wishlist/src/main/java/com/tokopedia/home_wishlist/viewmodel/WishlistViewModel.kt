@@ -265,7 +265,8 @@ open class WishlistViewModel @Inject constructor(
                                         productId = productId,
                                         cartId = cartId,
                                         isSuccess = isSuccess,
-                                        message = message
+                                        message = message,
+                                        item = visitableItem.productItem
                                 )
                         )
                         tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
@@ -454,10 +455,11 @@ open class WishlistViewModel @Inject constructor(
                     object: Subscriber<List<WishlistActionData>>() {
                         override fun onNext(responselist: List<WishlistActionData>) {
                             val updatedList = wishlistData.value.toMutableList()
-
+                            val deletedIds = mutableListOf<String>()
                             var isPartiallyFailed = false
                             responselist.forEach {
                                 if (it.isSuccess) {
+                                    deletedIds.add((arrayForBulkRemoveCandidate[it.position] as WishlistItemDataModel).productItem.id)
                                     updatedList.remove(arrayForBulkRemoveCandidate[it.position] as Visitable<*>)
                                 } else if (!isPartiallyFailed) isPartiallyFailed = !it.isSuccess
                             }
@@ -466,7 +468,8 @@ open class WishlistViewModel @Inject constructor(
                                     BulkRemoveWishlistActionData(
                                             message = "",
                                             isSuccess = !isPartiallyFailed,
-                                            isPartiallyFailed = isPartiallyFailed
+                                            isPartiallyFailed = isPartiallyFailed,
+                                            productIds = deletedIds
                                     )
                             )
                             wishlistData.value = updatedList
