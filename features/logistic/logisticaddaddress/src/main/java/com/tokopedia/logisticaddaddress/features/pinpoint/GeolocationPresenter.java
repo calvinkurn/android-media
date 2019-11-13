@@ -405,21 +405,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     }
 
     @Override
-    public void restoreStateData(Bundle savedState) {
-        if (savedState != null) {
-            isAllowGenerateAddress = savedState.getBoolean(STATE_IS_ALLOW_GENERATE_ADDRESS);
-            isUseExistingLocation = savedState.getBoolean(STATE_IS_USE_EXISTING_LOCATION);
-        }
-    }
-
-    @Override
-    public Bundle saveStateCurrentLocation(Bundle state) {
-        state.putBoolean(STATE_IS_ALLOW_GENERATE_ADDRESS, isAllowGenerateAddress);
-        state.putBoolean(STATE_IS_USE_EXISTING_LOCATION, isUseExistingLocation);
-        return state;
-    }
-
-    @Override
     public void onDestroy() {
         retrofitInteractor.unSubscribe();
         autofillUseCase.unsubscribe();

@@ -117,10 +117,6 @@ public interface GeolocationContract {
 
         void onSubmitPointer(Activity activity);
 
-        void restoreStateData(Bundle savedState);
-
-        Bundle saveStateCurrentLocation(Bundle state);
-
         void onDestroy();
 
         void prepareDetailDestination(View view);
