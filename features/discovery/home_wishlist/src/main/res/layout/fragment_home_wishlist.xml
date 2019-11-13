@@ -16,6 +16,7 @@
             android:layout_height="68dp"
             android:layout_marginTop="?attr/actionBarSize"
             android:background="@color/white"
+            app:layout_behavior="com.tokopedia.home_wishlist.view.custom.CustomAppBarLayoutBehavior"
             app:elevation="@dimen/dp_4">
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapse"
@@ -57,6 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
+                android:paddingBottom="@dimen/dp_64"
                 tools:listitem="@layout/layout_wishlist_item"
                 tools:visibility="visible"/>
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

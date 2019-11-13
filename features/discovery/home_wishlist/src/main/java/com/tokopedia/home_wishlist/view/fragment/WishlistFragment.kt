@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -38,6 +39,7 @@ import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.util.Status
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
+import com.tokopedia.home_wishlist.view.custom.CustomAppBarLayoutBehavior
 import com.tokopedia.home_wishlist.view.custom.CustomSearchView
 import com.tokopedia.home_wishlist.view.custom.SpaceBottomItemDecoration
 import com.tokopedia.home_wishlist.view.ext.isScrollable
@@ -102,7 +104,8 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private val appBarLayout by lazy { view?.findViewById<AppBarLayout>(R.id.app_bar_layout)}
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private val coachMark by lazy { CoachMarkBuilder().allowPreviousButton(false).build() }
-    private val itemDecorationBottom by lazy { SpaceBottomItemDecoration() }
+    private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) }
+    private val itemDecorationBottom by lazy { SpaceBottomItemDecoration(staggeredGridLayoutManager) }
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
     internal var menu: Menu? = null
@@ -153,6 +156,11 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         observeAction()
     }
 
+    override fun onPause() {
+        super.onPause()
+        if(!this::trackingQueue.isInitialized && trackingQueue != null) trackingQueue.sendAll()
+    }
+
     override fun getScreenName(): String = getString(R.string.wishlist_global)
 
     override fun initInjector() {
@@ -174,6 +182,10 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         return when(item.itemId){
             R.id.manage -> manageDeleteWishlist()
             R.id.cancel -> cancelDeleteWishlist()
+            android.R.id.home -> {
+                activity?.finish()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -240,7 +252,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun initRecyclerView(){
-        recyclerView?.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        recyclerView?.layoutManager = staggeredGridLayoutManager
         recyclerView?.adapter = adapter
         recyclerView?.addItemDecoration(itemDecorationBottom)
         endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
@@ -442,6 +454,10 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     private fun onBulkDelete(){
         viewModel.bulkRemoveWishlist()
+        showSearchView()
+        val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(true)
+        swipeToRefresh?.isEnabled = true
     }
 
     private fun showOnBoarding(){
@@ -486,6 +502,8 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         containerDelete?.show()
 
         hideSearchView()
+        val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(false)
 
         viewModel.updateBulkMode(true)
 
@@ -503,7 +521,8 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         containerDelete?.hide()
 
         showSearchView()
-
+        val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+        (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(true)
         swipeToRefresh?.isEnabled = true
         viewModel.updateBulkMode(false)
         return true

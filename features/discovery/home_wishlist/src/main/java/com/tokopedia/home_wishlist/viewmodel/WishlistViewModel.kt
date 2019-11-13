@@ -469,6 +469,7 @@ open class WishlistViewModel @Inject constructor(
                                             productIds = deletedIds
                                     )
                             )
+                            bulkSelectActionData.value = Event(0)
                             wishlistData.value = updatedList
                             updateBulkMode(false)
                         }
@@ -477,6 +478,7 @@ open class WishlistViewModel @Inject constructor(
                         }
 
                         override fun onError(e: Throwable) {
+                            bulkSelectActionData.value = Event(0)
                             bulkRemoveWishlistActionData.value = Event(
                                     BulkRemoveWishlistActionData(
                                             message = e.message ?: "",
