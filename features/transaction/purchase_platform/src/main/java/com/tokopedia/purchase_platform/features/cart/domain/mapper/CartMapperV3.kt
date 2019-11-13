@@ -246,6 +246,10 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
             if (similarProduct != null && !TextUtils.isEmpty(similarProduct.text) && !TextUtils.isEmpty(similarProduct.url)) {
                 it.similarProductData = SimilarProductData(similarProduct.text, similarProduct.url)
             }
+            val nicotineLiteMessage = cartDetail.nicotineLiteMessage
+            if (nicotineLiteMessage != null && !TextUtils.isEmpty(nicotineLiteMessage.text) && !TextUtils.isEmpty(nicotineLiteMessage.url)) {
+                it.nicotineLiteMessageData = NicotineLiteMessageData(nicotineLiteMessage.text, nicotineLiteMessage.url)
+            }
 
             if (cartDetail.errors.size > 1) {
                 it.errorMessageDescription = iMapperUtil.convertToString(

@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.cart.view;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -34,6 +33,7 @@ import com.readystatesoftware.chuck.Chuck;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -124,7 +124,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -159,6 +158,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
     private boolean FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
     private boolean FLAG_IS_CART_EMPTY = false;
+
+    private static final String ADVERTISINGID = "ADVERTISINGID";
+    private static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
+    private static final String QUERY_APP_CLIENT_ID = "{app_client_id}";
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -907,22 +910,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             linearSmoothScroller.setTargetPosition(cartAdapter.getDisabledItemHeaderPosition());
             cartRecyclerView.getLayoutManager().startSmoothScroll(linearSmoothScroller);
         }
-    }
-
-    @Override
-    public void onTickerDescriptionUrlClicked(@NotNull String url) {
-        String finalUrl = url;
-        if (!url.startsWith("https://")) {
-            if (url.startsWith("http://")) {
-                finalUrl = url.replace("http", "https");
-            } else {
-                finalUrl = "https://" + url;
-            }
-        }
-        Intent view = new Intent();
-        view.setAction(Intent.ACTION_VIEW);
-        view.setData(Uri.parse(finalUrl));
-        startActivity(view);
     }
 
     @Override
@@ -2622,6 +2609,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         DialogUnify dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size());
 
+        for (CartItemData cartItemData : allDisabledCartItemDataList) {
+            if (cartItemData.getNicotineLiteMessageData() != null) {
+                cartPageAnalytics.eventClickHapusButtonOnProductContainTobacco(cartItemData.getOriginData().getShopId(), cartItemData.getOriginData().getProductId());
+                break;
+            }
+        }
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
         ));
@@ -2647,7 +2640,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onDeleteDisabledItem(CartItemData cartItemData) {
-        sendAnalyticsOnClickRemoveIconCartItem();
+        if (cartItemData.getNicotineLiteMessageData() != null) {
+            cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco(cartItemData.getOriginData().getShopId(), cartItemData.getOriginData().getProductId());
+        } else {
+            sendAnalyticsOnClickRemoveIconCartItem();
+        }
         List<CartItemData> cartItemDatas = Collections.singletonList(cartItemData);
         List<CartItemData> allCartItemDataList = cartAdapter.getAllDisabledCartItemData();
 
@@ -2668,5 +2665,33 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             return Unit.INSTANCE;
         });
         dialog.show();
+    }
+
+    @Override
+    public void onTobaccoLiteUrlClicked(@NotNull String url, @NotNull String shopId, @NotNull String productId) {
+        if (getContext() != null) {
+            String finalUrl = url;
+//            if (!url.startsWith("https://")) {
+//                if (url.startsWith("http://")) {
+//                    finalUrl = url.replace("http", "https");
+//                } else {
+//                    finalUrl = "https://" + url;
+//                }
+//            }
+
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), ADVERTISINGID);
+            String adsId = localCacheHandler.getString(KEY_ADVERTISINGID);
+            if (adsId != null && !adsId.trim().isEmpty()) {
+                finalUrl = finalUrl.replace(QUERY_APP_CLIENT_ID, adsId);
+            }
+
+            cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco(shopId, productId);
+            RouteManager.route(getContext(), finalUrl);
+        }
+    }
+
+    @Override
+    public void onShowTickerTobacco(@NotNull String shopId, @NotNull String productId) {
+        cartPageAnalytics.eventViewTickerProductContainTobacco(shopId, productId);
     }
 }

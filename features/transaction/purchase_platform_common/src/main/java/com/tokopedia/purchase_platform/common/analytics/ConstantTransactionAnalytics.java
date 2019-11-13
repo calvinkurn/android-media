@@ -21,6 +21,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BUY = "clickBuy";
         String CLICK_CHECKOUT = "clickCheckout";
         String VIEW_ATC = "viewATC";
+        String VIEW_ATC_IRIS = "viewATCIris";
         String REMOVE_FROM_CART = "removeFromCart";
         String CHECKOUT = "checkout";
         String ADD_TO_CART = "addToCart";
@@ -313,6 +314,12 @@ public interface ConstantTransactionAnalytics {
         String VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT = "view help pop up after error in checkout";
         String CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT = "click report on help pop up in checkout";
         String CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT = "click close on help pop up in checkout";
+
+        //Tobacco
+        String CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO = "click browse button on ticker product contain tobacco";
+        String VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO = "view ticker product contain tobacco";
+        String CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click hapus button on product contain tobacco";
+        String CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO = "click trash icon button on product contain tobacco";
     }
 
     interface EventLabel {

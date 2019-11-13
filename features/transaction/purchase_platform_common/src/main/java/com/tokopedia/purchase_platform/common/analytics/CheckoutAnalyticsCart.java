@@ -3,8 +3,6 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.os.Bundle;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
 import java.util.Map;
 
@@ -873,4 +871,41 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    public void eventClickBrowseButtonOnTickerProductContainTobacco(String shopId, String productId) {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventViewTickerProductContainTobacco(String shopId, String productId) {
+        sendEventCategoryAction(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventClickHapusButtonOnProductContainTobacco(String shopId, String productId) {
+//        sendEventCategoryActionLabel(
+//                EventName.CLICK_ATC,
+//                EventCategory.CART,
+//                EventAction.CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO,
+//                shopId + " - " + productId
+//        );
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
+
+    public void eventClickTrashIconButtonOnProductContainTobacco(String shopId, String productId) {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
+        );
+    }
 }
