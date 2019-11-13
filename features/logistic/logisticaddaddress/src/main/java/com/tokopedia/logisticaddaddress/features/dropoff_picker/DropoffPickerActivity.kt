@@ -253,6 +253,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun setDefaultMap() {
+        tracker.trackClickMap()
         mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         mMarkerList.forEach {
