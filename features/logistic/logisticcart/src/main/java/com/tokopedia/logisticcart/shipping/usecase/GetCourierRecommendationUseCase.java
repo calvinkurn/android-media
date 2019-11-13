@@ -13,7 +13,11 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.GetRatesCourierRecommendationTradeInDropOffData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesData;
 import com.tokopedia.usecase.RequestParams;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -48,14 +52,19 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                         ShippingParam shippingParam,
                         Subscriber<ShippingRecommendationData> subscriber) {
         query = getQueryWithParams(query, codHistory, isCorner, isLeasing, pslCode, shopShipments, shippingParam);
-        executeQuery(query, selectedSpId, selectedServiceId, shopShipments, subscriber);
+        executeQuery(query, selectedSpId, selectedServiceId, shopShipments, shippingParam, subscriber);
     }
 
-    private void executeQuery(String query, int selectedSpId, int selectedServiceId, List<ShopShipment> shopShipments,
+    private void executeQuery(String query, int selectedSpId, int selectedServiceId, List<ShopShipment> shopShipments, ShippingParam shippingParam,
                               Subscriber<ShippingRecommendationData> subscriber) {
         clearRequest();
 
-        GraphqlRequest request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class, false);
+        GraphqlRequest request;
+        if (shippingParam.isTradeInDropOff()) {
+            request = new GraphqlRequest(query, GetRatesCourierRecommendationTradeInDropOffData.class, false);
+        } else {
+            request = new GraphqlRequest(query, GetRatesCourierRecommendationData.class, false);
+        }
 
         addRequest(request);
         createObservable(RequestParams.EMPTY)
@@ -65,50 +74,69 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 .map(new Func1<GraphqlResponse, ShippingRecommendationData>() {
                     @Override
                     public ShippingRecommendationData call(GraphqlResponse graphqlResponse) {
-                        GetRatesCourierRecommendationData data = graphqlResponse.getData(GetRatesCourierRecommendationData.class);
-                        ShippingRecommendationData shippingRecommendationData = new ShippingRecommendationData();
-
-                        // Check response not null
-                        if (data != null && data.getRatesData() != null && data.getRatesData().getRatesDetailData() != null) {
-                            // Check has service / duration list
-                            if (data.getRatesData().getRatesDetailData().getServices() != null &&
-                                    data.getRatesData().getRatesDetailData().getServices().size() > 0) {
-                                // Check if has error
-                                if (data.getRatesData().getRatesDetailData().getError() != null &&
-                                        !TextUtils.isEmpty(data.getRatesData().getRatesDetailData().getError().getErrorMessage())) {
-                                    shippingRecommendationData.setErrorMessage(data.getRatesData().getRatesDetailData().getError().getErrorMessage());
-                                    shippingRecommendationData.setErrorId(data.getRatesData().getRatesDetailData().getError().getErrorId());
-                                }
-
-                                // Check if has info
-                                String blackboxInfo = "";
-                                if (data.getRatesData().getRatesDetailData().getInfo() != null &&
-                                        data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo() != null &&
-                                        !TextUtils.isEmpty(data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo())) {
-                                    blackboxInfo = data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo();
-                                }
-
-                                String ratesId = data.getRatesData().getRatesDetailData().getRatesId();
-                                // Has service / duration list
-                                shippingRecommendationData.setShippingDurationViewModels(
-                                        shippingDurationConverter.convertToViewModel(
-                                                data.getRatesData().getRatesDetailData().getServices(),
-                                                shopShipments, selectedSpId, ratesId, selectedServiceId,
-                                                blackboxInfo, isPromoStackingApplied(data)));
-                                shippingRecommendationData.setLogisticPromo(
-                                        shippingDurationConverter.convertToPromoModel(
-                                                data.getRatesData().getRatesDetailData().getPromoStacking()));
-                            }
+                        Object data;
+                        if (shippingParam.isTradeInDropOff()) {
+                            data = graphqlResponse.getData(GetRatesCourierRecommendationTradeInDropOffData.class);
+                        } else {
+                            data = graphqlResponse.getData(GetRatesCourierRecommendationData.class);
                         }
-                        return shippingRecommendationData;
+                        return getShippingRecommendationData(data, shopShipments, selectedSpId, selectedServiceId);
                     }
                 })
                 .subscribe(subscriber);
     }
 
-    private boolean isPromoStackingApplied(GetRatesCourierRecommendationData data) {
-        if (data.getRatesData().getRatesDetailData().getPromoStacking() == null) return false;
-        return data.getRatesData().getRatesDetailData().getPromoStacking().getIsApplied() == 1;
+    @NotNull
+    private ShippingRecommendationData getShippingRecommendationData(Object data,
+                                                                     List<ShopShipment> shopShipments,
+                                                                     int selectedSpId,
+                                                                     int selectedServiceId) {
+        ShippingRecommendationData shippingRecommendationData = new ShippingRecommendationData();
+        RatesData ratesData = null;
+        if (data instanceof GetRatesCourierRecommendationData) {
+            ratesData = ((GetRatesCourierRecommendationData) data).getRatesData();
+        } else if (data instanceof GetRatesCourierRecommendationTradeInDropOffData) {
+            ratesData = ((GetRatesCourierRecommendationTradeInDropOffData) data).getRatesData();
+        }
+
+        // Check response not null
+        if (data != null && ratesData != null && ratesData.getRatesDetailData() != null) {
+            // Check has service / duration list
+            if (ratesData.getRatesDetailData().getServices() != null &&
+                    ratesData.getRatesDetailData().getServices().size() > 0) {
+                // Check if has error
+                if (ratesData.getRatesDetailData().getError() != null &&
+                        !TextUtils.isEmpty(ratesData.getRatesDetailData().getError().getErrorMessage())) {
+                    shippingRecommendationData.setErrorMessage(ratesData.getRatesDetailData().getError().getErrorMessage());
+                    shippingRecommendationData.setErrorId(ratesData.getRatesDetailData().getError().getErrorId());
+                }
+
+                // Check if has info
+                String blackboxInfo = "";
+                if (ratesData.getRatesDetailData().getInfo() != null &&
+                        ratesData.getRatesDetailData().getInfo().getBlackboxInfo() != null &&
+                        !TextUtils.isEmpty(ratesData.getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo())) {
+                    blackboxInfo = ratesData.getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo();
+                }
+
+                String ratesId = ratesData.getRatesDetailData().getRatesId();
+                // Has service / duration list
+                shippingRecommendationData.setShippingDurationViewModels(
+                        shippingDurationConverter.convertToViewModel(
+                                ratesData.getRatesDetailData().getServices(),
+                                shopShipments, selectedSpId, ratesId, selectedServiceId,
+                                blackboxInfo, isPromoStackingApplied(ratesData)));
+                shippingRecommendationData.setLogisticPromo(
+                        shippingDurationConverter.convertToPromoModel(
+                                ratesData.getRatesDetailData().getPromoStacking()));
+            }
+        }
+        return shippingRecommendationData;
+    }
+
+    private boolean isPromoStackingApplied(RatesData ratesData) {
+        if (ratesData.getRatesDetailData().getPromoStacking() == null) return false;
+        return ratesData.getRatesDetailData().getPromoStacking().getIsApplied() == 1;
     }
 
     private String getQueryWithParams(String query, int codHistory, boolean isCorner,
