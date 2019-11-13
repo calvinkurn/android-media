@@ -1138,7 +1138,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff) {
-        shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+        shipmentCartItemModel.setStateLoadingCourierState(false);
+        if (isTradeInDropOff) {
+            shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
+        } else {
+            shipmentCartItemModel.setStateHasLoadCourierState(true);
+        }
         onNeedUpdateViewItem(itemPosition);
     }
 
@@ -2979,14 +2985,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onTradeInAddressTabChanged(int shipmentItemTradeInPosition) {
+        onNeedUpdateViewItem(shipmentItemTradeInPosition);
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
         if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
             // Todo : update address to normal address and reload SAF
             if (recipientAddressModel.getLocationDataModel() != null) {
                 shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true);
             }
-        } else {
-            onNeedUpdateViewItem(shipmentItemTradeInPosition);
         }
 //        shipmentAdapter.updateShipmentCostModel();
 //        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
