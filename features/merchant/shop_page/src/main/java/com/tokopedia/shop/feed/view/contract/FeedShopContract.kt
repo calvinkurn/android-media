@@ -8,12 +8,16 @@ import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by yfsx on 08/05/19.
  */
 interface FeedShopContract {
     interface View : BaseListViewListener<Visitable<*>> {
+
+        var userSession: UserSessionInterface
+
         fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain)
 
         fun onSuccessGetFeedNotLoginFirstPage(element: List<Visitable<*>>, lastCursor: String)

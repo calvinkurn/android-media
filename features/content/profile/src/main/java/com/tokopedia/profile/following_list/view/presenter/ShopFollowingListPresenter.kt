@@ -3,7 +3,6 @@ package com.tokopedia.profile.following_list.view.presenter
 import android.content.Context
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.kol.R
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.GetShopFollowingData
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.UserShopFollowDetail
 import com.tokopedia.profile.following_list.domain.interactor.GetShopFollowingListUseCase
@@ -12,6 +11,7 @@ import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.profile.R
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase.Action
 import kotlinx.coroutines.CoroutineScope

@@ -12,16 +12,13 @@ import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkRouter
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.kol.R
+import com.tokopedia.profile.R
 import com.tokopedia.profile.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.profile.following_list.view.adapter.KolFollowingAdapter
 import com.tokopedia.profile.following_list.view.listener.KolFollowingList
 import com.tokopedia.profile.following_list.view.listener.KolFollowingListEmptyListener
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingResultViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingResultViewModel
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingViewModel
 
 /**
  * Created by jegul on 2019-10-22

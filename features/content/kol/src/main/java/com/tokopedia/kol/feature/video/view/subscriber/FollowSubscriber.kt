@@ -28,7 +28,7 @@ class FollowSubscriber(private val view: VideoDetailContract.View) : Subscriber<
             throwable?.printStackTrace()
         }
         view.onErrorFollowKol(
-                ErrorHandler.getErrorMessage(view.getContext(), throwable)
+                ErrorHandler.getErrorMessage(view.androidContext, throwable)
         )
     }
 

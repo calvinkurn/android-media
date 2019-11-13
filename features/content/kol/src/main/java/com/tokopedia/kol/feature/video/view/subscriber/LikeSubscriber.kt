@@ -21,7 +21,7 @@ class LikeSubscriber constructor(
 
     override fun onError(e: Throwable) {
         view?.onLikeKolError(
-                GraphqlErrorHandler.getErrorMessage(view.ctx, e)
+                GraphqlErrorHandler.getErrorMessage(view.androidContext, e)
         )
     }
 

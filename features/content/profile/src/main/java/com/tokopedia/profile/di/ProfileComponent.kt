@@ -1,7 +1,6 @@
 package com.tokopedia.profile.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.kol.common.di.KolComponent
 import com.tokopedia.profile.view.fragment.ProfileEmptyFragment
 import com.tokopedia.profile.view.fragment.ProfileFragment
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets

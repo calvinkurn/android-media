@@ -10,8 +10,6 @@ import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.post.data.query.LikeKolPostQueryProvider;
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.presenter.KolPostPresenter;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
 import com.tokopedia.network.CommonNetwork;
@@ -35,11 +33,6 @@ import static com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase.MUTATION
 
 @Module(includes = {VoteModule.class, FeedComponentModule.class, CoroutineDispatcherModule.class})
 public class KolProfileModule {
-    @KolProfileScope
-    @Provides
-    KolPostListener.Presenter providesPresenter(KolPostPresenter presenter) {
-        return presenter;
-    }
 
     @KolProfileScope
     @Provides

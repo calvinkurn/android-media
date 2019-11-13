@@ -4,8 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.feedcomponent.di.FeedComponentModule
-import com.tokopedia.kol.feature.post.data.query.LikeKolPostQueryProvider
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase.Companion.MUTATION_LIKE_KOL_POST
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.presenter.ProfileEmptyPresenter

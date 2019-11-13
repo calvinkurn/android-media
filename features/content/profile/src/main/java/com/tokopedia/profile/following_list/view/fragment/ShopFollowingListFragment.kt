@@ -4,20 +4,17 @@ import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.kol.R
-import com.tokopedia.profile.following_list.di.DaggerKolFollowingListComponent
+import com.tokopedia.profile.following_list.di.DaggerFollowingListComponent
 import com.tokopedia.profile.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.profile.following_list.view.listener.KolFollowingList
-import com.tokopedia.profile.following_list.view.presenter.ShopFollowingListPresenter
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
+import com.tokopedia.profile.R
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by jegul on 2019-10-22
@@ -60,8 +57,7 @@ class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel,
     override lateinit var presenter: KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>
 
     override fun initInjector() {
-        DaggerKolFollowingListComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
+        DaggerFollowingListComponent.builder()
                 .build()
                 .inject(this)
     }

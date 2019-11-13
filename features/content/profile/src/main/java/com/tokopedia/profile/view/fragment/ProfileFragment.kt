@@ -1658,11 +1658,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToContentReport(contentId: Int) {
-        if (requireContext() != null) {
+        if (context != null) {
             if (userSession.isLoggedIn) {
-                val intent = ContentReportActivity.createIntent(
-                        requireContext()(),
-                        contentId
+                val intent = RouteManager.getIntent(
+                        requireContext(),
+                        ApplinkConstInternalContent.CONTENT_REPORT,
+                        contentId.toString()
                 )
                 startActivityForResult(intent, OPEN_CONTENT_REPORT)
             } else {
@@ -1688,7 +1689,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onGoToLink(link: String) {
-        if (requireContext() != null && !TextUtils.isEmpty(link)) {
+        if (context != null && !TextUtils.isEmpty(link)) {
             if (RouteManager.isSupportApplink(requireContext(), link)) {
                 RouteManager.route(requireContext(), link)
             } else {

@@ -104,7 +104,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     lateinit var shopAnalytics: ShopAnalytics
 
     @Inject
-    lateinit var userSession: UserSessionInterface
+    override lateinit var userSession: UserSessionInterface
 
     companion object {
         private const val YOUTUBE_URL = "{youtube_url}"

@@ -22,7 +22,9 @@ class VideoDetailSubscriber constructor(private val view : VideoDetailContract.V
     }
 
     override fun onError(e: Throwable?) {
-        view.onErrorGetVideoDetail(
-                GraphqlErrorHandler.getErrorMessage(view.getContext(), e))
+        e?.let {
+            view.onErrorGetVideoDetail(
+                    GraphqlErrorHandler.getErrorMessage(view.androidContext, it))
+        }
     }
 }

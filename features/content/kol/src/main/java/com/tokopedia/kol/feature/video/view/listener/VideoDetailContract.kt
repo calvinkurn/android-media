@@ -12,6 +12,9 @@ import com.tokopedia.user.session.UserSession
  */
 interface VideoDetailContract {
     interface View : CustomerView {
+
+        val androidContext: Context
+
         fun showLoading()
 
         fun hideLoading()

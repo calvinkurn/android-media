@@ -279,8 +279,8 @@ class FeedShopPresenter @Inject constructor(
         trackAffiliateClickUseCase.execute(
                 TrackAffiliateClickUseCase.createRequestParams(
                         uniqueTrackingId,
-                        view.getUserSession().deviceId,
-                        if (view.getUserSession().isLoggedIn) view.getUserSession().userId else "0"
+                        view.userSession.deviceId,
+                        if (view.userSession.isLoggedIn) view.userSession.userId else "0"
                 ),
                 object : Subscriber<Boolean>() {
                     override fun onNext(isSuccess: Boolean?) {
@@ -349,8 +349,8 @@ class FeedShopPresenter @Inject constructor(
 
     private fun getUserId(): String {
         var userId = "0"
-        if (!view.getUserSession().userId.isEmpty()) {
-            userId = view.getUserSession().userId
+        if (view.userSession.userId.isNotEmpty()) {
+            userId = view.userSession.userId
         }
         return userId
     }
