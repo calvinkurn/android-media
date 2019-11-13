@@ -52,6 +52,7 @@
         android:layout_marginRight="24dp"
         android:layout_marginBottom="@dimen/dp_8"
         android:gravity="center"
+        android:lineSpacingExtra="@dimen/dp_6"
         android:paddingStart="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_8"
         android:paddingTop="@dimen/dp_5"
