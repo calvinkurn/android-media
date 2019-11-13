@@ -2,6 +2,7 @@ package com.tokopedia.kol.feature.video.view.subscriber
 
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.kol.common.network.GraphqlErrorHandler
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import rx.Subscriber
 
@@ -10,9 +11,9 @@ import rx.Subscriber
  */
 class LikeSubscriber constructor(
         private val view: KolPostListener.View.Like?,
-        private val rowNumber: Int)
+        private val rowNumber: Int,
+        private val action: LikeKolPostUseCase.LikeKolPostAction)
     : Subscriber<Boolean>() {
-
 
     override fun onCompleted() {
 
@@ -27,7 +28,7 @@ class LikeSubscriber constructor(
     override fun onNext(isSuccess: Boolean?) {
         if (view != null) {
             if (isSuccess!!) {
-                view.onLikeKolSuccess(rowNumber, 0)
+                view.onLikeKolSuccess(rowNumber, action)
             } else {
                 view.onLikeKolError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }

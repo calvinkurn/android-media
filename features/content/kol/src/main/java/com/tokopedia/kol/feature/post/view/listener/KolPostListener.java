@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -42,7 +43,7 @@ public interface KolPostListener {
         interface Like {
             Context getContext();
 
-            void onLikeKolSuccess(int rowNumber, int action);
+            void onLikeKolSuccess(int rowNumber, LikeKolPostUseCase.LikeKolPostAction action);
 
             void onLikeKolError(String message);
         }

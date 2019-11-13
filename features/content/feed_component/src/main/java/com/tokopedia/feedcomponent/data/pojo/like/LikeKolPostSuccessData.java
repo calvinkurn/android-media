@@ -1,5 +1,5 @@
 
-package com.tokopedia.kol.feature.post.data.pojo;
+package com.tokopedia.feedcomponent.data.pojo.like;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

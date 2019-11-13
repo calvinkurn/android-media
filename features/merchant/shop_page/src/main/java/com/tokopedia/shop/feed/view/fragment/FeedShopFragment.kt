@@ -50,6 +50,7 @@ import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostActivity
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
@@ -320,7 +321,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
     }
 
-    override fun onLikeKolSuccess(rowNumber: Int, action: Int) {
+    override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
         if (adapter.data.size > rowNumber
                 && adapter.data[rowNumber] != null
                 && adapter.data[rowNumber] is DynamicPostViewModel) {

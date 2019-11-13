@@ -12,9 +12,9 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.feedcomponent.data.pojo.follow.FollowKolQuery
+import com.tokopedia.feedcomponent.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.network.constant.ErrorNetMessage
@@ -232,8 +232,8 @@ class FeedShopPresenter @Inject constructor(
     override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
         if (isViewAttached) {
             likeKolPostUseCase.execute(
-                    LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
-                    LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+                    LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
+                    LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
             )
         }
     }
@@ -241,8 +241,8 @@ class FeedShopPresenter @Inject constructor(
     override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
         if (isViewAttached) {
             likeKolPostUseCase.execute(
-                    LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-                    LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+                    LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
+                    LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)
             )
         }
     }

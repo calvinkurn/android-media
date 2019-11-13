@@ -1,13 +1,13 @@
-package com.tokopedia.kol.feature.post.domain.usecase;
+package com.tokopedia.feedcomponent.domain.usecase;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.feedcomponent.R;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.kol.R;
-import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery;
+import com.tokopedia.feedcomponent.data.pojo.follow.FollowKolQuery;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;

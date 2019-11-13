@@ -11,8 +11,8 @@ import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.feedcomponent.view.subscriber.TrackPostClickSubscriber
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileFirstUseCase
@@ -86,15 +86,15 @@ class ProfilePresenter @Inject constructor(
 
     override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
         likeKolPostUseCase.execute(
-            LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
-            LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+            LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
+            LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
         )
     }
 
     override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
         likeKolPostUseCase.execute(
-            LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
-            LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.ACTION_LIKE)
+            LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
+            LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)
         )
     }
 

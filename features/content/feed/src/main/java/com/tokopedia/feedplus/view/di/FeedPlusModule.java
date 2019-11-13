@@ -23,7 +23,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.kol.feature.post.data.query.LikeKolPostQueryProvider;
+import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
@@ -47,6 +48,8 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+
+import static com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase.MUTATION_LIKE_KOL_POST;
 
 /**
  * @author by nisie on 5/15/17.
@@ -211,5 +214,12 @@ public class FeedPlusModule {
     @FeedPlusScope
     CoroutineDispatcher provideMainDispatcher() {
         return Dispatchers.getMain();
+    }
+
+    @FeedPlusScope
+    @Provides
+    @Named(MUTATION_LIKE_KOL_POST)
+    String provideLikeKolPostMutation() {
+        return LikeKolPostQueryProvider.INSTANCE.getQuery();
     }
 }
