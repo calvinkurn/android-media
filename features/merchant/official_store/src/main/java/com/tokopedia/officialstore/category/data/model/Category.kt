@@ -18,7 +18,9 @@ data class Category(
         @SerializedName("fullUrl")
         val fullUrl: String = "",
         @SerializedName("categories")
-        val categories: ArrayList<Int> = ArrayList()
+        val categories: ArrayList<Int> = ArrayList(),
+        @SerializedName("imageInactiveURL")
+        val imageInactiveURL: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
@@ -29,7 +31,8 @@ data class Category(
             parcel.readString() ?: "",
             arrayListOf<Int>().apply {
                 parcel.readList(this, Int::class.java.classLoader)
-            })
+            },
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(categoryId)
@@ -39,6 +42,7 @@ data class Category(
         parcel.writeString(slug)
         parcel.writeString(fullUrl)
         parcel.writeList(categories)
+        parcel.writeString(imageInactiveURL)
     }
 
     override fun describeContents(): Int {
