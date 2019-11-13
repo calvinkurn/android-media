@@ -1110,4 +1110,12 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                 AnalyticsTrackerUtil.ActionKeys.CLICK_COUNTER_KUPON_SAYA,
                 "");
     }
+
+    @Override
+    public void onDestroyView() {
+        if (mExploreSectionPagerAdapter != null){
+            mExploreSectionPagerAdapter.onDestroyView();
+        }
+        super.onDestroyView();
+    }
 }
