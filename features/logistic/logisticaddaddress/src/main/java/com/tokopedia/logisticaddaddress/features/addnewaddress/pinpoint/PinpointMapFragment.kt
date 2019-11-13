@@ -253,9 +253,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         bottomSheetBehavior?.isHideable = false
         this.googleMap?.setOnCameraMoveListener { onMapDraggedListener() }
         this.googleMap?.let {
-            watchPin(it).subscribe(object : Subscriber<Boolean>() {
+            rxPinPoint(it).subscribe(object : Subscriber<Boolean>() {
                 override fun onNext(t: Boolean?) {
-                    onMapIdleListener()
+                    getAutofill()
                 }
 
                 override fun onCompleted() {
@@ -273,7 +273,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         whole_loading_container?.visibility = View.VISIBLE
     }
 
-    private fun onMapIdleListener() {
+    private fun getAutofill() {
         if (!isGetDistrict) {
             val target: LatLng? = this.googleMap?.cameraPosition?.target
             val latTarget = target?.latitude ?: 0.0
@@ -307,7 +307,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun moveMap(latLng: LatLng) {
-        println("## masuk moveMap - lat = ${latLng.latitude}, long = ${latLng.longitude}")
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
                 .zoom(16f)
@@ -686,9 +685,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         composite.unsubscribe()
     }
 
-    private fun watchPin(maps: GoogleMap): Observable<Boolean> =
+    private fun rxPinPoint(maps: GoogleMap): Observable<Boolean> =
             Observable.create({ emitter: Emitter<Boolean> ->
-                maps.setOnCameraIdleListener {
+                maps.setOnCameraMoveListener {
                     emitter.onNext(true)
                 }
             }, Emitter.BackpressureMode.LATEST)
