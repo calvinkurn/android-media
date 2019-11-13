@@ -1,9 +1,9 @@
-package com.tokopedia.kol.feature.post.view.subscriber;
+package com.tokopedia.kolcommon.view.subscriber;
 
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
-import com.tokopedia.kol.common.network.GraphqlErrorHandler;
-import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase;
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kolcommon.util.GraphqlErrorHandler;
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 
 import rx.Subscriber;
 
@@ -12,11 +12,11 @@ import rx.Subscriber;
  */
 
 public class LikeKolPostSubscriber extends Subscriber<Boolean> {
-    private final KolPostListener.View.Like  view;
+    private final KolPostLikeListener view;
     private final int rowNumber;
     private final LikeKolPostUseCase.LikeKolPostAction action;
 
-    public LikeKolPostSubscriber(KolPostListener.View.Like view, int rowNumber, LikeKolPostUseCase.LikeKolPostAction action) {
+    public LikeKolPostSubscriber(KolPostLikeListener view, int rowNumber, LikeKolPostUseCase.LikeKolPostAction action) {
         this.view = view;
         this.rowNumber = rowNumber;
         this.action = action;
@@ -31,7 +31,7 @@ public class LikeKolPostSubscriber extends Subscriber<Boolean> {
     public void onError(Throwable e) {
         if (view != null) {
             view.onLikeKolError(
-                    GraphqlErrorHandler.getErrorMessage(view.getContext(), e)
+                    GraphqlErrorHandler.getErrorMessage(view.getAndroidContext(), e)
             );
         }
     }

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 
 import java.util.List;
 

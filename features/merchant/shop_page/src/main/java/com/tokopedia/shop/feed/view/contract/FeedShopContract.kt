@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
@@ -30,8 +30,6 @@ interface FeedShopContract {
 
         fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int)
 
-        fun getUserSession(): UserSession
-
         fun onWhitelistClicked(element: WhitelistViewModel)
 
         fun onEmptyFeedButtonClicked()
@@ -52,9 +50,9 @@ interface FeedShopContract {
 
         fun unfollowKol(id: Int)
 
-        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
 
-        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
 
         fun deletePost(id: Int, rowNumber: Int)
 

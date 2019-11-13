@@ -32,8 +32,8 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
-import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kotlin.extensions.view.*
@@ -49,10 +49,12 @@ import javax.inject.Inject
 class VideoDetailFragment:
         BaseDaggerFragment(),
         VideoDetailContract.View,
-        KolPostListener.View.Like,
+        KolPostLikeListener,
         MediaPlayer.OnPreparedListener {
 
-
+    override val androidContext: Context
+        get() = requireContext()
+    
     @Inject
     lateinit var presenter: VideoDetailContract.Presenter
 
@@ -144,7 +146,7 @@ class VideoDetailFragment:
     override fun onErrorFollowKol(error: String) {
     }
 
-    override fun getContext(): Context {
+    fun getCtx(): Context {
         return activity!!
     }
 
@@ -172,8 +174,8 @@ class VideoDetailFragment:
         bindLike(like)
     }
 
-    override fun onLikeKolError(message: String?) {
-        showError(message!!, null)
+    override fun onLikeKolError(message: String) {
+        showError(message, null)
     }
 
     override fun onErrorGetVideoDetail(error: String) {
@@ -192,7 +194,7 @@ class VideoDetailFragment:
 
     }
 
-    override fun getUserSession(): UserSession = UserSession(context)
+    override fun getUserSession(): UserSession = UserSession(requireContext())
 
     override fun showLoading() {
 
@@ -227,17 +229,17 @@ class VideoDetailFragment:
 
             when(p1) {
                 MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
-                    Toast.makeText(context, getString(R.string.error_unknown), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.error_unknown), Toast.LENGTH_SHORT).show()
                     activity?.finish()
                     true
                 }
                 MediaPlayer.MEDIA_ERROR_SERVER_DIED -> {
-                    Toast.makeText(context, getString(R.string.default_request_error_internal_server), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.default_request_error_internal_server), Toast.LENGTH_SHORT).show()
                     activity?.finish()
                     true
                 }
                 else -> {
-                    Toast.makeText(context, getString(R.string.default_request_error_timeout), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.default_request_error_timeout), Toast.LENGTH_SHORT).show()
                     activity?.finish()
                     true
                 }

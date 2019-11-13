@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.feedcomponent.data.pojo.follow.FollowKolQuery
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.profile.view.listener.ProfileContract
 import rx.Subscriber
@@ -33,7 +33,7 @@ class FollowSubscriber(private val view: ProfileContract.View) : Subscriber<Grap
     }
 
     override fun onNext(response: GraphqlResponse) {
-        val query: FollowKolQuery? = response.getData(FollowKolQuery::class.java)
+        val query: com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery? = response.getData(com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery::class.java)
 
         if (query == null) {
             onError(RuntimeException())

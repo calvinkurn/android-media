@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.feedcomponent.data.pojo.follow.FollowKolQuery;
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery;
 import com.tokopedia.kol.feature.post.domain.model.FollowKolDomain;
-import com.tokopedia.feedcomponent.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
 
 import rx.Subscriber;
 
@@ -47,7 +47,7 @@ public class FollowUnfollowKolSubscriber extends Subscriber<GraphqlResponse> {
         FollowKolQuery query = response.getData(FollowKolQuery.class);
         if (query.getData() != null) {
             FollowKolDomain followKolDomain = new FollowKolDomain(query.getData().getData().getStatus());
-            if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS)
+            if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.Companion.getSUCCESS_STATUS())
                 kolListener.onSuccessFollowUnfollowKol(rowNumber);
             else {
                 kolListener.onErrorFollowKol(view.getContext().getString(R.string

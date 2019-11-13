@@ -3,8 +3,8 @@ package com.tokopedia.kol.feature.postdetail.view.subscriber;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kol.R;
-import com.tokopedia.feedcomponent.data.pojo.follow.FollowKolQuery;
-import com.tokopedia.feedcomponent.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery;
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.model.FollowKolDomain;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 
@@ -45,7 +45,7 @@ public class FollowUnfollowDetailSubscriber extends Subscriber<GraphqlResponse> 
         FollowKolQuery query = graphqlResponse.getData(FollowKolQuery.class);
         if (query.getData() != null) {
             FollowKolDomain followKolDomain = new FollowKolDomain(query.getData().getData().getStatus());
-            if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
+            if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.Companion.getSUCCESS_STATUS()) {
                 view.onSuccessFollowUnfollowKol(rowNumber);
             } else {
                 String errorMessage = view.getContext().getApplicationContext().getString(

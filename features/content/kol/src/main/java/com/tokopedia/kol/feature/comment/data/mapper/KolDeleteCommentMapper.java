@@ -3,7 +3,7 @@ package com.tokopedia.kol.feature.comment.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.kol.common.network.GraphqlErrorException;
+import com.tokopedia.kolcommon.util.GraphqlErrorException;
 import com.tokopedia.kol.feature.comment.data.pojo.delete.DeleteCommentKolData;
 import com.tokopedia.kol.feature.comment.data.pojo.delete.DeleteCommentKolGraphql;
 

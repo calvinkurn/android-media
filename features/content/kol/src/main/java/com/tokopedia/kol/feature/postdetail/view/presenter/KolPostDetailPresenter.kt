@@ -14,10 +14,9 @@ import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.feedcomponent.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract
 import com.tokopedia.kol.feature.postdetail.view.subscriber.FollowUnfollowDetailSubscriber
@@ -25,6 +24,7 @@ import com.tokopedia.kol.feature.postdetail.view.subscriber.GetKolPostDetailSubs
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.RequestParams
@@ -115,14 +115,14 @@ class KolPostDetailPresenter @Inject constructor(
         )
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
                 LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
         )
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)

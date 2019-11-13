@@ -1,9 +1,8 @@
-package com.tokopedia.kol.common.util
+package com.tokopedia.kolcommon.util
 
 import android.content.Context
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kol.R
-import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
+import com.tokopedia.kolcommon.R
 import java.util.*
 
 /**
@@ -52,16 +51,6 @@ fun createBottomMenu(context: Context,
         menus.dismiss()
     }
     return menus
-}
-
-fun createBottomMenu(context: Context,
-                     model: BaseKolViewModel,
-                     listener: PostMenuListener?): Menus {
-    return createBottomMenu(
-            context,
-            model.isDeletable,
-            model.isReportable,
-            model.isEditable, listener)
 }
 
 interface PostMenuListener {

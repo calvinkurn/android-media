@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.user.session.UserSession
 
 /**
@@ -20,8 +20,6 @@ interface VideoDetailContract {
 
         fun onErrorFollowKol(error: String)
 
-        fun getContext() : Context
-
         fun getUserSession() :UserSession
 
         fun onErrorGetVideoDetail(error: String)
@@ -36,8 +34,8 @@ interface VideoDetailContract {
 
         fun unFollowKol(id: Int)
 
-        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
 
-        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
     }
 }

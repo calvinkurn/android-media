@@ -87,7 +87,7 @@ public class GuessTokopediaTestRule<T extends Activity> extends BaseTokopediaTes
             /**
              * This cause bug "Terjadi kesalahan koneksi, because
              * Terjadi kesalahan koneksi : different base64 implementation.
-             * EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(context), SessionHandler.getRefreshTokenIV(context))
+             * EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(ctx), SessionHandler.getRefreshTokenIV(ctx))
              */
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 SessionHandler sessionHandler = new SessionHandler(application);

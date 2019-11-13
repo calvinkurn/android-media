@@ -1,8 +1,7 @@
-package com.tokopedia.feedcomponent.domain.usecase
+package com.tokopedia.kolcommon.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.feedcomponent.data.pojo.like.LikeKolPostData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 
@@ -16,14 +15,8 @@ import javax.inject.Named
  */
 
 class LikeKolPostUseCase @Inject constructor(
-        @Named(MUTATION_LIKE_KOL_POST) private val query: String,
         private val graphqlUseCase: GraphqlUseCase
 ) : UseCase<Boolean>() {
-
-    enum class LikeKolPostAction(val actionValue: Int) {
-        Unlike(0),
-        Like(1)
-    }
 
     companion object {
 
@@ -42,13 +35,36 @@ class LikeKolPostUseCase @Inject constructor(
         }
     }
 
+    //region query
+    private val query by lazy {
+        val idPost = "\$idPost"
+        val action = "\$action"
+
+        """
+            mutation LikeKolPost($idPost: Int!, $action: Int!) {
+                do_like_kol_post(idPost: $idPost, action: $action) {
+                    error
+                    data {
+                        success
+                    }
+                }
+            }
+        """.trimIndent()
+    }
+    //endregion
+
     override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
         graphqlUseCase.clearRequest()
-        val request = GraphqlRequest(query, LikeKolPostData::class.java, requestParams.parameters)
+        val request = GraphqlRequest(query, com.tokopedia.kolcommon.data.pojo.like.LikeKolPostData::class.java, requestParams.parameters)
         graphqlUseCase.addRequest(request)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
-            val likeKolPostData = it.getData<LikeKolPostData>(LikeKolPostData::class.java)
+            val likeKolPostData = it.getData<com.tokopedia.kolcommon.data.pojo.like.LikeKolPostData>(com.tokopedia.kolcommon.data.pojo.like.LikeKolPostData::class.java)
             return@map likeKolPostData.doLikeKolPost.data.success == LIKE_SUCCESS
         }
+    }
+
+    enum class LikeKolPostAction(val actionValue: Int) {
+        Unlike(0),
+        Like(1)
     }
 }

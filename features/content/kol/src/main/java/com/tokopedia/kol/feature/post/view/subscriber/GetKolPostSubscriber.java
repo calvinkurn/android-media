@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.kol.analytics.KolEnhancedTracking;
-import com.tokopedia.kol.common.network.GraphqlErrorHandler;
+import com.tokopedia.kolcommon.util.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.post.domain.model.KolProfileModel;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;

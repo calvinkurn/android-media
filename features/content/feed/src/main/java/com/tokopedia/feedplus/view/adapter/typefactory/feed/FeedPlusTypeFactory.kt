@@ -16,8 +16,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 
 interface FeedPlusTypeFactory {
 
-    fun type(kolPostViewModel: KolPostViewModel): Int
-
     fun type(emptyFeedBeforeLoginModel: EmptyFeedBeforeLoginModel): Int
 
     fun type(retryModel: RetryModel): Int

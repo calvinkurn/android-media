@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.video.view.subscriber
 
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.kol.common.network.GraphqlErrorHandler
+import com.tokopedia.kolcommon.util.GraphqlErrorHandler
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import rx.Subscriber
 

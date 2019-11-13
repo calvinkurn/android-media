@@ -98,16 +98,12 @@ import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.kol.common.util.PostMenuListener
-import com.tokopedia.kol.common.util.createBottomMenu
+import com.tokopedia.kolcommon.util.PostMenuListener
+import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
-import com.tokopedia.feedcomponent.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.*
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
@@ -141,7 +137,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
-        KolPostListener.View.ViewHolder,
+        KolPostViewHolderListener,
         BannerAdapter.BannerItemListener,
         RecommendationCardAdapter.RecommendationCardListener,
         TopadsShopViewHolder.TopadsShopListener,
@@ -461,13 +457,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun showInterestPick() {
-        if (context != null && isEnableInterestPick()) {
-            RouteManager.route(context, ApplinkConst.INTEREST_PICK)
+        if (ctx != null && isEnableInterestPick()) {
+            RouteManager.route(ctx, ApplinkConst.INTEREST_PICK)
         }
     }
 
     private fun isEnableInterestPick(): Boolean{
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val remoteConfig = FirebaseRemoteConfigImpl(ctx)
         return remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_INTEREST_PICK, true)
     }
 
@@ -483,10 +479,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSearchShopButtonClicked() {
-        if (context != null) {
+        if (ctx != null) {
             val INIT_STATE_FRAGMENT_FAVORITE = 2
             val EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT"
-            val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+            val intent = RouteManager.getIntent(ctx, ApplinkConst.HOME)
             intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FAVORITE)
             startActivity(intent)
         }
@@ -553,19 +549,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
                     )
                 }
-            }
-            OPEN_KOL_PROFILE -> if (resultCode == Activity.RESULT_OK) {
-                onSuccessFollowUnfollowFromProfile(
-                        data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
-                        data.getIntExtra(PARAM_IS_FOLLOWING, DEFAULT_VALUE)
-                )
-
-                updatePostState(
-                        data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
-                        data.getIntExtra(PARAM_IS_LIKED, DEFAULT_VALUE),
-                        data.getIntExtra(PARAM_TOTAL_LIKES, DEFAULT_VALUE),
-                        data.getIntExtra(PARAM_TOTAL_COMMENTS, DEFAULT_VALUE)
-                )
             }
             CREATE_POST -> {
             }
@@ -657,10 +640,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun triggerClearNewFeedNotification() {
-        if (context?.applicationContext != null) {
+        if (ctx?.applicationContext != null) {
             val intent = Intent(BROADCAST_FEED)
             intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true)
-            LocalBroadcastManager.getInstance(context!!.applicationContext).sendBroadcast(intent)
+            LocalBroadcastManager.getInstance(ctx!!.applicationContext).sendBroadcast(intent)
         }
     }
 
@@ -788,7 +771,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
-        val intent = KolCommentActivity.getCallingIntentFromFeed(context, id, rowNumber)
+        val intent = KolCommentActivity.getCallingIntentFromFeed(ctx, id, rowNumber)
         startActivityForResult(intent, OPEN_KOL_COMMENT)
         trackCardPostElementClick(rowNumber, FeedAnalytics.Element.COMMENT)
     }
@@ -816,28 +799,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
-        if (context != null) {
-            val menus = createBottomMenu(context!!, element,
-                    object : PostMenuListener {
-                        override fun onDeleteClicked() {
-
-                        }
-
-                        override fun onReportClick() {
-                            goToContentReport(element.contentId)
-                        }
-
-                        override fun onEditClick() {
-
-                        }
-                    }
-
-            )
-            menus.show()
-        }
-    }
-
     private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.feed_delete_post))
@@ -853,7 +814,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onGoToLink(link: String) {
-        context?.let {
+        ctx?.let {
             if (!TextUtils.isEmpty(link)) {
                 if (RouteManager.isSupportApplink(it, link)) {
                     RouteManager.route(it, link)
@@ -883,13 +844,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessFollowUnfollowKol(rowNumber: Int) {
-        if (adapter.getlist()[rowNumber] is KolPostViewModel) {
-            val kolPostViewModel = adapter.getlist()[rowNumber] as KolPostViewModel
-            kolPostViewModel.isFollowed = !kolPostViewModel.isFollowed
-            kolPostViewModel.isTemporarilyFollowed = !kolPostViewModel.isTemporarilyFollowed
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW)
-        }
-
         if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
             header.followCta.isFollow = !header.followCta.isFollow
@@ -903,17 +857,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is BaseKolViewModel) {
-            val kolViewModel = adapter.getlist()[rowNumber] as BaseKolViewModel
-            kolViewModel.isLiked = !kolViewModel.isLiked
-            if (kolViewModel.isLiked) {
-                kolViewModel.totalLike = (adapter.getlist()[rowNumber] as BaseKolViewModel).totalLike + 1
-            } else {
-                kolViewModel.totalLike = (adapter.getlist()[rowNumber] as BaseKolViewModel).totalLike - 1
-            }
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE)
-        }
-
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
             val like = footer.like
@@ -958,14 +901,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
         if (rowNumber != DEFAULT_VALUE
                 && adapter.getlist().size > rowNumber
-                && adapter.getlist()[rowNumber] is BaseKolViewModel) {
-            val kolViewModel = adapter.getlist()[rowNumber] as BaseKolViewModel
-            kolViewModel.totalComment = (adapter.getlist()[rowNumber] as BaseKolViewModel).totalComment + totalNewComment
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_COMMENT)
-        }
-
-        if (rowNumber != DEFAULT_VALUE
-                && adapter.getlist().size > rowNumber
                 && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
             val comment = footer.comment
@@ -977,41 +912,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             comment.value = comment.value + totalNewComment
             adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
-        }
-    }
-
-    private fun onSuccessFollowUnfollowFromProfile(rowNumber: Int, isFollowing: Int) {
-        if (rowNumber != DEFAULT_VALUE
-                && adapter.getlist().size > rowNumber
-                && adapter.getlist()[rowNumber] is KolPostViewModel) {
-            val kolViewModel = adapter.getlist()[rowNumber] as KolPostViewModel
-
-            if (isFollowing != DEFAULT_VALUE) {
-                kolViewModel.isFollowed = isFollowing == IS_FOLLOWING_TRUE
-                kolViewModel.isTemporarilyFollowed = isFollowing == IS_FOLLOWING_TRUE
-            }
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW)
-        }
-    }
-
-    private fun updatePostState(rowNumber: Int, isLiked: Int, totalLike: Int, totalComment: Int) {
-        if (rowNumber != DEFAULT_VALUE
-                && adapter.getlist().size > rowNumber
-                && adapter.getlist()[rowNumber] is BaseKolViewModel) {
-            val kolViewModel = adapter.getlist()[rowNumber] as BaseKolViewModel
-
-            if (isLiked != DEFAULT_VALUE) {
-                kolViewModel.isLiked = isLiked == IS_LIKE_TRUE
-            }
-
-            if (totalLike != DEFAULT_VALUE) {
-                kolViewModel.totalLike = totalLike
-            }
-
-            if (totalComment != DEFAULT_VALUE) {
-                kolViewModel.totalComment = totalComment
-            }
-            adapter.notifyItemChanged(rowNumber)
         }
     }
 
@@ -1094,7 +994,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun showBottomSheetCreatePost(element: WhitelistViewModel) {
         if (activity != null) {
-            createPostBottomSheet = CloseableBottomSheetDialog.createInstance(context,
+            createPostBottomSheet = CloseableBottomSheetDialog.createInstance(ctx,
                     {
 
                     }, {
@@ -1118,14 +1018,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     analytics.trackClickCreatePostAs(applink, userSession.userId,
                             userSession.shopId)
                     startActivityForResult(
-                            RouteManager.getIntent(context, applink),
+                            RouteManager.getIntent(ctx, applink),
                             CREATE_POST
                     )
                     createPostBottomSheet.dismiss()
                 }
 
             })
-            entryPointRecyclerView.layoutManager = LinearLayoutManager(context,
+            entryPointRecyclerView.layoutManager = LinearLayoutManager(ctx,
                     LinearLayoutManager.VERTICAL, false)
             entryPointRecyclerView.adapter = adapter
         }
@@ -1326,8 +1226,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean,
                              editable: Boolean) {
-        if (context != null) {
-            val menus = createBottomMenu(context!!, deletable, reportable, false, object : PostMenuListener {
+        if (ctx != null) {
+            val menus = createBottomMenu(ctx!!, deletable, reportable, false, object : PostMenuListener {
                 override fun onDeleteClicked() {
                     createDeleteDialog(positionInFeed, postId).show()
                 }
@@ -1452,8 +1352,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                          youtubeId: String) {
         val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
 
-        if (context != null) {
-            RouteManager.route(context, redirectUrl)
+        if (ctx != null) {
+            RouteManager.route(ctx, redirectUrl)
         }
 
         if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
@@ -1547,7 +1447,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddToCartSuccess() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+        RouteManager.route(ctx, ApplinkConstInternalMarketplace.CART)
     }
 
     override fun onAddToCartFailed(pdpAppLink: String) {
@@ -1602,7 +1502,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun getFirstPageCursor(): String {
-        context?.let {
+        ctx?.let {
             val cache = LocalCacheHandler(it, KEY_FEED)
             return cache.getString(KEY_FEED_FIRSTPAGE_CURSOR, "")
         }
@@ -1628,7 +1528,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessSubmitInterestPickData(data : SubmitInterestResponseViewModel) {
-        context?.let {
+        ctx?.let {
             when (data.source) {
                 FeedOnboardingViewModel.PARAM_SOURCE_SEE_ALL_CLICK -> {
                     startActivityForResult(FeedOnboardingActivity.getCallingIntent(it, Bundle()), OPEN_INTERESTPICK_DETAIL)
@@ -1661,9 +1561,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun goToContentReport(contentId: Int) {
-        if (context != null) {
+        if (ctx != null) {
             val intent = ContentReportActivity.createIntent(
-                    context!!,
+                    ctx!!,
                     contentId
             )
             startActivityForResult(intent, OPEN_CONTENT_REPORT)
@@ -1677,8 +1577,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun getProductIntent(productId: String): Intent? {
-        return if (context != null) {
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        return if (ctx != null) {
+            RouteManager.getIntent(ctx, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         } else {
             null
         }
@@ -1847,8 +1747,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun showAfterPostToaster() {
-        if (context != null) {
-            Toast.makeText(context, R.string.feed_after_post, Toast.LENGTH_LONG).show()
+        if (ctx != null) {
+            Toast.makeText(ctx, R.string.feed_after_post, Toast.LENGTH_LONG).show()
         }
     }
 

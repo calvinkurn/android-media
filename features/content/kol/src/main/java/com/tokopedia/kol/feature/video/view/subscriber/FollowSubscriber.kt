@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.feedcomponent.data.pojo.follow.FollowKolQuery
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.network.constant.ErrorNetMessage
 import rx.Subscriber

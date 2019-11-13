@@ -2,7 +2,7 @@ package com.tokopedia.kol.feature.post.view.subscriber;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.kol.common.network.GraphqlErrorHandler;
+import com.tokopedia.kolcommon.util.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.post.domain.model.ContentListDomain;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
@@ -10,8 +10,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import rx.Subscriber;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by milhamj on 23/08/18.

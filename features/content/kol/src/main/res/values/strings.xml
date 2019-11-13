@@ -14,11 +14,8 @@
     <string name="post_time_hour">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
     <string name="explore_more_button">Explore More</string>
-    <string name="kol_delete_post">Hapus Post</string>
-    <string name="kol_delete_post_desc">Setelah dihapus, kamu tidak akan bisa melihat post ini lagi.</string>
     <string name="kol_post_deleted">Post berhasil dihapus</string>
     <string name="kol_error_delete">Terjadi kesalahan saat menghapus post.</string>
-    <string name="kol_edit_post">Edit Post</string>
 
     <!--Kol Comment-->
     <string name="title_comment_kol">Comments</string>
@@ -26,9 +23,6 @@
     <string name="success_delete_kol_comment">Sukses menghapus komentar</string>
     <string name="see_more_comments">Lihat Comments Sebelumnya</string>
     <string name="write_comment">Tulis komentar…</string>
-
-    <string name="kol_title_delete">Hapus</string>
-    <string name="kol_title_cancel">Batal</string>
 
     <!--Kol Following List-->
     <string name="title_following_kol">Following</string>
@@ -80,7 +74,7 @@
     <string name="kol_reason_desc_abuse">Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial</string>
     <string name="kol_reason_desc_inappropriate">Mengandung pornografi</string>
     <string name="kol_reason_desc_others">Lainnya</string>
-    <string name="kol_report">Laporkan</string>
+
     <string name="kol_report_error">Tidak dapat melaporkan konten, silakan coba lagi</string>
     <string name="kol_duplicate">Laporanmu sedang diproses</string>
     <string name="kol_total_post_tag">%1$d barang</string>

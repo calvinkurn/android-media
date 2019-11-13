@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.comment.view.subscriber;
 
 import com.tokopedia.kol.R;
-import com.tokopedia.kol.common.network.GraphqlErrorHandler;
+import com.tokopedia.kolcommon.util.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 
 import rx.Subscriber;

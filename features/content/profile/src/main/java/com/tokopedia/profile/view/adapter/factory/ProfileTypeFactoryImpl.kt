@@ -29,9 +29,6 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.*
 import com.tokopedia.profile.view.adapter.viewholder.*
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
@@ -42,7 +39,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * @author by milhamj on 9/20/18.
  */
 class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.View,
-                             private val kolPostViewListener : KolPostListener.View.ViewHolder,
+                             private val kolPostViewListener : KolPostViewHolderListener,
                              private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
                              private val bannerListener: BannerAdapter.BannerItemListener,
                              private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener,
@@ -69,16 +66,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return ProfileEmptyViewHolder.LAYOUT
     }
 
-    override fun type(kolPostViewModel: KolPostViewModel): Int {
-        return KolPostViewHolder.LAYOUT
-    }
-
     override fun type(emptyKolPostViewModel: EmptyKolPostViewModel): Int {
         return EmptyKolPostViewHolder.LAYOUT
-    }
-
-    override fun type(kolPostYoutubeViewModel: KolPostYoutubeViewModel): Int {
-        return KolPostYoutubeViewHolder.LAYOUT
     }
 
     override fun type(exploreViewModel: ExploreViewModel): Int {
@@ -109,9 +98,6 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return EmptyAffiliateViewHolder.LAYOUT
     }
 
-    override fun setType(type: KolPostViewHolder.Type?) {
-    }
-
     override fun type(noPostCardViewModel: NoPostCardViewModel): Int {
         return NoPostCardViewHolder.LAYOUT
     }
@@ -135,16 +121,6 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 ProfileHeaderViewHolder(parent, viewListener) as AbstractViewHolder<Visitable<*>>
             ProfileEmptyViewHolder.LAYOUT ->
                 ProfileEmptyViewHolder(parent) as AbstractViewHolder<Visitable<*>>
-            KolPostViewHolder.LAYOUT ->
-                    KolPostViewHolder(parent,
-                            kolPostViewListener,
-                            KolPostViewHolder.Type.PROFILE
-                    ) as AbstractViewHolder<Visitable<*>>
-            KolPostYoutubeViewHolder.LAYOUT ->
-                KolPostYoutubeViewHolder(parent,
-                        kolPostViewListener,
-                        KolPostYoutubeViewHolder.Type.PROFILE
-                ) as AbstractViewHolder<Visitable<*>>
             EmptyKolPostViewHolder.LAYOUT ->
                 EmptyKolPostViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             ExploreViewHolder.LAYOUT ->

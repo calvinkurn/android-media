@@ -1,6 +1,7 @@
 package com.tokopedia.shop.feed.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -13,10 +14,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
@@ -45,18 +46,11 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.kol.common.util.PostMenuListener
-import com.tokopedia.kol.common.util.createBottomMenu
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
-import com.tokopedia.kol.feature.createpost.view.activity.CreatePostActivity
-import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
-import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
-import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
-import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.kolcommon.util.PostMenuListener
+import com.tokopedia.kolcommon.util.createBottomMenu
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
@@ -66,7 +60,7 @@ import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
 
@@ -74,7 +68,7 @@ import javax.inject.Inject
  * @author by yfsx on 08/05/19.
  */
 class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-        KolPostListener.View.ViewHolder, KolPostListener.View.Like,
+        KolPostViewHolderListener, KolPostLikeListener,
         DynamicPostViewHolder.DynamicPostListener,
         BannerAdapter.BannerItemListener,
         TopadsShopViewHolder.TopadsShopListener,
@@ -88,6 +82,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         FeedMultipleImageView.FeedMultipleImageViewListener,
         HighlightAdapter.HighlightListener,
         FeedShopContract.View {
+
+    override val androidContext: Context
+        get() = requireContext()
 
     private lateinit var createPostUrl: String
     private lateinit var shopId: String
@@ -106,6 +103,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     @Inject
     lateinit var shopAnalytics: ShopAnalytics
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     companion object {
         private const val YOUTUBE_URL = "{youtube_url}"
         private const val TEXT_PLAIN = "text/plain"
@@ -118,6 +118,19 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
         val PARAM_CREATE_POST_URL: String= "PARAM_CREATE_POST_URL"
         val PARAM_SHOP_ID: String= "PARAM_SHOP_ID"
+
+        //region Content Report Param
+        const val CONTENT_REPORT_RESULT_SUCCESS = "result_success"
+        const val CONTENT_REPORT_RESULT_ERROR_MSG = "error_msg"
+        //endregion
+
+        //region Media Preview Param
+        const val MEDIA_PREVIEW_INDEX = "media_index"
+        //endregion
+
+        //region Kol Comment Param
+        const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
+        //endregion
 
         fun createInstance(shopId: String, createPostUrl: String): FeedShopFragment {
             val fragment = FeedShopFragment()
@@ -212,7 +225,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun initInjector() {
         DaggerFeedShopComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
                 .build()
                 .inject(this)
     }
@@ -222,11 +234,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (resultCode == Activity.RESULT_OK) {
             when(requestCode) {
                 OPEN_CONTENT_REPORT -> {
-                    if (data!!.getBooleanExtra(ContentReportActivity.RESULT_SUCCESS, false)) {
+                    if (data!!.getBooleanExtra(CONTENT_REPORT_RESULT_SUCCESS, false)) {
                         onSuccessReportContent()
                     } else {
                         onErrorReportContent(
-                                data.getStringExtra(ContentReportActivity.RESULT_ERROR_MSG)
+                                data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG)
                         )
                     }
                 }
@@ -345,28 +357,26 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
                 like.value = like.value - 1
             }
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE)
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
         }
     }
 
     override fun onLikeKolError(message: String) = showError(message)
 
-    override fun getUserSession(): UserSession = UserSession(activity)
-
-    override fun onGoToKolProfile(rowNumber: Int, userId: String?, postId: Int) {
+    override fun onGoToKolProfile(rowNumber: Int, userId: String, postId: Int) {
     }
 
-    override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String?) {
+    override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String) {
     }
 
-    override fun onOpenKolTooltip(rowNumber: Int, uniqueTrackingId: String?, url: String?) {
+    override fun onOpenKolTooltip(rowNumber: Int, uniqueTrackingId: String, url: String) {
         onGoToLink(url ?: "")
     }
 
-    override fun trackContentClick(hasMultipleContent: Boolean, activityId: String?, activityType: String?, position: String?) {
+    override fun trackContentClick(hasMultipleContent: Boolean, activityId: String, activityType: String, position: String) {
     }
 
-    override fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String?, activityType: String?, position: String?) {
+    override fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String, activityType: String, position: String) {
     }
 
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
@@ -375,7 +385,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
     }
 
-    override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String?) {
+    override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
         } else {
@@ -383,7 +393,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String?) {
+    override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.unlikeKol(id, rowNumber, this)
         } else {
@@ -397,33 +407,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
     }
 
-    override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String?) {
-        val intent = KolCommentActivity.getCallingIntent(
-                context, id, rowNumber
-        )
-        startActivityForResult(intent, KOL_COMMENT_CODE)
+    override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
+        RouteManager.getIntent(
+                requireContext(),
+                UriUtil.buildUriAppendParam(
+                        ApplinkConstInternalContent.COMMENT,
+                        mapOf(
+                                COMMENT_ARGS_POSITION to rowNumber.toString()
+                        )
+                ),
+                id.toString()
+        ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
     }
 
-    override fun onEditClicked(hasMultipleContent: Boolean, activityId: String?, activityType: String?) {
-    }
-
-    override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
-        context?.let {
-            val menus = createBottomMenu(it, element, object : PostMenuListener {
-                override fun onDeleteClicked() {
-                    createDeleteDialog(rowNumber, element.contentId).show()
-                }
-
-                override fun onReportClick() {
-                    goToContentReport(element.contentId)
-                }
-
-                override fun onEditClick() {
-
-                }
-            })
-            menus.show()
-        }
+    override fun onEditClicked(hasMultipleContent: Boolean, activityId: String, activityType: String) {
     }
 
     override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
@@ -537,8 +534,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                                   redirectLink: String, isSingleItem: Boolean) {
         val model = adapter.data[positionInFeed] as? DynamicPostViewModel
         if (!isSingleItem && model != null){
-            activity?.let { startActivity(MediaPreviewActivity.createIntent(it,
-                    model.id.toString(), contentPosition))}
+            RouteManager.getIntent(
+                    requireContext(),
+                    UriUtil.buildUriAppendParam(
+                            ApplinkConstInternalContent.MEDIA_PREVIEW,
+                            mapOf(
+                                    MEDIA_PREVIEW_INDEX to contentPosition.toString()
+                            )
+                    ),
+                    model.id.toString()
+            )
         }
     }
 
@@ -585,11 +590,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String) {
-        activity?.let {
-            startActivity(VideoDetailActivity.getInstance(
-                    it,
-                    postId))
-        }
+        RouteManager.route(
+                requireContext(),
+                ApplinkConstInternalContent.VIDEO_DETAIL,
+                postId
+        )
     }
 
     override fun onAddToCartSuccess() {
@@ -632,19 +637,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun goToCreatePost() {
-        activity?.let {
-            val intent = if (GlobalConfig.isCustomerApp()) {
-                RouteManager.getIntent(it, ApplinkConst.CONTENT_CREATE_POST)
-            } else {
-                RouteManager.getIntent(it, ApplinkConstInternalContent.SHOP_POST_PICKER).apply{
-                    putExtra(CreatePostActivity.FORM_URL, createPostUrl)
-                }
-            }
-            startActivityForResult(
-                    intent,
-                    CREATE_POST
-            )
-        }
+        startActivityForResult(
+                RouteManager.getIntent(
+                        requireContext(),
+                        ApplinkConst.CONTENT_CREATE_POST
+                ),
+                CREATE_POST
+        )
     }
 
     private fun onGoToLink(url: String) {
@@ -675,9 +674,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private fun goToContentReport(contentId: Int) {
         if (context != null) {
             if (userSession.isLoggedIn) {
-                val intent = ContentReportActivity.createIntent(
-                        context!!,
-                        contentId
+                val intent = RouteManager.getIntent(
+                        requireContext(),
+                        ApplinkConstInternalContent.CONTENT_REPORT,
+                        contentId.toString()
                 )
                 startActivityForResult(intent, OPEN_CONTENT_REPORT)
             } else {
@@ -720,7 +720,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         val shareBody = String.format(formatString, link)
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = TEXT_PLAIN
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
         startActivity(
                 Intent.createChooser(sharingIntent, shareTitle)
         )

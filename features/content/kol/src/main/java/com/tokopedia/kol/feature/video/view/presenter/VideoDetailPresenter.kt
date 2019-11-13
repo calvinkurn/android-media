@@ -1,9 +1,9 @@
 package com.tokopedia.kol.feature.video.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.feedcomponent.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.video.domain.usecase.GetVideoDetailUseCase
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kol.feature.video.view.subscriber.FollowSubscriber
@@ -60,14 +60,14 @@ class VideoDetailPresenter
         followKolPostGqlUseCase.execute(FollowSubscriber(view))
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
                 LikeSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
         )
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like) {
+    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 LikeSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)

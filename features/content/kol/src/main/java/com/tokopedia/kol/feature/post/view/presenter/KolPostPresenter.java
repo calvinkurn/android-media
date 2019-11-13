@@ -3,11 +3,12 @@ package com.tokopedia.kol.feature.post.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase;
-import com.tokopedia.feedcomponent.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.subscriber.DeletePostSubscriber;
 import com.tokopedia.kol.feature.post.view.subscriber.GetKolPostSubscriber;
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
+import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber;
 
 import javax.inject.Inject;
 
@@ -72,7 +73,7 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     }
 
     @Override
-    public void likeKol(int id, int rowNumber, KolPostListener.View.Like likeListener) {
+    public void likeKol(int id, int rowNumber, KolPostLikeListener likeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.Companion.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
                 new LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Like)
@@ -80,7 +81,7 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     }
 
     @Override
-    public void unlikeKol(int id, int rowNumber, KolPostListener.View.Like likeListener) {
+    public void unlikeKol(int id, int rowNumber, KolPostLikeListener likeListener) {
         likeKolPostUseCase.execute(
                 LikeKolPostUseCase.Companion.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 new LikeKolPostSubscriber(likeListener, rowNumber, LikeKolPostUseCase.LikeKolPostAction.Unlike)
