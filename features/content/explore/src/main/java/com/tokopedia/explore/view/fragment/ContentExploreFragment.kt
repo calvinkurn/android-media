@@ -22,6 +22,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -345,20 +347,20 @@ class ContentExploreFragment :
         imageAdapter.showEmpty()
     }
 
-    override fun goToKolPostDetail(kolPostViewModel: KolPostViewModel) {
-        val intent = KolPostDetailActivity.getInstance(
-                context,
-                kolPostViewModel.contentId.toString()
+    override fun goToKolPostDetail(postId: Int, name: String) {
+        RouteManager.route(
+                requireContext(),
+                ApplinkConst.CONTENT_DETAIL,
+                postId.toString()
         )
-        startActivity(intent)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 ContentExloreEventTracking.Event.EXPLORE,
                 ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
                 ContentExloreEventTracking.Action.CLICK_GRID_CONTENT,
                 String.format(
                         ContentExloreEventTracking.EventLabel.CLICK_GRID_CONTENT_LABEL,
-                        kolPostViewModel.name,
-                        kolPostViewModel.contentId
+                        name,
+                        postId
                 )
         ))
     }

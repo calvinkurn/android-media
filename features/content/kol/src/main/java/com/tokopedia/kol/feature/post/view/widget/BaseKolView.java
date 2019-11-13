@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.kol.R;
-import com.tokopedia.kol.common.util.TimeConverter;
+import com.tokopedia.kolcommon.util.TimeConverter;
 import com.tokopedia.kol.common.util.UrlUtil;
 import com.tokopedia.kol.feature.post.view.listener.BaseKolListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;

@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.kol.common.util.TimeConverter;
+import com.tokopedia.kolcommon.util.TimeConverter;
 import com.tokopedia.kol.feature.post.data.pojo.shop.Content;
 import com.tokopedia.kol.feature.post.data.pojo.shop.ContentListData;
 import com.tokopedia.kol.feature.post.data.pojo.shop.FeedContentPost;

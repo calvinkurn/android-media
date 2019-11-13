@@ -1,8 +1,8 @@
-package com.tokopedia.kol.common.util;
+package com.tokopedia.kolcommon.util;
 
 import android.content.Context;
 
-import com.tokopedia.kol.R;
+import com.tokopedia.kolcommon.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
