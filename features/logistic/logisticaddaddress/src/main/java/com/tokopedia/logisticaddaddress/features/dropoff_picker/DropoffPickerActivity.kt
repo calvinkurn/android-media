@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.dropoff_picker
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -180,6 +181,13 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         mPermissionChecker.onRequestPermissionsResult(this,
                 requestCode, permissions, grantResults)
+        if(requestCode == mPermissionChecker.REQUEST_PERMISSION_CODE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                tracker.trackUserClickIzinkan()
+            } else {
+                tracker.trackUserClickNantiSaja()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
