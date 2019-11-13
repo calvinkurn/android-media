@@ -63,6 +63,7 @@ import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
+import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -485,10 +486,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
     }
 
-    private void openWebView(Uri encodedUri, boolean allowingOverriding, boolean showTitlebar,
+    private void openWebView(Uri uri, boolean allowingOverriding, boolean showTitlebar,
                              boolean needLogin) {
+        String encodedUri = UrlEncoderExtKt.encodeOnce(uri.toString());
         Intent intent = RouteManager.getIntentNoFallback(context, ApplinkConstInternalGlobal.WEBVIEW,
-                encodedUri.toString());
+                encodedUri);
         if (intent!=null) {
             intent.putExtra(KEY_ALLOW_OVERRIDE, allowingOverriding);
             intent.putExtra(KEY_NEED_LOGIN, needLogin);
