@@ -10,6 +10,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verifySequence
 import org.junit.Assert.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -33,6 +34,7 @@ class AddToCartUseCaseTest : Spek({
         lateinit var subscriber: AssertableSubscriber<AddToCartDataModel>
         lateinit var onErrorEvents: List<Throwable>
         lateinit var requestParam: RequestParams
+        val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST";
 
         Scenario("success") {
 
@@ -43,8 +45,28 @@ class AddToCartUseCaseTest : Spek({
 
             When("create observable") {
                 requestParam = RequestParams.create()
-                requestParam.putObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST", AddToCartRequestParams())
+                requestParam.putObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartRequestParams())
                 subscriber = addToCartUseCase.createObservable(requestParam).test()
+            }
+
+            Then("request param is not empty") {
+                assertTrue(requestParam.parameters.isNotEmpty())
+            }
+
+            Then("request param has field $REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") {
+                assertNotNull(requestParam.getObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST))
+            }
+
+            Then("should run sequence task") {
+                verifySequence {
+                    graphqlUseCase.clearRequest()
+                    graphqlUseCase.addRequest(any())
+                    graphqlUseCase.createObservable(any())
+                }
+            }
+
+            Then("should not give error") {
+                subscriber.assertNoErrors()
             }
 
             Then("should has 1 value") {
