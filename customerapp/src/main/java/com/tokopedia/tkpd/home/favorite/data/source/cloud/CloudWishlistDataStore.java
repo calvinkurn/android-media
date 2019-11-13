@@ -24,8 +24,6 @@ import rx.Observable;
 
 import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_COUNT;
 import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_PAGE;
-import static com.tokopedia.tkpd.home.presenter.WishListImpl.ITEM_COUNT;
-import static com.tokopedia.tkpd.home.presenter.WishListImpl.PAGE_NO;
 
 /**
  * @author Kulomady on 1/18/17.
@@ -33,6 +31,8 @@ import static com.tokopedia.tkpd.home.presenter.WishListImpl.PAGE_NO;
 public class CloudWishlistDataStore {
 
     private Context context;
+    public static final String PAGE_NO = "page";
+    public static final String ITEM_COUNT = "count";
 
     public CloudWishlistDataStore(Context context) {
         this.context = context;
@@ -47,7 +47,7 @@ public class CloudWishlistDataStore {
         variables.put(ITEM_COUNT, param.get(KEY_COUNT));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_wishlist),
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
                 GqlWishListDataResponse.class,
                 variables, false);
 
