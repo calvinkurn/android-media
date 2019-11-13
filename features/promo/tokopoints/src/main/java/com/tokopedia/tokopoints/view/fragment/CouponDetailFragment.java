@@ -827,6 +827,7 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
             if (TextUtils.isEmpty(mSwipeCardView.getCouponCode())) {
                 mSwipeCardView.reset();
             }
+            mBottomSheetFragment = null;
         }, CloseableBottomSheetFragment.STATE_FULL);
         mBottomSheetFragment.showNow(getActivity().getSupportFragmentManager(), "");
     }

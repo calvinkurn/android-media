@@ -346,4 +346,12 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
         adapter.startDataLoading();
         closeableBottomSheetDialog.setContentView(view);
     }
+
+    @Override
+    public void onDestroyView() {
+        if (mAdapter != null) {
+            mAdapter.onDestroyView();
+        }
+        super.onDestroyView();
+    }
 }
