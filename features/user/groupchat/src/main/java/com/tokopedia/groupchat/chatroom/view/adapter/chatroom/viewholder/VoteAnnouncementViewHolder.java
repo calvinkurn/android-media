@@ -77,7 +77,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         }
 
         voteTitle.setText(R.string.title_poll_finished);
-        voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.black_54));
+        voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), com.tokopedia.design.R.color.black_54));
     }
 
     private void setVoteStarted(VoteAnnouncementViewModel element) {

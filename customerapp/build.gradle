@@ -248,6 +248,8 @@ android {
     // to disable dynamic feature, use command option -Pdisable-dynamic-feature
     dynamicFeatures = getDynamicFeatureIfEnabled(project)
     generateAssetFile(project, dynamicFeatures)
+
+
 }
 
 dependencies {
@@ -268,7 +270,7 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
-    implementation project(rootProject.ext.features.groupchat)
+    //implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.event)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.loyalty)
@@ -291,7 +293,6 @@ dependencies {
     implementation project(rootProject.ext.features.homeRecom)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.digitalTopupBills)
@@ -469,13 +470,13 @@ dependencies {
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.expandableTextview
     implementation project(rootProject.ext.libraries.cameraview)
-    implementation (rootProject.ext.miscDependencies.flexBoxLayout){
+    implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.miscDependencies.ucrop){
+    implementation(rootProject.ext.miscDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.miscDependencies.imagecropper){
+    implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.exoPlayerCore
@@ -489,10 +490,10 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    implementation (rootProject.ext.analyticsDependencies.branch) {
+    implementation(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7

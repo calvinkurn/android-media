@@ -18,6 +18,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
+import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_LIST
+import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
@@ -65,6 +67,7 @@ import java.io.InputStreamReader
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
+    private val DFM_GROUPCHAT = "groupchat"
     private val DFM_SIMILAR_SEARCH = "similarsearch"
     private val DFM_IMAGE_SEARCH = "image_search"
     private val DFM_AUTOCOMPLETE = "autocomplete"
@@ -100,6 +103,7 @@ object DeeplinkDFMapper {
     private val DFM_TRADEIN_FINAL_PRICE = "tradein"
     private val DFM_MONEYIN = "tradein"
     private val DFM_WALLET = "fintech_wallet"
+    private val DFM_PROFILE = "profile"
 
 
     private var manager: SplitInstallManager? = null
@@ -109,6 +113,8 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) }, DFM_IMAGE_SEARCH, R.string.title_image_search))
             add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWith(HOTEL) }, DFM_HOTEL_TRAVEL, R.string.title_hotel))
+            add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DFM_GROUPCHAT, R.string.title_groupchat))
+            add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DFM_GROUPCHAT, R.string.title_groupchat))
             add(DFP({ it.startsWith(FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
             add(DFP({ it.startsWith(INTERNAL_FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
@@ -145,6 +151,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(TRADEIN) }, DFM_TRADEIN, R.string.applink_title_tradein))
             add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_TRADEIN_FINAL_PRICE, R.string.applink_harga_final))
             add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_MONEYIN, R.string.money_in))
+            add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
         }
     }
 
@@ -288,9 +295,9 @@ object DeeplinkDFMapper {
  * Class to hold dynamic feature pattern, used for mapping
  */
 class DFP(
-        val logic: ((deeplink: String) -> Boolean),
-        val moduleId: String,
-        val moduleNameResourceId: Int
+    val logic: ((deeplink: String) -> Boolean),
+    val moduleId: String,
+    val moduleNameResourceId: Int
 )
 
 fun String.startsWithPattern(prefix: String): Boolean {
