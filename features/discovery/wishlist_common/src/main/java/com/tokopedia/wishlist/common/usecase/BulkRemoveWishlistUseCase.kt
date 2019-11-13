@@ -64,9 +64,9 @@ open class BulkRemoveWishlistUseCase @Inject constructor(val context: Context): 
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
                     val removeWishListResponse: RemoveWishListResponse = it.getData(RemoveWishListResponse::class.java)
-                    WishlistActionData(removeWishListResponse.wishlistRemove.success, position)
+                    WishlistActionData(removeWishListResponse.wishlistRemove.success, position, productId)
                 }.onErrorResumeNext {
-                    Observable.just(WishlistActionData(false, position))
+                    Observable.just(WishlistActionData(false, position, productId))
                 }
     }
 }

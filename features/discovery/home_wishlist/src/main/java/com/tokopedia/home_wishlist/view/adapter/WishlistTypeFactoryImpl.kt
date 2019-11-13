@@ -3,15 +3,15 @@ package com.tokopedia.home_wishlist.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
-import com.tokopedia.home_wishlist.base.SmartExecutors
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.view.viewholder.*
+import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
+import com.tokopedia.smart_recycler_helper.SmartExecutors
 
 /**
  * A Class of Implementation Type Factory Pattern.
  *
- * This class extends from [BaseAdapterTypeFactory] and implement from [HomeRecommendationTypeFactory]
+ * This class extends from [BaseAdapterTypeFactory] and implement from [WishlistTypeFactory]
  */
 class WishlistTypeFactoryImpl(private val appExecutors: SmartExecutors) : WishlistTypeFactory {
     override fun type(wishlistItemDataModel: WishlistItemDataModel): Int {

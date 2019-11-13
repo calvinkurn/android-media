@@ -1,18 +1,18 @@
 package com.tokopedia.home_wishlist.view.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
+import com.tokopedia.home_wishlist.view.custom.WishlistCallback
+import com.tokopedia.home_wishlist.view.ext.copy
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.view.viewholder.RecommendationCarouselItemViewHolder
-import android.os.Bundle
-import androidx.recyclerview.widget.AsyncDifferConfig
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home_wishlist.base.SmartExecutors
-import com.tokopedia.home_wishlist.view.ext.copy
+import com.tokopedia.smart_recycler_helper.SmartExecutors
 
 class RecommendationCarouselAdapter (
         private val wishlistListener: WishlistListener,

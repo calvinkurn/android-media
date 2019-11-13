@@ -7,6 +7,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat.setElevation
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.home_wishlist.R
+import kotlin.math.abs
+import kotlin.math.max
 
 
 class ToolbarElevationOffsetListener(private val mActivity: AppCompatActivity, private val mToolbar: Toolbar) : AppBarLayout.OnOffsetChangedListener {
@@ -18,12 +20,12 @@ class ToolbarElevationOffsetListener(private val mActivity: AppCompatActivity, p
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onOffsetChanged(appBarLayout: AppBarLayout, offset: Int) {
-        var offset = offset
-        offset = Math.abs(offset)
-        mTargetElevation = Math.max(mTargetElevation, appBarLayout.targetElevation)
-        if (offset >= appBarLayout.totalScrollRange - mToolbar!!.getHeight()) {
-            val flexibleSpace = (appBarLayout.totalScrollRange - offset).toFloat()
-            val ratio = 1 - flexibleSpace / mToolbar!!.getHeight()
+        val verticalOffset: Int = abs(offset)
+        val difference = appBarLayout.totalScrollRange - mToolbar.height
+        mTargetElevation = max(mTargetElevation, appBarLayout.targetElevation)
+        if (verticalOffset >= difference && appBarLayout.focusedChild == null) {
+            val flexibleSpace = (appBarLayout.totalScrollRange - verticalOffset).toFloat()
+            val ratio = 1 - (flexibleSpace / mToolbar.height)
             val elevation = ratio * mTargetElevation
             setToolbarElevation(elevation)
         } else {

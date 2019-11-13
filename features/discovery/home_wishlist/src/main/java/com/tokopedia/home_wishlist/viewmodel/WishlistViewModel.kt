@@ -229,7 +229,7 @@ open class WishlistViewModel @Inject constructor(
             val tempListVisitable = wishlistData.value.copy().toMutableList()
 
             tempListVisitable[productPosition] = tempWishlist
-            wishlistData.value = tempListVisitable
+            wishlistData.value = tempListVisitable.copy()
 
             wishlistItemCandidateToAddToCart.let {
                 val addToCartRequestParams = AddToCartRequestParams()
@@ -266,21 +266,22 @@ open class WishlistViewModel @Inject constructor(
                                         productId = productId,
                                         cartId = cartId,
                                         isSuccess = isSuccess,
-                                        message = message
+                                        message = message,
+                                        item = visitableItem.productItem
                                 )
                         )
                         tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
+                        wishlistData.value = tempListVisitable.copy()
                     }
 
                     override fun onCompleted() {
                         tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
-                        wishlistData.value = tempListVisitable
+                        wishlistData.value = tempListVisitable.copy()
                     }
 
                     override fun onError(e: Throwable) {
                         tempListVisitable[productPosition] = visitableItem.copy(isOnAddToCartProgress = false)
-                        wishlistData.value = tempListVisitable
-
+                        wishlistData.value = tempListVisitable.copy()
                         addToCartActionData.value = Event(
                                 AddToCartActionData(
                                         position = productPosition,
@@ -454,16 +455,18 @@ open class WishlistViewModel @Inject constructor(
                     requestParams,
                     object: Subscriber<List<WishlistActionData>>() {
                         override fun onNext(responselist: List<WishlistActionData>) {
-                            val removeWishlistPair = removeWishlistItemsInBulkRemove(
+                            val removeWishlistTriple = removeWishlistItemsInBulkRemove(
                                     responselist, arrayForBulkRemoveCandidate)
-                            val updatedList = removeWishlistPair.first
-                            val isPartiallyFailed = removeWishlistPair.second
+                            val updatedList = removeWishlistTriple.first
+                            val isPartiallyFailed = removeWishlistTriple.second
+                            val deletedIds = removeWishlistTriple.third
 
                             bulkRemoveWishlistActionData.value = Event(
                                     BulkRemoveWishlistActionData(
                                             message = "",
                                             isSuccess = !isPartiallyFailed,
-                                            isPartiallyFailed = isPartiallyFailed
+                                            isPartiallyFailed = isPartiallyFailed,
+                                            productIds = deletedIds
                                     )
                             )
                             wishlistData.value = updatedList
@@ -501,11 +504,12 @@ open class WishlistViewModel @Inject constructor(
     private fun removeWishlistItemsInBulkRemove(
             responselist: List<WishlistActionData>,
             arrayForBulkRemoveCandidate: Array<WishlistItemDataModel?>
-            ): Pair<List<WishlistDataModel>, Boolean> {
+            ): Triple<List<WishlistDataModel>, Boolean, List<String>> {
         var isPartiallyFailed = false
         val updatedList = mutableListOf<WishlistDataModel>()
         val newWishlistDataValue = wishlistData.value.copy()
         val recommendationCarouselDataModels = mutableListOf<WishlistDataModel>()
+        val deletedIds = mutableListOf<String>()
 
         //save carousel instance temporarily
         for(i in 4 until newWishlistDataValue.size-1 step maxItemInPage) {
@@ -517,7 +521,9 @@ open class WishlistViewModel @Inject constructor(
 
         responselist.forEach {
             if (it.isSuccess) {
-                newWishlistDataValue.remove(arrayForBulkRemoveCandidate[it.position] as Visitable<*>)
+                val wishlistDataModel = arrayForBulkRemoveCandidate[it.position] as WishlistDataModel
+                newWishlistDataValue.remove(wishlistDataModel)
+                deletedIds.add(it.productId)
             } else if (!isPartiallyFailed) isPartiallyFailed = !it.isSuccess
         }
 
@@ -529,7 +535,7 @@ open class WishlistViewModel @Inject constructor(
         }
 
         updatedList.addAll(newWishlistDataValue)
-        return Pair(updatedList, isPartiallyFailed)
+        return Triple(updatedList, isPartiallyFailed, deletedIds)
     }
 
     /**
@@ -635,8 +641,6 @@ open class WishlistViewModel @Inject constructor(
     }
 
     private fun clearAllMarkedWishlistItem() {
-//        listVisitableMarked.forEach {
-//        }
         listVisitableMarked.forEach {
             if (it.value is WishlistItemDataModel) (it.value as WishlistItemDataModel).isOnChecked = false
         }
@@ -727,10 +731,7 @@ open class WishlistViewModel @Inject constructor(
         })
     }
 
-    private fun getWishlistPositionOnMark() =
-            listVisitableMarked.map {
-                it.key
-            }
+    private fun getWishlistPositionOnMark() = listVisitableMarked.map { it.key }
 
     private fun mappingWishlistToVisitable(list: List<WishlistItem>): MutableList<WishlistDataModel>{
         return list.mapIndexed{index, it ->

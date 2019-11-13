@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
 import com.tokopedia.home_wishlist.R
-import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
-import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.view.custom.WishlistCardView
 import com.tokopedia.home_wishlist.view.ext.setSafeOnClickListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
+import com.tokopedia.smart_recycler_helper.SmartListener
 
 class WishlistItemViewHolder(
         private val view: View
