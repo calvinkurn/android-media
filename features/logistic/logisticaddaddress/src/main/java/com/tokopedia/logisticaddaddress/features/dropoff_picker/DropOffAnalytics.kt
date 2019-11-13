@@ -20,52 +20,52 @@ class DropOffAnalytics @Inject constructor(){
     }
 
     fun trackUserClickNantiSaja() {
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.CLICK_NANTI_SAJA)
     }
 
     fun trackUserClickIzinkan() {
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.CLICK_IZINKAN)
     }
 
     fun trackClickSearchBarGpsOff(keyword: String) {
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.CLICK_SEARCHBAR_GPS_OFF,
                 keyword)
     }
 
     fun trackClickActivateGps() {
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.CLICK_AKTIFKAN_GPS)
     }
 
     fun trackSelectStoreListFirst(addressTitle: String, addressValue: String, storeType: String) {
         val label = "$addressTitle - $addressValue - $storeType"
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.SELECT_STORE_LIST_NEAREST,
                 label)
     }
 
     fun trackExpandList() {
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.EXPAND_LIST)
     }
 
     fun trackClickMap() {
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.CLICK_MAP)
     }
 
     fun trackClickSearchBarGpsOn(keyword: String) {
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.CLICK_SEARCHBAR_GPS_ON,
                 keyword)
@@ -73,7 +73,7 @@ class DropOffAnalytics @Inject constructor(){
 
     fun trackSelectStoreListAll(addressTitle: String, addressValue: String, storeType: String) {
         val label = "$addressTitle - $addressValue - $storeType"
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.SELECT_STORE_LIST_ALL,
                 label)
@@ -81,7 +81,7 @@ class DropOffAnalytics @Inject constructor(){
 
     fun trackSelectIndoMaretMap(model: DropoffNearbyModel) {
         val label = "${model.addrName} - ${model.getDescription()} - ${model.type}"
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.SELECT_INDOMARET_MAP,
                 label)
@@ -89,7 +89,7 @@ class DropOffAnalytics @Inject constructor(){
 
     fun trackClickBatalOnDetail(model: DropoffNearbyModel) {
         val label = "${model.addrName} - ${model.getDescription()} - ${model.type}"
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.CLICK_BATAL_DETAIL,
                 label)
@@ -97,14 +97,14 @@ class DropOffAnalytics @Inject constructor(){
 
     fun trackClickPilihOnDetail(model: DropoffNearbyModel) {
         val label = "${model.addrName} - ${model.getDescription()} - ${model.type}"
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.CLICK_PILIH_DETAIL,
                 label)
     }
 
     fun trackSearchKeyword(keyword: String) {
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.SEARCH_KEYWORD,
                 keyword)
@@ -112,11 +112,15 @@ class DropOffAnalytics @Inject constructor(){
 
     fun trackSelectLandmarkFromKeyword(keyword: String, addressTitle: String, addressValue: String) {
         val label = "$keyword - $addressTitle - $addressValue"
-        sendTracker("",
+        sendTracker(Event.CLICK_TRADE_IN,
                 Category.LOCATION_SELECTION,
                 Action.SELECT_LANDMARK_FROM_KEYWORD,
                 label)
     }
+}
+
+private object Event {
+    const val CLICK_TRADE_IN = "clickTradeIn"
 }
 
 private object Category {
