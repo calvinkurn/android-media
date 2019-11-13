@@ -107,9 +107,7 @@ public interface GeolocationContract {
 
         void initDefaultLocation();
 
-        void onCameraChange(Context context, CameraPosition cameraPosition);
-
-        void getReverseGeocoding(String latitude, String longitude);
+        void getReverseGeoCoding(String latitude, String longitude);
 
         void prepareAutoCompleteView();
 

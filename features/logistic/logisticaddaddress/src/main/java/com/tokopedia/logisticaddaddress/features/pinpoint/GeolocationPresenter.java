@@ -72,7 +72,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
 
     private Context context;
 
-    private boolean isUseExistingLocation;
     private boolean isAllowGenerateAddress;
 
     private boolean hasLocation;
@@ -133,11 +132,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     private void getExistingLocation() {
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }
-
-    private void setExistingLocationState(boolean state) {
-        isUseExistingLocation = state;
-    }
-
     private void checkLocationSettings() {
         LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
@@ -242,19 +236,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     }
 
     @Override
-    public void onCameraChange(Context context, CameraPosition cameraPosition) {
-        setAutoCompleteBoundary();
-        if (!isUseExistingLocation) {
-            saveLatLng(cameraPosition.target);
-            generateAddress(context);
-        } else {
-            setExistingLocationState(false);
-            view.setValuePointer(locationPass.getGeneratedAddress());
-        }
-    }
-
-    @Override
-    public void getReverseGeocoding(String latitude, String longitude) {
+    public void getReverseGeoCoding(String latitude, String longitude) {
         String keyword = String.format("%s,%s", latitude, longitude);
         view.setLoading(true);
         autofillUseCase.execute(keyword)
@@ -279,61 +261,8 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
                 });
     }
 
-    private void setAutoCompleteBoundary() {
-        view.generateBoundsFromCamera();
-    }
-
-    private void generateAddress(final Context context) {
-        if (isAllowGenerateAddress) {
-            retrofitInteractor.generateAddress(context, new RetrofitInteractor.GenerateAddressListener() {
-
-                @Override
-                public void onSuccess(LocationPass locationPass) {
-                    allowReverseGeocode(true);
-                    setNewLocationPass(locationPass);
-                    view.setValuePointer(locationPass.getGeneratedAddress());
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    allowReverseGeocode(true);
-                    view.setValuePointer("Error");
-                }
-
-                @Override
-                public void onPreConnection() {
-                    allowReverseGeocode(false);
-                    view.setValuePointer(context.getString(R.string.wait_generate_address));
-                }
-
-                @Override
-                public String getAddress(double latitude, double longitude) {
-                    String resultGeocode = GeoLocationUtils.reverseGeoCode(context, latitude, longitude);
-                    if (resultGeocode.contains(String.valueOf(latitude)) || resultGeocode.contains(String.valueOf(longitude))) {
-                        return context.getString(R.string.choose_this_location);
-                    } else {
-                        return resultGeocode;
-                    }
-                }
-
-                @Override
-                public LocationPass convertData(double latitude, double longitude) {
-                    LocationPass temp = new LocationPass();
-                    temp.setLatitude(String.valueOf(latitude));
-                    temp.setLongitude(String.valueOf(longitude));
-                    temp.setGeneratedAddress(getAddress(latitude, longitude));
-                    return temp;
-                }
-            });
-        }
-    }
-
     private void setNewLocationPass(LocationPass locationPass) {
         this.locationPass = locationPass;
-    }
-
-    private void allowReverseGeocode(boolean b) {
-        isAllowGenerateAddress = b;
     }
 
     private void saveLatLng(LatLng target) {

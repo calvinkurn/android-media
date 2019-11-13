@@ -14,8 +14,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 public interface RetrofitInteractor {
 
-    void generateAddress(Context context, GenerateAddressListener listener);
-
     void unSubscribe();
 
     void generateLatLng(Map<String, String> param, GenerateLatLongListener listener);
@@ -30,18 +28,5 @@ public interface RetrofitInteractor {
         void onSuccess(CoordinateViewModel model);
 
         void onError(String errorMessage);
-    }
-
-    interface GenerateAddressListener {
-
-        void onSuccess(LocationPass model);
-
-        void onError(Throwable e);
-
-        void onPreConnection();
-
-        String getAddress(double latitude, double longitude);
-
-        LocationPass convertData(double latitude, double longitude);
     }
 }

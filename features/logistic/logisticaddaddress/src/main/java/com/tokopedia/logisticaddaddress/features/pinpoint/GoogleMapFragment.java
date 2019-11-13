@@ -256,14 +256,6 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
     @Override
     public void initMapListener() {
-//        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-//            @Override
-//            public void onCameraChange(CameraPosition cameraPosition) {
-//                dimissKeyBoard();
-//                presenter.onCameraChange(getActivity(), cameraPosition);
-//            }
-//        });
-
         composite.add(LocationUtilsKt.rxPinPoint(googleMap)
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
@@ -280,7 +272,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
                     public void onNext(Boolean aBoolean) {
                         dimissKeyBoard();
                         LatLng temp = googleMap.getCameraPosition().target;
-                        presenter.getReverseGeocoding(
+                        presenter.getReverseGeoCoding(
                                 String.valueOf(temp.latitude), String.valueOf(temp.longitude));
                     }
                 }));
