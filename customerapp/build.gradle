@@ -581,6 +581,7 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.dexMakerMockito) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
+    
     // Cloud testing
     androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
     androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
@@ -598,12 +599,5 @@ dependencies {
     }
 }
 
-
-project.ext.sentryCli = [
-        logLevel   : "debug",
-        flavorAware: true
-]
-
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
-apply from: "../buildconfig/reactnative/sentry.gradle"
