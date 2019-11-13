@@ -5,14 +5,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
-import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
-import com.tokopedia.home_wishlist.base.SmartExecutors
-import com.tokopedia.home_wishlist.base.SmartRecyclerAdapter
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
-import com.tokopedia.home_wishlist.view.viewholder.DynamicCarouselRecommendationViewHolder
+import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
+import com.tokopedia.smart_recycler_helper.SmartExecutors
+import com.tokopedia.smart_recycler_helper.SmartRecyclerAdapter
 
 /**
  * A Class of WishlistAdapter.

@@ -2,10 +2,10 @@ package com.tokopedia.home_wishlist.view.viewholder
 
 import android.view.View
 import com.tokopedia.home_wishlist.R
-import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
-import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.ErrorWishlistDataModel
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
+import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
+import com.tokopedia.smart_recycler_helper.SmartListener
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 

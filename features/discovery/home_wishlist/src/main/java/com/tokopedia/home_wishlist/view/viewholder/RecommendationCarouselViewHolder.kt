@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_wishlist.util.GravitySnapHelper
 import com.tokopedia.home_wishlist.R
-import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
-import com.tokopedia.home_wishlist.base.SmartExecutors
-import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_wishlist.view.adapter.RecommendationCarouselAdapter
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import androidx.recyclerview.widget.DefaultItemAnimator
+import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
+import com.tokopedia.smart_recycler_helper.SmartExecutors
+import com.tokopedia.smart_recycler_helper.SmartListener
 
 
 class RecommendationCarouselViewHolder(view: View, private val appExecutors: SmartExecutors) : SmartAbstractViewHolder<RecommendationCarouselDataModel>(view) {

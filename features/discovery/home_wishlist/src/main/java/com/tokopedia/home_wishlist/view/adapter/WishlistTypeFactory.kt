@@ -1,8 +1,9 @@
 package com.tokopedia.home_wishlist.view.adapter
 
 import android.view.View
-import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
 import com.tokopedia.home_wishlist.model.datamodel.*
+import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
+import com.tokopedia.smart_recycler_helper.SmartTypeFactory
 
 /**
  * Created by Lukas on 26/08/19
@@ -11,7 +12,7 @@ import com.tokopedia.home_wishlist.model.datamodel.*
  *
  * This interface initialize all viewType it will shown at Adapter HomeRecommendation
  */
-interface WishlistTypeFactory {
+interface WishlistTypeFactory : SmartTypeFactory{
     fun type(wishlistItemDataModel: WishlistItemDataModel): Int
     fun type(errorWishlistDataModel: ErrorWishlistDataModel): Int
     fun type(recommendationTitleDataModel: RecommendationTitleDataModel): Int
@@ -22,5 +23,5 @@ interface WishlistTypeFactory {
     fun type(emptyWishlistDataModel: EmptySearchWishlistDataModel): Int
     fun type(loadingDataModel: LoadingDataModel): Int
     fun type(loadingMoreModel: LoadMoreDataModel): Int
-    fun createViewHolder(view: View, type: Int): SmartAbstractViewHolder<*>
+    override fun createViewHolder(view: View, type: Int): SmartAbstractViewHolder<*>
 }

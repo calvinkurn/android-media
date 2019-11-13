@@ -1,14 +1,10 @@
 package com.tokopedia.home_wishlist.view.viewholder
 
 import android.view.View
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_wishlist.R
-import com.tokopedia.home_wishlist.base.SmartAbstractViewHolder
-import com.tokopedia.home_wishlist.base.SmartListener
 import com.tokopedia.home_wishlist.model.datamodel.EmptySearchWishlistDataModel
-import com.tokopedia.home_wishlist.model.datamodel.EmptyWishlistDataModel
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
+import com.tokopedia.smart_recycler_helper.SmartListener
 import com.tokopedia.unifyprinciples.Typography
 
 class EmptySearchWishlistViewHolder(
