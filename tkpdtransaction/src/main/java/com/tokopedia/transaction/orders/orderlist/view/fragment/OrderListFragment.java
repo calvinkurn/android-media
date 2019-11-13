@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
@@ -144,6 +145,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private GridLayoutManager layoutManager;
     EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
+    private CloseableBottomSheetDialog changeDateBottomSheetDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -296,11 +298,24 @@ public class OrderListFragment extends BaseDaggerFragment implements
             presenter.buildAndRenderFilterList(orderLabelList.getFilterStatusList());
         }
 
+        changeDateBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+
         filterDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                orderListAnalytics.sendDateFilterClickEvent();
-                startActivityForResult(SaveDateBottomSheetActivity.getDateInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
+//                orderListAnalytics.sendDateFilterClickEvent();
+//                startActivityForResult(SaveDateBottomSheetActivity.getDateInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
+                View categoryView = getLayoutInflater().inflate(R.layout.change_bom_deadline_bottomsheet, null);
+                ImageView crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
+                crossIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        changeDateBottomSheetDialog.dismiss();
+                    }
+                });
+                changeDateBottomSheetDialog.setCustomContentView(categoryView, "", false);
+                changeDateBottomSheetDialog.show();
+//                startActivityForResult(SaveDateBottomSheetActivity.getDateInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
             }
         });
 
