@@ -1,34 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:visibility="visible">
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
+            android:layout_height="68dp"
+            android:layout_marginTop="?attr/actionBarSize"
             android:background="@color/white"
-            android:stateListAnimator="@animator/appbar_elevation"
             app:elevation="@dimen/dp_4">
-            <com.tokopedia.home_wishlist.view.custom.CustomSearchView
-                android:id="@+id/wishlist_search_view"
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapse"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="68dp"
+                android:minHeight="68dp"
                 android:layout_gravity="bottom"
-                android:layout_marginTop="?attr/actionBarSize"
-                android:layout_marginLeft="@dimen/dp_6"
-                android:layout_marginStart="@dimen/dp_6"
-                android:layout_marginRight="@dimen/dp_6"
-                android:layout_marginEnd="@dimen/dp_6"
-                android:layout_marginBottom="@dimen/dp_4"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed" />
+                app:titleEnabled="false"
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed|snap">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <com.tokopedia.home_wishlist.view.custom.CustomSearchView
+                        android:id="@+id/wishlist_search_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:layout_marginLeft="@dimen/dp_6"
+                        android:layout_marginStart="@dimen/dp_6"
+                        android:layout_marginRight="@dimen/dp_6"
+                        android:layout_marginEnd="@dimen/dp_6"
+                        android:layout_marginBottom="@dimen/dp_4"/>
+                </LinearLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
         </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -36,6 +50,7 @@
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" >
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
@@ -71,14 +86,12 @@
                 app:unifyButtonType="main"/>
         </FrameLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
-        android:minHeight="?attr/actionBarSize"
+        android:visibility="visible"
         app:titleTextAppearance="@style/Wishlist.TextAppearance"
-        app:theme="@style/Toolbar.Wishlist">
-    </androidx.appcompat.widget.Toolbar>
+        app:theme="@style/Toolbar.Wishlist"/>
 </FrameLayout>

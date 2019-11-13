@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Wishlist.Theme.White" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Wishlist.Theme.White" parent="Theme.AppCompat">
         <item name="toolbarTheme">@style/Toolbar.Wishlist</item>
     </style>
 
