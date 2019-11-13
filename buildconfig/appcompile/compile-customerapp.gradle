@@ -173,6 +173,7 @@ include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
 include "features:discovery:home_wishlist"
+include "features:discovery:smart_recycler_helper"
 
 include 'tkpdcore'
 include 'tkpdinbox'
