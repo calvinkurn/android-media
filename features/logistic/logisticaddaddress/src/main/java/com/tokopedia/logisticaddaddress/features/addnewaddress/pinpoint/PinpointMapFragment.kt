@@ -44,6 +44,8 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.utils.getLatLng
+import com.tokopedia.logisticaddaddress.utils.rxPinPoint
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -684,16 +686,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         presenter.detachView()
         composite.unsubscribe()
     }
-
-    private fun rxPinPoint(maps: GoogleMap): Observable<Boolean> =
-            Observable.create({ emitter: Emitter<Boolean> ->
-                maps.setOnCameraMoveListener {
-                    emitter.onNext(true)
-                }
-            }, Emitter.BackpressureMode.LATEST)
-                    .debounce(1000, TimeUnit.MILLISECONDS)
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .observeOn(AndroidSchedulers.mainThread())
 
     private fun Subscription.toCompositeSubs() {
         composite.add(this)
