@@ -171,6 +171,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setTradein(shipmentDetailData.isTradein());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
+        shippingParam.setTradeInDropOff(isTradeInDropOff);
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
             shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));
