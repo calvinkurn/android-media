@@ -10,6 +10,8 @@ import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.presenter.ProfileEmptyPresenter
 import com.tokopedia.profile.view.presenter.ProfilePresenter
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -40,9 +42,6 @@ class ProfileModule {
 
     @ProfileScope
     @Provides
-    @Named(MUTATION_LIKE_KOL_POST)
-    fun provideLikeKolPostMutation(): String {
-        return LikeKolPostQueryProvider.getQuery()
-    }
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
 }

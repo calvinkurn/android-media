@@ -109,27 +109,27 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     companion object {
         private const val YOUTUBE_URL = "{youtube_url}"
         private const val TEXT_PLAIN = "text/plain"
-        private val CREATE_POST = 888
-        private val OPEN_DETAIL = 54
+        private const val CREATE_POST = 888
+        private const val OPEN_DETAIL = 54
         private const val LOGIN_CODE = 1383
         private const val LOGIN_FOLLOW_CODE = 1384
         private const val OPEN_CONTENT_REPORT = 1130
         private const val KOL_COMMENT_CODE = 13
 
-        val PARAM_CREATE_POST_URL: String= "PARAM_CREATE_POST_URL"
-        val PARAM_SHOP_ID: String= "PARAM_SHOP_ID"
+        private const val PARAM_CREATE_POST_URL: String = "PARAM_CREATE_POST_URL"
+        private const val PARAM_SHOP_ID: String= "PARAM_SHOP_ID"
 
         //region Content Report Param
-        const val CONTENT_REPORT_RESULT_SUCCESS = "result_success"
-        const val CONTENT_REPORT_RESULT_ERROR_MSG = "error_msg"
+        private const val CONTENT_REPORT_RESULT_SUCCESS = "result_success"
+        private const val CONTENT_REPORT_RESULT_ERROR_MSG = "error_msg"
         //endregion
 
         //region Media Preview Param
-        const val MEDIA_PREVIEW_INDEX = "media_index"
+        private const val MEDIA_PREVIEW_INDEX = "media_index"
         //endregion
 
         //region Kol Comment Param
-        const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
+        private const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
         //endregion
 
         fun createInstance(shopId: String, createPostUrl: String): FeedShopFragment {
@@ -181,9 +181,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 try {
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        recyclerView?.let {
-                            FeedScrollListener.onFeedScrolled(it, adapter.list)
-                        }
+                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }

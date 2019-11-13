@@ -54,9 +54,9 @@ interface ProfileContract {
 
         fun unfollowKol(id: Int)
 
-        fun likeKol(id: Int, rowNumber: Int, likeListener: com.tokopedia.kolcommon.view.listener.KolPostLikeListener)
+        fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
 
-        fun unlikeKol(id: Int, rowNumber: Int, likeListener: com.tokopedia.kolcommon.view.listener.KolPostLikeListener)
+        fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener)
 
         fun deletePost(id: Int, rowNumber: Int)
 

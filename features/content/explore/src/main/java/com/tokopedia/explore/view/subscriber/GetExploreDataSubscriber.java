@@ -12,6 +12,7 @@ import com.tokopedia.explore.domain.entity.PostKol;
 import com.tokopedia.explore.domain.entity.Tag;
 import com.tokopedia.explore.domain.entity.Tracking;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
+import com.tokopedia.explore.view.type.ExploreCardType;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
@@ -99,36 +100,6 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
 
     private ExploreImageViewModel convertToKolPostViewModel(PostKol postKol, int pos) {
         Content content = getContent(postKol);
-//        Tag tag = getKolTag(content);
-//        List<String> imageList = new ArrayList<>();
-//        imageList.add(getImageUrl(content));
-//
-//        KolPostViewModel kolPostViewModel = new KolPostViewModel(
-//                postKol.getUserId(),
-//                checkType(postKol, content),
-//                "",
-//                postKol.getUserName() == null ? "" : postKol.getUserName(),
-//                postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
-//                postKol.getUserInfo() == null ? "" : postKol.getUserInfo(),
-//                postKol.getUserUrl() == null ? "" : postKol.getUserUrl(),
-//                postKol.isIsFollow(),
-//                postKol.getDescription() == null ? "" : postKol.getDescription(),
-//                postKol.isIsLiked(),
-//                postKol.getLikeCount(),
-//                postKol.getCommentCount(),
-//                0,
-//                postKol.getId(),
-//                postKol.getCreateTime() == null ? "" : generateTime(postKol.getCreateTime()),
-//                true,
-//                true,
-//                imageList,
-//                getTagId(tag),
-//                "",
-//                getTagType(tag),
-//                getTagCaption(tag),
-//                getTagLink(tag),
-//                convertToTrackingViewModel(postKol.getTracking())
-//        );
 
         return new ExploreImageViewModel(
                 postKol.getId(),
@@ -140,11 +111,11 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
         );
     }
 
-    private ExploreImageViewModel.ExploreImageCardType checkType(PostKol postKol, Content content) {
+    private ExploreCardType checkType(PostKol postKol, Content content) {
         if (postKol.getContent().size() > 1) {
-            return ExploreImageViewModel.ExploreImageCardType.Multi;
+            return ExploreCardType.Multi;
         } else {
-            return ExploreImageViewModel.ExploreImageCardType.getCardTypeByString(content.getType());
+            return ExploreCardType.getCardTypeByString(content.getType());
         }
     }
 

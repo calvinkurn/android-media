@@ -39,8 +39,5 @@ public interface KolApi {
     Observable<Response<GraphqlResponse<SendCommentKolGraphql>>>
     sendKolComment(@Body GraphqlRequest requestBody);
 
-    @POST("./")
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<GetKolFollowingData>>>
-    getKolFollowingList(@Body GraphqlRequest requestBody);
+
 }

@@ -3,7 +3,7 @@ package com.tokopedia.kol.feature.post.view.subscriber;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kolcommon.util.GraphqlErrorHandler;
-import com.tokopedia.kol.feature.post.domain.model.ContentListDomain;
+import com.tokopedia.kolcommon.data.pojo.content_list.ContentListDomain;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 

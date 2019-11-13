@@ -39,8 +39,6 @@ import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
-import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
 import com.tokopedia.user.session.UserSessionInterface
 
 import javax.inject.Inject

@@ -2,6 +2,7 @@ package com.tokopedia.explore.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory
+import com.tokopedia.explore.view.type.ExploreCardType
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.model.ImpressHolder
 
@@ -14,7 +15,7 @@ class ExploreImageViewModel(
         val userName: String,
         val imageUrl: String?,
         val itemPos: Int,
-        val cardType: ExploreImageCardType,
+        val cardType: ExploreCardType,
         val trackingViewModelList: List<TrackingViewModel>
 ) : Visitable<ExploreImageTypeFactory> {
 
@@ -24,23 +25,5 @@ class ExploreImageViewModel(
         return typeFactory.type(this)
     }
 
-    enum class ExploreImageCardType(val typeString: String) {
 
-        Multi("multi"),
-        Video("video"),
-        Youtube("youtube"),
-        Unknown("");
-
-        companion object {
-            val values = values()
-
-            @JvmStatic
-            fun getCardTypeByString(typeString: String): ExploreImageCardType {
-                for (type in values) {
-                    if (type.typeString == typeString) return type
-                }
-                return Unknown
-            }
-        }
-    }
 }

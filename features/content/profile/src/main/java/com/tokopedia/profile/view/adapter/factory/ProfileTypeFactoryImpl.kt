@@ -26,10 +26,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder
-import com.tokopedia.kol.feature.post.view.viewmodel.*
+import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.profile.view.adapter.viewholder.*
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.viewmodel.*
@@ -56,7 +53,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val highlightListener: HighlightAdapter.HighlightListener,
                              private val userSession : UserSessionInterface)
 
-    : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
+    : BaseAdapterTypeFactory(), ProfileTypeFactory, DynamicFeedTypeFactory {
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {
         return ProfileHeaderViewHolder.LAYOUT
@@ -64,18 +61,6 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
 
     override fun type(viewModel: ProfileEmptyViewModel): Int {
         return ProfileEmptyViewHolder.LAYOUT
-    }
-
-    override fun type(emptyKolPostViewModel: EmptyKolPostViewModel): Int {
-        return EmptyKolPostViewHolder.LAYOUT
-    }
-
-    override fun type(exploreViewModel: ExploreViewModel): Int {
-        return ExploreViewHolder.LAYOUT
-    }
-
-    override fun type(entryPointViewModel: EntryPointViewModel?): Int {
-        return 0
     }
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
@@ -121,10 +106,6 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 ProfileHeaderViewHolder(parent, viewListener) as AbstractViewHolder<Visitable<*>>
             ProfileEmptyViewHolder.LAYOUT ->
                 ProfileEmptyViewHolder(parent) as AbstractViewHolder<Visitable<*>>
-            EmptyKolPostViewHolder.LAYOUT ->
-                EmptyKolPostViewHolder(parent) as AbstractViewHolder<Visitable<*>>
-            ExploreViewHolder.LAYOUT ->
-                ExploreViewHolder(parent, kolPostViewListener) as AbstractViewHolder<Visitable<*>>
             DynamicPostViewHolder.LAYOUT ->
                 DynamicPostViewHolder(parent,
                         dynamicPostListener,

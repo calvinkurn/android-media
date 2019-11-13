@@ -10,11 +10,8 @@ import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.post.data.query.LikeKolPostQueryProvider;
-import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 import com.tokopedia.kol.feature.post.view.presenter.KolPostPresenter;
-import com.tokopedia.kol.feature.post.view.presenter.KolPostShopPresenter;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
 import com.tokopedia.network.CommonNetwork;
@@ -82,13 +79,6 @@ public class KolProfileModule {
     @Provides
     TopAdsApi provideTopAdsApi(Retrofit retrofit) {
         return retrofit.create(TopAdsApi.class);
-    }
-
-    @KolProfileScope
-    @Provides
-    KolPostShopContract.Presenter
-    provideKolPostShopPresenter(GetContentListUseCase getContentListUseCase) {
-        return new KolPostShopPresenter(getContentListUseCase);
     }
 
     @Provides

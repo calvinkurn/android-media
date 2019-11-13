@@ -38,6 +38,7 @@ import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
@@ -65,18 +66,9 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
-import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
-import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
-import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
-import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
-import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
+import com.tokopedia.profile.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.profile.R
@@ -96,7 +88,6 @@ import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -106,6 +97,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.util.*
 import javax.inject.Inject
@@ -130,6 +122,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
         HighlightAdapter.HighlightListener,
         ShareBottomSheets.OnShareItemClickListener {
+
+    override val androidContext: Context
+        get() = requireContext()
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -181,6 +176,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var affiliatePreference: AffiliatePreference
+    
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private lateinit var byMeInstastoryView: ByMeInstastoryView
 
@@ -200,6 +198,27 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val OPEN_CONTENT_REPORT = 1130
         private const val FOLLOW_HEADER = "follow_header"
         private const val FOLLOW_FOOTER = "follow_footer"
+
+        //region Content Report Param
+        private const val CONTENT_REPORT_RESULT_SUCCESS = "result_success"
+        private const val CONTENT_REPORT_RESULT_ERROR_MSG = "error_msg"
+        //endregion
+
+        //region Media Preview Param
+        private const val MEDIA_PREVIEW_INDEX = "media_index"
+        //endregion
+
+        //region Kol Comment Param
+        private const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
+        private const val COMMENT_ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT"
+        //endregion
+
+        private const val PARAM_IS_LIKED = "is_liked"
+        private const val PARAM_TOTAL_COMMENTS = "total_comments"
+        private const val PARAM_TOTAL_LIKES = "total_likes"
+        private const val PARAM_POST_ID = "post_id"
+        private const val IS_LIKE_TRUE = 1
+        private const val IS_LIKE_FALSE = 0
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -303,8 +322,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             KOL_COMMENT_CODE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     onSuccessAddDeleteKolComment(
-                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
-                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
+                            data.getIntExtra(COMMENT_ARGS_POSITION, -1),
+                            data.getIntExtra(COMMENT_ARGS_TOTAL_COMMENT, 0))
                 }
             }
             LOGIN_FOLLOW_CODE -> {
@@ -317,10 +336,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             OPEN_CONTENT_REPORT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.let {
-                        if (it.getBooleanExtra(ContentReportActivity.RESULT_SUCCESS, false)) {
+                        if (it.getBooleanExtra(CONTENT_REPORT_RESULT_SUCCESS, false)) {
                             onSuccessReportContent()
                         } else {
-                            onErrorReportContent(it.getStringExtra(ContentReportActivity.RESULT_ERROR_MSG))
+                            onErrorReportContent(it.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG))
                         }
                     }
                 }
@@ -349,7 +368,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun initInjector() {
         DaggerProfileComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
                 .build()
                 .inject(this)
     }
@@ -395,10 +413,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun getUserSession(): UserSession = UserSession(ctx)
+    override fun getUserSession(): UserSession = UserSession(requireContext())
 
     fun onOtherProfilePostItemClick(applink: String, position: Int, datum: FeedPostRelated.Datum) {
-        RouteManager.route(ctx, applink)
+        RouteManager.route(requireContext(), applink)
         profileAnalytics.eventClickOtherPost(userId.toString(), position, datum, userSession.userId, userSession.name)
     }
 
@@ -419,9 +437,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         if (!element.dynamicFeedDomainModel.postList.isEmpty()) {
-            element.dynamicFeedDomainModel.postList
-                    .filterIsInstance<BaseKolViewModel>()
-                    .forEach { it.isKol = element.profileHeaderViewModel.isKol }
+//            element.dynamicFeedDomainModel.postList
+//                    .filterIsInstance<BaseKolViewModel>()
+//                    .forEach { it.isKol = element.profileHeaderViewModel.isKol }
             visitables.addAll(element.dynamicFeedDomainModel.postList)
             trackKolPostImpression(visitables)
         } else {
@@ -523,11 +541,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun goToFollowing() {
         profileAnalytics.eventClickFollowing(isOwner, userId.toString())
-        startActivity(FollowingListActivity.createIntent(ctx, userId.toString()))
+        startActivity(FollowingListActivity.createIntent(requireContext(), userId.toString()))
     }
 
     override fun goToFollower() {
-        startActivity(KolFollowingListActivity.getFollowerInstance(ctx, userId))
+        startActivity(KolFollowingListActivity.getFollowerInstance(requireContext(), userId))
     }
 
     override fun updateCursor(cursor: String) {
@@ -579,12 +597,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onLikeKolError(message: String) = showError(message)
 
-    override fun onGoToKolProfile(rowNumber: Int, userId: String?, postId: Int) {
-
+    override fun onGoToKolProfile(rowNumber: Int, userId: String, postId: Int) {
     }
 
-    override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String?) {
-
+    override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String) {
     }
 
     override fun onOpenKolTooltip(rowNumber: Int, uniqueTrackingId: String, url: String) {
@@ -650,14 +666,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
-        val intent = KolCommentActivity.getCallingIntent(
-                ctx, id, rowNumber
-        )
-        startActivityForResult(intent, KOL_COMMENT_CODE)
+        RouteManager.getIntent(
+                requireContext(),
+                UriUtil.buildUriAppendParam(
+                        ApplinkConstInternalContent.COMMENT,
+                        mapOf(
+                                COMMENT_ARGS_POSITION to rowNumber.toString()
+                        )
+                ),
+                id.toString()
+        ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
         if (isOwner.not()) {
             profileAnalytics.eventClickComment(hasMultipleContent, id.toString(), activityType)
         }
     }
+
+
 
     override fun onSuccessFollowKol() {
         profileHeader?.let {
@@ -778,8 +802,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
-        ctx?.let {
-            val menus = com.tokopedia.kolcommon.util.createBottomMenu(it, deletable, reportable, editable, object : com.tokopedia.kolcommon.util.PostMenuListener {
+        context?.let {
+            val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
                 override fun onDeleteClicked() {
                     createDeleteDialog(positionInFeed, postId).show()
                 }
@@ -796,8 +820,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    override fun onEditClicked(hasMultipleContent: Boolean, activityId: String,
+                               activityType: String) {
+
+    }
+
     private fun goToEditPostAffiliate(postId: Int) {
-        ctx?.let { RouteManager.route(it, ApplinkConstInternalContent.AFFILIATE_EDIT, postId.toString()) }
+        context?.let { RouteManager.route(it, ApplinkConstInternalContent.AFFILIATE_EDIT, postId.toString()) }
     }
 
     private fun getShopIntent(
@@ -880,7 +909,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
-        ctx?.let {
+        context?.let {
             startActivity(getShopIntent(it, shop.id))
         }
     }
@@ -935,10 +964,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     redirectLink
             )
             if (!isSingleItem) {
-                activity?.let {
-                    startActivity(MediaPreviewActivity.createIntent(it,
-                            model.id.toString(), contentPosition))
-                }
+                RouteManager.getIntent(
+                        requireContext(),
+                        UriUtil.buildUriAppendParam(
+                                ApplinkConstInternalContent.MEDIA_PREVIEW,
+                                mapOf(
+                                        MEDIA_PREVIEW_INDEX to contentPosition.toString()
+                                )
+                        ),
+                        model.id.toString()
+                )
             }
         }
     }
@@ -973,9 +1008,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
         val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
 
-        if (ctx != null) {
+        if (context != null) {
             RouteManager.route(
-                    requireContext(),
+                    context,
                     redirectUrl
             )
         }
@@ -1026,9 +1061,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             positionInFeed: Int,
             contentPosition: Int,
             postId: String) {
-        startActivity(VideoDetailActivity.getInstance(
-                activity!!,
-                postId))
+        RouteManager.route(
+                requireContext(),
+                ApplinkConstInternalContent.VIDEO_DETAIL,
+                postId
+        )
     }
 
     override fun onEmptyComponentClicked() {
@@ -1041,7 +1078,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onAddToCartSuccess() {
-        RouteManager.route(ctx, ApplinkConstInternalMarketplace.CART)
+        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
     override fun onAddToCartFailed(pdpAppLink: String) {
@@ -1091,7 +1128,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             )
         }
 
-        remoteConfig = FirebaseRemoteConfigImpl(ctx)
+        remoteConfig = FirebaseRemoteConfigImpl(requireContext())
 
         isOwner = userId.toString() == userSession.userId
     }
@@ -1155,7 +1192,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         val affName = if (element.affiliateName.isNotBlank()) {
             element.affiliateName
         } else {
-            ctx?.resources?.getString(R.string.title_profile)
+            context?.resources?.getString(R.string.title_profile)
         }
         tv_name_parallax.text = affName
         tv_aff_name.text = affName
@@ -1183,14 +1220,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
         )
 
-        if (!::byMeInstastoryView.isInitialized) ctx?.let { ctx -> byMeInstastoryView = ByMeInstastoryView(ctx) }
+        if (!::byMeInstastoryView.isInitialized) context?.let { ctx -> byMeInstastoryView = ByMeInstastoryView(ctx) }
         byMeInstastoryView.setUserName(element.formattedAffiliateName)
 
         val selfProfile = userSession.userId == userId.toString()
                 && element.isAffiliate
         lateinit var action: View.OnClickListener
         action = if (!selfProfile) {
-            iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(ctx, com.tokopedia.design.R.drawable.ic_share_white))
+            iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(requireContext(), com.tokopedia.design.R.drawable.ic_share_white))
             iv_action.gone()
             View.OnClickListener {
                 showShareBottomSheet(
@@ -1203,8 +1240,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 isShareProfile = true
             }
         } else {
-            iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(ctx, R.drawable.ic_af_graph))
-            iv_action.setImageDrawable(MethodChecker.getDrawable(ctx, R.drawable.ic_af_graph))
+            iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(requireContext(), R.drawable.ic_af_graph))
+            iv_action.setImageDrawable(MethodChecker.getDrawable(requireContext(), R.drawable.ic_af_graph))
             View.OnClickListener {
                 goToDashboard()
             }
@@ -1316,7 +1353,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun updateDrawState(ds: TextPaint?) {
                 super.updateDrawState(ds)
                 ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(ctx, com.tokopedia.design.R.color.white)
+                ds?.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
             }
         }
 
@@ -1328,7 +1365,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun updateDrawState(ds: TextPaint?) {
                 super.updateDrawState(ds)
                 ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(ctx, com.tokopedia.design.R.color.white)
+                ds?.color = MethodChecker.getColor(requireContext(), com.tokopedia.design.R.color.white)
             }
         }
         if (spannableString.indexOf(followers) != -1) {
@@ -1457,7 +1494,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showAfterPostToast() {
-        ctx?.let {
+        context?.let {
             Toast.makeText(it, R.string.profile_after_post, Toast.LENGTH_LONG).show()
         }
     }
@@ -1508,26 +1545,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
         if (adapter.data.size > rowNumber &&
                 adapter.data[rowNumber] != null &&
-                adapter.data[rowNumber] is KolPostViewModel) {
-            val kolPostViewModel = adapter.data[rowNumber] as KolPostViewModel
-            kolPostViewModel.totalComment = kolPostViewModel.totalComment + totalNewComment
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
-
-            if (activity != null &&
-                    arguments != null &&
-                    arguments!!.getInt(PARAM_POST_ID, -1) == kolPostViewModel.contentId) {
-
-                if (resultIntent == null) {
-                    resultIntent = Intent()
-                    resultIntent!!.putExtras(arguments!!)
-                }
-                resultIntent!!.putExtra(PARAM_TOTAL_COMMENTS, kolPostViewModel.totalComment)
-                activity!!.setResult(Activity.RESULT_OK, resultIntent)
-            }
-        }
-
-        if (adapter.data.size > rowNumber &&
-                adapter.data[rowNumber] != null &&
                 adapter.data[rowNumber] is DynamicPostViewModel) {
             val comment = ((adapter.data[rowNumber]) as DynamicPostViewModel).footer.comment
             try {
@@ -1544,7 +1561,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun followSuccessOnClickListener(profileHeaderViewModel: ProfileHeaderViewModel)
             : View.OnClickListener {
         return View.OnClickListener {
-            RouteManager.route(ctx, ApplinkConst.FEED)
+            RouteManager.route(requireContext(), ApplinkConst.FEED)
             profileAnalytics.eventClickAfterFollow(profileHeaderViewModel.name)
         }
     }
@@ -1553,8 +1570,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.profile_delete_post))
         dialog.setDesc(getString(R.string.profile_after_delete_cant))
-        dialog.setBtnOk(getString(com.tokopedia.kol.R.string.kol_title_delete))
-        dialog.setBtnCancel(getString(com.tokopedia.kol.R.string.kol_title_cancel))
+        dialog.setBtnOk(getString(com.tokopedia.kolcommon.R.string.kol_title_delete))
+        dialog.setBtnCancel(getString(com.tokopedia.kolcommon.R.string.kol_title_cancel))
         dialog.setOnOkClickListener {
             presenter.deletePost(id, rowNumber)
             dialog.dismiss()
@@ -1566,7 +1583,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun goToAffiliateExplore() {
         if (affiliatePreference.isFirstTimeEducation(userSession.userId)) {
 
-            val intent = RouteManager.getIntent(ctx,
+            val intent = RouteManager.getIntent(requireContext(),
                     ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
             )
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
@@ -1574,7 +1591,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             affiliatePreference.setFirstTimeEducation(userSession.userId)
 
         } else {
-            val intent = RouteManager.getIntent(ctx, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST)
+            val intent = RouteManager.getIntent(requireContext(), ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
@@ -1582,7 +1599,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToExplore() {
         RouteManager.route(
-                ctx,
+                requireContext(),
                 ApplinkConst.CONTENT_EXPLORE
                         .replace(PARAM_TAB_NAME, TAB_INSPIRASI)
                         .replace(PARAM_CATEGORY_ID, CATEGORY_0)
@@ -1590,18 +1607,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToDashboard() {
-        RouteManager.route(ctx, ApplinkConst.AFFILIATE_DASHBOARD)
+        RouteManager.route(requireContext(), ApplinkConst.AFFILIATE_DASHBOARD)
         profileAnalytics.eventClickStatistic(userId.toString())
     }
 
     private fun goToLogin() {
-        ctx?.let {
+        context?.let {
             startActivityForResult(getLoginIntent(it), LOGIN_CODE)
         }
     }
 
     private fun followAfterLogin() {
-        ctx?.let {
+        context?.let {
             startActivityForResult(getLoginIntent(it), LOGIN_FOLLOW_CODE)
         }
     }
@@ -1626,7 +1643,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun isAutomaticOpenShareUser(): Boolean {
@@ -1641,10 +1658,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToContentReport(contentId: Int) {
-        if (ctx != null) {
+        if (requireContext() != null) {
             if (userSession.isLoggedIn) {
                 val intent = ContentReportActivity.createIntent(
-                        requireContext(),
+                        requireContext()(),
                         contentId
                 )
                 startActivityForResult(intent, OPEN_CONTENT_REPORT)
@@ -1671,12 +1688,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onGoToLink(link: String) {
-        if (ctx != null && !TextUtils.isEmpty(link)) {
-            if (RouteManager.isSupportApplink(ctx, link)) {
-                RouteManager.route(ctx, link)
+        if (requireContext() != null && !TextUtils.isEmpty(link)) {
+            if (RouteManager.isSupportApplink(requireContext(), link)) {
+                RouteManager.route(requireContext(), link)
             } else {
                 RouteManager.route(
-                        ctx,
+                        requireContext(),
                         String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
                 )
             }
@@ -1720,7 +1737,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onErrorGetRelatedProfile(throwable: Throwable?) {
-        view?.showErrorToaster(ErrorHandler.getErrorMessage(ctx, throwable),
+        view?.showErrorToaster(ErrorHandler.getErrorMessage(requireContext(), throwable),
                 com.tokopedia.abstraction.R.string.title_try_again) {
             getRelatedProfile()
         }
@@ -1743,7 +1760,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun registerBroadcastReceiver() {
-        ctx?.applicationContext?.let {
+        context?.applicationContext?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_SUBMIT_POST)
 
@@ -1754,7 +1771,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun unregisterBroadcastReceiver() {
-        ctx?.applicationContext?.let {
+        context?.applicationContext?.let {
             LocalBroadcastManager
                     .getInstance(it)
                     .unregisterReceiver(submitPostReceiver)

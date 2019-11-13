@@ -7,10 +7,10 @@ import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.PagerAdapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
-import com.tokopedia.kol.feature.following_list.view.fragment.KolFollowingListFragment
-import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment
-import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingListEmptyListener
+import com.tokopedia.profile.following_list.view.activity.KolFollowingListActivity
+import com.tokopedia.profile.following_list.view.fragment.KolFollowingListFragment
+import com.tokopedia.profile.following_list.view.fragment.ShopFollowingListFragment
+import com.tokopedia.profile.following_list.view.listener.KolFollowingListEmptyListener
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.adapter.FollowingListTabAdapter
 import com.tokopedia.profile.view.viewmodel.FollowingListTabItem
