@@ -1,8 +1,5 @@
 package com.tokopedia.kolcommon.domain.usecase
 
-import android.content.Context
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
@@ -14,9 +11,7 @@ import javax.inject.Inject
  * @author by yfsx on 11/7/18.
  */
 
-class FollowKolPostGqlUseCase @Inject constructor(
-        @param:ApplicationContext private val context: Context
-) : GraphqlUseCase() {
+class FollowKolPostGqlUseCase @Inject constructor() : GraphqlUseCase() {
 
     companion object {
 

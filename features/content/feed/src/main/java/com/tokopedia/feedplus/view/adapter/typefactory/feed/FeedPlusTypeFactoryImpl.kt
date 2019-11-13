@@ -38,13 +38,7 @@ import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
-import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel
-import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel
-import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -53,7 +47,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
                               private val userSession: UserSessionInterface) :
-        BaseAdapterTypeFactory(), FeedPlusTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
+        BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
 
     private val viewListener: FeedPlus.View
     private val kolPostListener: KolPostViewHolderListener
@@ -91,19 +85,6 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
 
     override fun type(emptyModel: EmptyModel): Int {
         return EmptyFeedViewHolder.LAYOUT
-    }
-
-    override fun type(emptyKolPostViewModel: EmptyKolPostViewModel): Int {
-        return EmptyKolPostViewHolder.LAYOUT
-    }
-
-    override fun type(exploreViewModel: ExploreViewModel): Int {
-        return ExploreViewHolder.LAYOUT
-    }
-
-    override fun type(entryPointViewModel: EntryPointViewModel): Int {
-        throw IllegalStateException(this.javaClass.simpleName + " doesn't support "
-                + EntryPointViewModel::class.java.simpleName)
     }
 
     override fun type(whitelistViewModel: WhitelistViewModel): Int {
@@ -152,10 +133,6 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
             viewHolder = RetryViewHolder(view, viewListener)
         else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
             viewHolder = EmptyFeedBeforeLoginViewHolder(view, viewListener)
-        else if (type == EmptyKolPostViewHolder.LAYOUT)
-            viewHolder = EmptyKolPostViewHolder(view)
-        else if (type == ExploreViewHolder.LAYOUT)
-            viewHolder = ExploreViewHolder(view, kolPostListener)
         else if (type == WhitelistViewHolder.LAYOUT)
             viewHolder = WhitelistViewHolder(view, viewListener)
         else if (type == DynamicPostViewHolder.LAYOUT) {
