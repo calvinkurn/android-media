@@ -7,12 +7,12 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.R
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.*
 
 
@@ -90,6 +90,9 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             descCouponGlobal?.text = desc
             descCouponGlobal.visibility = View.VISIBLE
         }
+
+        relativeLayoutUsePromoGlobal.background = ViewUtils.generateBackgroundWithShadow(relativeLayoutUsePromoGlobal)
+        layoutState.background = ViewUtils.generateBackgroundWithShadow(layoutState)
 
         setActionListener()
         invalidate()
