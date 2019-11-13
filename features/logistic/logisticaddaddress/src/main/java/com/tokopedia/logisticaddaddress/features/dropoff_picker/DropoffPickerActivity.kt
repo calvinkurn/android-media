@@ -128,6 +128,17 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
         mNearbiesBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
         mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        mNearbiesBehavior?.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(p0: View, p1: Float) {
+
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    tracker.trackExpandList()
+                }
+            }
+        })
         mDetailBehavior = BottomSheetBehavior.from(mStoreDetail)
         mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
