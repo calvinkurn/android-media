@@ -1,21 +1,15 @@
 package com.tokopedia.home_wishlist.view.fragment
 
 import android.animation.AnimatorInflater
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.util.TypedValue
 import android.view.*
-import android.view.animation.Animation
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.TranslateAnimation
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -23,12 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.text.SearchInputView
@@ -58,7 +52,6 @@ import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.SPAN
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -109,6 +102,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private val toolbar by lazy { view?.findViewById<Toolbar>(R.id.toolbar)}
     private val appBarLayout by lazy { view?.findViewById<AppBarLayout>(R.id.app_bar_layout)}
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private val coachMark by lazy { CoachMarkBuilder().allowPreviousButton(false).build() }
     private val itemDecorationBottom by lazy { SpaceBottomItemDecoration() }
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
@@ -123,6 +117,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val COACH_MARK_TAG = "wishlist"
         private const val REQUEST_FROM_PDP = 394
 
         fun newInstance() = WishlistFragment()
@@ -441,22 +436,23 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun showOnBoarding(){
-        Handler().postDelayed({
-            val manageMenu = view?.rootView?.findViewById<View>(R.id.manage)
+        if(!coachMark.hasShown(activity, COACH_MARK_TAG)){
+            Handler().postDelayed({
+                val manageMenu = view?.rootView?.findViewById<View>(R.id.manage)
 
-            manageMenu?.post {
-                val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
-                coachMarkItems.add(
-                        CoachMarkItem(
-                                manageMenu,
-                                getString(R.string.wishlist_coach_mark_title),
-                                getString(R.string.wishlist_coach_mark_description)
-                        )
-                )
-                val coachMark = CoachMarkBuilder().allowPreviousButton(false).build()
-                coachMark.show(activity, "wishlist", coachMarkItems)
-            }
-        }, 100)
+                manageMenu?.post {
+                    val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
+                    coachMarkItems.add(
+                            CoachMarkItem(
+                                    manageMenu,
+                                    getString(R.string.wishlist_coach_mark_title),
+                                    getString(R.string.wishlist_coach_mark_description)
+                            )
+                    )
+                    coachMark.show(activity, "wishlist", coachMarkItems)
+                }
+            }, 100)
+        }
     }
 
     /**
