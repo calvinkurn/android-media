@@ -9,9 +9,6 @@ import java.util.Map;
 
 import rx.subscriptions.CompositeSubscription;
 
-/**
- * Created by Fajar Ulin Nuha on 30/10/18.
- */
 public interface RetrofitInteractor {
 
     void unSubscribe();

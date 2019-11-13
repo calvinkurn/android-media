@@ -49,15 +49,9 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-/**
- * Created by Fajar Ulin Nuha on 29/10/18.
- */
 @GeolocationScope
 public class GeolocationPresenter implements GeolocationContract.GeolocationPresenter, LocationListener {
 
-    private static final String TAG = GeolocationPresenter.class.getSimpleName();
-    private static final String STATE_IS_ALLOW_GENERATE_ADDRESS = "STATE_IS_ALLOW_GENERATE_ADDRESS";
-    private static final String STATE_IS_USE_EXISTING_LOCATION = "STATE_IS_USE_EXISTING_LOCATION";
     public static final String CACHE_LATITUDE_LONGITUDE = "cache_latitude_longitude";
     public static final String CACHE_LATITUDE = "cache_latitude";
     public static final String CACHE_LONGITUDE = "cache_longitude";
