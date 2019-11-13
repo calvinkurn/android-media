@@ -1,0 +1,20 @@
+query ClaimPopGratification($campaignSlug:String!, $page:String!){
+  popGratificationClaim(PopGratificationClaimInput:{CampaignSlug: $campaignSlug, Page: $page}) {
+    resultStatus {
+      code
+      message
+      reason
+    }
+    dummyCouponCode
+    title
+    text
+    imageUrl
+    imageUrlMobile
+    popGratificationActionButton {
+      type
+      text
+      url
+      appLink
+    }
+  }
+}

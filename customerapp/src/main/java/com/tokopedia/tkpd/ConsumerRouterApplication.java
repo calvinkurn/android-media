@@ -178,6 +178,7 @@ import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
+import com.tokopedia.officialstore.reactnative.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
@@ -1592,7 +1593,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
-        return OfficialHomeContainerFragment.newInstance(bundle);
+        boolean enableOsNative = getBooleanRemoteConfig(RemoteConfigKey.ENABLE_OFFICIAL_STORE_OS, true);
+        if (enableOsNative) {
+            return OfficialHomeContainerFragment.newInstance(bundle);
+        } else {
+            return ReactNativeOfficialStoreFragment.Companion.createInstance();
+        }
     }
 
     @Override
