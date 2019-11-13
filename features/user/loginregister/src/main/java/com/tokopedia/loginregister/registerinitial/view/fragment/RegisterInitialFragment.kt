@@ -702,11 +702,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_SECURITY_QUESTION
                     && resultCode == Activity.RESULT_OK
-                    && data != null
-                    && data.extras != null
-                    && data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID) != null) {
-                val validateToken = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                registerInitialViewModel.reloginAfterSQ(validateToken)
+                    && data != null){
+                data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let {validateToken ->
+                    registerInitialViewModel.reloginAfterSQ(validateToken)
+                }
+
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
                             .RESULT_CANCELED) {
                 dismissProgressBar()
