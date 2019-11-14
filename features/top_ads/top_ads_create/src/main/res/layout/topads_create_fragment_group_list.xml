@@ -40,11 +40,11 @@
         app:layout_constraintTop_toBottomOf="@+id/typography18">
 
         <EditText
+            android:id="@+id/group_name_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/ketik_nama_group_iklan"
-            tools:layout_editor_absoluteX="-5dp"
-            tools:layout_editor_absoluteY="232dp" />
+            android:singleLine="true" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

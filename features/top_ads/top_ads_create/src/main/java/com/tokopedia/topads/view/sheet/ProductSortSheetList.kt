@@ -6,6 +6,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.FrameLayout
 import android.widget.RadioGroup
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.data.response.ResponseEtalase
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_sort.*
 
 /**
@@ -14,8 +15,7 @@ import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_
 class ProductSortSheetList {
 
     private var dialog: BottomSheetDialog? = null
-    private var actionListener: ActionListener? = null
-
+    var onItemClick: ((sortId: String) -> Unit)? = null
 
     private fun setupView(context: Context) {
         dialog?.let {
@@ -32,14 +32,21 @@ class ProductSortSheetList {
             }
             it.rb_group.setOnCheckedChangeListener ( object: RadioGroup.OnCheckedChangeListener{
                 override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
-
+                    onItemClick?.invoke(checkedId.toString())
+                    dismissDialog()
                 }
             })
         }
     }
 
-    fun setActionListener(actionListener: ActionListener) {
-        this.actionListener = actionListener
+    fun getSelectedSortId(): String {
+        return when(dialog?.rb_group?.checkedRadioButtonId){
+            R.id.rb_terbaru -> TERBARU
+            R.id.rb_terendah -> TERENDAH
+            R.id.rb_terlaris -> TERLARIS
+            R.id.rb_tertinggi -> TERTINGGI
+            else -> TERBARU
+        }
     }
 
     fun show() {
@@ -50,11 +57,11 @@ class ProductSortSheetList {
         dialog!!.dismiss()
     }
 
-    interface ActionListener {
-        fun onSort(pos: Int)
-    }
-
     companion object {
+        val TERBARU = "9"
+        val TERENDAH = "3"
+        val TERLARIS = "8"
+        val TERTINGGI = "4"
 
         fun newInstance(context: Context): ProductSortSheetList {
             val fragment = ProductSortSheetList()

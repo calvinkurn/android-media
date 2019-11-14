@@ -5,13 +5,15 @@
     android:id="@+id/linearLayout6"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:clickable="true"
+    android:background="?attr/selectableItemBackground">
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         style="@style/TextView.Small.Bold"
-        android:layout_width="339dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/subtitle"
         app:layout_constraintEnd_toStartOf="@+id/check"
@@ -25,7 +27,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subtitle"
         style="@style/TextView.Micro"
-        android:layout_width="339dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/check"
@@ -39,9 +41,12 @@
         android:id="@+id/check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_create_ic_check" />
+        app:srcCompat="@drawable/topads_create_ic_check"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

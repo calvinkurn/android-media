@@ -65,12 +65,11 @@
         app:srcCompat="@drawable/topads_create_ic_filter" />
 
     <RadioGroup
-        android:id="@+id/radioGroup2"
+        android:id="@+id/promotedGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:orientation="horizontal"
@@ -79,7 +78,7 @@
         app:layout_constraintTop_toBottomOf="@+id/searchInputView">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/not_promoted"
             style="@style/TopadsProductFilterRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -89,7 +88,7 @@
             android:text="@string/belum_diiklankan" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/promoted"
             style="@style/TopadsProductFilterRadioButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -100,17 +99,36 @@
 
     </RadioGroup>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <View
+        android:id="@+id/view5"
+        android:layout_width="0dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/topads_create_bg_shader_gray"
+        android:rotation="180"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/promotedGroup" />
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/view4"
+        app:layout_constraintBottom_toTopOf="@+id/shadow_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup2"
-        tools:itemCount="10"
-        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/topads_create_layout_product_list_item" />
+        app:layout_constraintTop_toBottomOf="@+id/view5">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/product_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:itemCount="10"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/topads_create_layout_product_list_item_product" />
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <com.tokopedia.design.component.RoundFloatingButton
         android:id="@+id/tip_btn"
@@ -123,16 +141,18 @@
         android:textAllCaps="false"
         app:buttonCompatSize="medium"
         app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips"
-        app:layout_constraintBottom_toTopOf="@+id/view4"
+        app:layout_constraintBottom_toTopOf="@+id/shadow_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <View
-        android:id="@+id/view4"
+        android:id="@+id/shadow_bottom"
         android:layout_width="0dp"
         android:layout_height="6dp"
         android:layout_marginBottom="@dimen/dp_8"
         android:background="@drawable/topads_create_bg_shader_gray"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -147,26 +167,30 @@
         android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:text="@string/lanjutkan"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:buttonCompatType="primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/typography37" />
+        app:layout_constraintStart_toEndOf="@+id/select_product_info" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography37"
+        android:id="@+id/select_product_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_weight="1"
         android:padding="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/btn_next"
         app:layout_constraintEnd_toStartOf="@+id/btn_next"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_next"
-        app:typographyType="body_3"
+        app:typographyType="heading_6"
         tools:text="2 produk dipilih" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

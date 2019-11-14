@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout7"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/topads_create_bg_top_round">
 
 
@@ -37,7 +37,7 @@
     <RadioGroup
         android:id="@+id/rb_group"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:divider="@drawable/topads_create_h_divider"
         android:dividerPadding="16dip"
         android:inputType="text"

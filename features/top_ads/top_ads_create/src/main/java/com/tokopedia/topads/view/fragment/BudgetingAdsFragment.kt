@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
+import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.sheet.InfoSheetBudgetList
 import com.tokopedia.topads.view.sheet.TipSheetBudgetList
 import kotlinx.android.synthetic.main.topads_create_fragment_budget_list.*
@@ -45,6 +46,7 @@ class BudgetingAdsFragment: BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     override fun initInjector() {
+        getComponent(CreateAdsComponent::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
