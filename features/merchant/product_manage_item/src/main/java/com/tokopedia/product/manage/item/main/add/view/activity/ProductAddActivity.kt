@@ -2,10 +2,11 @@ package com.tokopedia.product.manage.item.main.add.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
 import com.tokopedia.product.manage.item.category.view.model.ProductCategory
+import com.tokopedia.product.manage.item.common.util.AddEditPageType
 import com.tokopedia.product.manage.item.name.view.model.ProductName
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditActivity
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
@@ -15,6 +16,8 @@ import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddE
 import com.tokopedia.product.manage.item.main.add.view.fragment.ProductAddFragment
 
 open class ProductAddActivity : BaseProductAddEditActivity(){
+    override var addEditPageType: AddEditPageType = AddEditPageType.ADD
+
     override fun getCancelMessageRes() =  R.string.product_draft_dialog_cancel_message
 
     override fun needDeleteCacheOnBack() = true

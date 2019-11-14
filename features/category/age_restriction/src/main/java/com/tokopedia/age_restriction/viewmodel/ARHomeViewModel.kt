@@ -1,8 +1,8 @@
 package com.tokopedia.age_restriction.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.age_restriction.data.UserDOBResponse

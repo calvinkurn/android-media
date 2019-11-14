@@ -6,7 +6,7 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -36,7 +36,7 @@
                 android:id="@+id/spv_passenger_children"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:spv_icon="@drawable/ic_passenger_childreen"
+                app:spv_icon="@drawable/flight_ic_passenger_childreen"
                 app:spv_max_value="7"
                 app:spv_min_value="0"
                 app:spv_subtitle="@string/select_passenger_children_subtitle"
@@ -50,8 +50,8 @@
                 android:id="@+id/spv_passenger_infant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:spv_icon="@drawable/ic_passenger_infant"
-                app:spv_max_value="7"
+                app:spv_icon="@drawable/flight_ic_passenger_infant"
+                app:spv_max_value="4"
                 app:spv_min_value="0"
                 app:spv_subtitle="@string/select_passenger_infant_subtitle"
                 app:spv_title="@string/select_passenger_infant_title"
@@ -62,7 +62,7 @@
         </LinearLayout>
 
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <Button
         android:id="@+id/button_save"

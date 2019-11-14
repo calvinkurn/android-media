@@ -1,16 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
-android {
-    configurations {
-        all {
-            resolutionStrategy {
-                force "android.arch.core:runtime:1.1.1"
-            }
-        }
-    }
-}
-
 project.ext {
     artifactId = 'cachemanager'
     groupId = 'com.tokopedia.cachemanager'

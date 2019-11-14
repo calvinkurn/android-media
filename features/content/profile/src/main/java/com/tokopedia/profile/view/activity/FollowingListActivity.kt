@@ -3,14 +3,14 @@ package com.tokopedia.profile.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.view.PagerAdapter
+import com.google.android.material.tabs.TabLayout
+import androidx.viewpager.widget.PagerAdapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.following_list.view.fragment.KolFollowingListFragment
+import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment
 import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingListEmptyListener
-import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.adapter.FollowingListTabAdapter
 import com.tokopedia.profile.view.viewmodel.FollowingListTabItem
@@ -81,10 +81,11 @@ class FollowingListActivity : BaseTabActivity(), KolFollowingListEmptyListener {
     }
 
     private fun getFavoritedShopTabItem(): FollowingListTabItem {
-        val fragment = (application as ProfileModuleRouter).getFavoritedShopFragment(userId)
+        val bundle = Bundle()
+        bundle.putInt(KolFollowingListActivity.ARGS_USER_ID, userId.toInt())
         return FollowingListTabItem(
                 getString(R.string.fl_shop_title),
-                fragment
+                ShopFollowingListFragment.createInstance(bundle)
         )
     }
 

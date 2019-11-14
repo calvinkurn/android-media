@@ -1,14 +1,14 @@
 package com.tokopedia.topchat.chatlist.activity
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v4.view.PagerAdapter
+import com.google.android.material.tabs.TabLayout
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +34,8 @@ import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
 import com.tokopedia.topchat.chatlist.listener.ChatListContract
+import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel.Companion.ROLE_BUYER
+import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel.Companion.ROLE_SELLER
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
@@ -71,6 +73,10 @@ class ChatListActivity : BaseTabActivity()
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_chat_list
+    }
+
+    override fun getScreenName(): String {
+        return "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
     }
 
     override fun getViewPagerAdapter(): PagerAdapter? {
@@ -232,25 +238,43 @@ class ChatListActivity : BaseTabActivity()
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
         debug(TAG, incomingChatWebSocketModel.toString())
-        val fragment: ChatListFragment? = determineFragmentByTag(incomingChatWebSocketModel.contact?.tag)
+        val contactId = incomingChatWebSocketModel.getContactId()
+        val tag = incomingChatWebSocketModel.getTag()
+        val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
         fragment?.processIncomingMessage(incomingChatWebSocketModel)
     }
 
 
     private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
         debug(TAG, incomingTypingWebSocketModel.toString())
-        val fragment: ChatListFragment? = determineFragmentByTag(incomingTypingWebSocketModel.contact?.tag)
+        val contactId = incomingTypingWebSocketModel.getContactId()
+        val tag = incomingTypingWebSocketModel.getTag()
+        val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
         fragment?.processIncomingMessage(incomingTypingWebSocketModel)
     }
 
-    private fun determineFragmentByTag(tag: String?): ChatListFragment {
-        if (isBuyerOnly()) {
-            return fragmentAdapter.getItem(0) as ChatListFragment
-        }
-        return when (tag) {
-            "User" -> fragmentAdapter.getItem(0) as ChatListFragment
-            else -> fragmentAdapter.getItem(1) as ChatListFragment
-        }
+    private fun determineFragmentByTag(fromUid: String, tag: String): ChatListFragment? {
+        if (isBuyerOnly()) return getBuyerFragment()
+        if (isFromBuyer(fromUid, tag)) return getSellerFragment()
+        if (isFromSeller(fromUid, tag)) return getBuyerFragment()
+        return null
+    }
+
+    private fun isFromBuyer(fromUid: String, tag: String): Boolean {
+        return (tag == ROLE_BUYER && fromUid != userSession.userId)
+    }
+
+    private fun isFromSeller(fromUid: String, tag: String): Boolean {
+        return (tag == ROLE_SELLER && fromUid != userSession.userId)
+    }
+
+    private fun getBuyerFragment(): ChatListFragment {
+        val buyerPosition = if (isBuyerOnly()) 0 else 1
+        return fragmentAdapter.getItem(buyerPosition) as ChatListFragment
+    }
+
+    private fun getSellerFragment(): ChatListFragment {
+        return fragmentAdapter.getItem(0) as ChatListFragment
     }
 
     private fun isBuyerOnly(): Boolean {

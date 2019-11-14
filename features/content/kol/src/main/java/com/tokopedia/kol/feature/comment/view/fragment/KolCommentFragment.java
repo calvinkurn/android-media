@@ -5,9 +5,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.feedcomponent.util.MentionTextHelper;
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter;
 import com.tokopedia.feedcomponent.view.custom.MentionEditText;
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
@@ -282,6 +283,23 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void replyToUser(MentionableUserViewModel user) {
+        if (!user.isShop()) {
+            CharSequence userToMention = MentionTextHelper.createValidMentionText(user.toString());
+            kolComment.append(userToMention);
+        } else {
+            StringBuilder mentionFormatBuilder = new StringBuilder();
+            if (kolComment.getText().length() > 0 && kolComment.getText().charAt(kolComment.length() - 1) != ' ') mentionFormatBuilder.append(" ");
+            mentionFormatBuilder
+                    .append("@")
+                    .append(user.getFullName())
+                    .append(" ");
+            kolComment.append(mentionFormatBuilder.toString());
+        }
+        kolComment.setSelection(kolComment.length());
+    }
+
+    @Override
     public void onSuccessChangeWishlist() {
         setWishlist(true);
     }
@@ -319,13 +337,15 @@ public class KolCommentFragment extends BaseDaggerFragment
         adapter.addItem(new KolCommentViewModel(
                 sendKolCommentDomain.getId(),
                 String.valueOf(sendKolCommentDomain.getDomainUser().getId()),
+                null,
                 sendKolCommentDomain.getDomainUser().getPhoto(),
                 sendKolCommentDomain.getDomainUser().getName(),
                 sendKolCommentDomain.getComment(),
                 sendKolCommentDomain.getTime(),
                 sendKolCommentDomain.getDomainUser().isKol(),
                 sendKolCommentDomain.canDeleteComment(),
-                ""
+                "",
+                false
         ));
 
         kolComment.setText("");

@@ -4,13 +4,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -174,7 +174,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 scrollToBottom();
             }
         });
-        login = view.findViewById(R.id.login);
+        login = view.findViewById(com.tokopedia.design.R.id.login);
         sprintSaleIconLayout = view.findViewById(R.id.sprintsale_icon_layout);
         sprintSaleText = view.findViewById(R.id.sprintsale_text);
         prepareView();
@@ -196,7 +196,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity()
                 .getResources().getDimension(R.dimen.space_chat));
         QuickReplyItemDecoration quickReplyItemDecoration = new QuickReplyItemDecoration((int) getActivity()
-                .getResources().getDimension(R.dimen.dp_16));
+                .getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
         chatRecyclerView.addItemDecoration(itemDecoration);
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration);
         chatRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -474,7 +474,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
 
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet)
@@ -500,7 +500,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         View view = getLayoutInflater().inflate(R.layout.layout_pinned_message_expanded, null);
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
         ImageHandler.loadImage(getActivity(), view.findViewById(R.id.thumbnail)
-                , pinnedMessage.getThumbnail(), R.drawable.loading_page);
+                , pinnedMessage.getThumbnail(), com.tokopedia.abstraction.R.drawable.loading_page);
         if (!TextUtils.isEmpty(pinnedMessage.getImageUrl())) {
             view.findViewById(R.id.thumbnail).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -516,15 +516,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
-                    R.drawable.bg_rounded_pink_label));
-            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
+                    R.drawable.bg_rounded_soft_pink));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.red_500));
             sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
                     .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
-            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.red_500));
         } else if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_ACTIVE)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_red_label));
-            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.white));
             sprintSaleText.setText(getString(R.string.ongoing));
         }
     }

@@ -1,12 +1,12 @@
 package com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
-import android.support.annotation.LayoutRes
-import android.support.v4.app.FragmentActivity
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.FragmentActivity
 import android.text.Html
 import android.text.TextUtils
 import android.view.Menu
@@ -221,7 +221,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                 orderListAnalytics.sendProductClickEvent(status?.text.toString())
                 orderListAnalytics.sendPageClickEvent("order - detail")
 
-                RouteManager.route(itemView.context, appLink)
+                RouteManager.route(itemView.context, "${appLink}?upstream=${order.upstream}")
             }
         }
     }
@@ -241,7 +241,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                 }
                 R.id.action_order_detail -> {
                     if (order.appLink.isNotEmpty()) {
-                        RouteManager.route(context, order.appLink)
+                        RouteManager.route(context, "${order.appLink}?upstream=${order.upstream}")
                     }
                     true
                 }

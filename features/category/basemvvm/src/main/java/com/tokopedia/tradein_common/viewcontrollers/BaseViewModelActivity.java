@@ -1,15 +1,15 @@
 package com.tokopedia.tradein_common.viewcontrollers;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -134,15 +134,9 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         startActivityForResult(intent, requestCode);
     }
 
-    public void showProgressBar() {
-        if (getRootView() != null)
-            getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.VISIBLE);
-    }
+    protected abstract void showProgressBar();
 
-    public void hideProgressBar() {
-        if (getRootView() != null)
-        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.GONE);
-    }
+    protected abstract void hideProgressBar();
 
     @Override
     protected void setupStatusBar() {
@@ -235,11 +229,15 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.addToBackStack("TNC");
-        transaction.replace(R.id.root_view, fragment);
+        transaction.replace(getRootViewId(), fragment);
         transaction.commit();
     }
 
-    protected void showDialogFragment(int resId, String titleText, String bodyText, String positiveButton, String negativeButton) {
+    public int getRootViewId() {
+        return R.id.root_view;
+    }
+
+    protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.newInstance();
         accessDialog.setLayoutResId(resId);

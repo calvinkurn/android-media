@@ -11,7 +11,7 @@
         android:id="@+id/tv_section"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_12"
         android:textColor="@color/black_70"
         android:visibility="gone"
         app:typographyType="heading_5"
@@ -21,17 +21,12 @@
         tools:visibility="visible"
         tools:text="Produk Afiliasi Berlangsung" />
 
-    <android.support.v7.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/card_view"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        app:cardElevation="@dimen/dp_4"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardUseCompatPadding="true">
+        android:layout_marginStart="@dimen/dp_14"
+        android:layout_marginEnd="@dimen/dp_14">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,7 +34,7 @@
             android:padding="@dimen/dp_10"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/dp_4"
@@ -52,7 +47,7 @@
                     android:layout_gravity="center"
                     android:scaleType="centerCrop"
                     tools:background="@tools:sample/avatars"/>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -192,6 +187,6 @@
         </LinearLayout>
 
 
-    </android.support.v7.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify>
 
 </LinearLayout>

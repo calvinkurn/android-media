@@ -3,9 +3,9 @@ package com.tokopedia.tokopoints.view.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,9 +128,9 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
             StringBuilder upperText = new StringBuilder();
 
             if (item.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.red_150));
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), com.tokopedia.design.R.color.red_150));
             } else {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), R.color.black_38));
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.getContext(), com.tokopedia.design.R.color.black_38));
             }
 
             for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
@@ -162,16 +162,16 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
         //disabling the coupons if not eligible for current membership
         if (item.isDisabled()) {
             ImageUtil.dimImage(holder.imgBanner);
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), R.color.black_54));
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.design.R.color.black_54));
         } else {
             ImageUtil.unDimImage(holder.imgBanner);
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), R.color.orange_red));
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), com.tokopedia.design.R.color.orange_red));
         }
 
         if (item.isDisabledButton()) {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.black_12));
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), com.tokopedia.abstraction.R.color.black_12));
         } else {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), com.tokopedia.design.R.color.white));
         }
 
         if (item.getPointsSlash() <= 0) {
@@ -331,7 +331,7 @@ public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
         promoClick.put("promoClick", promotions);
 
         AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
                 data.getTitle(), promoClick);

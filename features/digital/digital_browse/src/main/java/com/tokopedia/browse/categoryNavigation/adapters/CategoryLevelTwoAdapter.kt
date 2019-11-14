@@ -1,9 +1,9 @@
 package com.tokopedia.browse.categoryNavigation.adapters
 
 import android.content.Context
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +12,18 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_level_two_type_two.view.*
 import kotlinx.android.synthetic.main.item_exclusive_level_two.view.*
 import kotlinx.android.synthetic.main.item_level_two_child.view.product_image
 import kotlinx.android.synthetic.main.item_level_two_child.view.product_name
 
-class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>,
+                              private val trackingQueue: TrackingQueue?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     private val TYPE_ONE = 1
@@ -68,6 +72,19 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
     private fun initLayoutTwo(holder: DefaultViewHolder, position: Int) {
         val item = list[position]
 
+        //default view holder impression
+        holder.itemView.addOnImpressionListener(
+                item, object : ViewHintListener {
+            override fun onViewHint() {
+                if (!viewMap2.containsKey(position)) {
+                    viewMap2[position] = true
+                    trackingQueue?.let {
+                        CategoryAnalytics.createInstance().eventDropDownPromoView(it, list[position], position)
+                    }
+                }
+            }
+        })
+
         ImageHandler.loadImage(holder.itemView.context, holder.item_image, item.iconImageUrl, R.drawable.loading_page)
         holder.item_name.text = item.name
 
@@ -79,7 +96,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
             holder.item_child_recycler.apply {
                 layoutManager = gridLayoutManager
-                adapter = LevelTwoChildAdapter(childList)
+                adapter = LevelTwoChildAdapter(childList, trackingQueue)
             }
         }
 
@@ -132,6 +149,19 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
     private fun initLayoutOne(holder: ExclusiveViewHolder, position: Int) {
         val item = list[position]
 
+        //exclusive viewholder impression
+        holder.itemView.addOnImpressionListener(
+                item, object : ViewHintListener {
+            override fun onViewHint() {
+                if (!viewMap1.containsKey(position)) {
+                    viewMap1[position] = true
+                    trackingQueue?.let {
+                        CategoryAnalytics.createInstance().eventPromoView(it, list[position], position)
+                    }
+                }
+            }
+        })
+
         ImageHandler.loadImage(holder.itemView.context, holder.item_image_v1, item.iconImageUrl, R.drawable.loading_page)
         holder.item_name_v1.text = item.name
 
@@ -152,25 +182,6 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
     private fun fireApplink(context: Context?, applinks: String?) {
         RouteManager.route(context, applinks)
     }
-
-    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        if (holder is ExclusiveViewHolder) {
-            val position = holder.adapterPosition
-            if (!viewMap1.containsKey(position)) {
-                viewMap1[position] = true
-                CategoryAnalytics.createInstance().eventPromoView(list[position], position)
-            }
-
-        } else if (holder is DefaultViewHolder) {
-            val position = holder.adapterPosition
-            if (!viewMap2.containsKey(position)) {
-                viewMap2[position] = true
-                CategoryAnalytics.createInstance().eventDropDownPromoView(list[position], position)
-            }
-        }
-    }
-
 
     class DefaultViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val item_image = view.item_icon

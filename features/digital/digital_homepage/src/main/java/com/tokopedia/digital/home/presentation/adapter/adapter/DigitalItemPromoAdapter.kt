@@ -1,6 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalItemPromoViewHolder
 

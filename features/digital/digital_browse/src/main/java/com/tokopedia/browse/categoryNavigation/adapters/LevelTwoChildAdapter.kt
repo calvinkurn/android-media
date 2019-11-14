@@ -1,6 +1,6 @@
 package com.tokopedia.browse.categoryNavigation.adapters
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +9,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_level_two_child.view.*
 
-class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Adapter<LevelTwoChildAdapter.ViewHolder>() {
+class LevelTwoChildAdapter(private val list: List<ChildItem>?,
+                           private val trackingQueue: TrackingQueue?) : RecyclerView.Adapter<LevelTwoChildAdapter.ViewHolder>() {
 
     val viewMap = HashMap<Int, Boolean>()
 
@@ -26,6 +30,19 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        list?.let {list->
+            holder.itemView.addOnImpressionListener(list[position], object: ViewHintListener {
+                override fun onViewHint() {
+                    if (!viewMap.containsKey(position)) {
+                        viewMap[position] = true
+                        trackingQueue?.let {trackingQueue->
+                            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoView(trackingQueue, list[position], position)
+                        }
+                    }
+                }
+            })
+        }
+
         holder.productName.text = list!![position].name
 
         val marginThirty = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_10)
@@ -45,15 +62,6 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
         }
         holder.productName.setOnClickListener {
             RouteManager.route(holder.productImage.context, list[position].applinks)
-        }
-    }
-
-    override fun onViewAttachedToWindow(holder: ViewHolder) {
-        super.onViewAttachedToWindow(holder)
-        val position = holder.adapterPosition
-        if (!viewMap.containsKey(position)) {
-            viewMap[position] = true
-            CategoryAnalytics.createInstance().eventBannerInsideLevelTwoView(list?.get(position)!!, position)
         }
     }
 

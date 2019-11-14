@@ -16,8 +16,8 @@ public class GqlCheckPremiumAccountUseCase {
     private String query;
 
     @Inject
-    public GqlCheckPremiumAccountUseCase() {
-        graphqlUseCase = new GraphqlUseCase();
+    public GqlCheckPremiumAccountUseCase(GraphqlUseCase graphqlUseCase) {
+        this.graphqlUseCase = graphqlUseCase;
     }
 
     public void unsubscribe() {

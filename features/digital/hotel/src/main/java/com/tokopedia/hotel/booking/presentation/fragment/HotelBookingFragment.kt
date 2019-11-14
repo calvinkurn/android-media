@@ -2,12 +2,12 @@ package com.tokopedia.hotel.booking.presentation.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
@@ -86,7 +86,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.hotelCartResult.observe(this, android.arch.lifecycle.Observer {
+        bookingViewModel.hotelCartResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     hotelCart = it.data
@@ -98,7 +98,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
         })
 
-        bookingViewModel.hotelCheckoutResult.observe(this, android.arch.lifecycle.Observer {
+        bookingViewModel.hotelCheckoutResult.observe(this, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
@@ -122,7 +122,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
         })
 
-        bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
+        bookingViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
             contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
     }

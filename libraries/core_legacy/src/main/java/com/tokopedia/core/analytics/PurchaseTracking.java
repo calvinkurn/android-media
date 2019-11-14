@@ -1,18 +1,26 @@
 package com.tokopedia.core.analytics;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.track.TrackApp;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import kotlin.Pair;
 
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_CAT;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID;
@@ -37,10 +45,12 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String LOGISTIC_TYPE = "logistic_type";
     public static final String ECOMMERCE = "ecommerce";
     public static final String EVENT_LABEL = "";
+    public static final String ITEMS = "items";
 
     public static final String USER_ID = "userId";
 
-    public static void marketplace(Context context, Purchase purchase) {
+    public static void marketplace(Context context, Pair<Purchase, Bundle> purchaseBundlePair) {
+        Purchase purchase = purchaseBundlePair.getFirst();
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                 AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
@@ -59,6 +69,8 @@ public class PurchaseTracking extends TrackingUtils {
         ));
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_FINISH_TX);
         TrackApp.getInstance().getGTM().clearEnhanceEcommerce();
+
+
     }
 
     public static void digital(Context context, Purchase purchase) {
@@ -98,12 +110,20 @@ public class PurchaseTracking extends TrackingUtils {
         List<String> productList = new ArrayList<>();
         List<String> productId = new ArrayList<>();
         List<String> productCategory = new ArrayList<>();
+        JSONArray productArray = new JSONArray();
         for(Object product:trackignData.getListProduct()) {
+            JSONObject jsonObject = new JSONObject();
             Map<String, Object> product1 = (Map<String, Object>) product;
             quantity += parseStringToInt(String.valueOf(product1.get(KEY_QTY)));
             productList.add(String.valueOf(product1.get(KEY_NAME)));
             productId.add(String.valueOf(product1.get(KEY_ID)));
             productCategory.add(String.valueOf(product1.get(KEY_CAT)));
+            try {
+                jsonObject.put(KEY_ID, String.valueOf(product1.get(KEY_ID)));
+                jsonObject.put(KEY_QTY, parseStringToInt(String.valueOf(product1.get(KEY_QTY))));
+                productArray.put(jsonObject);
+            } catch (JSONException ignored) {
+            }
         }
 
 
@@ -118,13 +138,15 @@ public class PurchaseTracking extends TrackingUtils {
         afValue.put(AFInAppEventParameterName.CURRENCY, Jordan.VALUE_IDR);
         afValue.put(Jordan.AF_VALUE_PRODUCTTYPE, productList);
         afValue.put(Jordan.AF_KEY_CATEGORY_NAME,productCategory);
-        if(productList != null && productList.size()>1) {
-            afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTGROUPTYPE);
-        }else {
-            afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        if (productArray.length() > 0) {
+            String afContent = productArray.toString();
+            afValue.put(AFInAppEventParameterName.CONTENT, afContent);
         }
 
+        afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
+        afValue.remove(AFInAppEventParameterName.CONTENT);
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 }

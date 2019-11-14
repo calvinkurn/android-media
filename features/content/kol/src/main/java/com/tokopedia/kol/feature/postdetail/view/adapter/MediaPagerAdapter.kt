@@ -1,11 +1,11 @@
 package com.tokopedia.kol.feature.postdetail.view.adapter
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.kol.feature.video.view.fragment.MediaHolderFragment
-import android.support.v4.util.SparseArrayCompat
+import androidx.collection.SparseArrayCompat
 import android.view.ViewGroup
 
 

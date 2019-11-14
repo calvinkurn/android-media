@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Patterns
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.analytics.TrackAnalytics
-import com.tokopedia.analytics.cashshield.CashShield
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
 import com.tokopedia.linker.LinkerConstants
@@ -25,7 +24,6 @@ import javax.inject.Inject
  * https://docs.google.com/spreadsheets/d/1F3IQYqqG62aSxNbeFvrxyy-Pu--ZrShh8ewMKELeKj4/edit?ts=5cca711b#gid=910823048
  */
 class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInterface) {
-    private var cashShield: CashShield? = null
 
     companion object {
 
@@ -764,7 +762,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     fun eventClickCloseSocmedButton(){
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
+                EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED,
                 ""
@@ -778,31 +776,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
             e.printStackTrace()
         }
 
-    }
-
-    fun initCashShield(context: Context?) {
-        context?.let {
-            getCashShield(it).refreshSession()
-        }
-    }
-
-    fun sendCashShield(context: Context?) {
-        context?.let {
-            getCashShield(it).send()
-        }
-    }
-
-    private fun getCashShield(context: Context): CashShield {
-        if(cashShield == null) {
-            cashShield = CashShield(context)
-        }
-
-        return cashShield!!
-    }
-
-    fun onDestroy() {
-        cashShield?.cancel()
-        cashShield = null
     }
 
     fun getLoginMethodMoengage(loginMethod: String?): String? {

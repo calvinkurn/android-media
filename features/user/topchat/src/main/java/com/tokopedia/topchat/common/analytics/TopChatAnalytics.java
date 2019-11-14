@@ -3,6 +3,7 @@ package com.tokopedia.topchat.common.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
+import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel;
 import com.tokopedia.track.TrackApp;
@@ -83,6 +84,10 @@ public class TopChatAnalytics {
         public static final String CLICK_BUY_PRODUCT_THUMBNAIL ="click buy on product thumbnail";
         public static final String SENT_INVOICE_ATTACHMENT = "click kirim after attach invoice";
         public static final String CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
+        public static final String CLICK_ADD_ATTACHMENT = "click add attachment";
+        public static final String CLICK_IMAGE_ATTACHMENT = "click on image on chat";
+        public static final String CLICK_INVOICE_ATTACHMENT = "click invoice on chat detail";
+        public static final String CLICK_REPORT_USER = "click report user on chat";
 
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
 
@@ -387,4 +392,45 @@ public class TopChatAnalytics {
                 ""
         );
     }
+
+
+    public void trackChatMenuClicked(@NotNull String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_ADD_ATTACHMENT,
+                label
+        );
+    }
+
+    public void trackClickImageUpload() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_IMAGE_ATTACHMENT,
+                ""
+        );
+    }
+
+
+    public void trackClickInvoice(@NotNull AttachInvoiceSentViewModel invoice) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_INVOICE_ATTACHMENT,
+                invoice.getInvoiceId()
+        );
+    }
+
+    // #RC1
+    public void eventClickReportUser(String opponentId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_REPORT_USER,
+                opponentId
+        );
+    }
+
+
 }

@@ -5,8 +5,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +16,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.analytics.cashshield.CashShield;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.Router;
@@ -50,7 +49,6 @@ public class DialogLogoutFragment extends DialogFragment {
     CompositeSubscription compositeSubscription = new CompositeSubscription();
     Button okButton;
     TkpdProgressDialog progressDialog;
-    private CashShield cashShield;
 
 
     @Override
@@ -58,7 +56,6 @@ public class DialogLogoutFragment extends DialogFragment {
         final Activity activity = getActivity();
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         progressDialog = new TkpdProgressDialog(activity, TkpdProgressDialog.NORMAL_PROGRESS);
-        cashShield = new CashShield(getActivity());
         return new AlertDialog.Builder(getActivity())
                 .setIcon(getDrawable())
                 .setTitle(getString(R.string.action_logout) + " dari Tokopedia")
@@ -128,10 +125,6 @@ public class DialogLogoutFragment extends DialogFragment {
                                             Router.onLogout(getActivity(), component);
                                         }
 
-                                        if(cashShield != null) {
-                                            cashShield.refreshSession();
-                                        }
-
                                         dismiss();
                                     } else {
                                         progressDialog.dismiss();
@@ -176,13 +169,5 @@ public class DialogLogoutFragment extends DialogFragment {
         dismiss();
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(cashShield != null) {
-            cashShield.cancel();
-        }
     }
 }

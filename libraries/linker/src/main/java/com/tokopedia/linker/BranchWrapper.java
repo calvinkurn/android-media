@@ -66,8 +66,6 @@ public class BranchWrapper implements WrapperInterface {
             try {
                 if(linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDataObj() != null &&
                         linkerDeeplinkRequest.getDataObj() instanceof LinkerDeeplinkData) {
-                    branch.setRequestMetadata(LinkerConstants.KEY_GA_CLIENT_ID,
-                            ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getClientId());
                     branch.initSession(new Branch.BranchReferralInitListener() {
                                            @Override
                                            public void onInitFinished(JSONObject referringParams, BranchError error) {
@@ -99,6 +97,17 @@ public class BranchWrapper implements WrapperInterface {
                 }
             }
         }
+    }
+
+    @Override
+    public void setGaClientId(String gaClientId) {
+        Branch branch = Branch.getInstance();
+        branch.setRequestMetadata(LinkerConstants.KEY_GA_CLIENT_ID, gaClientId);
+    }
+
+    @Override
+    public void initSession() {
+        Branch.getInstance().initSession();
     }
 
     @Override

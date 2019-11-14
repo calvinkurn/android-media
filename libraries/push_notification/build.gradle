@@ -46,6 +46,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
 }
 
 project.ext {

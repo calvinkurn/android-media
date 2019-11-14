@@ -1,8 +1,8 @@
 package com.tokopedia.feedcomponent.view.custom
 
 import android.content.Context
-import android.support.annotation.ColorInt
-import android.support.v4.content.ContextCompat
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -20,7 +20,8 @@ import kotlin.math.max
 class MentionEditText : MultiAutoCompleteTextView {
 
     companion object {
-        @ColorInt fun getMentionColor(context: Context): Int {
+        @ColorInt
+        fun getMentionColor(context: Context): Int {
             return ContextCompat.getColor(context, R.color.Green_G500)
         }
     }
@@ -47,20 +48,25 @@ class MentionEditText : MultiAutoCompleteTextView {
             if (text == null) return
             removeTextChangedListener(this)
 
-            val distanceFromEnd = length() - selectionEnd //calculate cursor distance from text end
+            val prevLength = length()
+            val selEnd = selectionEnd
+            val distanceFromEnd = prevLength - selEnd //calculate cursor distance from text end
 
             val spannedText = MentionTextHelper.spanText(text, color, onMentionClickedListener, true)
-            val allMentionSpans = MentionTextHelper.getAllMentionSpansFromText(spannedText).toList()
+            val allMentionSpans = MentionTextHelper.getRenewedMentionSpans(spannedText).toList()
             val newText = MentionTextHelper.stripInvalidMentionFromText(spannedText, allMentionSpans)
 
-            text.replace(0, text.length, "")
-                .replace(0, text.length, newText)
+            text.replace(0, text.length, newText)
 
             /**
              * Cursor positioning
              */
-            val expectedCursorFromEnd = max(length() - distanceFromEnd, 0)
-            setSelection(expectedCursorFromEnd) //move cursor to distance from text end to mimic previous cursor place
+            val currentLength = length()
+            if (currentLength < distanceFromEnd) setSelection(selEnd)
+            else {
+                val expectedCursorFromEnd = max(currentLength - distanceFromEnd, 0)
+                setSelection(expectedCursorFromEnd) //move cursor to distance from text end to mimic previous cursor place
+            }
 
             addTextChangedListener(this)
 
@@ -80,7 +86,7 @@ class MentionEditText : MultiAutoCompleteTextView {
         var start = selStart
         var end = selEnd
 
-        val mentionSpanList = MentionTextHelper.getAllMentionSpansFromText(text, selStart, selEnd)
+        val mentionSpanList = MentionTextHelper.getRenewedMentionSpans(text, selStart, selEnd)
         for (span in mentionSpanList) {
             val spanStart = text.getSpanStart(span)
             val spanEnd = text.getSpanEnd(span)
@@ -92,8 +98,7 @@ class MentionEditText : MultiAutoCompleteTextView {
                 if (selEnd in (spanStart + 1) until spanEnd) {
                     end = spanEnd
                 }
-            }
-            else if (spanStart <= selStart && spanEnd > selEnd) {
+            } else if (spanStart <= selStart && spanEnd > selEnd) {
                 start = spanStart
                 end = spanEnd
             }

@@ -1,10 +1,10 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
 import android.content.Context
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -46,7 +46,7 @@ class OverflowMenuHelper(
             overflowMenuDialog.setOnShowListener { dialog ->
                 val d = dialog as BottomSheetDialog
 
-                val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+                val bottomSheet = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
@@ -61,7 +61,7 @@ class OverflowMenuHelper(
 
     private fun createMenuDialog(): View {
         val overflowMenuDialog = LayoutInflater.from(context).inflate(R.layout.layout_overflow_menu, null)
-        val recyclerView = overflowMenuDialog.findViewById<RecyclerView>(R.id.recycler_view)
+        val recyclerView = overflowMenuDialog.findViewById<RecyclerView>(com.tokopedia.abstraction.R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = menuAdapter
         recyclerView.addItemDecoration(OverflowMenuItemDecoration(context))

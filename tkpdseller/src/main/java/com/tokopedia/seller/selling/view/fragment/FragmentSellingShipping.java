@@ -6,14 +6,14 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,8 +29,6 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
-import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
@@ -83,7 +81,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     private RefreshHandler refresh;
     @SuppressWarnings("all")
     private BaseSellingAdapter adapter;
-    private MultiSelector multiSelector = new MultiSelector();
     public ActionMode actionMode;
     private boolean inhibitSpinnerShipping = true;
     private boolean inhibitSpinnerDuedate = true;
@@ -162,49 +159,8 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         presenter.requestRefNumDialog(pos, getActivity());
     }
 
-    ModalMultiSelectorCallback selectionMode = new ModalMultiSelectorCallback(multiSelector) {
-        @Override
-        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-            super.onCreateActionMode(actionMode, menu);
-            FragmentSellingShipping.this.actionMode = actionMode;
-            hideFab();
-            actionMode.setTitle("1");
-            if (GlobalConfig.isCustomerApp()) {
-                getActivity().getMenuInflater().inflate(com.tokopedia.seller.R.menu.shipping_confirm_multi_dark, menu);
-            } else {
-                getActivity().getMenuInflater().inflate(R.menu.shipping_confirm_multi, menu);
-            }
-            refresh.setPullEnabled(false);
-            return true;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-            if (menuItem.getItemId() == R.id.action_multi_send) {
-                // Need to finish the action mode before doing the following,
-                // not after. No idea why, but it crashes.
-                presenter.onMultiConfirm(actionMode, multiSelector.getSelectedPositions());
-                adapter.notifyDataSetChanged();
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode actionMode) {
-            super.onDestroyActionMode(actionMode);
-            enableFilter();
-            showFab();
-            refresh.setPullEnabled(true);
-            multiSelector.clearSelections();
-            presenter.updateListDataChecked(false);
-        }
-    };
-
     @Override
-    public void clearMultiSelector() {
-        multiSelector.clearSelections();
-    }
+    public void clearMultiSelector() { }
 
     @Override
     public void initHandlerAndAdapter() {
@@ -217,49 +173,12 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
                 viewHolder.vRefNumber.setOnClickListener(onGetRefNumDialog(position));
                 viewHolder.CameraBut.setOnClickListener(onGetBarcodeListener(position));
                 viewHolder.BtnOverflow.setOnClickListener(onOverflowClicked(position));
-                viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(int position) {
-                        if (!multiSelector.tapSelection(viewHolder)) {
-                            if (adapter.isLoading()) {
-                                getPaging().setPage(getPaging().getPage() - 1);
-                                presenter.onFinishConnection();
-                            }
-                            moveToDetail(position);
-                        } else {
-                            presenter.updateListDataChecked(position, multiSelector.isSelected(position, viewHolder.getItemId()));
-                            if (multiSelector.getSelectedPositions().size() == 0) {
-                                actionMode.finish();
-                                multiSelector.refreshAllHolders();
-                            } else {
-                                actionMode.setTitle(multiSelector.getSelectedPositions().size() + "");
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onLongClicked(int position) {
-                        if (multiSelector.getSelectedPositions().size() == 0) {
-                            ((AppCompatActivity) getActivity()).startSupportActionMode(selectionMode);
-                            multiSelector.setSelected(viewHolder, true);
-                        } else {
-                            multiSelector.tapSelection(viewHolder.getAdapterPosition(), viewHolder.getItemId());
-                            actionMode.setTitle(multiSelector.getSelectedPositions().size() + "");
-                            if (multiSelector.getSelectedPositions().size() == 0) {
-                                actionMode.finish();
-                                multiSelector.refreshAllHolders();
-                            }
-                        }
-                        presenter.updateListDataChecked(position, multiSelector.isSelected(position, viewHolder.getItemId()));
-                    }
-
-                });
             }
 
             @Override
             protected ShippingViewHolder getViewHolder(int mModelLayout, ViewGroup parent) {
                 ViewGroup view = (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(mModelLayout, parent, false);
-                return new ShippingViewHolder(view, multiSelector);
+                return new ShippingViewHolder(view);
             }
         };
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);

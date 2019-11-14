@@ -141,5 +141,6 @@
     <color name="clr_194c2a86">#194c2a86</color>
     <color name="clr_6c727c">#6c727c</color>
     <color name="bg_saldolock_ticker">#fffae6</color>
+    <color name="background_splash_screen">#EDE6DB</color>
 
 </resources>

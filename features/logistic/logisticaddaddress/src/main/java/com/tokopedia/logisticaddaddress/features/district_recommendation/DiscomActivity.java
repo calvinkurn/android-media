@@ -3,7 +3,7 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.ARGUMENT_DATA_TOKEN;
 

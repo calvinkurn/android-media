@@ -2,12 +2,14 @@ package com.tokopedia.product.manage.item.main.draft.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
+import com.tokopedia.product.manage.item.common.util.AddEditPageType
 import com.tokopedia.product.manage.item.main.draft.view.fragment.ProductDraftEditFragment
 import com.tokopedia.product.manage.item.main.draft.view.fragment.ProductDraftEditFragment.Companion.DRAFT_PRODUCT_ID
 
 class ProductDraftEditActivity : ProductDraftAddActivity() {
 
+    override var addEditPageType: AddEditPageType = AddEditPageType.DRAFT_EDIT
     override fun getNewFragment(): Fragment {
         val productId = intent.getLongExtra(DRAFT_PRODUCT_ID, java.lang.Long.MIN_VALUE)
         return ProductDraftEditFragment.createInstance(productId)

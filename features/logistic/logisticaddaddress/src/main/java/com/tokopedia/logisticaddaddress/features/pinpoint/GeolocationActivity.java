@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -21,11 +21,11 @@ import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
 import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
-import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +60,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                                         boolean isFromMarketPlaceCart) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
+        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
         bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketPlaceCart);
         intent.putExtras(bundle);
         return intent;
@@ -133,7 +133,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
         mBundle = getIntent().getExtras();
 
         if (mBundle != null) {
-            locationPass = mBundle.getParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION);
+            locationPass = mBundle.getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION);
         }
 
         if (locationPass != null) {

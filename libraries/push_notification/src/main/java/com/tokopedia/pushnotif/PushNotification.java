@@ -6,10 +6,11 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
+import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
@@ -20,6 +21,11 @@ import com.tokopedia.pushnotif.util.NotificationTracker;
  */
 
 public class PushNotification {
+    private static boolean isChatBotWindowOpen;
+
+    public static void setIsChatBotWindowOpen(boolean isChatBotWindowOpen) {
+        PushNotification.isChatBotWindowOpen = isChatBotWindowOpen;
+    }
 
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
@@ -34,6 +40,11 @@ public class PushNotification {
                 notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else if (notificationId == Constant.NotificationId.GROUPCHAT) {
                 notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.CHAT_BOT) {
+                if (!isChatBotWindowOpen)
+                    notifyChatbot(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            } else if (notificationId == Constant.NotificationId.REVIEW) {
+                notifyReview(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
@@ -41,6 +52,13 @@ public class PushNotification {
                 NotificationTracker.getInstance(context).trackDeliveredNotification(applinkNotificationModel);
             }
         }
+    }
+
+    private static void notifyChatbot(Context context, ApplinkNotificationModel applinkNotificationModel, int notificationId, NotificationManagerCompat notificationManagerCompat) {
+        Notification notifChat = new ChatNotificationFactory(context)
+                .createNotification(applinkNotificationModel, notificationId, notificationId);
+
+        notificationManagerCompat.notify(notificationId, notifChat);
     }
 
     private static void notifyTalk(Context context, ApplinkNotificationModel applinkNotificationModel,
@@ -85,6 +103,11 @@ public class PushNotification {
             notificationManagerCompat.notify(notificationType, notifSummary);
         }
 
+    }
+
+    private static void notifyReview(Context context, ApplinkNotificationModel applinkNotificationModel,
+                                     int notificationType, NotificationManagerCompat notificationManagerCompat) {
+        new ReviewNotificationFactory(context).createNotification(applinkNotificationModel,notificationType,notificationType);
     }
 
     private static void notifyGroupChat(Context context, ApplinkNotificationModel applinkNotificationModel,

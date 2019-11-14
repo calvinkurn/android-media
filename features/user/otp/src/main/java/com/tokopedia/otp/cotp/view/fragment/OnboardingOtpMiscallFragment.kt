@@ -2,8 +2,8 @@ package com.tokopedia.otp.cotp.view.fragment
 
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 import com.tokopedia.otp.R
-import com.tokopedia.otp.common.OTPAnalytics
+import com.tokopedia.otp.common.analytics.OTPAnalytics
 import com.tokopedia.otp.cotp.view.viewlistener.OnboardingOtpMiscall
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel
 import com.tokopedia.unifycomponents.UnifyButton
