@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceBenefitViewModel;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class FlightInsuranceBenefitAdapter extends RecyclerView.Adapter<FlightIn
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(com.tokopedia.flight.R.layout.item_flight_benefit_insurance, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_flight_benefit_insurance, parent, false);
         return new ViewHolder(view);
     }
 
@@ -43,14 +44,14 @@ public class FlightInsuranceBenefitAdapter extends RecyclerView.Adapter<FlightIn
 
         public ViewHolder(View itemView) {
             super(itemView);
-            logoImageView = itemView.findViewById(com.tokopedia.flight.R.id.iv_logo);
-            titleTextView = itemView.findViewById(com.tokopedia.design.R.id.tv_title);
-            descriptionTextView = itemView.findViewById(com.tokopedia.design.R.id.tv_description);
+            logoImageView = itemView.findViewById(R.id.iv_logo);
+            titleTextView = itemView.findViewById(R.id.tv_title);
+            descriptionTextView = itemView.findViewById(R.id.tv_description);
         }
 
         public void bind(FlightInsuranceBenefitViewModel benefitViewModel) {
             ImageHandler.loadImageWithoutPlaceholder(logoImageView, benefitViewModel.getIcon(),
-                    ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.flight.R.drawable.flight_ic_airline_default)
+                    ContextCompat.getDrawable(itemView.getContext(), R.drawable.flight_ic_airline_default)
             );
             titleTextView.setText(benefitViewModel.getTitle());
             descriptionTextView.setText(benefitViewModel.getDescription());
