@@ -1,6 +1,6 @@
 package com.tokopedia.similarsearch
 
-import com.tokopedia.similarsearch.testinstance.similarSearchSelectedProductNotWishlisted
+import com.tokopedia.similarsearch.testinstance.getSimilarSearchSelectedProductNotWishlisted
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
@@ -12,6 +12,7 @@ internal class CreateSimilarSearchViewModelTest: Spek({
         createTestInstance()
 
         Scenario("Create Similar Search View Model") {
+            val similarSearchSelectedProductNotWishlisted = getSimilarSearchSelectedProductNotWishlisted()
             lateinit var similarSearchViewModel: SimilarSearchViewModel
 
             When("create similar search view model") {

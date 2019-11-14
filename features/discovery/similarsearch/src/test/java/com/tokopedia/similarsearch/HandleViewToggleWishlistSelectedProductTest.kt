@@ -1,7 +1,7 @@
 package com.tokopedia.similarsearch
 
-import com.tokopedia.similarsearch.testinstance.similarSearchSelectedProductNotWishlisted
-import com.tokopedia.similarsearch.testinstance.similarSearchSelectedProductWishlisted
+import com.tokopedia.similarsearch.testinstance.getSimilarSearchSelectedProductNotWishlisted
+import com.tokopedia.similarsearch.testinstance.getSimilarSearchSelectedProductWishlisted
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -45,7 +45,8 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
 
         Scenario("Handle View Toggle Wishlist Selected Product for logged in user and product is not wishlisted") {
             val userId = "123456"
-            val addWishlistUseCase by memoized<AddWishListUseCase>()
+            val similarSearchSelectedProductNotWishlisted = getSimilarSearchSelectedProductNotWishlisted()
+            val addWishListUseCase by memoized<AddWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -64,12 +65,13 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
             }
 
             Then("verify add wishlist API is called with product id equals to selected product id") {
-                verify(exactly = 1) { addWishlistUseCase.createObservable(similarSearchSelectedProductNotWishlisted.id, userId, any()) }
+                verify(exactly = 1) { addWishListUseCase.createObservable(similarSearchSelectedProductNotWishlisted.id, userId, any()) }
             }
         }
 
         Scenario("Handle View Toggle Wishlist Selected Product for logged in user and product is wishlisted") {
             val userId = "123456"
+            val similarSearchSelectedProductWishlisted = getSimilarSearchSelectedProductWishlisted()
             val removeWishListUseCase by memoized<RemoveWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()
 
@@ -99,7 +101,8 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
 
         Scenario("Add Wishlist Selected Product Success") {
             val userId = "123456"
-            val addWishlistUseCase by memoized<AddWishListUseCase>()
+            val similarSearchSelectedProductNotWishlisted = getSimilarSearchSelectedProductNotWishlisted()
+            val addWishListUseCase by memoized<AddWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -115,7 +118,7 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
 
             Given("add wishlist API will be successful") {
                 every {
-                    addWishlistUseCase.createObservable(similarSearchSelectedProductNotWishlisted.id, userId, any())
+                    addWishListUseCase.createObservable(similarSearchSelectedProductNotWishlisted.id, userId, any())
                 }.answers {
                     thirdArg<WishListActionListener>().onSuccessAddWishlist(firstArg())
                 }
@@ -146,7 +149,8 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
 
         Scenario("Add Wishlist Selected Product Failed") {
             val userId = "123456"
-            val addWishlistUseCase by memoized<AddWishListUseCase>()
+            val similarSearchSelectedProductNotWishlisted = getSimilarSearchSelectedProductNotWishlisted()
+            val addWishListUseCase by memoized<AddWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -162,17 +166,17 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
 
             Given("add wishlist API will fail") {
                 every {
-                    addWishlistUseCase.createObservable(similarSearchSelectedProductNotWishlisted.id, userId, any())
+                    addWishListUseCase.createObservable(similarSearchSelectedProductNotWishlisted.id, userId, any())
                 }.answers {
                     thirdArg<WishListActionListener>().onErrorAddWishList("error from backend", firstArg())
                 }
             }
 
-            When("handle view toggle wishlist selected product", timeout = 100000) {
+            When("handle view toggle wishlist selected product") {
                 similarSearchViewModel.onViewToggleWishlistSelectedProduct()
             }
 
-            Then("assert add wishlist selected product event is false", timeout = 100000) {
+            Then("assert add wishlist selected product event is false") {
                 val addWishlistSelectedProductEvent = similarSearchViewModel.getAddWishlistSelectedProductEventLiveData().value
 
                 addWishlistSelectedProductEvent?.getContentIfNotHandled().shouldBe(
@@ -181,14 +185,114 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
                 )
             }
 
-//            Then("assert selected product is wishlisted stays false") {
-//                val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
-//
-//                similarSearchSelectedProduct.isWishlisted.shouldBe(
-//                        false,
-//                        "Selected Product is wishlisted should be false"
-//                )
-//            }
+            Then("assert selected product is wishlisted stays false") {
+                val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
+
+                similarSearchSelectedProduct.isWishlisted.shouldBe(
+                        false,
+                        "Selected Product is wishlisted should be false"
+                )
+            }
+        }
+    }
+
+    Feature("Remove Wishlist Selected Product") {
+        createTestInstance()
+
+        Scenario("Remove Wishlist Selected Product Success") {
+            val userId = "123456"
+            val similarSearchSelectedProductWishlisted = getSimilarSearchSelectedProductWishlisted()
+            val removeWishListUseCase by memoized<RemoveWishListUseCase>()
+            val userSession by memoized<UserSessionInterface>()
+
+            lateinit var similarSearchViewModel: SimilarSearchViewModel
+
+            Given("similar search view model with wishlisted product") {
+                similarSearchViewModel = createSimilarSearchViewModel(similarSearchSelectedProductWishlisted)
+            }
+
+            Given("user is logged in") {
+                every { userSession.isLoggedIn }.returns(true)
+                every { userSession.userId }.returns(userId)
+            }
+
+            Given("remove wishlist API will be successful") {
+                every {
+                    removeWishListUseCase.createObservable(similarSearchSelectedProductWishlisted.id, userId, any())
+                }.answers {
+                    thirdArg<WishListActionListener>().onSuccessRemoveWishlist(firstArg())
+                }
+            }
+
+            When("handle view toggle wishlist selected product") {
+                similarSearchViewModel.onViewToggleWishlistSelectedProduct()
+            }
+
+            Then("assert remove wishlist selected product event is true") {
+                val removeWishlistSelectedProductEvent = similarSearchViewModel.getRemoveWishlistSelectedProductEventLiveData().value
+
+                removeWishlistSelectedProductEvent?.getContentIfNotHandled().shouldBe(
+                        true,
+                        "Remove wishlist selected product event should be true"
+                )
+            }
+
+            Then("assert selected product is wishlisted is true") {
+                val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
+
+                similarSearchSelectedProduct.isWishlisted.shouldBe(
+                        false,
+                        "Selected Product is wishlisted should be false"
+                )
+            }
+        }
+
+        Scenario("Remove Wishlist Selected Product Failed") {
+            val userId = "123456"
+            val similarSearchSelectedProductWishlisted = getSimilarSearchSelectedProductWishlisted()
+            val removeWishListUseCase by memoized<RemoveWishListUseCase>()
+            val userSession by memoized<UserSessionInterface>()
+
+            lateinit var similarSearchViewModel: SimilarSearchViewModel
+
+            Given("similar search view model with wishlisted product") {
+                similarSearchViewModel = createSimilarSearchViewModel(similarSearchSelectedProductWishlisted)
+            }
+
+            Given("user is logged in") {
+                every { userSession.isLoggedIn }.returns(true)
+                every { userSession.userId }.returns(userId)
+            }
+
+            Given("remove wishlist API will fail") {
+                every {
+                    removeWishListUseCase.createObservable(similarSearchSelectedProductWishlisted.id, userId, any())
+                }.answers {
+                    thirdArg<WishListActionListener>().onErrorRemoveWishlist("error from backend", firstArg())
+                }
+            }
+
+            When("handle view toggle wishlist selected product") {
+                similarSearchViewModel.onViewToggleWishlistSelectedProduct()
+            }
+
+            Then("assert remove wishlist selected product event is false") {
+                val removeWishlistSelectedProductEvent = similarSearchViewModel.getRemoveWishlistSelectedProductEventLiveData().value
+
+                removeWishlistSelectedProductEvent?.getContentIfNotHandled().shouldBe(
+                        false,
+                        "Remove wishlist selected product event should be false"
+                )
+            }
+
+            Then("assert selected product is wishlisted stays true") {
+                val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
+
+                similarSearchSelectedProduct.isWishlisted.shouldBe(
+                        true,
+                        "Selected Product is wishlisted should be true"
+                )
+            }
         }
     }
 })

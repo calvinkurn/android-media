@@ -510,4 +510,4 @@ private val similarProductModelTwoPageJSONString = """
 }
 """.trimIndent().replace("\n", "")
 
-internal val similarProductModelTwoPage = Gson().fromJson(similarProductModelTwoPageJSONString, SimilarProductModel::class.java)
+internal fun getSimilarProductModelTwoPage() = Gson().fromJson(similarProductModelTwoPageJSONString, SimilarProductModel::class.java)

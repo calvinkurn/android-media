@@ -510,4 +510,4 @@ private val similarProductModelCommonJSONString = """
 }
 """.trimIndent().replace("\n", "")
 
-internal val similarProductModelCommon = Gson().fromJson(similarProductModelCommonJSONString, SimilarProductModel::class.java)
+internal fun getSimilarProductModelCommon() = Gson().fromJson(similarProductModelCommonJSONString, SimilarProductModel::class.java)

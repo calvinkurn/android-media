@@ -33,6 +33,7 @@ internal class SimilarSearchViewModel(
     private val loadingMoreModel = LoadingMoreModel()
     private val routeToLoginPageEventLiveData = MutableLiveData<Event<Boolean>>()
     private val addWishlistSelectedProductEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val removeWishlistSelectedProductEventLiveData = MutableLiveData<Event<Boolean>>()
 
     fun onViewCreated() {
         if (!hasLoadData) {
@@ -180,11 +181,12 @@ internal class SimilarSearchViewModel(
     private fun createSelectedProductWishlistActionListener(): WishListActionListener {
         return object : WishListActionListener {
             override fun onSuccessRemoveWishlist(productId: String?) {
-
+                removeWishlistSelectedProductEventLiveData.postValue(Event(true))
+                similarSearchSelectedProduct.isWishlisted = false
             }
 
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-
+                removeWishlistSelectedProductEventLiveData.postValue(Event(false))
             }
 
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
@@ -204,5 +206,9 @@ internal class SimilarSearchViewModel(
 
     fun getAddWishlistSelectedProductEventLiveData(): LiveData<Event<Boolean>> {
         return addWishlistSelectedProductEventLiveData
+    }
+
+    fun getRemoveWishlistSelectedProductEventLiveData(): LiveData<Event<Boolean>> {
+        return removeWishlistSelectedProductEventLiveData
     }
 }

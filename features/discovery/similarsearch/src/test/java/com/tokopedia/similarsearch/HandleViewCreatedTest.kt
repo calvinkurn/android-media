@@ -1,9 +1,9 @@
 package com.tokopedia.similarsearch
 
 import com.tokopedia.discovery.common.State
-import com.tokopedia.similarsearch.testinstance.similarProductModelCommon
-import com.tokopedia.similarsearch.testinstance.similarProductModelEmptyResult
-import com.tokopedia.similarsearch.testinstance.similarProductModelOnePage
+import com.tokopedia.similarsearch.testinstance.getSimilarProductModelCommon
+import com.tokopedia.similarsearch.testinstance.getSimilarProductModelEmptyResult
+import com.tokopedia.similarsearch.testinstance.getSimilarProductModelOnePage
 import com.tokopedia.usecase.coroutines.UseCase
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -16,6 +16,7 @@ internal class HandleViewCreatedTest: Spek({
         createTestInstance()
 
         Scenario("View is created") {
+            val similarProductModelCommon = getSimilarProductModelCommon()
             val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -38,6 +39,7 @@ internal class HandleViewCreatedTest: Spek({
         }
 
         Scenario("View is created multiple times") {
+            val similarProductModelCommon = getSimilarProductModelCommon()
             val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -66,6 +68,7 @@ internal class HandleViewCreatedTest: Spek({
         createTestInstance()
 
         Scenario("Get Similar Products Successful") {
+            val similarProductModelCommon = getSimilarProductModelCommon()
             val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -162,6 +165,7 @@ internal class HandleViewCreatedTest: Spek({
         }
 
         Scenario("Get Similar Products returns empty result") {
+            val similarProductModelEmptyResult = getSimilarProductModelEmptyResult()
             val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -192,6 +196,7 @@ internal class HandleViewCreatedTest: Spek({
         }
 
         Scenario("Get Similar Products only returns one page of data") {
+            val similarProductModelOnePage = getSimilarProductModelOnePage()
             val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel

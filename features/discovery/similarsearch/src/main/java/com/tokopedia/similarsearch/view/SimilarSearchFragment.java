@@ -258,7 +258,7 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
         mAdapter.updateWishlistStatus(productId, true);
         enableWishlistButton(mAdapter.getIndex(productId));
         mAdapter.notifyItemChanged(mAdapter.getIndex(productId));
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.similar_search_add_wishlist_success));
     }
 
     @Override
@@ -272,7 +272,7 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
         mAdapter.updateWishlistStatus(productId, false);
         enableWishlistButton(mAdapter.getIndex(productId));
         mAdapter.notifyItemChanged(mAdapter.getIndex(productId));
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.similar_search_remove_wishlist_success));
     }
 
     @Override

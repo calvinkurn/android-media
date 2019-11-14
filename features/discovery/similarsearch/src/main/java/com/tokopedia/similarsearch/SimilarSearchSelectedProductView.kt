@@ -8,15 +8,14 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.similar_search_selected_product_layout.view.*
 
 internal class SimilarSearchSelectedProductView(
-        similarSearchSelectedProductViewListener: SimilarSearchSelectedProductViewListener
+        private val similarSearchSelectedProductViewListener: SimilarSearchSelectedProductViewListener
 ) {
 
-    private val similarSearchSelectedProduct = similarSearchSelectedProductViewListener.getSelectedProduct()
     private val fragmentView = similarSearchSelectedProductViewListener.getFragmentView()
     private val context = fragmentView.context
 
     fun bindSelectedProductView() {
-        if (similarSearchSelectedProduct == null) return
+        val similarSearchSelectedProduct = similarSearchSelectedProductViewListener.getSelectedProduct() ?: return
 
         initImageProduct(similarSearchSelectedProduct)
         initButtonWishlist(similarSearchSelectedProduct)
@@ -32,11 +31,10 @@ internal class SimilarSearchSelectedProductView(
     }
 
     private fun initButtonWishlist(similarSearchSelectedProduct: SimilarSearchSelectedProduct) {
-        if (similarSearchSelectedProduct.isWishlisted) {
-            fragmentView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_active)
-        }
-        else {
-            fragmentView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_inactive)
+        updateWishlistStatus(similarSearchSelectedProduct.isWishlisted)
+
+        fragmentView.buttonWishlist?.setOnClickListener {
+            similarSearchSelectedProductViewListener.onButtonWishlistClicked()
         }
     }
 
@@ -84,6 +82,15 @@ internal class SimilarSearchSelectedProductView(
     private fun initReview(similarSearchSelectedProduct: SimilarSearchSelectedProduct) {
         fragmentView.textViewReviewCount?.shouldShowWithAction(similarSearchSelectedProduct.reviewCount != 0) {
             fragmentView.textViewReviewCount?.text = context.getString(R.string.similar_search_selected_product_review_count, similarSearchSelectedProduct.reviewCount.toString())
+        }
+    }
+
+    fun updateWishlistStatus(isWishlisted: Boolean) {
+        if (isWishlisted) {
+            fragmentView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_active)
+        }
+        else {
+            fragmentView.buttonWishlist?.setImageResource(R.drawable.similar_search_ic_wishlist_inactive)
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.similarsearch
 
 import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
-import com.tokopedia.similarsearch.testinstance.similarSearchSelectedProductNotWishlisted
+import com.tokopedia.similarsearch.testinstance.getSimilarSearchSelectedProductNotWishlisted
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -16,7 +16,7 @@ internal fun FeatureBody.createTestInstance() {
         mockk<UseCase<SimilarProductModel>>(relaxed = true)
     }
 
-    val addWishlistUseCase by memoized {
+    val addWishListUseCase by memoized {
         mockk<AddWishListUseCase>(relaxed = true)
     }
 
@@ -30,10 +30,10 @@ internal fun FeatureBody.createTestInstance() {
 }
 
 internal fun TestBody.createSimilarSearchViewModel(
-        similarSearchSelectedProduct: SimilarSearchSelectedProduct = similarSearchSelectedProductNotWishlisted
+        similarSearchSelectedProduct: SimilarSearchSelectedProduct = getSimilarSearchSelectedProductNotWishlisted()
 ): SimilarSearchViewModel {
     val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
-    val addWishlistUseCase by memoized<AddWishListUseCase>()
+    val addWishListUseCase by memoized<AddWishListUseCase>()
     val removeWishListUseCase by memoized<RemoveWishListUseCase>()
     val userSession by memoized<UserSessionInterface>()
 
@@ -41,7 +41,7 @@ internal fun TestBody.createSimilarSearchViewModel(
             TestDispatcherProvider(),
             similarSearchSelectedProduct,
             getSimilarProductsUseCase,
-            addWishlistUseCase,
+            addWishListUseCase,
             removeWishListUseCase,
             userSession
     )

@@ -541,4 +541,4 @@ private val similarProductModelThreePageJSONString = """
 }
 """.trimIndent().replace("\n", "")
 
-internal val similarProductModelThreePage = Gson().fromJson(similarProductModelThreePageJSONString, SimilarProductModel::class.java)
+internal fun getSimilarProductModelThreePage() = Gson().fromJson(similarProductModelThreePageJSONString, SimilarProductModel::class.java)

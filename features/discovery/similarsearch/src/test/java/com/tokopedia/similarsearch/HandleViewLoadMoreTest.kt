@@ -1,8 +1,8 @@
 package com.tokopedia.similarsearch
 
 import com.tokopedia.discovery.common.State
-import com.tokopedia.similarsearch.testinstance.similarProductModelThreePage
-import com.tokopedia.similarsearch.testinstance.similarProductModelTwoPage
+import com.tokopedia.similarsearch.testinstance.getSimilarProductModelThreePage
+import com.tokopedia.similarsearch.testinstance.getSimilarProductModelTwoPage
 import com.tokopedia.usecase.coroutines.UseCase
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -15,6 +15,7 @@ internal class HandleViewLoadMoreTest: Spek({
         createTestInstance()
 
         Scenario("Handle View Load More when similar product list has 2 page of data") {
+            val similarProductModelTwoPage = getSimilarProductModelTwoPage()
             val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -50,6 +51,7 @@ internal class HandleViewLoadMoreTest: Spek({
         }
 
         Scenario("Handle View Load More when similar product list has 3 page of data") {
+            val similarProductModelThreePage = getSimilarProductModelThreePage()
             val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel

@@ -2,7 +2,7 @@ package com.tokopedia.similarsearch.testinstance
 
 import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
 
-internal val similarSearchSelectedProductNotWishlisted = SimilarSearchSelectedProduct(
+internal fun getSimilarSearchSelectedProductNotWishlisted() = SimilarSearchSelectedProduct(
         id = "553354058",
         imageUrl = "someurl.jpg",
         isWishlisted = false,

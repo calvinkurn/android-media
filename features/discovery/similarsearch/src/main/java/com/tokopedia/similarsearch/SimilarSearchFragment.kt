@@ -4,12 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
@@ -23,6 +29,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
     }
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
+    private var similarSearchSelectedProductView: SimilarSearchSelectedProductView? = null
     private var similarSearchAdapter: SimilarSearchAdapter? = null
     private var recyclerViewLayoutManager: RecyclerView.LayoutManager? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -60,7 +67,9 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
     private fun initSelectedProductView() {
         view?.let { view ->
             val selectedProductViewListener = createSelectedProductViewListener(view)
-            SimilarSearchSelectedProductView(selectedProductViewListener).bindSelectedProductView()
+
+            similarSearchSelectedProductView = SimilarSearchSelectedProductView(selectedProductViewListener)
+            similarSearchSelectedProductView?.bindSelectedProductView()
         }
     }
 
@@ -72,6 +81,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
 
             override fun getFragmentView(): View {
                 return view
+            }
+
+            override fun onButtonWishlistClicked() {
+                similarSearchViewModel?.onViewToggleWishlistSelectedProduct()
             }
         }
     }
@@ -110,6 +123,18 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
         similarSearchViewModel?.getSimilarSearchLiveData()?.observe(viewLifecycleOwner, Observer {
             updateAdapter(it)
         })
+
+        similarSearchViewModel?.getAddWishlistSelectedProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleAddWishlistSelectedProductEvent(it)
+        })
+
+        similarSearchViewModel?.getRemoveWishlistSelectedProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleRemoveWishlistSelectedProductEvent(it)
+        })
+
+        similarSearchViewModel?.getRouteToLoginPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleRouteToLoginPage()
+        })
     }
 
     private fun updateAdapter(similarSearchLiveData: State<List<Any>>) {
@@ -137,5 +162,42 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
     private fun updateScrollListener() {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(similarSearchViewModel?.getHasNextPage() ?: false)
+    }
+
+    private fun handleAddWishlistSelectedProductEvent(isSuccess: Boolean) {
+        if (isSuccess) {
+            showSnackbar(R.string.similar_search_add_wishlist_success)
+            updateSelectedProductWishlistStatus()
+        }
+        else {
+            showSnackbar(R.string.similar_search_add_wishlist_failed)
+        }
+    }
+
+    private fun updateSelectedProductWishlistStatus() {
+        val similarSearchSelectedProduct = similarSearchViewModel?.similarSearchSelectedProduct
+        similarSearchSelectedProductView?.updateWishlistStatus(similarSearchSelectedProduct?.isWishlisted ?: false)
+    }
+
+    private fun handleRemoveWishlistSelectedProductEvent(isSuccess: Boolean) {
+        if (isSuccess) {
+            showSnackbar(R.string.similar_search_remove_wishlist_success)
+            updateSelectedProductWishlistStatus()
+        }
+        else {
+            showSnackbar(R.string.similar_search_remove_wishlist_failed)
+        }
+    }
+
+    private fun showSnackbar(@StringRes messageStringResource: Int) {
+        SnackbarManager.make(
+                activity,
+                getString(messageStringResource),
+                Snackbar.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun handleRouteToLoginPage() {
+        RouteManager.route(activity, ApplinkConst.LOGIN)
     }
 }
