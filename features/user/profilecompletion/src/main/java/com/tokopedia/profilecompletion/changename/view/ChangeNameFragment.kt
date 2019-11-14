@@ -78,15 +78,21 @@ class ChangeNameFragment : BaseDaggerFragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s != null) {
                     when {
-                        s.isEmpty() || s.toString() == oldName -> {
-                            changeNameButtonSave?.isEnabled = false
+                        s.isEmpty() || s == "" -> activity?.let {
+                            changeNameTextMessage?.run {
+                                text = getString(R.string.change_name_visible_on_another_user)
+                                setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+                                changeNameButtonSave?.isEnabled = false
+                            }
                         }
                         s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
-                            if (s.length < MINIMUM_LENGTH) {
-                                onErrorChangeName(Throwable(resources.getString(R.string.error_name_min_3)))
-                            } else if (s.length > MAXIMUM_LENGTH) {
-                                onErrorChangeName(Throwable(resources.getString(R.string.error_name_max_35)))
+                            when {
+                                s.length < MINIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_min_3)))
+                                s.length > MAXIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_max_35)))
                             }
+                            changeNameButtonSave?.isEnabled = false
+                        }
+                        s.toString() == oldName -> {
                             changeNameButtonSave?.isEnabled = false
                         }
                         else -> {
