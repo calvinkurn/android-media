@@ -12,15 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.core.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +24,16 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -90,6 +91,8 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
@@ -145,6 +148,9 @@ public class DigitalProductFragment extends BaseDaggerFragment
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
     private static final String DIGITAL_DETAIL_TRACE = "dg_detail";
     private static final String DIGITAL_NFC_FROM_PDP = "calling_from_pdp";
+    private static final String CLICK_PDP = "clickPDP";
+    private static final String DIGITAL_HOMEPAGE = "digital - homepage";
+    private static final String CLICK_UPDATE_SALDO = "click update saldo ";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
@@ -390,7 +396,12 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
         selectedCheckPulsaBalanceView = null;
         checkETollBalanceView.setListener(() -> {
-            rechargeAnalytics.onClickUpdateSaldoEmoney(additionalETollOperatorName);
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    CLICK_PDP,
+                    DIGITAL_HOMEPAGE,
+                    CLICK_UPDATE_SALDO + additionalETollOperatorName,
+                    additionalETollOperatorName
+            ));
             Intent intent = RouteManager.getIntent(getActivity(),
                     ApplinkConsInternalDigital.SMARTCARD, DIGITAL_NFC_FROM_PDP);
             startActivityForResult(intent, REQUEST_CODE_CHECK_SALDO_EMONEY);
