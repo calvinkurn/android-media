@@ -59,6 +59,12 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onTabUnselected(tab: Tab) {
                 tab.customView?.apply {
+                    ImageHandler.loadImage(
+                            context,
+                            image_view_category_icon,
+                            categoriesItemTab[tab.position].inactiveIconUrl,
+                            R.drawable.ic_loading_image
+                    )
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
@@ -71,6 +77,12 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onTabSelected(tab: Tab) {
                 tab.customView?.apply {
+                    ImageHandler.loadImage(
+                            context,
+                            image_view_category_icon,
+                            categoriesItemTab[tab.position].iconUrl,
+                            R.drawable.ic_loading_image
+                    )
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
@@ -173,7 +185,8 @@ class OfficialCategoriesTab(context: Context,
             ImageHandler.loadImage(
                     context,
                     image_view_category_icon,
-                    categoriesItemTab[position].iconUrl,
+                    // categoriesItemTab[position].iconUrl,
+                    categoriesItemTab[position].inactiveIconUrl,
                     R.drawable.ic_loading_image
             )
             text_view_category_title.text = categoriesItemTab[position].title
