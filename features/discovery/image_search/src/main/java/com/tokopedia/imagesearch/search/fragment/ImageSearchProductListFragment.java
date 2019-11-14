@@ -558,7 +558,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                     dataLayerList.add(productItem.getProductAsObjectDataLayerForImageSearchImpression());
                 }
             }
-            ImageSearchTracking.eventImpressionImageSearchResultProduct(getActivity(), dataLayerList);
+            ImageSearchTracking.eventImpressionImageSearchResultProduct(
+                    dataLayerList, getToken());
         }
     }
 
@@ -611,12 +612,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onEmptyButtonClicked() {
-        ImageSearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
-        redirectionListener.moveToAutoCompletePage();
-    }
-
-    @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
@@ -624,7 +619,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        ImageSearchTracking.eventSearchResultProductWishlistClick(true, getQueryKey(), userSession.getUserId());
+        ImageSearchTracking.eventSearchResultProductWishlistClick(true, getQueryKey(), userSession.getUserId(), getToken());
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.image_search_msg_add_wishlist));
@@ -638,7 +633,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        ImageSearchTracking.eventSearchResultProductWishlistClick(false, getQueryKey(), userSession.getUserId());
+        ImageSearchTracking.eventSearchResultProductWishlistClick(false, getQueryKey(), userSession.getUserId(), getToken());
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.image_search_msg_remove_wishlist));
@@ -673,7 +668,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     public void onLongClick(ProductItem item, int adapterPosition) {
-        ImageSearchTracking.trackEventProductLongPress(getQueryKey(), item.getProductID());
+        ImageSearchTracking.trackEventProductLongPress(getQueryKey(), item.getProductID(), getToken());
         startSimilarSearch(item.getProductID());
     }
 
@@ -687,8 +682,13 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void sendItemClickTrackingEvent(ProductItem item) {
         ImageSearchTracking.trackEventClickImageSearchResultProduct(
-                item.getProductAsObjectDataLayerForImageSearchClick()
+                item.getProductAsObjectDataLayerForImageSearchClick(),
+                getToken()
         );
+    }
+
+    private String getToken() {
+        return presenter != null ? presenter.getToken() : "";
     }
 
     @Override

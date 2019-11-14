@@ -77,7 +77,7 @@ public class SearchProductResponse {
 
     public static class Data {
         @SerializedName("token")
-        private String token;
+        private String token = "";
         @SerializedName("source")
         private String source;
         @SerializedName("share_url")

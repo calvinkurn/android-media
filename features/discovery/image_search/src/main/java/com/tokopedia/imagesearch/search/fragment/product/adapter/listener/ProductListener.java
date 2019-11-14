@@ -16,7 +16,6 @@ public interface ProductListener {
 
     void onProductImpressed(ProductItem item, int adapterPosition);
 
-    void onEmptyButtonClicked();
     boolean isUserHasLogin();
     String getUserId();
 }

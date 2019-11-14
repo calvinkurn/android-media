@@ -54,7 +54,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     private List<Visitable> presentedDataList = new ArrayList<>();
     private CategoryFilterModel categoryFilterModel;
     private String selectedCategoryId = "";
-    private String token;
+    private String token = "";
 
     @Override
     public void detachView() {
@@ -311,5 +311,10 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
     private void removeWishlist(String productId, String userId) {
         removeWishlistActionUseCase.createObservable(productId, userId, wishListActionListener);
+    }
+
+    @Override
+    public String getToken() {
+        return token;
     }
 }

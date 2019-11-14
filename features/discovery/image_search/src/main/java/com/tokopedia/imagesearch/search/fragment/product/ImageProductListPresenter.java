@@ -30,4 +30,6 @@ public interface ImageProductListPresenter extends CustomerPresenter<ImageProduc
     void setFilterCategory(String categoryId);
 
     void requestImageSearch(String imagePath);
+
+    String getToken();
 }
