@@ -316,7 +316,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         bottomSheet.setTitle(getString(R.string.choose_social_media))
         bottomSheet.setChild(viewBottomSheetDialog)
         bottomSheet.setCloseClickListener{
-            analytics.eventClickSocmedButton()
+            analytics.eventClickCloseSocmedButton()
             onDismissBottomSheet()
         }
 
