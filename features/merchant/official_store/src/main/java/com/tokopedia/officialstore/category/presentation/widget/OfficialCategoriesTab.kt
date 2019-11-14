@@ -224,5 +224,5 @@ class OfficialCategoriesTab(context: Context,
         }
     }
 
-    class CategoriesItemTab(val title: String, val iconUrl: String)
+    class CategoriesItemTab(val title: String, val iconUrl: String, val inactiveIconUrl: String)
 }
