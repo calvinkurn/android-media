@@ -13,6 +13,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
@@ -25,13 +26,22 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
-
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'scanner'
+    groupId = 'com.tokopedia.promo'
+    versionName = "0.0.1"
+    artifactName = "scanner-release"
+}
+
+apply from: '../../publish_local.gradle'

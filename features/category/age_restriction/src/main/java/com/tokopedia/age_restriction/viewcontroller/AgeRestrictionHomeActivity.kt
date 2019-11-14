@@ -198,7 +198,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         super.onStart()
         arHomeViewModel.notFilled.observe(this, Observer<Int> {
             selection = notFilledDob
-            showDialogFragment(getString(R.string.ar_text_adult_content),
+            showAgeVerificationDialogFragment(getString(R.string.ar_text_adult_content),
                     getString(R.string.ar_text_dob_verify),
                     getString(R.string.ar_text_verify_dob),
                     getString(R.string.ar_label_back))

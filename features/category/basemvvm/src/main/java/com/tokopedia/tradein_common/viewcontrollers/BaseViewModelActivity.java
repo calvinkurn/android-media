@@ -240,11 +240,22 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.newInstance();
-        accessDialog.show(fragmentManager, AccessRequestDialogFragment.TAG);
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);
         accessDialog.setPositiveButton(positiveButton);
         accessDialog.setNegativeButton(negativeButton);
+        accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
+    }
+
+    protected void showAgeVerificationDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
+        accessDialog.setLayoutResId(R.layout.age_restriction_verifcation_dialog);
+        accessDialog.setBodyText(bodyText);
+        accessDialog.setTitle(titleText);
+        accessDialog.setPositiveButton(positiveButton);
+        accessDialog.setNegativeButton(negativeButton);
+        accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
     }
 
     protected void sendGeneralEvent(String event, String category, String action, String label) {
