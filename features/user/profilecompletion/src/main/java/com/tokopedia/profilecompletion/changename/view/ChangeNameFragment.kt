@@ -23,10 +23,8 @@ import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTrack
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_add_name_register.view.*
 import kotlinx.android.synthetic.main.fragment_change_fullname.*
 import javax.inject.Inject
 
@@ -93,7 +91,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
                             activity?.let {
                                 changeNameTextMessage?.run {
                                     text = getString(R.string.change_name_visible_on_another_user)
-                                    setTextColor(ContextCompat.getColor(it, R.color.grey_700))
+                                    setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
                                 }
                             }
                         }
@@ -152,7 +150,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
             activity?.let {
                 changeNameTextMessage?.run {
                     text = message
-                    setTextColor(ContextCompat.getColor(it, R.color.red_500))
+                    setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Red_R500))
                     ChangeNameTracker().onFailedChangeName(throwable.message.toString())
                 }
             }

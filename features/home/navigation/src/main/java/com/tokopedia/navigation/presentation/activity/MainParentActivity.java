@@ -53,12 +53,14 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
+import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
@@ -240,10 +242,12 @@ public class MainParentActivity extends BaseActivity implements
             }
         }
 
-        Intent intent = RouteManager.getIntent(this,
-                ApplinkConstInternalMarketplace.ONBOARDING);
-        startActivity(intent);
-        finish();
+        if (DFInstaller.isInstalled(this.getApplication(), DeeplinkDFMapper.DFM_ONBOARDING)) {
+            Intent intent = RouteManager.getIntent(this,
+                    ApplinkConstInternalMarketplace.ONBOARDING);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void setDefaultShakeEnable() {
