@@ -36,6 +36,7 @@ ProductReviewImageListQuery(productID: $productID, page: $page, total: $total){
        uriLarge
        reviewID
      }
+     imageCountFmt
    },
    hasNext,
    hasPrev
