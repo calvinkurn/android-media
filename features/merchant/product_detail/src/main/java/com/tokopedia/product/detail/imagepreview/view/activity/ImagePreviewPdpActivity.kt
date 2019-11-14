@@ -130,12 +130,11 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_LOGIN -> {
-                    startActivity(RouteManager.getIntent(applicationContext, ApplinkConst.WISHLIST))
-                    finish()
-                }
+        when (requestCode) {
+            REQUEST_CODE_LOGIN -> {
+                addWishlist()
+                startActivity(RouteManager.getIntent(applicationContext, ApplinkConst.WISHLIST))
+                finish()
             }
         }
     }
@@ -174,16 +173,16 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
         )
     }
 
+    override fun gotoLogin() {
+        startActivityForResult(RouteManager.getIntent(applicationContext, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+    }
+
     override fun showLoading() {
         progressBar?.show()
     }
 
     override fun hideLoading() {
         progressBar?.hide()
-    }
-
-    override fun gotoLogin() {
-        startActivityForResult(RouteManager.getIntent(applicationContext, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
     }
 
     override fun onSuccessAddWishlist() {
