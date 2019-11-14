@@ -15,7 +15,6 @@ import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.ReactNativeBearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.ReactNativeInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
@@ -376,7 +375,7 @@ public class OkHttpFactory {
     }
 
     public OkHttpClient buildDaggerClientResolutionAuth(FingerprintInterceptor fingerprintInterceptor,
-                                                        ResolutionInterceptor resolutionInterceptor,
+                                                        TkpdAuthInterceptor resolutionInterceptor,
                                                         OkHttpRetryPolicy okHttpRetryPolicy,
                                                         ChuckInterceptor chuckInterceptor,
                                                         DebugInterceptor debugInterceptor) {
