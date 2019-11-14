@@ -26,8 +26,8 @@
 
                 <data
                     android:host="@string/host_digital"
-                    android:path="@string/path_smartcard"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:path="@string/path_emoney_brizzi"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />

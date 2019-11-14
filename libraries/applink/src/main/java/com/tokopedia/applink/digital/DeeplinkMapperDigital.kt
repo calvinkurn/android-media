@@ -24,7 +24,7 @@ object DeeplinkMapperDigital {
 
     const val TEMPLATE_PARAM = "template"
     const val MENU_ID_PARAM = "menu_id"
-    const val NFC_CALLING_TYPE = "calling_type"
+    const val NFC_CALLING_TYPE = "callingType"
 
     private fun readWhitelistFromFile(context: Context): List<WhitelistItem> {
         if (whiteList == null) {
@@ -93,6 +93,7 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         var paramValue = uri.getQueryParameter(NFC_CALLING_TYPE)
+
 
         return if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SMARTCARD_BRIZZI))
             UriUtil.buildUri(ApplinkConsInternalDigital.SMARTCARD_WITH_BRIZZI, paramValue)
