@@ -185,7 +185,6 @@ class OfficialCategoriesTab(context: Context,
             ImageHandler.loadImage(
                     context,
                     image_view_category_icon,
-                    // categoriesItemTab[position].iconUrl,
                     categoriesItemTab[position].inactiveIconUrl,
                     R.drawable.ic_loading_image
             )
