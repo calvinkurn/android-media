@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dialog_width"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
     android:background="@drawable/bg_rect_white_round"
-    tools:background="@color/colorPink"
     tools:context="com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment">
 
     <TextView
@@ -16,7 +17,7 @@
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_16"
         android:text="@string/ar_text_adult_content"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/black_70"
         android:textSize="@dimen/sp_20"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -32,7 +33,8 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/dp_6"
         android:text="@string/ar_text_dob_warning"
-        android:textColor="@color/textColorDeny"
+        android:gravity="center"
+        android:textColor="@color/black_54"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
@@ -79,7 +81,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_accept"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toBottomOf="@+id/button_accept" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

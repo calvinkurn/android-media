@@ -3,6 +3,7 @@ package com.tokopedia.discovery.categoryrevamp.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Log
+import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
@@ -17,7 +18,7 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class ProductNavViewModel @Inject constructor(var categoryProductUseCase: CategoryProductUseCase,
-                                              var subCategoryUseCase: SubCategoryUseCase,
+                                              var subCategoryUseCaseV3: SubCategoryV3UseCase,
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
                                               var quickFilterUseCase: QuickFilterUseCase,
                                               var getProductListUseCase: GetProductListUseCase) : ViewModel() {
@@ -35,7 +36,7 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
                 productListResponse?.let { productResponse ->
                     (productResponse.searchProduct)?.let { searchProduct ->
                         searchProduct.products?.let { productList ->
-                                mProductList.value = Success((productList) as List<ProductsItem>)
+                            mProductList.value = Success((productList) as List<ProductsItem>)
                         }
 
                         mProductCount.value = searchProduct.countText
@@ -53,17 +54,19 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
     }
 
     fun fetchSubCategoriesList(params: RequestParams) {
-
-        subCategoryUseCase.execute(params, object : Subscriber<ArrayList<SubCategoryItem?>?>() {
-            override fun onNext(subCategoryList: ArrayList<SubCategoryItem?>?) {
-
-                subCategoryList?.let {
-                    if (subCategoryList.isNotEmpty()) {
-                        mSubCategoryList.value = Success(it as List<SubCategoryItem>)
-                    } else {
-                        mSubCategoryList.value = Fail(Throwable("no data"))
+        subCategoryUseCaseV3.execute(params, object : Subscriber<Data?>() {
+            override fun onNext(data: Data?) {
+                data?.let {
+                    val subCategoryList = it.child
+                    subCategoryList?.let {
+                        if (subCategoryList.isNotEmpty()) {
+                            mSubCategoryList.value = Success(it as List<SubCategoryItem>)
+                        } else {
+                            mSubCategoryList.value = Fail(Throwable("no data"))
+                        }
                     }
                 }
+
             }
 
             override fun onCompleted() {
@@ -111,8 +114,8 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
     }
 
 
-    fun onDetach(){
-        subCategoryUseCase.unsubscribe()
+    fun onDetach() {
+        subCategoryUseCaseV3.unsubscribe()
         dynamicFilterUseCase.unsubscribe()
         quickFilterUseCase.unsubscribe()
         getProductListUseCase.unsubscribe()
