@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowerListUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListLoadMoreUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListUseCase;
-import com.tokopedia.profile.following_list.view.listener.KolFollowingList;
+import com.tokopedia.profile.following_list.view.listener.FollowingList;
 import com.tokopedia.profile.following_list.view.subscriber
         .GetKolFollowingListLoadMoreSubscriber;
 import com.tokopedia.profile.following_list.view.subscriber.GetKolFollowingListSubscriber;
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingResultViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingResultViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingViewModel;
 import com.tokopedia.network.utils.ErrorHandler;
 
 import javax.inject.Inject;
@@ -23,10 +23,10 @@ import rx.Subscriber;
  * Created by yfsx on 28/12/17.
  */
 
-public class FollowingListPresenter extends BaseDaggerPresenter<KolFollowingList.View<KolFollowingViewModel, KolFollowingResultViewModel>>
-        implements KolFollowingList.Presenter<KolFollowingViewModel, KolFollowingResultViewModel> {
+public class FollowingListPresenter extends BaseDaggerPresenter<FollowingList.View<ProfileFollowingViewModel, ProfileFollowingResultViewModel>>
+        implements FollowingList.Presenter<ProfileFollowingViewModel, ProfileFollowingResultViewModel> {
 
-    private KolFollowingList.View mainView;
+    private FollowingList.View mainView;
     private final GetFollowingListUseCase getFollowingListUseCase;
     private final GetFollowingListLoadMoreUseCase getFollowingListLoadMoreUseCase;
     private final GetFollowerListUseCase getFollowerList;
@@ -63,7 +63,7 @@ public class FollowingListPresenter extends BaseDaggerPresenter<KolFollowingList
     }
 
     @Override
-    public void attachView(KolFollowingList.View view) {
+    public void attachView(FollowingList.View view) {
         super.attachView(view);
         this.mainView = view;
     }
@@ -81,7 +81,7 @@ public class FollowingListPresenter extends BaseDaggerPresenter<KolFollowingList
         if (isViewAttached()) {
             getFollowerList.execute(GetFollowerListUseCase.getFollowerListParam(
                     userId,""),
-                    new Subscriber<KolFollowingResultViewModel>() {
+                    new Subscriber<ProfileFollowingResultViewModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -94,7 +94,7 @@ public class FollowingListPresenter extends BaseDaggerPresenter<KolFollowingList
                 }
 
                 @Override
-                public void onNext(KolFollowingResultViewModel result) {
+                public void onNext(ProfileFollowingResultViewModel result) {
                     mainView.hideLoading();
                     getView().onSuccessGetKolFollowingList(result);
                 }
@@ -108,7 +108,7 @@ public class FollowingListPresenter extends BaseDaggerPresenter<KolFollowingList
 
             getFollowerList.execute(GetFollowerListUseCase.getFollowerListParam(
                     userId, cursor),
-                    new Subscriber<KolFollowingResultViewModel>() {
+                    new Subscriber<ProfileFollowingResultViewModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -120,7 +120,7 @@ public class FollowingListPresenter extends BaseDaggerPresenter<KolFollowingList
                 }
 
                 @Override
-                public void onNext(KolFollowingResultViewModel result) {
+                public void onNext(ProfileFollowingResultViewModel result) {
                     getView().onSuccessLoadMoreKolFollowingList(result);
                 }
             });

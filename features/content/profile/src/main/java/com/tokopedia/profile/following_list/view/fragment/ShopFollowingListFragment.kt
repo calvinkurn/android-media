@@ -6,7 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.profile.following_list.di.DaggerFollowingListComponent
 import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
-import com.tokopedia.profile.following_list.view.listener.KolFollowingList
+import com.tokopedia.profile.following_list.view.listener.FollowingList
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel
@@ -54,7 +54,7 @@ class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel,
     }
 
     @Inject
-    override lateinit var presenter: KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>
+    override lateinit var presenter: FollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>
 
     override fun initInjector() {
         DaggerFollowingListComponent.builder()

@@ -2,9 +2,9 @@ package com.tokopedia.profile.following_list.domain.interactor
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.profile.following_list.data.mapper.KolFollowingListMapper
+import com.tokopedia.profile.following_list.data.mapper.FollowingListMapper
 import com.tokopedia.profile.following_list.data.pojo.GetKolFollowingData
-import com.tokopedia.profile.following_list.domain.model.KolFollowingResultDomain
+import com.tokopedia.profile.following_list.domain.model.FollowingResultDomain
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 
@@ -17,8 +17,8 @@ import rx.Observable
  */
 class GetFollowingListLoadMoreUseCase @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase,
-        private val mapper: KolFollowingListMapper
-) : UseCase<KolFollowingResultDomain>() {
+        private val mapper: FollowingListMapper
+) : UseCase<FollowingResultDomain>() {
 
     companion object {
 
@@ -76,7 +76,7 @@ class GetFollowingListLoadMoreUseCase @Inject constructor(
         """.trimIndent()
     }
 
-    override fun createObservable(requestParams: RequestParams): Observable<KolFollowingResultDomain> {
+    override fun createObservable(requestParams: RequestParams): Observable<FollowingResultDomain> {
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(
                 GraphqlRequest(

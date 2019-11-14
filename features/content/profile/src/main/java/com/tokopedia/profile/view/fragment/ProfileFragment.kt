@@ -967,7 +967,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     redirectLink
             )
             if (!isSingleItem) {
-                RouteManager.getIntent(
+                RouteManager.route(
                         requireContext(),
                         UriUtil.buildUriAppendParam(
                                 ApplinkConstInternalContent.MEDIA_PREVIEW,

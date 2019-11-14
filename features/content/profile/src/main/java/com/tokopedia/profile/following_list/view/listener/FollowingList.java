@@ -7,14 +7,12 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingResultViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingResultViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingViewModel;
 
 /**
  * Created by yfsx on 28/12/17.
  */
 
-public interface KolFollowingList<R extends FollowingViewModel, T extends FollowingResultViewModel<R>> {
+public interface FollowingList<R extends FollowingViewModel, T extends FollowingResultViewModel<R>> {
 
     interface View<R, T> extends CustomerView {
 

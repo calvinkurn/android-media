@@ -7,16 +7,16 @@ import com.tokopedia.feedcomponent.di.CoroutineDispatcherModule;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.profile.following_list.data.mapper.KolFollowerMapper;
+import com.tokopedia.profile.following_list.data.mapper.FollowerMapper;
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowerListUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListLoadMoreUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetShopFollowingListUseCase;
-import com.tokopedia.profile.following_list.view.listener.KolFollowingList;
+import com.tokopedia.profile.following_list.view.listener.FollowingList;
 import com.tokopedia.profile.following_list.view.presenter.FollowingListPresenter;
 import com.tokopedia.profile.following_list.view.presenter.ShopFollowingListPresenter;
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingResultViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingResultViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
@@ -33,7 +33,7 @@ public class FollowingListModule {
 
     @FollowingListScope
     @Provides
-    public KolFollowingList.Presenter<KolFollowingViewModel, KolFollowingResultViewModel> provideKolFollowingListPresenter(
+    public FollowingList.Presenter<ProfileFollowingViewModel, ProfileFollowingResultViewModel> provideKolFollowingListPresenter(
             GetFollowingListUseCase getFollowingListUseCase,
             GetFollowingListLoadMoreUseCase getFollowingListLoadMoreUseCase,
             GetFollowerListUseCase getFollowerListUseCase
@@ -47,7 +47,7 @@ public class FollowingListModule {
 
     @FollowingListScope
     @Provides
-    public KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel> provideShopFollowingListPresenter(
+    public FollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel> provideShopFollowingListPresenter(
             @ApplicationContext Context context,
             GetShopFollowingListUseCase getShopFollowingListUseCase,
             ToggleFavouriteShopUseCase toggleFavouriteShopUseCase
@@ -76,13 +76,13 @@ public class FollowingListModule {
     public GetFollowerListUseCase providesGetFollowerListUseCase(
             @ApplicationContext Context context,
             GraphqlUseCase graphqlUseCase,
-            KolFollowerMapper mapper) {
+            FollowerMapper mapper) {
         return new GetFollowerListUseCase(context, graphqlUseCase, mapper);
     }
 
     @FollowingListScope
     @Provides
-    public KolFollowerMapper providesKolFollowerMapper() {
-        return new KolFollowerMapper();
+    public FollowerMapper providesKolFollowerMapper() {
+        return new FollowerMapper();
     }
 }

@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.profile.R;
-import com.tokopedia.profile.following_list.view.fragment.KolFollowingListFragment;
+import com.tokopedia.profile.following_list.view.fragment.ProfileFollowingListFragment;
 
 /**
  * Created by yfsx on 28/12/17.
@@ -44,6 +44,6 @@ public class FollowingListActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return KolFollowingListFragment.createInstance(getIntent().getExtras());
+        return ProfileFollowingListFragment.createInstance(getIntent().getExtras());
     }
 }

@@ -1372,7 +1372,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             trackCardPostClick(positionInFeed, trackingPostModel)
 
             if (!isSingleItem && activity != null) {
-                RouteManager.getIntent(
+                RouteManager.route(
                         requireContext(),
                         UriUtil.buildUriAppendParam(
                                 ApplinkConstInternalContent.MEDIA_PREVIEW,

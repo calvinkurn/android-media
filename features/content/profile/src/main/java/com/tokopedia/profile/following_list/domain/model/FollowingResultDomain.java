@@ -6,22 +6,22 @@ import java.util.List;
  * Created by yfsx on 29/12/17.
  */
 
-public class KolFollowingResultDomain {
+public class FollowingResultDomain {
     private boolean isCanLoadMore;
     private String lastCursor;
-    private List<KolFollowingDomain> kolFollowingDomainList;
+    private List<FollowingDomain> followingDomainList;
     private String buttonText;
     private String buttonApplink;
 
-    public KolFollowingResultDomain(
+    public FollowingResultDomain(
             boolean isCanLoadMore,
             String lastCursor,
-            List<KolFollowingDomain> kolFollowingDomainList,
+            List<FollowingDomain> followingDomainList,
             String buttonText,
             String buttonApplink) {
         this.isCanLoadMore = isCanLoadMore;
         this.lastCursor = lastCursor;
-        this.kolFollowingDomainList = kolFollowingDomainList;
+        this.followingDomainList = followingDomainList;
         this.buttonText = buttonText;
         this.buttonApplink = buttonApplink;
     }
@@ -58,11 +58,11 @@ public class KolFollowingResultDomain {
         this.lastCursor = lastCursor;
     }
 
-    public List<KolFollowingDomain> getKolFollowingDomainList() {
-        return kolFollowingDomainList;
+    public List<FollowingDomain> getFollowingDomainList() {
+        return followingDomainList;
     }
 
-    public void setKolFollowingDomainList(List<KolFollowingDomain> kolFollowingDomainList) {
-        this.kolFollowingDomainList = kolFollowingDomainList;
+    public void setFollowingDomainList(List<FollowingDomain> followingDomainList) {
+        this.followingDomainList = followingDomainList;
     }
 }

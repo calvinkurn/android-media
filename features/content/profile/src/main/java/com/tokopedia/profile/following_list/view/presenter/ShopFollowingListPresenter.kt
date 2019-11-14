@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.GetShopFollowingData
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.UserShopFollowDetail
 import com.tokopedia.profile.following_list.domain.interactor.GetShopFollowingListUseCase
-import com.tokopedia.profile.following_list.view.listener.KolFollowingList
+import com.tokopedia.profile.following_list.view.listener.FollowingList
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel
@@ -29,7 +29,7 @@ class ShopFollowingListPresenter @Inject constructor(
         @ApplicationContext private val context: Context,
         private val getUserShopFollowingListUseCase: GetShopFollowingListUseCase,
         private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
-) : BaseDaggerPresenter<KolFollowingList.View<ShopFollowingViewModel, ShopFollowingResultViewModel>>(), KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>, CoroutineScope {
+) : BaseDaggerPresenter<FollowingList.View<ShopFollowingViewModel, ShopFollowingResultViewModel>>(), FollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job

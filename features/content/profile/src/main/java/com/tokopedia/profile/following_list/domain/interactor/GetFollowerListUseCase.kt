@@ -2,13 +2,11 @@ package com.tokopedia.profile.following_list.domain.interactor
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.profile.R
-import com.tokopedia.profile.following_list.data.mapper.KolFollowerMapper
+import com.tokopedia.profile.following_list.data.mapper.FollowerMapper
 import com.tokopedia.profile.following_list.data.pojo.FollowerListData
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingResultViewModel
+import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingResultViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -18,8 +16,8 @@ import rx.Observable
  */
 class GetFollowerListUseCase constructor(@ApplicationContext private val context: Context,
                                          private val useCase: GraphqlUseCase,
-                                         private val mapData: KolFollowerMapper
-): UseCase<KolFollowingResultViewModel>() {
+                                         private val mapData: FollowerMapper
+): UseCase<ProfileFollowingResultViewModel>() {
 
     companion object {
         private const val PARAM_ID = "userID"
@@ -67,7 +65,7 @@ class GetFollowerListUseCase constructor(@ApplicationContext private val context
     }
     //endregion
 
-    override fun createObservable(requestParams: RequestParams): Observable<KolFollowingResultViewModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<ProfileFollowingResultViewModel> {
         val request = GraphqlRequest(query,
                 FollowerListData::class.java,
                 requestParams.parameters)

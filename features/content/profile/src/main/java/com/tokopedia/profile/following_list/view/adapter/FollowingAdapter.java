@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.profile.R;
-import com.tokopedia.profile.following_list.view.listener.KolFollowingList;
+import com.tokopedia.profile.following_list.view.listener.FollowingList;
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel;
 import com.tokopedia.unifycomponents.UnifyButton;
 
@@ -34,9 +34,9 @@ public class FollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private Context context;
     private List<FollowingViewModel> itemList = new ArrayList<>();
-    private KolFollowingList.View mainView;
+    private FollowingList.View mainView;
 
-    public FollowingAdapter(Context context, KolFollowingList.View view) {
+    public FollowingAdapter(Context context, FollowingList.View view) {
         this.context = context;
         this.mainView = view;
     }
@@ -73,9 +73,9 @@ public class FollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder followingViewHolder, int position) {
         final FollowingViewModel viewModel = itemList.get(position);
 
-        if (viewModel instanceof KolFollowingViewModel && followingViewHolder instanceof KolFollowingViewHolder) {
+        if (viewModel instanceof ProfileFollowingViewModel && followingViewHolder instanceof KolFollowingViewHolder) {
             KolFollowingViewHolder viewHolder = (KolFollowingViewHolder) followingViewHolder;
-            KolFollowingViewModel model = (KolFollowingViewModel) viewModel;
+            ProfileFollowingViewModel model = (ProfileFollowingViewModel) viewModel;
             initView(viewHolder, model);
             initData(viewHolder, model);
             viewHolder.layout.setOnClickListener(new View.OnClickListener() {
@@ -99,14 +99,14 @@ public class FollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private void initView(KolFollowingViewHolder viewHolder,
-                          KolFollowingViewModel viewModel) {
+                          ProfileFollowingViewModel viewModel) {
         viewHolder.layout.setVisibility(viewModel.isLoadingItem() ? View.GONE : View.VISIBLE);
         viewHolder.progressBar.setVisibility(viewModel.isLoadingItem() ? View.VISIBLE : View.GONE);
         viewHolder.ivVerified.setVisibility(viewModel.isInfluencer() ? View.VISIBLE : View.GONE);
     }
 
     private void initData(KolFollowingViewHolder viewHolder,
-                          KolFollowingViewModel viewModel) {
+                          ProfileFollowingViewModel viewModel) {
         if (!viewModel.isLoadingItem()) {
             ImageHandler.loadImageCircle2(context, viewHolder.ivAvatar, viewModel.getAvatarUrl());
             viewHolder.tvName.setText(MethodChecker.fromHtml(viewModel.getName()));
@@ -129,7 +129,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public void addBottomLoading() {
-        getItemList().add(new KolFollowingViewModel(true));
+        getItemList().add(new ProfileFollowingViewModel(true));
         notifyDataSetChanged();
     }
 
@@ -146,7 +146,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemViewType(int position) {
         FollowingViewModel viewModel = itemList.get(position);
-        if (viewModel instanceof KolFollowingViewModel) {
+        if (viewModel instanceof ProfileFollowingViewModel) {
             return TYPE_KOL;
         } else if (viewModel instanceof ShopFollowingViewModel) {
             return TYPE_SHOP;

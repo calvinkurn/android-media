@@ -532,7 +532,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                                   redirectLink: String, isSingleItem: Boolean) {
         val model = adapter.data[positionInFeed] as? DynamicPostViewModel
         if (!isSingleItem && model != null){
-            RouteManager.getIntent(
+            RouteManager.route(
                     requireContext(),
                     UriUtil.buildUriAppendParam(
                             ApplinkConstInternalContent.MEDIA_PREVIEW,

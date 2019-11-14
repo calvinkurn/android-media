@@ -15,15 +15,15 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
 import com.tokopedia.profile.following_list.view.adapter.FollowingAdapter
-import com.tokopedia.profile.following_list.view.listener.KolFollowingList
-import com.tokopedia.profile.following_list.view.listener.KolFollowingListEmptyListener
+import com.tokopedia.profile.following_list.view.listener.FollowingList
+import com.tokopedia.profile.following_list.view.listener.FollowingListEmptyListener
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingResultViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel
 
 /**
  * Created by jegul on 2019-10-22
  */
-abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResultViewModel<I>> : BaseDaggerFragment(), KolFollowingList.View<I, T> {
+abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResultViewModel<I>> : BaseDaggerFragment(), FollowingList.View<I, T> {
 
     private lateinit var rvItem: RecyclerView
     private lateinit var progressBar: ProgressBar
@@ -38,7 +38,7 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
     protected lateinit var emptyButton: Button
     private var openFollowerPage: Boolean? = false
 
-    abstract var presenter: KolFollowingList.Presenter<I, T>
+    abstract var presenter: FollowingList.Presenter<I, T>
 
     abstract fun updateParams(viewModel: T)
     abstract fun onViewUpdated(viewModel: T)
@@ -126,8 +126,8 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
 
     override fun onSuccessGetKolFollowingListEmptyState() {
         emptyState.visibility = View.VISIBLE
-        if (activity is KolFollowingListEmptyListener) {
-            (activity as KolFollowingListEmptyListener).onFollowingEmpty()
+        if (activity is FollowingListEmptyListener) {
+            (activity as FollowingListEmptyListener).onFollowingEmpty()
         }
     }
 

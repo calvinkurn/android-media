@@ -38,7 +38,7 @@ import com.tokopedia.createpost.domain.entity.FeedDetail
 import com.tokopedia.createpost.view.activity.CreatePostActivity
 import com.tokopedia.createpost.view.activity.CreatePostImagePickerActivity
 import com.tokopedia.createpost.view.activity.CreatePostVideoPickerActivity
-import com.tokopedia.createpost.view.activity.MediaPreviewActivity
+import com.tokopedia.createpost.view.activity.CreatePostMediaPreviewActivity
 import com.tokopedia.createpost.view.adapter.DefaultCaptionsAdapter
 import com.tokopedia.createpost.view.adapter.ProductAttachmentAdapter
 import com.tokopedia.createpost.view.adapter.ProductSuggestionAdapter
@@ -632,7 +632,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun goToMediaPreview() {
         context?.let {
-            startActivityForResult(MediaPreviewActivity.createIntent(it, viewModel), REQUEST_PREVIEW)
+            startActivityForResult(CreatePostMediaPreviewActivity.createIntent(it, viewModel), REQUEST_PREVIEW)
         }
     }
 

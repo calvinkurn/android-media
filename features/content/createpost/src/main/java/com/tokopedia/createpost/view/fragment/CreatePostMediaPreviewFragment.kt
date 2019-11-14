@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_af_media_preview.*
 /**
  * @author by milhamj on 25/02/19.
  */
-class MediaPreviewFragment : BaseDaggerFragment() {
+class CreatePostMediaPreviewFragment : BaseDaggerFragment() {
 
     private lateinit var viewModel: CreatePostViewModel
 
@@ -62,7 +62,7 @@ class MediaPreviewFragment : BaseDaggerFragment() {
 
     companion object {
         fun createInstance(bundle: Bundle): Fragment {
-            val fragment = MediaPreviewFragment()
+            val fragment = CreatePostMediaPreviewFragment()
             fragment.arguments = bundle
             return fragment
         }

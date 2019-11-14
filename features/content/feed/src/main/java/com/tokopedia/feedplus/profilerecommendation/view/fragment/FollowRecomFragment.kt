@@ -233,7 +233,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
             feedAnalyticTracker.eventClickContentRecommendation(model.id, itemPos, it.typeString)
         }
         context?.let { ctx ->
-            RouteManager.getIntent(
+            RouteManager.route(
                     ctx,
                     ApplinkConstInternalContent.MEDIA_PREVIEW,
                     id.toString()

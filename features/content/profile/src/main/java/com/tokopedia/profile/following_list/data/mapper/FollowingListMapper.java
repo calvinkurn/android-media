@@ -6,8 +6,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.profile.following_list.data.pojo.GetKolFollowingData;
 import com.tokopedia.profile.following_list.data.pojo.GetUserKolFollowing;
 import com.tokopedia.profile.following_list.data.pojo.User;
-import com.tokopedia.profile.following_list.domain.model.KolFollowingDomain;
-import com.tokopedia.profile.following_list.domain.model.KolFollowingResultDomain;
+import com.tokopedia.profile.following_list.domain.model.FollowingDomain;
+import com.tokopedia.profile.following_list.domain.model.FollowingResultDomain;
 
 import java.util.ArrayList;
 
@@ -19,23 +19,23 @@ import rx.functions.Func1;
  * @author by milhamj on 23/04/18.
  */
 
-public class KolFollowingListMapper
-        implements Func1<GraphqlResponse, KolFollowingResultDomain> {
+public class FollowingListMapper
+        implements Func1<GraphqlResponse, FollowingResultDomain> {
 
     @Inject
-    public KolFollowingListMapper() {
+    public FollowingListMapper() {
     }
 
     @Override
-    public KolFollowingResultDomain call(GraphqlResponse getKolFollowingDataGraphqlResponse) {
+    public FollowingResultDomain call(GraphqlResponse getKolFollowingDataGraphqlResponse) {
         GetKolFollowingData getKolFollowingData = getKolFollowingDataGraphqlResponse.getData(GetKolFollowingData.class);
         GetUserKolFollowing getUserKolFollowing = getKolFollowingData.getUserKolFollowing;
 
-        ArrayList<KolFollowingDomain> kolFollowingDomains = new ArrayList<>();
+        ArrayList<FollowingDomain> followingDomains = new ArrayList<>();
 
         for (User user : getUserKolFollowing.users) {
-            kolFollowingDomains.add(
-                    new KolFollowingDomain(
+            followingDomains.add(
+                    new FollowingDomain(
                             user.id,
                             user.name == null ? "" : user.name,
                             user.photo == null ? "" : user.photo,
@@ -46,10 +46,10 @@ public class KolFollowingListMapper
             );
         }
 
-        return new KolFollowingResultDomain(
+        return new FollowingResultDomain(
                 !TextUtils.isEmpty(getUserKolFollowing.lastCursor),
                 getUserKolFollowing.lastCursor,
-                kolFollowingDomains,
+                followingDomains,
                 "",
                 ""
         );

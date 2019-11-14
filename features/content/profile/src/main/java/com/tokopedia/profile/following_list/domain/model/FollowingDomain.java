@@ -4,7 +4,7 @@ package com.tokopedia.profile.following_list.domain.model;
  * Created by yfsx on 28/12/17.
  */
 
-public class KolFollowingDomain {
+public class FollowingDomain {
     private final int id;
     private final String name;
     private final String avatarUrl;
@@ -12,8 +12,8 @@ public class KolFollowingDomain {
     private final String profileUrl;
     private final boolean isInfluencer;
 
-    public KolFollowingDomain(int id, String name, String avatarUrl, String profileApplink,
-                              String profileUrl, boolean isInfluencer) {
+    public FollowingDomain(int id, String name, String avatarUrl, String profileApplink,
+                           String profileUrl, boolean isInfluencer) {
         this.id = id;
         this.name = name;
         this.avatarUrl = avatarUrl;

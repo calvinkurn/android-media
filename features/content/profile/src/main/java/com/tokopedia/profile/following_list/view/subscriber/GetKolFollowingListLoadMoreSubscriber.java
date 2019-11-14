@@ -1,8 +1,8 @@
 package com.tokopedia.profile.following_list.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.profile.following_list.domain.model.KolFollowingResultDomain;
-import com.tokopedia.profile.following_list.view.listener.KolFollowingList;
+import com.tokopedia.profile.following_list.domain.model.FollowingResultDomain;
+import com.tokopedia.profile.following_list.view.listener.FollowingList;
 
 import rx.Subscriber;
 
@@ -10,10 +10,10 @@ import rx.Subscriber;
  * Created by yfsx on 28/12/17.
  */
 
-public class GetKolFollowingListLoadMoreSubscriber extends Subscriber<KolFollowingResultDomain> {
-    private KolFollowingList.View mainView;
+public class GetKolFollowingListLoadMoreSubscriber extends Subscriber<FollowingResultDomain> {
+    private FollowingList.View mainView;
 
-    public GetKolFollowingListLoadMoreSubscriber(KolFollowingList.View mainView) {
+    public GetKolFollowingListLoadMoreSubscriber(FollowingList.View mainView) {
         this.mainView = mainView;
     }
 
@@ -31,9 +31,9 @@ public class GetKolFollowingListLoadMoreSubscriber extends Subscriber<KolFollowi
     }
 
     @Override
-    public void onNext(KolFollowingResultDomain kolFollowingResultDomain) {
+    public void onNext(FollowingResultDomain followingResultDomain) {
         mainView.hideLoading();
-        mainView.onSuccessLoadMoreKolFollowingList(GetKolFollowingListSubscriber.mappingViewModel(kolFollowingResultDomain));
+        mainView.onSuccessLoadMoreKolFollowingList(GetKolFollowingListSubscriber.mappingViewModel(followingResultDomain));
     }
 
 }

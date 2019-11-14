@@ -1,11 +1,11 @@
 package com.tokopedia.profile.following_list.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.profile.following_list.domain.model.KolFollowingDomain;
-import com.tokopedia.profile.following_list.domain.model.KolFollowingResultDomain;
-import com.tokopedia.profile.following_list.view.listener.KolFollowingList;
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingResultViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingViewModel;
+import com.tokopedia.profile.following_list.domain.model.FollowingDomain;
+import com.tokopedia.profile.following_list.domain.model.FollowingResultDomain;
+import com.tokopedia.profile.following_list.view.listener.FollowingList;
+import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingResultViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +16,10 @@ import rx.Subscriber;
  * Created by yfsx on 28/12/17.
  */
 
-public class GetKolFollowingListSubscriber extends Subscriber<KolFollowingResultDomain> {
-    private KolFollowingList.View mainView;
+public class GetKolFollowingListSubscriber extends Subscriber<FollowingResultDomain> {
+    private FollowingList.View mainView;
 
-    public GetKolFollowingListSubscriber(KolFollowingList.View mainView) {
+    public GetKolFollowingListSubscriber(FollowingList.View mainView) {
         this.mainView = mainView;
     }
 
@@ -37,28 +37,28 @@ public class GetKolFollowingListSubscriber extends Subscriber<KolFollowingResult
     }
 
     @Override
-    public void onNext(KolFollowingResultDomain kolFollowingResultDomain) {
+    public void onNext(FollowingResultDomain followingResultDomain) {
         mainView.hideLoading();
-        if (kolFollowingResultDomain.getKolFollowingDomainList().size() != 0) {
-            mainView.onSuccessGetKolFollowingList(mappingViewModel(kolFollowingResultDomain));
+        if (followingResultDomain.getFollowingDomainList().size() != 0) {
+            mainView.onSuccessGetKolFollowingList(mappingViewModel(followingResultDomain));
         } else {
             mainView.onSuccessGetKolFollowingListEmptyState();
         }
     }
 
-    public static KolFollowingResultViewModel mappingViewModel(KolFollowingResultDomain domain) {
-        return new KolFollowingResultViewModel(
+    public static ProfileFollowingResultViewModel mappingViewModel(FollowingResultDomain domain) {
+        return new ProfileFollowingResultViewModel(
                 domain.isCanLoadMore(),
-                mappingViewModels(domain.getKolFollowingDomainList()),
+                mappingViewModels(domain.getFollowingDomainList()),
                 domain.getLastCursor(),
                 domain.getButtonText(),
                 domain.getButtonApplink());
     }
 
-    private static List<KolFollowingViewModel> mappingViewModels(List<KolFollowingDomain> domainList) {
-        List<KolFollowingViewModel> viewModelList = new ArrayList<>();
-        for (KolFollowingDomain domain : domainList) {
-            KolFollowingViewModel viewModel = new KolFollowingViewModel(
+    private static List<ProfileFollowingViewModel> mappingViewModels(List<FollowingDomain> domainList) {
+        List<ProfileFollowingViewModel> viewModelList = new ArrayList<>();
+        for (FollowingDomain domain : domainList) {
+            ProfileFollowingViewModel viewModel = new ProfileFollowingViewModel(
                     domain.getId(),
                     domain.getAvatarUrl(),
                     domain.getProfileApplink(),
