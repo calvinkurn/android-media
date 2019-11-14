@@ -81,7 +81,8 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     private fun updateView() {
         findViewById<Button>(R.id.ivDownload)?.hide()
 
-        if (remoteConfig.getBoolean(KEY_WISHLIST_BUTTON, false)) {
+        val isCanShowing = remoteConfig.getBoolean(KEY_WISHLIST_BUTTON, false)
+        if (isCanShowing) {
             btnAddToWishlist?.show()
         } else {
             btnAddToWishlist?.hide()

@@ -147,7 +147,7 @@
     <string name="review_counter">• %1$d ulasan</string>
     <string name="label_see_all_with_counter">Lainnya \n %2$d</string>
 
-    <string name="image_preview_add_wishlist">Tambah ke Wishlist</string>
+    <string name="image_preview_add_wishlist">Tambahkan ke Wishlist</string>
     <string name="image_preview_remove_wishlist">Hapus dari Wishlist</string>
     <string name="image_preview_add_wishlist_success">Berhasil menambahkan ke Wishlist</string>
     <string name="image_preview_remove_wishlist_success">Berhasil menghapus dari Wishlist</string>

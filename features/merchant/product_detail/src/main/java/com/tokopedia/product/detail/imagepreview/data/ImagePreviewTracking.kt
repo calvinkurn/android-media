@@ -28,9 +28,9 @@ class ImagePreviewTracking {
         }
 
         object ACTION {
-            const val ADD_WISLIST_NON_LOGIN = "add wishlist - product page - non login"
-            const val ADD_WISLIST_LOGIN = "add wishlist - product page - login"
-            const val REMOVE_WISLIST_LOGIN = "remove wishlist - product page - login"
+            const val ADD_WISLIST_NON_LOGIN = "add wishlist - product image - nonlogin"
+            const val ADD_WISLIST_LOGIN = "add wishlist - product image - login"
+            const val REMOVE_WISLIST_LOGIN = "remove wishlist - product image - login"
         }
 
         object LABEL {
