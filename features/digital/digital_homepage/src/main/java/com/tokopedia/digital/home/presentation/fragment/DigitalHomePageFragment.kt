@@ -33,7 +33,9 @@ import com.tokopedia.digital.home.presentation.Util.DigitalHomePageCategoryDataM
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_RESULT_PAGE_ICON_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
@@ -90,7 +92,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         })
 
         digital_homepage_order_list.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.DIGITAL_ORDER)
+            onClickOrderList()
         }
 
         trackingUtil.resetInitialImpressionTracking()
@@ -260,11 +262,15 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, i: Int, sectionType: String) {
-        trackingUtil.eventSectionClick(element, i, sectionType)
+        if (sectionType == SUBSCRIPTION_GUIDE_CLICK) {
+            trackingUtil.eventClickSubscriptionGuide()
+        } else {
+            trackingUtil.eventSectionClick(element, i, sectionType)
+        }
         RouteManager.route(activity, element.applink)
     }
 
-    override fun onSectionItemImpression(sectionType: String, initialLoad: Boolean) {
+    override fun onSectionItemImpression(sectionType: String) {
         val sectionOrder = when(sectionType) {
             BEHAVIORAL_CATEGORY_IMPRESSION -> FAVORITES_ORDER
             NEW_USER_IMPRESSION -> NEW_USER_ZONE_ORDER
@@ -275,7 +281,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             viewModel.digitalHomePageList.value?.get(sectionOrder)?.let { item ->
                 if (item is DigitalHomePageSectionModel && item.isLoaded && item.isSuccess) {
                     item.data?.section?.items?.let { data ->
-                        trackingUtil.eventSectionImpression(data, sectionType, initialLoad)
+                        trackingUtil.eventSectionImpression(data, sectionType)
                     }
                 }
             }

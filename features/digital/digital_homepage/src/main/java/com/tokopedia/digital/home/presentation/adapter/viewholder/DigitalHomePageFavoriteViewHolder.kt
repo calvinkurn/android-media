@@ -28,16 +28,7 @@ class DigitalHomePageFavoriteViewHolder(itemView: View?, val onItemBindListener:
 
                 with(itemView.rv_digital_homepage_favorites) {
                     adapter = DigitalItemFavoriteAdapter(items, onItemBindListener)
-                    onItemBindListener.onSectionItemImpression(BEHAVIORAL_CATEGORY_IMPRESSION, true)
-//                    clearOnScrollListeners()
-//                    addOnScrollListener(object: RecyclerView.OnScrollListener() {
-//                        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                            super.onScrollStateChanged(recyclerView, newState)
-//                            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                                onItemBindListener.onSectionItemImpression(BEHAVIORAL_CATEGORY_IMPRESSION, AnalyticUtils.getVisibleItemIndexes(recyclerView))
-//                            }
-//                        }
-//                    })
+                    onItemBindListener.onSectionItemImpression(BEHAVIORAL_CATEGORY_IMPRESSION)
                 }
             }
         } else {

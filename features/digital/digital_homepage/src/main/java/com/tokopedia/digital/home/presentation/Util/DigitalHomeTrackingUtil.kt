@@ -164,10 +164,10 @@ class DigitalHomeTrackingUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, MORE_INFO_CLICK, "")
     }
 
-    fun eventSectionImpression(data: List<DigitalHomePageSectionModel.Item>, eventAction: String, initialLoad: Boolean = false) {
+    fun eventSectionImpression(data: List<DigitalHomePageSectionModel.Item>, eventAction: String) {
         initialImpressionTracking.apply {
             if (containsKey(eventAction)) {
-                if (!(initialLoad && this[eventAction] == true)) {
+                if (this[eventAction] == false) {
                     TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                             DataLayer.mapOf(
                                     TrackAppUtils.EVENT, PROMO_VIEW,
@@ -176,9 +176,9 @@ class DigitalHomeTrackingUtil {
                                     TrackAppUtils.EVENT_LABEL, "",
                                     ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(data).toArray()))
                             ))
+                    // Disable initial load after first time
+                    this[eventAction] = true
                 }
-                // Disable initial load after first time
-                if (initialLoad && this[eventAction] == false) this[eventAction] = true
             }
         }
 
