@@ -22,8 +22,8 @@ class TwitterWebViewFragment : BaseSessionWebViewFragment() {
         }
     }
 
-    override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
-        return isCallbackUrl(url.orEmpty())
+    override fun shouldOverrideUrlLoading(webView: WebView?, url: String): Boolean {
+        return isCallbackUrl(url)
     }
 
     private fun isCallbackUrl(url: String): Boolean {

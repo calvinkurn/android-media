@@ -2,12 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-repositories {
-    flatDir {
-        dirs project(rootProject.ext.libraries.inappupdate).file('libs')
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -25,7 +19,7 @@ dependencies {
 project.ext {
     artifactId = 'inapp-update'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "inappupdate-release"
 }
 

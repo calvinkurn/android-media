@@ -1,0 +1,21 @@
+query productrevGetForm($reputationId:Int!,$productId:Int!){
+  productrevGetForm(reputationID:$reputationId, productID:$productId){
+    reputationID
+    productData{
+      productID
+      productName
+      productStatus
+      productPageURL
+      productImageURL
+    }
+    shopData{
+      shopID
+      shopOpen
+    }
+    userData{
+      userID
+      userName
+      userStatus
+    }
+  }
+}

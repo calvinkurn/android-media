@@ -358,7 +358,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/bottom"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/item_quick_reply"
+            tools:listitem="@layout/item_quick_play_reply"
             tools:visibility="gone"/>
 
         <View
@@ -446,7 +446,7 @@
                 android:layout_gravity="center_vertical"
                 android:rotation="180"
                 android:tint="@color/play_new_chat"
-                app:srcCompat="@drawable/ic_arrow_up_green"/>
+                app:srcCompat="@drawable/ic_arrow_up_green_thick"/>
 
         </LinearLayout>
 

@@ -10,8 +10,10 @@ import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.R;
 import com.tokopedia.user_identification_common.domain.pojo.RegisterIdentificationPojo;
 import com.tokopedia.user_identification_common.domain.pojo.UploadIdentificationPojo;
+import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase;
+import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber;
 import com.tokopedia.user_identification_common.util.SchedulerProvider;
 import com.tokopedia.user_identification_common.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.user_identification_common.view.viewmodel.AttachmentImageModel;
@@ -50,6 +52,7 @@ public class UserIdentificationUploadImagePresenter extends
     private static final String DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg";
     private CompositeSubscription compositeSubscription;
 
+    private final GetKtpStatusUseCase cekKtpStatusUseCase;
     private final UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
     private final UploadIdentificationUseCase uploadIdentificationUseCase;
     private final RegisterIdentificationUseCase registerIdentificationUseCase;
@@ -62,6 +65,7 @@ public class UserIdentificationUploadImagePresenter extends
                                                   UploadIdentificationUseCase
                                                           uploadIdentificationUseCase,
                                                   RegisterIdentificationUseCase registerIdentificationUseCase,
+                                                  GetKtpStatusUseCase cekKtpStatusUseCase,
                                                   UserSessionInterface userSession,
                                                   CompositeSubscription compositeSubscription,
                                                   SchedulerProvider schedulerProvider) {
@@ -71,6 +75,7 @@ public class UserIdentificationUploadImagePresenter extends
         this.userSession = userSession;
         this.compositeSubscription = compositeSubscription;
         this.schedulerProvider = schedulerProvider;
+        this.cekKtpStatusUseCase = cekKtpStatusUseCase;
     }
 
     @Override
@@ -204,6 +209,11 @@ public class UserIdentificationUploadImagePresenter extends
         list.add(new ImageUploadModel(UploadIdentificationUseCase.TYPE_KTP, model.getKtpFile()));
         list.add(new ImageUploadModel(UploadIdentificationUseCase.TYPE_SELFIE, model.getFaceFile()));
         return list;
+    }
+
+    @Override
+    public void checkKtp(String image) {
+        cekKtpStatusUseCase.execute(cekKtpStatusUseCase.getRequestParam(image), new GetKtpStatusSubscriber(getView().getKtpStatusListener()));
     }
 
     @Override

@@ -78,6 +78,7 @@
     <string name="template_last_update_price">Perubahan Harga Terakhir : %1$s</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
     <string name="title_image_review">Foto dari Pembeli</string>
+    <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_most_helpful_review">Ulasan Paling Membantu</string>
     <string name="label_see_all_review">Lihat Semua Ulasan (%1$s)</string>
     <string name="title_latest_talk">Diskusi Terakhir</string>
@@ -136,5 +137,14 @@
     <string name="pdp_etalase_empty_default_value">Semua  Etalase</string>
     <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
     <string name="recom_see_more_title">Lihat semua</string>
+
+    <string name="review_like_pattern">%1$d orang</string>
+    <string name="date_review_pattern">%1$s oleh %2$s</string>
+    <string name="txt_most_helpfull">terbantu dengan ulasan ini</string>
+    <string name="txt_more_item_plus">%1$d +</string>
+    <string name="counter_pattern_string">%1$s / %2$d</string>
+    <string name="review_counter">• %1$d ulasan</string>
+    <string name="label_see_all_with_counter">Lainnya \n %2$d</string>
+
 
 </resources>

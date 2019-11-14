@@ -134,4 +134,8 @@ public interface SearchConstant {
         String FREE_ONGKIR_LOCAL_CACHE_NAME = "SEARCH_PRODUCT_FREE_ONGKIR";
         String FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN = "FREE_ONGKIR_SHOW_CASE_ALREADY_SHOWN";
     }
+
+    interface SimilarSearch {
+        String QUERY = "SIMILAR_SEARCH_QUERY";
+    }
 }
