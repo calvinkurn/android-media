@@ -70,6 +70,8 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             toolbar.setTitle(R.string.money_in);
             TRADEIN_TEST_TYPE = TRADEIN_MONEY_IN;
+            clickEvent = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
+            viewEvent = TradeInGTMConstants.ACTION_VIEW_MONEYIN;
         }
         setSupportActionBar(toolbar);
     }

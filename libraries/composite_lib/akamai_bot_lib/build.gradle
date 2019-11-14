@@ -14,13 +14,13 @@ buildscript {
 project.ext {
     artifactId = 'akamai_bot_lib'
     groupId = 'com.tokopedia.akamai'
-    versionName = "1.0.6"
+    versionName = "1.0.5-test"
     artifactName = "akamai_bot_lib"
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.tokopedia.config:global_config:1.0.3"
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 }
 
 apply from: '../publish_local.gradle'

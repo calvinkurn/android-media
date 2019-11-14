@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.officialstore.ApplinkConstant
@@ -123,8 +124,13 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                     populateCategoriesData(it.data)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG)
+                    if (BuildConfig.DEBUG) {
                         it.throwable.printStackTrace()
+                    }
+
+                    NetworkErrorHelper.showEmptyState(context, view) {
+                        viewModel.getOfficialStoreCategories()
+                    }
                 }
             }
         })

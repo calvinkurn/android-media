@@ -14,7 +14,11 @@ interface ITrackingDataSource<U : Any> {
 
     fun getAll(): Array<U>?
 
+    fun get(limit: Int): Array<U>?
+
     fun delete(event: EventModel)
+
+    fun delete(keyList:List<String>)
 
     fun delete()
 
