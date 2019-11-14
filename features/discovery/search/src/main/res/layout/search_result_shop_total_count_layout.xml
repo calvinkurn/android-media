@@ -5,6 +5,7 @@
     android:id="@+id/constraintLayoutShopHeader"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_8"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
