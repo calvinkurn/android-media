@@ -135,4 +135,7 @@
 
     <!-- Digital-Deals-->
     <string name="digital_deals">digital_deals</string>
+
+    <!-- Dynamic feature for Setting Bank-->
+    <string name="onboarding_app_name">OnBoarding</string>
 </resources>

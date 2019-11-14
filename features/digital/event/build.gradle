@@ -39,15 +39,19 @@ dependencies {
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.libraries.fingerprint)
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
+    implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.calendar
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
@@ -59,25 +63,18 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.calendar
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.icon
-    implementation rootProject.ext.unifyDependencies.coach_mark
 }
 
 project.ext {
     artifactId = 'event'
     groupId = 'com.tokopedia.digital'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="event-release"
 }
 

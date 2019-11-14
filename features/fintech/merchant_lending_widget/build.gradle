@@ -43,7 +43,7 @@ dependencies {
 project.ext {
     artifactId = 'merchant-lending-widget'
     groupId = 'com.tokopedia.fintech'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="merchant_lending_widget-release"
 }
 

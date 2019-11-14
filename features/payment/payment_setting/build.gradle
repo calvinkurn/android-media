@@ -43,7 +43,7 @@ dependencies {
 project.ext {
     artifactId = "setting"
     groupId = "com.tokopedia.payment"
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "payment_setting-release"
 }
 

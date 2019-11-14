@@ -50,7 +50,7 @@ dependencies {
 project.ext {
     artifactId = 'gamification'
     groupId = 'com.tokopedia.promo'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "gamification-release"
 }
 apply from: '../../../publish_local.gradle'

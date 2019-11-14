@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'resources-common'
     groupId = 'com.tokopedia.common'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "resources_common-release"
 }
 

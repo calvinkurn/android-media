@@ -46,7 +46,7 @@ dependencies {
 project.ext {
     artifactId = 'checkout'
     groupId = 'com.tokopedia.promo'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="promo_checkout-release"
 }
 
