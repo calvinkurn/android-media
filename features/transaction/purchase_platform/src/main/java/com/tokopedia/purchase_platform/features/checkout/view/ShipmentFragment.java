@@ -2958,6 +2958,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChangeTradeInDropOffClicked() {
+        checkoutAnalyticsCourierSelection.eventClickUbahTitikDropoffButton();
         startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.DROPOFF_PICKER),
                 LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN);
     }
@@ -2992,6 +2993,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (recipientAddressModel.getLocationDataModel() != null) {
                 shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true);
             }
+            checkoutAnalyticsCourierSelection.eventClickJemputTab();
+        } else {
+            checkoutAnalyticsCourierSelection.eventClickDropOffTab();
         }
 //        shipmentAdapter.updateShipmentCostModel();
 //        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());

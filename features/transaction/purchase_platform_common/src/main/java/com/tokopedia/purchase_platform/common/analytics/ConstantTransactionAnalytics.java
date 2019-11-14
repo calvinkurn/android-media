@@ -268,6 +268,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_GANTI_NOMOR = "click ganti nomor";
         String CLICK_BUTTON_PILIH_DURASI = "click button pilih durasi";
         String CLICK_KURIR_TRADE_IN = "click kurir trade in";
+        String CLICK_JEMPUT_TAB = "click - jemput tab";
+        String CLICK_DROP_OFF_TAB = "click - drop off tab";
+        String CLICK_UBAH_TITIK_DROP_OFF_BUTTON = "click - ubah titik drop off button";
 
         //PROMO STACKING
         String CLICK_PILIH_MERCHANT_VOUCHER = "click pilih merchant voucher";
