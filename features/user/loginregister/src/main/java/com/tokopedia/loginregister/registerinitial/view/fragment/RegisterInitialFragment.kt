@@ -378,6 +378,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 is Fail -> onFailedRegisterGoogle(it.throwable)
             }
         })
+        registerInitialViewModel.loginAfterSQResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessReloginAfterSQ()
+                is Fail -> onFailedReloginAfterSQ(it.throwable)
+            }
+        })
         registerInitialViewModel.getUserInfoResponse.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
@@ -490,7 +496,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         onErrorRegister(errorMessage)
     }
 
-    private fun     onSuccessGetUserInfo(profileInfo: ProfileInfo){
+    private fun onSuccessReloginAfterSQ(){
+        registerInitialViewModel.getUserInfo()
+    }
+
+    private fun onFailedReloginAfterSQ(throwable: Throwable){
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        onErrorRegister(errorMessage)
+    }
+
+    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo){
         val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         if (profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
@@ -685,9 +700,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                             .RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
+            } else if (requestCode == REQUEST_SECURITY_QUESTION
+                    && resultCode == Activity.RESULT_OK
+                    && data != null){
+                data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let {validateToken ->
+                    registerInitialViewModel.reloginAfterSQ(validateToken)
+                }
+
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
                             .RESULT_CANCELED) {
                 dismissProgressBar()
