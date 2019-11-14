@@ -51,7 +51,7 @@ dependencies {
 project.ext {
     artifactId = "pms"
     groupId = "com.tokopedia.payment"
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "pms-release"
 }
 

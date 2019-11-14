@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
 import java.util.Map;
 
@@ -916,6 +913,15 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT
+        );
+    }
+
+    public void eventViewInformationAndWarningTickerInCheckout(String tickerId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT,
+                tickerId
         );
     }
 }

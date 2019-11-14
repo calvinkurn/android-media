@@ -31,7 +31,7 @@ dependencies {
 project.ext {
     artifactId = 'date-picker-range'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "date_picker_range-release"
 }
 

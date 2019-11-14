@@ -65,12 +65,13 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation project(rootProject.ext.features.carouselProductCard)
 }
 
 project.ext {
     artifactId = 'home-recommendation'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="home_recom-release"
 }
 

@@ -107,14 +107,11 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
             }
 
             override fun onError(e: Throwable) {
-                if (isViewAttached) {
-                    view.hideProgressBar()
+
                     view.showGetListLastSeenError(e)
-                }
             }
 
             override fun onNext(objects: GraphqlResponse) {
-                view.hideProgressBar()
                 val dataExchangeCoupon = objects.getData<ResponseExchangeCoupon>(ResponseExchangeCoupon::class.java)
                 view.renderListExchangeCoupon((dataExchangeCoupon.tokopointsCatalogHighlight!!))
             }

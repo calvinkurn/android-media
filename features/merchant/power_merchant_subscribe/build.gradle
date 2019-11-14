@@ -15,10 +15,6 @@ buildscript {
 }
 
 dependencies {
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.principles
-
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -33,7 +29,10 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.libraries.cameraview)
 
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -41,7 +40,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -60,7 +59,7 @@ dependencies {
 project.ext {
     artifactId = 'pm-subscribe'
     groupId = 'com.tokopedia.merchant'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="power_merchant_subscribe-release"
 }
 
