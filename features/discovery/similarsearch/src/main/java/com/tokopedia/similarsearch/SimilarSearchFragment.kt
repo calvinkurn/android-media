@@ -133,7 +133,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
         })
 
         similarSearchViewModel?.getRouteToLoginPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            handleRouteToLoginPage()
+            handleRouteToLoginPageEvent()
         })
     }
 
@@ -197,7 +197,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
         ).show()
     }
 
-    private fun handleRouteToLoginPage() {
+    private fun handleRouteToLoginPageEvent() {
         RouteManager.route(activity, ApplinkConst.LOGIN)
     }
 }
