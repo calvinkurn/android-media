@@ -3,7 +3,6 @@ package com.tokopedia.profile.following_list.view.presenter;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.kol.R;
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowerListUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListLoadMoreUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListUseCase;
@@ -24,7 +23,7 @@ import rx.Subscriber;
  * Created by yfsx on 28/12/17.
  */
 
-public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingList.View<KolFollowingViewModel, KolFollowingResultViewModel>>
+public class FollowingListPresenter extends BaseDaggerPresenter<KolFollowingList.View<KolFollowingViewModel, KolFollowingResultViewModel>>
         implements KolFollowingList.Presenter<KolFollowingViewModel, KolFollowingResultViewModel> {
 
     private KolFollowingList.View mainView;
@@ -33,9 +32,9 @@ public class KolFollowingListPresenter extends BaseDaggerPresenter<KolFollowingL
     private final GetFollowerListUseCase getFollowerList;
 
     @Inject
-    public KolFollowingListPresenter(GetFollowingListUseCase getFollowingListUseCase,
-                                     GetFollowingListLoadMoreUseCase getFollowingListLoadMoreUseCase,
-                                     GetFollowerListUseCase getFollowerList) {
+    public FollowingListPresenter(GetFollowingListUseCase getFollowingListUseCase,
+                                  GetFollowingListLoadMoreUseCase getFollowingListLoadMoreUseCase,
+                                  GetFollowerListUseCase getFollowerList) {
         this.getFollowingListUseCase = getFollowingListUseCase;
         this.getFollowingListLoadMoreUseCase = getFollowingListLoadMoreUseCase;
         this.getFollowerList = getFollowerList;

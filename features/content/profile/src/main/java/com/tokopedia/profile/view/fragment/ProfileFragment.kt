@@ -68,14 +68,12 @@ import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
-import com.tokopedia.profile.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.di.DaggerProfileComponent
-import com.tokopedia.profile.view.activity.FollowingListActivity
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.adapter.viewholder.EmptyAffiliateViewHolder
@@ -88,6 +86,7 @@ import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -541,11 +540,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun goToFollowing() {
         profileAnalytics.eventClickFollowing(isOwner, userId.toString())
-        startActivity(FollowingListActivity.createIntent(requireContext(), userId.toString()))
+        startActivity(FollowingListActivity.getFollowingInstance(requireContext(), userId))
     }
 
     override fun goToFollower() {
-        startActivity(KolFollowingListActivity.getFollowerInstance(requireContext(), userId))
+        startActivity(com.tokopedia.profile.following_list.view.activity.FollowingListActivity.getFollowerInstance(requireContext(), userId))
     }
 
     override fun updateCursor(cursor: String) {

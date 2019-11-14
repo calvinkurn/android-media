@@ -38,7 +38,6 @@ import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.ShareCallback;
@@ -144,7 +143,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     protected void initInjector() {
         if (getActivity() != null && getActivity().getApplicationContext() != null) {
             DaggerFeedPlusComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
                     .build()
                     .inject(this);
         }

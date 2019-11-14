@@ -5,7 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.profile.following_list.di.DaggerFollowingListComponent
-import com.tokopedia.profile.following_list.view.activity.KolFollowingListActivity
+import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
 import com.tokopedia.profile.following_list.view.listener.KolFollowingList
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel
@@ -34,7 +34,7 @@ class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel,
         fun createInstance(userId: String): ShopFollowingListFragment {
             return ShopFollowingListFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(KolFollowingListActivity.ARGS_USER_ID, userId.toInt())
+                    putInt(FollowingListActivity.ARGS_USER_ID, userId.toInt())
                 }
             }
         }

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.kol.R;
+import com.tokopedia.profile.R;
 import com.tokopedia.profile.following_list.view.listener.KolFollowingList;
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.KolFollowingViewModel;
@@ -27,7 +27,7 @@ import java.util.List;
  * Created by yfsx on 28/12/17.
  */
 
-public class KolFollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_KOL = 1;
     private static final int TYPE_SHOP = 2;
@@ -36,7 +36,7 @@ public class KolFollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private List<FollowingViewModel> itemList = new ArrayList<>();
     private KolFollowingList.View mainView;
 
-    public KolFollowingAdapter(Context context, KolFollowingList.View view) {
+    public FollowingAdapter(Context context, KolFollowingList.View view) {
         this.context = context;
         this.mainView = view;
     }

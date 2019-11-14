@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.model.FollowResponseModel
 import com.tokopedia.search.result.domain.model.SearchProfileModel
@@ -23,7 +25,7 @@ class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View
     lateinit var searchProfileListUseCase : UseCase<SearchProfileModel>
 
     @Inject
-    lateinit var followKolPostGqlUseCase : UseCase<FollowResponseModel>
+    lateinit var followKolPostGqlUseCase : FollowKolPostGqlUseCase
 
     @Inject
     lateinit var profileListViewModelMapper: Mapper<SearchProfileModel, ProfileListViewModel>
@@ -46,15 +48,15 @@ class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View
             }
 
         followKolPostGqlUseCase.execute(
-            FollowKolPostGqlUseCase.createRequestParams(userToFollowId, requestedAction),
+            FollowKolPostGqlUseCase.getParam(userToFollowId, requestedAction),
             getFollowKolSubscriber(adapterPosition, followedStatus)
         )
     }
 
-    private fun getFollowKolSubscriber(adapterPosition: Int, followStatus: Boolean) : Subscriber<FollowResponseModel> {
-        return object : Subscriber<FollowResponseModel>() {
-            override fun onNext(followResponseModel: FollowResponseModel?) {
-                followKolSubscriberOnNext(followResponseModel, adapterPosition, followStatus)
+    private fun getFollowKolSubscriber(adapterPosition: Int, followStatus: Boolean) : Subscriber<GraphqlResponse> {
+        return object : Subscriber<GraphqlResponse>() {
+            override fun onNext(t: GraphqlResponse) {
+                followKolSubscriberOnNext(t.getData(FollowKolQuery::class.java), adapterPosition, followStatus)
             }
 
             override fun onCompleted() { }
@@ -65,16 +67,16 @@ class ProfileListPresenter : BaseDaggerPresenter<ProfileListSectionContract.View
         }
     }
 
-    private fun followKolSubscriberOnNext(followResponseModel : FollowResponseModel?, adapterPosition: Int, followStatus: Boolean) {
+    private fun followKolSubscriberOnNext(followResponseModel : FollowKolQuery?, adapterPosition: Int, followStatus: Boolean) {
         if(followResponseModel == null) {
             view.onErrorToggleFollow()
             return
         }
 
-        if (followResponseModel.isSuccess) {
+        if (followResponseModel.data.error != null) {
             view.onSuccessToggleFollow(adapterPosition, (!followStatus))
         } else {
-            view.onErrorToggleFollow(followResponseModel.errorMessage ?: "")
+            view.onErrorToggleFollow(followResponseModel.data.error ?: "")
         }
     }
 

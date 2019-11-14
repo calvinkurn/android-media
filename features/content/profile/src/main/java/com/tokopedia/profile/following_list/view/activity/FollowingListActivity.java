@@ -6,19 +6,19 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.kol.R;
+import com.tokopedia.profile.R;
 import com.tokopedia.profile.following_list.view.fragment.KolFollowingListFragment;
 
 /**
  * Created by yfsx on 28/12/17.
  */
 
-public class KolFollowingListActivity extends BaseSimpleActivity {
+public class FollowingListActivity extends BaseSimpleActivity {
     public static final String ARGS_USER_ID = "user_id";
     public static final String ARGS_OPEN_FOLLOWER = "OPEN_FOLLOWER";
 
-    public static Intent getCallingIntent(Context context, int userId) {
-        Intent intent = new Intent(context, KolFollowingListActivity.class);
+    public static Intent getFollowingInstance(Context context, int userId) {
+        Intent intent = new Intent(context, FollowingListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(ARGS_USER_ID, userId);
         intent.putExtras(bundle);
@@ -26,7 +26,7 @@ public class KolFollowingListActivity extends BaseSimpleActivity {
     }
 
     public static Intent getFollowerInstance(Context context, int userId) {
-        Intent intent = new Intent(context, KolFollowingListActivity.class);
+        Intent intent = new Intent(context, FollowingListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(ARGS_USER_ID, userId);
         bundle.putBoolean(ARGS_OPEN_FOLLOWER, true);

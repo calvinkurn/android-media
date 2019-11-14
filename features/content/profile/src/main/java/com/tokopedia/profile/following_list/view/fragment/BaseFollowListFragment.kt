@@ -13,8 +13,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.profile.R
-import com.tokopedia.profile.following_list.view.activity.KolFollowingListActivity
-import com.tokopedia.profile.following_list.view.adapter.KolFollowingAdapter
+import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
+import com.tokopedia.profile.following_list.view.adapter.FollowingAdapter
 import com.tokopedia.profile.following_list.view.listener.KolFollowingList
 import com.tokopedia.profile.following_list.view.listener.KolFollowingListEmptyListener
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingResultViewModel
@@ -33,7 +33,7 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
     protected var emptyApplink: String? = null
     private var userId: Int = 0
 
-    protected lateinit var adapter: KolFollowingAdapter
+    protected lateinit var adapter: FollowingAdapter
     private lateinit var emptyState: View
     protected lateinit var emptyButton: Button
     private var openFollowerPage: Boolean? = false
@@ -61,7 +61,7 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            userId = arguments!!.getInt(KolFollowingListActivity.ARGS_USER_ID)
+            userId = arguments!!.getInt(FollowingListActivity.ARGS_USER_ID)
         }
     }
 
@@ -82,13 +82,13 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        openFollowerPage = arguments!!.getBoolean(KolFollowingListActivity.ARGS_OPEN_FOLLOWER, false)
+        openFollowerPage = arguments!!.getBoolean(FollowingListActivity.ARGS_OPEN_FOLLOWER, false)
         initView()
         initViewListener()
     }
 
     private fun initView() {
-        adapter = KolFollowingAdapter(activity, this)
+        adapter = FollowingAdapter(activity, this)
         rvItem.apply {
             visibility = View.GONE
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)

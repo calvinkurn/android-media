@@ -45,7 +45,7 @@ public class FollowUnfollowDetailSubscriber extends Subscriber<GraphqlResponse> 
         FollowKolQuery query = graphqlResponse.getData(FollowKolQuery.class);
         if (query.getData() != null) {
             FollowKolDomain followKolDomain = new FollowKolDomain(query.getData().getData().getStatus());
-            if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.Companion.getSUCCESS_STATUS()) {
+            if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
                 view.onSuccessFollowUnfollowKol(rowNumber);
             } else {
                 String errorMessage = view.getContext().getApplicationContext().getString(

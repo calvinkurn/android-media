@@ -447,7 +447,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, () -> {
-            if (status == FollowKolPostGqlUseCase.Companion.getPARAM_UNFOLLOW()) {
+            if (status == FollowKolPostGqlUseCase.PARAM_UNFOLLOW) {
                 presenter.unfollowKol(id, rowNumber);
             } else {
                 presenter.followKol(id, rowNumber);
