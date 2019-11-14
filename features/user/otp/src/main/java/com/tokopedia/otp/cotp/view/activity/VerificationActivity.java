@@ -208,7 +208,6 @@ public class VerificationActivity extends BaseSimpleActivity {
     }
 
     protected VerificationViewModel createSmsBundle() {
-
         return new VerificationViewModel(
                 phoneNumber,
                 email,
@@ -217,12 +216,12 @@ public class VerificationActivity extends BaseSimpleActivity {
                 R.drawable.ic_verification_sms,
                 createSmsMessage(phoneNumber, otpType),
                 OTPAnalytics.Screen.SCREEN_COTP_SMS,
-                canUseOtherMethod
+                canUseOtherMethod,
+                6
         );
     }
 
     private VerificationViewModel createEmailBundle() {
-
         return new VerificationViewModel(
                 phoneNumber,
                 email,
@@ -231,13 +230,12 @@ public class VerificationActivity extends BaseSimpleActivity {
                 R.drawable.ic_verification_email,
                 createEmailMessage(email),
                 OTPAnalytics.Screen.SCREEN_COTP_EMAIL,
-                canUseOtherMethod
+                canUseOtherMethod,
+                6
         );
     }
 
     protected VerificationViewModel createDynamicBundle(MethodItem methodItem) {
-
-
         return new VerificationViewModel(
                 phoneNumber,
                 email,
@@ -246,7 +244,8 @@ public class VerificationActivity extends BaseSimpleActivity {
                 methodItem.getImageUrl(),
                 methodItem.getVerificationText(),
                 getDynamicAppScreen(methodItem.getModeName()),
-                canUseOtherMethod
+                canUseOtherMethod,
+                methodItem.getNumberOtpDigit()
         );
     }
 

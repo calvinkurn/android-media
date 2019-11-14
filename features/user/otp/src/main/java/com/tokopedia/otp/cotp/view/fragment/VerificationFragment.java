@@ -65,7 +65,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private static final int COUNTDOWN_LENGTH = 30;
     private static final int INTERVAL = 1000;
-    protected static final int MAX_OTP_LENGTH = 6;
 
     private static final String CACHE_OTP = "CACHE_OTP";
     private static final String HAS_TIMER = "has_timer";
@@ -74,6 +73,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private static final CharSequence VERIFICATION_CODE = "Kode verifikasi";
     private static final CharSequence PIN_ERR_MSG = "PIN";
+
+    private int maxOtpLength = 6;
 
     protected ImageView icon;
     protected TextView message, title;
@@ -257,7 +258,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (inputOtp.getText().length() == MAX_OTP_LENGTH) {
+                if (inputOtp.getText().length() == maxOtpLength) {
                     enableVerifyButton();
                     verifyOtp();
                 } else {
@@ -268,7 +269,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
         inputOtp.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE
-                    && inputOtp.length() == MAX_OTP_LENGTH) {
+                    && inputOtp.length() == maxOtpLength) {
                 verifyOtp();
                 return true;
             }
@@ -655,6 +656,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onSuccessGetModelFromServer(MethodItem methodItem) {
         this.viewModel.setImageUrl(methodItem.getImageUrl());
         this.viewModel.setMessage(methodItem.getVerificationText());
+        this.maxOtpLength = methodItem.getNumberOtpDigit();
         setData();
     }
 
