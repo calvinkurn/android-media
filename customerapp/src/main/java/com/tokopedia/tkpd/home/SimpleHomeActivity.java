@@ -21,7 +21,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ProductHistoryFragment;
-
+import com.tokopedia.tkpd.home.wishlist.WishListFragment;
 import com.tokopedia.tkpd.home.presenter.SimpleHome;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeImpl;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeView;
@@ -37,6 +37,14 @@ public class SimpleHomeActivity extends TActivity
     SimpleHome simpleHome;
 
     FragmentManager supportFragmentManager;
+
+    @DeepLink({Constants.Applinks.WISHLIST, ApplinkConst.WISHLIST})
+    public static Intent getWishlistApplinkIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return newWishlistInstance(context)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     public static Intent newWishlistInstance(Context context) {
         Intent intent = new Intent(context, SimpleHomeActivity.class);
@@ -95,14 +103,31 @@ public class SimpleHomeActivity extends TActivity
 
     @Override
     public void initFragment(int fragmentType) {
-        if (fragmentType == PRODUCT_HISTORY_FRAGMENT) {
-            if (isFragmentCreated(ProductHistoryFragment.FRAGMENT_TAG)) {
-                Log.d(TAG, messageTAG + ProductHistoryFragment.class.getSimpleName() + " is created !!!");
-                Fragment productHistory = ProductHistoryFragment.newInstance();
-                moveToFragment(productHistory, true, ProductHistoryFragment.FRAGMENT_TAG);
-            } else {
-                Log.d(TAG, messageTAG + ProductHistoryFragment.class.getSimpleName() + " is not created !!!");
-            }
+        switch (fragmentType) {
+            case WISHLIST_FRAGMENT:
+                if (isFragmentCreated(WishListFragment.FRAGMENT_TAG)) {
+                    Log.d(TAG, messageTAG + WishListFragment.class.getSimpleName() + " is created !!!");
+                    Fragment wishListFragment = WishListFragment.newInstance();
+                    if (getIntent().hasExtra(Constants.FROM_APP_SHORTCUTS)) {
+                        boolean isFromAppShortCut = getIntent().getBooleanExtra(WishListFragment.FROM_APP_SHORTCUTS, false);
+                        Bundle args = new Bundle();
+                        args.putBoolean(WishListFragment.FROM_APP_SHORTCUTS, isFromAppShortCut);
+                        wishListFragment.setArguments(args);
+                    }
+                    moveToFragment(wishListFragment, true, WishListFragment.FRAGMENT_TAG);
+                } else {
+                    Log.d(TAG, messageTAG + WishListFragment.class.getSimpleName() + " is not created !!!");
+                }
+                break;
+            case PRODUCT_HISTORY_FRAGMENT:
+                if (isFragmentCreated(ProductHistoryFragment.FRAGMENT_TAG)) {
+                    Log.d(TAG, messageTAG + ProductHistoryFragment.class.getSimpleName() + " is created !!!");
+                    Fragment productHistory = ProductHistoryFragment.newInstance();
+                    moveToFragment(productHistory, true, ProductHistoryFragment.FRAGMENT_TAG);
+                } else {
+                    Log.d(TAG, messageTAG + ProductHistoryFragment.class.getSimpleName() + " is not created !!!");
+                }
+                break;
         }
     }
 

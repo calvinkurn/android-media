@@ -73,6 +73,7 @@ public interface ApplinkConst {
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
+    String NEW_WISHLIST = "tokopedia://new-wishlist";
     String WISHLIST_HOME = "tokopedia://wishlisthome";
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String TOPPICKS = "tokopedia://toppicks";

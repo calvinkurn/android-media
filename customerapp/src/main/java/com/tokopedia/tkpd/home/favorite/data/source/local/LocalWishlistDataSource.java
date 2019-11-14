@@ -26,6 +26,8 @@ import rx.functions.Func1;
 
 import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_COUNT;
 import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_PAGE;
+import static com.tokopedia.tkpd.home.presenter.WishListImpl.ITEM_COUNT;
+import static com.tokopedia.tkpd.home.presenter.WishListImpl.PAGE_NO;
 
 /**
  * @author Kulomady on 2/13/17.
@@ -33,8 +35,6 @@ import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil
 public class LocalWishlistDataSource {
 
     private final Context context;
-    public static final String PAGE_NO = "page";
-    public static final String ITEM_COUNT = "count";
 
     public LocalWishlistDataSource(Context context) {
         this.context = context;
