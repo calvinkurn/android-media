@@ -15,9 +15,6 @@ data class UserDataPojo(
 
         val authorization: String = "",
 
-        @SerializedName("x-method")
-        val method: String= "",
-
         @SerializedName("accounts-authorization")
         val accountAuth: String = ""
 )
