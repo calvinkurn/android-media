@@ -1260,7 +1260,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
             if (isCourierSelected) {
                 if (isCourierInstantOrSameday(shipmentDetailData.getSelectedCourier().getShipperId())) {
-                    // TODO: 2019-11-08 order prioritas
                     if (!shipmentCartItemModel.isOrderPrioritasDisable() && (courierItemData.getNow() && !shipmentCartItemModel.isProductIsPreorder())) {
                         tvPrioritasInfo.setText(courierItemData.getPriorityCheckboxMessage());
                         llPrioritas.setVisibility(View.VISIBLE);
