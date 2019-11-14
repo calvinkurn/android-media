@@ -38,12 +38,12 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/toolbar_back_black" />
 
-                <TextView
+                <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
-                    android:drawableRight="@drawable/location_arrow_down"
+                    app:drawableRightCompat="@drawable/location_arrow_down"
                     android:gravity="center"
                     android:text="@string/deals_toolbar_title"
                     android:textColor="@color/toolbar_title_color"
