@@ -123,6 +123,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     companion object {
         private const val ORDER_BY = "ob"
+        private const val IS_BANNED = 1
+        private const val IS_ADULT = 1
 
         @JvmStatic
         fun isCategoryRevampEnabled(context: Context): Boolean {
@@ -209,12 +211,12 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             when (it) {
                 is Success -> {
                     progressBar.visibility = View.GONE
-                    if (it.data.isBanned == 1) {
+                    if (it.data.isBanned == IS_BANNED) {
                         setEmptyView(it.data)
                     } else {
                         layout_banned_screen.visibility = View.GONE
                         searchNavContainer?.visibility = View.VISIBLE
-                        if (it.data.isAdult == 1) {
+                        if (it.data.isAdult == IS_ADULT) {
                             AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
                         }
                         initViewPager()
@@ -281,7 +283,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     private fun applyFilter(filterParameter: Map<String, String>) {
         val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
 
-        if(filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))){
+        if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
             searchNavContainer?.onFilterSelected(true)
         } else {
             searchNavContainer?.onFilterSelected(false)
@@ -371,8 +373,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         this.activeTabPosition = position
         val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
         selectedFragment.resetSortTick()
-        val  filterParameter = selectedFragment.getSelectedFilter()
-        if(filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))){
+        val filterParameter = selectedFragment.getSelectedFilter()
+        if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
             searchNavContainer?.onFilterSelected(true)
         } else {
             searchNavContainer?.onFilterSelected(false)
