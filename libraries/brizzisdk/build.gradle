@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('brizzi-release-sbox-1.3.aar'))
+artifacts.add("default", file('brizzi-release-prod.aar'))
