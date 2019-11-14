@@ -9,6 +9,10 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
@@ -17,18 +21,32 @@ import com.tokopedia.tokopoints.view.fragment.CouponCatalogFragment;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.List;
+
 public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
     private TokoPointComponent tokoPointComponent;
+    private Bundle bundle = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        forDeeplink();
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_detail));
+
+    }
+
+    private void forDeeplink() {
+        bundle = getIntent().getExtras();
+        if (bundle == null)
+            bundle = new Bundle();
+        if (getIntent().getData() != null){
+            UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_CATALOG_DETAIL,getIntent().getData(),bundle);
+        }
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return CouponCatalogFragment.newInstance(getIntent().getExtras());
+        return CouponCatalogFragment.newInstance(bundle);
     }
 
     @Override
@@ -43,7 +61,6 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
         return intent;
     }
 
-    @DeepLink({ApplinkConstant.CATALOG_DETAIL3, ApplinkConstant.CATALOG_DETAIL4})
     public static Intent getCatalogDetail(Context context, Bundle extras) {
         return getCallingIntent(context, extras);
     }

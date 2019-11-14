@@ -25,7 +25,6 @@ import android.widget.LinearLayout;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationTermsAndConditionsActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
@@ -38,7 +37,7 @@ import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReview
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 
 import javax.inject.Inject;
 
@@ -88,20 +87,20 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_cancellation_review, container, false);
-        reviewContainer = view.findViewById(R.id.sv_review_container);
-        loadingContainer = view.findViewById(R.id.full_page_loading);
-        rvAttachments = view.findViewById(R.id.rv_attachments);
-        containerAdditionalData = view.findViewById(R.id.container_additional_data);
-        containerAdditionalReason = view.findViewById(R.id.container_additional_reason);
-        containerAdditionalDocuments = view.findViewById(R.id.container_additional_documents);
-        txtReason = view.findViewById(R.id.txt_cancellation_reason);
-        txtTotalRefund = view.findViewById(R.id.tv_total_refund);
-        btnSubmit = view.findViewById(R.id.button_submit);
-        tvDescription = view.findViewById(R.id.tv_description_refund);
-        tvRefundDetail = view.findViewById(R.id.tv_refund_detail);
-        containerEstimateRefund = view.findViewById(R.id.container_estimate_refund);
-        containerEstimateNotes = view.findViewById(R.id.container_estimate_notes);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_cancellation_review, container, false);
+        reviewContainer = view.findViewById(com.tokopedia.flight.R.id.sv_review_container);
+        loadingContainer = view.findViewById(com.tokopedia.flight.R.id.full_page_loading);
+        rvAttachments = view.findViewById(com.tokopedia.flight.R.id.rv_attachments);
+        containerAdditionalData = view.findViewById(com.tokopedia.flight.R.id.container_additional_data);
+        containerAdditionalReason = view.findViewById(com.tokopedia.flight.R.id.container_additional_reason);
+        containerAdditionalDocuments = view.findViewById(com.tokopedia.flight.R.id.container_additional_documents);
+        txtReason = view.findViewById(com.tokopedia.flight.R.id.txt_cancellation_reason);
+        txtTotalRefund = view.findViewById(com.tokopedia.flight.R.id.tv_total_refund);
+        btnSubmit = view.findViewById(com.tokopedia.flight.R.id.button_submit);
+        tvDescription = view.findViewById(com.tokopedia.flight.R.id.tv_description_refund);
+        tvRefundDetail = view.findViewById(com.tokopedia.flight.R.id.tv_refund_detail);
+        containerEstimateRefund = view.findViewById(com.tokopedia.flight.R.id.container_estimate_refund);
+        containerEstimateNotes = view.findViewById(com.tokopedia.flight.R.id.container_estimate_notes);
 
         tvDescription.setText(setDescriptionText());
         tvDescription.setMovementMethod(LinkMovementMethod.getInstance());
@@ -162,7 +161,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     @Override
     public void showSuccessDialog(int resId) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
-        dialog.setTitle(getString(R.string.flight_cancellation_review_dialog_success_title));
+        dialog.setTitle(getString(com.tokopedia.flight.R.string.flight_cancellation_review_dialog_success_title));
         dialog.setDesc(Html.fromHtml(getString(resId)));
         dialog.setBtnOk("OK");
         dialog.setOnOkClickListener(new View.OnClickListener() {
@@ -307,16 +306,16 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     private SpannableString setDescriptionText() {
-        final int color = getContext().getResources().getColor(R.color.green_500);
-        int startIndex = getString(R.string.flight_cancellation_refund_description).indexOf("Pelajari");
-        int stopIndex = getString(R.string.flight_cancellation_refund_description).length();
+        final int color = getContext().getResources().getColor(com.tokopedia.design.R.color.green_500);
+        int startIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).indexOf("Pelajari");
+        int stopIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).length();
         SpannableString description = new SpannableString(getContext().getString(
-                R.string.flight_cancellation_refund_description));
+                com.tokopedia.flight.R.string.flight_cancellation_refund_description));
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 FlightCancellationRefundBottomSheet bottomSheet = new FlightCancellationRefundBottomSheet();
-                bottomSheet.show(getChildFragmentManager(), getString(R.string.flight_cancellation_refund_bottom_sheet_tag));
+                bottomSheet.show(getChildFragmentManager(), getString(com.tokopedia.flight.R.string.flight_cancellation_refund_bottom_sheet_tag));
             }
 
             @Override

@@ -3,6 +3,7 @@ package com.tokopedia.explore.view.viewmodel;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kotlin.model.ImpressHolder;
 
 /**
  * @author by milhamj on 24/07/18.
@@ -12,10 +13,13 @@ public class ExploreImageViewModel implements Visitable<ExploreImageTypeFactory>
 
     private String imageUrl;
     private KolPostViewModel kolPostViewModel;
+    private ImpressHolder impressHolder = new ImpressHolder();
+    private int itemPos = 0;
 
-    public ExploreImageViewModel(String imageUrl, KolPostViewModel kolPostViewModel) {
+    public ExploreImageViewModel(String imageUrl, KolPostViewModel kolPostViewModel, int itemPos) {
         this.imageUrl = imageUrl;
         this.kolPostViewModel = kolPostViewModel;
+        this.itemPos = itemPos;
     }
 
     @Override
@@ -37,5 +41,17 @@ public class ExploreImageViewModel implements Visitable<ExploreImageTypeFactory>
 
     public void setKolPostViewModel(KolPostViewModel kolPostViewModel) {
         this.kolPostViewModel = kolPostViewModel;
+    }
+
+    public int getItemPos() {
+        return itemPos;
+    }
+
+    public void setItemPos(int itemPos) {
+        this.itemPos = itemPos;
+    }
+
+    public ImpressHolder getImpressHolder() {
+        return impressHolder;
     }
 }

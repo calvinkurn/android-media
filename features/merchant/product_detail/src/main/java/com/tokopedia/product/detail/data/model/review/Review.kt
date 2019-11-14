@@ -24,6 +24,10 @@ data class Review(
         @Expose
         val likeDislike: LikeDislike = LikeDislike(),
 
+        @SerializedName("productVariant")
+        @Expose
+        val productVariantReview: ProductVariantReview = ProductVariantReview(),
+
         @SerializedName("message")
         @Expose
         val message: String = "",
@@ -71,7 +75,7 @@ data class Review(
         @SerializedName("user")
         @Expose
         val user: User = User()
-){
+) {
     data class Response(
             @SerializedName("ProductMostHelpfulReviewQuery")
             @Expose
@@ -82,5 +86,11 @@ data class Review(
             @SerializedName("list")
             @Expose
             val list: List<Review> = listOf()
+    )
+
+    data class ProductVariantReview(
+            @SerializedName("name")
+            @Expose
+            val variantTitle: String = ""
     )
 }

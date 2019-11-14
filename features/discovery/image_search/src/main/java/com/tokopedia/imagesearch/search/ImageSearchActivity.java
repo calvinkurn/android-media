@@ -5,9 +5,11 @@ import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
@@ -16,13 +18,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
@@ -47,6 +52,7 @@ import com.tokopedia.track.TrackApp;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -72,10 +78,11 @@ public class ImageSearchActivity extends BaseActivity
     private static final String KEY_IMAGE_PATH = "image_path";
 
     private Toolbar toolbar;
+    private View backButton;
+    private TextView searchTextView;
+    private ImageView thumbnailImage;
     private FrameLayout container;
     protected ProgressBar loadingView;
-
-    public MenuItem searchItem;
 
     protected View root;
 
@@ -117,6 +124,9 @@ public class ImageSearchActivity extends BaseActivity
 
     protected void initView() {
         toolbar = (Toolbar) findViewById(R.id.image_search_toolbar);
+        backButton = findViewById(R.id.action_up_btn);
+        searchTextView = findViewById(R.id.imageSearchTextView);
+        thumbnailImage = findViewById(R.id.imageSearchThumbnail);
         container = (FrameLayout) findViewById(R.id.image_search_container);
         loadingView = findViewById(R.id.image_search_progressBar);
         root = findViewById(R.id.image_search_root);
@@ -136,15 +146,33 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     protected void initToolbar() {
+        configureSupportActionBar();
+        setSearchTextViewDrawableLeft();
+        configureToolbarOnClickListener();
+    }
+
+    private void configureSupportActionBar() {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+            getSupportActionBar().setHomeButtonEnabled(false);
         }
+    }
 
-        toolbar.setOnClickListener(v -> moveToAutoCompletePage());
+    private void setSearchTextViewDrawableLeft() {
+        Drawable iconSearch = AppCompatResources.getDrawable(this, R.drawable.image_search_ic_search);
+        searchTextView.setCompoundDrawablesWithIntrinsicBounds(iconSearch, null, null, null);
+    }
+
+    private void loadThumbnailImage(String imagePath) {
+        ImageHandler.loadImageCircle2(this, thumbnailImage, imagePath);
+    }
+
+    private void configureToolbarOnClickListener() {
+        searchTextView.setOnClickListener(v -> moveToAutoCompletePage());
+        backButton.setOnClickListener(v -> onBackPressed());
     }
 
     protected void setToolbarTitle(String query) {
@@ -155,25 +183,6 @@ public class ImageSearchActivity extends BaseActivity
 
     protected void setLastQuery(String lastQuery) {
         this.lastQuery = lastQuery;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_image_search, menu);
-        searchItem = menu.findItem(R.id.image_search_action_search);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        } else if (item.getItemId() == R.id.image_search_action_search) {
-            moveToAutoCompletePage();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void initImageSearch() {
@@ -447,6 +456,7 @@ public class ImageSearchActivity extends BaseActivity
         setImagePath(imagePath);
         showLoadingView(true);
         showContainer(false);
+        loadThumbnailImage(imagePath);
         searchPresenter.requestImageSearch(imagePath);
     }
 

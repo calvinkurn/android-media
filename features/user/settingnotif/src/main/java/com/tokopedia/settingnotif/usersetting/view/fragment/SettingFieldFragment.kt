@@ -125,7 +125,9 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
 
     override fun onErrorGetUserSetting() {
         showMessage(MESSAGE_ERROR_SERVER)
-        renderList(emptyList())
+        activity?.let {
+            renderList(emptyList())
+        }
     }
 
     protected fun showMessage(@StringRes messageRes: Int) {

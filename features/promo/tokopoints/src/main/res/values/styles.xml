@@ -32,8 +32,6 @@
         <item name="colorAccent">@color/medium_green</item>
     </style>
 
-    <style name="TokoPointTransparentStatus" parent="Theme.Tokopedia3">
 
-    </style>
 
 </resources>

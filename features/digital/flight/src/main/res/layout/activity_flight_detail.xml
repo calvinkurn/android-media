@@ -16,7 +16,7 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stateListAnimator="@drawable/appbar_always_elevated"
+            android:stateListAnimator="@drawable/flight_appbar_always_elevated"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout

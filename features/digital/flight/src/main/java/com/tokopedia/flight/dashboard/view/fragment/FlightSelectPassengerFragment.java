@@ -52,11 +52,11 @@ public class FlightSelectPassengerFragment extends BaseDaggerFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_select_flight_passenger, container, false);
-        adultPassengerView = (SelectPassengerView) view.findViewById(R.id.spv_passenger_adult);
-        childrenPassengerView = (SelectPassengerView) view.findViewById(R.id.spv_passenger_children);
-        infantPassengerView = (SelectPassengerView) view.findViewById(R.id.spv_passenger_infant);
-        saveButton = (Button) view.findViewById(R.id.button_save);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_select_flight_passenger, container, false);
+        adultPassengerView = (SelectPassengerView) view.findViewById(com.tokopedia.flight.R.id.spv_passenger_adult);
+        childrenPassengerView = (SelectPassengerView) view.findViewById(com.tokopedia.flight.R.id.spv_passenger_children);
+        infantPassengerView = (SelectPassengerView) view.findViewById(com.tokopedia.flight.R.id.spv_passenger_infant);
+        saveButton = (Button) view.findViewById(com.tokopedia.flight.R.id.button_save);
 
         adultPassengerView.setMinimalPassenger(1);
         adultPassengerView.setOnPassengerCountChangeListener(new SelectPassengerView.OnPassengerCountChangeListener() {

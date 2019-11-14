@@ -11,10 +11,12 @@ public class CartTickerErrorData implements Parcelable {
 
     private String errorInfo;
     private String actionInfo;
+    private int errorCount;
 
     private CartTickerErrorData(Builder builder) {
         errorInfo = builder.errorInfo;
         actionInfo = builder.actionInfo;
+        errorCount = builder.errorCount;
     }
 
     public void setErrorInfo(String errorInfo) {
@@ -33,6 +35,14 @@ public class CartTickerErrorData implements Parcelable {
         return actionInfo;
     }
 
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    public void setErrorCount(int errorCount) {
+        this.errorCount = errorCount;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -42,6 +52,7 @@ public class CartTickerErrorData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.errorInfo);
         dest.writeString(this.actionInfo);
+        dest.writeInt(this.errorCount);
     }
 
     public CartTickerErrorData() {
@@ -50,6 +61,7 @@ public class CartTickerErrorData implements Parcelable {
     protected CartTickerErrorData(Parcel in) {
         this.errorInfo = in.readString();
         this.actionInfo = in.readString();
+        this.errorCount = in.readInt();
     }
 
     public static final Creator<CartTickerErrorData> CREATOR = new Creator<CartTickerErrorData>() {
@@ -67,6 +79,7 @@ public class CartTickerErrorData implements Parcelable {
     public static final class Builder {
         private String errorInfo;
         private String actionInfo;
+        private int errorCount;
 
         public Builder() {
         }
@@ -78,6 +91,11 @@ public class CartTickerErrorData implements Parcelable {
 
         public Builder actionInfo(String val) {
             actionInfo = val;
+            return this;
+        }
+
+        public Builder errorCount(int val) {
+            errorCount = val;
             return this;
         }
 
