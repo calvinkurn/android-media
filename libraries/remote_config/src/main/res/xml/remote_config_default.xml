@@ -348,4 +348,8 @@
         <key>android_mainapp_merchant_freeongkir_title</key>
         <value>Pengiriman ini berpotensi Bebas Ongkir</value>
     </entry>
+    <entry>
+        <key>app_hotlist_nav_enable</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

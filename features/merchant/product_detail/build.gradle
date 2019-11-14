@@ -85,7 +85,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     kapt rootProject.ext.miscDependencies.daggerCompiler
-
+    implementation project(rootProject.ext.features.carouselProductCard)
     testImplementation rootProject.ext.testDependencies.assertJ
 }
 
