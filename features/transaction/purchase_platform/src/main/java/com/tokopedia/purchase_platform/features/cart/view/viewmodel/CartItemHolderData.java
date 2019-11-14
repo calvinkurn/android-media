@@ -37,16 +37,16 @@ public class CartItemHolderData implements Parcelable {
 
     public int getErrorFormItemValidationType() {
         if (cartItemData.getUpdatedData().getRemark().length() > cartItemData.getUpdatedData().getMaxCharRemark()) {
-            this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorFieldMaxChar()
+            this.errorFormItemValidationMessage = cartItemData.getMessageErrorData().getErrorFieldMaxChar()
                     .replace("{{value}}", String.valueOf(cartItemData.getUpdatedData().getMaxCharRemark()));
             return ERROR_FIELD_MAX_CHAR;
         } else if (cartItemData.getOriginData().getInvenageValue() != 0 && cartItemData.getUpdatedData().getQuantity() > cartItemData.getOriginData().getInvenageValue()) {
             String formattedMaxCharRemark = String.format(Locale.US, "%,d", cartItemData.getOriginData().getInvenageValue()).replace(',', '.');
-            this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorProductMaxQuantity()
+            this.errorFormItemValidationMessage = cartItemData.getMessageErrorData().getErrorProductMaxQuantity()
                     .replace("{{value}}", formattedMaxCharRemark);
             return ERROR_PRODUCT_MAX_QUANTITY;
         } else if (cartItemData.getUpdatedData().getQuantity() < cartItemData.getOriginData().getMinimalQtyOrder()) {
-            this.errorFormItemValidationMessage = cartItemData.getErrorData().getErrorProductMinQuantity()
+            this.errorFormItemValidationMessage = cartItemData.getMessageErrorData().getErrorProductMinQuantity()
                     .replace("{{value}}", String.valueOf(cartItemData.getOriginData().getMinimalQtyOrder()));
             return ERROR_PRODUCT_MIN_QUANTITY;
         } else {

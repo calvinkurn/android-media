@@ -115,7 +115,6 @@ import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -318,7 +317,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
 
     private fun prepareView() {
-        adapter.itemTreshold = 2
+        adapter.itemTreshold = 1
         layoutManager = NpaLinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL,
                 false)
@@ -558,7 +557,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             OPEN_KOL_PROFILE -> if (resultCode == Activity.RESULT_OK) {
                 onSuccessFollowUnfollowFromProfile(
                         data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
-                        data.getIntExtra(ProfileActivity.PARAM_IS_FOLLOWING, DEFAULT_VALUE)
+                        data.getIntExtra(PARAM_IS_FOLLOWING, DEFAULT_VALUE)
                 )
 
                 updatePostState(
@@ -652,13 +651,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     fun scrollToTop() {
-        if (recyclerView != null) {
+        if (::recyclerView.isInitialized) {
             recyclerView.scrollToPosition(0)
         }
     }
 
     private fun triggerClearNewFeedNotification() {
-        if (context != null && context!!.applicationContext != null) {
+        if (context?.applicationContext != null) {
             val intent = Intent(BROADCAST_FEED)
             intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true)
             LocalBroadcastManager.getInstance(context!!.applicationContext).sendBroadcast(intent)
@@ -668,7 +667,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onResume() {
         super.onResume()
         registerNewFeedReceiver()
-        if (userVisibleHint && presenter != null) {
+        if (userVisibleHint && ::presenter.isInitialized) {
             loadData(userVisibleHint)
         }
     }
@@ -699,7 +698,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun loadData(isVisibleToUser: Boolean) {
-        if (isVisibleToUser && isAdded && activity != null && presenter != null) {
+        if (isVisibleToUser && isAdded && activity != null && ::presenter.isInitialized) {
             if (!isLoadedOnce) {
                 feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
                 isLoadedOnce = !isLoadedOnce
@@ -731,12 +730,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onGoToKolProfile(rowNumber: Int, userId: String, postId: Int) {
-        if (context != null) {
-            val profileIntent = ProfileActivity
-                    .createIntentFromFeed(context, userId, postId)
-                    .putExtra(ARGS_ROW_NUMBER, rowNumber)
-            startActivityForResult(profileIntent, OPEN_KOL_PROFILE)
-        }
+        //Not Used - 04/11/2019
     }
 
     override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String) {
@@ -993,8 +987,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val kolViewModel = adapter.getlist()[rowNumber] as KolPostViewModel
 
             if (isFollowing != DEFAULT_VALUE) {
-                kolViewModel.isFollowed = isFollowing == ProfileActivity.IS_FOLLOWING_TRUE
-                kolViewModel.isTemporarilyFollowed = isFollowing == ProfileActivity.IS_FOLLOWING_TRUE
+                kolViewModel.isFollowed = isFollowing == IS_FOLLOWING_TRUE
+                kolViewModel.isTemporarilyFollowed = isFollowing == IS_FOLLOWING_TRUE
             }
             adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW)
         }
@@ -1722,14 +1716,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             visitable.header.followCta.authorType,
                             trackingPostModel)
                 }
-                onAffiliateTrackClicked(visitable.tracking, false)
 
             } else if (visitable is BannerViewModel) {
                 val (itemViewModels) = visitable
                 val trackingBannerModels = ArrayList<TrackingBannerModel>()
                 for ((_, _, _, trackingBannerModel, tracking) in itemViewModels) {
                     trackingBannerModels.add(trackingBannerModel)
-                    onAffiliateTrackClicked(tracking, false)
                 }
                 analytics.eventBannerImpression(trackingBannerModels, userId)
             } else if (visitable is FeedRecommendationViewModel) {
@@ -1737,7 +1729,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val trackingList = ArrayList<TrackingRecommendationModel>()
                 for ((_, _, _, _, _, _, _, _, _, _, trackingRecommendationModel, tracking) in cards) {
                     trackingList.add(trackingRecommendationModel)
-                    onAffiliateTrackClicked(tracking, false)
                 }
                 analytics.eventRecommendationImpression(
                         trackingList,
@@ -1749,7 +1740,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         trackingList,
                         userId
                 )
-                onAffiliateTrackClicked(tracking, false)
             }
         }
     }
@@ -1885,6 +1875,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
         val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
         val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
+
+        //Profile Param and Args
+        const val PARAM_IS_FOLLOWING = "is_following"
+
+        const val IS_FOLLOWING_TRUE = 1
+        const val IS_FOLLOWING_FALSE = 0
 
 
         fun newInstance(bundle: Bundle?): FeedPlusFragment {

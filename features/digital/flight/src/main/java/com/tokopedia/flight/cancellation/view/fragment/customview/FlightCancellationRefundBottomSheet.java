@@ -7,7 +7,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationRefundAdapter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationRefund;
 
@@ -19,14 +18,14 @@ public class FlightCancellationRefundBottomSheet extends BottomSheets {
 
     @Override
     public int getLayoutResourceId() {
-        return R.layout.partial_flight_cancellation_refund_description;
+        return com.tokopedia.flight.R.layout.partial_flight_cancellation_refund_description;
     }
 
     @Override
     public void initView(View view) {
-        detailsRecyclerView = view.findViewById(R.id.rv_details);
-        String[] titles = getResources().getStringArray(R.array.flight_cancellation_refund_title);
-        String[] subtitles = getResources().getStringArray(R.array.flight_cancellation_refund_subtitle);
+        detailsRecyclerView = view.findViewById(com.tokopedia.flight.R.id.rv_details);
+        String[] titles = getResources().getStringArray(com.tokopedia.flight.R.array.flight_cancellation_refund_title);
+        String[] subtitles = getResources().getStringArray(com.tokopedia.flight.R.array.flight_cancellation_refund_subtitle);
         List<FlightCancellationRefund> descriptions = new ArrayList<>();
         for (int i = 0; i < titles.length; i++) {
             FlightCancellationRefund description = new FlightCancellationRefund();
@@ -42,7 +41,7 @@ public class FlightCancellationRefundBottomSheet extends BottomSheets {
 
     @Override
     protected String title() {
-        return getString(R.string.flight_order_status_refund_label);
+        return getString(com.tokopedia.flight.orderlist.R.string.flight_order_status_refund_label);
     }
 
     @Override

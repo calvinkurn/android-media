@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFormFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
@@ -15,7 +16,7 @@ import dagger.Component;
  */
 
 @ReputationScope
-@Component(modules = ReputationModule.class, dependencies = AppComponent.class)
+@Component(modules = {ReputationModule.class, ViewModelModule.class}, dependencies = AppComponent.class)
 public interface ReputationComponent {
 
     void inject(InboxReputationFragment inboxReputationFragment);
@@ -29,4 +30,6 @@ public interface ReputationComponent {
     void inject(ReviewProductFragment productReviewFragment);
 
     void inject(ReviewShopFragment shopReviewFragment);
+
+    void inject(CreateReviewFragment createReviewFragment);
 }

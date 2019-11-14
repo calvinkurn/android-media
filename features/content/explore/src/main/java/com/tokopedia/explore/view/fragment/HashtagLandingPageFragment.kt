@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.explore.R
 import com.tokopedia.explore.di.ExploreComponent
 import com.tokopedia.explore.domain.entity.PostKol
+import com.tokopedia.explore.domain.entity.Tracking
 import com.tokopedia.explore.view.adapter.HashtagLandingItemAdapter
 import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.explore.view.viewmodel.HashtagLandingPageViewModel
@@ -158,6 +159,15 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
 
     override fun onImageFirstTimeSeen(post: PostKol, position: Int) {
         feedAnalytics.eventHashtagPageViewPost(post.id.toString(), searchTag, position)
+    }
+
+    override fun onAffiliateTrack(trackingList: List<Tracking>, isClick: Boolean) {
+        trackingList.forEach { tracking ->
+            viewModel.trackAffiliate(
+                    if (isClick) tracking.clickURL
+                    else tracking.viewURL
+            )
+        }
     }
 
     override fun onPause() {

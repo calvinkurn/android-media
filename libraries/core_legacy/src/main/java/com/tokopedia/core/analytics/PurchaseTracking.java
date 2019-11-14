@@ -11,6 +11,10 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.track.TrackApp;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,37 +70,7 @@ public class PurchaseTracking extends TrackingUtils {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(AppScreen.SCREEN_FINISH_TX);
         TrackApp.getInstance().getGTM().clearEnhanceEcommerce();
 
-        marketplacev5(context, purchaseBundlePair);
-    }
 
-    private static void marketplacev5(Context context, Pair<Purchase, Bundle> purchaseBundlePair) {
-        Purchase purchase = purchaseBundlePair.getFirst();
-        Bundle ecommerceBundle = new Bundle();
-        ecommerceBundle.putString(AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory());
-        ecommerceBundle.putString(AppEventTracking.EVENT_ACTION, purchase.getEventAction());
-        ecommerceBundle.putString(AppEventTracking.EVENT_LABEL, purchase.getEventLabel());
-        ecommerceBundle.putString(Purchase.PAYMENT_ID, purchase.getPaymentId());
-        ecommerceBundle.putString(Purchase.PAYMENT_TYPE, purchase.getPaymentType());
-        ecommerceBundle.putString(Purchase.SHOP_ID, purchase.getShopId());
-        ecommerceBundle.putString(Purchase.LOGISTIC_TYPE, purchase.getLogisticType());
-        ecommerceBundle.putString(Purchase.CURRENT_SITE, purchase.getCurrentSite());
-        ecommerceBundle.putString(Purchase.USER_ID, purchase.getUserId());
-        Object transactionID = purchase.getTransactionID();
-        ecommerceBundle.putString(FirebaseAnalytics.Param.TRANSACTION_ID, transactionID instanceof String ? ((String) transactionID) : "");
-        Object affiliation = purchase.getAffiliation();
-        ecommerceBundle.putString(FirebaseAnalytics.Param.AFFILIATION, affiliation instanceof String ? ((String) affiliation) : "");
-        Object revenue = purchase.getRevenue();
-        ecommerceBundle.putDouble(FirebaseAnalytics.Param.VALUE, revenue instanceof String ? Double.parseDouble(((String) revenue)) : 0);
-        Object tax = purchase.getTax();
-        ecommerceBundle.putFloat(FirebaseAnalytics.Param.TAX, tax instanceof String ? Float.parseFloat(((String) tax)) : 0);
-        Object shipping = purchase.getShipping();
-        ecommerceBundle.putFloat(FirebaseAnalytics.Param.SHIPPING, shipping instanceof String ? Float.parseFloat(((String) shipping)) : 0);
-        ecommerceBundle.putString(FirebaseAnalytics.Param.CURRENCY, purchase.getCurrency());
-        Object couponCode = purchase.getCouponCode();
-        ecommerceBundle.putString(FirebaseAnalytics.Param.COUPON, couponCode instanceof String ? ((String) couponCode) : "");
-        ecommerceBundle.putParcelableArrayList(ITEMS, purchaseBundlePair.getSecond().getParcelableArrayList("products"));
-        TrackApp.getInstance().getGTM().pushEECommerce(FirebaseAnalytics.Event.ECOMMERCE_PURCHASE, ecommerceBundle);
-        TrackApp.getInstance().getGTM().sendScreenV5(AppScreen.SCREEN_FINISH_TX);
     }
 
     public static void digital(Context context, Purchase purchase) {
@@ -136,12 +110,20 @@ public class PurchaseTracking extends TrackingUtils {
         List<String> productList = new ArrayList<>();
         List<String> productId = new ArrayList<>();
         List<String> productCategory = new ArrayList<>();
+        JSONArray productArray = new JSONArray();
         for(Object product:trackignData.getListProduct()) {
+            JSONObject jsonObject = new JSONObject();
             Map<String, Object> product1 = (Map<String, Object>) product;
             quantity += parseStringToInt(String.valueOf(product1.get(KEY_QTY)));
             productList.add(String.valueOf(product1.get(KEY_NAME)));
             productId.add(String.valueOf(product1.get(KEY_ID)));
             productCategory.add(String.valueOf(product1.get(KEY_CAT)));
+            try {
+                jsonObject.put(KEY_ID, String.valueOf(product1.get(KEY_ID)));
+                jsonObject.put(KEY_QTY, parseStringToInt(String.valueOf(product1.get(KEY_QTY))));
+                productArray.put(jsonObject);
+            } catch (JSONException ignored) {
+            }
         }
 
 
@@ -156,13 +138,15 @@ public class PurchaseTracking extends TrackingUtils {
         afValue.put(AFInAppEventParameterName.CURRENCY, Jordan.VALUE_IDR);
         afValue.put(Jordan.AF_VALUE_PRODUCTTYPE, productList);
         afValue.put(Jordan.AF_KEY_CATEGORY_NAME,productCategory);
-        if(productList != null && productList.size()>1) {
-            afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTGROUPTYPE);
-        }else {
-            afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        if (productArray.length() > 0) {
+            String afContent = productArray.toString();
+            afValue.put(AFInAppEventParameterName.CONTENT, afContent);
         }
 
+        afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
+        afValue.remove(AFInAppEventParameterName.CONTENT);
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 }

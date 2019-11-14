@@ -17,9 +17,9 @@ import javax.inject.Named
  */
 
 class GetMentionableUserUseCase @Inject constructor(
-        @Named(SEARCH_PROFILE_QUERY) val query: String,
-        val graphqlUseCase: GraphqlUseCase,
-        val mentionableUserMapper: MentionableUserMapper
+        @Named(SEARCH_PROFILE_QUERY) private val query: String,
+        private val graphqlUseCase: GraphqlUseCase,
+        private val mentionableUserMapper: MentionableUserMapper
 ) : UseCase<List<MentionableUserViewModel>>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<List<MentionableUserViewModel>> {

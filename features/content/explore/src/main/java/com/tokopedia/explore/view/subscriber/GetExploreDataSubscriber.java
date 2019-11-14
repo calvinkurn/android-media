@@ -10,10 +10,12 @@ import com.tokopedia.explore.domain.entity.GetDiscoveryKolData;
 import com.tokopedia.explore.domain.entity.GetExploreData;
 import com.tokopedia.explore.domain.entity.PostKol;
 import com.tokopedia.explore.domain.entity.Tag;
+import com.tokopedia.explore.domain.entity.Tracking;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kol.common.util.TimeConverter;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
@@ -86,15 +88,17 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
 
     private List<ExploreImageViewModel> convertToKolPostViewModelList(List<PostKol> postKolList) {
         List<ExploreImageViewModel> kolPostViewModelList = new ArrayList<>();
+        int i = 0;
         for (PostKol postKol : postKolList) {
             if (!postKol.getContent().isEmpty()) {
-                kolPostViewModelList.add(convertToKolPostViewModel(postKol));
+                kolPostViewModelList.add(convertToKolPostViewModel(postKol, i));
+                i++;
             }
         }
         return kolPostViewModelList;
     }
 
-    private ExploreImageViewModel convertToKolPostViewModel(PostKol postKol) {
+    private ExploreImageViewModel convertToKolPostViewModel(PostKol postKol, int pos) {
         Content content = getContent(postKol);
         Tag tag = getKolTag(content);
         List<String> imageList = new ArrayList<>();
@@ -123,10 +127,11 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 "",
                 getTagType(tag),
                 getTagCaption(tag),
-                getTagLink(tag)
+                getTagLink(tag),
+                convertToTrackingViewModel(postKol.getTracking())
         );
 
-        return new ExploreImageViewModel(getImageUrl(content), kolPostViewModel);
+        return new ExploreImageViewModel(getImageUrl(content), kolPostViewModel, pos);
     }
 
     private String checkType(PostKol postKol, Content content) {
@@ -211,5 +216,20 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 category.getId(),
                 category.getName() == null ? "" : category.getName()
         );
+    }
+
+    private List<TrackingViewModel> convertToTrackingViewModel(List<Tracking> trackingList) {
+        List<TrackingViewModel> trackingViewModelList = new ArrayList<>();
+        for (Tracking tracking: trackingList) {
+            trackingViewModelList.add(
+                    new TrackingViewModel(
+                            tracking.getClickURL(),
+                            tracking.getViewURL(),
+                            tracking.getType(),
+                            tracking.getSource()
+                    )
+            );
+        }
+        return trackingViewModelList;
     }
 }

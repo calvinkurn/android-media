@@ -1,0 +1,28 @@
+hachikoCatalogDetail(catalog_id: param_cId) {
+    id
+    catalog_type
+    icon
+    expired
+    points
+    title
+    sub_title
+    expired_label
+    expired_str
+    is_disabled
+    is_disabled_button
+    disable_error_message
+    upper_text_desc
+    description
+    overview
+    overview
+    how_to_use
+    icon
+    thumbnail_url
+    thumbnail_url_mobile
+    image_url
+    image_url_mobile
+    thumbnail_v2_url
+    thumbnail_v2_url_mobile
+    minimumUsage
+    minimumUsageLabel
+}
