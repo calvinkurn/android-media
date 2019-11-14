@@ -1,10 +1,10 @@
 package com.tokopedia.kol.feature.following_list.domain.interactor
 
+import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kol.feature.following_list.data.pojo.usershopfollow.GetShopFollowingData
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -14,7 +14,8 @@ import javax.inject.Named
  */
 class GetShopFollowingListUseCase @Inject constructor(
         @Named(QUERY_USER_SHOP_FOLLOWING) private val query: String,
-        private val graphqlUseCase: MultiRequestGraphqlUseCase
+        private val graphqlUseCase: MultiRequestGraphqlUseCase,
+        private val dispatchers: CoroutineDispatcherProvider
 ) : UseCase<GetShopFollowingData>() {
 
     companion object {
@@ -29,7 +30,7 @@ class GetShopFollowingListUseCase @Inject constructor(
         private const val PER_PAGE = 10
     }
 
-    override suspend fun executeOnBackground(): GetShopFollowingData = withContext(Dispatchers.IO) {
+    override suspend fun executeOnBackground(): GetShopFollowingData = withContext(dispatchers.io) {
         val response = graphqlUseCase.executeOnBackground()
         return@withContext response.getData<GetShopFollowingData>(GetShopFollowingData::class.java)
     }

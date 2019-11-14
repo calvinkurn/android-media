@@ -32,7 +32,7 @@ public class GamificationViewHolder extends AbstractViewHolder<GroupChatPointsVi
     public GamificationViewHolder(View itemView, ChatroomContract.ChatItem.GroupChatPointsViewHolderListener imageListener) {
         super(itemView);
         mainView = itemView;
-        messageView = itemView.findViewById(R.id.text);
+        messageView = itemView.findViewById(com.tokopedia.design.R.id.text);
         icon = itemView.findViewById(R.id.icon);
         listener = imageListener;
     }

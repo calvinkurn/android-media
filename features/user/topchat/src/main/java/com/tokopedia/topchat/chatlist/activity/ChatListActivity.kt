@@ -75,6 +75,10 @@ class ChatListActivity : BaseTabActivity()
         return R.layout.activity_chat_list
     }
 
+    override fun getScreenName(): String {
+        return "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
+    }
+
     override fun getViewPagerAdapter(): PagerAdapter? {
         fragmentAdapter = ChatListPagerAdapter(supportFragmentManager)
         fragmentAdapter.setItemList(tabList)

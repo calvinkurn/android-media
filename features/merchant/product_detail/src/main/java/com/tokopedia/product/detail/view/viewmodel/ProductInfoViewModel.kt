@@ -305,16 +305,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             fun ImageReviewGqlResponse.toImageReviewItemList(): List<ImageReviewItem> {
                 val images = SparseArray<ImageReviewGqlResponse.Image>()
                 val reviews = SparseArray<ImageReviewGqlResponse.Review>()
-
+                val hasNext = productReviewImageListQuery?.isHasNext ?: false
                 productReviewImageListQuery?.detail?.images?.forEach { images.put(it.imageAttachmentID, it) }
                 productReviewImageListQuery?.detail?.reviews?.forEach { reviews.put(it.reviewId, it) }
-
                 return productReviewImageListQuery?.list?.map {
                     val image = images[it.imageID]
                     val review = reviews[it.reviewID]
                     ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
                             review.reviewer?.fullName, image.uriThumbnail,
-                            image.uriLarge, review.rating)
+                            image.uriLarge, review.rating, hasNext, productReviewImageListQuery?.detail?.imageCount)
                 } ?: listOf()
 
             }
@@ -717,11 +716,10 @@ companion object {
     private const val DEFAULT_NUM_VOUCHER = 3
     private const val DEFAULT_NUM_IMAGE_REVIEW = 4
 
-    private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
-            "last_active", "location", "terms", "allow_manage",
-            "is_owner", "other-goldos", "status")
-
-    private const val KEY_PARAM = "params"
+        private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
+                "last_active", "location", "terms", "allow_manage",
+                "is_owner", "other-goldos", "status")
+        private const val KEY_PARAM = "params"
 
     private const val PARAMS_OTHER_PRODUCT_TEMPLATE = "device=android&source=other_product&shop_id=%d&-id=%d"
 

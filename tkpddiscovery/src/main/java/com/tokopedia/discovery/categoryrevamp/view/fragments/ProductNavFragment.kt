@@ -677,4 +677,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         })
     }
 
+    override fun onShareButtonClicked() {
+    }
 }

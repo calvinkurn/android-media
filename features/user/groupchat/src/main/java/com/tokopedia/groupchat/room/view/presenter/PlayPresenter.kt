@@ -76,7 +76,7 @@ class PlayPresenter @Inject constructor(
 
                     override fun onError(e: Throwable?) {
                         val errorMessage = GroupChatErrorHandler.getErrorMessage(view.context, e, false)
-                        val defaultMessage = view.context.getString(R.string.default_request_error_unknown)
+                        val defaultMessage = view.context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
                         val internalServerErrorMessage = "Internal Server Error"
                         if(e is UnknownHostException){
                             onNoInternetConnection()

@@ -552,7 +552,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     override fun onBannerClick(view: View, position: Int) {
-        val url = view.getTag(position) as String
+        val url = view.tag as String
         val eventLabel = url + " - " + position.toString()
         instantLoanAnalytics.eventLoanBannerClick(eventLabel)
         if (!TextUtils.isEmpty(url)) {
