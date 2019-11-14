@@ -54,9 +54,6 @@ dependencies {
     }
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
-    implementation (rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-firebase'
-    }
 
     implementation rootProject.ext.firebase.appIndexing
     implementation rootProject.ext.firebase.core
