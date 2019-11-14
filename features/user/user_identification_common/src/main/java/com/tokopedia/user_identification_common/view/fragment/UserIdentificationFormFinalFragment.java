@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -18,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -25,15 +26,20 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.user_identification_common.R;
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics;
 import com.tokopedia.user_identification_common.di.DaggerUserIdentificationCommonComponent;
 import com.tokopedia.user_identification_common.di.UserIdentificationCommonComponent;
+import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber;
 import com.tokopedia.user_identification_common.view.activity.UserIdentificationCameraActivity;
 import com.tokopedia.user_identification_common.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.user_identification_common.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.user_identification_common.view.viewmodel.UserIdentificationStepperModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
@@ -50,7 +56,9 @@ import static com.tokopedia.user_identification_common.view.fragment.UserIdentif
  */
 
 public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
-        implements UserIdentificationUploadImage.View, UserIdentificationFormActivity.Listener {
+        implements UserIdentificationUploadImage.View,
+        GetKtpStatusSubscriber.GetKtpStatusListener,
+        UserIdentificationFormActivity.Listener {
 
     private ImageView imageKtp;
     private ImageView imageFace;
@@ -58,6 +66,8 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     private TextView buttonFace;
     private TextView info;
     private TextView uploadButton;
+    private Ticker ticker;
+    private ImageView errorImageView;
     private View progressBar;
     private UserIdentificationStepperModel stepperModel;
 
@@ -130,6 +140,14 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         }
     }
 
+    private void openCameraView(int viewMode, int requestCode){
+        analytics.eventClickChangeKtpFinalFormPage();
+        Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
+                viewMode);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
+        startActivityForResult(intent, requestCode);
+    }
+
     private void setContentView() {
         setImageKtp(stepperModel.getKtpFile());
         setImageFace(stepperModel.getFaceFile());
@@ -137,22 +155,14 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         buttonKtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                analytics.eventClickChangeKtpFinalFormPage();
-                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
-                        PARAM_VIEW_MODE_KTP);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
-                startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
+                openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
             }
         });
 
         buttonFace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                analytics.eventClickChangeSelfieFinalFormPage();
-                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
-                        PARAM_VIEW_MODE_FACE);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
-                startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
+                openCameraView(PARAM_VIEW_MODE_FACE, REQUEST_CODE_CAMERA_FACE);
             }
         });
 
@@ -160,13 +170,18 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 analytics.eventClickUploadPhotos();
-                uploadImage();
+                checkKtp();
             }
         });
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity())
                     .updateToolbarTitle(getString(R.string.title_kyc_form_upload));
         }
+    }
+
+    private void checkKtp(){
+        showLoading();
+        presenter.checkKtp(stepperModel.getKtpFile());
     }
 
     private void uploadImage() {
@@ -196,6 +211,8 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         info = view.findViewById(R.id.text_info);
         uploadButton = view.findViewById(R.id.upload_button);
         progressBar = view.findViewById(R.id.progress_bar);
+        ticker = view.findViewById(R.id.user_identification_final_ticker);
+        errorImageView = view.findViewById(R.id.user_identification_final_x_img);
     }
 
     @Override
@@ -206,6 +223,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                 case REQUEST_CODE_CAMERA_KTP:
                     stepperModel.setKtpFile(imagePath);
                     setImageKtp(imagePath);
+                    hideKtpInvalidView();
                     break;
                 case REQUEST_CODE_CAMERA_FACE:
                     stepperModel.setFaceFile(imagePath);
@@ -267,6 +285,11 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     @Override
+    public GetKtpStatusSubscriber.GetKtpStatusListener getKtpStatusListener() {
+        return this;
+    }
+
+    @Override
     public void showLoading() {
         imageKtp.setVisibility(View.GONE);
         imageFace.setVisibility(View.GONE);
@@ -294,8 +317,55 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         presenter.detachView();
     }
 
+    private void hideKtpInvalidView(){
+        uploadButton.setText(getResources().getString(R.string.upload_button));
+        uploadButton.setOnClickListener(v -> {
+            analytics.eventClickUploadPhotos();
+            checkKtp();
+        });
+        errorImageView.setVisibility(View.GONE);
+        ticker.setVisibility(View.GONE);
+        info.setText(R.string.form_final_info);
+        generateLink();
+        hideLoading();
+    }
+
+    private void showKtpInvalidView(){
+        uploadButton.setText(getResources().getString(R.string.user_identification_common_retake_photo));
+        uploadButton.setOnClickListener(v -> {
+            openCameraView(PARAM_VIEW_MODE_KTP, REQUEST_CODE_CAMERA_KTP);
+        });
+
+        errorImageView.setVisibility(View.VISIBLE);
+        ticker.setVisibility(View.VISIBLE);
+
+        info.setText(R.string.form_reupload_info);
+        generateLink();
+        buttonKtp.setVisibility(View.GONE);
+        buttonFace.setVisibility(View.GONE);
+    }
+
     @Override
     public void trackOnBackPressed() {
         analytics.eventClickBackFinalForm();
+    }
+
+    @Override
+    public void onErrorGetKtpStatus(@NotNull Throwable error) {
+        hideLoading();
+        String errMsg = ErrorHandler.getErrorMessage(getActivity(), error);
+        ((UserIdentificationFormActivity) getActivity()).showError(errMsg, this::checkKtp);
+    }
+
+    @Override
+    public void onKtpInvalid(@NotNull String message) {
+        hideLoading();
+        showKtpInvalidView();
+    }
+
+    @Override
+    public void onKtpValid() {
+        hideLoading();
+        uploadImage();
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.applink;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.TaskStackBuilder;
+import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLinkResult;
 

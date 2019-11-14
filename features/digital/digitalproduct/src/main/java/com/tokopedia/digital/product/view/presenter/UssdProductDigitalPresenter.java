@@ -1,6 +1,6 @@
 package com.tokopedia.digital.product.view.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.authentication.AuthHelper;

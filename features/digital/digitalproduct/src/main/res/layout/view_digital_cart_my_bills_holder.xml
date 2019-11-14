@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -16,27 +16,45 @@
         android:padding="@dimen/dp_16"
         tools:ignore="MissingDefaultResource">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rl_title_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/tv_header_title"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:ellipsize="end"
                 app:fontSize="title"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toStartOf="@+id/ic_more_info"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:textViewTheme="lightPrimary"
                 app:weight="regular"
                 tools:text="Bayar Otomatis" />
+
+            <ImageView
+                android:id="@+id/ic_more_info"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                app:layout_constraintEnd_toStartOf="@+id/cb_subscription"
+                app:layout_constraintStart_toEndOf="@id/tv_header_title"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_coupon_info" />
 
             <CheckBox
                 android:id="@+id/cb_subscription"
                 android:layout_width="@dimen/dp_30"
                 android:layout_height="@dimen/dp_30"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:theme="@style/DigitalCheckboxAndRadioButton" />
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_description"
@@ -48,4 +66,4 @@
             app:textViewTheme="lightPrimary"
             tools:text="Pembayaran akan dilakukan secara otomatis pada 2 November 2018 dengan OvoCash." />
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

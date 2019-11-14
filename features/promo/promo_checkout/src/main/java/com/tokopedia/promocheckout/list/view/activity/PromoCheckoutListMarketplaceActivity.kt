@@ -1,9 +1,10 @@
 package com.tokopedia.promocheckout.list.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.constant.IRouterConstant
@@ -12,25 +13,24 @@ import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.promocheckout.common.data.PROMO_CODE
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
+import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.list.PromoCheckoutListComponentInstance
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
-import com.tokopedia.promocheckout.list.view.fragment.BasePromoCheckoutListFragment
 import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketplaceFragment
+import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketplaceFragment.Companion.CHECKOUT_CATALOG_DETAIL_FRAGMENT
 
 class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutListComponent> {
 
-
-    lateinit var promocheckoutlistfragment:PromoCheckoutListMarketplaceFragment
-
     override fun getNewFragment(): Fragment {
-        promocheckoutlistfragment= PromoCheckoutListMarketplaceFragment.createInstance(
+        return PromoCheckoutListMarketplaceFragment.createInstance(
                 intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
                 intent?.extras?.getString(PROMO_CODE, ""),
                 intent?.extras?.getBoolean(ONE_CLICK_SHIPMENT, false),
                 intent?.extras?.getInt(PAGE_TRACKING, 1) ?: 1,
                 intent?.extras?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM) as Promo
         )
-        return promocheckoutlistfragment
     }
 
     override fun getComponent(): PromoCheckoutListComponent {
@@ -54,12 +54,34 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
 
     override fun onBackPressed() {
 
-        val hasFragment=promocheckoutlistfragment.childFragmentManager.backStackEntryCount>0
-        if(hasFragment){
-            promocheckoutlistfragment.childFragmentManager.popBackStack()
-        }
-        else {
+        val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
+        if (promocheckoutlistfragment != null && promocheckoutlistfragment is PromoCheckoutListMarketplaceFragment) {
+            if (promocheckoutlistfragment.childFragmentManager.backStackEntryCount > 0) {
+                promocheckoutlistfragment.childFragmentManager.popBackStack()
+            } else
+                super.onBackPressed()
+        } else {
             super.onBackPressed()
+
+        }
+    }
+
+    override fun onResume() {
+        val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
+        if (promocheckoutlistfragment != null && promocheckoutlistfragment is PromoCheckoutListMarketplaceFragment) {
+            if (promocheckoutlistfragment.childFragmentManager.backStackEntryCount > 0) {
+                promocheckoutlistfragment.childFragmentManager.findFragmentByTag(CHECKOUT_CATALOG_DETAIL_FRAGMENT)?.let { promocheckoutlistfragment.childFragmentManager.beginTransaction().remove(it).commit() }
+                promocheckoutlistfragment.childFragmentManager.popBackStack()
+            }
+        }
+        super.onResume()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val promocheckoutlistfragment = supportFragmentManager.fragments.get(0)
+        if (promocheckoutlistfragment != null && promocheckoutlistfragment is PromoCheckoutListMarketplaceFragment) {
+            promocheckoutlistfragment.onActivityResult(requestCode, resultCode, data)
         }
     }
 }
+

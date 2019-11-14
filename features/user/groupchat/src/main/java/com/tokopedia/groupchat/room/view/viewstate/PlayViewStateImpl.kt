@@ -3,14 +3,6 @@ package com.tokopedia.groupchat.room.view.viewstate
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import android.support.constraint.ConstraintLayout
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
@@ -21,7 +13,15 @@ import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -169,7 +169,7 @@ open class PlayViewStateImpl(
         chatRecyclerView.layoutManager = layoutManager
         chatRecyclerView.adapter = adapter
         val itemDecoration = SpaceItemDecoration(view.context
-                .resources.getDimension(R.dimen.space_play_chat).toInt())
+                .resources.getDimension(com.tokopedia.groupchat.R.dimen.space_play_chat).toInt())
         chatRecyclerView.addItemDecoration(itemDecoration)
 
         chatRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -199,7 +199,7 @@ open class PlayViewStateImpl(
         quickReplyRecyclerView.adapter = quickReplyAdapter
 
         val quickReplyItemDecoration = QuickReplyItemDecoration(view.context
-                .resources.getDimension(R.dimen.dp_16).toInt())
+                .resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt())
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
         var dynamicButtonTypeFactory = DynamicButtonTypeFactoryImpl(
@@ -207,7 +207,7 @@ open class PlayViewStateImpl(
 
         dynamicButtonRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         var buttonSpace = SpaceItemDecoration(activity.getResources()
-                .getDimension(R.dimen.dp_8).toInt(), 2)
+                .getDimension(com.tokopedia.design.R.dimen.dp_8).toInt(), 2)
         dynamicButtonAdapter = DynamicButtonsAdapter(dynamicButtonTypeFactory)
         dynamicButtonRecyclerView.adapter = dynamicButtonAdapter
         dynamicButtonRecyclerView.addItemDecoration(buttonSpace)
@@ -348,7 +348,7 @@ open class PlayViewStateImpl(
 
     override fun onKeyboardHidden() {
         showWidgetAboveInput(true)
-        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
+        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.design.R.color.transparent))
         sendButton.hide()
         dynamicButtonRecyclerView.show()
         scrollToBottom()
@@ -364,7 +364,7 @@ open class PlayViewStateImpl(
 
     private fun onKeyboardShown() {
         showWidgetAboveInput(false)
-        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
+        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.groupchat.R.color.play_transparent))
         sendButton.show()
         dynamicButtonRecyclerView.hide()
 //            setSprintSaleIcon(null)
@@ -613,7 +613,7 @@ open class PlayViewStateImpl(
             overlayDialog.setOnShowListener { dialog ->
                 val d = dialog as BottomSheetDialog
 
-                val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+                val bottomSheet = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
@@ -638,7 +638,7 @@ open class PlayViewStateImpl(
         val interruptViewModel = channelInfoViewModel.overlayViewModel.interuptViewModel
         interruptViewModel?.let {
             if (!TextUtils.isEmpty(interruptViewModel.imageUrl)) {
-                ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, R.drawable.loading_page)
+                ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, com.tokopedia.abstraction.R.drawable.loading_page)
                 overlayView.findViewById<ImageView>(R.id.ivImage).setOnClickListener {
                     if (!TextUtils.isEmpty(interruptViewModel.imageLink)) {
                         var applink = RouteManager.routeWithAttribution(view.context, interruptViewModel.imageLink,
@@ -705,7 +705,7 @@ open class PlayViewStateImpl(
 
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
 
-        toolbar.setBackgroundResource(R.color.transparent)
+        toolbar.setBackgroundResource(com.tokopedia.design.R.color.transparent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 0f
         }
@@ -713,8 +713,8 @@ open class PlayViewStateImpl(
         toolbar.findViewById<TextView>(R.id.toolbar_title).text = title
         setToolbarParticipantCount(view.context, TextFormatter.format(totalView))
 
-        toolbar.findViewById<TextView>(R.id.toolbar_title).setTextColor(MethodChecker.getColor(activity, R.color.white))
-        toolbar.findViewById<TextView>(R.id.toolbar_subtitle).setTextColor(MethodChecker.getColor(activity, R.color.white))
+        toolbar.findViewById<TextView>(R.id.toolbar_title).setTextColor(MethodChecker.getColor(activity, com.tokopedia.design.R.color.white))
+        toolbar.findViewById<TextView>(R.id.toolbar_subtitle).setTextColor(MethodChecker.getColor(activity, com.tokopedia.design.R.color.white))
 
         when {
             title != null -> setVisibilityHeader(View.VISIBLE)
@@ -726,9 +726,9 @@ open class PlayViewStateImpl(
         sponsorHelper.hideSponsor()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 10f
-            toolbar.setBackgroundResource(R.color.white)
+            toolbar.setBackgroundResource(com.tokopedia.design.R.color.white)
         } else {
-            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow)
+            toolbar.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow)
         }
         var title = toolbar.findViewById<TextView>(R.id.toolbar_title)
         var subtitle = toolbar.findViewById<TextView>(R.id.toolbar_subtitle)
@@ -736,8 +736,8 @@ open class PlayViewStateImpl(
         toolbar.findViewById<TextView>(R.id.toolbar_live).hide()
         title.text = getStringResource(R.string.play_title)
         subtitle.text = ""
-        title.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
-        subtitle.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
+        title.setTextColor(MethodChecker.getColor(title.context, com.tokopedia.design.R.color.black_70))
+        subtitle.setTextColor(MethodChecker.getColor(title.context, com.tokopedia.design.R.color.black_70))
     }
 
     override fun errorViewShown(): Boolean {
@@ -952,7 +952,7 @@ open class PlayViewStateImpl(
         }
 
         if (floatingButton.imageUrl.toLowerCase().endsWith("gif")) {
-            ImageHandler.loadGifFromUrl(webviewIcon, floatingButton.imageUrl, R.drawable.ic_loading_toped)
+            ImageHandler.loadGifFromUrl(webviewIcon, floatingButton.imageUrl, com.tokopedia.abstraction.R.drawable.ic_loading_toped)
         } else {
             ImageHandler.LoadImage(webviewIcon, floatingButton.imageUrl)
         }
@@ -1026,7 +1026,7 @@ open class PlayViewStateImpl(
         setEmptyState(R.drawable.ic_play_overload,
                 getStringResource(R.string.error_overload_play),
                 it.replace("channelName", viewModel?.title ?: "", false),
-                getStringResource(R.string.title_try_again),
+                getStringResource(com.tokopedia.abstraction.R.string.title_try_again),
                 listener::onRetryGetInfo)
         loadingView.hide()
         errorView.show()
@@ -1037,7 +1037,7 @@ open class PlayViewStateImpl(
         setEmptyState(R.drawable.ic_play_no_connection,
                 getStringResource(R.string.no_connection_play),
                 getStringResource(R.string.try_connection_play),
-                getStringResource(R.string.title_try_again),
+                getStringResource(com.tokopedia.abstraction.R.string.title_try_again),
                 listener::onRetryGetInfo)
         loadingView.hide()
         errorView.show()
@@ -1145,7 +1145,7 @@ open class PlayViewStateImpl(
         pinnedMessageDialog.setOnShowListener() { dialog ->
             val d = dialog as BottomSheetDialog
 
-            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) {
                 BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
                 pinnedMessageView.findViewById<ImageView>(R.id.thumbnail).visibility = View.VISIBLE
@@ -1163,7 +1163,7 @@ open class PlayViewStateImpl(
         (view.findViewById(R.id.nickname) as TextView).text = getStringResource(R.string.from) + " " + channelInfoViewModel.adminName
         channelInfoViewModel.pinnedMessageViewModel?.let {
             (view.findViewById(R.id.message) as TextView).text = it.message
-            ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R
+            ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, com.tokopedia.abstraction.R
                     .drawable.loading_page)
             if (!TextUtils.isEmpty(it.imageUrl)) {
                 view.findViewById<ImageView>(R.id.thumbnail).setOnClickListener {
@@ -1203,10 +1203,10 @@ open class PlayViewStateImpl(
             val layoutParams = chatRecyclerView.layoutParams as ConstraintLayout.LayoutParams
 
             val fadingEdgeLength = when (it){
-                VideoVerticalHelper.VERTICAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
-                VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                VideoVerticalHelper.VERTICAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_0)
+                VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
                 else -> {
-                    view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
+                    view.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_24)
                 }
             }
             chatRecyclerView.setFadingEdgeLength(fadingEdgeLength)

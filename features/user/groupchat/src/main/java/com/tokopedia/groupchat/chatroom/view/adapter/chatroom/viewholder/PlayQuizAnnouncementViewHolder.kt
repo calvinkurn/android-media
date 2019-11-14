@@ -1,7 +1,7 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -30,7 +30,7 @@ class PlayQuizAnnouncementViewHolder(itemView: View,
 
     init {
         icon = itemView.findViewById(R.id.icon)
-        title = itemView.findViewById(R.id.title)
+        title = itemView.findViewById(com.tokopedia.design.R.id.title)
         content = itemView.findViewById(R.id.content)
     }
 

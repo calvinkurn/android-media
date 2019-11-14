@@ -1,79 +1,51 @@
 package com.tokopedia.core.common.category.data.source.db;
-
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 
 /**
  * @author sebastianuskh on 4/3/17.
  */
 public class CategoryDataManager {
+    private CategoryDao categoryDao;
 
     @Inject
-    public CategoryDataManager() {
-
+    public CategoryDataManager(CategoryDao categoryDao) {
+        this.categoryDao = categoryDao;
     }
 
     public void clearDatabase() {
-        new Delete().from(CategoryDataBase.class).execute();
+        categoryDao.clearTables();
     }
 
     public List<CategoryDataBase> fetchCategoryFromParent(long categoryId) {
-        ConditionGroup conditionGroup = ConditionGroup.clause().and(CategoryDataBase_Table.parentId.eq(categoryId));
-        return new Select()
-                .from(CategoryDataBase.class)
-                .where(conditionGroup)
-                .orderBy(CategoryDataBase_Table.weight, true)
-                .queryList();
+        return categoryDao.getCategoryListByParent(categoryId);
     }
 
     public List<CategoryDataBase> fetchFromDatabase() {
-        return new Select().from(CategoryDataBase.class).queryList();
+        return categoryDao.getAllCategories();
     }
 
     public Observable<String> getCategoryName(long categoryId){
-        CategoryDataBase categoryDataBase =
-                new Select().from(CategoryDataBase.class)
-                .where(CategoryDataBase_Table.id.is(categoryId))
-                .querySingle();
-        if (categoryDataBase != null) {
-            return Observable.just(categoryDataBase.getName());
-        } else {
-            return null;
-        }
+        return Observable.fromCallable(() -> categoryDao.getCategoryName(categoryId));
     }
 
     public void storeData(List<CategoryDataBase> categoryDataBases) {
-
-        DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
-        database.beginTransaction();
-        try{
-            for(CategoryDataBase categoryDataBase : categoryDataBases){
-                categoryDataBase.save();
-            }
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
-        }
+        Observable.fromCallable(() -> {
+            categoryDao.insertMultiple(categoryDataBases);
+            return true;
+        }).subscribeOn(Schedulers.io()).subscribe();
 
     }
 
     public CategoryDataBase fetchCategoryWithId(long categoryId) {
-        CategoryDataBase categoryDataBase = new Select()
-                .from(CategoryDataBase.class)
-                .where(CategoryDataBase_Table.id.like(categoryId))
-                .querySingle();
-        if (categoryDataBase != null) {
-            return categoryDataBase;
+        CategoryDataBase category = categoryDao.getSingleCategory(categoryId);
+        if (category != null) {
+            return category;
         } else {
             throw new RuntimeException("No category found");
         }

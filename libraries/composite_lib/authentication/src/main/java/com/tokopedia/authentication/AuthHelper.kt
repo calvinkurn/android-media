@@ -1,7 +1,7 @@
 package com.tokopedia.authentication
 
 import android.os.Build
-import android.support.v4.util.ArrayMap
+import androidx.collection.ArrayMap
 import android.util.Base64
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig

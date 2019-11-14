@@ -23,7 +23,7 @@
         app:weight="medium"
         tools:text="1234567" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_view_check"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"

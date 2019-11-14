@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo_clashing.viewholder
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter.ClashingAdapter

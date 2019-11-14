@@ -1,13 +1,13 @@
 package com.tokopedia.home_recom.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -45,6 +45,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import kotlinx.android.synthetic.main.fragment_recommendation.*
 import javax.inject.Inject
 
 /**
@@ -79,6 +80,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var productId: String
     private lateinit var queryParam: String
+    private lateinit var ref: String
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
@@ -93,13 +95,15 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
         private const val SAVED_PRODUCT_ID = "saved_product_id"
         private const val SAVED_REF = "saved_ref"
+        private const val SAVED_QUERY_PARAM = "saved_query_param"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
-        fun newInstance(productId: String = "", source: String = "") = RecommendationFragment().apply {
+        fun newInstance(productId: String = "", source: String = "", ref: String = "null") = RecommendationFragment().apply {
             this.productId = productId
             this.queryParam = source
+            this.ref = ref
         }
     }
 
@@ -112,7 +116,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         clearProductInfoView()
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
-            queryParam = it.getString(SAVED_REF) ?: ""
+            queryParam = it.getString(SAVED_QUERY_PARAM) ?: ""
+            ref = it.getString(SAVED_REF) ?: ""
         }
         activity?.let {
             trackingQueue = TrackingQueue(it)
@@ -128,20 +133,21 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             RecommendationPageTracking.sendScreenRecommendationPage(
                     screenName,
                     null,
-                    queryParam)
+                    ref)
         }
         else {
             RecommendationPageTracking.sendScreenRecommendationPage(
                     screenName,
                     productId,
-                    queryParam)
+                    ref)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_PRODUCT_ID, productId)
-        outState.putString(SAVED_REF, queryParam)
+        outState.putString(SAVED_REF, ref)
+        outState.putString(SAVED_QUERY_PARAM, queryParam)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -241,24 +247,24 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             if(isAddWishlist){
                 recommendationWidgetViewModel.addWishlist(item, callback)
                 if(productId.isNotBlank() || productId.isNotEmpty()){
-                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, queryParam)
+                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, ref)
                 }else {
-                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item), queryParam)
+                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item), ref)
                 }
             } else {
                 recommendationWidgetViewModel.removeWishlist(item, callback)
                 if(productId.isNotBlank() || productId.isNotEmpty()){
-                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, queryParam)
+                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, ref)
                 }else {
-                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item), queryParam)
+                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item), ref)
                 }
             }
         }else{
             RouteManager.route(context, ApplinkConst.LOGIN)
             if(productId.isNotBlank() || productId.isNotEmpty()){
-               RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLoginWithProductId(queryParam)
+               RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLoginWithProductId(ref)
             } else {
-               RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item), queryParam)
+               RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item), ref)
             }
         }
     }
@@ -271,15 +277,15 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onProductImpression(item: RecommendationItem) {
         if(recommendationWidgetViewModel.isLoggedIn()){
             if(productId.isNotBlank() || productId.isNotEmpty()){
-                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLoginWithProductId(trackingQueue, getHeaderName(item), item, item.position.toString(), queryParam)
+                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLoginWithProductId(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
             }else {
-                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString(), queryParam)
+                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
             }
         } else {
             if(productId.isNotBlank() || productId.isNotEmpty()){
-                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameWithProductId(trackingQueue, getHeaderName(item), item, item.position.toString(), queryParam)
+                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameWithProductId(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
             }else {
-                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString(), queryParam)
+                RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString(), ref)
             }
         }
     }
@@ -354,7 +360,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      */
     private fun displayProductInfo(dataModel: ProductInfoDataModel){
         childFragmentManager.beginTransaction()
-                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(dataModel, queryParam))
+                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(dataModel, ref))
                 .commit()
     }
 
@@ -395,15 +401,15 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private fun eventTrackerClickListener(item: RecommendationItem){
         if(recommendationWidgetViewModel.isLoggedIn()){
             if(productId.isNotBlank() || productId.isNotEmpty()){
-                RecommendationPageTracking.eventUserClickOnHeaderNameProductWithProductId(getHeaderName(item), item, item.position.toString(), queryParam)
+                RecommendationPageTracking.eventUserClickOnHeaderNameProductWithProductId(getHeaderName(item), item, item.position.toString(), ref)
             }else {
-                RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString(), queryParam)
+                RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString(), ref)
             }
         }else{
             if(productId.isNotBlank() || productId.isNotEmpty()){
-                RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLoginWithProductId(getHeaderName(item), item, item.position.toString(), queryParam)
+                RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLoginWithProductId(getHeaderName(item), item, item.position.toString(), ref)
             }else {
-                RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString(), queryParam)
+                RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString(), ref)
             }
         }
     }

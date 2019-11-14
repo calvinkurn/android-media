@@ -7,7 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -102,7 +102,7 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebview(view: View) {
         CookieManager.getInstance().setAcceptCookie(true)
-        webview = view.findViewById(R.id.webview)
+        webview = view.findViewById(com.tokopedia.abstraction.R.id.webview)
         progressBar = view.findViewById(R.id.progress_bar)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)

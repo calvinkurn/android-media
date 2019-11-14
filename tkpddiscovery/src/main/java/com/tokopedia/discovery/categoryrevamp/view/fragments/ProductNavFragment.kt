@@ -1,17 +1,16 @@
 package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -52,6 +51,8 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -73,6 +74,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         SubCategoryListener,
         WishListActionListener {
 
+    var isSubCategoryAvailable = false
+
+
     override fun onListItemImpressionEvent(element: Visitable<Any>, position: Int) {
 
         val item = element as ProductsItem
@@ -85,7 +89,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 item.id.toString(),
                 CurrencyFormatHelper.convertRupiahToInt(item.price),
                 position,
-                getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()),
+                getProductItemPath(item.categoryBreadcrumb ?: "", getDepartMentId()),
                 item.categoryBreadcrumb ?: "")
     }
 
@@ -353,7 +357,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
             when (it) {
                 is Success -> {
-                    subcategory_recyclerview.visibility = View.VISIBLE
+                    isSubCategoryAvailable = true
+                    subcategory_recyclerview.show()
                     subCategoryAdapter = SubCategoryAdapter(it.data as ArrayList<SubCategoryItem>,
                             this)
                     subcategory_recyclerview.adapter = subCategoryAdapter
@@ -362,7 +367,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 }
 
                 is Fail -> {
-                    subcategory_recyclerview.visibility = View.GONE
+                    isSubCategoryAvailable = false
+                    subcategory_recyclerview.hide()
                 }
             }
 
@@ -399,11 +405,17 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
-            layout_no_data.visibility = View.VISIBLE
+            layout_no_data.show()
             txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
+            quickfilter_parent.hide()
+            subcategory_recyclerview.hide()
         } else {
-            layout_no_data.visibility = View.GONE
+            layout_no_data.hide()
+            quickfilter_parent.show()
+            if (isSubCategoryAvailable) {
+                subcategory_recyclerview.show()
+            }
         }
     }
 
@@ -567,15 +579,16 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
         }
-        if (item.isTopAds) {
+        if (!item.isTopAds) {
             ImpresionTask().execute(item.productClickTrackingUrl)
         }
-        catAnalyticsInstance.eventClickProductList(item.id.toString(),
-                mDepartmentId,
-                item.name,
-                CurrencyFormatHelper.convertRupiahToInt(item.price),
-                adapterPosition,
-                getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()))
+            catAnalyticsInstance.eventClickProductList(item.id.toString(),
+                    mDepartmentId,
+                    item.name,
+                    CurrencyFormatHelper.convertRupiahToInt(item.price),
+                    adapterPosition,
+                    item.categoryBreadcrumb ?: "",
+                    getProductItemPath(item.categoryBreadcrumb ?: "", mDepartmentId))
 
     }
 
@@ -584,7 +597,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private fun getProductItemPath(path: String, id: String): String {
         if (path.isNotEmpty()) {
-            return "category$path-$id"
+            return "category/$path - $id"
         }
         return ""
     }
@@ -696,4 +709,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         })
     }
 
+    override fun onShareButtonClicked() {
+    }
 }

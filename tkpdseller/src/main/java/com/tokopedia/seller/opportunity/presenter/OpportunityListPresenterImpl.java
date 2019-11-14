@@ -1,6 +1,6 @@
 package com.tokopedia.seller.opportunity.presenter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;

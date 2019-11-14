@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.component.EditTextCompat;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationChooseReasonActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
@@ -134,19 +133,19 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_cancellation_refundable_step_two, container, false);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_cancellation_refundable_step_two, container, false);
         buildView(view);
         return view;
     }
 
     private void buildView(View view) {
-        container = view.findViewById(R.id.container);
-        progressBar = view.findViewById(R.id.progress_bar);
-        tvChooseReason = view.findViewById(R.id.et_saved_passenger);
-        attachmentContainer = view.findViewById(R.id.attachment_container);
-        attachmentDescription = view.findViewById(R.id.attachment_description);
-        rvAttachments = view.findViewById(R.id.rv_attachments);
-        btnNext = view.findViewById(R.id.btn_next);
+        container = view.findViewById(com.tokopedia.flight.R.id.container);
+        progressBar = view.findViewById(com.tokopedia.flight.R.id.progress_bar);
+        tvChooseReason = view.findViewById(com.tokopedia.flight.R.id.et_saved_passenger);
+        attachmentContainer = view.findViewById(com.tokopedia.flight.R.id.attachment_container);
+        attachmentDescription = view.findViewById(com.tokopedia.flight.R.id.attachment_description);
+        rvAttachments = view.findViewById(com.tokopedia.flight.R.id.rv_attachments);
+        btnNext = view.findViewById(com.tokopedia.flight.R.id.btn_next);
 
         FlightCancellationAttachmentTypeFactory adapterTypeFactory = new FlightCancellationAttachementAdapterTypeFactory(this, true);
         adapter = new FlightCancellationAttachmentAdapter(adapterTypeFactory);
@@ -169,7 +168,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 startActivityForResult(FlightCancellationChooseReasonActivity.createIntent(getContext(), selectedReason),
                         CHOOSE_REASON_REQUEST_CODE);
-                getActivity().overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay);
+                getActivity().overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_slide_up_in, com.tokopedia.common.travel.R.anim.travel_anim_stay);
             }
         });
 
@@ -302,7 +301,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void onUploadAttachmentButtonClicked(int positionIndex) {
         positionChangedImage = positionIndex;
-        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.imagepicker.R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
                 null, null);

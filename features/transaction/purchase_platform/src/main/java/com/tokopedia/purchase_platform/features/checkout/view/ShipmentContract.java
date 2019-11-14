@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.view;
 
 import android.app.Activity;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -251,6 +251,8 @@ public interface ShipmentContract {
         void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration, boolean isCod, String shippingPriceMin, String shippingPriceHigh);
 
         void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId, boolean isCod);
+
+        void sendAnalyticsViewInformationAndWarningTickerInCheckout(String tickerId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -1,13 +1,11 @@
 package com.tokopedia.affiliate.feature.onboarding.view.widget
 
 import android.content.Context
-import android.support.v7.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatEditText
 import android.text.*
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.widget.TextView
-import com.tokopedia.profile.R
-
 
 /**
  * Created by Hendry on 3/9/2017.
@@ -48,12 +46,12 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         var a = context.obtainStyledAttributes(
-                attrs, R.styleable.PrefixEditText, defStyle, 0)
+                attrs, com.tokopedia.design.R.styleable.PrefixEditText, defStyle, 0)
 
         mPrefix = a.getString(
-                R.styleable.PrefixEditText_prefix)
+                com.tokopedia.design.R.styleable.PrefixEditText_prefix)
         mColor = a.getColor(
-                R.styleable.PrefixEditText_prefixTextColor,
+                com.tokopedia.design.R.styleable.PrefixEditText_prefixTextColor,
                 0)
         a.recycle()
 

@@ -1,6 +1,6 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +61,7 @@ public class ChannelPartnerChildAdapter
         holder.partnerName.setText(list.get(position).getPartnerName());
         ImageHandler.loadImage2(holder.partnerAvatar,
                 list.get(position).getPartnerAvatar(),
-                R.drawable.loading_page);
+                com.tokopedia.abstraction.R.drawable.loading_page);
 
         listener.onPartnerViewed(list.get(holder.getAdapterPosition()).getPartnerName());
         holder.partnerChildLayout.setOnClickListener(new View.OnClickListener() {

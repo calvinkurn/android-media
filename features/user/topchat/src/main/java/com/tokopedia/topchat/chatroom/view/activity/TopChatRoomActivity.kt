@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.BaseChatToolbarActivity
@@ -12,8 +12,14 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 
 class TopChatRoomActivity : BaseChatToolbarActivity() {
+
+
+    override fun getScreenName(): String {
+        return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
+    }
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()

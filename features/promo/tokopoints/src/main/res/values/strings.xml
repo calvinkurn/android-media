@@ -100,5 +100,7 @@
     <string name="tp_try_again">Coba Lagi</string>
     <string name="tp_no_internet_title">Nggak ada koneksi internet</string>
     <string name="tp_no_internet_label">Pastikan ada jaringan internet di tempatmu atau cek paket data / WiFi</string>
+    <string name="tp_masukan_pin">Masukan PIN</string>
+
 
 </resources>

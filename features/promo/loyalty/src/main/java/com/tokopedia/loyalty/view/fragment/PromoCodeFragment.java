@@ -7,10 +7,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +21,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCodeComponent;
 import com.tokopedia.loyalty.di.component.PromoCodeComponent;
@@ -38,7 +34,6 @@ import com.tokopedia.loyalty.view.LoyaltyTracking;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCodePresenter;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
-import com.tokopedia.track.TrackApp;
 
 import javax.inject.Inject;
 
@@ -145,12 +140,7 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
                 voucherCodeFieldHolder.setError(null);
                 if (voucherCodeField.getText().toString().isEmpty()) {
                     textHolder.setError(getActivity().getString(R.string.error_empty_voucher_code));
-                } else
-                    dPresenter.processCheckFlightPromoCode(
-                            getActivity(),
-                            voucherCodeField.getText().toString(),
-                            getArguments().getString(CART_ID)
-                    );
+                }
             }
         };
     }
@@ -277,6 +267,7 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
             }
         };
     }
+
     @SuppressWarnings("deprecation")
     @Override
     protected void initInjector() {
@@ -296,7 +287,7 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
         return fragment;
     }
 
-    public static Fragment newInstance(String platform,String platformPage, String categoryKey,
+    public static Fragment newInstance(String platform, String platformPage, String categoryKey,
                                        String categoryName, String cartId, String additionalDataString,
                                        String trainReservationId, String trainReservartionCode) {
         PromoCodeFragment fragment = new PromoCodeFragment();
@@ -444,8 +435,8 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
     }
 
     @Override
-    public void sendEventDigitalEventTracking(Context context,String text, String failmsg) {
-        loyaltyModuleRouter.sendEventDigitalEventTracking(context,text, failmsg);
+    public void sendEventDigitalEventTracking(Context context, String text, String failmsg) {
+        loyaltyModuleRouter.sendEventDigitalEventTracking(context, text, failmsg);
     }
 
     @Override

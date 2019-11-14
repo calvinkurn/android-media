@@ -1,10 +1,10 @@
 package com.tokopedia.groupchat.chatroom.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,7 +160,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
     private void initView(View view) {
         KeyboardHandler.DropKeyboard(getContext(), getView());
         profile = view.findViewById(R.id.prof_pict);
-        title = view.findViewById(R.id.title);
+        title = view.findViewById(com.tokopedia.design.R.id.title);
         subtitle = view.findViewById(R.id.subtitle);
         name = view.findViewById(R.id.name);
         totalView = view.findViewById(R.id.participant);
@@ -195,7 +195,7 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         ImageHandler.loadImageCircle2(profile.getContext(),
                 profile,
                 channelInfoViewModel.getAdminPicture(),
-                R.drawable.loading_page);
+                com.tokopedia.abstraction.R.drawable.loading_page);
 
         if (channelInfoViewModel.getChannelPartnerViewModels() != null
                 && !channelInfoViewModel.getChannelPartnerViewModels().isEmpty()) {

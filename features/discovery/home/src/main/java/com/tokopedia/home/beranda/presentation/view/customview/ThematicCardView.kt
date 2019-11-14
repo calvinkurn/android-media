@@ -4,28 +4,29 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
-import android.support.annotation.DimenRes
-import android.support.annotation.DrawableRes
-import android.support.annotation.IdRes
-import android.support.constraint.ConstraintLayout
-import android.support.v7.widget.CardView
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import android.widget.TextView
+import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.unifycomponents.Label
@@ -34,7 +35,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by Lukas on 01/10/19
  */
-class ThematicCardView : FrameLayout {
+class ThematicCardView : BaseCustomView {
     companion object {
         const val LIGHT_GREY = "lightGrey"
         const val LIGHT_BLUE = "lightBlue"
@@ -72,18 +73,24 @@ class ThematicCardView : FrameLayout {
     private var labelCredibility: Label? = null
     private var blankSpaceConfig = BlankSpaceConfig()
 
-    constructor(context: Context): super(context){
+    constructor(context: Context): super(context) {
         init()
     }
-    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet) {
+
+    constructor(context: Context, attrs: AttributeSet?): super(context, attrs) {
         init()
     }
-    constructor(context: Context, attributeSet: AttributeSet, defaultStyleAttr: Int): super(context, attributeSet, defaultStyleAttr){
+
+    constructor(
+            context: Context,
+            attrs: AttributeSet?,
+            defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr) {
         init()
     }
 
     private fun init(){
-        findViews(inflate(context, R.layout.thematic_card_view, this))
+        findViews(View.inflate(context, R.layout.thematic_card_view, this))
     }
 
 
@@ -182,14 +189,17 @@ class ThematicCardView : FrameLayout {
     private fun loadShopBadgesIcon(url: String) {
         if(!TextUtils.isEmpty(url)) {
             val view = LayoutInflater.from(context).inflate(com.tokopedia.productcard.R.layout.product_card_badge_layout, null)
+            ImageHandler.loadImageBitmap2(context, url, object : CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {
 
-            ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
-                override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {
-                    loadShopBadgeSuccess(view, bitmap)
                 }
 
-                override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
-                    super.onLoadFailed(e, errorDrawable)
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    loadShopBadgeSuccess(view, resource)
+                }
+
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
                     loadShopBadgeFailed(view)
                 }
             })
@@ -377,6 +387,10 @@ class ThematicCardView : FrameLayout {
         imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
     }
 
+    override fun setOnClickListener(clickListener: OnClickListener?) {
+        cardViewProductCard?.setOnClickListener(clickListener)
+    }
+
     @DrawableRes
     fun getRatingDrawable(isActive: Boolean): Int {
         return if(isActive) com.tokopedia.productcard.R.drawable.product_card_ic_rating_active
@@ -438,4 +452,56 @@ class ThematicCardView : FrameLayout {
             constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
         }
     }
+
+    private fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
+        if (this == null) return
+
+        if (shouldShow) {
+            this.visibility = View.VISIBLE
+            action(this)
+        } else {
+            this.visibility = View.GONE
+        }
+    }
+
+    private fun ConstraintLayout?.applyConstraintSet(configureConstraintSet: (ConstraintSet) -> Unit) {
+        this?.let {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(it)
+            configureConstraintSet(constraintSet)
+            constraintSet.applyTo(it)
+        }
+    }
+
+    private fun View.getDimensionPixelSize(@DimenRes id: Int): Int {
+        return this.context.resources.getDimensionPixelSize(id)
+    }
+
+    private fun <T: View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boolean, blankSpaceConfigValue: Boolean, action: (T) -> Unit) {
+        if (this == null) return
+
+        visibility = if (isVisible) {
+            action(this)
+            View.VISIBLE
+        } else {
+            getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue)
+        }
+    }
+
+    private fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {
+        return if (blankSpaceConfigValue) {
+            View.INVISIBLE
+        }
+        else {
+            View.GONE
+        }
+    }
+
+    private fun TextView?.setTextWithBlankSpaceConfig(textValue: String, blankSpaceConfigValue: Boolean) {
+        this?.configureVisibilityWithBlankSpaceConfig(textValue.isNotEmpty(), blankSpaceConfigValue) {
+            it.text = MethodChecker.fromHtml(textValue)
+        }
+    }
+
 }

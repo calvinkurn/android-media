@@ -49,8 +49,8 @@ public class GqlSubmitWithdrawUseCase {
 
 
     @Inject
-    public GqlSubmitWithdrawUseCase() {
-        graphqlUseCase = new GraphqlUseCase();
+    public GqlSubmitWithdrawUseCase(GraphqlUseCase graphqlUseCase) {
+        this.graphqlUseCase = graphqlUseCase;
     }
 
     public void unsubscribe() {

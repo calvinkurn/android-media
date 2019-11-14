@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/buy_widget"
@@ -34,7 +34,7 @@
                 app:tckv_indicator_off_color="@color/grey_550"
                 app:tckv_indicator_on_color="@color/tkpd_main_green" />
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/input_number_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                     android:layout_marginTop="@dimen/dp_5"
                     android:layout_marginRight="@dimen/dp_5" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
                 android:id="@+id/recent_numbers"
@@ -121,7 +121,7 @@
 
         </RelativeLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
         android:id="@+id/buy_widget"

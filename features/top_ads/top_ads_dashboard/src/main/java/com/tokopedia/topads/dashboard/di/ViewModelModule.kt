@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.di
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.topads.common.view.TopAdsDatePickerViewModel
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory

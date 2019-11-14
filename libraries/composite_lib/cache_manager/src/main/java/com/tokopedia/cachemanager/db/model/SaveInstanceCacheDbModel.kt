@@ -1,6 +1,6 @@
 package com.tokopedia.cachemanager.db.model
 
-import android.arch.persistence.room.Entity
+import androidx.room.Entity
 import com.tokopedia.cachemanager.db.model.SaveInstanceCacheDbModel.Companion.SAVE_INSTANCE_CACHE_TABLE_NAME
 
 @Entity(tableName = SAVE_INSTANCE_CACHE_TABLE_NAME)

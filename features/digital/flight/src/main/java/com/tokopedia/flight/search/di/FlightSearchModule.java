@@ -8,9 +8,4 @@ import dagger.Module;
 
 @FlightSearchScope
 @Module
-public class FlightSearchModule {
-
-    public FlightSearchModule() {
-    }
-
-}
+public class FlightSearchModule {}

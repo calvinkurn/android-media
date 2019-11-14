@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.MenuItem
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -53,10 +53,11 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             intent.data != null -> {
                 if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
                         if(isNumber(intent.data?.pathSegments?.get(0) ?: "")) intent.data?.pathSegments?.get(0) ?: ""
-                        else "", intent.data?.query ?: "")
-                else RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", intent.data?.query ?: "")
+                        else "", intent.data?.getQueryParameter("ref") ?: "null", intent.data?.query ?: "")
+                else RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", intent.data?.query ?: "", intent.data?.getQueryParameter("ref") ?: "")
             }
             else -> {
+                RouteManager.route(this, ApplinkConst.HOME)
                 RecommendationFragment.newInstance()
             }
         }

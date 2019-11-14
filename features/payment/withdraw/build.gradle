@@ -54,6 +54,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.libraries.webview)
 
 }
 

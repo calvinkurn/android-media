@@ -1,14 +1,14 @@
 package com.tokopedia.feedplus.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -80,7 +80,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private val coachMark: CoachMark by lazy {
         CoachMarkBuilder()
-                .allowNextButton(false)
+                .allowPreviousButton(false)
                 .build()
     }
 
@@ -425,7 +425,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-     fun showCreatePostOnBoarding() {
+    fun showCreatePostOnBoarding() {
         fab_feed.addOneTimeGlobalLayoutListener {
             val x1: Int = fab_feed.x.toInt()
             val y1: Int = fab_feed.y.toInt()
@@ -442,9 +442,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    fun showFabCoachMark() {
+    private fun showFabCoachMark() {
         if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)) {
-            showCreatePostOnBoarding()
+            coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
     }

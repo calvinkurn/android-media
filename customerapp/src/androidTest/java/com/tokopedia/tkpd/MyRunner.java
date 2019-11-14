@@ -3,8 +3,8 @@ package com.tokopedia.tkpd;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.multidex.MultiDex;
-import android.support.test.runner.AndroidJUnitRunner;
+import androidx.multidex.MultiDex;
+import androidx.test.runner.AndroidJUnitRunner;
 
 /**
  * Created by normansyahputa on 3/22/18.

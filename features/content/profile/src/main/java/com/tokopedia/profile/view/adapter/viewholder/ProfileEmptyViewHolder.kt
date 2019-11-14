@@ -1,6 +1,6 @@
 package com.tokopedia.profile.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -29,6 +29,6 @@ class ProfileEmptyViewHolder(val v: View) : AbstractViewHolder<ProfileEmptyViewM
                 DisplayMetricUtils.getScreenDensity(itemView.context),
                 IMAGE_NAME
         )
-        ImageHandler.loadImage2(itemView.image, imageUrl, R.drawable.ic_loading_image)
+        ImageHandler.loadImage2(itemView.image, imageUrl, com.tokopedia.design.R.drawable.ic_loading_image)
     }
 }

@@ -1,12 +1,11 @@
 package com.tokopedia.browse.categoryNavigation.fragments
 
-
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +17,7 @@ import com.tokopedia.browse.categoryNavigation.adapters.CategoryLevelOneAdapter
 import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.di.CategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.di.DaggerCategoryNavigationComponent
+import com.tokopedia.browse.categoryNavigation.view.ActivityStateListener
 import com.tokopedia.browse.categoryNavigation.view.CategoryChangeListener
 import com.tokopedia.browse.categoryNavigation.viewmodel.CategoryLevelOneViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,6 +35,8 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     lateinit var categoryBrowseViewModel: CategoryLevelOneViewModel
     private val categoryList = ArrayList<CategoriesItem>()
 
+    var activityStateListener: ActivityStateListener? = null
+
     var selectedPosition = 0
 
     var selectedItemIdentifier: String? = null
@@ -42,7 +44,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     companion object {
         private val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
         @JvmStatic
-        fun newInstance(categoryName: String?): Fragment {
+        fun newInstance(categoryName: String?): CategorylevelOneFragment {
             val fragment = CategorylevelOneFragment()
             if (categoryName != null) {
                 val bundle = Bundle()
@@ -75,7 +77,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     private fun initView() {
         val linearLayoutManager = LinearLayoutManager(context)
         master_list.layoutManager = linearLayoutManager
-        val categoryLevelOneAdapter = CategoryLevelOneAdapter(categoryList, activity!!.applicationContext, listener)
+        val categoryLevelOneAdapter = CategoryLevelOneAdapter(categoryList, listener, activityStateListener?.getActivityTrackingQueue())
         master_list.adapter = categoryLevelOneAdapter
 
         activity?.let { observer ->
