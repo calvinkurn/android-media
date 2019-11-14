@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout2"
@@ -69,7 +69,7 @@
         android:id="@+id/category_btn_banned_navigation"
         android:layout_width="@dimen/dp_250"
         android:layout_height="@dimen/dp_48"
-        android:layout_marginBottom="@dimen/dp_50"
+        android:layout_marginBottom="@dimen/dp_60"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:paddingLeft="@dimen/dp_20"
@@ -88,4 +88,4 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_sub_header"
         app:layout_constraintWidth_default="wrap" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

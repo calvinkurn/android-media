@@ -35,11 +35,8 @@ class CategoryPageAnalytics {
     val KEY_ACTIONFIELD = "actionField"
     val KEY_CLICK = "click"
     val KEY_PROMOVIEW = "promoView"
-    val KEY_PROMO_CLICK = "promoClick"
     val KEY_EVENT_BANNED_CLICK = "clickCategoryBanned"
-    val KEY_PROMO_VIEW = "promoView"
     val KEY_EVENT_BANNED_VIEW = "viewCategoryBannedIris"
-    val KEY_PROMOTIONS = "promotions"
 
     val EVENT_NAME_VALUE = "clickCategory"
     val EVENT_CATEGORY_VALUE = "category page"

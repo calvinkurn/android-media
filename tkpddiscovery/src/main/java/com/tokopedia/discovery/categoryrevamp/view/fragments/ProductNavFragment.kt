@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 
+import android.content.Context
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
