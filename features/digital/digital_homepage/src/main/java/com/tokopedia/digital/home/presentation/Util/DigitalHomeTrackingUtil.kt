@@ -15,17 +15,16 @@ import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActio
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BACK_BUTTON_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.MORE_INFO_CLICK
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_BANNER_CLICK
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_BOX_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_CLICK
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_BANNER_CLICK
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_RESULT_PAGE_ICON_IMPRESSION
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingCategoryConstant.DIGITAL_HOMEPAGE_CATEGORY
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingEventNameConstant.CLICK_HOMEPAGE
@@ -37,12 +36,10 @@ import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingLabel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingLabelConstant.ORDER_LIST
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import javax.inject.Inject
 
 class DigitalHomeTrackingUtil {
 
-    @Inject
-    constructor()
+    private var initialImpressionTracking: MutableMap<String, Boolean> = initialImpressionTrackingConst.toMutableMap()
 
     fun eventBannerImpression(item: DigitalHomePageBannerModel.Banner?, position: Int) {
         val products = mutableListOf<Any>()
@@ -167,15 +164,23 @@ class DigitalHomeTrackingUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, MORE_INFO_CLICK, "")
     }
 
-    fun eventSectionImpression(data: List<DigitalHomePageSectionModel.Item>, eventAction: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        TrackAppUtils.EVENT, PROMO_VIEW,
-                        TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
-                        TrackAppUtils.EVENT_ACTION, eventAction,
-                        TrackAppUtils.EVENT_LABEL, "",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(data).toArray()))
-                ))
+    fun eventSectionImpression(data: List<DigitalHomePageSectionModel.Item>, eventAction: String, initialLoad: Boolean = false) {
+        initialImpressionTracking.apply {
+            if (containsKey(eventAction)) {
+                if (!(initialLoad && this[eventAction] == true)) {
+                    TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                            DataLayer.mapOf(
+                                    TrackAppUtils.EVENT, PROMO_VIEW,
+                                    TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
+                                    TrackAppUtils.EVENT_ACTION, eventAction,
+                                    TrackAppUtils.EVENT_LABEL, "",
+                                    ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(data).toArray()))
+                            ))
+                }
+                // Disable initial load after first time
+                if (initialLoad && this[eventAction] == false) this[eventAction] = true
+            }
+        }
 
     }
 
@@ -203,6 +208,20 @@ class DigitalHomeTrackingUtil {
             ))
         }
         return items
+    }
+
+    fun resetInitialImpressionTracking() {
+        initialImpressionTracking = initialImpressionTrackingConst.toMutableMap()
+    }
+
+    companion object {
+        val initialImpressionTrackingConst = mapOf(
+                BEHAVIORAL_CATEGORY_IMPRESSION to false,
+                NEW_USER_IMPRESSION to false,
+                SPOTLIGHT_IMPRESSION to false,
+                SUBHOME_WIDGET_IMPRESSION to false,
+                SEARCH_RESULT_PAGE_ICON_IMPRESSION to false
+        )
     }
 
 }

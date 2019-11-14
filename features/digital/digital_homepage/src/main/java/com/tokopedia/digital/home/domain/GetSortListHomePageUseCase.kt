@@ -32,7 +32,7 @@ class GetSortListHomePageUseCase {
                 trustMark,
                 newUserZone,
                 spotLight,
-//                subscription,
+                subscription,
                 category
         )
     }

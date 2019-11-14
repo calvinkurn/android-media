@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.digital.home.di.DigitalHomePageComponent
 import com.tokopedia.digital.home.di.DigitalHomePageComponentInstance
-import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageFragment
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageSearchFragment
 import com.tokopedia.graphql.data.GraphqlClient
 
@@ -27,7 +26,7 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Digital
 
     override fun getComponent(): DigitalHomePageComponent {
         if (!::travelHomepageComponent.isInitialized) {
-            travelHomepageComponent = DigitalHomePageComponentInstance.getTravelHomepageComponent(application)
+            travelHomepageComponent = DigitalHomePageComponentInstance.getDigitalHomepageComponent(application)
         }
         return travelHomepageComponent
     }

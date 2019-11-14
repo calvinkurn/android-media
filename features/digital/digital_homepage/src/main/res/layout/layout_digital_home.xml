@@ -49,8 +49,8 @@
 
                 <ImageView
                     android:id="@+id/digital_homepage_order_list"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginTop="@dimen/dp_8"

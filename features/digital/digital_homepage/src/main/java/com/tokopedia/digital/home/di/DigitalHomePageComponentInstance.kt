@@ -7,7 +7,7 @@ import com.tokopedia.digital.home.di.DaggerDigitalHomePageComponent
 object DigitalHomePageComponentInstance {
     private lateinit var digitalHomepageComponent: DigitalHomePageComponent
 
-    fun getTravelHomepageComponent(application: Application): DigitalHomePageComponent {
+    fun getDigitalHomepageComponent(application: Application): DigitalHomePageComponent {
         if (!::digitalHomepageComponent.isInitialized) {
             digitalHomepageComponent =  DaggerDigitalHomePageComponent.builder().baseAppComponent(
                     (application as BaseMainApplication).baseAppComponent).build()

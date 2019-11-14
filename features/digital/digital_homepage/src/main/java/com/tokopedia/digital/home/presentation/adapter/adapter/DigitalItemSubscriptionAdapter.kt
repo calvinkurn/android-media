@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
-import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_BANNER_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import kotlinx.android.synthetic.main.layout_digital_home_subscription_item.view.*
 
@@ -32,7 +32,7 @@ class DigitalItemSubscriptionAdapter(val items: List<DigitalHomePageSectionModel
 //            itemView.subscription_image.loadImage(element.mediaUrl)
             itemView.subscription_name.text = element.title
             itemView.setOnClickListener {
-                onItemBindListener.onSectionItemClicked(element, adapterPosition, SPOTLIGHT_BANNER_CLICK)
+                onItemBindListener.onSectionItemClicked(element, adapterPosition, SUBSCRIPTION_GUIDE_CLICK)
             }
         }
 

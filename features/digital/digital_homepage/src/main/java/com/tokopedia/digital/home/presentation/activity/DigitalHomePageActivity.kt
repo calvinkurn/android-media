@@ -30,7 +30,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
 
     override fun getComponent(): DigitalHomePageComponent {
         if (!::travelHomepageComponent.isInitialized) {
-            travelHomepageComponent = DigitalHomePageComponentInstance.getTravelHomepageComponent(application)
+            travelHomepageComponent = DigitalHomePageComponentInstance.getDigitalHomepageComponent(application)
         }
         return travelHomepageComponent
     }

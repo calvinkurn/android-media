@@ -17,10 +17,14 @@ object DigitalHomepageTrackingActionConstant {
     const val MORE_INFO_CLICK = "click selengkapnya"
     const val BEHAVIORAL_CATEGORY_IMPRESSION = "impression behavioral category"
     const val BEHAVIORAL_CATEGORY_CLICK = "click behavioral category"
-    const val NEW_USER_IMPRESSION_CLICK = "impression new user banner"
+    const val NEW_USER_IMPRESSION = "impression new user banner"
     const val NEW_USER_BANNER_CLICK = "click new user banner"
-    const val SPOTLIGHT_IMPRESSION_CLICK = "impression spotlight banner"
+    const val SPOTLIGHT_IMPRESSION = "impression spotlight banner"
     const val SPOTLIGHT_BANNER_CLICK = "click spotlight banner"
+    const val SUBHOME_WIDGET_IMPRESSION = "impression subhome wisget"
+    const val SUBHOME_WIDGET_CLICK = "click spotlight banner"
+    const val SEARCH_RESULT_PAGE_ICON_IMPRESSION = "impression SRP icon"
+    const val SEARCH_RESULT_PAGE_ICON_CLICK = "click SRP icon"
 }
 
 object DigitalHomepageTrackingLabelConstant {

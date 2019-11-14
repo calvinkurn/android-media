@@ -38,7 +38,7 @@ class DigitalHomePageSubscriptionViewHolder(itemView: View?, val onItemBindListe
         } else {
             itemView.digital_homepage_subscription_shimmering.show()
             itemView.rv_digital_homepage_subscription.hide()
-            onItemBindListener.onSpotlightItemDigitalBind(element.isLoadFromCloud)
+            onItemBindListener.onSubscriptionItemDigitalBind(element.isLoadFromCloud)
         }
     }
 

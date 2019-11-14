@@ -31,11 +31,17 @@ import com.tokopedia.digital.home.model.DigitalHomePageItemModel
 import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageCategoryDataMapper
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
+import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel.Companion.FAVORITES_ORDER
+import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel.Companion.NEW_USER_ZONE_ORDER
+import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel.Companion.SPOTLIGHT_ORDER
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
@@ -86,6 +92,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         digital_homepage_order_list.setOnClickListener {
             RouteManager.route(context, ApplinkConst.DIGITAL_ORDER)
         }
+
+        trackingUtil.resetInitialImpressionTracking()
     }
 
     private fun hideStatusBar() {
@@ -189,6 +197,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun loadData(page: Int) {
+        trackingUtil.resetInitialImpressionTracking()
         viewModel.getInitialList(swipeToRefresh?.isRefreshing ?: false)
     }
 
@@ -230,6 +239,11 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 ?: true)
     }
 
+    override fun onSubscriptionItemDigitalBind(loadFromCloud: Boolean?) {
+        viewModel.getSubscriptionList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section), loadFromCloud
+                ?: true)
+    }
+
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
         trackingUtil.eventCategoryClick(element, position)
         RouteManager.route(activity, element?.applink)
@@ -248,6 +262,24 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     override fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, i: Int, sectionType: String) {
         trackingUtil.eventSectionClick(element, i, sectionType)
         RouteManager.route(activity, element.applink)
+    }
+
+    override fun onSectionItemImpression(sectionType: String, initialLoad: Boolean) {
+        val sectionOrder = when(sectionType) {
+            BEHAVIORAL_CATEGORY_IMPRESSION -> FAVORITES_ORDER
+            NEW_USER_IMPRESSION -> NEW_USER_ZONE_ORDER
+            SPOTLIGHT_IMPRESSION -> SPOTLIGHT_ORDER
+            else -> -1
+        }
+        if (sectionOrder >= 0) {
+            viewModel.digitalHomePageList.value?.get(sectionOrder)?.let { item ->
+                if (item is DigitalHomePageSectionModel && item.isLoaded && item.isSuccess) {
+                    item.data?.section?.items?.let { data ->
+                        trackingUtil.eventSectionImpression(data, sectionType, initialLoad)
+                    }
+                }
+            }
+        }
     }
 
     override fun onBannerImpressionTrack(banner: DigitalHomePageBannerModel.Banner?, position: Int) {

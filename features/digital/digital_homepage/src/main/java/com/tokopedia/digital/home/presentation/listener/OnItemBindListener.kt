@@ -11,12 +11,14 @@ interface OnItemBindListener {
     fun onTrustMarkItemDigitalBind(loadFromCloud: Boolean?)
     fun onNewUserZoneItemDigitalBind(loadFromCloud: Boolean?)
     fun onSpotlightItemDigitalBind(loadFromCloud: Boolean?)
+    fun onSubscriptionItemDigitalBind(loadFromCloud: Boolean?)
     fun onPromoItemDigitalBind()
 
     fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, i: Int)
     fun onBannerItemClicked(element: DigitalHomePageBannerModel.Banner?, position: Int)
     fun onBannerAllItemClicked()
     fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, i: Int, sectionType: String)
+    fun onSectionItemImpression(sectionType: String, initialLoad: Boolean = false)
 
     fun onBannerImpressionTrack(banner: DigitalHomePageBannerModel.Banner?, i: Int)
     fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int)
