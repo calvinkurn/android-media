@@ -166,9 +166,9 @@
             android:id="@+id/container_pay_at_hotel_shadow"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
-            app:layout_constraintStart_toStartOf="@id/container_pay_at_hotel"
+            app:layout_constraintStart_toStartOf="@+id/container_pay_at_hotel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rating_counter"
+            app:layout_constraintTop_toBottomOf="@+id/rating_counter"
             android:layout_marginTop="@dimen/dp_16"
             android:visibility="gone"
             />
