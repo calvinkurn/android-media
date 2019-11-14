@@ -489,6 +489,7 @@ public class ProductListFragment
     @Override
     public void onPause() {
         super.onPause();
+        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey(), SCREEN_SEARCH_PAGE_PRODUCT_TAB);
         trackingQueue.sendAll();
     }
 

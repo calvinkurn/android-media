@@ -1,0 +1,7 @@
+query otp_request($otpType: String!, $mode: String, $email: String){
+    OTPRequest(otpType: $otpType, mode: $mode, email: $email) {
+        success
+        message
+        errorMessage
+    }
+}

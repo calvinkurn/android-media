@@ -60,7 +60,7 @@ class CouponView @JvmOverloads constructor(
         val p = Paint()
         p.style = Paint.Style.FILL
         p.color = circleColor
-        p.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
+        p.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
         p.isAntiAlias = true
 
         clipPath.addCircle(x, y, circleRadius, Path.Direction.CW)

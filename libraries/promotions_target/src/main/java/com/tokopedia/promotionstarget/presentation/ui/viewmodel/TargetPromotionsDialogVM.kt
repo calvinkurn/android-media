@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.promotionstarget.data.LiveDataResult
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.domain.usecase.AutoApplyUseCase
+import com.tokopedia.promotionstarget.presentation.SingleLiveEvent
 import com.tokopedia.promotionstarget.presentation.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,7 +21,7 @@ class TargetPromotionsDialogVM @Inject constructor(@Named("Main")
                                                    val autoApplyUseCase: AutoApplyUseCase
 ) : BaseViewModel(uiDispatcher) {
 
-    val autoApplyLiveData: MutableLiveData<LiveDataResult<AutoApplyResponse>> = MutableLiveData()
+    val autoApplyLiveData: SingleLiveEvent<LiveDataResult<AutoApplyResponse>> = SingleLiveEvent()
 
     fun autoApply(code: String) {
         launchCatchError(block = {
