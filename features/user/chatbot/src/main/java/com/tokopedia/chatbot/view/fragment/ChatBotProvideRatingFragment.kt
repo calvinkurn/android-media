@@ -20,6 +20,7 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
         const val BOT_OTHER_REASON= "bot_other_reason"
         const val OTHER_REASON_TITLE= "otherReasonTitle"
         const val IS_SHOW_OTHER_REASON = "is_show_other_reason"
+        const val TIME_STAMP = "time_stamp"
         fun newInstance(bundle: Bundle?): ChatBotProvideRatingFragment {
             val fragment = ChatBotProvideRatingFragment()
             fragment.arguments = bundle
@@ -83,6 +84,7 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
 
     override fun onSuccessSubmit(intent: Intent) {
         intent.putExtra(BOT_OTHER_REASON, et_state.text.toString())
+        intent.putExtra(TIME_STAMP, arguments?.getString(TIME_STAMP) ?: "")
         super.onSuccessSubmit(intent)
     }
 

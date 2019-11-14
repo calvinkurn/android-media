@@ -45,6 +45,7 @@ import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
+import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
@@ -94,6 +95,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
     val SELECTED_ITEMS = "selected_items"
     val EMOJI_STATE = "emoji_state"
+    val CSAT_ATTRIBUTES = "csat_attribute"
 
     @Inject
     lateinit var presenter: ChatbotPresenter
@@ -104,6 +106,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var replyEditText: EditText
 
     lateinit var mCsatResponse: WebSocketCsatResponse
+    lateinit var attribute: Attributes
     private var isBackAllowed = true
 
     override fun initInjector() {
@@ -159,8 +162,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun onClickEmoji(number: Int) {
-        startActivityForResult(ChatBotProvideRatingActivity
-                .getInstance(context!!, number,mCsatResponse), REQUEST_SUBMIT_FEEDBACK)
+        startActivityForResult(context?.let {
+            ChatBotProvideRatingActivity
+                .getInstance(it, number,mCsatResponse)
+        }, REQUEST_SUBMIT_FEEDBACK)
     }
 
     override fun getUserSession(): UserSessionInterface {
@@ -216,6 +221,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         )
         viewState.initView()
         loadInitialData()
+
+        if (savedInstanceState != null)
+            this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
+
     }
 
     override fun getSwipeRefreshLayoutResourceId() = 0
@@ -358,29 +367,39 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun submitRating(data: Intent?) {
-        data?.let{
-            val attributes = mCsatResponse.attachment?.attributes
-            val reasonList = attributes?.reasons
-            val input = InputItem()
-            input.chatbotSessionId = attributes?.chatbotSessionId
-            input.livechatSessionId = attributes?.livechatSessionId
-            val selectedOption = it.getStringExtra(SELECTED_ITEMS)?.split(";")
-            var filters = ""
-            if (!selectedOption.isNullOrEmpty()) {
-                for (filter in selectedOption) {
-                    filters += reasonList?.get(filter.toInt()) + ","
-                }
-                filters = filters.substring(0, filters.length - 1)
-            }
-            input.reason = filters
-            input.otherReason = it.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
-            input.score = it.extras?.getInt(EMOJI_STATE) ?: 0
-            input.timestamp = mCsatResponse.message?.timestampUnix.toString()
-            input.triggerRuleType = attributes?.triggerRuleType
 
-            presenter.submitCsatRating(input, onError(),
-                    onSuccessSubmitCsatRating())
+        var csatAttributes: Attributes?
+
+        if (!(::mCsatResponse.isInitialized)) {
+            csatAttributes = attribute
+        } else {
+            csatAttributes = mCsatResponse.attachment?.attributes
         }
+
+        val reasonList = csatAttributes?.reasons
+        val input = InputItem()
+        input.chatbotSessionId = csatAttributes?.chatbotSessionId
+        input.livechatSessionId = csatAttributes?.livechatSessionId
+        input.reason = getFilters(data, reasonList)
+        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
+        input.score = data?.extras?.getInt(EMOJI_STATE) ?: 0
+        input.timestamp = data?.getStringExtra("time_stamp")
+        input.triggerRuleType = csatAttributes?.triggerRuleType
+
+        presenter.submitCsatRating(input, onError(),
+                onSuccessSubmitCsatRating())
+    }
+
+    private fun getFilters(data: Intent?, reasonList: List<String?>?): String? {
+        val selectedOption = data?.getStringExtra(SELECTED_ITEMS)?.split(";")
+        var filters = ""
+        if (!selectedOption.isNullOrEmpty()) {
+            for (filter in selectedOption) {
+                filters += reasonList?.get(filter.toInt()) + ","
+            }
+            return filters.substring(0, filters.length - 1)
+        }
+        return ""
     }
 
     private fun onSuccessSubmitCsatRating(): (String) -> Unit {
@@ -555,6 +574,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 loadData(page)
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (::mCsatResponse.isInitialized)
+            outState.putParcelable(CSAT_ATTRIBUTES, mCsatResponse.attachment?.attributes)
     }
 
     override fun onDestroy() {
