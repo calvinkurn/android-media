@@ -62,6 +62,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -368,7 +369,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         isMandatoryDoB,
                         departureDate,
                         requestId,
-                        true //must be is domestic
+                        bookingViewModel.flightIsDomestic()
                 ),
                 REQUEST_CODE_PASSENGER
         )
@@ -410,6 +411,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.getProfile(GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile))
 
         setUpView()
+        launchLoadingLayoutJob.start()
     }
 
     private fun navigateToTopPay(checkoutData: FlightCheckoutData) {
@@ -444,7 +446,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
         })
 
-        tv_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
+        layout_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
         switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
             bookingViewModel.onTravellerAsPassenger(on)
         }
@@ -491,6 +493,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             override fun onDisablePromoDiscount() {
                 bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = ""))
+                bookingViewModel.onCancelAppliedVoucher(GraphqlHelper.loadRawString(resources, R.raw.promo_checkout_flight_cancel_voucher))
             }
 
             override fun onClickDetailPromo() {
@@ -549,6 +552,19 @@ class FlightBookingFragment : BaseDaggerFragment() {
         layout_shimmering.visibility = View.VISIBLE
     }
 
+    var launchLoadingLayoutJob = uiScope.launch {
+        val list = randomLoadingSubtitle()
+        val view = View.inflate(context, R.layout.layout_flight_booking_loading, null)
+        val loadingText = view.findViewById(R.id.tv_loading_subtitle) as Typography
+        showLoadingDialog(view)
+        loadingText.text = list[0]
+        delay(2000L)
+        loadingText.text = list[1]
+        delay(2000L)
+        loadingText.text = list[2]
+        delay(2000L)
+    }
+
     private fun hideShimmering() {
         if (layout_loading.isVisible) layout_loading.hide()
         if (layout_shimmering.isVisible) layout_shimmering.hide()
@@ -557,13 +573,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun hidePriceDetail() {
         thin_seperator_1.hide()
         rv_flight_price_detail.hide()
-        tv_see_detail_price.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.flight.R.drawable.ic_arrow_down_detail_flight, 0)
+        iv_see_detail_price_arrow.setImageResource(R.drawable.ic_system_action_arrow_down_normal_24)
     }
 
     private fun showPriceDetail() {
         thin_seperator_1.show()
         rv_flight_price_detail.show()
-//        tv_see_detail_price.setCompoundDrawablesWithIntrinsicBounds(0, 0, com.tokopedia.flight.R.drawable.ic_arrow_up_flight_expandable, 0)
+        iv_see_detail_price_arrow.setImageResource(R.drawable.ic_system_action_arrow_up_normal_24)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -639,7 +655,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
 
+    private fun showLoadingDialog(view: View) {
+        if (activity != null) {
+            var dialog = DialogUnify(activity as FlightBookingActivity, 0, 0)
+            dialog.setUnlockVersion()
+            dialog.setChild(view)
+            dialog.show()
+            dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(false)
+        }
     }
 
     companion object {

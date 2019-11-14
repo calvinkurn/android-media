@@ -27,8 +27,6 @@
         tools:text="Penumpang dewasa"
         app:typographyType="heading_5"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintRight_toLeftOf="@id/tv_edit_passenger_info"
-        app:layout_constraintEnd_toStartOf="@id/tv_edit_passenger_info"
         android:layout_marginRight="@dimen/dp_8"
         android:lines="1"
         android:maxLines="1"
@@ -52,7 +50,8 @@
             android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_4"
             app:typographyType="body_2"
-            android:textColor="@color/Green_G500"/>
+            android:textColor="@color/Green_G500"
+            android:layout_gravity="center_vertical"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_edit_passenger"
@@ -60,7 +59,7 @@
             android:layout_height="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            tools:background="@color/Green_G500"
+            app:srcCompat="@drawable/ic_system_action_arrow_right_normal_24"
             />
 
     </LinearLayout>

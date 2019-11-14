@@ -176,18 +176,37 @@
                 app:typographyType="heading_3"
                 tools:text="Rp10.920.000" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_see_detail_price"
+            <LinearLayout
+                android:id="@+id/layout_see_detail_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/dp_4"
-                android:padding="@dimen/dp_4"
-                android:text="Lihat detail"
-                android:textColor="@color/Green_G500"
                 app:layout_constraintEnd_toEndOf="@id/tv_total_payment_amount"
                 app:layout_constraintTop_toBottomOf="@id/tv_total_payment_amount"
-                app:typographyType="body_3"
-                app:typographyWeight="bold" />
+                >
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_see_detail_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp_4"
+                    android:text="Lihat detail"
+                    android:textColor="@color/Green_G500"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
+                    />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_see_detail_price_arrow"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    app:layout_constraintTop_toTopOf="@id/tv_see_detail_price"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_see_detail_price"
+                    app:layout_constraintEnd_toEndOf="@id/tv_total_payment_amount"
+                    tools:src="@drawable/ic_system_action_arrow_down_normal_24"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+
 
             <View
                 android:id="@+id/thin_seperator_1"
@@ -195,7 +214,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_margin="@dimen/dp_16"
                 android:background="#f3f4f5"
-                app:layout_constraintTop_toBottomOf="@id/tv_see_detail_price" />
+                app:layout_constraintTop_toBottomOf="@id/layout_see_detail_price" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_flight_price_detail"

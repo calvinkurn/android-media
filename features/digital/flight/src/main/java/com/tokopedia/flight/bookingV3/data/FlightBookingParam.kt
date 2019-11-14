@@ -10,6 +10,7 @@ data class FlightBookingParam (
         var departureId: String = "",
         var returnId: String = "",
         var cartId: String = "",
+        var isDomestic: Boolean = true,
         var searchParam: FlightSearchPassDataViewModel = FlightSearchPassDataViewModel(),
         var insurances: MutableList<FlightCart.Insurance> = arrayListOf()
 )

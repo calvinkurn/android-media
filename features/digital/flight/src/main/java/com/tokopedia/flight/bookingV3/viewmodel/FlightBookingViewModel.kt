@@ -30,10 +30,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.lang.Exception
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -51,7 +48,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     val flightPromoResult = MutableLiveData<FlightPromoViewEntity>() //promoData
     val profileResult = MutableLiveData<Result<ProfileInfo>>() //profileData from userSession
     val flightPassengersData = MutableLiveData<List<FlightBookingPassengerViewModel>>() //passengerData
-    val flightCancelVoucherSuccess = MutableLiveData<Boolean>() //voucher cancel success
     val errorToastMessageData = MutableLiveData<Int>()
 
     //priceListData
@@ -81,6 +77,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<FlightCart.Response>().flightCart
 
             if (data.cartData.id.isNotBlank()) {
+                flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                 flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
                 flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
                         data.cartData.flight.child, data.cartData.flight.infant)
@@ -99,6 +96,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             //            flightCartResult.value = Fail(it)
             val gson = Gson()
             val data = gson.fromJson(dummy, FlightCart.Response::class.java).flightCart
+            flightBookingParam.isDomestic = data.cartData.flight.isDomestic
             flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
             flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
                     data.cartData.flight.child, data.cartData.flight.infant)
@@ -108,6 +106,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
+    fun flightIsDomestic(): Boolean = flightBookingParam.isDomestic
     fun getCartId(): String = flightBookingParam.cartId
 
     fun verifyCartData(query: String, totalPrice: Int, contactName: String,
@@ -415,16 +414,11 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun onCancelAppliedVoucher(rawQuery: String) {
-        launchCatchError(block = {
-            val profileInfo = withContext(Dispatchers.Default) {
+        launch {
+            withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCancelVoucher>()
-
-            flightCancelVoucherSuccess.value = true
-        })
-        {
-            flightCancelVoucherSuccess.value = false
         }
     }
 

@@ -69,7 +69,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
                 if (list.size > 1) renderMoreBenefit(list.subList(1, list.size))
                 else {
                     seperator_2.hide()
-                    tv_insurance_highlight_see_more.hide()
+                    layout_insurance_highlight.hide()
                     seperator_3.hide()
                     rv_more_benefits.hide()
                 }
@@ -108,13 +108,15 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
                 rv_more_benefits.layoutManager = LinearLayoutManager(context)
                 rv_more_benefits.adapter = FlightInsuranceBenefitAdapter(list)
 
-                tv_insurance_highlight_see_more.setOnClickListener {
+                layout_insurance_highlight.setOnClickListener {
                     if (rv_more_benefits.isVisible) {
                         seperator_3.hide()
                         rv_more_benefits.hide()
+                        iv_insurance_highlight_see_more_arrow.setImageResource(R.drawable.ic_system_action_arrow_down_normal_24)
                     } else {
                         seperator_3.show()
                         rv_more_benefits.show()
+                        iv_insurance_highlight_see_more_arrow.setImageResource(R.drawable.ic_system_action_arrow_up_normal_24)
                     }
                 }
             }
