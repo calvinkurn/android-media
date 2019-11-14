@@ -69,7 +69,7 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
         param.putString(PARAM_MODE, mode);
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putString(PARAM_OS_TYPE, TYPE_ANDROID);
-        if (numberOtpDigit == DEFAULT_CODE_OTP_LENGTH) {
+        if (numberOtpDigit != DEFAULT_CODE_OTP_LENGTH) {
             param.putInt(PARAM_NUMBER_OTP_DIGIT, numberOtpDigit);
         }
         return param;
@@ -82,7 +82,7 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
         param.putString(PARAM_MODE, MODE_EMAIL);
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putString(PARAM_OS_TYPE, TYPE_ANDROID);
-        if (numberOtpDigit == DEFAULT_CODE_OTP_LENGTH) {
+        if (numberOtpDigit != DEFAULT_CODE_OTP_LENGTH) {
             param.putInt(PARAM_NUMBER_OTP_DIGIT, numberOtpDigit);
         }
         return param;
