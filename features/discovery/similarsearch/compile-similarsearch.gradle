@@ -8,6 +8,12 @@ include 'features:discovery:wishlist_common'
 include 'libraries:applink'
 include "libraries:track"
 include 'libraries:kotlin_extension'
+include 'libraries:promotion_targets'
 
 include 'tkpdabstraction'
 include 'tkpddesign'
+
+// for instrumentation test - disabled for now
+//include ':libraries:core_legacy'
+//include ":libraries:iris"
+//include ":libraries:cpm"

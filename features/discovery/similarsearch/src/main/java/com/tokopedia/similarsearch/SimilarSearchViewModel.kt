@@ -32,6 +32,7 @@ internal class SimilarSearchViewModel(
     private val similarProductModelList = mutableListOf<Product>()
     private val loadingMoreModel = LoadingMoreModel()
     private val routeToLoginPageEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val addWishlistSelectedProductEventLiveData = MutableLiveData<Event<Boolean>>()
 
     fun onViewCreated() {
         if (!hasLoadData) {
@@ -158,11 +159,22 @@ internal class SimilarSearchViewModel(
             return
         }
 
-        addWishlistUseCase.createObservable(
-                similarSearchSelectedProduct.id,
-                userSession.userId,
-                createSelectedProductWishlistActionListener()
-        )
+        val selectedProductWishListActionListener = createSelectedProductWishlistActionListener()
+
+        if (!similarSearchSelectedProduct.isWishlisted) {
+            addWishlistUseCase.createObservable(
+                    similarSearchSelectedProduct.id,
+                    userSession.userId,
+                    selectedProductWishListActionListener
+            )
+        }
+        else {
+            removeWishListUseCase.createObservable(
+                    similarSearchSelectedProduct.id,
+                    userSession.userId,
+                    selectedProductWishListActionListener
+            )
+        }
     }
 
     private fun createSelectedProductWishlistActionListener(): WishListActionListener {
@@ -176,16 +188,21 @@ internal class SimilarSearchViewModel(
             }
 
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-
+                addWishlistSelectedProductEventLiveData.postValue(Event(false))
             }
 
             override fun onSuccessAddWishlist(productId: String?) {
-
+                similarSearchSelectedProduct.isWishlisted = true
+                addWishlistSelectedProductEventLiveData.postValue(Event(true))
             }
         }
     }
 
     fun getRouteToLoginPageEventLiveData(): LiveData<Event<Boolean>> {
         return routeToLoginPageEventLiveData
+    }
+
+    fun getAddWishlistSelectedProductEventLiveData(): LiveData<Event<Boolean>> {
+        return addWishlistSelectedProductEventLiveData
     }
 }

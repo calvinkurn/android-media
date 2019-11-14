@@ -6,7 +6,7 @@ import android.os.Parcelable
 data class SimilarSearchSelectedProduct(
         val id: String = "",
         val imageUrl: String = "",
-        val isWishlisted: Boolean = false,
+        var isWishlisted: Boolean = false,
         val name: String = "",
         val price: String = "",
         val location: String = "",

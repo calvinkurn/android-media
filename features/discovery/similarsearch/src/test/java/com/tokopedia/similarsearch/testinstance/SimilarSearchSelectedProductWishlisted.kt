@@ -2,9 +2,10 @@ package com.tokopedia.similarsearch.testinstance
 
 import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
 
-internal val similarSearchSelectedProduct = SimilarSearchSelectedProduct(
-        id = "553354058",
+internal val similarSearchSelectedProductWishlisted = SimilarSearchSelectedProduct(
+        id = "553354059",
         imageUrl = "someurl.jpg",
+        isWishlisted = true,
         name = "Samsung Galaxy A70",
         price = "Rp 5.499.999",
         location = "Jakarta",
