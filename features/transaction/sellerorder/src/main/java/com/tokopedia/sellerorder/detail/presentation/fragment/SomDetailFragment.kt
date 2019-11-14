@@ -84,11 +84,14 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import android.net.Uri
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
+import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
 
 
 /**x
@@ -429,7 +432,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         if (key.equals(KEY_REJECT_ORDER, true)) {
             setActionRejectOrder()
 
-        } else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
+        } else if (key.equals(KEY_BATALKAN_PESANAN, true)) {
+            setActionCancelOrder()
+
+        } /*else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
             // besok lanjut bikin adapter untuk beberapa layout khusus untuk reject order
 
         } else if (key.equals(KEY_REASON_COURIER_PROBLEM, true)) {
@@ -444,7 +450,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             listRejectTypeData.add(SomRejectTypeData(mapRadio, BOTTOMSHEET_TEXT_RADIO_WITH_REASON_TYPE))
             // somBottomSheetRejectOrderAdapter.listRejectTypeData = listRejectTypeData
             // somBottomSheetRejectOrderAdapter.notifyDataSetChanged()
-        }
+        }*/
     }
 
     private fun setActionRejectOrder() {
@@ -452,7 +458,39 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         observingRejectReasons()
     }
 
-    private fun createOptionsCourierProblems(): HashMap<String, String> {
+    private fun setActionCancelOrder() {
+        bottomSheetUnify.dismiss()
+        bottomSheetUnify = BottomSheetUnify().apply {
+            if (isAdded) this.dismiss()
+
+        }
+        if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_cancel_order, null)
+
+        viewBottomSheet.tf_cancel_notes?.setLabelStatic(true)
+        viewBottomSheet.tf_cancel_notes?.setMessage(getString(R.string.cancel_order_notes_max))
+        viewBottomSheet.tf_cancel_notes?.textFiedlLabelText?.text = getString(R.string.cancel_order_notes_hint)
+        viewBottomSheet.tf_cancel_notes?.textFieldInput?.hint = getString(R.string.cancel_order_notes_hint)
+
+        bottomSheetUnify.setFullPage(false)
+        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+        bottomSheetUnify.setChild(viewBottomSheet)
+        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        bottomSheetUnify.setTitle(TITLE_BATALKAN_PESANAN)
+
+        viewBottomSheet?.btn_cancel_order_canceled?.setOnClickListener { bottomSheetUnify.dismiss() }
+        viewBottomSheet?.btn_cancel_order_confirmed?.setOnClickListener {
+            bottomSheetUnify.dismiss()
+            val orderRejectRequest = SomRejectRequest(
+                    orderId = detailResponse.orderId.toString(),
+                    rCode = "0",
+                    reason = viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString()
+            )
+            doRejectOrder(orderRejectRequest)
+        }
+    }
+
+    /*private fun createOptionsCourierProblems(): HashMap<String, String> {
         val map = HashMap<String, String>()
         map[KEY_COURIER_PROBLEM_OFFICE_CLOSED] = VALUE_COURIER_PROBLEM_OFFICE_CLOSED
         map[KEY_COURIER_PROBLEM_UNMATCHED_COST] = VALUE_REASON_SHOP_CLOSED
@@ -460,7 +498,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         map[KEY_REASON_BUYER_NO_RESPONSE] = VALUE_REASON_BUYER_NO_RESPONSE
         map[KEY_REASON_OTHER] = VALUE_REASON_OTHER
         return map
-    }
+    }*/
 
     override fun onShowBottomSheetInfo(title: String, resIdDesc: Int) {
         val bottomSheetUnify = BottomSheetUnify()

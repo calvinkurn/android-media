@@ -116,4 +116,9 @@
     <string name="card_courier_count_example">Jumlah: 1</string>
     <string name="courier_notes_example">Tidak perlu memberikan ongkir ke kurir</string>
 
+    <string name="cancel_order_batal">Batal</string>
+    <string name="cancel_order_konfirmasi">Konfirmasi</string>
+    <string name="cancel_order_notes_hint">Keterangan</string>
+    <string name="cancel_order_notes_max">Maksimum 512 Karakter</string>
+
 </resources>

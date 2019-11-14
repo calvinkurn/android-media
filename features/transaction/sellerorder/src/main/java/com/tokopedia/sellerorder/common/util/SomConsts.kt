@@ -55,6 +55,7 @@ object SomConsts {
     const val KEY_REASON_COURIER_PROBLEM = "courier_problem"
     const val KEY_REASON_BUYER_NO_RESPONSE = "buyer_no_resp"
     const val KEY_REASON_OTHER = "other_reason"
+    const val KEY_BATALKAN_PESANAN = "reject_shipping"
 
     const val VALUE_REASON_EMPTY_STOCK = "Stok Produk Kosong"
     const val VALUE_REASON_SHOP_CLOSED = "Toko Sedang Tutup"
@@ -76,6 +77,7 @@ object SomConsts {
     const val TITLE_PILIH_PRODUK_KOSONG = "Pilih produk yang kosong"
     const val TITLE_COURIER_PROBLEM = "Kendala Kurir"
     const val TITLE_ATUR_TOKO_TUTUP = "Atur tanggal toko tutup"
+    const val TITLE_BATALKAN_PESANAN = "Tuliskan Keterangan Anda"
 
     const val BOTTOMSHEET_TEXT_ONLY_TYPE = "text_only"
     const val BOTTOMSHEET_TEXT_RADIO_TYPE = "text_radio"
