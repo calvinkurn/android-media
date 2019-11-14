@@ -85,7 +85,7 @@ dependencies {
 project.ext {
     artifactId = 'transaction'
     groupId = 'com.tokopedia.transaction'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "tkpdtransaction-release"
 }
 

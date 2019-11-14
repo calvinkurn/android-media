@@ -53,7 +53,7 @@ dependencies {
 project.ext {
     artifactId = 'developer-options'
     groupId = 'com.tokopedia.common'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="developer_options-release"
 }
 

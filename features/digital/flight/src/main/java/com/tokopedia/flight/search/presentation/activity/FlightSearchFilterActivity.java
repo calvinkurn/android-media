@@ -245,6 +245,11 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     }
 
     @Override
+    protected int getParentViewResourceID() {
+        return R.id.parent_view;
+    }
+
+    @Override
     public void onTransitLabelClicked() {
         replaceFragment(FlightFilterTransitFragment.newInstance(), FlightFilterTransitFragment.TAG);
     }
@@ -290,6 +295,11 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     public void onSuccessGetCount(int count) {
         this.count = count;
         updateButtonFilter(count);
+    }
+
+    @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
     }
 
     @Override

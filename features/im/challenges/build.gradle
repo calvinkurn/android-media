@@ -47,7 +47,7 @@ dependencies {
 project.ext {
     artifactId = 'challenges'
     groupId = 'com.tokopedia.im'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "challenges-release"
 }
 

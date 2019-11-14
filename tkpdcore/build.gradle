@@ -131,14 +131,14 @@ dependencies {
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="tkpdcore-release"
 }
 
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="tkpdcore-release"
 }
 

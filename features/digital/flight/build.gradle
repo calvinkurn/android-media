@@ -103,7 +103,7 @@ dependencies {
 project.ext {
     artifactId = 'flight'
     groupId = 'com.tokopedia.travel'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="flight-release"
 }
 

@@ -64,7 +64,7 @@ dependencies {
 project.ext {
     artifactId = 'contact-us'
     groupId = 'com.tokopedia.operational'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "contact_us-release"
 }
 

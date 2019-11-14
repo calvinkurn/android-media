@@ -15,9 +15,15 @@ buildscript {
     }
 }
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     //retrofit
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
 }
 
+project.ext {
+    artifactId = 'translator'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.1"
+    artifactName = "translator-release"
+}
+
+apply from: '../../publish_local.gradle'

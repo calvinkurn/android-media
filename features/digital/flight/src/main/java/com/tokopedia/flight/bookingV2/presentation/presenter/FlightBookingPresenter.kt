@@ -124,6 +124,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 val data = graphqlResponse.getData<ProfilePojo>(ProfilePojo::class.java)
                 val profileInfo = data.profileInfo
                 if (isViewAttached) {
+                    view.hideContactDataProgressBar()
                     if (view.getContactName().isEmpty()) {
                         view.setContactName(profileInfo.fullName)
                     }
@@ -145,7 +146,6 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                         view.setContactGender(profileInfo.gender.toInt())
                     }
                 }
-                view.hideContactDataProgressBar()
             }
 
             override fun onCompleted() {

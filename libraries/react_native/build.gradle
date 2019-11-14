@@ -63,7 +63,7 @@ dependencies {
 project.ext {
     artifactId = 'react-native'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "react_native-release"
 }
 
