@@ -10,11 +10,18 @@ import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.gcm.di.DaggerFcmServiceComponent;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.fcmcommon.FirebaseMessagingManager;
+import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
+import com.tokopedia.fcmcommon.di.FcmComponent;
+import com.tokopedia.fcmcommon.di.FcmModule;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.inject.Inject;
 
 import io.hansel.hanselsdk.Hansel;
 import rx.Observable;
@@ -28,10 +35,26 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
 
     private static final String TAG = FCMInstanceIDService.class.getSimpleName();
 
+    @Inject
+    FirebaseMessagingManager fcmManager;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        FcmComponent fcmComponent = DaggerFcmComponent.builder()
+                .fcmModule(new FcmModule(getApplicationContext()))
+                .build();
+        DaggerFcmServiceComponent.builder()
+                .fcmComponent(fcmComponent)
+                .build()
+                .inject(this);
+    }
+
     @Override
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         CommonUtils.dumper(TAG + " RefreshedToken: " + refreshedToken);
+        fcmManager.onNewToken(refreshedToken);
         propagateIDtoServer(refreshedToken);
         updateMoEngageToken(refreshedToken);
         Hansel.setNewToken(this, refreshedToken);
@@ -61,6 +84,12 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        fcmManager.clear();
+    }
+
+    @Override
     public void propagateIDtoServer(String token) {
         if (!TextUtils.isEmpty(token)) {
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
@@ -81,5 +110,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
                 }
             }
         }
+
+
     }
 }
