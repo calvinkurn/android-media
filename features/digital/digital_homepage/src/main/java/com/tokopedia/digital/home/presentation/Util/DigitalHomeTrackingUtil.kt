@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.presentation.Util
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.CREATIVE
 import com.tokopedia.digital.home.presentation.Util.DigitaHomepageTrackingEEConstant.CREATIVE_URL
@@ -22,6 +23,7 @@ import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActio
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_BOX_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_CLICK
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_RESULT_PAGE_ICON_CLICK
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SEARCH_RESULT_PAGE_ICON_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_IMPRESSION
@@ -191,23 +193,67 @@ class DigitalHomeTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, eventAction,
                         TrackAppUtils.EVENT_LABEL, data.title,
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(listOf(data)).toArray()))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(listOf(data), position).toArray()))
                 ))
 
     }
 
-    private fun createSectionItem(list: List<DigitalHomePageSectionModel.Item>): ArrayList<Any> {
+    private fun createSectionItem(list: List<DigitalHomePageSectionModel.Item>, position: Int? = null): ArrayList<Any> {
         val items = ArrayList<Any>()
         for ((index, item) in list.withIndex()) {
             items.add(DataLayer.mapOf(
                     ID, item.id,
                     NAME, item.title,
-                    POSITION, index,
+                    POSITION, position ?: index,
                     CREATIVE, item.title,
                     CREATIVE_URL, item.mediaUrl
             ))
         }
         return items
+    }
+
+    fun eventSearchResultPageImpression(items: List<DigitalHomePageSearchCategoryModel>) {
+        val categories = mutableListOf<Any>()
+        for ((position, item) in items.withIndex()) {
+            categories.add(DataLayer.mapOf(
+                    NAME, item.name,
+                    POSITION, position,
+                    ID, item.id,
+                    CREATIVE, item.name,
+                    CREATIVE_URL, item.icon
+            ))
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, PROMO_VIEW,
+                        TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
+                        TrackAppUtils.EVENT_ACTION, SEARCH_RESULT_PAGE_ICON_IMPRESSION,
+                        TrackAppUtils.EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, categories))
+                ))
+
+    }
+
+    fun eventSearchResultPageClick(item: DigitalHomePageSearchCategoryModel, position: Int) {
+        val categories = mutableListOf<Any>()
+            categories.add(DataLayer.mapOf(
+                    NAME, item.name,
+                    POSITION, position,
+                    ID, item.id,
+                    CREATIVE, item.name,
+                    CREATIVE_URL, item.icon
+            ))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, PROMO_CLICK,
+                        TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
+                        TrackAppUtils.EVENT_ACTION, SEARCH_RESULT_PAGE_ICON_CLICK,
+                        TrackAppUtils.EVENT_LABEL, item.name,
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, categories))
+                ))
+
     }
 
     fun resetInitialImpressionTracking() {
@@ -219,8 +265,7 @@ class DigitalHomeTrackingUtil {
                 BEHAVIORAL_CATEGORY_IMPRESSION to false,
                 NEW_USER_IMPRESSION to false,
                 SPOTLIGHT_IMPRESSION to false,
-                SUBHOME_WIDGET_IMPRESSION to false,
-                SEARCH_RESULT_PAGE_ICON_IMPRESSION to false
+                SUBHOME_WIDGET_IMPRESSION to false
         )
     }
 

@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common_digital.common.util.AnalyticUtils
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.di.DigitalHomePageComponent
@@ -84,6 +85,7 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
                 is Success -> {
                     clearAllData()
                     renderList(it.data)
+                    trackSearchResultCategories(it.data)
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -93,7 +95,7 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
     }
 
     override fun loadData(page: Int) {
-        adapter.clearAllElements()
+        clearAllData()
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageSearchTypeFactory {
@@ -105,15 +107,17 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
     }
 
     override fun onSearchSubmitted(text: String?) {
-
+        text?.run {
+            if (this.isNotEmpty()) trackingUtil.eventClickSearch(this)
+        }
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let { query -> searchCategory(query) }
+        text?.let { query -> if (query.isNotEmpty()) searchCategory(query) }
     }
 
     override fun onSearchReset() {
-        searchCategory("")
+        clearAllData()
     }
 
     private fun searchCategory(searchQuery: String) {
@@ -121,12 +125,18 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
     }
 
     override fun onSearchCategoryClicked(category: DigitalHomePageSearchCategoryModel, position: Int) {
+        trackingUtil.eventSearchResultPageClick(category, position)
         RouteManager.route(context, category.applink)
     }
 
-    companion object {
-        val TOOLBAR_TRANSITION_RANGE = R.dimen.dp_8
+    private fun trackSearchResultCategories(list: List<DigitalHomePageSearchCategoryModel>) {
+        val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
+        if (visibleIndexes.first >= 0 && visibleIndexes.second >= 0) {
+            trackingUtil.eventSearchResultPageImpression(list.subList(visibleIndexes.first, visibleIndexes.second + 1))
+        }
+    }
 
+    companion object {
         fun getInstance() = DigitalHomePageSearchFragment()
     }
 }
