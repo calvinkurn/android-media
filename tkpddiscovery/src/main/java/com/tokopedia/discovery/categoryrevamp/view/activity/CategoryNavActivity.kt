@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
+import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
@@ -29,6 +30,7 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CategoryNavViewModel
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
@@ -45,7 +47,14 @@ import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
 import javax.inject.Inject
 
 
-class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSheetListener {
+class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
+        SearchNavigationView.SearchNavClickListener,
+        BaseCategorySectionFragment.SortAppliedListener,
+        BottomSheetListener {
+
+    override fun onSortApplied(showTick: Boolean) {
+        searchNavContainer?.onSortSelected(showTick)
+    }
 
     override fun hideBottomNavigation() {
         searchNavContainer?.visibility = View.GONE
@@ -81,7 +90,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     private val STATE_LIST = 2
     private val STATE_BIG = 3
     private var bottomSheetFilterView: BottomSheetFilterView? = null
-    private var searchNavContainer: View? = null
+    private var searchNavContainer: SearchNavigationView? = null
 
 
     private var searchParameter: SearchParameter? = null
@@ -113,6 +122,9 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     companion object {
+        private const val ORDER_BY = "ob"
+        private const val IS_BANNED = 1
+        private const val IS_ADULT = 1
         fun isBannedNavigationEnabled(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BANNED_NAVIGATION, true)
@@ -150,27 +162,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     private fun initSwitchButton() {
-
-        icon_sort.setOnClickListener {
-            visibleFragmentListener?.onSortClick()
-            catAnalyticsInstance.eventSortClicked(departmentId)
-
-        }
-        button_sort.setOnClickListener {
-            visibleFragmentListener?.onSortClick()
-            catAnalyticsInstance.eventSortClicked(departmentId)
-        }
-
-        icon_filter.setOnClickListener {
-            visibleFragmentListener?.onFilterClick()
-            catAnalyticsInstance.eventFilterClicked(departmentId)
-        }
-
-        button_filter.setOnClickListener {
-            visibleFragmentListener?.onFilterClick()
-            catAnalyticsInstance.eventFilterClicked(departmentId)
-        }
-
+        searchNavContainer?.setSearchNavListener(this)
 
         img_display_button.tag = STATE_GRID
         img_display_button.setOnClickListener {
@@ -223,16 +215,19 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
             when (it) {
                 is Success -> {
                     progressBar.visibility = View.GONE
-                    layout_banned_screen.visibility = View.GONE
-                    if (it.data.isBanned == 1) {
-                        searchNavContainer?.visibility = View.GONE
+                    if (it.data.isBanned == IS_BANNED) {
+                        setEmptyView(it.data)
                     } else {
+                        layout_banned_screen.visibility = View.GONE
                         searchNavContainer?.visibility = View.VISIBLE
+                        if (it.data.isAdult == IS_ADULT) {
+                            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
+                        }
+                        initViewPager()
+                        loadSection()
+                        initSwitchButton()
+                        initBottomSheetListener()
                     }
-                    initViewPager()
-                    loadSection(it.data)
-                    initSwitchButton()
-                    initBottomSheetListener()
                 }
                 is Fail -> {
                     progressBar.visibility = View.GONE
@@ -288,6 +283,11 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     private fun applyFilter(filterParameter: Map<String, String>) {
         val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
 
+        if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
+            searchNavContainer?.onFilterSelected(true)
+        } else {
+            searchNavContainer?.onFilterSelected(false)
+        }
         val presentFilterList = selectedFragment.getSelectedFilter()
         if (presentFilterList.size < filterParameter.size) {
             for (i in filterParameter.entries) {
@@ -371,6 +371,14 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     private fun onPageSelectedCalled(position: Int) {
         this.isForceSwipeToShop = false
         this.activeTabPosition = position
+        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+        selectedFragment.resetSortTick()
+        val filterParameter = selectedFragment.getSelectedFilter()
+        if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
+            searchNavContainer?.onFilterSelected(true)
+        } else {
+            searchNavContainer?.onFilterSelected(false)
+        }
     }
 
     private fun initToolbar() {
@@ -422,6 +430,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        AdultManager.handleActivityResult(this, requestCode, resultCode, data)
         handleDefaultActivityResult(requestCode, resultCode, data)
     }
 
@@ -431,6 +440,16 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     fun getCategoryId(): String {
         return departmentId
+    }
+
+    override fun onSortButtonClicked() {
+        visibleFragmentListener?.onSortClick()
+        catAnalyticsInstance.eventSortClicked(departmentId)
+    }
+
+    override fun onFilterButtonClicked() {
+        visibleFragmentListener?.onFilterClick()
+        catAnalyticsInstance.eventFilterClicked(departmentId)
     }
 
 }

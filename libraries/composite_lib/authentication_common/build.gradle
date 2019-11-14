@@ -9,7 +9,7 @@ dependencies {
 project.ext {
     artifactId = 'authentication_common'
     groupId = 'com.tokopedia.authentication'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "authentication_common"
 }
 

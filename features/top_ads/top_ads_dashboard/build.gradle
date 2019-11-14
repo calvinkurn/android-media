@@ -74,7 +74,7 @@ dependencies {
 project.ext {
     artifactId = 'dashboard'
     groupId = 'com.tokopedia.topads'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="top_ads_dashboard-release"
 }
 

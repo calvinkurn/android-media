@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.categoryrevamp.data.bannedCategory
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
 import java.io.Serializable
 
 class Data : Serializable {
@@ -30,6 +31,9 @@ class Data : Serializable {
 
     @SerializedName("isAdult")
     var isAdult: Int = 0
+
+    @SerializedName("child")
+    val child: List<SubCategoryItem?>? = null
 
     override fun toString(): String {
         return "Data{" +

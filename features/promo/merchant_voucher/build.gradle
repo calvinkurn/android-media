@@ -42,7 +42,7 @@ dependencies {
 project.ext {
     artifactId = 'merchant-voucher'
     groupId = 'com.tokopedia.promo'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="merchant_voucher-release"
 }
 
