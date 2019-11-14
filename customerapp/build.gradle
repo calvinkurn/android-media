@@ -94,9 +94,6 @@ buildscript {
         maven {
             url 'https://jitpack.io'
         }
-        flatDir {
-            dirs project(rootProject.ext.libraries.inappupdate).file('libs')
-        }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
@@ -265,19 +262,16 @@ dependencies {
     implementation project(rootProject.ext.features.explore)
     implementation project(rootProject.ext.features.interestPick)
     implementation project(rootProject.ext.features.shopPage)
-    implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
-    implementation project(rootProject.ext.features.groupchat)
+    //implementation project(rootProject.ext.features.groupchat)
     implementation project(rootProject.ext.features.event)
     implementation project(rootProject.ext.features.commonWallet)
-    implementation project(rootProject.ext.features.wallet)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.tkpdinbox)
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.flightOrderList)
     implementation project(rootProject.ext.features.hotel)
     implementation project(rootProject.ext.features.travelHomepage)
@@ -294,14 +288,12 @@ dependencies {
     implementation project(rootProject.ext.features.homeRecom)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.digitalTopupBills)
     implementation project(rootProject.ext.features.voucherGame)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
-    implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.goldMerchantCommon)
@@ -342,7 +334,6 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.basemvvm)
-    implementation project(rootProject.ext.features.instantLoan)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
@@ -356,10 +347,8 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.onboarding)
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
-    implementation project(rootProject.ext.features.digitalHomepage)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
@@ -414,7 +403,10 @@ dependencies {
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.williamchart)
+    implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.scanner)
+    implementation project(rootProject.ext.libraries.promotionsTarget)
+    implementation project(rootProject.ext.libraries.cameraview)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -433,6 +425,9 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation rootProject.ext.supportLibDependencies.kotlinReflection
+    implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
     implementation rootProject.ext.miscDependencies.lottie
@@ -471,14 +466,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.expandableTextview
-    implementation project(rootProject.ext.libraries.cameraview)
-    implementation (rootProject.ext.miscDependencies.flexBoxLayout){
+    implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.miscDependencies.ucrop){
+    implementation(rootProject.ext.miscDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.miscDependencies.imagecropper){
+    implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.exoPlayerCore
@@ -492,10 +486,10 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-    implementation (rootProject.ext.analyticsDependencies.branch) {
+    implementation(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7

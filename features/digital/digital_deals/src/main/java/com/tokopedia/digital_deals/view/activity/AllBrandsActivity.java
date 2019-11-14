@@ -84,20 +84,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
     AllCategoryPresenter mPresenter;
     private boolean isLocationUpdated;
     SelectLocationBottomSheet selectLocationFragment;
-
-    public static final String FROM_VOUCHER = "isVoucher";
-
-
-    public Intent getAllBrandsStaticIntent(Context context, String fromVoucher) {
-        Intent destination = new Intent();
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            extras.putString(FROM_VOUCHER, fromVoucher);
-            destination = new Intent(context, AllBrandsActivity.class)
-                    .putExtras(extras);
-        }
-        return destination;
-    }
+    String fromVoucher;
 
     @Override
     protected int getLayoutRes() {
@@ -111,7 +98,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         Uri uri = getIntent().getData();
         if (uri != null) {
             List<String> params = UriUtil.destructureUri(ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS, uri, true);
-            getAllBrandsStaticIntent(this, params.get(0));
+            fromVoucher = params.get(0);
         }
         userSession = new UserSession(this);
         dealsAnalytics = new DealsAnalytics();
@@ -140,7 +127,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         if (!TextUtils.isEmpty(searchText)) {
             searchInputView.setSearchText(searchText);
         }
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(FROM_VOUCHER))) {
+        if (!TextUtils.isEmpty(fromVoucher)) {
             title.setText(getResources().getString(com.tokopedia.digital_deals.R.string.voucher));
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
             title.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.clr_f531353b));

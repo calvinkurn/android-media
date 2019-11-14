@@ -2,8 +2,10 @@ package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.contract.ValidateMerchantPinContract;
+import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
 import com.tokopedia.tokopoints.view.presenter.ValidateMerchantPinPresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
@@ -30,12 +33,22 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     private PinEditText mEditPin;
     private TextView mTextError;
     private TextView mTextInfo;
+    private ValidatePinCallBack mValidatePinCallBack;
 
 
-    public static Fragment newInstance(Bundle extras) {
-        Fragment fragment = new ValidateMerchantPinFragment();
+    public static ValidateMerchantPinFragment newInstance(Bundle extras) {
+        ValidateMerchantPinFragment fragment = new ValidateMerchantPinFragment();
         fragment.setArguments(extras);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    public void setmValidatePinCallBack(ValidatePinCallBack mValidatePinCallBack) {
+        this.mValidatePinCallBack = mValidatePinCallBack;
     }
 
     @Nullable
@@ -131,8 +144,8 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     }
 
     @Override
-    public void onSuccess() {
-        getActivity().onBackPressed();
+    public void onSuccess(CouponSwipeUpdate couponSwipeUpdate) {
+        mValidatePinCallBack.onSuccess(couponSwipeUpdate);
     }
 
     @Override
@@ -149,5 +162,9 @@ public class ValidateMerchantPinFragment extends BaseDaggerFragment implements V
     @Override
     public Context getActivityContext() {
         return getActivity();
+    }
+
+    interface ValidatePinCallBack {
+        void onSuccess(CouponSwipeUpdate couponSwipeUpdate);
     }
 }

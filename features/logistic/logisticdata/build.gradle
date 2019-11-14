@@ -41,7 +41,7 @@ dependencies {
 project.ext {
     artifactId = "data"
     groupId = "com.tokopedia.logistic"
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "logisticdata-release"
 }
 

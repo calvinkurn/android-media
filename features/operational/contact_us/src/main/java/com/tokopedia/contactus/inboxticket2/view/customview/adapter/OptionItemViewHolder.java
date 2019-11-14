@@ -18,7 +18,7 @@ public class OptionItemViewHolder extends ItemFilterViewHolder {
     public OptionItemViewHolder(View itemView, QuickSingleFilterListener listener) {
         super(itemView, listener);
         layoutInside =itemView.findViewById(R.id.layout_inside1);
-        filterName = (TextView) itemView.findViewById(R.id.filter_name);
+        filterName = itemView.findViewById(R.id.filter_name);
     }
     protected void updateData(QuickFilterItem filterItem) {
         filterName.setText(filterItem.getName());

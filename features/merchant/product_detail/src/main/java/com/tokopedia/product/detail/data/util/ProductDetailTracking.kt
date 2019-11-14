@@ -20,6 +20,8 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import org.json.JSONArray
+import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -644,24 +646,32 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
     private fun eventAppsFyler(productInfo: ProductInfo, eventName:String) {
         TrackApp.getInstance().appsFlyer.run {
-            sendEvent(eventName,
-                    mutableMapOf(
-                            "af_description" to "productView",
-                            "af_content_id" to productInfo.basic.id,
-                            "af_content_type" to "product",
-                            "af_price" to productInfo.basic.price,
-                            "af_currency" to "IDR",
-                            "af_quantity" to 1.toString()
-                    ).apply {
-                        if (productInfo.category.detail.isNotEmpty()) {
-                            val size = productInfo.category.detail.size
-                            for (i in 1..size) {
-                                put("level" + i + "_name", productInfo.category.detail[size - i].name)
-                                put("level" + i + "_id", productInfo.category.detail[size - i].id)
-                            }
-                        }
+            val mutableMap = mutableMapOf(
+                    "af_description" to "productView",
+                    "af_content_id" to productInfo.basic.id,
+                    "af_content_type" to "product",
+                    "af_price" to productInfo.basic.price,
+                    "af_currency" to "IDR",
+                    "af_quantity" to 1.toString()
+            ).apply {
+                if (productInfo.category.detail.isNotEmpty()) {
+                    val size = productInfo.category.detail.size
+                    for (i in 1..size) {
+                        put("level" + i + "_name", productInfo.category.detail[size - i].name)
+                        put("level" + i + "_id", productInfo.category.detail[size - i].id)
                     }
-            )
+                }
+                if ("af_content_view" == eventName) {
+                    val jsonArray = JSONArray()
+                    val jsonObject = JSONObject()
+                    jsonObject.put("id", productInfo.basic.id.toString())
+                    jsonObject.put("quantity", 1)
+                    jsonArray.put(jsonObject)
+                    this["af_content"] = jsonArray.toString()
+                }
+            }
+
+            sendEvent(eventName, mutableMap)
         }
     }
 

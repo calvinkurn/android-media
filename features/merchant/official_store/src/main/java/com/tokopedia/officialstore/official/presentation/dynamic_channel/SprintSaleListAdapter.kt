@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.officialstore.R
@@ -36,11 +37,12 @@ class SprintSaleListAdapter(
                 oldPrice.text = item.slashedPrice
                 oldPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                 newPrice.text = item.price
-                ImageHandler.loadImageFitCenter(
-                        holder.freeOngkirView.context,
-                        freeOngkirView,
-                        item.freeOngkir?.imageUrl
-                )
+                Glide.with(holder.freeOngkirView.context)
+                        .asBitmap()
+                        .load(item.freeOngkir?.imageUrl)
+                        .fitCenter()
+                        .dontAnimate()
+                        .into(freeOngkirView)
             }
         }
     }

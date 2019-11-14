@@ -1,4 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">basemvvm</string>
     <string name="tradein_accept">Setuju</string>
+    <string name="ar_text_adult_content">Konten Dewasa</string>
+    <string name="ar_text_verify_dob">Verifikasi Tanggal Lahir</string>
+    <string name="ar_label_back">Kembali</string>
+    <string name="ar_text_dob_warning">Setelah verifikasi berhasil, tanggal lahir tidak bisa diubah.
+        Pastikan kamu sudah memasukkan informasi yang benar.</string>
 </resources>

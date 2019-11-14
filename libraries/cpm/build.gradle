@@ -13,7 +13,7 @@ dependencies {
 project.ext {
     artifactId = 'cpm'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "cpm-release"
 }
 
