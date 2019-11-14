@@ -1,5 +1,5 @@
-query GetPublicMerchantVoucherList($shop_id: Int!, $num_voucher: Int!, $cart_item_data: MerchantVoucherCartItem) {
-  getPublicMerchantVoucherList(shop_id: $shop_id, num_voucher: $num_voucher) {
+query GetPublicMerchantVoucherList($shop_id: Int!, $num_voucher: Int, $cart_item_data: [MerchantVoucherCartItem]) {
+  getPublicMerchantVoucherList(shop_id: $shop_id, num_voucher: $num_voucher, cart_item_data: $cart_item_data) {
     vouchers {
       voucher_id
       voucher_name

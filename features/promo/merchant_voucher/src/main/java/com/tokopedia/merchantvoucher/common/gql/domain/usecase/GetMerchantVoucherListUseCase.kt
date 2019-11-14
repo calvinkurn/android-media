@@ -1,7 +1,6 @@
 package com.tokopedia.merchantvoucher.common.gql.domain.usecase
 
 import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
@@ -33,7 +32,7 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<MerchantVo
                 variables[SHOP_ID] = shopId
                 val numVoucher = requestParams.getInt(NUM_VOUCHER, 0)
                 variables[NUM_VOUCHER] = numVoucher
-                val cartItemData = requestParams.getString(CART_ITEM_DATA, null)
+                val cartItemData = requestParams.getObject(CART_ITEM_DATA)
                 variables[CART_ITEM_DATA] = cartItemData
                 return variables
             }
@@ -74,7 +73,7 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<MerchantVo
             requestParams.putInt(SHOP_ID, shopId.toInt())
             requestParams.putInt(NUM_VOUCHER, numVoucher)
             if (cartItemDatumVouchers != null) {
-                requestParams.putString(CART_ITEM_DATA, Gson().toJson(cartItemDatumVouchers))
+                requestParams.putObject(CART_ITEM_DATA, cartItemDatumVouchers)
             }
             return requestParams
         }
