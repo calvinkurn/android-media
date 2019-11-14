@@ -352,8 +352,4 @@
         <key>app_hotlist_nav_enable</key>
         <value>true</value>
     </entry>
-    <entry>
-        <key>android_customer_image_preview_wishlist_pdp</key>
-        <value>true</value>
-    </entry>
 </defaultsMap>
