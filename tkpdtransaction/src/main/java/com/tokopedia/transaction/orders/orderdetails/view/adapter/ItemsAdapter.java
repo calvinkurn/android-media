@@ -51,7 +51,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int DEALS_CATEGORY_ID = 35;
     private static final int EVENTS_CATEGORY_ID_1 = 32;
     private static final int EVENTS_CATEGORY_ID_2 = 23;
-    private static final int EVENTS_CATEGORY_ID_3 = 61;
+    private static final int EVENTS_CATEGORY_INSURANCE = 61;
     private boolean isShortLayout;
     private List<Items> itemsList;
     private Context context;
@@ -144,7 +144,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return ITEM_DEALS;
         } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2) {
             return ITEM_EVENTS;
-        }else if(itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_3){
+        }else if(itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_INSURANCE){
             return ITEM_INSURANCE;
         } else{
             return ITEM_DEFAULT;

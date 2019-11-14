@@ -72,6 +72,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String PARAM = "param";
     private static final String INVOICE = "invoice";
     private static final String TAB_ID = "tabId";
+    private static final String CATEGORY_PRODUCT = "Kategori Produk";
     private static final int DEFAULT_TAB_ID = 1;
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
@@ -632,9 +633,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     public String getProductCategory() {
-        for (Title title : details.title()) {
-            if (title.label().equalsIgnoreCase("Kategori Produk"))
-                return title.value();
+        if (details.title() != null) {
+            for (Title title : details.title()) {
+                if (title.label().equalsIgnoreCase(CATEGORY_PRODUCT))
+                    return title.value();
+            }
         }
         return null;
     }
