@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.profile.following_list.data.mapper.FollowerMapper
 import com.tokopedia.profile.following_list.data.pojo.FollowerListData
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingResultViewModel
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -17,7 +17,7 @@ import rx.Observable
 class GetFollowerListUseCase constructor(@ApplicationContext private val context: Context,
                                          private val useCase: GraphqlUseCase,
                                          private val mapData: FollowerMapper
-): UseCase<ProfileFollowingResultViewModel>() {
+): UseCase<UserFollowingResultViewModel>() {
 
     companion object {
         private const val PARAM_ID = "userID"
@@ -65,7 +65,7 @@ class GetFollowerListUseCase constructor(@ApplicationContext private val context
     }
     //endregion
 
-    override fun createObservable(requestParams: RequestParams): Observable<ProfileFollowingResultViewModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<UserFollowingResultViewModel> {
         val request = GraphqlRequest(query,
                 FollowerListData::class.java,
                 requestParams.parameters)

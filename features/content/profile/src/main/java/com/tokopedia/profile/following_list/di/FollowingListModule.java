@@ -13,10 +13,10 @@ import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListLo
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetShopFollowingListUseCase;
 import com.tokopedia.profile.following_list.view.listener.FollowingList;
-import com.tokopedia.profile.following_list.view.presenter.FollowingListPresenter;
+import com.tokopedia.profile.following_list.view.presenter.UserFollowingListPresenter;
 import com.tokopedia.profile.following_list.view.presenter.ShopFollowingListPresenter;
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingResultViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
@@ -33,12 +33,12 @@ public class FollowingListModule {
 
     @FollowingListScope
     @Provides
-    public FollowingList.Presenter<ProfileFollowingViewModel, ProfileFollowingResultViewModel> provideKolFollowingListPresenter(
+    public FollowingList.Presenter<UserFollowingViewModel, UserFollowingResultViewModel> provideKolFollowingListPresenter(
             GetFollowingListUseCase getFollowingListUseCase,
             GetFollowingListLoadMoreUseCase getFollowingListLoadMoreUseCase,
             GetFollowerListUseCase getFollowerListUseCase
     ) {
-        return new FollowingListPresenter(
+        return new UserFollowingListPresenter(
                 getFollowingListUseCase,
                 getFollowingListLoadMoreUseCase,
                 getFollowerListUseCase

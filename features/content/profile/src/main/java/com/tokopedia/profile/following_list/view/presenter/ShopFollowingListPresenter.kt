@@ -36,7 +36,7 @@ class ShopFollowingListPresenter @Inject constructor(
 
     private val job = SupervisorJob()
 
-    override fun getKolFollowingList(userId: Int) {
+    override fun getFollowingList(userId: Int) {
         val page = 1
         launch {
             val userFollow = getUserShopFollowingListUseCase.apply {
@@ -50,7 +50,7 @@ class ShopFollowingListPresenter @Inject constructor(
         }
     }
 
-    override fun getKolLoadMore(userId: Int, cursor: String?) {
+    override fun getFollowingListLoadMore(userId: Int, cursor: String?) {
         val page = try { cursor?.toInt()?.plus(1) } catch (e: Exception) { null } ?: return
         launch {
             val userFollow = getUserShopFollowingListUseCase.apply {

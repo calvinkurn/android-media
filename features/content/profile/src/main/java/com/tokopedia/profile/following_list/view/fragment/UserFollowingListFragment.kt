@@ -6,27 +6,27 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.profile.following_list.di.DaggerFollowingListComponent
 import com.tokopedia.profile.following_list.view.listener.FollowingList
 import com.tokopedia.profile.following_list.view.listener.FollowingListEmptyListener
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingResultViewModel
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingViewModel
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewModel
 import javax.inject.Inject
 
 /**
  * Created by jegul on 2019-10-22
  */
-class ProfileFollowingListFragment : BaseFollowListFragment<ProfileFollowingViewModel, ProfileFollowingResultViewModel>() {
+class UserFollowingListFragment : BaseFollowListFragment<UserFollowingViewModel, UserFollowingResultViewModel>() {
 
     companion object {
 
         @JvmStatic
-        fun createInstance(bundle: Bundle?): ProfileFollowingListFragment {
-            return ProfileFollowingListFragment().apply {
+        fun createInstance(bundle: Bundle?): UserFollowingListFragment {
+            return UserFollowingListFragment().apply {
                 arguments = bundle
             }
         }
     }
 
     @Inject
-    override lateinit var presenter: FollowingList.Presenter<ProfileFollowingViewModel, ProfileFollowingResultViewModel>
+    override lateinit var presenter: FollowingList.Presenter<UserFollowingViewModel, UserFollowingResultViewModel>
 
     override fun initInjector() {
         DaggerFollowingListComponent.builder()
@@ -37,13 +37,13 @@ class ProfileFollowingListFragment : BaseFollowListFragment<ProfileFollowingView
                 .inject(this)
     }
 
-    override fun onListItemClicked(item: ProfileFollowingViewModel) {
+    override fun onListItemClicked(item: UserFollowingViewModel) {
         if (RouteManager.isSupportApplink(context, item.profileApplink) && !item.profileApplink.contains("m.tokopedia.com")) {
             RouteManager.route(context, item.profileApplink)
         }
     }
 
-    override fun onViewUpdated(viewModel: ProfileFollowingResultViewModel) {
+    override fun onViewUpdated(viewModel: UserFollowingResultViewModel) {
         if (viewModel.followingViewModelList.isEmpty()) {
             emptyButton.text = viewModel.buttonText
             emptyApplink = viewModel.buttonApplink
@@ -58,7 +58,7 @@ class ProfileFollowingListFragment : BaseFollowListFragment<ProfileFollowingView
         }
     }
 
-    override fun updateParams(viewModel: ProfileFollowingResultViewModel) {
+    override fun updateParams(viewModel: UserFollowingResultViewModel) {
         this.isCanLoadMore = viewModel.isCanLoadMore
         this.cursor = viewModel.lastCursor
     }

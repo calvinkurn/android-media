@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.profile.following_list.domain.model.FollowingDomain;
 import com.tokopedia.profile.following_list.domain.model.FollowingResultDomain;
 import com.tokopedia.profile.following_list.view.listener.FollowingList;
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingResultViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +16,10 @@ import rx.Subscriber;
  * Created by yfsx on 28/12/17.
  */
 
-public class GetKolFollowingListSubscriber extends Subscriber<FollowingResultDomain> {
+public class GetFollowingListSubscriber extends Subscriber<FollowingResultDomain> {
     private FollowingList.View mainView;
 
-    public GetKolFollowingListSubscriber(FollowingList.View mainView) {
+    public GetFollowingListSubscriber(FollowingList.View mainView) {
         this.mainView = mainView;
     }
 
@@ -46,8 +46,8 @@ public class GetKolFollowingListSubscriber extends Subscriber<FollowingResultDom
         }
     }
 
-    public static ProfileFollowingResultViewModel mappingViewModel(FollowingResultDomain domain) {
-        return new ProfileFollowingResultViewModel(
+    public static UserFollowingResultViewModel mappingViewModel(FollowingResultDomain domain) {
+        return new UserFollowingResultViewModel(
                 domain.isCanLoadMore(),
                 mappingViewModels(domain.getFollowingDomainList()),
                 domain.getLastCursor(),
@@ -55,10 +55,10 @@ public class GetKolFollowingListSubscriber extends Subscriber<FollowingResultDom
                 domain.getButtonApplink());
     }
 
-    private static List<ProfileFollowingViewModel> mappingViewModels(List<FollowingDomain> domainList) {
-        List<ProfileFollowingViewModel> viewModelList = new ArrayList<>();
+    private static List<UserFollowingViewModel> mappingViewModels(List<FollowingDomain> domainList) {
+        List<UserFollowingViewModel> viewModelList = new ArrayList<>();
         for (FollowingDomain domain : domainList) {
-            ProfileFollowingViewModel viewModel = new ProfileFollowingViewModel(
+            UserFollowingViewModel viewModel = new UserFollowingViewModel(
                     domain.getId(),
                     domain.getAvatarUrl(),
                     domain.getProfileApplink(),

@@ -44,9 +44,9 @@ public interface FollowingList<R extends FollowingViewModel, T extends Following
     }
 
     interface Presenter<R, T> extends CustomerPresenter<View<R, T>> {
-        void getKolFollowingList(int userId);
+        void getFollowingList(int userId);
 
-        void getKolLoadMore(int userId, String cursor);
+        void getFollowingListLoadMore(int userId, String cursor);
 
         void getFollowersList(int userId);
 

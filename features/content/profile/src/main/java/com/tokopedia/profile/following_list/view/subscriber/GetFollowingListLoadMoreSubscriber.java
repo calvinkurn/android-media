@@ -10,10 +10,10 @@ import rx.Subscriber;
  * Created by yfsx on 28/12/17.
  */
 
-public class GetKolFollowingListLoadMoreSubscriber extends Subscriber<FollowingResultDomain> {
+public class GetFollowingListLoadMoreSubscriber extends Subscriber<FollowingResultDomain> {
     private FollowingList.View mainView;
 
-    public GetKolFollowingListLoadMoreSubscriber(FollowingList.View mainView) {
+    public GetFollowingListLoadMoreSubscriber(FollowingList.View mainView) {
         this.mainView = mainView;
     }
 
@@ -33,7 +33,7 @@ public class GetKolFollowingListLoadMoreSubscriber extends Subscriber<FollowingR
     @Override
     public void onNext(FollowingResultDomain followingResultDomain) {
         mainView.hideLoading();
-        mainView.onSuccessLoadMoreKolFollowingList(GetKolFollowingListSubscriber.mappingViewModel(followingResultDomain));
+        mainView.onSuccessLoadMoreKolFollowingList(GetFollowingListSubscriber.mappingViewModel(followingResultDomain));
     }
 
 }

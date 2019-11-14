@@ -6,13 +6,13 @@ import android.os.Parcelable
 /**
  * Created by yfsx on 29/12/17.
  */
-data class ProfileFollowingResultViewModel(
+data class UserFollowingResultViewModel(
         override val isCanLoadMore: Boolean,
-        override val followingViewModelList: List<ProfileFollowingViewModel>,
+        override val followingViewModelList: List<UserFollowingViewModel>,
         val lastCursor: String,
         val buttonText: String,
         val buttonApplink: String
-) : FollowingResultViewModel<ProfileFollowingViewModel>, Parcelable {
+) : FollowingResultViewModel<UserFollowingViewModel>, Parcelable {
 
     constructor() : this(
             false,
@@ -24,7 +24,7 @@ data class ProfileFollowingResultViewModel(
 
     constructor(source: Parcel) : this(
             1 == source.readInt(),
-            source.createTypedArrayList(ProfileFollowingViewModel.CREATOR),
+            source.createTypedArrayList(UserFollowingViewModel.CREATOR),
             source.readString(),
             source.readString(),
             source.readString()
@@ -42,9 +42,9 @@ data class ProfileFollowingResultViewModel(
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<ProfileFollowingResultViewModel> = object : Parcelable.Creator<ProfileFollowingResultViewModel> {
-            override fun createFromParcel(source: Parcel): ProfileFollowingResultViewModel = ProfileFollowingResultViewModel(source)
-            override fun newArray(size: Int): Array<ProfileFollowingResultViewModel?> = arrayOfNulls(size)
+        val CREATOR: Parcelable.Creator<UserFollowingResultViewModel> = object : Parcelable.Creator<UserFollowingResultViewModel> {
+            override fun createFromParcel(source: Parcel): UserFollowingResultViewModel = UserFollowingResultViewModel(source)
+            override fun newArray(size: Int): Array<UserFollowingResultViewModel?> = arrayOfNulls(size)
         }
     }
 }

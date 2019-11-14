@@ -6,7 +6,7 @@ import android.os.Parcelable
 /**
  * Created by yfsx on 28/12/17.
  */
-class ProfileFollowingViewModel(
+class UserFollowingViewModel(
         override val id: Int,
         override val avatarUrl: String,
         val profileApplink: String,
@@ -49,9 +49,9 @@ class ProfileFollowingViewModel(
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<ProfileFollowingViewModel> = object : Parcelable.Creator<ProfileFollowingViewModel> {
-            override fun createFromParcel(source: Parcel): ProfileFollowingViewModel = ProfileFollowingViewModel(source)
-            override fun newArray(size: Int): Array<ProfileFollowingViewModel?> = arrayOfNulls(size)
+        val CREATOR: Parcelable.Creator<UserFollowingViewModel> = object : Parcelable.Creator<UserFollowingViewModel> {
+            override fun createFromParcel(source: Parcel): UserFollowingViewModel = UserFollowingViewModel(source)
+            override fun newArray(size: Int): Array<UserFollowingViewModel?> = arrayOfNulls(size)
         }
     }
 }

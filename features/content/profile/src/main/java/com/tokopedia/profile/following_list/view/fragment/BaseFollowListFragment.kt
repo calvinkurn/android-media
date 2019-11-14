@@ -53,7 +53,7 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
                 if (isCanLoadMore && visibleItemCount + firstVisiblesItems >= totalItemCount) {
                     adapter.addBottomLoading()
                     isCanLoadMore = false
-                    presenter.getKolLoadMore(userId, cursor)
+                    presenter.getFollowingListLoadMore(userId, cursor)
                 }
             }
         }
@@ -98,7 +98,7 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
         }
         emptyState.visibility = View.GONE
         showLoading()
-        presenter.getKolFollowingList(userId)
+        presenter.getFollowingList(userId)
     }
 
     private fun initViewListener() {

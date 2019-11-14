@@ -7,12 +7,11 @@ import com.tokopedia.profile.following_list.domain.interactor.GetFollowerListUse
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListLoadMoreUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListUseCase;
 import com.tokopedia.profile.following_list.view.listener.FollowingList;
-import com.tokopedia.profile.following_list.view.subscriber
-        .GetKolFollowingListLoadMoreSubscriber;
-import com.tokopedia.profile.following_list.view.subscriber.GetKolFollowingListSubscriber;
+import com.tokopedia.profile.following_list.view.subscriber.GetFollowingListLoadMoreSubscriber;
+import com.tokopedia.profile.following_list.view.subscriber.GetFollowingListSubscriber;
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingResultViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewModel;
 import com.tokopedia.network.utils.ErrorHandler;
 
 import javax.inject.Inject;
@@ -23,8 +22,8 @@ import rx.Subscriber;
  * Created by yfsx on 28/12/17.
  */
 
-public class FollowingListPresenter extends BaseDaggerPresenter<FollowingList.View<ProfileFollowingViewModel, ProfileFollowingResultViewModel>>
-        implements FollowingList.Presenter<ProfileFollowingViewModel, ProfileFollowingResultViewModel> {
+public class UserFollowingListPresenter extends BaseDaggerPresenter<FollowingList.View<UserFollowingViewModel, UserFollowingResultViewModel>>
+        implements FollowingList.Presenter<UserFollowingViewModel, UserFollowingResultViewModel> {
 
     private FollowingList.View mainView;
     private final GetFollowingListUseCase getFollowingListUseCase;
@@ -32,30 +31,30 @@ public class FollowingListPresenter extends BaseDaggerPresenter<FollowingList.Vi
     private final GetFollowerListUseCase getFollowerList;
 
     @Inject
-    public FollowingListPresenter(GetFollowingListUseCase getFollowingListUseCase,
-                                  GetFollowingListLoadMoreUseCase getFollowingListLoadMoreUseCase,
-                                  GetFollowerListUseCase getFollowerList) {
+    public UserFollowingListPresenter(GetFollowingListUseCase getFollowingListUseCase,
+                                      GetFollowingListLoadMoreUseCase getFollowingListLoadMoreUseCase,
+                                      GetFollowerListUseCase getFollowerList) {
         this.getFollowingListUseCase = getFollowingListUseCase;
         this.getFollowingListLoadMoreUseCase = getFollowingListLoadMoreUseCase;
         this.getFollowerList = getFollowerList;
     }
 
     @Override
-    public void getKolFollowingList(int userId) {
+    public void getFollowingList(int userId) {
         mainView.showLoading();
         if (!getView().isOpenFollowerPage()) {
             getFollowingListUseCase.execute(GetFollowingListUseCase.Companion.getParam(userId),
-                    new GetKolFollowingListSubscriber(mainView));
+                    new GetFollowingListSubscriber(mainView));
         } else {
             getFollowersList(userId);
         }
     }
 
     @Override
-    public void getKolLoadMore(int userId, String cursor) {
+    public void getFollowingListLoadMore(int userId, String cursor) {
         if (!getView().isOpenFollowerPage()) {
             getFollowingListLoadMoreUseCase.execute(GetFollowingListLoadMoreUseCase.Companion.getParam(userId, cursor),
-                    new GetKolFollowingListLoadMoreSubscriber(mainView));
+                    new GetFollowingListLoadMoreSubscriber(mainView));
         } else {
             getFollowersLoadMore(userId, cursor);
         }
@@ -81,7 +80,7 @@ public class FollowingListPresenter extends BaseDaggerPresenter<FollowingList.Vi
         if (isViewAttached()) {
             getFollowerList.execute(GetFollowerListUseCase.getFollowerListParam(
                     userId,""),
-                    new Subscriber<ProfileFollowingResultViewModel>() {
+                    new Subscriber<UserFollowingResultViewModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -94,7 +93,7 @@ public class FollowingListPresenter extends BaseDaggerPresenter<FollowingList.Vi
                 }
 
                 @Override
-                public void onNext(ProfileFollowingResultViewModel result) {
+                public void onNext(UserFollowingResultViewModel result) {
                     mainView.hideLoading();
                     getView().onSuccessGetKolFollowingList(result);
                 }
@@ -108,7 +107,7 @@ public class FollowingListPresenter extends BaseDaggerPresenter<FollowingList.Vi
 
             getFollowerList.execute(GetFollowerListUseCase.getFollowerListParam(
                     userId, cursor),
-                    new Subscriber<ProfileFollowingResultViewModel>() {
+                    new Subscriber<UserFollowingResultViewModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -120,7 +119,7 @@ public class FollowingListPresenter extends BaseDaggerPresenter<FollowingList.Vi
                 }
 
                 @Override
-                public void onNext(ProfileFollowingResultViewModel result) {
+                public void onNext(UserFollowingResultViewModel result) {
                     getView().onSuccessLoadMoreKolFollowingList(result);
                 }
             });

@@ -18,8 +18,6 @@ class GetShopFollowingListUseCase @Inject constructor(
 ) : UseCase<GetShopFollowingData>() {
 
     companion object {
-        const val QUERY_USER_SHOP_FOLLOWING = "query_user_shop_following"
-
         private const val KEY_PARAMS = "params"
 
         private const val PARAM_USER_ID = "userID"

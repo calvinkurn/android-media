@@ -3,8 +3,8 @@ package com.tokopedia.profile.following_list.data.mapper
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.profile.following_list.data.pojo.DataItem
 import com.tokopedia.profile.following_list.data.pojo.FollowerListData
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingResultViewModel
-import com.tokopedia.profile.following_list.view.viewmodel.ProfileFollowingViewModel
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewModel
 import rx.functions.Func1
 import java.util.ArrayList
 import javax.inject.Inject
@@ -12,17 +12,17 @@ import javax.inject.Inject
 /**
  * @author by yoasfs on 2019-08-22
  */
-class FollowerMapper @Inject constructor() : Func1<GraphqlResponse, ProfileFollowingResultViewModel> {
+class FollowerMapper @Inject constructor() : Func1<GraphqlResponse, UserFollowingResultViewModel> {
 
-    override fun call(t: GraphqlResponse?): ProfileFollowingResultViewModel {
+    override fun call(t: GraphqlResponse?): UserFollowingResultViewModel {
         val data = t?.getData<FollowerListData?>(FollowerListData::class.java)
         data?.let {
             return mapFollowersData(data)
         }
-        return ProfileFollowingResultViewModel()
+        return UserFollowingResultViewModel()
     }
-    private fun mapFollowersData(data: FollowerListData): ProfileFollowingResultViewModel {
-        return ProfileFollowingResultViewModel(
+    private fun mapFollowersData(data: FollowerListData): UserFollowingResultViewModel {
+        return UserFollowingResultViewModel(
                 !data.feedGetUserFollowers.meta.nextCursor.isEmpty(),
                 mapFollowData(data.feedGetUserFollowers.data),
                 data.feedGetUserFollowers.meta.nextCursor,
@@ -31,10 +31,10 @@ class FollowerMapper @Inject constructor() : Func1<GraphqlResponse, ProfileFollo
         )
     }
 
-    private fun mapFollowData(dataList: List<DataItem>): List<ProfileFollowingViewModel> {
-        val resultList = ArrayList<ProfileFollowingViewModel>()
+    private fun mapFollowData(dataList: List<DataItem>): List<UserFollowingViewModel> {
+        val resultList = ArrayList<UserFollowingViewModel>()
         for ((_, _, applink, name, photo, id) in dataList) {
-            resultList.add(ProfileFollowingViewModel(
+            resultList.add(UserFollowingViewModel(
                     id,
                     photo,
                     applink,
