@@ -213,6 +213,11 @@ public class PinInputEditText extends EditText {
         mMask = mask;
     }
 
+    public void setLength(int length) {
+        mMaxLength = length;
+        mNumChars = length;
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);

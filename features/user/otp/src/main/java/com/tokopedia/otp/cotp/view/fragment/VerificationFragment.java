@@ -245,6 +245,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private void setupGeneralView(){
         limitOtp.setVisibility(View.GONE);
+        inputOtp.setLength(viewModel.getNumberOtpDigit());
         inputOtp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
