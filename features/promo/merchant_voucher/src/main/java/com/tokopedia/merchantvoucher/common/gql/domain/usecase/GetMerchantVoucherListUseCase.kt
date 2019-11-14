@@ -32,8 +32,10 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<MerchantVo
                 variables[SHOP_ID] = shopId
                 val numVoucher = requestParams.getInt(NUM_VOUCHER, 0)
                 variables[NUM_VOUCHER] = numVoucher
-                val cartItemData = requestParams.getObject(CART_ITEM_DATA)
-                variables[CART_ITEM_DATA] = cartItemData
+                if (requestParams.getObject(CART_ITEM_DATA) != null) {
+                    val cartItemData = requestParams.getObject(CART_ITEM_DATA)
+                    variables[CART_ITEM_DATA] = cartItemData
+                }
                 return variables
             }
 
