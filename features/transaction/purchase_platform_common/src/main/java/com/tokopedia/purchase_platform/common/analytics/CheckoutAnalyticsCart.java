@@ -871,7 +871,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
-    public void eventClickBrowseButtonOnTickerProductContainTobacco(String shopId, String productId) {
+    public void eventClickBrowseButtonOnTickerProductContainTobacco() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
@@ -879,7 +879,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventViewTickerProductContainTobacco(String shopId, String productId) {
+    public void eventViewTickerProductContainTobacco() {
         sendEventCategoryAction(
                 EventName.VIEW_ATC_IRIS,
                 EventCategory.CART,
@@ -887,13 +887,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickHapusButtonOnProductContainTobacco(String shopId, String productId) {
-//        sendEventCategoryActionLabel(
-//                EventName.CLICK_ATC,
-//                EventCategory.CART,
-//                EventAction.CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO,
-//                shopId + " - " + productId
-//        );
+    public void eventClickHapusButtonOnProductContainTobacco() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
@@ -901,7 +895,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickTrashIconButtonOnProductContainTobacco(String shopId, String productId) {
+    public void eventClickTrashIconButtonOnProductContainTobacco() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
                 EventCategory.CART,

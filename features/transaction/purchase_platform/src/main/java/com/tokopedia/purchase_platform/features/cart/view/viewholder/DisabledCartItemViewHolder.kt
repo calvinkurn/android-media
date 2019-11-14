@@ -59,7 +59,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                 setHtmlDescription(descriptionText)
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        actionListener.onTobaccoLiteUrlClicked(data.nicotineLiteMessageData!!.url, data.data.originData.shopId, data.productId)
+                        actionListener.onTobaccoLiteUrlClicked(data.nicotineLiteMessageData!!.url)
                     }
 
                     override fun onDismiss() {}
@@ -70,7 +70,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
                     requestLayout()
                 }
-                actionListener.onShowTickerTobacco(data.data.originData.shopId, data.productId)
+                actionListener.onShowTickerTobacco()
             } else if (data.tickerMessage != null) {
                 setTextDescription(data.tickerMessage!!)
                 visibility = View.VISIBLE

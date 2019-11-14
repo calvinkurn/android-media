@@ -2612,7 +2612,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         for (CartItemData cartItemData : allDisabledCartItemDataList) {
             if (cartItemData.getNicotineLiteMessageData() != null) {
-                cartPageAnalytics.eventClickHapusButtonOnProductContainTobacco(cartItemData.getOriginData().getShopId(), cartItemData.getOriginData().getProductId());
+                cartPageAnalytics.eventClickHapusButtonOnProductContainTobacco();
                 break;
             }
         }
@@ -2642,7 +2642,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onDeleteDisabledItem(CartItemData cartItemData) {
         if (cartItemData.getNicotineLiteMessageData() != null) {
-            cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco(cartItemData.getOriginData().getShopId(), cartItemData.getOriginData().getProductId());
+            cartPageAnalytics.eventClickTrashIconButtonOnProductContainTobacco();
         } else {
             sendAnalyticsOnClickRemoveIconCartItem();
         }
@@ -2669,30 +2669,21 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onTobaccoLiteUrlClicked(@NotNull String url, @NotNull String shopId, @NotNull String productId) {
+    public void onTobaccoLiteUrlClicked(@NotNull String url) {
         if (getContext() != null) {
-            String finalUrl = url;
-//            if (!url.startsWith("https://")) {
-//                if (url.startsWith("http://")) {
-//                    finalUrl = url.replace("http", "https");
-//                } else {
-//                    finalUrl = "https://" + url;
-//                }
-//            }
-
             LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), ADVERTISINGID);
             String adsId = localCacheHandler.getString(KEY_ADVERTISINGID);
             if (adsId != null && !adsId.trim().isEmpty()) {
-                finalUrl = finalUrl.replace(QUERY_APP_CLIENT_ID, adsId);
+                url = url.replace(QUERY_APP_CLIENT_ID, adsId);
             }
 
-            cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco(shopId, productId);
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl)));
+            cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco();
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
         }
     }
 
     @Override
-    public void onShowTickerTobacco(@NotNull String shopId, @NotNull String productId) {
-        cartPageAnalytics.eventViewTickerProductContainTobacco(shopId, productId);
+    public void onShowTickerTobacco() {
+        cartPageAnalytics.eventViewTickerProductContainTobacco();
     }
 }
