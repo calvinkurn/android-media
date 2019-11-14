@@ -26,7 +26,7 @@ android {
 project.ext {
     artifactId = 'graph-view'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "graph_view-release"
 }
 

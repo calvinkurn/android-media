@@ -21,8 +21,9 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -41,6 +42,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
@@ -59,3 +62,12 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.chips
 }
+
+project.ext {
+    artifactId = 'auto-complete'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "0.0.1"
+    artifactName = "autocomplete-release"
+}
+
+apply from: '../../../publish_local.gradle'

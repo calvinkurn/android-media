@@ -30,14 +30,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    implementation 'io.reactivex:rxkotlin:0.60.0'
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation rootProject.ext.miscDependencies.rxKotlin
 }
 
 project.ext {
     artifactId = 'logout'
     groupId = 'com.tokopedia.user'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "logout-release"
 }
 
