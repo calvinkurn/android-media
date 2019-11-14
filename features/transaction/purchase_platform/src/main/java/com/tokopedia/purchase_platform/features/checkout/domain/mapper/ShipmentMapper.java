@@ -84,10 +84,10 @@ public class ShipmentMapper implements IShipmentMapper {
                     case dropshipper:
                         dataResult.setDropshipperDisable(true);
                         break;
-                    case multi_address:
+                    case multiAddress:
                         dataResult.setMultipleDisable(true);
                         break;
-                    case order_prioritas:
+                    case orderPrioritas:
                         dataResult.setOrderPrioritasDisable(true);
                         break;
                     case egold:
