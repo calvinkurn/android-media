@@ -26,6 +26,18 @@ internal class SimilarProductItemViewHolder(itemView: View): BaseViewHolder<Prod
         )
 
         itemView.productCardView?.setProductModel(productCardModel)
+
+        itemView.productCardView?.setOnLongClickListener {
+            true
+        }
+
+        itemView.productCardView?.setOnClickListener {
+
+        }
+
+        itemView.productCardView?.setButtonWishlistOnClickListener {
+
+        }
     }
 
     private fun getDiscountPercentageVisible(similarProductItem: Product): Boolean {

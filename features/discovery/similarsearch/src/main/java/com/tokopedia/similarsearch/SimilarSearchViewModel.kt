@@ -211,4 +211,8 @@ internal class SimilarSearchViewModel(
     fun getRemoveWishlistSelectedProductEventLiveData(): LiveData<Event<Boolean>> {
         return removeWishlistSelectedProductEventLiveData
     }
+
+    fun onViewToggleWishlistSimilarProduct(productId: String, isWishlisted: Boolean) {
+
+    }
 }
