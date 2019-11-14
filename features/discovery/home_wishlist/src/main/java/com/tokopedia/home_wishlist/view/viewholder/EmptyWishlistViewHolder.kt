@@ -25,6 +25,6 @@ class EmptyWishlistViewHolder(
     }
 
     companion object{
-        val LAYOUT = R.layout.layout_wishlist_empty_state
+        val LAYOUT = R.layout.layout_new_wishlist_empty_state
     }
 }

@@ -8,6 +8,6 @@ fun getRegisteredNavigationRecommendation(context: Context, deeplink : String): 
     val uri = Uri.parse(deeplink)
     return when {
         uri.pathSegments.size > 0 -> ApplinkConsInternalHome.DEFAULT_HOME_RECOMMENDATION + uri.path + if(uri.query.isNotEmpty()) "?${uri.query}" else ""
-        else -> ApplinkConsInternalHome.DEFAULT_HOME_RECOMMENDATION
+        else -> ApplinkConsInternalHome.DEFAULT_HOME_RECOMMENDATION + "/"
     }
 }

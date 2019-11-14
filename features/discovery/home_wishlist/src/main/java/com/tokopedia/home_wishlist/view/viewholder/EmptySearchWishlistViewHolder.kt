@@ -18,6 +18,6 @@ class EmptySearchWishlistViewHolder(
     }
 
     companion object{
-        val LAYOUT = R.layout.layout_wishlist_empty_search_state
+        val LAYOUT = R.layout.layout_new_wishlist_empty_search_state
     }
 }

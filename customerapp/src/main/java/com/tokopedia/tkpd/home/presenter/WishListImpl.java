@@ -2,9 +2,8 @@ package com.tokopedia.tkpd.home.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
-
+import android.os.Handler;
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
@@ -39,6 +38,10 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistProductViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomTitleViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistTopAdsViewModel;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.tkpd.home.wishlist.mapper.WishlistProductMapper;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -47,8 +50,12 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
-
 import org.parceler.Parcels;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -57,12 +64,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -207,7 +208,7 @@ public class WishListImpl implements WishList {
                         wishListView.displayLoadMore(false);
                         List<Visitable> visitables = new ArrayList<>();
                         RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
-//                        visitables.add(new WishlistRecomTitleViewModel(recommendationWidget.getTitle()));
+                        visitables.add(new WishlistRecomTitleViewModel(recommendationWidget.getTitle()));
                         visitables.addAll(getRecommendationVisitables(recommendationWidget));
                         wishListView.onRenderRecomInbox(visitables);
                         wishListView.loadDataChange();
@@ -219,7 +220,7 @@ public class WishListImpl implements WishList {
     private List<Visitable> getRecommendationVisitables(RecommendationWidget recommendationWidget) {
         List<Visitable> recomendationList = new ArrayList<>();
         for (RecommendationItem item : recommendationWidget.getRecommendationItemList()) {
-//            recomendationList.add(new WishlistRecomendationViewModel(item));
+            recomendationList.add(new WishlistRecomendationViewModel(item));
         }
         return recomendationList;
     }
@@ -634,10 +635,10 @@ public class WishListImpl implements WishList {
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
             product.setFreeOngkir(wishlists.get(i).getFreeOngkir().getActive());
             product.setImageFreeOngkir(wishlists.get(i).getFreeOngkir().getImageUrl());
-//            products.add(new WishlistProductViewModel(product));
+            products.add(new WishlistProductViewModel(product));
         }
         if (products.size() >= TOPADS_INDEX && adsModel != null && !adsModel.getData().isEmpty()) {
-//            products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query, title));
+            products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query, title));
         }
         return products;
     }

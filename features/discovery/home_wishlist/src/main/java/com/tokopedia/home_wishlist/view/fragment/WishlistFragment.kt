@@ -58,7 +58,7 @@ import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.fragment_home_wishlist.*
+import kotlinx.android.synthetic.main.fragment_new_home_wishlist.*
 import javax.inject.Inject
 
 
@@ -126,7 +126,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_home_wishlist, container, false)
+        return inflater.inflate(R.layout.fragment_new_home_wishlist, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,7 +158,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     override fun onPause() {
         super.onPause()
-        if(this::trackingQueue.isInitialized && trackingQueue != null) trackingQueue.sendAll()
+        if(this::trackingQueue.isInitialized) trackingQueue.sendAll()
     }
 
     override fun getScreenName(): String = getString(R.string.wishlist_global)
@@ -234,15 +234,17 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun initDeleteBulkButton(){
+        val count = viewModel.bulkSelectActionData.value?.peekContent() ?: 0
+        val title = if(count == 0) getString(R.string.wishlist_delete_zero_text) else String.format(getString(R.string.wishlist_delete_text), count.toString())
         deleteButton?.setOnClickListener {
             dialogUnify.apply {
-                setTitle(getString(R.string.wishlist_delete_title))
+                setTitle(title)
                 setDescription(getString(R.string.wishlist_message_delete_alert))
-                setPrimaryCTAText(getString(R.string.wishlist_delete))
-                setSecondaryCTAText(getString(R.string.wishlist_cancel))
-                setPrimaryCTAClickListener { onBulkDelete();dismiss() }
+                setPrimaryCTAText(getString(R.string.wishlist_cancel))
+                setSecondaryCTAText(getString(R.string.wishlist_delete))
+                setPrimaryCTAClickListener { WishlistTracking.clickCancelDeleteWishlist();dismiss() }
                 setSecondaryCTAClickListener {
-                    WishlistTracking.clickCancelDeleteWishlist()
+                    onBulkDelete()
                     dismiss()
                 }
                 setCancelable(false)
@@ -379,14 +381,14 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         dialogUnify.apply {
             setTitle(getString(R.string.wishlist_delete_title))
             setDescription(getString(R.string.wishlist_message_delete_alert))
-            setPrimaryCTAText(getString(R.string.wishlist_delete))
-            setSecondaryCTAText(getString(R.string.wishlist_cancel))
+            setPrimaryCTAText(getString(R.string.wishlist_cancel))
+            setSecondaryCTAText(getString(R.string.wishlist_delete))
             setPrimaryCTAClickListener {
-                viewModel.removeWishlistedProduct(adapterPosition)
+                WishlistTracking.clickCancelDeleteWishlist()
                 dismiss()
             }
             setSecondaryCTAClickListener {
-                WishlistTracking.clickCancelDeleteWishlist()
+                viewModel.removeWishlistedProduct(adapterPosition)
                 dismiss()
             }
             setCancelable(false)
@@ -563,7 +565,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun updateSelectedDeleteItem(value: Int){
-        deleteButton?.text = String.format(getString(R.string.wishlist_delete_text), value.toString())
+        deleteButton?.text = if(value == 0) getString(R.string.wishlist_delete_zero_text) else String.format(getString(R.string.wishlist_delete_text), value.toString())
         deleteButton?.isEnabled = value > 0
     }
 }
