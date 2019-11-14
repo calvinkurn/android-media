@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReviewActivity;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationRefundDetailContract;
@@ -81,24 +80,24 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_cancellation_refund_detail, container, false);
+        View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_cancellation_refund_detail, container, false);
         setupView(view);
         return view;
     }
 
     private void setupView(View view) {
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-        container = (LinearLayout) view.findViewById(R.id.container);
-        tvStepTitle = (AppCompatTextView) view.findViewById(R.id.tv_step_title);
-        tvTotalRefund = (AppCompatTextView) view.findViewById(R.id.tv_total_refund);
-        tvDescription = (AppCompatTextView) view.findViewById(R.id.tv_description_refund);
+        progressBar = (ProgressBar) view.findViewById(com.tokopedia.flight.R.id.progress_bar);
+        container = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.container);
+        tvStepTitle = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_step_title);
+        tvTotalRefund = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_total_refund);
+        tvDescription = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_description_refund);
         tvDescription.setText(setDescriptionText());
         tvDescription.setMovementMethod(LinkMovementMethod.getInstance());
-        btnNext = (AppCompatButton) view.findViewById(R.id.btn_next);
+        btnNext = (AppCompatButton) view.findViewById(com.tokopedia.flight.R.id.btn_next);
         btnNext.setOnClickListener(getNextButtonClickListener());
 
         tvStepTitle.setText(String.format(
-                getString(R.string.flight_cancellation_step_3_header_title), stepsNumber));
+                getString(com.tokopedia.flight.R.string.flight_cancellation_step_3_header_title), stepsNumber));
     }
 
     private View.OnClickListener getNextButtonClickListener() {
@@ -188,16 +187,16 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     }
 
     private SpannableString setDescriptionText() {
-        final int color = getContext().getResources().getColor(R.color.green_500);
-        int startIndex = getString(R.string.flight_cancellation_refund_description).indexOf("Pelajari");
-        int stopIndex = getString(R.string.flight_cancellation_refund_description).length();
+        final int color = getContext().getResources().getColor(com.tokopedia.design.R.color.green_500);
+        int startIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).indexOf("Pelajari");
+        int stopIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).length();
         SpannableString description = new SpannableString(getContext().getString(
-                R.string.flight_cancellation_refund_description));
+                com.tokopedia.flight.R.string.flight_cancellation_refund_description));
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 FlightCancellationRefundBottomSheet bottomSheet = new FlightCancellationRefundBottomSheet();
-                bottomSheet.show(getChildFragmentManager(), getString(R.string.flight_cancellation_refund_bottom_sheet_tag));
+                bottomSheet.show(getChildFragmentManager(), getString(com.tokopedia.flight.R.string.flight_cancellation_refund_bottom_sheet_tag));
             }
 
             @Override

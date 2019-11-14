@@ -49,6 +49,11 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
     StackedCouponActivityPresenter mPresenter;
 
     @Override
+    protected int getToolbarResourceID() {
+        return R.id.toolbar_coupon_listing_tokopoint;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_label_my_coupon_new));

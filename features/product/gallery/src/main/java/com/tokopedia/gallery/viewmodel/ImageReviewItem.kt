@@ -10,9 +10,11 @@ data class ImageReviewItem(var reviewId: String? = null,
                            var reviewerName: String? = null,
                            var imageUrlThumbnail: String? = null,
                            var imageUrlLarge: String? = null,
-                           var rating: Int = NO_RATING_DATA) : Visitable<TypeFactory>, Parcelable {
+                           var rating: Int = NO_RATING_DATA,
+                           var hasNext: Boolean = false,
+                           var imageCount: String? = null) : Visitable<TypeFactory>, Parcelable {
 
-    override fun type(typeFactory: TypeFactory): Int  = typeFactory.type(this)
+    override fun type(typeFactory: TypeFactory): Int = typeFactory.type(this)
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -20,7 +22,10 @@ data class ImageReviewItem(var reviewId: String? = null,
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readInt())
+            parcel.readInt(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readString()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(reviewId)
@@ -29,6 +34,9 @@ data class ImageReviewItem(var reviewId: String? = null,
         parcel.writeString(imageUrlThumbnail)
         parcel.writeString(imageUrlLarge)
         parcel.writeInt(rating)
+        parcel.writeByte(if (hasNext) 1 else 0)
+        parcel.writeString(imageCount)
+
     }
 
     override fun describeContents(): Int {

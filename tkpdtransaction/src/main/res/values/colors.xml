@@ -42,5 +42,6 @@
     <color name="tkpd_transaction_label_grey">#9e9fa3</color>
     <color name="tkpd_transaction_arrow_tint">#6c727c</color>
     <color name="detail_text_color">#31353b</color>
+    <color name="tkpd_transaction_retry_failed_button">#5131353b</color>
 
 </resources>

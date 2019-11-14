@@ -30,7 +30,7 @@ class PlayImageAnnouncementViewHolder(itemView: View, var listener: ChatroomCont
     private val content: ImageView
 
     init {
-        message = itemView.findViewById(R.id.text)
+        message = itemView.findViewById(com.tokopedia.design.R.id.text)
         content = itemView.findViewById(R.id.content_image)
     }
 
@@ -39,7 +39,7 @@ class PlayImageAnnouncementViewHolder(itemView: View, var listener: ChatroomCont
         var userName = getUserName(element.senderName, element.isAdministrator)
         message.append(userName)
         message.append(" ")
-        message.append(getColoredString(element.message, ContextCompat.getColor(itemView.context, R.color.white)))
+        message.append(getColoredString(element.message, ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.white)))
         ImageHandler.loadImageWithoutPlaceholder(content, element.contentImageUrl)
         content.setOnClickListener { listener.onImageAnnouncementClicked(element) }
     }

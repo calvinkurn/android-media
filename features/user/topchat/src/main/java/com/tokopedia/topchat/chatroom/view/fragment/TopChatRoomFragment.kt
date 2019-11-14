@@ -65,7 +65,6 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
-import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatRouter
@@ -366,7 +365,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
-
+        analytics.trackClickImageUpload()
         activity?.let {
             val strings: ArrayList<String> = ArrayList()
             strings.add(imageUrl)
@@ -756,6 +755,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onGoToReportUser() {
         context?.let {
+            analytics.eventClickReportUser(opponentId)
             val reportUrl = getChatReportUrl()
             val intent = BaseSimpleWebViewActivity.getStartIntent(it, reportUrl)
             startActivity(intent)
@@ -849,6 +849,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         onGoToWebView(url, id)
     }
 
+    override fun trackClickInvoice(viewModel: AttachInvoiceSentViewModel) {
+        analytics.trackClickInvoice(viewModel)
+    }
+
     override fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
         return getParamString(key, arguments, savedInstanceState)
     }
@@ -875,6 +879,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun getShopName(): String {
         return opponentName
+    }
+
+    override fun trackChatMenuClicked(label: String) {
+        analytics.trackChatMenuClicked(label)
     }
 
     override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {

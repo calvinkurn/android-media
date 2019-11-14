@@ -47,7 +47,7 @@
 
             <ImageView
                 android:id="@+id/image"
-                android:scaleType="fitXY"
+                android:scaleType="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </androidx.cardview.widget.CardView>

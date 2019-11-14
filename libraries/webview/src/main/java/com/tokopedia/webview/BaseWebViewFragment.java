@@ -52,6 +52,7 @@ import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private static final int MAX_PROGRESS = 100;
+    private static final int PICTURE_QUALITY = 60;
 
     public TkpdWebView webView;
     ProgressBar progressBar;
@@ -185,7 +186,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
-            String base64 = encodeToBase64(imagePath);
+            String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
             if (imagePath != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
                 jsCallbackBuilder.append("javascript:")
@@ -360,7 +361,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    protected boolean shouldOverrideUrlLoading(WebView webview, @NonNull String url) {
+    protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {
         if (getActivity() == null) {
             return false;
         }

@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerData;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.AutoApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Donation;
@@ -158,7 +157,7 @@ public class ShipmentMapper implements IShipmentMapper {
                         voucherOrdersItemData.setIsAutoapply(true);
                         voucherOrdersItemDataList.add(voucherOrdersItemData);
                     }
-                    autoApplyStackData.setVoucherOrders(voucherOrdersItemDataList);
+                    autoApplyStackData.setVoucherOrdersItemDataList(voucherOrdersItemDataList);
                 }
             }
             dataResult.setAutoApplyStackData(autoApplyStackData);

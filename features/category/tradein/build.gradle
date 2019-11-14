@@ -50,14 +50,15 @@ dependencies {
     
     testImplementation 'junit:junit:4.12'
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.datepicker
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.features.profileCompletion)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.purchase_platform_common)
+    implementation rootProject.ext.miscDependencies.rootbeer
 }
 
 project.ext {

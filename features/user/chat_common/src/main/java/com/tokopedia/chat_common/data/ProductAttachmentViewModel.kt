@@ -2,13 +2,14 @@ package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
+import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import java.util.*
 
 /**
  * @author by nisie on 5/14/18.
  */
-class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
+open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
     var productId: Int = 0
         private set
@@ -39,6 +40,8 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
     var shopId: Int = 0
 
     var freeShipping: FreeShipping = FreeShipping()
+
+    var playStoreData: PlayStoreData = PlayStoreData()
 
     var categoryId: Int = 0
 
@@ -78,7 +81,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
             productImage: String, isSender: Boolean, message: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variant: String, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping, categoryId: Int
+            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             "", isRead, false, isSender, message
@@ -99,6 +102,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.shopId = shopId
         this.freeShipping = freeShipping
         this.categoryId = categoryId
+        this.playStoreData = playStoreData
     }
 
     /**
@@ -129,7 +133,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
             isSender: Boolean, message: String, startTime: String,
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variant: String, dropPercentage: String, priceBefore: String, shopId: Int,
-            freeShipping: FreeShipping
+            freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             startTime, false, false, isSender, message
@@ -149,6 +153,8 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.priceBefore = priceBefore
         this.shopId = shopId
         this.freeShipping = freeShipping
+        this.categoryId = categoryId
+        this.playStoreData = playStoreData
     }
 
     /**
@@ -188,6 +194,22 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
 
     fun getFreeShippingImageUrl(): String {
         return freeShipping.imageUrl
+    }
+
+    fun getAtcEventLabel(): String {
+        val atcEventLabel =  when {
+            blastId == 0 -> "chat"
+            blastId == -1 -> "drop price alert"
+            blastId == -2 -> "limited stock"
+            blastId > 0 -> "broadcast"
+            else -> "chat"
+        }
+
+        return "$atcEventLabel - $blastId"
+    }
+
+    fun getAtcEventAction(): String {
+        return "click atc on bottom sheet"
     }
 
 }
