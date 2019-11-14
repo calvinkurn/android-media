@@ -56,14 +56,14 @@ class ContentExploreFragment :
 
     companion object {
 
-        var PARAM_CATEGORY_ID = "category_id"
-        var DEFAULT_CATEGORY = "0"
-        var PEFORMANCE_EXPLORE = "mp_explore"
-        var CATEGORY_POSITION_NONE = -1
+        const val PARAM_CATEGORY_ID = "category_id"
+        private const val DEFAULT_CATEGORY = "0"
+        private const val PEFORMANCE_EXPLORE = "mp_explore"
+        private const val CATEGORY_POSITION_NONE = -1
 
-        private val IMAGE_SPAN_COUNT = 3
-        private val IMAGE_SPAN_SINGLE = 1
-        private val LOAD_MORE_THRESHOLD = 2
+        private const val IMAGE_SPAN_COUNT = 3
+        private const val IMAGE_SPAN_SINGLE = 1
+        private const val LOAD_MORE_THRESHOLD = 2
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ContentExploreFragment {
@@ -107,7 +107,7 @@ class ContentExploreFragment :
     }
 
     override fun initInjector() {
-        val baseAppComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
+        val baseAppComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent
         DaggerExploreComponent.builder()
                 .baseAppComponent(baseAppComponent)
                 .build()

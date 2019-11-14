@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.tagmanager.DataLayer
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -263,6 +264,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun initInjector() {
         if (activity != null && activity!!.application != null) {
             DaggerFeedPlusComponent.builder()
+                    .baseAppComponent(
+                            (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                    )
                     .build()
                     .inject(this)
         }

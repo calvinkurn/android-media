@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -162,19 +163,19 @@ class DynamicFeedFragment:
     }
 
     override fun getScreenName(): String {
-        var screenName = ""
-        when(feedKey){
-            FeedTabs.KEY_TRENDING -> screenName = FeedAnalyticTracker.Screen.TRENDING
+        return when(feedKey){
+            FeedTabs.KEY_TRENDING -> FeedAnalyticTracker.Screen.TRENDING
+            else -> ""
         }
-        return screenName
     }
 
     override fun initInjector() {
-        if (activity != null && activity!!.application != null) {
-            DaggerFeedPlusComponent.builder()
-                    .build()
-                    .inject(this)
-        }
+        DaggerFeedPlusComponent.builder()
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
+                .build()
+                .inject(this)
     }
 
     override fun loadData(page: Int) {
