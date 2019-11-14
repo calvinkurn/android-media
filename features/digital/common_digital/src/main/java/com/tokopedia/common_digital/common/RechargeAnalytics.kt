@@ -5,7 +5,6 @@ import com.tokopedia.common_digital.common.presentation.model.RechargePushEventR
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
 import rx.Subscriber
 
 class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase) {
@@ -52,15 +51,6 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
                 val response = graphqlResponse.getData<RechargePushEventRecommendationResponseEntity>(RechargePushEventRecommendationResponseEntity::class.java)
             }
         }
-    }
-
-    fun onClickUpdateSaldoEmoney(operatorName:String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                CLICK_PDP,
-                DIGITAL_HOMEPAGE,
-                CLICK_UPDATE_SALDO + operatorName,
-                operatorName
-        ))
     }
 
     companion object {
