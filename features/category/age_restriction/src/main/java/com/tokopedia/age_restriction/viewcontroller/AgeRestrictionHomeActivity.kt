@@ -3,7 +3,6 @@ package com.tokopedia.age_restriction.viewcontroller
 import android.app.Activity
 import androidx.lifecycle.Observer
 import android.content.Intent
-import com.google.android.material.snackbar.Snackbar
 import androidx.fragment.app.Fragment
 import android.view.View
 import com.tokopedia.age_restriction.R
@@ -14,7 +13,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.age_restriction_home_activity.*
 
 class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessRequestListener {

@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.home.account.presentation.fragment.setting.AdvancedSettingFragment;
-import com.tokopedia.home.account.presentation.fragment.setting.GeneralSettingFragment;
 
 public class AdvancedSettingActivity extends BaseSimpleActivity {
 

@@ -6,10 +6,10 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
-import com.tokopedia.tradein_common.IAccessRequestListener
 import com.tokopedia.tradein.model.TradeInParams
 
 /**
