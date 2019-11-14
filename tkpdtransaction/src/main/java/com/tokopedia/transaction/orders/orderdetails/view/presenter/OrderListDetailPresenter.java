@@ -631,4 +631,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url);
     }
 
+    public String getProductCategory() {
+        for (Title title : details.title()) {
+            if (title.label().equalsIgnoreCase("Kategori Produk"))
+                return title.value();
+        }
+        return null;
+    }
 }

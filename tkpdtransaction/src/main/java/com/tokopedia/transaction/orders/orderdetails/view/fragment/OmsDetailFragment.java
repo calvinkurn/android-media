@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
@@ -127,7 +129,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     LinearLayout userInfo;
     TextView userInfoLabel;
     private String categoryName;
-    View dividerUserInfo, dividerActionBtn;
+    View dividerUserInfo, dividerActionBtn,dividerUserlabel;
+    private CardView policy;
+    private CardView claim;
 
 
     @Override
@@ -176,9 +180,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         userInfo = view.findViewById(R.id.user_information_layout);
         userInfoLabel = view.findViewById(R.id.user_label);
         dividerUserInfo = view.findViewById(R.id.divider_above_userInfo);
+        dividerUserlabel = view.findViewById(R.id.divider_above_infolabel);
         dividerActionBtn = view.findViewById(R.id.divider_above_actionButton);
         actionButtonText = view.findViewById(R.id.actionButton_text);
         recyclerView.setNestedScrollingEnabled(false);
+        policy = view.findViewById(R.id.policy);
+        claim = view.findViewById(R.id.claim);
 
 
         initInjector();
@@ -654,5 +661,21 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         if (!TextUtils.isEmpty(title)) {
             detailLabel.setText(title);
         }
+    }
+
+    @Override
+    public void setInsuranceDetail() {
+        policy.setVisibility(View.VISIBLE);
+        claim.setVisibility(View.VISIBLE);
+        dividerUserlabel.setVisibility(View.GONE);
+        claim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(
+                getContext(),
+                String.format("%s?url=%s", ApplinkConst.WEBVIEW, getContext().getResources().getString(R.string.insurance_claim_applink)));
+
+            }
+        });
     }
 }

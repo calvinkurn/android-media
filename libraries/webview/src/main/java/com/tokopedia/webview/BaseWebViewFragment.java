@@ -77,6 +77,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private boolean needLogin = false;
 
     private UserSession userSession;
+    View mView;
 
     /**
      * return the url to load in the webview
@@ -121,6 +122,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mView = inflater.inflate(getLayout(), container, false);
+        webView = mView.findViewById(R.id.webview);
         boolean overrideUrlLoading = shouldOverrideUrlLoading(webView, url);
         if (overrideUrlLoading) {
             getActivity().finish();
@@ -132,12 +135,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-        View view = inflater.inflate(getLayout(), container, false);
-        webView = view.findViewById(R.id.webview);
-        progressBar = view.findViewById(R.id.progressbar);
 
+        progressBar = mView.findViewById(R.id.progressbar);
         CookieManager.getInstance().setAcceptCookie(true);
-
         webView.clearCache(true);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -150,7 +150,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings.setMediaPlaybackRequiresUserGesture(false);
         }
-        return view;
+
+        return mView;
     }
 
     protected int getLayout() {
