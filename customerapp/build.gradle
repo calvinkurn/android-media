@@ -458,9 +458,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
-//    implementation rootProject.ext.analyticsDependencies.moengageSdk
-//    implementation rootProject.ext.analyticsDependencies.moengagePushbase
-//    implementation rootProject.ext.analyticsDependencies.moengageInapp
     implementation(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
@@ -578,7 +575,6 @@ dependencies {
     }
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
-//    implementation "com.moengage:push-amp-plus:0.2.00"
 }
 
 
