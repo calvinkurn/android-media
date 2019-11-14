@@ -65,7 +65,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.parceler
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.viewDependencies.appIntro
+    
 }
 
 project.ext {

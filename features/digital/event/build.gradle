@@ -57,7 +57,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.viewDependencies.appIntro
+
     implementation rootProject.ext.playServicesDependencies.maps
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch

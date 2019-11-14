@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.onboarding.FreeReturnOnboardingActivity;
 import com.tokopedia.core.util.RouterUtils;
 
 
@@ -107,13 +106,5 @@ public class InboxRouter {
             e.printStackTrace();
         }
         return parentIndexHomeClass;
-    }
-
-    public static Intent getFreeReturnOnBoardingActivityIntent(Context context, String orderID) {
-        Intent intent = new Intent(context, FreeReturnOnboardingActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_ORDER_ID, orderID);
-        intent.putExtras(bundle);
-        return intent;
     }
 }
