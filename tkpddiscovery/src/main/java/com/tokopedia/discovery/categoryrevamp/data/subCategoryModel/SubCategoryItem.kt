@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.categoryrevamp.data.subCategoryModel
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class SubCategoryItem(
 
@@ -24,4 +25,4 @@ data class SubCategoryItem(
 
         @field:SerializedName("is_default")
         var is_default: Boolean = false
-)
+) : Serializable

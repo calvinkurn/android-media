@@ -37,6 +37,8 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
@@ -214,23 +216,23 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         categoryNavViewModel.mBannedCheck.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    progressBar.visibility = View.GONE
+                    progressBar.hide()
                     if (it.data.isBanned == IS_BANNED) {
-                        setEmptyView(it.data)
+                        hideBottomNavigation()
                     } else {
-                        layout_banned_screen.visibility = View.GONE
-                        searchNavContainer?.visibility = View.VISIBLE
-                        if (it.data.isAdult == IS_ADULT) {
-                            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
-                        }
-                        initViewPager()
-                        loadSection()
-                        initSwitchButton()
-                        initBottomSheetListener()
+                        showBottomNavigation()
                     }
+                    layout_banned_screen.hide()
+                    if (it.data.isAdult == IS_ADULT) {
+                        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
+                    }
+                    initViewPager()
+                    loadSection(it.data)
+                    initSwitchButton()
+                    initBottomSheetListener()
                 }
                 is Fail -> {
-                    progressBar.visibility = View.GONE
+                    progressBar.hide()
                     setErrorPage()
                 }
             }
@@ -239,8 +241,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun setErrorPage() {
-        searchNavContainer?.visibility = View.GONE
-        layout_banned_screen.visibility = View.VISIBLE
+        hideBottomNavigation()
+        layout_banned_screen.show()
         txt_header.text = "There is some error on server"
         txt_sub_header.text = "try again"
 
