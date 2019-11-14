@@ -25,6 +25,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData;
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.RemoveInsuranceData;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceData;
@@ -1229,11 +1230,11 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public Map<String, Object> generateRecommendationDataOnClickAnalytics(RecommendationItem cartRecommendation, boolean isEmptyCart, int position) {
-        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
+//        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
         EnhancedECommerceEmptyCartData enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationOnClickMapData(cartRecommendation, isEmptyCart, position);
-        enhancedECommerceCartMapData.addClick(enhancedECommerceProductCartMapData.getData());
-        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
-        return enhancedECommerceCartMapData.getCartMap();
+//        enhancedECommerceCartMapData.addClick(enhancedECommerceProductCartMapData.getData());
+//        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+        return enhancedECommerceProductCartMapData.getData();
     }
 
     @NonNull
@@ -1568,10 +1569,10 @@ public class CartListPresenter implements ICartListPresenter {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(getActionFieldListStr(isCartEmpty, cartRecommendationItemHolderData.getRecommendationItem()));
-        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
+        EnhancedECommerceRecomProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceRecomProductCartMapData();
         enhancedECommerceProductCartMapData.setProductName(cartRecommendationItemHolderData.getRecommendationItem().getName());
         enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartRecommendationItemHolderData.getRecommendationItem().getProductId()));
-        enhancedECommerceProductCartMapData.setPrice(cartRecommendationItemHolderData.getRecommendationItem().getPrice());
+        enhancedECommerceProductCartMapData.setPrice(cartRecommendationItemHolderData.getRecommendationItem().getPrice().replaceAll("[^0-9]", ""));
         enhancedECommerceProductCartMapData.setCategory(cartRecommendationItemHolderData.getRecommendationItem().getCategoryBreadcrumbs());
         enhancedECommerceProductCartMapData.setQty(cartRecommendationItemHolderData.getRecommendationItem().getMinOrder());
         enhancedECommerceProductCartMapData.setShopId(String.valueOf(cartRecommendationItemHolderData.getRecommendationItem().getShopId()));
