@@ -72,6 +72,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public void onDetach() {
             if (timer != null){
                 timer.cancel();
+                timer = null;
             }
         }
     }
