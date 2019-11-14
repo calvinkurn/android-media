@@ -54,14 +54,16 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
 
         val totalProducts = somItemList[position].listOrderProduct.size
         if (totalProducts > 1) {
-            holder.itemView.rl_overlay_product.visibility = View.VISIBLE
-            holder.itemView.label_total_product.text = "$totalProducts\n Produk"
+            holder.itemView.rl_overlay_product?.visibility = View.VISIBLE
+            holder.itemView.label_total_product?.text = "$totalProducts\n Produk"
         } else {
-            holder.itemView.rl_overlay_product.visibility = View.GONE
+            holder.itemView.rl_overlay_product?.visibility = View.GONE
         }
 
         if (somItemList[position].listOrderLabel.isNotEmpty()) {
             createOrderLabelList(holder, position)
+        } else {
+            holder.itemView.ll_label_order?.visibility = View.GONE
         }
 
         holder.itemView.setOnClickListener {
@@ -71,7 +73,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
 
     @SuppressLint("Range", "InflateParams")
     private fun createOrderLabelList(holder: ViewHolder, position: Int) {
-        holder.itemView.ll_label_order.removeAllViews()
+        holder.itemView.ll_label_order?.removeAllViews()
 
         // soon will be change with unify label (for now, label unify cannot set color background & text
         somItemList[position].listOrderLabel.forEach {

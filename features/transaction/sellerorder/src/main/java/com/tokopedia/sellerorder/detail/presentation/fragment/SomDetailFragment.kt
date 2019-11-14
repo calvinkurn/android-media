@@ -84,7 +84,11 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import android.net.Uri
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
+import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 
 
 /**x
@@ -108,6 +112,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private lateinit var somBottomSheetCourierProblemsAdapter: SomBottomSheetCourierProblemsAdapter
     private lateinit var dialogUnify: DialogUnify
     private lateinit var bottomSheetUnify: BottomSheetUnify
+    private val FLAG_CONFIRM_REQ_PICKUP = 3535
 
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
@@ -326,6 +331,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
                 } else if (buttonResp.key.equals(KEY_TRACK_SELLER, true)) {
                     setActionGoToTrackingPage(buttonResp)
+
+                } else if (buttonResp.key.equals(KEY_REQUEST_PICKUP, true)) {
+                    setActionRequestPickup()
                 }
             }
 
@@ -388,6 +396,15 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl)
             routingAppLink += uriBuilder.toString()
             RouteManager.route(context, routingAppLink)
+        }
+    }
+
+    private fun setActionRequestPickup() {
+        btn_primary?.setOnClickListener {
+            Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
+                putExtra(PARAM_ORDER_ID, orderId)
+                startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
+            }
         }
     }
 
@@ -771,5 +788,19 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         val phone = "tel:$strPhoneNo"
         intent.data = Uri.parse(phone)
         startActivity(intent)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == FLAG_CONFIRM_REQ_PICKUP && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
+                    val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
+                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                        putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
+                    })
+                    activity?.finish()
+                }
+            }
+        }
     }
 }

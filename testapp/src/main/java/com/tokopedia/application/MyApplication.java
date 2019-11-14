@@ -27,8 +27,6 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-import com.tokopedia.url.Env;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.tkpd.network.DataSource;
 

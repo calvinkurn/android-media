@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_IS_FROM_FINTECH
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LANG_ID

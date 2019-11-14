@@ -3,6 +3,7 @@
     <string name="title_som_list">Penjualan</string>
     <string name="title_som_filter">Filter</string>
     <string name="title_som_detail">Detail Pesanan</string>
+    <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
     <string name="hint_search_product">Cari produk atau invoice</string>
     <string name="response_due">Batas Response</string>
     <string name="seller_info">Seller Info</string>
@@ -101,5 +102,18 @@
     <string name="tv_driver_phone_example">081234567890</string>
     <string name="tv_driver_license_example">B 1408 TMB</string>
     <string name="tv_driver_call_btn">Hubungi</string>
+
+    <string name="req_pickup_info_button">Request Pick-Up</string>
+    <string name="req_pickup_location_label">Lokasi Tokomu:</string>
+    <string name="req_pickup_location_icon">Icon Location</string>
+    <string name="req_pickup_phone_icon">Icon Phone</string>
+    <string name="req_pickup_location_desc_sample">Tokopedia Tower Ciputra World 2 \n Prof. DR. Satrio No. Kav. 11, RT.3/RW.3, \n Karet Semanggi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950</string>
+    <string name="req_pickup_info_title">Pastikan :</string>
+    <string name="req_pickup_phone_desc_sample">0813166229819</string>
+    <string name="card_courier_title">Detail pengajuan pickup pesanan</string>
+    <string name="card_courier_name_example">SiCepat (Reguler Pick-Up)</string>
+    <string name="card_courier_notes_example">Batas waktu penjemputan 24 jam</string>
+    <string name="card_courier_count_example">Jumlah: 1</string>
+    <string name="courier_notes_example">Tidak perlu memberikan ongkir ke kurir</string>
 
 </resources>

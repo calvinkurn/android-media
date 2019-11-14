@@ -26,6 +26,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
@@ -41,6 +42,8 @@ import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.bottomsheet.TickerDetailBottomSheetFragment
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
+import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
+import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -390,6 +393,10 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 } else if (data.hasExtra(RESULT_REJECT_ORDER)) {
                     val resultRejectOrder = data.getParcelableExtra<SomRejectOrder.Data.RejectOrder>(RESULT_REJECT_ORDER)
                     refreshThenShowToasterOk(resultRejectOrder.message.first())
+
+                } else if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
+                    val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
+                    refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
                 }
             }
         }

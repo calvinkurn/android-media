@@ -42,10 +42,13 @@ object SomConsts {
     const val ACTION_OK = "OK"
     const val RESULT_ACCEPT_ORDER = "result_accept_order"
     const val RESULT_REJECT_ORDER = "result_reject_order"
+    const val RESULT_CONFIRM_REQ_PICKUP = "result_confirm_req_pickup"
+    const val RESULT_PROCESS_REQ_PICKUP = "result_process_req_pickup"
 
     const val KEY_ACCEPT_ORDER = "accept_order"
     const val KEY_REJECT_ORDER = "reject_order"
     const val KEY_TRACK_SELLER = "track_seller"
+    const val KEY_REQUEST_PICKUP = "request_pickup"
 
     const val KEY_REASON_EMPTY_STOCK = "empty_stock"
     const val KEY_REASON_SHOP_CLOSED = "shop_closed"
@@ -83,4 +86,8 @@ object SomConsts {
 
     const val BASE_URL_UPLOAD_PROOF_AWB = "https://m.tokopedia.com/myorder/list/uploadawb/"
     const val QUERY_INVOICE_URL_UPLOAD_AWB = "?invoice="
+
+    const val RESULT_OK = "OK"
+    const val RESULT_ERROR = "ERROR"
+    const val INPUT_ORDER_ID = "#orderId"
 }
