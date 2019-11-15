@@ -27,4 +27,5 @@
     <color name="tp_no_connection_title_color">#f531353b</color>
     <color name="tp_no_connection_subtitle_color">#ae31353b</color>
     <color name="tp_nonlogin_container_color">#03ac0e</color>
+    <color name="tp_bg_progress_timer">#ffeaef</color>
 </resources>

@@ -63,6 +63,12 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     }
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val waitingForLogin = savedInstanceState.getBoolean(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN)
+            if (waitingForLogin) {
+                activity?.intent?.putExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
+            }
+        }
         processOnActivityCreated(activity, activity?.intent)
     }
 
@@ -87,13 +93,21 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    fun clearMaps(activity: Activity, removeSubscriber: Boolean = true) {
+    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+        super.onActivitySaveInstanceState(activity, outState)
+        if (activity != null) {
+            val waitingForLogin = activity.intent?.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
+            if (waitingForLogin != null && waitingForLogin) {
+                outState?.putBoolean(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
+            }
+        }
+    }
+
+    fun clearMaps(activity: Activity) {
 
         mapOfJobs[activity]?.cancel()
         mapOfJobs.remove(activity)
-        if (removeSubscriber) {
-            mapOfDialogs[activity]?.first?.removeAutoApplyLiveDataObserver()
-        }
+        mapOfDialogs[activity]?.first?.removeAutoApplyLiveDataObserver()
         mapOfDialogs.remove(activity)
     }
 
@@ -219,6 +233,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
         mapOfDialogs.clear()
     }
+
 }
 
 data class GratificationData(val popSlug: String, val page: String)

@@ -58,6 +58,7 @@ ext {
     playServiceFirebaseCore = '16.0.6'
     playServiceTagManager = '16.0.6'
     playServiceSafetyNet = '16.0.0'
+    playServiceMeasurementApi = '16.0.4'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
@@ -140,7 +141,8 @@ ext {
             ads              : "com.google.android.gms:play-services-ads:${playServiceAds}",
             tagManagerImpl   : "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
             tagManager       : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
-            safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}"
+            safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}",
+            measurementApi   : "com.google.android.gms:play-services-measurement-api:${playServiceMeasurementApi}",
     ]
 
     firebase = [
@@ -182,10 +184,8 @@ ext {
             moengageSdk         : "com.moengage:moengagesdk:3.3.02",
             moengagePushbase    : "com.moengage:pushbase:3.2.00",
             moengageInapp   : "com.moengage:inapp:3.2.02",
-            moengageMSG: "com.moengage:addon-messaging:3.2.01",
             branch     : "io.branch.sdk.android:library:4.1.1",
-            rapid7     : "com.rapid7:r7insight_java:1.1.39",
-            cashshield : "com.cashshield.android:cashshield:2.5.1@aar"
+            rapid7     : "com.rapid7:r7insight_java:1.1.39"
     ]
 
     deeplinkDispatchDependencies = [
@@ -200,6 +200,7 @@ ext {
             parceler              : "org.parceler:parceler:1.1.12",
             gson                  : "com.google.code.gson:gson:2.7",
             rxAndroid             : "io.reactivex:rxandroid:1.0.1",
+            rxKotlin             : "io.reactivex:rxkotlin:0.60.0",
             rxJava                : "io.reactivex:rxjava:1.2.9",
             rxJavaMath            : "io.reactivex:rxjava-math:1.0.0",
             rxJavaComputation     : 'io.reactivex:rxjava-computation-expressions:0.21.0',

@@ -705,7 +705,7 @@ public class GTMAnalytics extends ContextAnalytics {
             return clientIdString;
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
+            return "NO_GA_ID";
         }
     }
 

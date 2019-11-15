@@ -17,6 +17,6 @@ interface CategoryNavigationListener {
     interface VisibleClickListener {
         fun onSortClick()
         fun onFilterClick()
-
+        fun onShareButtonClick()
     }
 }

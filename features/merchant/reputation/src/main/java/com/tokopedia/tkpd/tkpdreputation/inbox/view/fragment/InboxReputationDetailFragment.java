@@ -38,6 +38,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity;
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
@@ -73,6 +75,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     private static final int REQUEST_EDIT_REVIEW = 102;
     private static final int REQUEST_REPORT_REVIEW = 103;
 
+    public static final int REQUEST_CODE_ON_SUCCESS_REVIEW = 104;
     public static final int PUAS_SCORE = 2; // FROM API
 
     private RecyclerView listProduct;
@@ -267,19 +270,17 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToGiveReview(String reviewId, String productId,
-                                 int shopId, boolean reviewIsSkippable, String productAvatar,
-                                 String productName, String productUrl, String revieweeName, int
-                                         productStatus) {
-        startActivityForResult(
-                InboxReputationFormActivity.getGiveReviewIntent(
-                        getActivity(),
-                        reviewId,
-                        reputationId, productId,
-                        String.valueOf(shopId), reviewIsSkippable,
-                        productAvatar, productName, productUrl,
-                        revieweeName, productStatus),
-                REQUEST_GIVE_REVIEW);
+    public void onGoToGiveReview(String productId, int shopId) {
+        if (getContext() != null) {
+            startActivityForResult(
+                    CreateReviewActivity.Companion.newInstance(getContext())
+                        .putExtra(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId)
+                        .putExtra(InboxReputationFormActivity.ARGS_SHOP_ID, Integer.toString(shopId, 10))
+                        .putExtra(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId)
+                        .putExtra(CreateReviewFragment.REVIEW_CLICK_AT, 5),
+                    REQUEST_GIVE_REVIEW
+            );
+        }
     }
 
     @Override
@@ -581,6 +582,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_REPORT_REVIEW && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
                     .success_report_review));
+        } else if (requestCode == REQUEST_GIVE_REVIEW && resultCode == REQUEST_CODE_ON_SUCCESS_REVIEW) {
+            refreshPage();
+            getActivity().setResult(Activity.RESULT_OK);
+            showRatingDialog(data.getExtras());
+            NetworkErrorHelper.showSnackbar(getActivity(),
+                    getString(R.string.review_for) + " " + data.getExtras().getString
+                            (InboxReputationFormActivity.ARGS_REVIEWEE_NAME, "")
+                            + " " + getString(R.string.is_send));
         } else
             super.onActivityResult(requestCode, resultCode, data);
     }
