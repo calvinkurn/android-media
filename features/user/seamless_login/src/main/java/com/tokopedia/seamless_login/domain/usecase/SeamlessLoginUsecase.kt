@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.seamless_login.data.UserDataPojo
+import com.tokopedia.seamless_login.internal.SeamlessLoginConstant
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.seamless_login.utils.AESUtils
 import com.tokopedia.url.TokopediaUrl
@@ -43,40 +44,52 @@ class SeamlessLoginUsecase @Inject constructor(
     }
 
     private fun createData(url: String, aesKey: String): String {
-        val uri = Uri.parse(url)
         val date = AuthHelper.generateDate(DATE_FORMAT)
 
-        val seamlessUrl =
-                TokopediaUrl.getInstance().JS +
-                        "seamless?" +
-                        "os_type=1" +
-                        "&url=${URLEncoder.encode(url, "UTF-8")}"  +
-                        "&version=${GlobalConfig.VERSION_CODE}" +
-                        "&timestamp=${System.currentTimeMillis()}" +
-                        "&uid=${userSession.userId}" +
-                        "&token=${userSession.deviceId}" +
-                        "&browser=1"
+        val seamlessUrl = Uri.parse(TokopediaUrl.getInstance().JS)
+                .buildUpon()
+                .appendPath(SeamlessLoginConstant.SEAMLESS_PATH)
+                .appendQueryParameter(SeamlessLoginConstant.PARAM.TOKEN.value, userSession.deviceId)
+                .appendQueryParameter(SeamlessLoginConstant.PARAM.OS_TYPE.value, "1")
+                .appendQueryParameter(SeamlessLoginConstant.PARAM.UID.value, userSession.userId)
+                .appendQueryParameter(SeamlessLoginConstant.PARAM.URL.value, URLEncoder.encode(url, "UTF-8"))
+                .appendQueryParameter(SeamlessLoginConstant.PARAM.VERSION.value, GlobalConfig.VERSION_CODE.toString())
+                .appendQueryParameter(SeamlessLoginConstant.PARAM.TIMESTAMP.value, System.currentTimeMillis().toString())
+                .appendQueryParameter(SeamlessLoginConstant.PARAM.BROWSER.value, "1")
 
-        val contentMD5 = AuthUtil.md5(Uri.parse(seamlessUrl).query)
+//        val seamlessUrl =
+//                TokopediaUrl.getInstance().JS +
+//                        "seamless?" +
+//                        "os_type=1" +
+//                        "&url=${URLEncoder.encode(url, "UTF-8")}"  +
+//                        "&version=${GlobalConfig.VERSION_CODE}" +
+//                        "&timestamp=${System.currentTimeMillis()}" +
+//                        "&uid=${userSession.userId}" +
+//                        "&token=${userSession.deviceId}" +
+//                        "&browser=1"
 
-        val authString = ("GET"
+        val contentMD5 = AuthUtil.md5(seamlessUrl.build().query)
+
+        val authString = (
+                SeamlessLoginConstant.METHOD_GET
                 + "\n" + contentMD5
-                + "\n" + "application/x-www-form-urlencoded"
+                + "\n" + AuthUtil.CONTENT_TYPE
                 + "\n" + date
-                + "\n" + PARAM_X_TKPD_USER_ID + ":" + userSession.userId
-                + "\n" + uri.path)
+                + "\n" + SeamlessLoginConstant.SEAMLESS_PATH)
         val signature = AuthHelper.calculateRFC2104HMAC(authString, AuthUtil.KEY.KEY_WSV4)
 
         val userData = UserDataPojo(
                 date = date,
                 content_md5 = contentMD5,
-                authorization = "TKPD Tokopedia:${signature.trim()}",
-                accountAuth = "Bearer ${userSession.accessToken}"
+                authorization = "${SeamlessLoginConstant.HMAC_SIGNATURE}${signature.trim()}",
+                accountAuth = "${SeamlessLoginConstant.BEARER}${userSession.accessToken}"
         )
 
         val encryptedUserData = AESUtils.encrypt(gson.toJson(userData), key = aesKey)
         println("EncryptedUserDataKey $aesKey")
         println("EncryptedUserData $encryptedUserData")
-        return  "$seamlessUrl&data=${URLEncoder.encode(encryptedUserData, "UTF-8")}"
+
+        seamlessUrl.appendQueryParameter(SeamlessLoginConstant.PARAM.DATA.value, URLEncoder.encode(encryptedUserData, "UTF-8"))
+        return  seamlessUrl.build().toString()
     }
 }
