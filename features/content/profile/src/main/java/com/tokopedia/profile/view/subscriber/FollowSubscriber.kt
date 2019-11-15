@@ -33,7 +33,7 @@ class FollowSubscriber(private val view: ProfileContract.View) : Subscriber<Grap
     }
 
     override fun onNext(response: GraphqlResponse) {
-        val query: com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery? = response.getData(com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery::class.java)
+        val query: FollowKolQuery? = response.getData(FollowKolQuery::class.java)
 
         if (query == null) {
             onError(RuntimeException())

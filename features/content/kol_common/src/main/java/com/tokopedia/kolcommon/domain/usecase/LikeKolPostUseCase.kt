@@ -20,8 +20,6 @@ class LikeKolPostUseCase @Inject constructor(
 
     companion object {
 
-        const val MUTATION_LIKE_KOL_POST = "mutation_like_kol_post"
-
         private const val PARAM_ID_POST = "idPost"
         private const val PARAM_ACTION = "action"
 

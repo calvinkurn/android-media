@@ -49,8 +49,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
-import static com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase.MUTATION_LIKE_KOL_POST;
-
 /**
  * @author by nisie on 5/15/17.
  */

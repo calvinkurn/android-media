@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by yfsx on 25/03/19.
@@ -15,6 +15,8 @@ interface VideoDetailContract {
 
         val androidContext: Context
 
+        var userSession: UserSessionInterface
+
         fun showLoading()
 
         fun hideLoading()
@@ -22,8 +24,6 @@ interface VideoDetailContract {
         fun onSuccessFollowKol()
 
         fun onErrorFollowKol(error: String)
-
-        fun getUserSession() :UserSession
 
         fun onErrorGetVideoDetail(error: String)
 

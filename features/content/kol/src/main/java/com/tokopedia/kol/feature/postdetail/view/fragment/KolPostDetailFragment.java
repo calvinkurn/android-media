@@ -907,7 +907,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
-        startActivityForResult(VideoDetailActivity.Companion.getInstance(getActivity(), postId), OPEN_VIDEO_DETAIL);
+        startActivityForResult(VideoDetailActivity.getInstance(requireContext(), postId), OPEN_VIDEO_DETAIL);
     }
 
     @Override

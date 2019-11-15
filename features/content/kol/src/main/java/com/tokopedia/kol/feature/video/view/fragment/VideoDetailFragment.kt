@@ -38,6 +38,7 @@ import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoplayer.utils.Video
 import kotlinx.android.synthetic.main.layout_single_video_fragment.*
 import javax.inject.Inject
@@ -59,7 +60,11 @@ class VideoDetailFragment:
     lateinit var presenter: VideoDetailContract.Presenter
 
     lateinit var dynamicPostViewModel: DynamicPostViewModel
+
     lateinit var videoViewModel: VideoViewModel
+
+    @Inject
+    override lateinit var userSession: UserSessionInterface
 
     private var id: String = ""
     companion object {
@@ -146,10 +151,6 @@ class VideoDetailFragment:
     override fun onErrorFollowKol(error: String) {
     }
 
-    fun getCtx(): Context {
-        return activity!!
-    }
-
     override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
 
         val like = dynamicPostViewModel.footer.like
@@ -193,8 +194,6 @@ class VideoDetailFragment:
         initPlayer(videoViewModel.url)
 
     }
-
-    override fun getUserSession(): UserSession = UserSession(requireContext())
 
     override fun showLoading() {
 
@@ -262,7 +261,7 @@ class VideoDetailFragment:
 
     private fun onLikeSectionClicked(): View.OnClickListener {
         return View.OnClickListener {
-            if (getUserSession().isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 presenter.likeKol(id.toInt(), 0, this)
             } else{
                 goToLogin()
@@ -272,7 +271,7 @@ class VideoDetailFragment:
 
     private fun onCommentSectionClicked(): View.OnClickListener {
         return View.OnClickListener {
-            if (getUserSession().isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 startActivityForResult(KolCommentActivity.getCallingIntent(activity!!, id.toInt(), 0), INTENT_COMMENT)
             } else{
                 goToLogin()

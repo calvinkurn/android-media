@@ -31,14 +31,6 @@ class VideoDetailPresenter
         getVideoDetailUseCase.unsubscribe()
     }
 
-    override fun checkViewAttached() {
-        super.checkViewAttached()
-    }
-
-    override fun getView(): VideoDetailContract.View {
-        return super.getView()
-    }
-
     override fun getFeedDetail(detailId: String) {
         getVideoDetailUseCase.execute(GetVideoDetailUseCase.createRequestParams(getUserId(), detailId),
                 VideoDetailSubscriber(view))
@@ -75,8 +67,8 @@ class VideoDetailPresenter
     }
     private fun getUserId(): String {
         var userId = "0"
-        if (view.getUserSession().userId.isNotEmpty()) {
-            userId = view.getUserSession().userId
+        if (view.userSession.userId.isNotEmpty()) {
+            userId = view.userSession.userId
         }
 
         return userId

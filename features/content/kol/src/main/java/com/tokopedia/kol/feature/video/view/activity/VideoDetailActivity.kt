@@ -21,6 +21,7 @@ class VideoDetailActivity: BaseSimpleActivity() {
         const val PARAM_ID = "PARAM_ID"
 
         @Deprecated("Use ApplinkConstInternalContent")
+        @JvmStatic
         fun getInstance(context: Context,
                         id: String): Intent {
             val intent = Intent(context, VideoDetailActivity::class.java)

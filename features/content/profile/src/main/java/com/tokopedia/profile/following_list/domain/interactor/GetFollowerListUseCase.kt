@@ -10,13 +10,15 @@ import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultVi
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by yoasfs on 2019-08-22
  */
-class GetFollowerListUseCase constructor(@ApplicationContext private val context: Context,
-                                         private val useCase: GraphqlUseCase,
-                                         private val mapData: FollowerMapper
+class GetFollowerListUseCase @Inject constructor(
+        @ApplicationContext private val context: Context,
+        private val useCase: GraphqlUseCase,
+        private val mapData: FollowerMapper
 ): UseCase<UserFollowingResultViewModel>() {
 
     companion object {

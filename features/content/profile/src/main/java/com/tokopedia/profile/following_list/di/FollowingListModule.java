@@ -73,15 +73,6 @@ public class FollowingListModule {
 
     @FollowingListScope
     @Provides
-    public GetFollowerListUseCase providesGetFollowerListUseCase(
-            @ApplicationContext Context context,
-            GraphqlUseCase graphqlUseCase,
-            FollowerMapper mapper) {
-        return new GetFollowerListUseCase(context, graphqlUseCase, mapper);
-    }
-
-    @FollowingListScope
-    @Provides
     public FollowerMapper providesKolFollowerMapper() {
         return new FollowerMapper();
     }

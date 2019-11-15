@@ -9,7 +9,6 @@ import com.tokopedia.feedcomponent.di.CoroutineDispatcherModule;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.R;
-import com.tokopedia.kol.feature.post.data.query.LikeKolPostQueryProvider;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
 import com.tokopedia.network.CommonNetwork;
@@ -24,8 +23,6 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
-
-import static com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase.MUTATION_LIKE_KOL_POST;
 
 /**
  * @author by milhamj on 12/02/18.
@@ -79,12 +76,5 @@ public class KolProfileModule {
     @Named("atcMutation")
     String provideAddToCartMutation(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
-    }
-
-    @KolProfileScope
-    @Provides
-    @Named(MUTATION_LIKE_KOL_POST)
-    String provideLikeKolPostMutation() {
-        return LikeKolPostQueryProvider.INSTANCE.getQuery();
     }
 }
