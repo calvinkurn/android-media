@@ -200,8 +200,23 @@
                         android:layout_toRightOf="@+id/tv1"
                         app:srcCompat="@drawable/ic_info" />
 
+                    <com.tokopedia.unifycomponents.ticker.Ticker
+                        android:id="@+id/ticker_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        app:descriptionText="@string/ticker_desc"
+                        app:layout_constraintLeft_toLeftOf="@+id/tv1"
+                        app:layout_constraintTop_toBottomOf="@+id/tv1"
+                        app:tickerShapeType="loose"
+                        app:tickerType="announcement" />
+
                     <TextView
                         android:id="@+id/update_number"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignBaseline="@+id/tv_telephone"
@@ -225,7 +240,7 @@
                         android:id="@+id/tv2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv1"
+                        android:layout_below="@id/ticker_info"
                         android:layout_marginBottom="-8dp"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginStart="@dimen/dp_16"
@@ -271,6 +286,7 @@
 
                     <TextView
                         android:id="@+id/tv3"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_visitor_names"
@@ -284,6 +300,7 @@
 
                     <EditText
                         android:id="@+id/tv_telephone"
+                        android:visibility="gone"
                         android:layout_width="@dimen/edittext_width"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv3"

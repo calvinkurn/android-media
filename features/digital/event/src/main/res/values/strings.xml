@@ -23,6 +23,7 @@
     <string name="fare_breakup">Fare Breakup for %s</string>
     <string name="pay_button">Lanjut Pembayaran</string>
     <string name="date_hint">DD/MM/YY</string>
+    <string name="ticker_desc">Kamu bisa cek status pembelian dan e-voucher lewat halaman Daftar Transaksi</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="x_type">%1$d x %2$s</string>
@@ -33,7 +34,7 @@
     <string name="cek_kode">Cek Kode</string>
     <string name="kode_promo">Kode Promo</string>
     <string name="tujuan_pengiriman_tiket">Tujuan Pengiriman Tiket</string>
-    <string name="emailinfo_text">Alamat email dan nomor telepon yang tertulis akan menjadi tujuan pengiriman e-tiket pemesanan Anda.</string>
+    <string name="emailinfo_text">Alamat email yang tertulis akan menjadi tujuan pengiriman e-tiket Anda</string>
     <string name="data_pelanggan_tambahan">Data Pelanggan Tambahan</string>
     <string name="additionallinfo_text">Data pelanggan tambahan akan digunakan pada saat penukaran tiket</string>
     <string name="promo_success_msg">Anda mendapatkan promo:</string>
