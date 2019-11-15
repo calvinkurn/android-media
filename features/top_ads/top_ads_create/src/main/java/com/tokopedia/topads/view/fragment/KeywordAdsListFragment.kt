@@ -68,7 +68,7 @@ class KeywordAdsListFragment: BaseStepperFragment<CreateManualAdsStepperModel>()
     }
 
     private fun onKeywordSelected() {
-
+        selected_info.setText(String.format(getString(R.string.format_selected_keyword), keywordListAdapter.getSelectedItems().size))
     }
 
     private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data>){

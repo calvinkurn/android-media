@@ -166,12 +166,12 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onProductListSelected() {
-        select_product_info.setText(String.format("%d product", productListAdapter.getSelectedItems().size))
+        select_product_info.setText(String.format(getString(R.string.format_selected_produk), productListAdapter.getSelectedItems().size))
     }
 
     private fun onEmptyProduct() {
         clearRefreshLoading()
-        footer(View.GONE)
+        btn_next.isEnabled = false
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
     }
@@ -182,7 +182,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun onSuccessGetProductList(data: List<ResponseProductList.Data>) {
         clearRefreshLoading()
-        footer(View.VISIBLE)
+        btn_next.isEnabled = true
         data.forEach { result -> productListAdapter.items.add(ProductItemViewModel(result)) }
         productListAdapter.notifyDataSetChanged()
     }
@@ -195,12 +195,6 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         var items = mutableListOf<EtalaseViewModel>()
         data.forEachIndexed { index, result -> items.add(index, EtalaseItemViewModel(index == 0, result)) }
         filteSheetProductList.updateData(items)
-    }
-
-    fun footer(visibility: Int) {
-        btn_next.visibility = visibility
-        shadow_bottom.visibility = visibility
-        select_product_info.visibility = visibility
     }
 
 }

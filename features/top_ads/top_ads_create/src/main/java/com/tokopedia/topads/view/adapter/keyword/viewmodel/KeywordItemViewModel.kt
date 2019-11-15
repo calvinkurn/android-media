@@ -8,6 +8,8 @@ import com.tokopedia.topads.view.adapter.keyword.KeywordListAdapterTypeFactory
  */
 class KeywordItemViewModel(var data: ResponseKeywordSuggestion.TopAdsGetKeywordSuggestion.Data) : KeywordViewModel() {
 
+    var isChecked : Boolean = false
+    
     override fun type(typesFactory: KeywordListAdapterTypeFactory): Int {
         return typesFactory.type(this)
     }

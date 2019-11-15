@@ -92,10 +92,10 @@
         android:layout_marginBottom="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/typography28" />
+        app:layout_constraintStart_toEndOf="@+id/selected_info" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography28"
+        android:id="@+id/selected_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
@@ -104,6 +104,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_next"
         app:typographyType="body_3"
-        tools:text="2 kata kunci dipilih" />
+        android:text="@string/_0_kata_kunci_dipilih"
+        tools:text="@string/format_selected_keyword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

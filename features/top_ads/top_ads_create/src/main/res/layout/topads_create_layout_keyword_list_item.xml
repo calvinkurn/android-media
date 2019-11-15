@@ -22,6 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
+        android:text="@string/_0_produk"
         tools:text="@tools:sample/first_names" />
 
     <com.tokopedia.unifyprinciples.Typography

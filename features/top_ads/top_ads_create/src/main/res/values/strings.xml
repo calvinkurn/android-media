@@ -71,4 +71,8 @@
     <string name="ketik_kata_kunci">Ketik kata kunci</string>
     <string name="tambah">Tambah</string>
     <string name="no_promoted_product">Produkmu belum\ndiiklankan</string>
+    <string name="format_selected_keyword">%d kata kunci dipilih</string>
+    <string name="format_selected_produk">%d produk dipilih</string>
+    <string name="_0_kata_kunci_dipilih">0 kata kunci dipilih</string>
+    <string name="_0_produk">0 produk dipilih</string>
 </resources>

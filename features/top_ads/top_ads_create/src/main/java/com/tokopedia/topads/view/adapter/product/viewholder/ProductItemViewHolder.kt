@@ -21,7 +21,7 @@ class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?): P
 
     init {
         view?.setOnClickListener {
-            it.checkBox.isSelected = !it.checkBox.isSelected
+            it.checkBox.isChecked = !it.checkBox.isChecked
             actionChecked?.invoke()
         }
     }
