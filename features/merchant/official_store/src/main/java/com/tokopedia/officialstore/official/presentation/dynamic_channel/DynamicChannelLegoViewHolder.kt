@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,7 @@ class DynamicChannelLegoViewHolder(
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
     private val headerCountDown = itemView.findViewById<CountDownView>(R.id.dc_header_count_down)
-    private val headerActionText = itemView.findViewById<Typography>(R.id.dc_header_action_text)
+    private val headerActionText = itemView.findViewById<AppCompatTextView>(R.id.dc_header_action_text)
     private val contentList = itemView.findViewById<RecyclerView>(R.id.dc_lego_rv)
 
     override fun bind(element: DynamicChannelViewModel?) {

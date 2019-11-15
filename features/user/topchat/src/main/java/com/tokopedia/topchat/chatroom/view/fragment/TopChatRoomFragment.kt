@@ -65,7 +65,6 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
-import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatRouter
@@ -756,6 +755,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onGoToReportUser() {
         context?.let {
+            analytics.eventClickReportUser(opponentId)
             val reportUrl = getChatReportUrl()
             val intent = BaseSimpleWebViewActivity.getStartIntent(it, reportUrl)
             startActivity(intent)

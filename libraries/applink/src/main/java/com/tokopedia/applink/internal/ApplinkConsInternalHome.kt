@@ -13,5 +13,7 @@ object ApplinkConsInternalHome {
 
     const val HOME_RECOMMENDATION = "$INTERNAL_HOME/rekomendasi/.*\\/"
 
+    const val DEFAULT_HOME_RECOMMENDATION = "$INTERNAL_HOME/rekomendasi"
+
     const val HOME_SIMILAR_PRODUCT = "$INTERNAL_HOME/rekomendasi/d/.*"
 }

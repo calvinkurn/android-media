@@ -46,12 +46,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
 }
 
 project.ext {
     artifactId = 'push-notification'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "push_notification-release"
 }
 
