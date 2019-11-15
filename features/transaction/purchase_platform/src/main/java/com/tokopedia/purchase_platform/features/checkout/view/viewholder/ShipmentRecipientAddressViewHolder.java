@@ -127,6 +127,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             renderTradeInAddressWithTabs(recipientAddress);
         } else {
             renderTradeInAddressWithoutTabs(recipientAddress);
+            formatTradeInDeliveryInfo(recipientAddress);
         }
     }
 
