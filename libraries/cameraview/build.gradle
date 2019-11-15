@@ -17,8 +17,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.23.0'
 
     implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation "androidx.exifinterface:exifinterface:1.0.0"
-    implementation "androidx.annotation:annotation:1.0.0"
+    implementation rootProject.ext.supportLibDependencies.exifinterface
+    implementation rootProject.ext.testDependencies.androidAnnotation
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
@@ -30,7 +30,7 @@ dependencies {
 project.ext {
     artifactId = 'camera-view'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "cameraview-release"
 }
 
