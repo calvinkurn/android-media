@@ -49,6 +49,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
     lateinit var umrahOrderDetailViewModel: UmrahOrderDetailViewModel
 
     @Inject
@@ -65,11 +66,6 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
 
         orderId = savedInstanceState?.getString(EXTRA_ORDER_ID)
                 ?: arguments?.getString(EXTRA_ORDER_ID) ?: ""
-
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            umrahOrderDetailViewModel = viewModelProvider.get(UmrahOrderDetailViewModel::class.java)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -126,7 +122,6 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
         if (::orderId.isInitialized) {
             outState.putString(EXTRA_ORDER_ID, orderId)
         }
@@ -172,9 +167,15 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             tg_umrah_order_package.text = data.items[0].title
             tg_umrah_order_travel.text = metaData.travelAgent
             tg_booking_code.text = metaData.bookingCode
+            btn_show_detail_booking.text = metaData.productDetailButton.label
+            tg_show_e_voucher.text = metaData.evoucherButton.label
             btn_show_detail_booking.setOnClickListener {
                 trackingUmrahUtil.umrahOrderDetailDetailPDP()
-                RouteManager.route(context, data.items[0].productUrl)
+                RouteManager.route(context, metaData.productDetailButton.appURL)
+            }
+            container_umrah_e_voucher.setOnClickListener {
+                trackingUmrahUtil.umrahOrderDetailDetailEVoucher()
+                RouteManager.route(context, metaData.evoucherButton.appURL)
             }
         }
 
@@ -240,13 +241,8 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         }
     }
 
-
-
     override fun onItemClicked(buttonViewModel: UmrahOrderDetailButtonViewModel, position: Int) {
         when(buttonViewModel.label){
-            LIHAT_LABEL -> trackingUmrahUtil.umrahOrderDetailInvoice()
-            LIHAT_DETAIL_LABEL -> trackingUmrahUtil.umrahOrderDetailDetailPDP()
-            LIHAT_E_VOUCHER_LABEL -> trackingUmrahUtil.umrahOrderDetailDetailEVoucher()
             BATALKAN_LABEL -> trackingUmrahUtil.umrahOrderDetailBatalkanPesanan()
         }
         RouteManager.route(context, "${buttonViewModel.buttonLink}")
@@ -290,9 +286,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
 
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
         private const val BATALKAN_LABEL = "Batalkan Paket"
-        private const val LIHAT_LABEL = "Lihat"
-        private const val LIHAT_DETAIL_LABEL = "Lihat Detail"
-        private const val LIHAT_E_VOUCHER_LABEL = "Lihat E-Voucher"
+        private const val PESAN_ULRANG_LABEL = "Pesan Ulang"
 
         fun getInstance(orderId: String): UmrahOrderDetailFragment = UmrahOrderDetailFragment().also {
             it.arguments = Bundle().apply {

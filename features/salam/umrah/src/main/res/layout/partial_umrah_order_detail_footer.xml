@@ -73,15 +73,15 @@
         android:id="@+id/tg_umrah_condition_agreement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         android:gravity="center"
+        android:text="@string/umrah_order_detail_condition_agreement"
+        android:textColorLink="@color/green_800"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_payment_data"
-        app:typographyType="body_3"
-        android:layout_marginTop="@dimen/dp_16"
-        android:textColorLink="@color/green_800"
-        android:text="@string/umrah_order_detail_condition_agreement"
-        />
+        app:typographyType="body_3" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_action_button"
         android:layout_width="match_parent"
@@ -97,11 +97,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:gravity="center_horizontal"
+        android:textColorLink="@color/green_800"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_action_button"
         app:typographyType="body_3"
-        android:textColorLink="@color/green_800"
         tools:text="Butuh info lebih lanjut? Kunjungi Pusat Bantuan" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

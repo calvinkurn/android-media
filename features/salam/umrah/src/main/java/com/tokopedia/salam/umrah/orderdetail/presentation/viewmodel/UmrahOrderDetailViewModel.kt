@@ -1,6 +1,7 @@
 package com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -12,11 +13,13 @@ import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
+import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsMetaDataEntity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -35,12 +38,14 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
                 PARAM_ORDER_CATEGORY_STR to UMRAH_CATEGORY)
 
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, UmrahOrderDetailsEntity.Response::class.java, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<UmrahOrderDetailsEntity.Response>()
-
-            orderDetailData.value = Success(data.orderDetails)
+//            val data = withContext(Dispatchers.Default) {
+//                val graphqlRequest = GraphqlRequest(rawQuery, UmrahOrderDetailsEntity.Response::class.java, params)
+//                graphqlRepository.getReseponse(listOf(graphqlRequest))
+//            }.getSuccessData<UmrahOrderDetailsEntity.Response>()
+//            orderDetailData.value = Success(data.orderDetails)
+            delay(2000)
+            val gson = Gson()
+            orderDetailData.value = Success(gson.fromJson(response, UmrahOrderDetailsEntity.Response::class.java).orderDetails)
         }) {
             orderDetailData.value = Fail(it)
         }
