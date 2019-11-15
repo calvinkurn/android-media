@@ -181,7 +181,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private fun convertToCategoriesTabItem(data: List<Category>): List<OfficialCategoriesTab.CategoriesItemTab> {
         val tabItemDataList = ArrayList<OfficialCategoriesTab.CategoriesItemTab>()
         data.forEach {
-            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(it.title, it.icon))
+            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(it.title, it.icon, it.imageInactiveURL))
         }
         return tabItemDataList
     }

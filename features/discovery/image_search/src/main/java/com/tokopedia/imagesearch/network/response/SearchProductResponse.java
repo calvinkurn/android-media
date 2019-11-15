@@ -76,6 +76,8 @@ public class SearchProductResponse {
     }
 
     public static class Data {
+        @SerializedName("token")
+        private String token = "";
         @SerializedName("source")
         private String source;
         @SerializedName("share_url")
@@ -86,6 +88,14 @@ public class SearchProductResponse {
         private List<Products> products;
         @SerializedName("categories")
         private List<Categories> categories;
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
 
         public String getSource() {
             return source;
@@ -138,6 +148,8 @@ public class SearchProductResponse {
             private String price;
             @SerializedName("price_range")
             private String priceRange;
+            @SerializedName("wishlist")
+            private boolean wishlist;
             @SerializedName("shop")
             private Shop shop;
             @SerializedName("condition")
@@ -227,6 +239,14 @@ public class SearchProductResponse {
 
             public void setPriceRange(String priceRange) {
                 this.priceRange = priceRange;
+            }
+
+            public boolean isWishlist() {
+                return wishlist;
+            }
+
+            public void setWishlist(boolean wishlist) {
+                this.wishlist = wishlist;
             }
 
             public Shop getShop() {
