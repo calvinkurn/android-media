@@ -87,10 +87,7 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
         dropdownBottomSheet.clearAction()
 
         ac_input.setOnFocusChangeListener { _, b ->
-            if (b) {
-                ac_input.clearFocus()
-                showDropdownBottomSheet()
-            }
+            onFocusChangeDropdown(b)
         }
     }
 
@@ -147,6 +144,13 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
     private fun showDropdownBottomSheet() {
         if (isDropdown && fragmentManager != null) {
             dropdownBottomSheet.show(fragmentManager,"Enquiry input field dropdown bottom sheet")
+        }
+    }
+
+    private fun onFocusChangeDropdown(hasFocus: Boolean) {
+        if (hasFocus && isDropdown) {
+            ac_input.clearFocus()
+            showDropdownBottomSheet()
         }
     }
 
