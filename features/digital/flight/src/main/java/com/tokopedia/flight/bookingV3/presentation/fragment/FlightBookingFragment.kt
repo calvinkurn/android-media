@@ -42,11 +42,13 @@ import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.data.model.FlightException
+import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
+import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -92,7 +94,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var bookingViewModel: FlightBookingViewModel
 
-    override fun getScreenName(): String = ""
+    @Inject
+    lateinit var flightAnalytics: FlightAnalytics
+
+    override fun getScreenName(): String = "/flight/booking"
+
+    lateinit var loadingDialog: DialogUnify
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,8 +115,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID, "")
             val searchParam: FlightSearchPassDataViewModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
                     ?: FlightSearchPassDataViewModel()
+            val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE) ?: FlightPriceViewModel()
 
-            bookingViewModel.setSearchParam(departureId, returnId, searchParam)
+            bookingViewModel.setSearchParam(departureId, returnId, searchParam, flightPriceViewModel)
         }
     }
 
@@ -119,9 +127,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightCartResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    launchLoadingPageJob.cancel()
+                    if (layout_loading.isVisible) launchLoadingPageJob.cancel()
+                    if (loadingDialog.isShowing) loadingDialog.dismiss()
                     renderData(it.data)
                     setUpTimer(it.data.orderDueTimeStamp)
+                    sendAddToCartTracking()
                 }
                 is Fail -> {
 
@@ -168,6 +178,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     navigateToTopPay(it.data)
+                    sendCheckOutTracking()
                 }
                 is Fail -> {
 
@@ -193,6 +204,22 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
         })
 
+    }
+
+    private fun sendAddToCartTracking() {
+        flightAnalytics.eventAddToCart(bookingViewModel.getSearchParam().flightClass,
+                null, 0,
+                bookingViewModel.getRouteForFlightDetail(bookingViewModel.getDepartureId()),
+                bookingViewModel.getRouteForFlightDetail(bookingViewModel.getReturnId()),
+                bookingViewModel.getFlightPriceModel().comboKey)
+    }
+
+    private fun sendCheckOutTracking() {
+        flightAnalytics.eventCheckoutClick(
+                bookingViewModel.getRouteForFlightDetail(bookingViewModel.getDepartureId()),
+                bookingViewModel.getRouteForFlightDetail(bookingViewModel.getReturnId()),
+                bookingViewModel.getSearchParam(),
+                bookingViewModel.getFlightPriceModel().comboKey)
     }
 
     private fun renderErrorToast(resId: Int) {
@@ -347,7 +374,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 override fun onClickEditPassengerListener(passenger: FlightBookingPassengerViewModel) {
                     // if paramvm is oneoway, depaturedate = depaturedate else returndate
                     val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
-                    navigateToPassengerInfoDetail(passenger, true, "2020-02-02", requestId)
+                    navigateToPassengerInfoDetail(passenger, "2020-02-02", requestId)
                 }
             }
         }
@@ -357,7 +384,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun getDepartureId(): String = bookingViewModel.getDepartureId()
     private fun getReturnId(): String = bookingViewModel.getReturnId()
 
-    private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, isMandatoryDoB: Boolean, departureDate: String, requestId: String) {
+    private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, departureDate: String, requestId: String) {
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         activity as Activity,
@@ -366,7 +393,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         viewModel,
                         bookingViewModel.getLuggageViewModels(),
                         bookingViewModel.getMealViewModels(),
-                        isMandatoryDoB,
+                        bookingViewModel.getMandatoryDOB(),
                         departureDate,
                         requestId,
                         bookingViewModel.flightIsDomestic()
@@ -431,6 +458,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun setUpView() {
         hidePriceDetail()
+
+        context?.let {
+            loadingDialog = DialogUnify(it, 0, 0)
+        }
 
         widget_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
             override fun onClickEdit() {
@@ -557,12 +588,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
         val view = View.inflate(context, R.layout.layout_flight_booking_loading, null)
         val loadingText = view.findViewById(R.id.tv_loading_subtitle) as Typography
         showLoadingDialog(view)
-        loadingText.text = list[0]
-        delay(2000L)
-        loadingText.text = list[1]
-        delay(2000L)
-        loadingText.text = list[2]
-        delay(2000L)
+        while (true) {
+            loadingText.text = list[0]
+            delay(2000L)
+            loadingText.text = list[1]
+            delay(2000L)
+            loadingText.text = list[2]
+            delay(2000L)
+            loadingText.text = list[3]
+            delay(2000L)
+        }
     }
 
     private fun hideShimmering() {
@@ -645,7 +680,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     dialog.setSecondaryCTAText("heheheee")
 
                     dialog.setPrimaryCTAClickListener {
-                        //                    do action
+                        //                   if error code this, do this
                         dialog.dismiss()
                     }
 
@@ -658,13 +693,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun showLoadingDialog(view: View) {
-        if (activity != null) {
-            var dialog = DialogUnify(activity as FlightBookingActivity, 0, 0)
-            dialog.setUnlockVersion()
-            dialog.setChild(view)
-            dialog.show()
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(false)
+        if (context != null && ::loadingDialog.isInitialized) {
+            loadingDialog.setUnlockVersion()
+            loadingDialog.setChild(view)
+            loadingDialog.setOverlayClose(false)
+            loadingDialog.show()
         }
     }
 
@@ -680,6 +713,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val EXTRA_SEARCH_PASS_DATA = "EXTRA_SEARCH_PASS_DATA"
         const val EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID"
         const val EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID"
+        private val EXTRA_PRICE = "EXTRA_PRICE"
 
         const val REQUEST_CODE_PASSENGER = 1
         const val REQUEST_CODE_CONTACT_FORM = 12

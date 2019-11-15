@@ -54,6 +54,7 @@ query getCart($cartID: String!) {
               price
               priceNumeric
           }
+          mandatoryDOB
           amenityOptions {
             id
             journeyID

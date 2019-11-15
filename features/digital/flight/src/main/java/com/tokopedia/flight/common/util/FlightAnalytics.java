@@ -586,6 +586,38 @@ public class FlightAnalytics {
         );
     }
 
+    public void eventCheckoutClick(FlightDetailViewModel departureTrip, FlightDetailViewModel returnTrip, FlightSearchPassDataViewModel searchParam, String comboKey) {
+
+        List<Object> products = new ArrayList<>();
+
+        if (departureTrip != null) {
+            products.addAll(constructEnhanceEcommerceProduct(departureTrip, comboKey,
+                    searchParam.getFlightClass().getTitle(), returnTrip == null));
+            if (returnTrip != null) {
+                products.addAll(constructEnhanceEcommerceProduct(returnTrip, comboKey,
+                        searchParam.getFlightClass().getTitle(), false));
+            }
+        }
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, CHECKOUT_EVENT,
+                        EVENT_CATEGORY, GENERIC_CATEGORY,
+                        EVENT_ACTION, Category.BOOKING_NEXT,
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                departureTrip.getDepartureAirport(),
+                                departureTrip.getArrivalAirport()),
+                        ECOMMERCE, DataLayer.mapOf(
+                                CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
+                                "actionField", DataLayer.mapOf("step", 1,
+                                        "option", Category.BOOKING_NEXT),
+                                "products", DataLayer.listOf(
+                                        products.toArray(new Object[products.size()])
+                                )
+                        )
+                )
+        );
+    }
+
     public void eventReviewNextClick() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,

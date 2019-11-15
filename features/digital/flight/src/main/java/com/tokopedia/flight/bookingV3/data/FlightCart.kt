@@ -198,8 +198,11 @@ data class FlightCart(
 
             @SerializedName("journeys")
             @Expose
-            val journeys: List<Journey> = listOf()
+            val journeys: List<Journey> = listOf(),
 
+            @SerializedName("mandatoryDOB")
+            @Expose
+            val mandatoryDob: Boolean = false
     )
 
     data class PriceDetail(
