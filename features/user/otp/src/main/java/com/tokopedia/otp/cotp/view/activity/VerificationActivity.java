@@ -49,6 +49,7 @@ public class VerificationActivity extends BaseSimpleActivity {
     protected static final String CHOOSE_FRAGMENT_TAG = "choose";
     protected static final String REGEX_MASK_PHONE_NUMBER =
             "(0...|62...|\\+62...)(\\d{3,4})(\\d{3,4})(\\d{0,4})";
+    private static final int DEFAULT_OTP_CODE_LENGTH = 6;
 
     private String phoneNumber;
     private String email;
@@ -217,7 +218,7 @@ public class VerificationActivity extends BaseSimpleActivity {
                 createSmsMessage(phoneNumber, otpType),
                 OTPAnalytics.Screen.SCREEN_COTP_SMS,
                 canUseOtherMethod,
-                6
+                DEFAULT_OTP_CODE_LENGTH
         );
     }
 
@@ -231,7 +232,7 @@ public class VerificationActivity extends BaseSimpleActivity {
                 createEmailMessage(email),
                 OTPAnalytics.Screen.SCREEN_COTP_EMAIL,
                 canUseOtherMethod,
-                6
+                DEFAULT_OTP_CODE_LENGTH
         );
     }
 
