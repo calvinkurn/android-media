@@ -46,7 +46,6 @@ import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
@@ -341,7 +340,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsRouter,
         CMRouter,
         ILoyaltyRouter,
-        ChatbotRouter,
         ResolutionRouter,
         TradeInRouter,
         ProductDetailRouter,

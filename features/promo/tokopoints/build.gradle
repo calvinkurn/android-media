@@ -55,7 +55,7 @@ dependencies {
 project.ext {
     artifactId = 'tokopoints'
     groupId = 'com.tokopedia.promo'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "tokopoints-release"
 }
 

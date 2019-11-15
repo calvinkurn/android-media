@@ -29,8 +29,6 @@ import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
-import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
-import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
@@ -184,7 +182,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         PaymentSettingApplinkModule.class,
         RNDevOptionsApplinkModule.class,
         UserIdentificationApplinkModule.class,
-        ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
         OvoPayWithQrApplinkModule.class,
@@ -241,7 +238,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new PaymentSettingApplinkModuleLoader(),
                     new RNDevOptionsApplinkModuleLoader(),
                     new UserIdentificationApplinkModuleLoader(),
-                    new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
                     new OvoPayWithQrApplinkModuleLoader(),
