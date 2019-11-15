@@ -41,26 +41,19 @@ public class ShipmentDataRequestConverter {
             List<ShopProductCheckoutRequest> shopProductCheckoutRequestList = new ArrayList<>();
             if (recipientAddress != null) {
                 // Single address
-                // Todo : remove `changeAddressRequestData`
-                List<DataChangeAddressRequest> changeAddressRequestData = new ArrayList<>();
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
                     if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                         shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel, isTradeInPickup));
                     } else if (isAnalyticsPurpose) {
                         shopProductCheckoutRequestList.add(getProductCheckoutRequestForAnalytics(shipmentCartItemModel));
                     }
-                    createChangeAddressRequestData(changeAddressRequestData, shipmentCartItemModel, recipientAddress);
                 }
                 requestData.setCheckoutRequestData(createCheckoutRequestData(shopProductCheckoutRequestList, recipientAddress));
-                requestData.setChangeAddressRequestData(changeAddressRequestData);
             } else {
                 // Multiple address
                 List<DataCheckoutRequest> checkoutRequestData = new ArrayList<>();
-                // Todo : remove `changeAddressRequestData`
-                List<DataChangeAddressRequest> changeAddressRequestData = new ArrayList<>();
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
                     shopProductCheckoutRequestList.add(getProductCheckoutRequest(shipmentCartItemModel, isTradeInPickup));
-                    createChangeAddressRequestData(changeAddressRequestData, shipmentCartItemModel, null);
                 }
 
                 for (int i = 0; i < shopProductCheckoutRequestList.size(); i++) {
@@ -73,27 +66,10 @@ public class ShipmentDataRequestConverter {
                 }
 
                 requestData.setCheckoutRequestData(checkoutRequestData);
-                requestData.setChangeAddressRequestData(changeAddressRequestData);
             }
         }
 
         return requestData;
-    }
-
-    private void createChangeAddressRequestData(List<DataChangeAddressRequest> changeAddressRequestData,
-                                                ShipmentCartItemModel shipmentCartItemModel,
-                                                RecipientAddressModel recipientAddressModel) {
-        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-            DataChangeAddressRequest dataChangeAddressRequest = new DataChangeAddressRequest();
-            dataChangeAddressRequest.setQuantity(cartItemModel.getQuantity());
-            dataChangeAddressRequest.setProductId(cartItemModel.getProductId());
-            dataChangeAddressRequest.setNotes(cartItemModel.getNoteToSeller());
-            dataChangeAddressRequest.setAddressId(recipientAddressModel != null ?
-                    Integer.parseInt(recipientAddressModel.getId()) :
-                    Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId()));
-            dataChangeAddressRequest.setCartId(cartItemModel.getCartId());
-            changeAddressRequestData.add(dataChangeAddressRequest);
-        }
     }
 
     private ShopProductCheckoutRequest getProductCheckoutRequestForAnalytics(ShipmentCartItemModel shipmentCartItemModel) {

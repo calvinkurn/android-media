@@ -54,7 +54,6 @@ public class TradeInInfo {
     }
 
     public boolean isDropOffEnable() {
-        // Todo : revert this
-        return true;
+        return dropOffEnable;
     }
 }

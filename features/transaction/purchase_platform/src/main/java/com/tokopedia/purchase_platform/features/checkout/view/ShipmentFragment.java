@@ -1230,17 +1230,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderChangeAddressSuccess() {
-//        if (shipmentAdapter.hasAppliedPromoStackCode()) {
-//            setCornerId(selectedAddress.getCornerId());
-//        }
-//        if (!TextUtils.isEmpty(selectedAddress.getCornerId()) && shipmentPresenter.getCodData() != null) {
-//            shipmentAdapter.removeNotifierData();
-//            shipmentPresenter.getShipmentButtonPaymentModel().setCod(false);
-//            onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
-//        }
-//        shipmentPresenter.setRecipientAddressModel(selectedAddress);
-//        shipmentAdapter.updateSelectedAddress(selectedAddress, false);
-//        onDataDisableToCheckout(null);
         shipmentPresenter.processInitialLoadCheckoutPage(
                 true, isOneClickShipment(), isTradeIn(), true,
                 shipmentAdapter.getAddressShipmentData().getCornerId(), getDeviceId(), getCheckoutLeasingId()
@@ -2964,7 +2953,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onResultFromSetTradeInPinpoint(Intent data) {
-        // Todo : update address to indomaret address and reload SAF
         if (data != null) {
             LocationDataModel locationDataModel = data.getParcelableExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION);
             RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
@@ -2972,8 +2960,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             recipientAddressModel.setDropOffAddressName(locationDataModel.getAddrName());
             recipientAddressModel.setDropOffAddressDetail(locationDataModel.getAddress1());
             shipmentPresenter.changeShippingAddress(recipientAddressModel, true, true, true);
-
-//            shipmentAdapter.updateSelectedAddress(recipientAddressModel, true);
         }
     }
 
@@ -2989,7 +2975,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         onNeedUpdateViewItem(shipmentItemTradeInPosition);
         RecipientAddressModel recipientAddressModel = shipmentAdapter.getAddressShipmentData();
         if (recipientAddressModel.getSelectedTabIndex() == RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT) {
-            // Todo : update address to normal address and reload SAF
             if (recipientAddressModel.getLocationDataModel() != null) {
                 shipmentPresenter.changeShippingAddress(recipientAddressModel, true, false, true);
             }
@@ -2997,7 +2982,5 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             checkoutAnalyticsCourierSelection.eventClickDropOffTab();
         }
-//        shipmentAdapter.updateShipmentCostModel();
-//        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
     }
 }

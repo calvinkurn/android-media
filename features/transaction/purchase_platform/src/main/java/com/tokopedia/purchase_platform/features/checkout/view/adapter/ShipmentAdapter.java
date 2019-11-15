@@ -1369,13 +1369,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         private List<DataCheckoutRequest> checkoutRequestData;
 
-        // Todo : remove `changeAddressRequestData` since already generated on presenter
-        private List<DataChangeAddressRequest> changeAddressRequestData;
-
         @Inject
         public RequestData() {
             checkoutRequestData = new ArrayList<>();
-            changeAddressRequestData = new ArrayList<>();
         }
 
         public List<DataCheckoutRequest> getCheckoutRequestData() {
@@ -1386,13 +1382,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.checkoutRequestData = checkoutRequestData;
         }
 
-        public List<DataChangeAddressRequest> getChangeAddressRequestData() {
-            return changeAddressRequestData;
-        }
-
-        public void setChangeAddressRequestData(List<DataChangeAddressRequest> changeAddressRequestData) {
-            this.changeAddressRequestData = changeAddressRequestData;
-        }
     }
 
     public List<ShipmentCartItemModel> getShipmentCartItemModelList() {
