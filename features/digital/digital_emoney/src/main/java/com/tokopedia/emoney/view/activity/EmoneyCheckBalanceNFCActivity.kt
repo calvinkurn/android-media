@@ -178,9 +178,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     override fun processGetBalanceBrizzi(refresh: Boolean) {
         brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
         brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
-            //TODO change key to use AuthKey
-            brizziInstance.Init(token, "RR1DJ8QZsYUXTZPb")
-            brizziInstance.setUserName("tXnA6Gzq9J439GI3jJ9BjcBG05tmqIQa")
+            brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
+            brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
 
             briBrizzi = BrizziCheckBalance(brizziInstance, this)
             showLoading()
