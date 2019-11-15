@@ -66,13 +66,8 @@ class WVMBulkRemoveWishlist : Spek({
             Given("Bulk remove usecase returns that all data successfully removed from wishlist") {
                 every { bulkRemoveWishlistUseCase.execute(any(), any()) }
                         .answers {
-                            (secondArg() as Subscriber<List<WishlistActionData>>).onNext(
-                                    listOf(
-                                            WishlistActionData(true, 0),
-                                            WishlistActionData(true, 1),
-                                            WishlistActionData(true, 2),
-                                            WishlistActionData(true, 3)
-                                    )
+                            (secondArg() as Subscriber<WishlistActionData>).onNext(
+                                    WishlistActionData(true, "0,1,2,3,4")
                             )
                         }
             }
@@ -156,13 +151,8 @@ class WVMBulkRemoveWishlist : Spek({
             Given("Bulk remove usecase returns that have some failed data") {
                 every { bulkRemoveWishlistUseCase.execute(any(), any()) }
                         .answers {
-                            (secondArg() as Subscriber<List<WishlistActionData>>).onNext(
-                                    listOf(
-                                            WishlistActionData(true, 0),
-                                            WishlistActionData(false, 1),
-                                            WishlistActionData(false, 2),
-                                            WishlistActionData(true, 3)
-                                    )
+                            (secondArg() as Subscriber<WishlistActionData>).onNext(
+                                    WishlistActionData(true, "0,1,2,3")
                             )
                         }
             }
@@ -176,8 +166,8 @@ class WVMBulkRemoveWishlist : Spek({
                 )
             }
 
-            Then("Expect that 4 wishlist data is removed, so the rest is 8 data") {
-                Assert.assertEquals(8, wishlistViewmodel.wishlistLiveData.value!!.size)
+            Then("Expect that 3 wishlist data is removed (from 10 wishlist item data), so the rest is 6 data") {
+                Assert.assertEquals(7, wishlistViewmodel.wishlistLiveData.value!!.size)
             }
             Then("Expect all item is not in bulk mode") {
                 wishlistViewmodel.wishlistLiveData.value?.forEach {
