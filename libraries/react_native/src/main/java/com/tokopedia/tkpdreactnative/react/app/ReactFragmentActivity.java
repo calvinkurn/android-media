@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,8 @@ import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactNavigationModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
+
+import java.util.Date;
 
 /**
  *
@@ -116,6 +119,7 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
 
     @Override
     public void hideLoaderReactPage() {
+        Log.v("DiscoveryActivity", "" + new Date().getTime());
         loaderBootingReact.setVisibility(View.GONE);
     }
 
