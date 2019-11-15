@@ -113,11 +113,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
         args?.let {
             val departureId = args.getString(EXTRA_FLIGHT_DEPARTURE_ID, "")
             val returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID, "")
+            val departureTerm = args.getString(EXTRA_FLIGHT_DEPARTURE_TERM, "")
+            val returnTerm = args.getString(EXTRA_FLIGHT_DEPARTURE_TERM, "")
             val searchParam: FlightSearchPassDataViewModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
                     ?: FlightSearchPassDataViewModel()
             val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE) ?: FlightPriceViewModel()
 
-            bookingViewModel.setSearchParam(departureId, returnId, searchParam, flightPriceViewModel)
+            bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceViewModel)
         }
     }
 
@@ -433,9 +435,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         launchLoadingPageJob.start()
+        val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
         bookingViewModel.addToCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart),
                 GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
-                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_get_cart))
+                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_get_cart),
+                requestId)
         bookingViewModel.getProfile(GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile))
 
         setUpView()
@@ -712,6 +716,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val EXTRA_SEARCH_PASS_DATA = "EXTRA_SEARCH_PASS_DATA"
         const val EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID"
         const val EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID"
+        const val EXTRA_FLIGHT_DEPARTURE_TERM = "EXTRA_FLIGHT_DEPARTURE_TERM"
+        const val EXTRA_FLIGHT_ARRIVAL_TERM = "EXTRA_FLIGHT_ARRIVAL_TERM"
         private val EXTRA_PRICE = "EXTRA_PRICE"
 
         const val REQUEST_CODE_PASSENGER = 1
@@ -723,12 +729,15 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         fun newInstance(searchPassDataViewModel: FlightSearchPassDataViewModel,
                         departureId: String, returnId: String,
+                        departureTerm: String, returnTerm: String,
                         priceViewModel: FlightPriceViewModel): FlightBookingFragment {
             val fragment = FlightBookingFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataViewModel)
             bundle.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
             bundle.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnId)
+            bundle.putString(EXTRA_FLIGHT_DEPARTURE_TERM, departureTerm)
+            bundle.putString(EXTRA_FLIGHT_ARRIVAL_TERM, returnTerm)
             bundle.putParcelable(EXTRA_PRICE, priceViewModel)
             fragment.arguments = bundle
             return fragment

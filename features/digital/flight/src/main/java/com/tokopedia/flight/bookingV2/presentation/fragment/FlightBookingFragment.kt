@@ -390,7 +390,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     override fun getReturnTripId(): String = returnId
 
     override fun navigateToDetailTrip(departureTrip: FlightDetailViewModel) {
-        startActivity(FlightDetailActivity.createIntent(activity, departureTrip, false))
+        startActivity(FlightDetailActivity.createIntent(activity, departureTrip,false))
     }
 
     override fun getIdEmpotencyKey(tokenId: String): String = generateIdEmpotency(tokenId)

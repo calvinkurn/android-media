@@ -28,10 +28,12 @@ class FlightBookingActivity: BaseFlightActivity(), HasComponent<FlightBookingCom
     override fun getNewFragment(): Fragment {
         val departureId = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID)
         val arrivalId = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID)
+        val departureTerm = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_TERM)
+        val returnTerm = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_TERM)
         val searchPassDataViewModel: FlightSearchPassDataViewModel = intent.getParcelableExtra(EXTRA_PASS_SEARCH_DATA)
         val priceViewModel: FlightPriceViewModel = intent.getParcelableExtra(EXTRA_PRICE)
         return FlightBookingFragment.newInstance(searchPassDataViewModel,
-                departureId, arrivalId, priceViewModel)
+                departureId, arrivalId, departureTerm, returnTerm, priceViewModel)
     }
 
     override fun getComponent(): FlightBookingComponent {
@@ -62,17 +64,23 @@ class FlightBookingActivity: BaseFlightActivity(), HasComponent<FlightBookingCom
         private const val EXTRA_PASS_SEARCH_DATA = "EXTRA_PASS_SEARCH_DATA"
         private const val EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID"
         private const val EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID"
+        private const val EXTRA_FLIGHT_DEPARTURE_TERM = "EXTRA_FLIGHT_DEPARTURE_TERM"
+        private const val EXTRA_FLIGHT_ARRIVAL_TERM = "EXTRA_FLIGHT_ARRIVAL_TERM"
         private const val EXTRA_PRICE = "EXTRA_PRICE"
 
         fun getCallingIntent(activity: Activity,
                              passDataViewModel: FlightSearchPassDataViewModel,
                              departureId: String,
+                             departureTerm: String,
                              priceViewModel: FlightPriceViewModel,
-                             returnId: String = ""): Intent {
+                             returnId: String = "",
+                             returnTerm: String = ""): Intent {
             val intent = Intent(activity, FlightBookingActivity::class.java)
             intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
             intent.putExtra(EXTRA_PASS_SEARCH_DATA, passDataViewModel)
             intent.putExtra(EXTRA_FLIGHT_ARRIVAL_ID, returnId)
+            intent.putExtra(EXTRA_FLIGHT_DEPARTURE_TERM, departureTerm)
+            intent.putExtra(EXTRA_FLIGHT_ARRIVAL_TERM, returnTerm)
             intent.putExtra(EXTRA_PRICE, priceViewModel)
             return intent
         }

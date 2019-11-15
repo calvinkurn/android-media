@@ -25,7 +25,8 @@ interface FlightSearchReturnContract {
 
         fun navigateToCart(returnFlightSearchViewModel: FlightJourneyViewModel? = null,
                            selectedFlightReturn: String? = null,
-                           flightPriceViewModel: FlightPriceViewModel)
+                           flightPriceViewModel: FlightPriceViewModel,
+                           selectedFlightTerm: String? = null)
 
     }
 

@@ -10,57 +10,57 @@ import com.google.gson.annotations.SerializedName
 data class FlightAddToCartParam (
         @SerializedName("flight")
         @Expose
-        val flight: FlightData = FlightData(),
+        var flight: FlightData = FlightData(),
 
         @SerializedName("ipAddress")
         @Expose
-        val ipAddress: String = "",
+        var ipAddress: String = "",
 
         @SerializedName("userAgent")
         @Expose
-        val userAgent: String = "",
+        var userAgent: String = "",
 
         @SerializedName("did")
         @Expose
-        val did: Int = 0,
+        var did: Int = 0,
 
         @SerializedName("idempotencyKey")
         @Expose
-        val idempotencyKey: String = ""
+        var idempotencyKey: String = ""
 ) {
     data class FlightData(
             @SerializedName("destination")
             @Expose
-            val destination: List<FlightDestination> = listOf(),
+            var destination: MutableList<FlightDestination> = mutableListOf(),
 
             @SerializedName("adult")
             @Expose
-            val adult: Int = 1,
+            var adult: Int = 1,
 
             @SerializedName("child")
             @Expose
-            val child: Int = 0,
+            var child: Int = 0,
 
             @SerializedName("infant")
             @Expose
-            val infant: Int = 0,
+            var infant: Int = 0,
 
             @SerializedName("class")
             @Expose
-            val flightClass: Int = 0,
+            var flightClass: Int = 0,
 
             @SerializedName("combo")
             @Expose
-            val combo: String = ""
+            var combo: String = ""
     )
 
     data class FlightDestination(
             @SerializedName("journeyID")
             @Expose
-            val journeyId: String = "",
+            var journeyId: String = "",
 
             @SerializedName("term")
             @Expose
-            val term: String
+            var term: String
     )
 }

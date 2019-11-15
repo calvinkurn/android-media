@@ -30,6 +30,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.*
 import java.lang.Exception
 import java.util.regex.Pattern
@@ -506,19 +507,26 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         return phoneRawString
     }
 
-    fun setSearchParam(depatureId: String, arrivalId: String, searchParam: FlightSearchPassDataViewModel,
+    fun setSearchParam(depatureId: String, arrivalId: String,
+                       departureTerm: String, arrivalTerm: String,
+                       searchParam: FlightSearchPassDataViewModel,
                        flightPriceViewModel: FlightPriceViewModel) {
         flightBookingParam.departureId = depatureId
         flightBookingParam.returnId = arrivalId
+        flightBookingParam.departureTerm = departureTerm
+        flightBookingParam.returnTerm = arrivalTerm
         flightBookingParam.searchParam = searchParam
         flightBookingParam.flightPriceViewModel = flightPriceViewModel
     }
 
-    fun addToCart(query: String, getCartQuery: String, dummy: String) {
+    fun addToCart(query: String, getCartQuery: String, dummy: String, idempotencyKey: String) {
+
+        val addToCartParam = createAddToCartParam(idempotencyKey)
+        val param = mapOf(PARAM_VERIFY_CART to addToCartParam)
         //if add to cart success -> proceed to getCart with the id.
         launchCatchError(block = {
             val addToCartData = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(query, FlightAddToCartData.Response::class.java)
+                val graphqlRequest = GraphqlRequest(query, FlightAddToCartData.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightAddToCartData.Response>()
 
@@ -529,6 +537,24 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 //            flightCartResult.value = Fail(it)
             getCart(getCartQuery, getCartId(), dummy)
         }
+    }
+
+    private fun createAddToCartParam(idempotencyKey: String): FlightAddToCartParam {
+        val addToCartParam = FlightAddToCartParam()
+
+        addToCartParam.flight.adult = flightBookingParam.searchParam.flightPassengerViewModel.adult
+        addToCartParam.flight.child = flightBookingParam.searchParam.flightPassengerViewModel.children
+        addToCartParam.flight.infant = flightBookingParam.searchParam.flightPassengerViewModel.infant
+        addToCartParam.flight.flightClass = flightBookingParam.searchParam.flightClass.id
+        addToCartParam.idempotencyKey = idempotencyKey
+        addToCartParam.did = 4
+        addToCartParam.ipAddress = FlightRequestUtil.getLocalIpAddress()
+        addToCartParam.userAgent = FlightRequestUtil.getUserAgentForApiCall()
+        addToCartParam.flight.combo = flightBookingParam.flightPriceViewModel.comboKey
+        addToCartParam.flight.destination.add(FlightAddToCartParam.FlightDestination(flightBookingParam.departureId, flightBookingParam.departureTerm))
+        if (flightBookingParam.returnId.isNotEmpty()) addToCartParam.flight.destination.add(FlightAddToCartParam.FlightDestination(flightBookingParam.returnId, flightBookingParam.returnTerm))
+
+        return addToCartParam
     }
 
     fun getDepartureId(): String = flightBookingParam.departureId
