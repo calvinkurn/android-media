@@ -53,6 +53,7 @@ include 'libraries:cpm'
 //include "libraries:videouploader"
 
 //include "libraries:unify:unify_compositions:banner"
+include 'libraries:promotions_target'
 
 include 'tkpddesign'
 include 'tkpdabstraction'
