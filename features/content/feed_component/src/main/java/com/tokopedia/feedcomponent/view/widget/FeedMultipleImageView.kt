@@ -119,6 +119,9 @@ class FeedMultipleImageView @JvmOverloads constructor(
                     if (media.tracking.isNotEmpty()) {
                         feedMultipleImageViewListener?.onAffiliateTrackClicked(mapTrackingData(media.tracking), true)
                     }
+                    if (media.type == TYPE_VIDEO) {
+                        itemView.ic_play_vid.gone()
+                    }
                 }
             }
 

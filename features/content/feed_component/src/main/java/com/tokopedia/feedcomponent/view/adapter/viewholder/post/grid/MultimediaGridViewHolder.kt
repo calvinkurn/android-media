@@ -83,6 +83,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
 
     private fun playVideo(url: String) {
         if (!isPlaying) {
+            itemView.feedMultipleImageView.performClick()
             itemView.loading_panel.show()
             itemView.layout_dummy.gone()
             itemView.frame_video.invisible()
