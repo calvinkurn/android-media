@@ -32,6 +32,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     override fun loadData(page: Int) {
         if (page != defaultInitialPage) return
+        viewModel.loadChatSettings()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
