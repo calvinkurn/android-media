@@ -275,14 +275,14 @@ Anda di sini.</string>
     <string name="insurance_detail_label">Daftar Produk</string>
     <string name="protection_details">Detail Proteksi</string>
     <string name="insurance_claim">Lihat Cara Klaim</string>
-    <string name="insurance_claim_content">Info lengkap benefit asudansi dan cara pengajuan klaim asuransi</string>
+    <string name="insurance_claim_content">Info lengkap benefit asuransi dan cara pengajuan klaim asuransi</string>
     <string name="insurance_policy_content">Bukti perjanjian tertulis tertanggung dan pihak asuransi</string>
     <string name="insurance_type">Jenis Asuransi</string>
     <string name="product_category">Kategori Produk</string>
     <string name="insurance_length">Masa Perlindungan</string>
     <string name="insurance_quantity">Jumlah Proteksi</string>
     <string name="insurance_price">Harga Proteksi</string>
-    <string name="insurance_claim_applink">https://www.tokopedia.com/asuransi/klaim</string>
+    <string name="insurance_claim_applink">tokopedia://webview?allow_override=false&url=https://www.tokopedia.com/asuransi/klaim</string>
 
     <!-- OMS Insurance-->
 
