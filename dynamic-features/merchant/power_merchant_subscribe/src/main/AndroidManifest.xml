@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.report.customerapp">
+    package="com.tokopedia.merchant.subscribe">
 
     <dist:module
         dist:instant="false"
