@@ -23,7 +23,7 @@
     <string name="fare_breakup">Fare Breakup for %s</string>
     <string name="pay_button">Lanjut Pembayaran</string>
     <string name="date_hint">DD/MM/YY</string>
-    <string name="ticker_desc">Kamu bisa cek status pembelian dan e-voucher lewat halaman Daftar Transaksi</string>
+    <string name="ticker_desc">Kamu bisa cek status pembelian dan e-tiket lewat halaman Daftar Transaksi</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="x_type">%1$d x %2$s</string>
