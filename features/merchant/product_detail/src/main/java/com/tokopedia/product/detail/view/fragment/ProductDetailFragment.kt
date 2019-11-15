@@ -41,6 +41,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -54,6 +55,7 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
@@ -78,6 +80,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
@@ -100,11 +103,11 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
+import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_ADDED_PRODUCT_DATA_MODEL
-import com.tokopedia.product.detail.view.widget.PictureScrollingView
-import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
-import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
+import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_FINANCING_DATA
+import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_IS_OFFICIAL
+import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet.Companion.KEY_PDP_PRODUCT_PRICE
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -160,6 +163,7 @@ import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener, BottomSheetImageReviewSlider.Callback {
 
@@ -469,7 +473,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initView()
         tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         tv_trade_in_promo.setOnClickListener {
-            productId?.let{
+            productId?.let {
                 productDetailTracking.eventClickTradeInRibbon(it)
             }
             scrollToTradeInWidget()
@@ -1241,6 +1245,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun openFtInstallmentBottomSheet(installmentData: FinancingDataResponse) {
+
+        productDetailTracking.eventClickPDPInstallmentSeeMore(productId)
+
+        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
+        val bundleData = Bundle()
+        bundleData.putParcelable(KEY_PDP_FINANCING_DATA, installmentData)
+        bundleData.putFloat(KEY_PDP_PRODUCT_PRICE, productInfo?.basic?.price ?: 0f)
+        bundleData.putBoolean(KEY_PDP_IS_OFFICIAL, shopInfo?.goldOS?.isOfficial == 1)
+        pdpInstallmentBottomSheet.arguments = bundleData
+        pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
+    }
+
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
         productInfo?.let {
             val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
@@ -1447,9 +1464,54 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         } else {
             merchantVoucherListWidget.gone()
         }
-        productInfoP2.minInstallment?.let {
+
+        productInfoP2.productFinancingRecommendationData.let {
+            if (it.response.data.partnerCode.isNotBlank()) {
+                iv_ovo_installment_icon.show()
+                iv_arrow_next.show()
+
+                ImageHandler.loadImage(context, iv_ovo_installment_icon, it.response.data.partnerIcon, R.drawable.ic_loading_image)
+
+                iv_ovo_installment_icon.setOnClickListener {
+                    openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+                }
+
+                iv_arrow_next.setOnClickListener {
+                    openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+                }
+
+                label_installment.visible()
+                label_installment.text = String.format(getString(R.string.new_installment_template),
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        (if (shopInfo?.goldOS?.isOfficial == 1) it.response.data.osMonthlyPrice
+                        else it.response.data.monthlyPrice).roundToLong(), false))
+
+                label_desc_installment.text = getString(R.string.pdp_installment_desc)
+                label_desc_installment.visible()
+
+                label_desc_installment.setOnClickListener {
+                    activity?.let {
+                        openFtInstallmentBottomSheet(productInfoP2.productFinancingCalculationData)
+                    }
+                }
+
+                if (label_min_wholesale.isVisible) {
+                    wholesale_divider.visible()
+                } else {
+                    wholesale_divider.gone()
+                }
+                base_view_wholesale.visible()
+
+            } else {
+                base_view_wholesale.hide()
+                iv_ovo_installment_icon.hide()
+                iv_arrow_next.hide()
+            }
+        }
+
+        /*productInfoP2.minInstallment?.let {
             label_installment.visible()
-            label_desc_installment.text = getString(R.string.installment_template, it.interest.numberFormatted(),
+            label_installment.text = getString(R.string.new_installment_template,
                     (if (shopInfo?.goldOS?.isOfficial == 1) it.osMonthlyPrice else it.monthlyPrice).getCurrencyFormatted())
             label_desc_installment.visible()
             label_desc_installment.setOnClickListener {
@@ -1472,7 +1534,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 wholesale_divider.gone()
             }
             base_view_wholesale.visible()
-        }
+        }*/
+
         productShopView.renderShopFeature(productInfoP2.shopFeature)
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
@@ -1493,6 +1556,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
     }
+
 
     private fun updateWishlist(shopInfo: ShopInfo, wishlisted: Boolean) {
         context?.let {
@@ -2220,14 +2284,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun updateStickyContent() {
         productInfoViewModel.getStickyLoginContent(
-            onSuccess = {
-                this.tickerDetail = it
-                updateStickyState()
-                updateActionBarBackground()
-            },
-            onError = {
-                stickyLoginView.hide()
-            }
+                onSuccess = {
+                    this.tickerDetail = it
+                    updateStickyState()
+                    updateActionBarBackground()
+                },
+                onError = {
+                    stickyLoginView.hide()
+                }
         )
     }
 

@@ -445,6 +445,18 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
+    fun eventClickPDPInstallmentSeeMore(productId: String?) {
+        if (productId.isNullOrEmpty()) return
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN,
+                ""
+        )
+        mapEvent[KEY_PRODUCT_ID] = productId
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
     fun eventPDPAddToWishlist(productId: String?) {
         if (productId.isNullOrEmpty()) return
         val mapEvent = TrackAppUtils.gtmData(

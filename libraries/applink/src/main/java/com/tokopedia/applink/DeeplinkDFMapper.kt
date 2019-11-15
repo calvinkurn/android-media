@@ -32,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
@@ -97,8 +98,11 @@ object DeeplinkDFMapper {
     private val DFM_SALDO_INTRO = "saldo_deposit"
     private val DFM_REFERRAL = "im_referral"
     private val DFM_WALLET = "fintech_wallet"
-    private val DFM_PROFILE = "profile"
+    private val DFM_CHAT_BOT = "chatbot"
 
+    private val DFM_PROFILE = "profile"
+    @JvmField
+    val DFM_ONBOARDING = "onboarding"
 
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
@@ -143,6 +147,8 @@ object DeeplinkDFMapper {
             add(DFP({it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
             add(DFP({ it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
             add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
+
+            add(DFP({it.startsWith(CHAT_BOT)}, DFM_CHAT_BOT, R.string.title_applink_chatbot))
         }
     }
 

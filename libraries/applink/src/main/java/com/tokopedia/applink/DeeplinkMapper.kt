@@ -2,6 +2,7 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.constant.DeeplinkConstant
@@ -59,6 +60,9 @@ object DeeplinkMapper {
                         getCreateReviewInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(context, deeplink)
+                    deeplink.startsWith(ApplinkConst.CHAT_BOT,true) ->
+                        getChatbotDeeplink(deeplink)
+
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){
