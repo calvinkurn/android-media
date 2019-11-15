@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.adapter.ChatMenuAdapter
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
+import java.lang.IllegalStateException
 
 
 class BottomChatMenuFragment : BottomSheetDialogFragment() {
