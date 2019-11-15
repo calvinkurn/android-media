@@ -68,7 +68,7 @@ private val similarProductModelCommonJSONString = """
             "discount_expired_time": "",
             "discount_start_time": "",
             "discount_percentage": 0,
-            "wishlist": false
+            "wishlist": true
           },
           {
             "id": 483396058,

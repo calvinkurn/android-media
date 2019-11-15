@@ -83,3 +83,16 @@ internal infix fun Collection<Any>?.shouldNotContain(expectedValue: Any) {
         throw AssertionError("Collection still contain \"$expectedValue\"")
     }
 }
+
+internal infix fun List<Any>?.shouldHaveSameElementsAs(expectedCollection: List<Any>) {
+    if (this == null) {
+        throw AssertionError("List is null")
+    }
+
+    this.forEachIndexed { index, it ->
+        it.shouldBe(
+                expectedCollection[index],
+                "Item is not the same at index $index"
+        )
+    }
+}

@@ -87,3 +87,15 @@ private fun State<List<Any>>?.shouldHaveEmptyResultViewModel(position: Int) {
 
     list[position].shouldBeInstanceOf<EmptyResultViewModel>()
 }
+
+internal fun List<Any>.shouldHaveSimilarProductWithUpdatedWishlist(productToWishlist: Product, expectedWishlistStatus: Boolean, similarSearchPreviousViewModelList: List<Any>) {
+    productToWishlist.isWishlisted.shouldBe(
+            expectedWishlistStatus,
+            "Chosen Product ${productToWishlist.id} isWishlisted status should be $expectedWishlistStatus")
+
+    this.forEachIndexed { index, it ->
+        if (it !is Product || it.id != productToWishlist.id) {
+            it shouldBe similarSearchPreviousViewModelList[index]
+        }
+    }
+}

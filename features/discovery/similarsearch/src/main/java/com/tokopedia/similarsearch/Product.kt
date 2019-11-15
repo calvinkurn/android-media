@@ -70,5 +70,5 @@ internal data class Product(
 
         @SerializedName("wishlist")
         @Expose
-        val isWishlisted: Boolean = false
+        var isWishlisted: Boolean = false
 )

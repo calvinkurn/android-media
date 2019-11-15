@@ -128,21 +128,28 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
                 similarSearchViewModel.onViewToggleWishlistSelectedProduct()
             }
 
-            Then("assert add wishlist selected product event is true") {
-                val addWishlistSelectedProductEvent = similarSearchViewModel.getAddWishlistSelectedProductEventLiveData().value
+            Then("assert add wishlist event is true") {
+                val addWishlistEventLiveData = similarSearchViewModel.getAddWishlistEventLiveData().value
 
-                addWishlistSelectedProductEvent?.getContentIfNotHandled().shouldBe(
+                addWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
                         true,
-                        "Add wishlist selected product event should be true"
+                        "Add wishlist event should be true"
                 )
             }
 
-            Then("assert selected product is wishlisted is true") {
+            Then("assert selected product is wishlisted is true, and update wishlist selected product event is true") {
                 val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
 
                 similarSearchSelectedProduct.isWishlisted.shouldBe(
                         true,
                         "Selected Product is wishlisted should be true"
+                )
+
+                val updateWishlistSelectedProductEventLiveData = similarSearchViewModel.getUpdateWishlistSelectedProductEventLiveData().value
+
+                updateWishlistSelectedProductEventLiveData?.getContentIfNotHandled().shouldBe(
+                        true,
+                        "Update wishlist selected product event should be true"
                 )
             }
         }
@@ -176,21 +183,28 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
                 similarSearchViewModel.onViewToggleWishlistSelectedProduct()
             }
 
-            Then("assert add wishlist selected product event is false") {
-                val addWishlistSelectedProductEvent = similarSearchViewModel.getAddWishlistSelectedProductEventLiveData().value
+            Then("assert add wishlist event is false") {
+                val addWishlistEventLiveData = similarSearchViewModel.getAddWishlistEventLiveData().value
 
-                addWishlistSelectedProductEvent?.getContentIfNotHandled().shouldBe(
+                addWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
                         false,
-                        "Add wishlist selected product event should be false"
+                        "Add wishlist event should be false"
                 )
             }
 
-            Then("assert selected product is wishlisted stays false") {
+            Then("assert selected product is wishlisted stays false, and update wishlist selected product event is null") {
                 val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
 
                 similarSearchSelectedProduct.isWishlisted.shouldBe(
                         false,
                         "Selected Product is wishlisted should be false"
+                )
+
+                val updateWishlistSelectedProductEventLiveData = similarSearchViewModel.getUpdateWishlistSelectedProductEventLiveData().value
+
+                updateWishlistSelectedProductEventLiveData?.getContentIfNotHandled().shouldBe(
+                        null,
+                        "Update wishlist selected product event should be null"
                 )
             }
         }
@@ -228,21 +242,28 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
                 similarSearchViewModel.onViewToggleWishlistSelectedProduct()
             }
 
-            Then("assert remove wishlist selected product event is true") {
-                val removeWishlistSelectedProductEvent = similarSearchViewModel.getRemoveWishlistSelectedProductEventLiveData().value
+            Then("assert remove wishlist event is true") {
+                val removeWishlistEventLiveData = similarSearchViewModel.getRemoveWishlistEventLiveData().value
 
-                removeWishlistSelectedProductEvent?.getContentIfNotHandled().shouldBe(
+                removeWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
                         true,
-                        "Remove wishlist selected product event should be true"
+                        "Remove wishlist event should be true"
                 )
             }
 
-            Then("assert selected product is wishlisted is true") {
+            Then("assert selected product is wishlisted is false, and update wishlist selected product event is false") {
                 val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
 
                 similarSearchSelectedProduct.isWishlisted.shouldBe(
                         false,
                         "Selected Product is wishlisted should be false"
+                )
+
+                val updateWishlistSelectedProductEventLiveData = similarSearchViewModel.getUpdateWishlistSelectedProductEventLiveData().value
+
+                updateWishlistSelectedProductEventLiveData?.getContentIfNotHandled().shouldBe(
+                        false,
+                        "Update wishlist selected product event should be false"
                 )
             }
         }
@@ -277,20 +298,27 @@ internal class HandleViewToggleWishlistSelectedProductTest: Spek({
             }
 
             Then("assert remove wishlist selected product event is false") {
-                val removeWishlistSelectedProductEvent = similarSearchViewModel.getRemoveWishlistSelectedProductEventLiveData().value
+                val removeWishlistEventLiveData = similarSearchViewModel.getRemoveWishlistEventLiveData().value
 
-                removeWishlistSelectedProductEvent?.getContentIfNotHandled().shouldBe(
+                removeWishlistEventLiveData?.getContentIfNotHandled().shouldBe(
                         false,
-                        "Remove wishlist selected product event should be false"
+                        "Remove wishlist event should be false"
                 )
             }
 
-            Then("assert selected product is wishlisted stays true") {
+            Then("assert selected product is wishlisted stays true, and update wishlist selected product event is null") {
                 val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
 
                 similarSearchSelectedProduct.isWishlisted.shouldBe(
                         true,
                         "Selected Product is wishlisted should be true"
+                )
+
+                val updateWishlistSelectedProductEventLiveData = similarSearchViewModel.getUpdateWishlistSelectedProductEventLiveData().value
+
+                updateWishlistSelectedProductEventLiveData?.getContentIfNotHandled().shouldBe(
+                        null,
+                        "Update wishlist selected product event should be null"
                 )
             }
         }

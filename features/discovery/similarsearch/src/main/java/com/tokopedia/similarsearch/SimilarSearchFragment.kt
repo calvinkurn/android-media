@@ -124,13 +124,13 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
             updateAdapter(it)
         })
 
-        similarSearchViewModel?.getAddWishlistSelectedProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            handleAddWishlistSelectedProductEvent(it)
-        })
+//        similarSearchViewModel?.getAddWishlistSelectedProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+//            handleAddWishlistSelectedProductEvent(it)
+//        })
 
-        similarSearchViewModel?.getRemoveWishlistSelectedProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            handleRemoveWishlistSelectedProductEvent(it)
-        })
+//        similarSearchViewModel?.getRemoveWishlistSelectedProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+//            handleRemoveWishlistSelectedProductEvent(it)
+//        })
 
         similarSearchViewModel?.getRouteToLoginPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             handleRouteToLoginPageEvent()
@@ -167,22 +167,19 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
     private fun handleAddWishlistSelectedProductEvent(isSuccess: Boolean) {
         if (isSuccess) {
             showSnackbar(R.string.similar_search_add_wishlist_success)
-            updateSelectedProductWishlistStatus()
         }
         else {
             showSnackbar(R.string.similar_search_add_wishlist_failed)
         }
     }
 
-    private fun updateSelectedProductWishlistStatus() {
-        val similarSearchSelectedProduct = similarSearchViewModel?.similarSearchSelectedProduct
-        similarSearchSelectedProductView?.updateWishlistStatus(similarSearchSelectedProduct?.isWishlisted ?: false)
+    private fun updateSelectedProductWishlistStatus(isWishlisted: Boolean) {
+        similarSearchSelectedProductView?.updateWishlistStatus(isWishlisted)
     }
 
     private fun handleRemoveWishlistSelectedProductEvent(isSuccess: Boolean) {
         if (isSuccess) {
             showSnackbar(R.string.similar_search_remove_wishlist_success)
-            updateSelectedProductWishlistStatus()
         }
         else {
             showSnackbar(R.string.similar_search_remove_wishlist_failed)
