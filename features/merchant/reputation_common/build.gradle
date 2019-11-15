@@ -34,7 +34,7 @@ dependencies {
 project.ext {
     artifactId = 'reputation-common'
     groupId = 'com.tokopedia.merchant'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="reputation_common-release"
 }
 
