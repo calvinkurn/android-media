@@ -117,14 +117,13 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
 
     @Override
     public void showLoaderReactPage() {
-        long loadTime = new Date().getTime() - loadStartTime;
-        Toast.makeText(this, "" + loadTime, Toast.LENGTH_LONG).show();
         loaderBootingReact.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoaderReactPage() {
-        Log.v("DiscoveryActivity", "" + new Date().getTime());
+        long loadTime = new Date().getTime() - loadStartTime;
+        Toast.makeText(this, "" + loadTime, Toast.LENGTH_LONG).show();
         loaderBootingReact.setVisibility(View.GONE);
     }
 
