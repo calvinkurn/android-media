@@ -2165,14 +2165,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
             ArrayList<CartItemDataVoucher> cartItemDataVoucherArrayList = new ArrayList<>();
             for (CartItemHolderData cartItemHolderData : shopGroupAvailableData.getCartItemDataList()) {
-                try {
-                    CartItemDataVoucher cartItemDataVoucher = new CartItemDataVoucher();
-                    cartItemDataVoucher.setProductId(Integer.parseInt(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
-                    cartItemDataVoucher.setProductName(cartItemHolderData.getCartItemData().getOriginData().getProductName());
-                    cartItemDataVoucherArrayList.add(cartItemDataVoucher);
-                } catch (NumberFormatException e) {
-                    if (GlobalConfig.isAllowDebuggingTools()) {
-                        e.printStackTrace();
+                if (cartItemHolderData.isSelected()) {
+                    try {
+                        CartItemDataVoucher cartItemDataVoucher = new CartItemDataVoucher();
+                        cartItemDataVoucher.setProductId(Integer.parseInt(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
+                        cartItemDataVoucher.setProductName(cartItemHolderData.getCartItemData().getOriginData().getProductName());
+                        cartItemDataVoucherArrayList.add(cartItemDataVoucher);
+                    } catch (NumberFormatException e) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
