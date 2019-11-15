@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.translator.manager.TranslatorManager;
 import com.tokopedia.url.Env;
@@ -85,6 +87,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
 
+    private Button requestFcmToken;
+
     @Override
     public String getScreenName() {
         return getString(R.string.screen_name);
@@ -134,6 +138,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         groupChatLogToggle = findViewById(R.id.groupchat_log);
 
         accessTokenView = findViewById(R.id.access_token);
+        requestFcmToken = findViewById(R.id.requestFcmToken);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
         ArrayAdapter<Env> envSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Env.values());
@@ -273,6 +278,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             if (clipboard != null) {
                 clipboard.setPrimaryClip(clip);
             }
+        });
+
+        requestFcmToken.setOnClickListener(v -> {
+            Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
+            startService(intent);
         });
     }
 

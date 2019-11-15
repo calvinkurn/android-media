@@ -171,6 +171,8 @@ include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
 
+include 'features:fcm_common'
+
 include 'tkpdcore'
 include 'tkpdinbox'
 include 'tkpddiscovery'
