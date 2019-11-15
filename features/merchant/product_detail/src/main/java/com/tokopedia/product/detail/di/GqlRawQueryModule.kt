@@ -179,8 +179,24 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PDP_FINANCING_RECOMMENDATION)
+    fun providePDPFinancingRecommendation(@ApplicationContext context: Context) :String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment_recommendation)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PDP_FINANCING_CALCULATION)
+    fun providePDPFinancingCalculation(@ApplicationContext context: Context) :String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_installment_calculations)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
-    fun proviceRecommendationProduct(@ApplicationContext context: Context): String =
+    fun provideRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
 
     @ProductDetailScope
