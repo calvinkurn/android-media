@@ -8,7 +8,7 @@ import com.tokopedia.tkpd.home.SimpleHomeActivity;
 
 /**
  * Created by m.normansyah on 01/12/2015.
- * this class don't hold ctx
+ * this class don't hold context
  */
 public class SimpleHomeImpl implements SimpleHome {
     int fragmentType;

@@ -163,7 +163,7 @@ public class CustomPushListener extends PushMessageListener {
      * it will create grid notification (2,3,6) images which will have {@link PendingIntent}
      * setOnClickPendingIntent
      *
-     * @param context This ctx is used to create intent, to get packageName
+     * @param context This context is used to create intent, to get packageName
      * @param extras  This bundle contains the payload for Grid Type Notification
      * @param builder This builder object is provided by MoEngage and here we are setting contentView
      */

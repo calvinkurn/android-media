@@ -227,7 +227,7 @@ public class ProductHistoryImpl implements ProductHistory {
 //        new android.os.Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
-//                fetchDataFromInternet(ctx);
+//                fetchDataFromInternet(context);
 //            }
 //        }, 1_000);
     }
