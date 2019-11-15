@@ -53,7 +53,8 @@ public class ShipmentMapper implements IShipmentMapper {
     private static final String SHOP_TYPE_REGULER = "reguler";
 
     @Inject
-    public ShipmentMapper() {}
+    public ShipmentMapper() {
+    }
 
     @Override
     public CartShipmentAddressFormData convertToShipmentAddressFormData(
@@ -81,6 +82,31 @@ public class ShipmentMapper implements IShipmentMapper {
                 if (addresses.getData().getDefaultAddress() != null) {
                     com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
                             addresses.getData().getDefaultAddress();
+                    UserAddress defaultAddressData = new UserAddress();
+                    defaultAddressData.setAddressId(defaultAddress.getAddressId());
+                    defaultAddressData.setAddressName(defaultAddress.getAddressName());
+                    defaultAddressData.setAddress(defaultAddress.getAddress());
+                    defaultAddressData.setAddress2(defaultAddress.getAddress2());
+                    defaultAddressData.setCityId(defaultAddress.getCityId());
+                    defaultAddressData.setCityName(defaultAddress.getCityName());
+                    defaultAddressData.setCorner(defaultAddress.isCorner());
+                    defaultAddressData.setCornerId(defaultAddress.getCornerId());
+                    defaultAddressData.setCountry(defaultAddress.getCountry());
+                    defaultAddressData.setDistrictId(defaultAddress.getDistrictId());
+                    defaultAddressData.setDistrictName(defaultAddress.getDistrictName());
+                    defaultAddressData.setLatitude(defaultAddress.getLatitude());
+                    defaultAddressData.setLongitude(defaultAddress.getLongitude());
+                    defaultAddressData.setPhone(defaultAddress.getPhone());
+                    defaultAddressData.setPostalCode(defaultAddress.getPostalCode());
+                    defaultAddressData.setProvinceId(defaultAddress.getProvinceId());
+                    defaultAddressData.setProvinceName(defaultAddress.getProvinceName());
+                    defaultAddressData.setReceiverName(defaultAddress.getReceiverName());
+                    defaultAddressData.setStatus(defaultAddress.getStatus());
+
+                    dataAddressData.setDefaultAddress(defaultAddressData);
+                } else if(shipmentAddressFormDataResponse.getIsMultiple() == 0) {
+                    com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
+                            shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
                     UserAddress defaultAddressData = new UserAddress();
                     defaultAddressData.setAddressId(defaultAddress.getAddressId());
                     defaultAddressData.setAddressName(defaultAddress.getAddressName());
