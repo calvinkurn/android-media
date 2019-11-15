@@ -17,7 +17,6 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
@@ -25,8 +24,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.commonWallet)
-
-    implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.navigationCommon)
@@ -40,6 +37,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.webview)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
@@ -51,6 +51,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -77,14 +78,12 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation project(rootProject.ext.libraries.webview)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
 }
 
 project.ext {
     artifactId = 'account'
     groupId = 'com.tokopedia.home'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "account-home-release"
 }
 
