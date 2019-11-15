@@ -6,7 +6,7 @@ import dagger.Component
 
 @ChatSettingScope
 @Component(
-        modules = [ChatSettingModule::class],
+        modules = [ChatSettingModule::class, ChatSettingViewModelModule::class],
         dependencies = [BaseAppComponent::class]
 )
 
