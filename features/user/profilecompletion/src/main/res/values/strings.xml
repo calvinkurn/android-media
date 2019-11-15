@@ -14,7 +14,7 @@
     <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
     <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
     <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 35 karakter</string>
-    <string name="error_name_min_3">Minimal 3 karakter</string>
+    <string name="error_name_min_3">Minimum 3 karakter</string>
     <string name="error_name_max_35">Maksimal 35 karakter</string>
     <string name="error_name_same_with_previous">Nama tidak boleh sama</string>
     <string name="name_confirmation_yes">Ya, benar</string>
