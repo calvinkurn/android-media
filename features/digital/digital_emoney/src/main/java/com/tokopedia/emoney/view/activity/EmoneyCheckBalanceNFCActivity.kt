@@ -44,6 +44,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.user.session.UserSessionInterface
 import id.co.bri.sdk.Brizzi
 import javax.inject.Inject
 
@@ -68,6 +69,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     lateinit var emoneyAnalytics: EmoneyAnalytics
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
 
     override fun getNewFragment(): Fragment? {
@@ -391,46 +394,51 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         }
     }
 
-
-    internal fun detectNFC() {
+    fun detectNFC() {
         if (!brizziInstance.nfcAdapter.isEnabled) {
             eTollUpdateBalanceResultView.visibility = View.GONE
             tapETollCardView.visibility = View.GONE
 
             AlertDialog.Builder(this)
                     .setMessage(getString(R.string.emoney_please_activate_nfc_from_settings))
-                    .setPositiveButton(getString(R.string.emoney_activate), object : DialogInterface.OnClickListener {
-                        override fun onClick(p0: DialogInterface?, p1: Int) {
-                            emoneyAnalytics.onActivateNFCFromSetting()
-                            directToNFCSettingsPage()
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.emoney_cancel), object : DialogInterface.OnClickListener {
-                        override fun onClick(p0: DialogInterface?, p1: Int) {
-                            emoneyAnalytics.onCancelActivateNFCFromSetting()
-                            nfcDisabledView.visibility = View.VISIBLE
-                        }
-                    }).show()
+                    .setPositiveButton(getString(R.string.emoney_activate)) { p0, p1 ->
+                        emoneyAnalytics.onActivateNFCFromSetting()
+                        directToNFCSettingsPage()
+                    }
+                    .setNegativeButton(getString(R.string.emoney_cancel)) { p0, p1 ->
+                        emoneyAnalytics.onCancelActivateNFCFromSetting()
+                        nfcDisabledView.visibility = View.VISIBLE
+                    }.show()
         } else {
-            pendingIntent = PendingIntent.getActivity(this, 0,
-                    Intent(this, EmoneyCheckBalanceNFCActivity::class.java)
-                            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
-            val intentFilter = arrayOf(IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED))
-            techListsArrayBrizzi = arrayOf(arrayOf(IsoDep::class.java.name, NfcA::class.java.name))
-            brizziInstance.nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilter, null)
-            nfcDisabledView.visibility = View.GONE
+            if (userSession.isLoggedIn) {
+                pendingIntent = PendingIntent.getActivity(this, 0,
+                        Intent(this, EmoneyCheckBalanceNFCActivity::class.java)
+                                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
+                val intentFilter = arrayOf(IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED))
+                techListsArrayBrizzi = arrayOf(arrayOf(IsoDep::class.java.name, NfcA::class.java.name))
+                brizziInstance.nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilter, null)
+                nfcDisabledView.visibility = View.GONE
 
-            if (eTollUpdateBalanceResultView.visibility == View.GONE) {
-                emoneyAnalytics.onEnableNFC()
-                tapETollCardView.visibility = View.VISIBLE
+                if (eTollUpdateBalanceResultView.visibility == View.GONE) {
+                    emoneyAnalytics.onEnableNFC()
+                    tapETollCardView.visibility = View.VISIBLE
+                }
+            } else {
+                navigateToLoginPage()
             }
         }
+    }
+
+    fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
     companion object {
         const val DIGITAL_NFC_CALLING_TYPE = "calling_page_check_saldo"
         const val DIGITAL_NFC_FROM_PDP = "calling_from_pdp"
         const val DIGITAL_NFC = "calling_from_nfc"
+        const val REQUEST_CODE_LOGIN = 1980
 
         const val ISSUER_ID_EMONEY = 1
         const val ISSUER_ID_BRIZZI = 2
