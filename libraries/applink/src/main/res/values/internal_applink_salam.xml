@@ -6,7 +6,7 @@
     -->
 
     <!--host-->
-    <string name="host_umrah" translatable="false">order-details</string>
+    <string name="host_order_detail_umrah" translatable="false">order-details</string>
 
     <!--Umrah Path-->
     <string name="path_umrah_order_detail" translatable="false">/umroh/.*\</string>

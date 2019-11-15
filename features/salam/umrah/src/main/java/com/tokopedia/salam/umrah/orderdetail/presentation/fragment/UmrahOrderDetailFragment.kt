@@ -6,22 +6,18 @@ import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleAdapter
@@ -31,6 +27,7 @@ import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsMetaDataEntity
 import com.tokopedia.salam.umrah.orderdetail.di.UmrahOrderDetailComponent
 import com.tokopedia.salam.umrah.orderdetail.presentation.adapter.UmrahOrderDetailButtonAdapter
+import com.tokopedia.salam.umrah.orderdetail.presentation.util.UmrahOrderDetailConst.BATALKAN_LABEL
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
 import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -110,13 +107,11 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
 
         umrahOrderDetailViewModel.getOrderDetail(
                 GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_order_detail),
-                orderId,
-                GraphqlHelper.loadRawString(resources, R.raw.dummy_order_detail)
+                orderId
         )
         umrahOrderDetailViewModel.getMyUmrahWidget(
                 GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_saya_by_order_id),
-                orderId,
-                GraphqlHelper.loadRawString(resources, R.raw.dummy_my_umrah_by_order_id)
+                orderId
         )
     }
 
@@ -171,7 +166,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             tg_show_e_voucher.text = metaData.evoucherButton.label
             btn_show_detail_booking.setOnClickListener {
                 trackingUmrahUtil.umrahOrderDetailDetailPDP()
-                RouteManager.route(context, metaData.productDetailButton.appURL)
+                RouteManager.route(context, metaData.productDetailButton.webURL)
             }
             container_umrah_e_voucher.setOnClickListener {
                 trackingUmrahUtil.umrahOrderDetailDetailEVoucher()
@@ -285,8 +280,6 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     companion object {
 
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
-        private const val BATALKAN_LABEL = "Batalkan Paket"
-        private const val PESAN_ULRANG_LABEL = "Pesan Ulang"
 
         fun getInstance(orderId: String): UmrahOrderDetailFragment = UmrahOrderDetailFragment().also {
             it.arguments = Bundle().apply {

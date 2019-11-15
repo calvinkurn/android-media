@@ -14,7 +14,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_umrah"
+                    android:host="@string/host_order_detail_umrah"
                     android:pathPattern="@string/path_umrah_order_detail"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
