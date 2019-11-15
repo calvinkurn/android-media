@@ -34,7 +34,6 @@ import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -454,7 +453,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     companion object {
-
+        private val URL_GAINS_SCORE_POINT = "https://seller.tokopedia.com/edu/skor-toko"
         private val REQUEST_EDIT_BASIC_INFO = 781
         private val REQUEST_EDIT_SCHEDULE = 782
 
