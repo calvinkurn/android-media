@@ -95,7 +95,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_weight="1"
-            android:text="@string/pm_upgrade_shop"
+            android:text="@string/pm_upgrade_shop_settings"
             android:textSize="14sp" />
 
         <com.tokopedia.design.component.TextViewCompat
@@ -138,7 +138,7 @@
                     android:layout_margin="@dimen/dp_5"
                     android:lineSpacingExtra="@dimen/sp_6"
                     android:padding="@dimen/dp_8"
-                    tools:text="@string/pm_label_price_cashback" />
+                    tools:text="@string/pm_label_price_cashback_shop_settings" />
 
                 <ImageView
                     android:id="@+id/iv_ticker_logo"
