@@ -49,6 +49,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     private lateinit var destination: String
     private var isCourierSet: Boolean = false
     private var isTimeSet: Boolean = false
+    private var moneyInStringCancelled: String = ""
+    private var moneyInStringCancelledOrFailed: String = ""
 
     companion object {
         const val MONEY_IN_DEFAULT_ADDRESS = "MONEY_IN_DEFAULT_ADDRESS"
@@ -60,6 +62,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     override fun initView() {
+        moneyInStringCancelled = getString(R.string.money_in_alert_payment_canceled)
+        moneyInStringCancelledOrFailed = getString(R.string.money_in_alert_payment_canceled_or_failed)
         sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_MONEYIN,
                 TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
                 TradeInGTMConstants.ACTION_VIEW_CHECKOUT_PAGE,
@@ -378,10 +382,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                 finish()
             }
             PaymentConstant.PAYMENT_FAILED -> {
-                showMessage(getString(R.string.money_in_alert_payment_canceled_or_failed))
+                showMessage(moneyInStringCancelledOrFailed)
             }
             PaymentConstant.PAYMENT_CANCELLED -> {
-                showMessage(getString(R.string.money_in_alert_payment_canceled))
+                showMessage(moneyInStringCancelled)
             }
             else -> {
 
