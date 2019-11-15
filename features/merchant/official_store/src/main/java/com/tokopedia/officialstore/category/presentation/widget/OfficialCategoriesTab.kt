@@ -48,12 +48,20 @@ class OfficialCategoriesTab(context: Context,
 
         addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabReselected(tab: Tab) {
-                text_view_category_title?.apply {
-                    setTextColor(MethodChecker.getColor(
+                tab.customView?.apply {
+                    ImageHandler.loadImage(
                             context,
-                            R.color.Purple_P600
-                    ))
-                    setWeight(Typography.BOLD)
+                            image_view_category_icon,
+                            categoriesItemTab[tab.position].iconUrl,
+                            R.drawable.ic_loading_image
+                    )
+                    text_view_category_title?.apply {
+                        setTextColor(MethodChecker.getColor(
+                                context,
+                                R.color.Purple_P600
+                        ))
+                        setWeight(Typography.BOLD)
+                    }
                 }
             }
 
