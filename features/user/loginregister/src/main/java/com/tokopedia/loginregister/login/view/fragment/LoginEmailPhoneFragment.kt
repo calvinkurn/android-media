@@ -7,9 +7,6 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
-import androidx.fragment.app.Fragment
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
@@ -17,7 +14,11 @@ import android.text.format.DateFormat
 import android.text.style.ClickableSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -27,6 +28,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -66,7 +69,6 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
@@ -147,8 +149,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
-            analytics.initCashShield(this)
-            analytics.sendCashShield(this)
         }
     }
 
@@ -580,7 +580,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val remoteConfig = FirebaseRemoteConfigImpl(this)
             val installAtLogin = remoteConfig.getBoolean(KEY_REMOTE_CONFIG_INSTALL_DF_AT_LOGIN, false)
             if (!GlobalConfig.isSellerApp() && installAtLogin) {
-                DFInstaller.installOnBackground(application, listOf(DeeplinkDFMapper.DFM_SHOP_SETTINGS_CUSTOMERAPP))
+                DFInstaller().installOnBackground(application, listOf(DeeplinkDFMapper.DFM_SHOP_SETTINGS_CUSTOMERAPP))
             }
         }
     }
@@ -647,7 +647,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     fun onErrorLogin(errorMessage: String?) {
         analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
-        analytics.sendCashShield(context)
 
         dismissLoadingLogin()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
@@ -667,7 +666,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         val message = ErrorHandlerSession.getErrorMessage(context, throwable)
         analytics.trackClickOnNextFail(emailPhoneEditText.text.toString(), message)
-        analytics.sendCashShield(context)
         partialRegisterInputView.onErrorValidate(message)
     }
 
@@ -886,7 +884,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }.showRetrySnackbar()
 
             analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
-            analytics.sendCashShield(context)
         }
     }
 
@@ -1067,7 +1064,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
-        analytics.onDestroy()
     }
 
     override fun onBackPressed() {

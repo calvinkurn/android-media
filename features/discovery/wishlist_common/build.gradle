@@ -31,7 +31,7 @@ dependencies {
 project.ext {
     artifactId = 'wishlist-common'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="wishlist_common-release"
 }
 
