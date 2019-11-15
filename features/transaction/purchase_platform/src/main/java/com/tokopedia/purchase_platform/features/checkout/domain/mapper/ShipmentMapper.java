@@ -33,7 +33,6 @@ import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipme
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.ServiceId;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Shop;
-import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.TradeInInfo;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.TradeInInfoData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.UserAddress;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
