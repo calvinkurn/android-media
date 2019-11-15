@@ -14,7 +14,7 @@ object SeamlessLoginConstant {
     }
 
     const val RSA_ALGORITHM = "RSA"
-    const val SEAMLESS_PATH = "seamless"
+    const val SEAMLESS_PATH = "/seamless"
 
     const val METHOD_GET = "GET"
     const val HMAC_SIGNATURE = "TKPD Tokopedia:"
