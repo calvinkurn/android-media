@@ -19,9 +19,8 @@ import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerDat
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeatures;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Donation;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupAddress;
@@ -33,23 +32,8 @@ import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipme
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.ServiceId;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.TradeInInfo;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldTieringModel;
-import com.tokopedia.purchase_platform.common.base.IMapperUtil;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack;
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message;
-import com.tokopedia.purchase_platform.common.data.model.response.TrackingDetail;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem;
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
-import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
-import com.tokopedia.logisticcart.shipping.model.CodModel;
-import com.tokopedia.logisticcart.shipping.model.ShipProd;
-import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -504,10 +488,10 @@ public class ShipmentMapper implements IShipmentMapper {
                                 }
 
                                 if (!isDisablePPP) {
-                                if (product.getPurchaseProtectionPlanData() != null) {
-                                    PurchaseProtectionPlanData purchaseProtectionPlanData = new PurchaseProtectionPlanData();
-                                    com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.PurchaseProtectionPlanData pppDataMapping =
-                                            product.getPurchaseProtectionPlanData();
+                                    if (product.getPurchaseProtectionPlanData() != null) {
+                                        PurchaseProtectionPlanData purchaseProtectionPlanData = new PurchaseProtectionPlanData();
+                                        com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.PurchaseProtectionPlanData pppDataMapping =
+                                                product.getPurchaseProtectionPlanData();
 
                                         purchaseProtectionPlanData.setProtectionAvailable(pppDataMapping.getProtectionAvailable());
                                         purchaseProtectionPlanData.setProtectionLinkText(pppDataMapping.getProtectionLinkText());
