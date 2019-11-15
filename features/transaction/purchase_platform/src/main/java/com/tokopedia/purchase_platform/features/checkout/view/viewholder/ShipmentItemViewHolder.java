@@ -752,7 +752,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     );
                 }
             });
-            llShippingOptionsContainer.setVisibility(View.GONE);
             llShipmentRecommendationContainer.setVisibility(View.GONE);
             layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
             llCourierRecommendationTradeInDropOffStateLoading.setVisibility(View.GONE);
@@ -765,6 +764,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvTradeInShippingPriceTitle.setVisibility(View.VISIBLE);
                 labelChooseDurationTradeIn.setVisibility(View.GONE);
                 tvChooseDurationTradeIn.setVisibility(View.GONE);
+                llShippingOptionsContainer.setVisibility(View.VISIBLE);
             } else {
                 if (shipmentCartItemModel.isHasSetDropOffLocation()) {
                     loadCourierState(shipmentCartItemModel, shipmentDetailData, recipientAddressModel, ratesDataConverter, true);
