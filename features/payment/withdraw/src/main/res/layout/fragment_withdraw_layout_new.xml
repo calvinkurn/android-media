@@ -1,0 +1,361 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:id="@+id/mainView"
+    android:scrollbars="none">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivButtonLeft"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:tint="#abadb1"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/withdraw_button"
+            app:layout_constraintStart_toStartOf="@+id/withdraw_button"
+            app:layout_constraintTop_toTopOf="@+id/withdraw_button"
+            app:srcCompat="@drawable/ic_icon_lock" />
+
+        <TextView
+            android:id="@+id/withdraw_refund_saldo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_line_separator"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:text="@string/refund"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/withdraw_seller_saldo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/withdraw_seller_saldo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:background="@drawable/bg_single_line"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:text="@string/saldo_return"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/withdraw_refund_saldo"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/withdraw_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_40"
+            android:background="@drawable/bg_button_green_enabled"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/sp_11"
+            android:padding="@dimen/dp_12"
+            android:text="@string/title_action_withdraw"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_info" />
+
+        <TextView
+            android:id="@+id/add_account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_12"
+            android:drawableLeft="@drawable/ic_add_round"
+            android:drawablePadding="@dimen/dp_12"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/sp_11"
+            android:padding="@dimen/dp_12"
+            android:text="Tambah Rekening"
+            android:textSize="@dimen/sp_14"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/saldo_title"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_view_bank" />
+
+        <TextView
+            android:id="@+id/tv_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:lineSpacingExtra="@dimen/sp_5"
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/saldo_title"
+            app:layout_constraintTop_toBottomOf="@+id/add_account"
+            tools:text="@string/saldolock_info_text" />
+
+        <View
+            android:id="@+id/view_divider3"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_9"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:background="@color/grey_200"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_choose_bank" />
+
+        <View
+            android:id="@+id/view_divider2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8"
+            android:layout_below="@+id/saldo_title"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/grey_200"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/saldo_withdraw_hint" />
+
+        <View
+            android:id="@+id/view_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/saldo_title"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:background="@color/grey_300"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/saldo_title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_bank"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_choose_bank"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/saldo_title"
+            app:layout_constraintTop_toBottomOf="@+id/view_divider3" />
+
+        <com.tokopedia.design.component.Tabs
+            android:id="@+id/tab_withdraw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingBottom="@dimen/dp_0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/saldo_title"
+            app:layout_constraintTop_toBottomOf="@+id/layout_premium_account"
+            app:tabIndicatorColor="@color/tkpd_main_green"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/tkpd_main_green"
+            app:tabTextColor="@color/black_38">
+
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/tab_saldo_refund"
+                android:textAlignment="textStart" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/saldo_return"
+                android:textAlignment="textStart" />
+
+        </com.tokopedia.design.component.Tabs>
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/wrapper_total_withdrawal"
+            style="@style/HintTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_nominal_withdrawal"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:textColorHint="@color/grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/saldo_title"
+            app:layout_constraintTop_toBottomOf="@+id/withdrawal_all_tv">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/total_withdrawal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned"
+                android:textSize="@dimen/sp_16" />
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/saldo_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:text="@string/saldo_refund"
+            android:textColor="@color/clr_f531353b"
+            app:layout_constraintEnd_toStartOf="@+id/total_saldo_value"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tab_withdraw"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/total_saldo_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:gravity="end"
+            android:textColor="@color/clr_f531353b"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/saldo_title"
+            app:layout_constraintTop_toTopOf="@+id/saldo_title"
+            app:typographyType="heading_5"
+            tools:text="Rp5.000.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_nominal_withdrawal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view_divider"
+            android:layout_marginTop="@dimen/dp_16"
+            android:lineSpacingExtra="@dimen/sp_4"
+            android:text="@string/nominal_withdrawal"
+            android:textColor="@color/grey_button_compat"
+            app:layout_constraintEnd_toStartOf="@+id/withdrawal_all_tv"
+            app:layout_constraintStart_toStartOf="@+id/saldo_title"
+            app:layout_constraintTop_toBottomOf="@+id/view_divider"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/withdrawal_all_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view_divider"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:gravity="right|end"
+            android:text="@string/saldo_withdrawal_all"
+            android:textColor="@color/tkpd_main_green"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/title_nominal_withdrawal"
+            app:layout_constraintTop_toTopOf="@+id/title_nominal_withdrawal"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title_choose_bank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:fontFamily="sans-serif"
+            android:text="@string/choose_bank_account"
+            android:textColor="@color/black_70"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/saldo_title"
+            app:layout_constraintTop_toBottomOf="@+id/view_divider2"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/saldo_withdraw_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/wrapper_total_withdrawal"
+            android:layout_marginTop="@dimen/dp_4"
+            android:lineSpacingExtra="@dimen/sp_4"
+            android:textColor="@color/grey_button_compat"
+            app:layout_constraintStart_toStartOf="@+id/saldo_title"
+            app:layout_constraintTop_toBottomOf="@+id/wrapper_total_withdrawal"
+            app:typographyType="body_3"
+            tools:text="@string/saldo_withdraw_hint" />
+
+        <include
+            android:id="@+id/layout_ticker"
+            layout="@layout/layout_holdwithdrawl_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/layout_premium_account"
+            layout="@layout/swd_layout_premium_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/layout_ticker"/>
+
+        <include
+            android:id="@+id/loading_layout"
+            layout="@layout/loading_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/iv_emptySaldo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/swd_no_saldo_copy"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/dp_40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tab_withdraw" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/empty_saldo_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dp_30"
+            android:textColor="@color/clr_f531353b"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
+            app:layout_constraintEnd_toEndOf="@+id/tab_withdraw"
+            app:layout_constraintStart_toStartOf="@+id/tab_withdraw"
+            app:layout_constraintTop_toBottomOf="@+id/iv_emptySaldo"
+            app:typographyType="heading_2" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/editable_group"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="wrapper_total_withdrawal,title_choose_bank,recycler_view_bank,withdrawal_all_tv,view_divider3,saldo_withdraw_hint,title_nominal_withdrawal,view_divider,view_divider2,saldo_title,tv_info,total_saldo_value,ivButtonLeft,withdraw_button" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/emptyGroup"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="empty_saldo_description,iv_emptySaldo" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

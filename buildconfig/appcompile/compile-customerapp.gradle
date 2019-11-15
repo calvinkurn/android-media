@@ -37,7 +37,7 @@ include "features:digital:flight_orderlist"
 include "features:digital:hotel"
 include "features:digital:imagepreviewslider"
 include "features:digital:travel_homepage"
-include ":features:digital:digital_homepage"
+include "features:digital:digital_homepage"
 
 include "features:salam:umrah"
 
@@ -68,6 +68,7 @@ include "features:fintech:saldo_details"
 include "features:fintech:common_wallet"
 include "features:fintech:wallet"
 
+include "features:home:dynamicbanner"
 include "features:home:navigation"
 include "features:home:navigation-common"
 include "features:home:searchbar"

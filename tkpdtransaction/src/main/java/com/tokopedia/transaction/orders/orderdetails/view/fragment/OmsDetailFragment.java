@@ -93,10 +93,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     private static final String KEY_FROM_PAYMENT = "from_payment";
+    private static final String KEY_UPSTREAM = "upstream";
     private static final String KEY_URI = "tokopedia";
     private static final String KEY_URI_PARAMETER = "idem_potency_key";
     private static final String KEY_URI_PARAMETER_EQUAL = "idem_potency_key=";
     public static final String CATEGORY_GIFT_CARD = "Gift-card";
+    public static int RETRY_COUNT = 0;
 
     @Inject
     OrderListDetailPresenter presenter;
@@ -127,7 +129,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     LinearLayout userInfo;
     TextView userInfoLabel;
     private String categoryName;
-    View dividerUserInfo, dividerActionBtn;
+    View dividerUserInfo, dividerActionBtn, dividerInfoLabel;
 
 
     @Override
@@ -140,11 +142,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         getComponent(OrderDetailsComponent.class).inject(this);
     }
 
-    public static Fragment getInstance(String orderId, String orderCategory, String fromPayment) {
+    public static Fragment getInstance(String orderId, String orderCategory, String fromPayment, String upstream) {
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ORDER_ID, orderId);
         bundle.putString(KEY_ORDER_CATEGORY, orderCategory);
         bundle.putString(KEY_FROM_PAYMENT, fromPayment);
+        bundle.putString(KEY_UPSTREAM, upstream);
         Fragment fragment = new OmsDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -177,6 +180,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         userInfoLabel = view.findViewById(R.id.user_label);
         dividerUserInfo = view.findViewById(R.id.divider_above_userInfo);
         dividerActionBtn = view.findViewById(R.id.divider_above_actionButton);
+        dividerInfoLabel = view.findViewById(R.id.divider_above_info_label);
         actionButtonText = view.findViewById(R.id.actionButton_text);
         recyclerView.setNestedScrollingEnabled(false);
 
@@ -191,7 +195,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString("from_payment"));
+        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString("from_payment"), (String) getArguments().get(KEY_UPSTREAM));
     }
 
     @Override
@@ -402,15 +406,23 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setItems(List<Items> items, boolean isTradeIn) {
         List<Items> itemsList = new ArrayList<>();
+        boolean metadataEmpty = true;
         for (Items item : items) {
             if (!CATEGORY_GIFT_CARD.equalsIgnoreCase(item.getCategory())) {
                 itemsList.add(item);
             }
         }
-        if (itemsList.size() > 0) {
+        for(Items item : itemsList){
+            if(!item.getMetaData().isEmpty()) {
+                metadataEmpty = false;
+                break;
+            }
+        }
+        if (itemsList.size() > 0 && !metadataEmpty) {
             recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter, OmsDetailFragment.this, getArguments().getString(KEY_ORDER_ID)));
         } else {
             detailsLayout.setVisibility(View.GONE);
+            dividerInfoLabel.setVisibility(View.GONE);
         }
     }
 
@@ -502,7 +514,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-
+        Toaster.INSTANCE.showNormalWithAction(mainView, message, Snackbar.LENGTH_INDEFINITE, "Oke", v1 -> {
+        });
     }
 
     @Override
