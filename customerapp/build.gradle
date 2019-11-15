@@ -309,7 +309,6 @@ dependencies {
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.topchat)
-    implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.changepassword)
