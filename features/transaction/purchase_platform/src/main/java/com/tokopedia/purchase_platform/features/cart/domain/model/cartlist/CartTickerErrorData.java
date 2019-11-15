@@ -3,6 +3,8 @@ package com.tokopedia.purchase_platform.features.cart.domain.model.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 /**
  * @author anggaprasetiyo on 02/03/18.
  */
@@ -41,6 +43,15 @@ public class CartTickerErrorData implements Parcelable {
 
     public void setErrorCount(int errorCount) {
         this.errorCount = errorCount;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof CartTickerErrorData) {
+            CartTickerErrorData data = (CartTickerErrorData) obj;
+            return errorCount == data.errorCount && errorInfo.equals(data.errorInfo) && actionInfo.equals(data.actionInfo);
+        }
+        return super.equals(obj);
     }
 
     @Override

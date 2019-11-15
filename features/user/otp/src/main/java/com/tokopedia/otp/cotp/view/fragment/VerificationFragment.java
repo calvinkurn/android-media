@@ -33,7 +33,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.R;
-import com.tokopedia.otp.common.OTPAnalytics;
+import com.tokopedia.otp.common.analytics.OTPAnalytics;
 import com.tokopedia.otp.common.design.PinInputEditText;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;

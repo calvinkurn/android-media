@@ -34,7 +34,6 @@ dependencies {
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
-    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.vote)
@@ -101,7 +100,7 @@ dependencies {
 project.ext {
     artifactId = 'feed'
     groupId = 'com.tokopedia.content'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "feed-release"
 }
 

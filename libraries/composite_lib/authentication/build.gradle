@@ -10,8 +10,8 @@ project.ext {
 }
 
 dependencies {
-    implementation "com.tokopedia.config:global_config:1.0.2"
-    implementation "com.tokopedia.user.session:user_session:1.0.6"
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 }

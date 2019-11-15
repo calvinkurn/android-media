@@ -59,6 +59,7 @@ ext {
             topAdsSdk                       : ":features:discovery:topadssdk",
             wishlistCommon                  : ":features:discovery:wishlist_common",
             productCard                     : ":features:discovery:productcard",
+            carouselProductCard             : ":features:discovery:carousel_productcard",
             filter                          : ":features:discovery:filter",
             imageSearch                     : ":features:discovery:image_search",
             similarSearch                   : ":features:discovery:similarsearch",
@@ -77,6 +78,7 @@ ext {
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
 
             accountHome                     : ":features:home:account-home",
+            dynamicBanner                   : ":features:home:dynamicbanner",
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",

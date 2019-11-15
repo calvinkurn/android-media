@@ -102,7 +102,6 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     open fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
-
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime)
             TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
@@ -173,6 +172,38 @@ open class GetExistingChatMapper @Inject constructor() {
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ProductAttachmentAttributes::class.java)
 
+        if (pojoAttribute.isBannedProduct()) {
+            return BannedProductAttachmentViewModel(
+                    chatItemPojoByDateByTime.msgId.toString(),
+                    chatItemPojoByDateByTime.senderId.toString(),
+                    chatItemPojoByDateByTime.senderName,
+                    chatItemPojoByDateByTime.role,
+                    chatItemPojoByDateByTime.attachment?.id ?: "",
+                    chatItemPojoByDateByTime.attachment?.type.toString(),
+                    chatItemPojoByDateByTime.replyTime,
+                    chatItemPojoByDateByTime.isRead,
+                    pojoAttribute.productId,
+                    pojoAttribute.productProfile.name,
+                    pojoAttribute.productProfile.price,
+                    pojoAttribute.productProfile.url,
+                    pojoAttribute.productProfile.imageUrl,
+                    !chatItemPojoByDateByTime.isOpposite,
+                    chatItemPojoByDateByTime.msg,
+                    canShowFooterProductAttachment(chatItemPojoByDateByTime.isOpposite,
+                            chatItemPojoByDateByTime.role),
+                    chatItemPojoByDateByTime.blastId,
+                    pojoAttribute.productProfile.priceInt,
+                    pojoAttribute.productProfile.category,
+                    pojoAttribute.productProfile.variant.toString(),
+                    pojoAttribute.productProfile.dropPercentage,
+                    pojoAttribute.productProfile.priceBefore,
+                    pojoAttribute.productProfile.shopId,
+                    pojoAttribute.productProfile.freeShipping,
+                    pojoAttribute.productProfile.categoryId,
+                    pojoAttribute.productProfile.playStoreData
+            )
+        }
+
         return ProductAttachmentViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
                 chatItemPojoByDateByTime.senderId.toString(),
@@ -199,7 +230,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojoAttribute.productProfile.priceBefore,
                 pojoAttribute.productProfile.shopId,
                 pojoAttribute.productProfile.freeShipping,
-                pojoAttribute.productProfile.categoryId
+                pojoAttribute.productProfile.categoryId,
+                pojoAttribute.productProfile.playStoreData
         )
     }
 
