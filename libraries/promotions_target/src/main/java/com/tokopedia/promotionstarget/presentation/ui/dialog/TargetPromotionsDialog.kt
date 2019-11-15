@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -167,11 +166,10 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
             val canHitAutoApply = !TextUtils.isEmpty(couponCodeAfterClaim) && shouldCallAutoApply
             if (canHitAutoApply) {
                 viewModel.autoApply(couponCodeAfterClaim!!)
+            } else {
+                removeAutoApplyLiveDataObserver()
             }
             IS_DISMISSED = true
-            if (activityContext is Activity) {
-                subscriber.clearMaps(activityContext, !canHitAutoApply)
-            }
         }
         bottomSheetDialog = bottomSheet
         this.claimCouponApi = claimCouponApi
@@ -435,11 +433,12 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 bottomSheetDialog.dismiss()
             }
         } else {
-            val loginIntent = RouteManager.getIntent(activityContext, ApplinkConst.LOGIN)
-            activityContext.startActivityForResult(loginIntent, REQUEST_CODE)
             val bundle = addGratificationDataInBundleIfNotLoggedIn(activityContext, gratificationData)
             activityContext.intent.putExtras(bundle)
             activityContext.intent?.putExtra(PARAM_WAITING_FOR_LOGIN, true)
+
+            val loginIntent = RouteManager.getIntent(activityContext, ApplinkConst.LOGIN)
+            activityContext.startActivityForResult(loginIntent, REQUEST_CODE)
 
             val handler = Handler()
             handler.postDelayed({
@@ -493,7 +492,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+
         }
         return intent
     }

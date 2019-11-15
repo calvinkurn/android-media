@@ -30,6 +30,7 @@
     <string name="path_product_etalase_picker" translatable="false">/product-etalase-picker/.*\\/</string>
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
+    <string name="path_create_review" translatable="false">/review/create/.*\\/.*\\/</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
     <string name="path_product_report" translatable="false">/product-report/.*\\/</string>
     <string name="path_store_setting" translatable="false">/store-setting</string>
