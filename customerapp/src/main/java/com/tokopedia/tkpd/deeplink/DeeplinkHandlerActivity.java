@@ -192,8 +192,7 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         OfficialStoreApplinkModule.class,
         OvoPayWithQrApplinkModule.class,
         WebViewApplinkModule.class,
-        RecommendationDeeplinkModule.class,
-        PowerMerchantSubscribeDeeplinkModule.class
+        RecommendationDeeplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
@@ -250,8 +249,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OfficialStoreApplinkModuleLoader(),
                     new OvoPayWithQrApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader(),
-                    new RecommendationDeeplinkModuleLoader(),
-                    new PowerMerchantSubscribeDeeplinkModuleLoader()
+                    new RecommendationDeeplinkModuleLoader()
             );
         }
 

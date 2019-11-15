@@ -19,4 +19,7 @@
     <string name="title_autocomplete" >Pencarian</string>
     <string name="title_search_result" >Hasil Pencarian</string>
     <string name="title_digital_deals" >Deals</string>
+
+    <string name="pm_title_activity">Power Merchant</string>
+
 </resources>

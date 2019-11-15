@@ -170,4 +170,7 @@
     <!-- Content -->
     <string name="title_profile">Profile</string>
     <string name="title_profile_following">Following</string>
+
+    <!-- Power Merchant -->
+    <string name="pm_title_activity">Power Merchant</string>
 </resources>

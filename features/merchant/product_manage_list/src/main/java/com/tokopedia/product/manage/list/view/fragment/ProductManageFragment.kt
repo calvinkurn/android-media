@@ -673,7 +673,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         if (productManagePresenter.isIdlePowerMerchant()) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS)
         } else if (!productManagePresenter.isPowerMerchant()) {
-            RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
+            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
         }
     }
 
