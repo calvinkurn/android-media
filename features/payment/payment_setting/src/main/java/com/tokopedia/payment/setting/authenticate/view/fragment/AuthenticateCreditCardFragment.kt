@@ -164,6 +164,8 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         authenticateCCPresenter.checkWhiteList(resources)
     }
 
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     companion object {
         val REQUEST_CODE_OTP_PAYMENT = 1273
         val OTP_TYPE_VERIFY_AUTH_CREDIT_CARD = 122
