@@ -100,6 +100,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private static final String KEY_URI_PARAMETER = "idem_potency_key";
     private static final String KEY_URI_PARAMETER_EQUAL = "idem_potency_key=";
     public static final String CATEGORY_GIFT_CARD = "Gift-card";
+    private static final String INSURANCE_CLAIM = "tokopedia://webview?allow_override=false&url=https://www.tokopedia.com/asuransi/klaim";
     public static int RETRY_COUNT = 0;
 
     @Inject
@@ -685,8 +686,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             @Override
             public void onClick(View v) {
                 RouteManager.route(
-                getContext(),
-                String.format("%s?url=%s", ApplinkConst.WEBVIEW, getContext().getResources().getString(R.string.insurance_claim_applink)));
+                        getContext(), INSURANCE_CLAIM
+                );
 
             }
         });
