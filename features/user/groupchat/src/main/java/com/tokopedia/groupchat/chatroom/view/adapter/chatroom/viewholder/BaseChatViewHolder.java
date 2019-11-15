@@ -50,7 +50,7 @@ public abstract class BaseChatViewHolder<T extends Visitable> extends AbstractVi
                 adminLabel.setVisibility(View.VISIBLE);
             } else {
                 nickname.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
-                nickname.setTextColor(MethodChecker.getColor(nickname.getContext(), R.color.font_black_disabled_38));
+                nickname.setTextColor(MethodChecker.getColor(nickname.getContext(), com.tokopedia.design.R.color.font_black_disabled_38));
                 adminLabel.setVisibility(View.GONE);
             }
 

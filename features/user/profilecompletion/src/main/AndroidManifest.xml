@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.tokopedia.profilecompletion">
 
@@ -215,6 +216,24 @@
             </intent-filter>
 
         </activity>
+        <activity
+          android:name=".changename.view.ChangeNameActivity"
+          android:label="@string/title_change_name"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.White"
+          android:windowSoftInputMode="stateAlwaysHidden">
+          <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
+        
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+        
+            <data
+              android:host="@string/host_global"
+              android:pathPattern="@string/path_change_name"
+              android:scheme="@string/internal_scheme" />
+          </intent-filter>
+      </activity>
     </application>
 
 </manifest>

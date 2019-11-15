@@ -351,7 +351,7 @@
     <string name="label_kode_booking_str">Kode booking</string>
     <string name="label_wajib_dicantumkan_str">Wajib Dicantumkan</string>
     <string name="placeholder_kode_booking">Terima pesanan terlebih dahulu</string>
-    <string name="bottomsheet_wajib_tulis_kode_booking_desc">Cetak label pengiriman atau tulis kode booking di kemasan paketmu. Kurir akan memastikan kode booking sudah selesai.</string>
+    <string name="bottomsheet_wajib_tulis_kode_booking_desc">Cetak label pengiriman atau tulis kode booking di kemasan paketmu. Kurir akan memastikan kode booking sudah sesuai.</string>
     <string name="title_bottomsheet_accept_order">Konfirmasi terima pesanan</string>
     <string name="action_batal">Batal</string>
     <string name="action_terima">Terima</string>

@@ -95,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:gravity="center"
-            android:scaleType="fitXY"
+            android:scaleType="fitStart"
             android:adjustViewBounds="true"
             android:visibility="gone"
             android:layout_marginBottom="@dimen/dp_4"

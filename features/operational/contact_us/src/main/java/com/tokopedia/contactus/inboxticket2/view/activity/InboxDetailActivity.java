@@ -127,6 +127,10 @@ public class InboxDetailActivity extends InboxBaseActivity
         return intent;
     }
 
+    protected int getToolbarResourceID() {
+        return R.id.toolbar;
+    }
+
     @Override
     public void renderMessageList(Tickets ticketDetail) {
         commentsItems = ticketDetail.getComments();

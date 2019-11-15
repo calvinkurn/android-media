@@ -85,7 +85,7 @@ public class SprintSaleAdapter extends RecyclerView.Adapter<SprintSaleAdapter.Vi
 
         holder.stockProgress.setProgress((int) list.get(position).getStockPercentage());
         ImageHandler.loadImage(holder.productImage.getContext(), holder.productImage,
-                list.get(position).getProductImage(), R.drawable.ic_loading_toped_new);
+                list.get(position).getProductImage(), com.tokopedia.design.R.drawable.ic_loading_toped_new);
     }
 
     @Override

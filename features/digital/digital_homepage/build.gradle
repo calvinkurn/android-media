@@ -47,7 +47,7 @@ dependencies {
 project.ext {
     artifactId = 'homepage'
     groupId = 'com.tokopedia.digital'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="digital_homepage-release"
 }
 

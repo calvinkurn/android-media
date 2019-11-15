@@ -238,7 +238,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
             setResult(RESULT_OK, intent);
             finish();
         } else {
-            decoratedBarcodeView.pause();
+            decoratedBarcodeView.pauseAndWait();
             hideAnimation();
             presenter.onBarCodeScanComplete(barcodeResult.getText());
         }

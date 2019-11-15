@@ -1,6 +1,23 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: "de.mannodermaus.android-junit5"
+
+android {
+    testOptions {
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
+        unitTests.all {
+            testLogging.events = ["passed", "skipped", "failed"]
+        }
+    }
+}
+
 
 repositories {
     maven { url 'https://hansel.io/maven' }
@@ -9,9 +26,11 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
+        jcenter()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -64,6 +83,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.dialog
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.analytics)
@@ -113,13 +133,25 @@ dependencies {
     implementation project(rootProject.ext.features.basemvvm)
     //-------------------------------------------------------------------//
 
+
+    //-------------------------------------------------------------------//
+    //--------------------- Testing Library Section ---------------------//
+    //-------------------------------------------------------------------//
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    //-------------------------------------------------------------------//
 }
 
 project.ext {
-    artifactId = "purchase_platform"
-    groupId = "com.tokopedia.purchase_platform"
-    versionName = "1.0.0"
-    artifactName = "purchaseplatform-release"
+    artifactId = 'purchase-platform'
+    groupId = 'com.tokopedia.transaction'
+    versionName = "0.0.1"
+    artifactName = "purchase_platform-release"
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"

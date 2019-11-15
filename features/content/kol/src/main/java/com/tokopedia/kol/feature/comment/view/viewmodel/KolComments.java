@@ -1,6 +1,6 @@
 package com.tokopedia.kol.feature.comment.view.viewmodel;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 10/31/17.
@@ -10,11 +10,11 @@ public class KolComments {
 
     private final String lastcursor;
     private final boolean hasNextPage;
-    private ArrayList<KolCommentViewModel> listComments;
+    private List<KolCommentViewModel> listComments;
     private KolCommentHeaderViewModel headerViewModel;
 
     public KolComments(String lastcursor, boolean hasNextPage,
-                       ArrayList<KolCommentViewModel> listComments,
+                       List<KolCommentViewModel> listComments,
                        KolCommentHeaderViewModel headerViewModel) {
         this.lastcursor = lastcursor;
         this.hasNextPage = hasNextPage;
@@ -30,7 +30,7 @@ public class KolComments {
         return hasNextPage;
     }
 
-    public ArrayList<KolCommentViewModel> getListComments() {
+    public List<KolCommentViewModel> getListComments() {
         return listComments;
     }
 
