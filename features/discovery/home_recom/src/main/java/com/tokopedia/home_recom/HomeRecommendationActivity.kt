@@ -67,7 +67,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * @return boolean
      */
     private fun isSimilarProduct(url: String): Boolean{
-        return url.contains("/d/")
+        return url.contains("/d/") || url.contains("/d?") || url.contains("/d")
     }
 
     /**

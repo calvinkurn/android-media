@@ -213,6 +213,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private fun initSwipeRefresh(){
         swipeToRefresh?.setOnRefreshListener{
             if(!modeBulkDelete) {
+                updateBottomMargin()
                 endlessRecyclerViewScrollListener?.resetState()
                 viewModel.getWishlistData(searchView?.searchText ?: "")
             }
@@ -256,12 +257,12 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private fun initRecyclerView(){
         recyclerView?.layoutManager = staggeredGridLayoutManager
         recyclerView?.adapter = adapter
-        recyclerView?.addItemDecoration(itemDecorationBottom)
         endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
             override fun getCurrentPage(): Int = 1
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if(viewModel.wishlistState.value == Status.EMPTY){
+                    updateBottomMargin()
                     viewModel.getRecommendationOnEmptyWishlist(page + 1)
                 }else{
                     viewModel.getNextPageWishlistData()
@@ -567,5 +568,10 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private fun updateSelectedDeleteItem(value: Int){
         deleteButton?.text = if(value == 0) getString(R.string.wishlist_delete_zero_text) else String.format(getString(R.string.wishlist_delete_text), value.toString())
         deleteButton?.isEnabled = value > 0
+    }
+
+    private fun updateBottomMargin(){
+        recyclerView?.removeItemDecoration(itemDecorationBottom)
+        recyclerView?.addItemDecoration(itemDecorationBottom)
     }
 }

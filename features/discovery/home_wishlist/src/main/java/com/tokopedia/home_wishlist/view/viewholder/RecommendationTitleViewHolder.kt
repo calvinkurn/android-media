@@ -19,7 +19,9 @@ class RecommendationTitleViewHolder (
         element.let { dataModel ->
             title.text = dataModel.title
             seeMore.visibility = if(element.seeMoreAppLink.isEmpty()) View.GONE else View.VISIBLE
-            seeMore.setOnClickListener { RouteManager.route(seeMore.context, dataModel.seeMoreAppLink) }
+            seeMore.setOnClickListener {
+                RouteManager.route(seeMore.context, dataModel.seeMoreAppLink)
+            }
         }
     }
 
