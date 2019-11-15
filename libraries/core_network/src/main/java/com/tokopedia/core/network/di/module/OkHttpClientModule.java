@@ -21,7 +21,6 @@ import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
@@ -240,7 +239,7 @@ public class OkHttpClientModule {
     @ApplicationScope
     @Provides
     public OkHttpClient provideOkHttpClientUploadWsV4Auth(FingerprintInterceptor fingerprintInterceptor,
-                                                          ResolutionInterceptor resolutionInterceptor,
+                                                          TkpdAuthInterceptor resolutionInterceptor,
                                                           OkHttpRetryPolicy okHttpRetryPolicy,
                                                           ChuckInterceptor chuckInterceptor,
                                                           DebugInterceptor debugInterceptor) {

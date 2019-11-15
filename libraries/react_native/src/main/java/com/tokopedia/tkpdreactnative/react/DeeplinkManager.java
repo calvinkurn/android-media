@@ -47,7 +47,7 @@ public class DeeplinkManager extends ReactContextBaseJavaModule {
                     }
                 }
             } else { // Check if it's web url
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, applinks));
+                RouteManager.route(getCurrentActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, applinks));
             }
         }
     }

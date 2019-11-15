@@ -614,28 +614,28 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
 
     // Trade In
     public void eventViewCheckoutPageTradeIn() {
-        sendEventCategoryAction("",
+        sendEventCategoryAction(EventName.VIEW_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.VIEW_CHECKOUYT_PAGE_TRADE_IN
         );
     }
 
-    public void eventClickGantiNomor() {
-        sendEventCategoryAction("",
+    public void eventClickGantiNomor(boolean tradeIn) {
+        sendEventCategoryAction(tradeIn ? EventName.CLICK_TRADEIN : "",
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_GANTI_NOMOR
         );
     }
 
     public void eventClickButtonPilihDurasi() {
-        sendEventCategoryAction("",
+        sendEventCategoryAction(EventName.CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_BUTTON_PILIH_DURASI
         );
     }
 
     public void eventClickKurirTradeIn(String label) {
-        sendEventCategoryActionLabel("",
+        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_KURIR_TRADE_IN,
                 label
@@ -643,7 +643,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void eventClickBayarTradeInFailed() {
-        sendEventCategoryActionLabel("",
+        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_BAYAR,
                 EventLabel.FAILED
@@ -651,7 +651,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void eventClickBayarCourierNotComplete() {
-        sendEventCategoryActionLabel("",
+        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_BAYAR,
                 EventLabel.COURIER_NOT_COMPLETE

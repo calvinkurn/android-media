@@ -2492,7 +2492,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel) {
         if (getActivity() != null) {
-            checkoutAnalyticsCourierSelection.eventClickGantiNomor();
+            checkoutAnalyticsCourierSelection.eventClickGantiNomor(isTradeIn());
             Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                     shipmentPresenter.getRecipientAddressModel(), shipmentPresenter.getKeroToken(),
                     CartAddressChoiceActivity.TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN);
@@ -2656,7 +2656,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 dataCheckoutRequests,
                 hasInsurance,
                 EnhancedECommerceActionField.STEP_4,
-                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                isTradeIn() ? ConstantTransactionAnalytics.EventAction.CLICK_BAYAR : ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
 

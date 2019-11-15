@@ -23,7 +23,7 @@ class OverflowMenuAdapter: RecyclerView.Adapter<OverflowMenuAdapter.OverflowMenu
         private val icon: ImageView = itemView.findViewById(R.id.icon)
 
         private val check: ImageView = itemView.findViewById(R.id.check)
-        private val title: TextView = itemView.findViewById(R.id.title)
+        private val title: TextView = itemView.findViewById(com.tokopedia.design.R.id.title)
 
         fun bind(model: OverflowMenuButtonViewModel) {
             icon.showWithCondition(model.image!=0)

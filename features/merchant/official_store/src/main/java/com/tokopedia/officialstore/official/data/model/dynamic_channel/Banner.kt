@@ -2,17 +2,18 @@ package com.tokopedia.officialstore.official.data.model.dynamic_channel
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Banner(
-        val cta: Cta?,
-        val id: Long,
-        val title: String,
-        val description: String,
-        val url: String,
-        val applink: String,
-        @SerializedName("text_color") val textColor: String,
-        @SerializedName("image_url") val imageUrl: String,
+        @Expose @SerializedName("cta") val cta: Cta?,
+        @Expose @SerializedName("id") val id: Long,
+        @Expose @SerializedName("title") val title: String,
+        @Expose @SerializedName("description") val description: String,
+        @Expose @SerializedName("url") val url: String,
+        @Expose @SerializedName("applink") val applink: String,
+        @Expose @SerializedName("text_color") val textColor: String,
+        @Expose @SerializedName("image_url") val imageUrl: String,
         val attribution: String
 ) : Parcelable {
 

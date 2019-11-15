@@ -1,6 +1,5 @@
 package com.tokopedia.applink
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -9,7 +8,6 @@ import android.text.TextUtils
 import android.webkit.URLUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 object DeepLinkChecker {
@@ -72,8 +70,8 @@ object DeepLinkChecker {
         path = path.replaceLastSlash()
         val uriWithoutParam = "$host$path"
         val excludedHostList = excludedHost.split(",".toRegex())
-            .filter { it.isNotEmpty() }
-            .map { it.replaceFirstWww().replaceLastSlash() }
+                .filter { it.isNotEmpty() }
+                .map { it.replaceFirstWww().replaceLastSlash() }
         for (excludedString in excludedHostList) {
             if (uriWithoutParam.startsWith(excludedString)) {
                 return true
@@ -91,8 +89,8 @@ object DeepLinkChecker {
         var path = uriData.path ?: return false
         path = path.replaceLastSlash()
         val excludedUrlList = excludedUrl.split(",".toRegex())
-            .filter { it.isNotEmpty() }
-            .map { it.replaceLastSlash() }
+                .filter { it.isNotEmpty() }
+                .map { it.replaceLastSlash() }
         for (excludedString in excludedUrlList) {
             if (path.endsWith(excludedString)) {
                 return true
@@ -141,7 +139,7 @@ object DeepLinkChecker {
 
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
-            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
+                (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
     }
 
     @JvmStatic
@@ -155,13 +153,21 @@ object DeepLinkChecker {
     }
 
     @JvmStatic
-    fun openPromoDetail(url: String, context: Context): Boolean {
-        return openIfExist(context, getPromoDetailIntent(context, url))
+    fun openPromoDetail(url: String, context: Context, defaultBundle: Bundle? = null): Boolean {
+        val intent = getPromoDetailIntent(context, url)
+        if (defaultBundle != null) {
+            intent.putExtras(defaultBundle)
+        }
+        return openIfExist(context, intent)
     }
 
     @JvmStatic
-    fun openPromoList(url: String, context: Context): Boolean {
-        return openIfExist(context, getPromoListIntent(context, url))
+    fun openPromoList(url: String, context: Context, defaultBundle: Bundle? = null): Boolean {
+        val intent = getPromoListIntent(context, url)
+        if (defaultBundle != null) {
+            intent.putExtras(defaultBundle)
+        }
+        return openIfExist(context, intent)
     }
 
     private fun openIfExist(context: Context, intent: Intent): Boolean {
@@ -174,14 +180,13 @@ object DeepLinkChecker {
     }
 
     // function for enable Hansel
-    private fun getHotListClassName() = "com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity"
 
     private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalog.activity.CatalogDetailActivity"
 
     private fun getHotIntent(context: Context, url: String): Intent {
-        val intent = getIntentByClassName(context, getHotListClassName())
-        intent.putExtra("HOTLIST_URL", url)
-        return intent
+        val uri = Uri.parse(url)
+        uri.pathSegments[1]
+        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.HOME_HOTLIST + "/" + if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""))
     }
 
     private fun getCatalogIntent(context: Context, url: String): Intent {

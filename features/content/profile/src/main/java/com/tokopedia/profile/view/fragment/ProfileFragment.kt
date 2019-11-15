@@ -82,7 +82,6 @@ import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
@@ -161,7 +160,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var linkerData: LinkerData? = null
     private var isShareProfile = false
 
-    override lateinit var profileRouter: ProfileModuleRouter
     lateinit var layoutManager: GridLayoutManager
 
     lateinit var remoteConfig: RemoteConfig
@@ -247,7 +245,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         })
         recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            val spacing = context!!.resources.getDimensionPixelOffset(R.dimen.dp_16)
+            val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_16)
             val halfSpacing = spacing / 2
             val spanCount = 2
             override fun getItemOffsets(outRect: Rect, view: View,
@@ -512,7 +510,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onErrorShouldChangeUsername(errorMessage: String, link: String) {
-        view?.showErrorToaster(errorMessage, R.string.title_try_again) {
+        view?.showErrorToaster(errorMessage, com.tokopedia.abstraction.R.string.title_try_again) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         }
     }
@@ -737,7 +735,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 getString(R.string.profile_post_deleted),
                 BaseToaster.LENGTH_LONG
         )
-        snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
+        snackbar.setAction(com.tokopedia.affiliatecommon.R.string.af_title_ok) { snackbar.dismiss() }.show()
 
         if (adapter.data.isEmpty()) {
             onSwipeRefresh()
@@ -750,7 +748,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onChangeAvatarClicked() {
         startActivityForResult(
-                RouteManager.getIntent(context!!, ApplinkConst.SETTING_PROFILE),
+                RouteManager.getIntent(requireContext(), ApplinkConst.SETTING_PROFILE),
                 SETTING_PROFILE_CODE
         )
     }
@@ -1000,7 +998,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         if (context != null) {
             RouteManager.route(
-                    context!!,
+                    requireContext(),
                     redirectUrl
             )
         }
@@ -1116,13 +1114,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             )
         }
 
-        if (context!!.applicationContext is ProfileModuleRouter) {
-            profileRouter = context!!.applicationContext as ProfileModuleRouter
-        } else {
-            throw IllegalStateException("Application must implement "
-                    .plus(ProfileModuleRouter::class.java.simpleName))
-        }
-
         remoteConfig = FirebaseRemoteConfigImpl(context)
 
         isOwner = userId.toString() == userSession.userId
@@ -1155,8 +1146,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             profileHeader?.let { header ->
                 linkerData = showShareBottomSheet(
                         header,
-                        String.format(getString(R.string.profile_share_text), header.link),
-                        String.format(getString(R.string.profile_other_share_title)),
+                        String.format(getString(com.tokopedia.feedcomponent.R.string.profile_share_text), header.link),
+                        String.format(getString(com.tokopedia.feedcomponent.R.string.profile_other_share_title)),
                         null
                 )
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
@@ -1222,13 +1213,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 && element.isAffiliate
         lateinit var action: View.OnClickListener
         action = if (!selfProfile) {
-            iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
+            iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.ic_share_white))
             iv_action.gone()
             View.OnClickListener {
                 showShareBottomSheet(
                         element,
-                        String.format(getString(R.string.profile_share_text), element.link),
-                        String.format(getString(R.string.profile_other_share_title)),
+                        String.format(getString(com.tokopedia.feedcomponent.R.string.profile_share_text), element.link),
+                        String.format(getString(com.tokopedia.feedcomponent.R.string.profile_other_share_title)),
                         null
                 )
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
@@ -1348,7 +1339,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun updateDrawState(ds: TextPaint?) {
                 super.updateDrawState(ds)
                 ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(context, R.color.white)
+                ds?.color = MethodChecker.getColor(context, com.tokopedia.design.R.color.white)
             }
         }
 
@@ -1360,7 +1351,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun updateDrawState(ds: TextPaint?) {
                 super.updateDrawState(ds)
                 ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(context, R.color.white)
+                ds?.color = MethodChecker.getColor(context, com.tokopedia.design.R.color.white)
             }
         }
         if (spannableString.indexOf(followers) != -1) {
@@ -1438,7 +1429,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showAfterEditToaster() {
-        view?.showNormalToaster(getString(R.string.profile_edit_success), getString(R.string.af_title_ok)) {
+        view?.showNormalToaster(getString(R.string.profile_edit_success), getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)) {
         }
     }
 
@@ -1462,8 +1453,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     byMeInstastoryView.setAvatarDrawable(iv_profile.drawable)
                     linkerData = showShareBottomSheet(
                             headerViewModel,
-                            String.format(getString(R.string.profile_share_text), headerViewModel.link),
-                            String.format(getString(R.string.profile_share_title)),
+                            String.format(getString(com.tokopedia.feedcomponent.R.string.profile_share_text), headerViewModel.link),
+                            String.format(getString(com.tokopedia.feedcomponent.R.string.profile_share_title)),
                             byMeInstastoryView.getTempFileUri()
                     )
                     profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
@@ -1471,7 +1462,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
             }
             shareProfile.setOnLongClickListener {
-                showToast(getString(R.string.profile_share_this_profile))
+                showToast(getString(com.tokopedia.feedcomponent.R.string.profile_share_this_profile))
                 true
             }
         } else {
@@ -1509,13 +1500,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun createShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
                 .backgroundContentColorRes(R.color.profile_showcase_black)
-                .shadowColorRes(R.color.shadow)
-                .titleTextColorRes(R.color.white)
-                .titleTextSizeRes(R.dimen.sp_16)
-                .textColorRes(R.color.white)
-                .textSizeRes(R.dimen.sp_14)
-                .nextStringRes(R.string.af_title_ok)
-                .finishStringRes(R.string.af_title_ok)
+                .shadowColorRes(R.color.profile_showcase_shadow)
+                .titleTextColorRes(com.tokopedia.design.R.color.white)
+                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
+                .textColorRes(com.tokopedia.design.R.color.white)
+                .textSizeRes(com.tokopedia.design.R.dimen.sp_14)
+                .nextStringRes(com.tokopedia.affiliatecommon.R.string.af_title_ok)
+                .finishStringRes(com.tokopedia.affiliatecommon.R.string.af_title_ok)
                 .clickable(true)
                 .useArrow(true)
                 .build()
@@ -1585,8 +1576,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.profile_delete_post))
         dialog.setDesc(getString(R.string.profile_after_delete_cant))
-        dialog.setBtnOk(getString(R.string.kol_title_delete))
-        dialog.setBtnCancel(getString(R.string.kol_title_cancel))
+        dialog.setBtnOk(getString(com.tokopedia.kol.R.string.kol_title_delete))
+        dialog.setBtnCancel(getString(com.tokopedia.kol.R.string.kol_title_cancel))
         dialog.setOnOkClickListener {
             presenter.deletePost(id, rowNumber)
             dialog.dismiss()
@@ -1653,7 +1644,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun showError(message: String, listener: View.OnClickListener?) {
         ToasterError.make(view, message, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again, listener)
+                .setAction(com.tokopedia.abstraction.R.string.title_try_again, listener)
                 .show()
     }
 
@@ -1676,7 +1667,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (context != null) {
             if (userSession.isLoggedIn) {
                 val intent = ContentReportActivity.createIntent(
-                        context!!,
+                        requireContext(),
                         contentId
                 )
                 startActivityForResult(intent, OPEN_CONTENT_REPORT)
@@ -1691,14 +1682,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .make(view,
                         getString(R.string.profile_feed_content_reported),
                         BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close) { }
+                .setAction(com.tokopedia.design.R.string.label_close) { }
                 .show()
     }
 
     private fun onErrorReportContent(errorMsg: String?) {
         ToasterError
                 .make(view, errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close) { }
+                .setAction(com.tokopedia.design.R.string.label_close) { }
                 .show()
     }
 
@@ -1753,7 +1744,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun onErrorGetRelatedProfile(throwable: Throwable?) {
         view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable),
-                R.string.title_try_again) {
+                com.tokopedia.abstraction.R.string.title_try_again) {
             getRelatedProfile()
         }
     }

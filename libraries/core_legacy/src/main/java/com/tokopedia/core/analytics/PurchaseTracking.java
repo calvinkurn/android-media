@@ -11,6 +11,10 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.track.TrackApp;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -106,12 +110,20 @@ public class PurchaseTracking extends TrackingUtils {
         List<String> productList = new ArrayList<>();
         List<String> productId = new ArrayList<>();
         List<String> productCategory = new ArrayList<>();
+        JSONArray productArray = new JSONArray();
         for(Object product:trackignData.getListProduct()) {
+            JSONObject jsonObject = new JSONObject();
             Map<String, Object> product1 = (Map<String, Object>) product;
             quantity += parseStringToInt(String.valueOf(product1.get(KEY_QTY)));
             productList.add(String.valueOf(product1.get(KEY_NAME)));
             productId.add(String.valueOf(product1.get(KEY_ID)));
             productCategory.add(String.valueOf(product1.get(KEY_CAT)));
+            try {
+                jsonObject.put(KEY_ID, String.valueOf(product1.get(KEY_ID)));
+                jsonObject.put(KEY_QTY, parseStringToInt(String.valueOf(product1.get(KEY_QTY))));
+                productArray.put(jsonObject);
+            } catch (JSONException ignored) {
+            }
         }
 
 
@@ -126,13 +138,15 @@ public class PurchaseTracking extends TrackingUtils {
         afValue.put(AFInAppEventParameterName.CURRENCY, Jordan.VALUE_IDR);
         afValue.put(Jordan.AF_VALUE_PRODUCTTYPE, productList);
         afValue.put(Jordan.AF_KEY_CATEGORY_NAME,productCategory);
-        if(productList != null && productList.size()>1) {
-            afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTGROUPTYPE);
-        }else {
-            afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        if (productArray.length() > 0) {
+            String afContent = productArray.toString();
+            afValue.put(AFInAppEventParameterName.CONTENT, afContent);
         }
 
+        afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
+        afValue.remove(AFInAppEventParameterName.CONTENT);
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 }
