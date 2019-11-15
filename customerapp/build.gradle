@@ -404,7 +404,6 @@ dependencies {
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.williamchart)
-    implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.libraries.cameraview)
