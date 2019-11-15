@@ -18,7 +18,6 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
@@ -27,17 +26,14 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CouponInStackBaseAdapter;
-import com.tokopedia.tokopoints.view.adapter.CouponListBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.CouponListStackedBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CouponListingStackedContract;
-import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponListingStackedPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -96,12 +92,6 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
     @Override
     public void showLoader() {
         mContainerMain.setDisplayedChild(CONTAINER_LOADER);
-        mSwipeToRefresh.setRefreshing(false);
-    }
-
-    @Override
-    public void showError(String errorMeassage) {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
         mSwipeToRefresh.setRefreshing(false);
     }
 
@@ -186,11 +176,6 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
         mRecyclerView.addItemDecoration(mItemDecoration);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.startDataLoading();
-    }
-
-    @Override
-    public void onErrorCoupons(String errorMessage) {
-
     }
 
     @Override
