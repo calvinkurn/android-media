@@ -12,6 +12,9 @@ import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_post_multimedia.view.*
 
 /**
@@ -80,8 +83,9 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
 
     private fun playVideo(url: String) {
         if (!isPlaying) {
-            itemView.layout_dummy.visibility = View.GONE
-            itemView.frame_video.visibility = View.INVISIBLE
+            itemView.loading_panel.show()
+            itemView.layout_dummy.gone()
+            itemView.frame_video.invisible()
             itemView.layout_video.setVideoURI(Uri.parse(url))
             itemView.layout_video.setOnPreparedListener(object: MediaPlayer.OnPreparedListener{
                 override fun onPrepared(mp: MediaPlayer) {
@@ -89,6 +93,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
                     mp.setOnInfoListener(object: MediaPlayer.OnInfoListener {
                         override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                             if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                                itemView.loading_panel.gone()
                                 itemView.frame_video.visibility = View.VISIBLE
                                 return true
                             }
@@ -105,8 +110,8 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
     private fun stopVideo() {
         if (isPlaying) {
             itemView.layout_video.stopPlayback()
-            itemView.layout_video.visibility = View.GONE
-            itemView.layout_dummy.visibility = View.VISIBLE
+            itemView.layout_video.gone()
+            itemView.layout_dummy.show()
             isPlaying = false
         }
     }
