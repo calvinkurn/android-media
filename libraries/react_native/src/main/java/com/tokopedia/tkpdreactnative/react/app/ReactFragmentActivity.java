@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -37,9 +38,11 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
 
     private ProgressBar loaderBootingReact;
     private Toolbar toolbar;
+    long loadStartTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loadStartTime = new Date().getTime();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_react_native);
         initView();
@@ -114,6 +117,8 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
 
     @Override
     public void showLoaderReactPage() {
+        long loadTime = new Date().getTime() - loadStartTime;
+        Toast.makeText(this, "" + loadTime, Toast.LENGTH_LONG).show();
         loaderBootingReact.setVisibility(View.VISIBLE);
     }
 
