@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.authentication.AuthKey
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.emoney.EmoneyAnalytics
@@ -175,8 +176,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
         brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
             //TODO change key to use AuthKey
-            brizziInstance.Init(token, "IlFDLgR31ACt7aqH")
-            brizziInstance.setUserName("Tokopedia")
+            brizziInstance.Init(token, "RR1DJ8QZsYUXTZPb")
+            brizziInstance.setUserName("tXnA6Gzq9J439GI3jJ9BjcBG05tmqIQa")
 
             briBrizzi = BrizziCheckBalance(brizziInstance, this)
             showLoading()
