@@ -82,6 +82,12 @@ public class GetApprovalStatusUseCase {
         return requestParams;
     }
 
+    public static Map<String, Object> getRequestParam() {
+        Map<String, Object> requestParams = new HashMap<>();
+        requestParams.put(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
+        return requestParams;
+    }
+
     public void unsubscribe() {
         graphqlUseCase.unsubscribe();
     }
