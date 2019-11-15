@@ -63,7 +63,7 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
-    fun provideBulkRemoveWishlistUseCase(@ApplicationContext context: Context) = BulkRemoveWishlistUseCase(context)
+    fun provideBulkRemoveWishlistUseCase(graphqlUseCase: GraphqlUseCase) = BulkRemoveWishlistUseCase(graphqlUseCase)
 
     @Provides
     @WishlistScope
