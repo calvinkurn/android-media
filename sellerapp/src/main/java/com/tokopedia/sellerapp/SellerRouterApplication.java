@@ -988,10 +988,10 @@ public abstract class SellerRouterApplication extends MainApplication
                                              ProductVariantViewModel productVariant, int productPriceCurrency, double productPrice,
                                              int productStock, boolean officialStore, String productSku,
                                              boolean needRetainImage, ProductPictureViewModel productSizeChart, boolean hasOriginalVariantLevel1,
-                                             boolean hasOriginalVariantLevel2, boolean hasWholesale) {
+                                             boolean hasOriginalVariantLevel2, boolean hasWholesale, boolean isAddStatus) {
         return ProductVariantDashboardActivity.getIntent(context, productVariantByCatModelList, productVariant,
                 productPriceCurrency, productPrice, productStock, officialStore, productSku, needRetainImage, productSizeChart,
-                hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale);
+                hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale,isAddStatus);
     }
 
     @Override

@@ -7,6 +7,8 @@ import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductU
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
