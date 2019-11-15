@@ -185,6 +185,8 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         authenticateCreditCard?.visibility = View.VISIBLE
     }
 
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     companion object {
         val REQUEST_CODE_DETAIL_CREDIT_CARD = 4213
         val REQUEST_CODE_ADD_CREDIT_CARD = 4273

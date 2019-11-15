@@ -41,7 +41,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
 
         supportFragmentManager.beginTransaction()
                 .addToBackStack(null)
-                .replace(R.id.parent_view, fragment, settingType.name)
+                .replace(parentViewResourceID, fragment, settingType.name)
                 .commit()
     }
 
