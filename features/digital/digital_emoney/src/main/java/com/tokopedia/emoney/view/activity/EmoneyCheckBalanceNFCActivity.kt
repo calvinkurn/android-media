@@ -3,7 +3,6 @@ package com.tokopedia.emoney.view.activity
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.PendingIntent
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NfcAdapter
@@ -431,6 +430,17 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     fun navigateToLoginPage() {
         val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        data?.let {
+            if (requestCode == REQUEST_CODE_LOGIN) {
+                if (userSession.isLoggedIn) {
+                    processGetBalanceBrizzi(false)
+                }
+            }
+        }
     }
 
     companion object {
