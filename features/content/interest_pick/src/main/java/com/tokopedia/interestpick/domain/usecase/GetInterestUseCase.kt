@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
 import com.tokopedia.interestpick.R
 import com.tokopedia.interestpick.data.pojo.GetInterestData
 import rx.Subscriber
