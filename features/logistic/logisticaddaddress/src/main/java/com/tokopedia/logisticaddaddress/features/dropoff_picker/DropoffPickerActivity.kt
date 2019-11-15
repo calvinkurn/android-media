@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.dropoff_picker
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -33,6 +34,7 @@ import com.tokopedia.logisticaddaddress.domain.mapper.GetStoreMapper
 import com.tokopedia.logisticaddaddress.features.autocomplete.AutoCompleteActivity
 import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 import com.tokopedia.logisticaddaddress.utils.bitmapDescriptorFromVector
+import com.tokopedia.logisticaddaddress.utils.getDescription
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
@@ -66,6 +68,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var dropoffMapper: GetStoreMapper
 
     @Inject
+    lateinit var tracker: DropOffAnalytics
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(DropoffPickerViewModel::class.java) }
@@ -81,6 +86,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mNoPermissionsView = findViewById(R.id.view_no_permissions)
         with(findViewById<UnifyButton>(R.id.button_activate_gps)) {
             setOnClickListener {
+                tracker.trackClickActivateGps()
                 checkAndRequestLocation()
             }
         }
@@ -90,8 +96,12 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             }
         }
         mStoreDetail = findViewById(R.id.bottom_sheet_detail)
-        mStoreDetail.setOnCancelClickListener { mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN }
+        mStoreDetail.setOnCancelClickListener { _, data ->
+            data?.let { tracker.trackClickBatalOnDetail(it) }
+            mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        }
         mStoreDetail.setOnOkClickListener { _, data ->
+            data?.let { tracker.trackClickPilihOnDetail(it) }
             val resultIntent = Intent().apply {
                 val intentData = data?.let { dropoffMapper.mapToIntentModel(it) }
                 putExtra(LogisticConstant.RESULT_DATA_STORE_LOCATION, intentData)
@@ -118,6 +128,17 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
         mNearbiesBehavior = BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
         mNearbiesBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        mNearbiesBehavior?.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(p0: View, p1: Float) {
+
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    tracker.trackExpandList()
+                }
+            }
+        })
         mDetailBehavior = BottomSheetBehavior.from(mStoreDetail)
         mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
 
@@ -150,6 +171,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         mMap?.setOnMarkerClickListener {
             val tag: Any? = it.tag
             if (tag is DropoffNearbyModel) {
+                tracker.trackSelectIndoMaretMap(tag)
                 showStoreDetail(tag)
             }
             true
@@ -170,6 +192,13 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         mPermissionChecker.onRequestPermissionsResult(this,
                 requestCode, permissions, grantResults)
+        if(requestCode == mPermissionChecker.REQUEST_PERMISSION_CODE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                tracker.trackUserClickIzinkan()
+            } else {
+                tracker.trackUserClickNantiSaja()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -243,6 +272,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun setDefaultMap() {
+        tracker.trackClickMap()
         mNearbiesBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         mDetailBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         mMarkerList.forEach {
@@ -374,6 +404,11 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private val goToAutoComplete: (View?) -> Unit = {
+        if (mDisabledLocationView.visibility == View.VISIBLE) {
+            tracker.trackClickSearchBarGpsOff("")
+        } else {
+            tracker.trackClickSearchBarGpsOn("")
+        }
         val intent = Intent(this, AutoCompleteActivity::class.java)
         startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE)
         overridePendingTransition(R.anim.slide_in_up, R.anim.stay_still)
@@ -381,8 +416,16 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
     private val adapterListener: NearbyStoreAdapter.ActionListener =
             object : NearbyStoreAdapter.ActionListener {
-                override fun onItemClicked(view: View) {
-                    showStoreDetail(view.tag as DropoffNearbyModel)
+                override fun onItemClicked(view: View, position: Int) {
+                    val data = view.tag as DropoffNearbyModel
+                    if (position == NearbyStoreAdapter.NEAREST_ITEM) {
+                        tracker.trackSelectStoreListFirst(
+                                data.addrName, data.getDescription(), data.type.toString())
+                    } else {
+                        tracker.trackSelectStoreListAll(
+                                data.addrName, data.getDescription(), data.type.toString())
+                    }
+                    showStoreDetail(data)
                 }
 
                 override fun requestAutoComplete() {

@@ -20,6 +20,7 @@ import com.tokopedia.logisticaddaddress.di.dropoff_picker.DaggerDropoffPickerCom
 import com.tokopedia.logisticaddaddress.features.autocomplete.model.AutoCompleteVisitable
 import com.tokopedia.logisticaddaddress.features.autocomplete.model.SavedAddress
 import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.DropOffAnalytics
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -31,10 +32,14 @@ class AutoCompleteFragment : Fragment(),
         SearchInputView.Listener, AutoCompleteAdapter.ActionListener {
 
     @Inject
+    lateinit var tracker: DropOffAnalytics
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(AutoCompleteViewModel::class.java) }
 
+    private lateinit var searchTextView: SearchInputView
     private val adapter: AutoCompleteAdapter = AutoCompleteAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +54,7 @@ class AutoCompleteFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(view.findViewById<SearchInputView>(R.id.search_input_autocomplete)) {
+        searchTextView = (view.findViewById<SearchInputView>(R.id.search_input_autocomplete)).apply {
             setDelayTextChanged(DEBOUNCE_DELAY)
             setListener(this@AutoCompleteFragment)
         }
@@ -81,6 +86,8 @@ class AutoCompleteFragment : Fragment(),
 
     override fun onResultClicked(data: AutoCompleteVisitable) {
         if (data is SuggestedPlace) {
+            tracker.trackSelectLandmarkFromKeyword(
+                    searchTextView.searchText, data.mainText, data.secondaryText)
             viewModel.getLatLng(data.placeId)
         } else if (data is SavedAddress) {
             sendResult(data.latitude, data.longitude)
@@ -98,6 +105,7 @@ class AutoCompleteFragment : Fragment(),
     }
 
     private fun fetchData(keyword: String) {
+        tracker.trackSearchKeyword(keyword)
         viewModel.getAutoCompleteList(keyword)
         adapter.setLoading()
     }
