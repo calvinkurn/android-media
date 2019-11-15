@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.power_merchant.subscribe">
 
-
     <application>
         <activity
             android:name=".view.activity.PowerMerchantSubscribeActivity"
