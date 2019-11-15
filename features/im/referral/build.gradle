@@ -42,7 +42,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.dagger
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.networkDependencies.glide
 }
@@ -50,7 +50,7 @@ dependencies {
 project.ext {
     artifactId = 'referral'
     groupId = 'com.tokopedia.im'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "referral-release"
 }
 

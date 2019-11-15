@@ -104,7 +104,8 @@ object DeeplinkDFMapper {
     private val DFM_MONEYIN = "tradein"
     private val DFM_WALLET = "fintech_wallet"
     private val DFM_PROFILE = "profile"
-
+    @JvmField
+    val DFM_ONBOARDING = "onboarding"
 
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
