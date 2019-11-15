@@ -1,9 +1,10 @@
 package com.tokopedia.product.detail.view.fragment
 
 import android.animation.Animator
+import android.content.Intent
 import android.graphics.drawable.LayerDrawable
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -18,25 +19,35 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.youtube.player.YouTubeApiServiceUtil
+import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductShopInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSocialProofDataModel
+import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.data.model.ProductInfoP3
+import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.description.DescriptionData
+import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
+import com.tokopedia.product.detail.view.activity.ProductFullDescriptionTabActivity
+import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -53,7 +64,7 @@ import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import javax.inject.Inject
 
-class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>() {
+class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
 
     companion object {
 
@@ -83,22 +94,32 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
 
     //View
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(::onPictureProductClicked, childFragmentManager, onViewClickListener) }
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(::onPictureProductClicked, childFragmentManager, this) }
     private var menu: Menu? = null
     private lateinit var varToolbar: Toolbar
     private lateinit var actionButtonView: PartialButtonActionView
     private lateinit var stickyLoginView: StickyLoginView
+
     private var hashMapLayout: Map<String, Any>? = null
+
     private val socialProofMap by lazy {
-        hashMapLayout?.get("social_proof")
+        hashMapLayout?.get("social_proof") as ProductSocialProofDataModel
     }
 
     private val snapshotMap by lazy {
-        hashMapLayout?.get("product_snapshot")
+        hashMapLayout?.get("product_snapshot") as ProductSnapshotDataModel
     }
 
     private val shopInfoMap by lazy {
-        hashMapLayout?.get("shop_info")
+        hashMapLayout?.get("shop_info") as ProductShopInfoDataModel
+    }
+
+    private val productInfoMap by lazy {
+        hashMapLayout?.get("product_info") as ProductInfoDataModel
+    }
+
+    private val productDiscussionMap by lazy {
+        hashMapLayout?.get("discussion") as ProductDiscussionDataModel
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -142,7 +163,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     override fun loadData(page: Int) {
-        productId = "1383900"
+        productId = "15266959"
         if (productId != null || (productKey != null && shopDomain != null)) {
             viewModel.getProductP1(ProductParams(productId, shopDomain, productKey), true)
         }
@@ -158,18 +179,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-//        viewModel.productSnapshotDataModel.observe(this, Observer {
-//            when (it) {
-//                is Success -> {
-//                    renderList(listOf(it.data, it.data))
-//                }
-//                is Fail -> {
-//                    Log.e("p1", "p1 ${it.throwable.message}")
-//
-//                }
-//            }
-//        })
-
         viewModel.productLayout.observe(this, Observer {
             when (it) {
                 is Success -> {
@@ -177,8 +186,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     renderList(it.data)
                 }
                 is Fail -> {
-                    Log.e("p1", "p1 ${it.throwable.message}")
-
                 }
             }
         })
@@ -186,14 +193,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         viewModel.productInfoP1.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    (snapshotMap as ProductSnapshotDataModel).productInfoP1 = it.data.productInfo
-                    (snapshotMap as ProductSnapshotDataModel).media = it.data.productInfo.media
-                    (socialProofMap as ProductSocialProofDataModel).productInfo = it.data.productInfo
+                    snapshotMap.productInfoP1 = it.data.productInfo
+                    snapshotMap.media = it.data.productInfo.media
+                    socialProofMap.productInfo = it.data.productInfo
+                    productInfoMap.productInfo = it.data.productInfo
                     adapter.notifyDataSetChanged()
                 }
                 is Fail -> {
-                    Log.e("p1", "p1 ${it.throwable.message}")
-
                 }
             }
         })
@@ -204,20 +210,102 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         })
 
         viewModel.p2ShopDataResp.observe(this, Observer {
-
-            (shopInfoMap as ProductShopInfoDataModel).shopInfo = it.shopInfo
-            (snapshotMap as ProductSnapshotDataModel).shopInfo = it.shopInfo ?: ShopInfo()
-            (snapshotMap as ProductSnapshotDataModel).nearestWarehouse = it.nearestWarehouse
+            shopInfoMap.shopInfo = it.shopInfo
+            snapshotMap.shopInfo = it.shopInfo ?: ShopInfo()
+            snapshotMap.nearestWarehouse = it.nearestWarehouse
+            productInfoMap.shopInfo = it.shopInfo
             adapter.notifyDataSetChanged()
         })
 
         viewModel.p2General.observe(this, Observer {
-            Log.e("p2 general", "${it}")
+            if (it.latestTalk.id.isEmpty()) {
+                removeDiscussionSection()
+            }
+            productInfoMap.productSpecification = it.productSpecificationResponse
+            productDiscussionMap.latestTalk = it.latestTalk
+            productDiscussionMap.shopId = productInfoMap.productInfo?.basic?.shopID.toString()
+            productDiscussionMap.talkCount = productInfoMap.productInfo?.stats?.countTalk ?: 0
+            adapter.notifyDataSetChanged()
         })
 
         viewModel.productInfoP3resp.observe(this, Observer {
-            Log.e("p3 ", "${it}")
+//            snapshotMap.shouldShowCod
         })
+    }
+
+    override fun openCategory(category: Category.Detail) {
+        if (GlobalConfig.isCustomerApp()) {
+            RouteManager.route(context,
+                    ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL,
+                    category.id)
+        }
+    }
+
+    override fun gotoEtalase(etalaseId: String, shopID: Int) {
+        val intent = RouteManager.getIntent(context, if (etalaseId.isNotBlank()) {
+            UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopID.toString(), etalaseId)
+        } else {
+            UriUtil.buildUri(ApplinkConst.SHOP, shopID.toString())
+        })
+        startActivity(intent)
+    }
+
+    override fun gotoVideoPlayer(videos: List<Video>, index: Int) {
+        context?.let {
+            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
+                    == YouTubeInitializationResult.SUCCESS) {
+                startActivity(ProductYoutubePlayerActivity.createIntent(it, videos.map { it.url }, index))
+            } else {
+                startActivity(Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://www.youtube.com/watch?v=" + videos[index].url)))
+            }
+        }
+    }
+
+
+    override val onViewClickListener = View.OnClickListener {
+        when (it.id) {
+            R.id.btn_favorite -> onShopFavoriteClick()
+            R.id.send_msg_shop, R.id.btn_topchat -> onShopChatClicked()
+            R.id.shop_ava, R.id.shop_name -> gotoShopDetail()
+            R.id.btn_apply_leasing -> onApplyLeasingClicked()
+            else -> {
+            }
+        }
+    }
+
+    override fun onDiscussionClicked() {
+        productDetailTracking.eventTalkClicked()
+
+        activity?.let {
+            val intent = RouteManager.getIntent(it,
+                    ApplinkConst.PRODUCT_TALK, productInfoMap.productInfo?.basic?.id.toString())
+            startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
+        }
+        productInfoMap.productInfo?.run {
+            productDetailTracking.sendMoEngageClickDiskusi(this,
+                    (productInfoMap.shopInfo?.goldOS?.isOfficial ?: 0) > 0,
+                    productInfoMap.shopInfo?.shopCore?.name ?: "")
+        }
+    }
+
+    override fun removeDiscussionSection() {
+        adapter.clearElement(productDiscussionMap)
+    }
+
+    override fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>) {
+        context?.let {
+            startActivity(ProductFullDescriptionTabActivity.createIntent(it,
+                    data, listOfCatalog))
+            activity?.overridePendingTransition(R.anim.pull_up, 0)
+            productDetailTracking.eventClickProductDescriptionReadMore(data.basicId)
+        }
+    }
+
+    private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
+//        userCod = productInfoP3.userCod
+//        if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
+//        headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
     }
 
     private fun initView() {
@@ -303,17 +391,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private fun initializePartialView() {
         if (!::actionButtonView.isInitialized) {
             actionButtonView = PartialButtonActionView.build(base_btn_action, onViewClickListener)
-        }
-    }
-
-    private val onViewClickListener = View.OnClickListener {
-        when (it.id) {
-            R.id.btn_favorite -> onShopFavoriteClick()
-            R.id.send_msg_shop, R.id.btn_topchat -> onShopChatClicked()
-            R.id.shop_ava, R.id.shop_name -> gotoShopDetail()
-            R.id.btn_apply_leasing -> onApplyLeasingClicked()
-            else -> {
-            }
         }
     }
 

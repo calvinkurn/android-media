@@ -1,10 +1,7 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductShopInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductSocialProofDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 
 object DynamicProductDetailMapper {
 
@@ -15,12 +12,12 @@ object DynamicProductDetailMapper {
                 "product_snapshot" -> {
                     listOfComponent.add(ProductSnapshotDataModel(dataLayout = component.componentData, type = component.type))
                 }
-//                "shop_voucher" -> {
-//                    listOfComponent.add(ProductShopVoucherDataModel(dataLayout = component.componentData))
-//                }
-//                "shipping_info" -> {
-//                    listOfComponent.add(ProductShippingInfoDataModel(dataLayout = component.componentData))
-//                }
+                "discussion" -> {
+                    listOfComponent.add(ProductDiscussionDataModel(dataLayout = component.componentData, type = component.type))
+                }
+                "product_info" -> {
+                    listOfComponent.add(ProductInfoDataModel(dataLayout = component.componentData, type = component.type))
+                }
                 "shop_info" -> {
                     listOfComponent.add(ProductShopInfoDataModel(dataLayout = component.componentData, type = component.type))
                 }
