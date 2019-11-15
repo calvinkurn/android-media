@@ -59,7 +59,6 @@ import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.Ima
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -113,7 +112,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private SwipeRefreshLayout refreshLayout;
 
     public int spanCount;
-    private TrackingQueue trackingQueue;
     private ImageSearchNavigationListener imageSearchNavigationListener;
     private BottomSheetListener bottomSheetListener;
     private FilterTrackingData filterTrackingData;
@@ -141,7 +139,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         } else {
             loadDataFromArguments();
         }
-        trackingQueue = new TrackingQueue(getContext());
     }
 
     @Override
@@ -566,8 +563,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onPause() {
         super.onPause();
-        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey(), SCREEN_IMAGE_SEARCH_TAB);
-        trackingQueue.sendAll();
     }
 
     @Override
