@@ -9,6 +9,7 @@ interface TokopointAddPointContract {
 
     interface View : CustomerView {
         fun inflatePointsData(item: SheetHowToGetV2)
+        fun inflateContainerLayout(success: Boolean)
     }
 
     interface Presenter : CustomerPresenter<View> {

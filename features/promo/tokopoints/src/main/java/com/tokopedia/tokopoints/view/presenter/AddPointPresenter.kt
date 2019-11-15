@@ -17,6 +17,7 @@ class AddPointPresenter @Inject constructor(val rewardUsecase: GraphqlUseCase) :
 
     override fun getRewardPoint(resources: Resources) {
 
+        view.inflateContainerLayout(false)
         val graphqlRequestPoints = GraphqlRequest(GraphqlHelper.loadRawString(resources, R.raw.tp_gql_add_point_rewards),
                 RewardPointResponse::class.java, false)
 
@@ -31,6 +32,7 @@ class AddPointPresenter @Inject constructor(val rewardUsecase: GraphqlUseCase) :
 
             override fun onNext(addPointResponse: GraphqlResponse?) {
 
+                view.inflateContainerLayout(true)
                 if (addPointResponse != null) {
                     val rewardPointResponse = addPointResponse.getData<RewardPointResponse>(RewardPointResponse::class.java)
                     rewardPointResponse.sheetHowToGetV2?.let { view.inflatePointsData(it) }

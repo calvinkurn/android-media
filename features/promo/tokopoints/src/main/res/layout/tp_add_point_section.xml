@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_tp_custom_dialog"
@@ -16,7 +16,15 @@
         android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/close_button_bottom_sheet" />
 
+    <include
+        android:id="@+id/shimmerView"
+        layout="@layout/tp_placeholder_addpoint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/containerData"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp_12">

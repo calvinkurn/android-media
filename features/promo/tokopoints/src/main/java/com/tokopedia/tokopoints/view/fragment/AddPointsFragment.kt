@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -23,7 +24,19 @@ import kotlinx.android.synthetic.main.tp_add_point_section.*
 import kotlinx.android.synthetic.main.tp_add_point_section.view.*
 import javax.inject.Inject
 
+
 class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract.View, AddPointGridViewHolder.ListenerItemClick {
+
+    override fun inflateContainerLayout(success: Boolean) {
+        if (success) {
+            containerData.visibility = View.VISIBLE
+            shimmerView.visibility = View.GONE
+
+        } else {
+            shimmerView.visibility = View.VISIBLE
+            containerData.visibility = View.GONE
+        }
+    }
 
     @Inject
     lateinit var addPointPresenter: AddPointPresenter
@@ -36,20 +49,20 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
         setStyle(STYLE_NORMAL, com.tokopedia.design.R.style.TransparentBottomSheetDialogTheme)
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.setOnShowListener {
-            val d = dialog as BottomSheetDialog
-            val bottomSheet = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.let {
-                BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
-            }
+    override fun onStart() {
+        super.onStart()
+        val dialog = dialog
+        val d = dialog as BottomSheetDialog
+        val bottomSheet = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+        bottomSheet?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+        bottomSheet?.let {
+            BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
+            BottomSheetBehavior.from(it).skipCollapsed = true
         }
-        return dialog
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return View.inflate(context, R.layout.tp_add_point_section, null)
+        return View.inflate(context, R.layout.tp_add_point_section, container)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
