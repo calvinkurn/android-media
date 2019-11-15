@@ -11,6 +11,8 @@ import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV3.presentation.fragment.FlightBookingFragment
 import com.tokopedia.flight.common.view.BaseFlightActivity
+import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -23,7 +25,14 @@ class FlightBookingActivity: BaseFlightActivity(), HasComponent<FlightBookingCom
     lateinit var userSession: UserSessionInterface
         @Inject set
 
-    override fun getNewFragment(): Fragment = FlightBookingFragment()
+    override fun getNewFragment(): Fragment {
+        val departureId = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID)
+        val arrivalId = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID)
+        val searchPassDataViewModel: FlightSearchPassDataViewModel = intent.getParcelableExtra(EXTRA_PASS_SEARCH_DATA)
+        val priceViewModel: FlightPriceViewModel = intent.getParcelableExtra(EXTRA_PRICE)
+        return FlightBookingFragment.newInstance(searchPassDataViewModel,
+                departureId, arrivalId, priceViewModel)
+    }
 
     override fun getComponent(): FlightBookingComponent {
         return DaggerFlightBookingComponent.builder()
@@ -49,12 +58,23 @@ class FlightBookingActivity: BaseFlightActivity(), HasComponent<FlightBookingCom
     }
 
     companion object {
-        val REQUEST_CODE_LOGIN = 6
+        private const val REQUEST_CODE_LOGIN = 6
+        private const val EXTRA_PASS_SEARCH_DATA = "EXTRA_PASS_SEARCH_DATA"
+        private const val EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID"
+        private const val EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID"
+        private const val EXTRA_PRICE = "EXTRA_PRICE"
 
-        fun getCallingIntent(activity: Activity): Intent {
+        fun getCallingIntent(activity: Activity,
+                             passDataViewModel: FlightSearchPassDataViewModel,
+                             departureId: String,
+                             priceViewModel: FlightPriceViewModel,
+                             returnId: String = ""): Intent {
             val intent = Intent(activity, FlightBookingActivity::class.java)
+            intent.putExtra(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
+            intent.putExtra(EXTRA_PASS_SEARCH_DATA, passDataViewModel)
+            intent.putExtra(EXTRA_FLIGHT_ARRIVAL_ID, returnId)
+            intent.putExtra(EXTRA_PRICE, priceViewModel)
             return intent
         }
     }
-
 }

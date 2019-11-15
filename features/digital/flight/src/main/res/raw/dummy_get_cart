@@ -60,7 +60,7 @@
           "totalPrice": "Rp 30.000",
           "totalPriceNumeric": 30000,
           "currency": "",
-          "isDomestic": false,
+          "isDomestic": true,
           "repriceTime": 10,
           "adult": 2,
           "child": 1,

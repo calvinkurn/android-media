@@ -123,20 +123,18 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             val params = mapOf(PARAM_VERIFY_CART to bookingVerifyParam)
 
             launchCatchError(block = {
-                //            val data = async {
-//                withContext(Dispatchers.Default) {
-//                    val graphqlRequest = GraphqlRequest(query, FlightVerify.Response::class.java, params)
-//                    graphqlRepository.getReseponse(listOf(graphqlRequest))
-//                }.getSuccessData<FlightVerify.Response>().flightVerify
-//            }
+                val data = async {
+                    withContext(Dispatchers.Default) {
+                        val graphqlRequest = GraphqlRequest(query, FlightVerify.Response::class.java, params)
+                        graphqlRepository.getReseponse(listOf(graphqlRequest))
+                    }.getSuccessData<FlightVerify.Response>().flightVerify
+                }
 
-                val gson = Gson()
-                val data = gson.fromJson(dummy, FlightVerify.Response::class.java).flightVerify
                 val checkPromoData = async { checkVoucher(checkVoucherQuery, getCartId(), dummyCheckVoucher) }
+                val flightVerifyData = data.await()
+                flightVerifyData.data.cartItems[0].promoEligibility = checkPromoData.await()
 
-                data.data.cartItems[0].promoEligibility = checkPromoData.await()
-
-                flightVerifyResult.value = Success(data)
+                flightVerifyResult.value = Success(flightVerifyData)
             }) {
 
                 val gson = Gson()
@@ -536,12 +534,26 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun getDepartureId(): String = flightBookingParam.departureId
     fun getReturnId(): String = flightBookingParam.returnId
 
-    fun checkOutCart(price: Int, dummy: String) {
-        val checkoutParam = createCheckoutParam(getCartId(), price)
+    fun checkOutCart(query: String, price: Int, dummy: String) {
 
-        val gson = Gson()
-        val data = gson.fromJson(dummy, FlightCheckoutData.Response::class.java).flightCheckout
-        flightCheckoutResult.value = Success(data)
+        val checkoutParam = createCheckoutParam(getCartId(), price)
+        val params = mapOf(PARAM_VERIFY_CART to checkoutParam)
+
+        launchCatchError(block = {
+            val checkOutData = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(query, FlightCheckoutData.Response::class.java, params)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<FlightCheckoutData.Response>().flightCheckout
+
+            flightCheckoutResult.value = Success(checkOutData)
+
+        })
+        {
+            val gson = Gson()
+            val data = gson.fromJson(dummy, FlightCheckoutData.Response::class.java).flightCheckout
+            flightCheckoutResult.value = Success(data)
+            //            flightCartResult.value = Fail(it)
+        }
     }
 
     private fun createCheckoutParam(cartId: String, price: Int): FlightCheckoutParam {

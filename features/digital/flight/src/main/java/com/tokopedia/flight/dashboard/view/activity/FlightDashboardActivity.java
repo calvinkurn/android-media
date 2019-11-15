@@ -52,8 +52,6 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbar.setContentInsetStartWithNavigation(0);
-        startActivity(FlightBookingActivity.Companion.getCallingIntent(this));
-
     }
 
     @Override

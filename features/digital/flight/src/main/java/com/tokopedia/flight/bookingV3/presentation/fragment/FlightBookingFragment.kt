@@ -272,7 +272,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
             dialog.setSecondaryCTAText("Cek Ulang")
 
             dialog.setPrimaryCTAClickListener {
-                bookingViewModel.checkOutCart(totalCartPrice,
+                bookingViewModel.checkOutCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart),
+                        totalCartPrice,
                         GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_checkout_data))
             }
 
@@ -523,7 +524,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
 
             override fun onDisablePromoDiscount() {
-                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = ""))
+                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
                 bookingViewModel.onCancelAppliedVoucher(GraphqlHelper.loadRawString(resources, R.raw.promo_checkout_flight_cancel_voucher))
             }
 
@@ -705,8 +706,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         const val COUPON_EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
         const val COUPON_EXTRA_CART_ID = "EXTRA_CART_ID"
-        const val COUPON_EXTRA_COUPON_CODE = "EXTRA_KUPON_CODE"
-        const val COUPON_EXTRA_IS_USE = "EXTRA_IS_USE"
         const val COUPON_EXTRA_LIST_ACTIVITY_RESULT = 3121
         const val COUPON_EXTRA_DETAIL_ACTIVITY_RESULT = 3122
         const val COUPON_EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
@@ -720,6 +719,19 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         fun newInstance(): FlightBookingFragment {
             return FlightBookingFragment()
+        }
+
+        fun newInstance(searchPassDataViewModel: FlightSearchPassDataViewModel,
+                        departureId: String, returnId: String,
+                        priceViewModel: FlightPriceViewModel): FlightBookingFragment {
+            val fragment = FlightBookingFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataViewModel)
+            bundle.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
+            bundle.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnId)
+            bundle.putParcelable(EXTRA_PRICE, priceViewModel)
+            fragment.arguments = bundle
+            return fragment
         }
 
         private val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
