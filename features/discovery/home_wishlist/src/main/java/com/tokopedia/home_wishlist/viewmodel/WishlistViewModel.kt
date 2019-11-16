@@ -25,6 +25,12 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CancellationException
 import rx.Subscriber
 import javax.inject.Inject
+import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+
 
 /**
  * A Class ViewModel For Recommendation Page.
@@ -426,7 +432,7 @@ open class WishlistViewModel @Inject constructor(
      *
      * This function will bulk remove selected wishlist data
      * result will be notified to bulkRemoveWishlistActionData
-     * result can be partially failed, since we use zip observable between single remove usecase
+     * result can be partially failed
      */
     fun bulkRemoveWishlist(positions: List<Int> = listOf()) {
         var listOfPosition = getWishlistPositionOnMark()
@@ -435,31 +441,32 @@ open class WishlistViewModel @Inject constructor(
             listOfPosition = positions
         }
         val requestParams = RequestParams.create()
-        val productRequest = mutableListOf<Pair<String, Int>>()
-        val arrayForBulkRemoveCandidate = arrayOfNulls<WishlistItemDataModel>(listOfPosition.size)
+        val productRequestId = mutableListOf<String>()
+
+        val listForBulkRemoveCandidate = hashMapOf<String, WishlistItemDataModel>()
 
         if (listOfPosition.size <= wishlistData.value.size) {
             listOfPosition.forEachIndexed { index, it ->
                 wishlistData.value[it].run {
                     if (this is WishlistItemDataModel) {
-                        arrayForBulkRemoveCandidate[index] = this
-                        productRequest.add(Pair(this.productItem.id, index))
+                        listForBulkRemoveCandidate.put(this.productItem.id, this)
+                        productRequestId.add(this.productItem.id)
                     }
                 }
             }
 
-            requestParams.putObject(BulkRemoveWishlistUseCase.PARAM_PRODUCT_IDS, productRequest)
+            requestParams.putObject(BulkRemoveWishlistUseCase.PARAM_PRODUCT_IDS, productRequestId)
             requestParams.putString(BulkRemoveWishlistUseCase.PARAM_USER_ID, userSessionInterface.userId)
 
             bulkRemoveWishlistUseCase.execute(
                     requestParams,
-                    object: Subscriber<List<WishlistActionData>>() {
-                        override fun onNext(responselist: List<WishlistActionData>) {
+                    object: Subscriber<WishlistActionData>() {
+                        override fun onNext(responselist: WishlistActionData) {
                             val removeWishlistTriple = removeWishlistItemsInBulkRemove(
-                                    responselist, arrayForBulkRemoveCandidate)
+                                    responselist, listForBulkRemoveCandidate)
                             val updatedList = removeWishlistTriple.first
-                            val isPartiallyFailed = removeWishlistTriple.second
-                            val deletedIds = removeWishlistTriple.third
+                            val deletedIds = removeWishlistTriple.second
+                            val isPartiallyFailed = removeWishlistTriple.third
 
                             bulkRemoveWishlistActionData.value = Event(
                                     BulkRemoveWishlistActionData(
@@ -504,10 +511,9 @@ open class WishlistViewModel @Inject constructor(
     }
 
     private fun removeWishlistItemsInBulkRemove(
-            responselist: List<WishlistActionData>,
-            arrayForBulkRemoveCandidate: Array<WishlistItemDataModel?>
-            ): Triple<List<WishlistDataModel>, Boolean, List<String>> {
-        var isPartiallyFailed = false
+            responselist: WishlistActionData,
+            listForBulkRemoveCandidate: HashMap<String, WishlistItemDataModel>
+            ): Triple<List<WishlistDataModel>, List<String>, Boolean> {
         val updatedList = mutableListOf<WishlistDataModel>()
         val newWishlistDataValue = wishlistData.value.copy()
         val recommendationCarouselDataModels = mutableListOf<WishlistDataModel>()
@@ -521,12 +527,15 @@ open class WishlistViewModel @Inject constructor(
             }
         }
 
-        responselist.forEach {
-            if (it.isSuccess) {
-                val wishlistDataModel = arrayForBulkRemoveCandidate[it.position] as WishlistDataModel
+        val ids = responselist.productId.split(",")
+        ids.forEach {
+            val wishlistDataModel = listForBulkRemoveCandidate[it]
+            listForBulkRemoveCandidate.remove(it)
+
+            wishlistDataModel?.let {wishlistDataModel->
                 newWishlistDataValue.remove(wishlistDataModel)
-                deletedIds.add(it.productId)
-            } else if (!isPartiallyFailed) isPartiallyFailed = !it.isSuccess
+                deletedIds.add(it)
+            }
         }
 
         //bring back carousel
@@ -536,8 +545,10 @@ open class WishlistViewModel @Inject constructor(
             recomIndex+=maxItemInPage
         }
 
+        val isPartiallyFailed = !listForBulkRemoveCandidate.isEmpty()
+
         updatedList.addAll(newWishlistDataValue)
-        return Triple(updatedList, isPartiallyFailed, deletedIds)
+        return Triple(updatedList, deletedIds, isPartiallyFailed)
     }
 
     /**

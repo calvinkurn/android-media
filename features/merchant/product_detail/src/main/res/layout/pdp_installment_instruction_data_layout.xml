@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_instruction_icon"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_64"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_loading_image" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_instruction_heading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:text="@string/ft_instruction_heading"
+        app:layout_constraintStart_toEndOf="@+id/iv_instruction_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_instruction_icon"
+        app:typographyType="heading_5"
+        tools:text="Rp 150.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_instruction_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/pdp_installment_price_heading"
+        app:layout_constraintStart_toEndOf="@+id/iv_instruction_icon"
+        app:layout_constraintTop_toBottomOf="@+id/tv_instruction_heading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_3"
+        tools:text="Cicilan 6x" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
