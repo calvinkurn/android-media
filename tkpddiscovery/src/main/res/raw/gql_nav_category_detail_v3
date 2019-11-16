@@ -17,9 +17,10 @@ query CategoryDetailQueryV3($identifier: String!, $intermediary: Boolean!, $safe
       hidden
       view
       intermediary
- 			isBanned
-        bannedMsg
-        bannedMsgHeader
+      isAdult
+ 	  isBanned
+      bannedMsg
+      bannedMsgHeader
       appRedirection
       brandCurated
       titleTag
