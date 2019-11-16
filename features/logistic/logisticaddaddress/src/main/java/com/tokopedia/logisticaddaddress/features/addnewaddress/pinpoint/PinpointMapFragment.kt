@@ -22,6 +22,7 @@ import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -248,7 +249,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBehavior?.isHideable = false
-        this.googleMap?.setOnCameraMoveListener { onMapDraggedListener() }
         this.googleMap?.let {
             rxPinPoint(it).subscribe(object : Subscriber<Boolean>() {
                 override fun onNext(t: Boolean?) {
@@ -264,7 +264,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
-    private fun onMapDraggedListener() {
+    override fun showLoading() {
         getdistrict_container?.visibility = View.GONE
         invalid_container?.visibility = View.GONE
         whole_loading_container?.visibility = View.VISIBLE

@@ -50,6 +50,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
             return
         }
         val param = "$lat,$long"
+        view.showLoading()
         autofillUseCase.execute(param)
                 .subscribe(
                         {
