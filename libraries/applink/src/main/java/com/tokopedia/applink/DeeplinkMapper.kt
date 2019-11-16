@@ -6,15 +6,11 @@ import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.internal.*
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPlay
-import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
-import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
@@ -66,9 +62,12 @@ object DeeplinkMapper {
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){
-                            val tempDL = deeplink.substring(0, deeplink.indexOf('?'))
+                            var tempDL = deeplink
+                            if(deeplink.contains('?')) {
+                                tempDL = deeplink.substring(0, deeplink.indexOf('?'))
+                            }
                             var navFromTokopedia = getRegisteredNavigationFromTokopedia(tempDL)
-                            if(navFromTokopedia.isNotEmpty()) {
+                            if(navFromTokopedia.isNotEmpty() && navFromTokopedia.contains('?')) {
                                 navFromTokopedia = navFromTokopedia.substring(0, navFromTokopedia.indexOf('?'))
                                 navFromTokopedia += "?$query"
                             }
