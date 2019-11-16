@@ -1,7 +1,7 @@
 package com.tokopedia.tokopoints.view.fragment
 
-import android.app.Dialog
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,20 +23,11 @@ import com.tokopedia.tokopoints.view.presenter.AddPointPresenter
 import kotlinx.android.synthetic.main.tp_add_point_section.*
 import kotlinx.android.synthetic.main.tp_add_point_section.view.*
 import javax.inject.Inject
+import android.widget.GridLayout
+import kotlin.math.roundToInt
 
 
 class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract.View, AddPointGridViewHolder.ListenerItemClick {
-
-    override fun inflateContainerLayout(success: Boolean) {
-        if (success) {
-            containerData.visibility = View.VISIBLE
-            shimmerView.visibility = View.GONE
-
-        } else {
-            shimmerView.visibility = View.VISIBLE
-            containerData.visibility = View.GONE
-        }
-    }
 
     @Inject
     lateinit var addPointPresenter: AddPointPresenter
@@ -96,6 +87,18 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
             rv_section.visibility = View.VISIBLE
     }
 
+    override fun inflateContainerLayout(success: Boolean) {
+        if (success) {
+            containerData.visibility = View.VISIBLE
+            shimmerView.visibility = View.GONE
+
+        } else {
+            setItemInGridLayout()
+            shimmerView.visibility = View.VISIBLE
+            containerData.visibility = View.GONE
+        }
+    }
+
     fun initInjector() {
         DaggerTokoPointComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
@@ -110,5 +113,48 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
 
     override fun onClickItem(appLink: String?) {
         RouteManager.route(context, appLink)
+    }
+
+    fun setItemInGridLayout() {
+
+        var index = 0
+        var column = 0
+        var row = 0
+        val columnCount = 4
+        val rowCount = 4
+        val total = 16
+        val resources = context?.resources
+        val metrics = resources?.displayMetrics
+        val screenWidth = metrics?.widthPixels
+        val shimmerGridItemWidth = screenWidth?.div(rowCount)
+
+        while (index < total) {
+            if (column == columnCount) {
+                column = 0
+                row++
+            }
+            val gridlayout = view?.findViewById<GridLayout>(R.id.gridlayout)
+            val v = View.inflate(context, R.layout.tp_placeholder_addpoint_item, null)
+            val param = GridLayout.LayoutParams()
+            if (shimmerGridItemWidth != null) {
+                param.width = shimmerGridItemWidth
+            }
+            param.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            param.topMargin = dpToPx(20f, metrics)
+            param.columnSpec = GridLayout.spec(column)
+            param.rowSpec = GridLayout.spec(row)
+            v.layoutParams = param
+            gridlayout?.addView(v)
+            index++
+            column++
+        }
+    }
+
+    fun dpToPx(dp: Float, metrics: DisplayMetrics?): Int {
+        metrics?.let {
+            val px = dp * (it.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+            return px.roundToInt()
+        }
+        return 0
     }
 }
