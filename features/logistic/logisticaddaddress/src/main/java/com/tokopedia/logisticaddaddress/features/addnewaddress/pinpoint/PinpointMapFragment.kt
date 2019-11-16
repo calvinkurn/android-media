@@ -67,7 +67,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var currentLong: Double = 0.0
     private var isShowingAutocomplete: Boolean = true
     private var bottomSheetBehavior: BottomSheetBehavior<CoordinatorLayout>? = null
-    val handler = Handler()
+    private val handler = Handler()
     private var UNNAMED_ROAD: String = "Unnamed Road"
     private var isGetDistrict = false
     private val FINISH_FLAG = 1212
@@ -249,6 +249,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBehavior?.isHideable = false
+        this.googleMap?.setOnCameraMoveStartedListener { _ -> showLoading() }
         this.googleMap?.let {
             rxPinPoint(it).subscribe(object : Subscriber<Boolean>() {
                 override fun onNext(t: Boolean?) {
