@@ -40,16 +40,16 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 itemAnimator = DefaultItemAnimator()
                 GravitySnapHelper(Gravity.START).attachToRecyclerView(this)
-                setRecycledViewPool(viewPool)
-                isNestedScrollingEnabled = false
-                setHasFixedSize(true)
+//                setRecycledViewPool(viewPool)
+//                isNestedScrollingEnabled = false
+//                setHasFixedSize(true)
                 adapter = RecommendationCarouselAdapter(listener as WishlistListener, appExecutors)
             }
             (recyclerView.adapter as RecommendationCarouselAdapter).updateList(dataModel.list)
-            if(clickedItem != -1) {
-                recyclerView.layoutManager?.scrollToPosition(clickedItem - 1)
-                clickedItem = -1
-            }
+//            if(clickedItem != -1) {
+//                recyclerView.layoutManager?.scrollToPosition(clickedItem - 1)
+//                clickedItem = -1
+//            }
         }
 
     }

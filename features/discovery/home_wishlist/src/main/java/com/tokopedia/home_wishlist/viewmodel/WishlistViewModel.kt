@@ -306,7 +306,7 @@ open class WishlistViewModel @Inject constructor(
      */
     open fun updateRecommendationItemWishlist(parentPosition: Int, childPosition: Int, newWishlistState: Boolean){
         val DEFAULT_PARENT_POSITION_EMPTY_RECOM = -1
-        val newWishlistData: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
+        val newWishlistData: MutableList<WishlistDataModel> = wishlistData.value.copy()
 
         if (parentPosition == DEFAULT_PARENT_POSITION_EMPTY_RECOM) {
             val newWishlistDataModel = newWishlistData[childPosition]

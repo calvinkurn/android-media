@@ -26,8 +26,9 @@ abstract class SmartRecyclerAdapter<T, V : SmartTypeFactory>(
     override fun onBindViewHolder(holder: SmartAbstractViewHolder<*>, position: Int, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty()){
             bind(holder as SmartAbstractViewHolder<Visitable<*>>, getItem(position), payloads)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
         }
-        super.onBindViewHolder(holder, position, payloads)
     }
 
     private fun onCreateViewItem(parent: ViewGroup, viewType: Int): View {
