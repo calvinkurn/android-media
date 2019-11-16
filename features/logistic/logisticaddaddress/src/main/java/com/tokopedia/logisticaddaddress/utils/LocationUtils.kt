@@ -9,7 +9,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 import rx.Emitter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -43,8 +42,8 @@ internal fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorRes
     }
 }
 
-internal fun DropoffNearbyModel.getDescription(): String =
-        "${this.districtName}, ${this.cityName}, ${this.provinceName}"
+internal fun getDescription(): String =
+        ""
 
 
 internal fun rxPinPoint(maps: GoogleMap): Observable<Boolean> =
