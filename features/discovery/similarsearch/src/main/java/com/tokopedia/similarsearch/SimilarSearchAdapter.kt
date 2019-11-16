@@ -4,11 +4,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-internal class SimilarSearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+internal class SimilarSearchAdapter(
+        similarProductItemListener: SimilarProductItemListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val list: MutableList<Any> = mutableListOf()
     private val adapterDelegatesManager = AdapterDelegatesManager()
-            .addDelegate(SimilarProductItemAdapterDelegate())
+            .addDelegate(SimilarProductItemAdapterDelegate(similarProductItemListener))
             .addDelegate(DividerAdapterDelegate())
             .addDelegate(TitleAdapterDelegate())
             .addDelegate(LoadingMoreAdapterDelegate())
@@ -27,7 +29,16 @@ internal class SimilarSearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        return adapterDelegatesManager.onBindViewHolder(list, holder, position)
+        adapterDelegatesManager.onBindViewHolder(list, holder, position)
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+        else {
+            adapterDelegatesManager.onBindViewHolder(list, holder, position, payloads)
+        }
     }
 
     fun updateList(newList: List<Any>) {
@@ -37,5 +48,13 @@ internal class SimilarSearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
         list.addAll(newList)
 
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun updateSimilarProductItemWishlistStatus(similarProductItem: Product) {
+        val index = list.indexOfFirst { it is Product && it.id == similarProductItem.id }
+
+        list[index] = similarProductItem
+
+        notifyItemChanged(index, similarProductItem.isWishlisted)
     }
 }

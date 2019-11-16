@@ -10,4 +10,8 @@ internal abstract class BaseViewHolder<T>(itemView: View): RecyclerView.ViewHold
     }
 
     abstract fun bind(item: T)
+
+    open fun bind(payload: List<Any>) {
+
+    }
 }

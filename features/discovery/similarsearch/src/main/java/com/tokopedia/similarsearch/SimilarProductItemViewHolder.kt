@@ -4,7 +4,10 @@ import android.view.View
 import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.similar_search_product_card_layout.view.*
 
-internal class SimilarProductItemViewHolder(itemView: View): BaseViewHolder<Product>(itemView) {
+internal class SimilarProductItemViewHolder(
+        itemView: View,
+        private val similarProductItemListener: SimilarProductItemListener
+): BaseViewHolder<Product>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.similar_search_product_card_layout
@@ -32,11 +35,11 @@ internal class SimilarProductItemViewHolder(itemView: View): BaseViewHolder<Prod
         }
 
         itemView.productCardView?.setOnClickListener {
-
+            similarProductItemListener.onItemClicked(item, adapterPosition)
         }
 
         itemView.productCardView?.setButtonWishlistOnClickListener {
-
+            similarProductItemListener.onItemWishlistClicked(item.id, item.isWishlisted)
         }
     }
 
@@ -55,5 +58,11 @@ internal class SimilarProductItemViewHolder(itemView: View): BaseViewHolder<Prod
         }
 
         return productCardModelShopBadgeList
+    }
+
+    override fun bind(payload: List<Any>) {
+        if (payload.isNotEmpty() && payload[0] is Boolean) {
+            itemView.productCardView?.setButtonWishlistImage(payload[0] as Boolean)
+        }
     }
 }

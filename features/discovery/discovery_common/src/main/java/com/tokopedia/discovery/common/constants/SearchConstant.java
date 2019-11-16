@@ -32,7 +32,8 @@ public interface SearchConstant {
 
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
-        String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
+        String WISHLIST_STATUS_IS_WISHLIST = "isWishlist";
+        String WISHLIST_PRODUCT_ID = "product_id";
         String PRODUCT_WISHLIST_URL = "product_wishlist_url";
         String PRODUCT_WISHLIST_URL_USE_CASE = "product_wishlist_url_use_case";
     }

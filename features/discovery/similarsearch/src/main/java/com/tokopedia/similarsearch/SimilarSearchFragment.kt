@@ -1,5 +1,6 @@
 package com.tokopedia.similarsearch
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,17 +16,22 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
+import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
+import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
 
-internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
+internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener {
 
     companion object {
         fun getInstance(): SimilarSearchFragment {
             return SimilarSearchFragment()
         }
+
+        const val REQUEST_CODE_GO_TO_PRODUCT_DETAIL = 123
     }
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
@@ -90,7 +96,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
     }
 
     private fun initRecyclerView() {
-        similarSearchAdapter = SimilarSearchAdapter()
+        similarSearchAdapter = SimilarSearchAdapter(this)
         recyclerViewLayoutManager = createRecyclerViewSimilarSearchLayoutManager()
         endlessRecyclerViewScrollListener = createEndlessRecyclerViewScrollListener()
 
@@ -124,16 +130,24 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
             updateAdapter(it)
         })
 
-//        similarSearchViewModel?.getAddWishlistSelectedProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-//            handleAddWishlistSelectedProductEvent(it)
-//        })
-
-//        similarSearchViewModel?.getRemoveWishlistSelectedProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-//            handleRemoveWishlistSelectedProductEvent(it)
-//        })
-
         similarSearchViewModel?.getRouteToLoginPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             handleRouteToLoginPageEvent()
+        })
+
+        similarSearchViewModel?.getUpdateWishlistSelectedProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            updateSelectedProductWishlistStatus(it)
+        })
+
+        similarSearchViewModel?.getUpdateWishlistSimilarProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            updateSimilarProductWishlistStatus(it)
+        })
+
+        similarSearchViewModel?.getAddWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleAddWishlistEvent(it)
+        })
+
+        similarSearchViewModel?.getRemoveWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleRemoveWishlistEvent(it)
         })
     }
 
@@ -164,25 +178,24 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
         endlessRecyclerViewScrollListener?.setHasNextPage(similarSearchViewModel?.getHasNextPage() ?: false)
     }
 
-    private fun handleAddWishlistSelectedProductEvent(isSuccess: Boolean) {
-        if (isSuccess) {
-            showSnackbar(R.string.similar_search_add_wishlist_success)
-        }
-        else {
-            showSnackbar(R.string.similar_search_add_wishlist_failed)
-        }
+    private fun handleRouteToLoginPageEvent() {
+        RouteManager.route(activity, ApplinkConst.LOGIN)
     }
 
     private fun updateSelectedProductWishlistStatus(isWishlisted: Boolean) {
         similarSearchSelectedProductView?.updateWishlistStatus(isWishlisted)
     }
 
-    private fun handleRemoveWishlistSelectedProductEvent(isSuccess: Boolean) {
+    private fun updateSimilarProductWishlistStatus(similarProductItem: Product) {
+        similarSearchAdapter?.updateSimilarProductItemWishlistStatus(similarProductItem)
+    }
+
+    private fun handleAddWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
-            showSnackbar(R.string.similar_search_remove_wishlist_success)
+            showSnackbar(R.string.similar_search_add_wishlist_success)
         }
         else {
-            showSnackbar(R.string.similar_search_remove_wishlist_failed)
+            showSnackbar(R.string.similar_search_add_wishlist_failed)
         }
     }
 
@@ -194,7 +207,35 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment() {
         ).show()
     }
 
-    private fun handleRouteToLoginPageEvent() {
-        RouteManager.route(activity, ApplinkConst.LOGIN)
+    private fun handleRemoveWishlistEvent(isSuccess: Boolean) {
+        if (isSuccess) {
+            showSnackbar(R.string.similar_search_remove_wishlist_success)
+        }
+        else {
+            showSnackbar(R.string.similar_search_remove_wishlist_failed)
+        }
+    }
+
+    override fun onItemClicked(similarProductItem: Product, adapterPosition: Int) {
+        activity?.let { activity ->
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, similarProductItem.id)
+
+            startActivityForResult(intent, REQUEST_CODE_GO_TO_PRODUCT_DETAIL)
+        }
+    }
+
+    override fun onItemWishlistClicked(productId: String, isWishlisted: Boolean) {
+        similarSearchViewModel?.onViewToggleWishlistSimilarProduct(productId, isWishlisted)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_GO_TO_PRODUCT_DETAIL && data?.extras != null) {
+            val productId = data.extras?.getString(WISHLIST_PRODUCT_ID, "") ?: ""
+            val isWishlisted = data.extras?.getBoolean(WISHLIST_STATUS_IS_WISHLIST, false) ?: false
+
+            similarSearchViewModel?.onViewUpdateProductWishlistStatus(productId, isWishlisted)
+        }
     }
 }

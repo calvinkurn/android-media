@@ -3,7 +3,9 @@ package com.tokopedia.similarsearch
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-internal class SimilarProductItemAdapterDelegate: BaseAdapterDelegate<Product, SimilarProductItemViewHolder>() {
+internal class SimilarProductItemAdapterDelegate(
+        private val similarProductItemListener: SimilarProductItemListener
+): BaseAdapterDelegate<Product, SimilarProductItemViewHolder>() {
 
     override fun isForViewType(items: List<Any>, position: Int): Boolean {
         return items[position] is Product
@@ -14,6 +16,6 @@ internal class SimilarProductItemAdapterDelegate: BaseAdapterDelegate<Product, S
     }
 
     override fun onCreateViewHolder(inflatedView: View): RecyclerView.ViewHolder {
-        return SimilarProductItemViewHolder(inflatedView)
+        return SimilarProductItemViewHolder(inflatedView, similarProductItemListener)
     }
 }

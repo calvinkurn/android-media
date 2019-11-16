@@ -33,6 +33,7 @@ internal class SimilarSearchViewModel(
     private val loadingMoreModel = LoadingMoreModel()
     private val routeToLoginPageEventLiveData = MutableLiveData<Event<Boolean>>()
     private val updateWishlistSelectedProductEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val updateWishlistSimilarProductEventLiveData = MutableLiveData<Event<Product>>()
     private val addWishlistEventLiveData = MutableLiveData<Event<Boolean>>()
     private val removeWishlistEventLiveData = MutableLiveData<Event<Boolean>>()
 
@@ -192,8 +193,10 @@ internal class SimilarSearchViewModel(
     }
 
     fun postUpdateWishlistSelectedProductEvent(isWishlisted: Boolean) {
-        similarSearchSelectedProduct.isWishlisted = isWishlisted
-        updateWishlistSelectedProductEventLiveData.postValue(Event(isWishlisted))
+        if (similarSearchSelectedProduct.isWishlisted != isWishlisted) {
+            similarSearchSelectedProduct.isWishlisted = isWishlisted
+            updateWishlistSelectedProductEventLiveData.postValue(Event(isWishlisted))
+        }
     }
 
     fun getRouteToLoginPageEventLiveData(): LiveData<Event<Boolean>> {
@@ -246,16 +249,26 @@ internal class SimilarSearchViewModel(
     }
 
     private fun postUpdateWishlistInSimilarSearchLiveData(productId: String?, isWishlisted: Boolean) {
-        getSimilarProductForWishlist(productId).isWishlisted = isWishlisted
-        postSimilarSearchLiveDataSuccess()
+        val similarProductItemForWishlist = getSimilarProductForWishlist(productId)
+
+        if (similarProductItemForWishlist != null && similarProductItemForWishlist.isWishlisted != isWishlisted) {
+            similarProductItemForWishlist.isWishlisted = isWishlisted
+            updateWishlistSimilarProductEventLiveData.postValue(Event(similarProductItemForWishlist))
+        }
     }
 
-    private fun getSimilarProductForWishlist(productId: String?): Product {
-        return similarSearchViewModelList.find { it is Product && it.id == productId } as Product
+    private fun getSimilarProductForWishlist(productId: String?): Product? {
+        val similarSearchViewModelItem = similarSearchViewModelList.find { it is Product && it.id == productId }
+
+        return if (similarSearchViewModelItem is Product) similarSearchViewModelItem else null
     }
 
     fun getUpdateWishlistSelectedProductEventLiveData(): LiveData<Event<Boolean>> {
         return updateWishlistSelectedProductEventLiveData
+    }
+
+    fun getUpdateWishlistSimilarProductEventLiveData(): LiveData<Event<Product>> {
+        return updateWishlistSimilarProductEventLiveData
     }
 
     fun getAddWishlistEventLiveData(): LiveData<Event<Boolean>> {
@@ -264,5 +277,13 @@ internal class SimilarSearchViewModel(
 
     fun getRemoveWishlistEventLiveData(): LiveData<Event<Boolean>> {
         return removeWishlistEventLiveData
+    }
+
+    fun onViewUpdateProductWishlistStatus(productId: String, isWishlisted: Boolean) {
+        if (productId.isEmpty()) return
+
+        postUpdateWishlistSelectedProductEvent(isWishlisted)
+
+        postUpdateWishlistInSimilarSearchLiveData(productId, isWishlisted)
     }
 }

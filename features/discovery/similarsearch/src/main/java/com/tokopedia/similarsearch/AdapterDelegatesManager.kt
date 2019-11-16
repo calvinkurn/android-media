@@ -24,7 +24,11 @@ internal class AdapterDelegatesManager {
         return adapterDelegateList[viewType].onCreateViewHolder(parent)
     }
 
-    fun onBindViewHolder(item: List<Any>, viewHolder: RecyclerView.ViewHolder, position:Int) {
-        return adapterDelegateList[viewHolder.itemViewType].onBindViewHolder(item, viewHolder, position)
+    fun onBindViewHolder(items: List<Any>, viewHolder: RecyclerView.ViewHolder, position:Int) {
+        return adapterDelegateList[viewHolder.itemViewType].onBindViewHolder(items, viewHolder, position)
+    }
+
+    fun onBindViewHolder(items: List<Any>, viewHolder: RecyclerView.ViewHolder, position: Int, payload: List<Any>) {
+        return adapterDelegateList[viewHolder.itemViewType].onBindViewHolder(items, viewHolder, position, payload)
     }
 }

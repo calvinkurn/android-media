@@ -10,4 +10,6 @@ internal interface AdapterDelegate<T> {
     fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder
 
     fun onBindViewHolder(items: List<T>, viewHolder: RecyclerView.ViewHolder, position: Int)
+
+    fun onBindViewHolder(items: List<T>, viewHolder: RecyclerView.ViewHolder, position: Int, payload: List<Any>)
 }
