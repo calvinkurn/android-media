@@ -333,7 +333,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHotel(Uri uri, Bundle bundle) {
-        RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
+        RouteManager.route(context, bundle,
+                getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
         context.finish();
     }
 
