@@ -164,7 +164,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                 intent.action == NfcAdapter.ACTION_TECH_DISCOVERED) {
 
             if (!isDigitalSmartcardEnabled()) {
-                Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.emoney_nfc_feature_unavailable), Toast.LENGTH_SHORT).show()
                 RouteManager.route(this, ApplinkConst.HOME_FEED)
                 finish()
             } else {
@@ -326,8 +326,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     private fun isDigitalSmartcardEnabled(): Boolean {
-//        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
-        return true
+        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
     }
 
     private fun directToNFCSettingsPage() {
@@ -447,6 +446,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         const val DIGITAL_NFC_CALLING_TYPE = "calling_page_check_saldo"
         const val DIGITAL_NFC_FROM_PDP = "calling_from_pdp"
         const val DIGITAL_NFC = "calling_from_nfc"
+        private const val DIGITAL_SMARTCARD = "mainapp_digital_smartcard"
+
         const val REQUEST_CODE_LOGIN = 1980
 
         const val ISSUER_ID_EMONEY = 1
