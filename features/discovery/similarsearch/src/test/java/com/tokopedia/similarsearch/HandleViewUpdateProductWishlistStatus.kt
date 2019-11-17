@@ -1,8 +1,7 @@
 package com.tokopedia.similarsearch
 
 import com.tokopedia.similarsearch.testinstance.getSimilarProductModelCommon
-import com.tokopedia.similarsearch.testinstance.getSimilarSearchSelectedProductNotWishlisted
-import com.tokopedia.similarsearch.testinstance.getSimilarSearchSelectedProductWishlisted
+import com.tokopedia.similarsearch.testinstance.getSimilarProductModelOriginalProductWishlisted
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
@@ -46,7 +45,7 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
             }
 
             Then("update wishlist selected product event is null") {
-                val updateWishlistSelectedProductEventLiveData = similarSearchViewModel.getUpdateWishlistSelectedProductEventLiveData().value
+                val updateWishlistSelectedProductEventLiveData = similarSearchViewModel.getUpdateWishlistOriginalProductEventLiveData().value
 
                 updateWishlistSelectedProductEventLiveData?.getContentIfNotHandled().shouldBe(
                         null,
@@ -55,67 +54,81 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
             }
         }
 
-        Scenario("Wishlist updated for selected product to true, and selected product isWishlisted already true") {
-            val similarSearchSelectedProductWishlisted = getSimilarSearchSelectedProductWishlisted()
+        Scenario("Wishlist updated for original product to true, and original product isWishlisted already true") {
+            val similarProductModelOriginalProductWishlisted = getSimilarProductModelOriginalProductWishlisted()
+            val originalProduct = similarProductModelOriginalProductWishlisted.getOriginalProduct()
             lateinit var similarSearchViewModel: SimilarSearchViewModel
 
             Given("similar search view model") {
-                similarSearchViewModel = createSimilarSearchViewModel(similarSearchSelectedProductWishlisted)
+                similarSearchViewModel = createSimilarSearchViewModel()
+            }
+
+            Given("view already created and has similar search data with original product wishlisted") {
+                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                getSimilarProductsUseCase.stubExecute().returns(similarProductModelOriginalProductWishlisted)
+                similarSearchViewModel.onViewCreated()
             }
 
             When("handle view update product wishlist status") {
-                similarSearchViewModel.onViewUpdateProductWishlistStatus(similarSearchSelectedProductWishlisted.id, true)
+                similarSearchViewModel.onViewUpdateProductWishlistStatus(originalProduct.id, true)
             }
 
-            Then("assert selected product isWishlisted is true, and update wishlist selected product event is null") {
-                val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
+            Then("assert original product isWishlisted is true, and update wishlist original product event is null") {
+                val similarSearchOriginalProduct = similarSearchViewModel.getOriginalProductLiveData().value
 
-                similarSearchSelectedProduct.isWishlisted.shouldBe(
+                similarSearchOriginalProduct?.isWishlisted.shouldBe(
                         true,
-                        "Selected Product is wishlisted should be true"
+                        "Original Product is wishlisted should be true"
                 )
 
-                val updateWishlistSelectedProductEventLiveData = similarSearchViewModel.getUpdateWishlistSelectedProductEventLiveData().value
+                val updateWishlistOriginalProductEventLiveData = similarSearchViewModel.getUpdateWishlistOriginalProductEventLiveData().value
 
-                updateWishlistSelectedProductEventLiveData?.getContentIfNotHandled().shouldBe(
+                updateWishlistOriginalProductEventLiveData?.getContentIfNotHandled().shouldBe(
                         null,
-                        "Update wishlist selected product event should be null"
+                        "Update wishlist Original product event should be null"
                 )
             }
         }
 
-        Scenario("Wishlist updated for selected product to false, and selected product isWishlisted already false") {
-            val similarSearchSelectedProductNotWishlisted = getSimilarSearchSelectedProductNotWishlisted()
+        Scenario("Wishlist updated for Original product to false, and Original product isWishlisted already false") {
+            val similarProductModelCommon = getSimilarProductModelCommon()
+            val originalProduct = similarProductModelCommon.getOriginalProduct()
             lateinit var similarSearchViewModel: SimilarSearchViewModel
 
             Given("similar search view model") {
-                similarSearchViewModel = createSimilarSearchViewModel(similarSearchSelectedProductNotWishlisted)
+                similarSearchViewModel = createSimilarSearchViewModel()
+            }
+
+            Given("view already created and has similar search data with original product wishlisted") {
+                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
+                similarSearchViewModel.onViewCreated()
             }
 
             When("handle view update product wishlist status") {
-                similarSearchViewModel.onViewUpdateProductWishlistStatus(similarSearchSelectedProductNotWishlisted.id, false)
+                similarSearchViewModel.onViewUpdateProductWishlistStatus(originalProduct.id, false)
             }
 
-            Then("assert selected product isWishlisted is false, and update wishlist selected product event is null") {
-                val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
+            Then("assert Original product isWishlisted is false, and update wishlist Original product event is null") {
+                val similarSearchOriginalProduct = similarSearchViewModel.getOriginalProductLiveData().value
 
-                similarSearchSelectedProduct.isWishlisted.shouldBe(
+                similarSearchOriginalProduct?.isWishlisted.shouldBe(
                         false,
-                        "Selected Product is wishlisted should be false"
+                        "Original Product is wishlisted should be false"
                 )
 
-                val updateWishlistSelectedProductEventLiveData = similarSearchViewModel.getUpdateWishlistSelectedProductEventLiveData().value
+                val updateWishlistOriginalProductEventLiveData = similarSearchViewModel.getUpdateWishlistOriginalProductEventLiveData().value
 
-                updateWishlistSelectedProductEventLiveData?.getContentIfNotHandled().shouldBe(
+                updateWishlistOriginalProductEventLiveData?.getContentIfNotHandled().shouldBe(
                         null,
-                        "Update wishlist selected product event should be null"
+                        "Update wishlist Original product event should be null"
                 )
             }
         }
 
         Scenario("Wishlist updated for similar product to true, and similar product isWishlisted already true") {
             val similarProductModel = getSimilarProductModelCommon()
-            val wishlistedProduct = similarProductModel.getProductList()[1]
+            val wishlistedProduct = similarProductModel.getSimilarProductList()[1]
             val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -152,7 +165,7 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
 
         Scenario("Wishlist updated for similar product to false, and similar product isWishlisted already false") {
             val similarProductModel = getSimilarProductModelCommon()
-            val notWishlistedProduct = similarProductModel.getProductList()[0]
+            val notWishlistedProduct = similarProductModel.getSimilarProductList()[0]
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
 
@@ -187,67 +200,81 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
             }
         }
 
-        Scenario("Wishlist updated for selected product to true") {
-            val similarSearchSelectedProductNotWishlisted = getSimilarSearchSelectedProductNotWishlisted()
+        Scenario("Wishlist updated for Original product to true") {
+            val similarProductModelCommon = getSimilarProductModelCommon()
+            val originalProduct = similarProductModelCommon.getOriginalProduct()
             lateinit var similarSearchViewModel: SimilarSearchViewModel
 
             Given("similar search view model") {
-                similarSearchViewModel = createSimilarSearchViewModel(similarSearchSelectedProductNotWishlisted)
+                similarSearchViewModel = createSimilarSearchViewModel()
+            }
+
+            Given("view already created and has similar search data with original product wishlisted") {
+                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
+                similarSearchViewModel.onViewCreated()
             }
 
             When("handle view update product wishlist status") {
-                similarSearchViewModel.onViewUpdateProductWishlistStatus(similarSearchSelectedProductNotWishlisted.id, true)
+                similarSearchViewModel.onViewUpdateProductWishlistStatus(originalProduct.id, true)
             }
 
-            Then("assert selected product isWishlisted is true, and update wishlist selected product event is true") {
-                val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
+            Then("assert Original product isWishlisted is true, and update wishlist Original product event is true") {
+                val similarSearchOriginalProduct = similarSearchViewModel.getOriginalProductLiveData().value
 
-                similarSearchSelectedProduct.isWishlisted.shouldBe(
+                similarSearchOriginalProduct?.isWishlisted.shouldBe(
                         true,
-                        "Selected Product is wishlisted should be true"
+                        "Original Product is wishlisted should be true"
                 )
 
-                val updateWishlistSelectedProductEventLiveData = similarSearchViewModel.getUpdateWishlistSelectedProductEventLiveData().value
+                val updateWishlistOriginalProductEventLiveData = similarSearchViewModel.getUpdateWishlistOriginalProductEventLiveData().value
 
-                updateWishlistSelectedProductEventLiveData?.getContentIfNotHandled().shouldBe(
+                updateWishlistOriginalProductEventLiveData?.getContentIfNotHandled().shouldBe(
                         true,
-                        "Update wishlist selected product event should be true"
+                        "Update wishlist Original product event should be true"
                 )
             }
         }
 
-        Scenario("Wishlist updated for selected product to false") {
-            val similarSearchSelectedProductWishlisted = getSimilarSearchSelectedProductWishlisted()
+        Scenario("Wishlist updated for Original product to false") {
+            val similarProductModelOriginalProductWishlisted = getSimilarProductModelOriginalProductWishlisted()
+            val originalProduct = similarProductModelOriginalProductWishlisted.getOriginalProduct()
             lateinit var similarSearchViewModel: SimilarSearchViewModel
 
             Given("similar search view model") {
-                similarSearchViewModel = createSimilarSearchViewModel(similarSearchSelectedProductWishlisted)
+                similarSearchViewModel = createSimilarSearchViewModel()
+            }
+
+            Given("view already created and has similar search data with original product wishlisted") {
+                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                getSimilarProductsUseCase.stubExecute().returns(similarProductModelOriginalProductWishlisted)
+                similarSearchViewModel.onViewCreated()
             }
 
             When("handle view update product wishlist status") {
-                similarSearchViewModel.onViewUpdateProductWishlistStatus(similarSearchSelectedProductWishlisted.id, false)
+                similarSearchViewModel.onViewUpdateProductWishlistStatus(originalProduct.id, false)
             }
 
-            Then("assert selected product isWishlisted is true, and update wishlist selected product event is true") {
-                val similarSearchSelectedProduct = similarSearchViewModel.similarSearchSelectedProduct
+            Then("assert Original product isWishlisted is true, and update wishlist Original product event is true") {
+                val similarSearchOriginalProduct = similarSearchViewModel.getOriginalProductLiveData().value
 
-                similarSearchSelectedProduct.isWishlisted.shouldBe(
+                similarSearchOriginalProduct?.isWishlisted.shouldBe(
                         false,
-                        "Selected Product is wishlisted should be false"
+                        "Original Product is wishlisted should be false"
                 )
 
-                val updateWishlistSelectedProductEventLiveData = similarSearchViewModel.getUpdateWishlistSelectedProductEventLiveData().value
+                val updateWishlistOriginalProductEventLiveData = similarSearchViewModel.getUpdateWishlistOriginalProductEventLiveData().value
 
-                updateWishlistSelectedProductEventLiveData?.getContentIfNotHandled().shouldBe(
+                updateWishlistOriginalProductEventLiveData?.getContentIfNotHandled().shouldBe(
                         false,
-                        "Update wishlist selected product event should be false"
+                        "Update wishlist Original product event should be false"
                 )
             }
         }
 
         Scenario("Wishlist updated for similar product to true") {
             val similarProductModel = getSimilarProductModelCommon()
-            val wishlistedProduct = similarProductModel.getProductList()[0]
+            val wishlistedProduct = similarProductModel.getSimilarProductList()[0]
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
 
@@ -284,7 +311,7 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
 
         Scenario("Wishlist updated for similar product to false") {
             val similarProductModel = getSimilarProductModelCommon()
-            val wishlistedProduct = similarProductModel.getProductList()[1]
+            val wishlistedProduct = similarProductModel.getSimilarProductList()[1]
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
             lateinit var similarSearchPreviousViewModelList: List<Any>

@@ -21,7 +21,6 @@ import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
-import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener {
@@ -35,7 +34,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
-    private var similarSearchSelectedProductView: SimilarSearchSelectedProductView? = null
+    private var similarSearchOriginalProductView: SimilarSearchOriginalProductView? = null
     private var similarSearchAdapter: SimilarSearchAdapter? = null
     private var recyclerViewLayoutManager: RecyclerView.LayoutManager? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -65,34 +64,8 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun initViews() {
-        initSelectedProductView()
         initRecyclerView()
         disableSwipeRefreshLayout()
-    }
-
-    private fun initSelectedProductView() {
-        view?.let { view ->
-            val selectedProductViewListener = createSelectedProductViewListener(view)
-
-            similarSearchSelectedProductView = SimilarSearchSelectedProductView(selectedProductViewListener)
-            similarSearchSelectedProductView?.bindSelectedProductView()
-        }
-    }
-
-    private fun createSelectedProductViewListener(view: View): SimilarSearchSelectedProductViewListener {
-        return object : SimilarSearchSelectedProductViewListener {
-            override fun getSelectedProduct(): SimilarSearchSelectedProduct? {
-                return similarSearchViewModel?.similarSearchSelectedProduct
-            }
-
-            override fun getFragmentView(): View {
-                return view
-            }
-
-            override fun onButtonWishlistClicked() {
-                similarSearchViewModel?.onViewToggleWishlistSelectedProduct()
-            }
-        }
     }
 
     private fun initRecyclerView() {
@@ -126,6 +99,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun observeViewModelData() {
+        similarSearchViewModel?.getOriginalProductLiveData()?.observe(viewLifecycleOwner, Observer {
+            initOriginalProductView(it)
+        })
+
         similarSearchViewModel?.getSimilarSearchLiveData()?.observe(viewLifecycleOwner, Observer {
             updateAdapter(it)
         })
@@ -134,7 +111,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             handleRouteToLoginPageEvent()
         })
 
-        similarSearchViewModel?.getUpdateWishlistSelectedProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+        similarSearchViewModel?.getUpdateWishlistOriginalProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             updateSelectedProductWishlistStatus(it)
         })
 
@@ -149,6 +126,64 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         similarSearchViewModel?.getRemoveWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             handleRemoveWishlistEvent(it)
         })
+    }
+
+    private fun initOriginalProductView(originalProduct: Product) {
+        view?.let { view ->
+            val selectedProductViewListener = createSelectedProductViewListener(view, originalProduct)
+
+            similarSearchOriginalProductView = SimilarSearchOriginalProductView(selectedProductViewListener)
+            similarSearchOriginalProductView?.bindOriginalProductView(originalProduct)
+        }
+    }
+
+    private fun createSelectedProductViewListener(view: View, originalProduct: Product): SimilarSearchOriginalProductViewListener {
+        return object : SimilarSearchOriginalProductViewListener {
+            override fun getFragmentView(): View {
+                return view
+            }
+
+            override fun onItemClicked() {
+                routeToProductDetail(originalProduct.id)
+            }
+
+            override fun onButtonWishlistClicked() {
+                similarSearchViewModel?.onViewToggleWishlistOriginalProduct()
+            }
+
+            override fun onButtonBuyClicked() {
+                selectedProductOnButtonBuyClicked()
+            }
+
+            override fun onButtonAddToCartClicked() {
+                selectedProductOnButtonAddToCartClicked()
+            }
+        }
+    }
+
+    private fun routeToProductDetail(productId: String) {
+        activity?.let { activity ->
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+
+            startActivityForResult(intent, REQUEST_CODE_GO_TO_PRODUCT_DETAIL)
+        }
+    }
+
+    private fun selectedProductOnButtonBuyClicked() {
+
+    }
+
+    private fun selectedProductOnButtonAddToCartClicked() {
+//        activity?.let { activity ->
+//            val similarSearchSelectedProduct = similarSearchViewModel?.similarSearchSelectedProduct
+//
+//            if (similarSearchSelectedProduct != null) {
+//                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).also {
+//                    it.putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, similarSearchSelectedProduct.name)
+//                    it.putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, similarSearchSelectedProduct.price)
+//                }
+//            }
+//        }
     }
 
     private fun updateAdapter(similarSearchLiveData: State<List<Any>>) {
@@ -183,7 +218,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun updateSelectedProductWishlistStatus(isWishlisted: Boolean) {
-        similarSearchSelectedProductView?.updateWishlistStatus(isWishlisted)
+        similarSearchOriginalProductView?.updateWishlistStatus(isWishlisted)
     }
 
     private fun updateSimilarProductWishlistStatus(similarProductItem: Product) {
@@ -217,11 +252,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     override fun onItemClicked(similarProductItem: Product, adapterPosition: Int) {
-        activity?.let { activity ->
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, similarProductItem.id)
-
-            startActivityForResult(intent, REQUEST_CODE_GO_TO_PRODUCT_DETAIL)
-        }
+        routeToProductDetail(similarProductItem.id)
     }
 
     override fun onItemWishlistClicked(productId: String, isWishlisted: Boolean) {

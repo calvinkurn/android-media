@@ -59,7 +59,7 @@ internal class HandleViewCreatedTest: Spek({
             }
 
             Then("verify get similar product API is called only once") {
-                getSimilarProductsUseCase.isExecuted()
+                getSimilarProductsUseCase.isExecuted(1)
             }
         }
     }
@@ -85,9 +85,18 @@ internal class HandleViewCreatedTest: Spek({
                 similarSearchViewModel.onViewCreated()
             }
 
+            Then("assert original product state is success and contains original product data") {
+                val originalProductData = similarSearchViewModel.getOriginalProductLiveData().value
+
+                originalProductData.shouldBe(
+                        similarProductModelCommon.getOriginalProduct(),
+                        "Original Product data should be equal to original product data from API"
+                )
+            }
+
             Then("assert similar search state is success and contains similar search data") {
                 val similarSearchLiveData = similarSearchViewModel.getSimilarSearchLiveData().value
-                val expectedSimilarProductList = similarProductModelCommon.getProductList().subList(0, SIMILAR_PRODUCT_ITEM_SIZE_PER_PAGE)
+                val expectedSimilarProductList = similarProductModelCommon.getSimilarProductList().subList(0, SIMILAR_PRODUCT_ITEM_SIZE_PER_PAGE)
 
                 similarSearchLiveData.shouldBeInstanceOf<State.Success<*>>()
                 similarSearchLiveData.shouldHaveCorrectViewModelListWithLoadingMore(expectedSimilarProductList)
@@ -121,6 +130,15 @@ internal class HandleViewCreatedTest: Spek({
                 exception.isStackTracePrinted.shouldBe(true, "Exception stack trace should be printed")
             }
 
+            Then("assert original product live data value should be null") {
+                val originalProductData = similarSearchViewModel.getOriginalProductLiveData().value
+
+                originalProductData.shouldBe(
+                        null,
+                        "Original product data should be null"
+                )
+            }
+
             Then("assert similar search state is error and does not contain data") {
                 val similarSearchLiveData = similarSearchViewModel.getSimilarSearchLiveData().value
 
@@ -149,6 +167,15 @@ internal class HandleViewCreatedTest: Spek({
 
             When("handle view is created") {
                 similarSearchViewModel.onViewCreated()
+            }
+
+            Then("assert original product live data value should be null") {
+                val originalProductData = similarSearchViewModel.getOriginalProductLiveData().value
+
+                originalProductData.shouldBe(
+                        null,
+                        "Original product data should be null"
+                )
             }
 
             Then("assert similar search state is error and does not contain data") {
@@ -182,6 +209,15 @@ internal class HandleViewCreatedTest: Spek({
                 similarSearchViewModel.onViewCreated()
             }
 
+            Then("assert original product state is success and contains original product data") {
+                val originalProductData = similarSearchViewModel.getOriginalProductLiveData().value
+
+                originalProductData.shouldBe(
+                        similarProductModelEmptyResult.getOriginalProduct(),
+                        "Original Product data should be equal to original product data from API"
+                )
+            }
+
             Then("assert similar search state is success and contains empty search model") {
                 val similarSearchLiveData = similarSearchViewModel.getSimilarSearchLiveData().value
 
@@ -213,9 +249,18 @@ internal class HandleViewCreatedTest: Spek({
                 similarSearchViewModel.onViewCreated()
             }
 
+            Then("assert original product state is success and contains original product data") {
+                val originalProductData = similarSearchViewModel.getOriginalProductLiveData().value
+
+                originalProductData.shouldBe(
+                        similarProductModelOnePage.getOriginalProduct(),
+                        "Original Product data should be equal to original product data from API"
+                )
+            }
+
             Then("assert similar search state is success and contains one page similar search data without loading more model") {
                 val similarSearchLiveData = similarSearchViewModel.getSimilarSearchLiveData().value
-                val expectedSimilarProductList = similarProductModelOnePage.getProductList().subList(0, similarProductModelOnePage.getProductList().size)
+                val expectedSimilarProductList = similarProductModelOnePage.getSimilarProductList().subList(0, similarProductModelOnePage.getSimilarProductList().size)
 
                 similarSearchLiveData.shouldBeInstanceOf<State.Success<*>>()
                 similarSearchLiveData.shouldHaveCorrectViewModelListWithoutLoadingMore(expectedSimilarProductList)

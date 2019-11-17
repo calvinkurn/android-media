@@ -23,7 +23,7 @@ internal class GetSimilarProductsUseCase(
         if (error == null || error.isEmpty()){
             return graphqlResponse.getData(SimilarProductModel::class.java)
         } else {
-            throw Exception(error.mapNotNull { it.message }.joinToString(separator = ", "))
+            throw Throwable(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
     }
 

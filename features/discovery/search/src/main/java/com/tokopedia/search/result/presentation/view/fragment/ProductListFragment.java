@@ -31,7 +31,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.common.manager.SimilarSearchManager;
 import com.tokopedia.discovery.common.model.SearchParameter;
-import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
@@ -596,26 +595,7 @@ public class ProductListFragment
 
         SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
 
-        SimilarSearchManager.startSimilarSearch(getActivity(), createSimilarSearchSelectedProduct(item), getQueryKey());
-    }
-
-    private SimilarSearchSelectedProduct createSimilarSearchSelectedProduct(ProductItemViewModel productItemViewModel) {
-        return new SimilarSearchSelectedProduct(
-                productItemViewModel.getProductID(),
-                productItemViewModel.getImageUrl(),
-                productItemViewModel.isWishlisted(),
-                productItemViewModel.getProductName(),
-                productItemViewModel.getPrice(),
-                productItemViewModel.getShopCity(),
-                getStarCount(productItemViewModel),
-                productItemViewModel.getCountReview()
-        );
-    }
-
-    private int getStarCount(ProductItemViewModel productItemViewModel) {
-        return productItemViewModel.isTopAds()
-                ? Math.round(productItemViewModel.getRating() / 20)
-                : productItemViewModel.getRating();
+        SimilarSearchManager.startSimilarSearch(getActivity(), item.getProductID(), getQueryKey());
     }
 
     private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {

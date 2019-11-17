@@ -5,15 +5,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
-        android:id="@+id/cardViewSelectedProductSimilarSearch"
-        layout="@layout/similar_search_selected_product_layout" />
+        android:id="@+id/cardViewOriginalProductSimilarSearch"
+        android:visibility="gone"
+        layout="@layout/similar_search_original_product_layout" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipeToRefreshSimilarSearch"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardViewSelectedProductSimilarSearch"
+        app:layout_constraintTop_toBottomOf="@id/cardViewOriginalProductSimilarSearch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 

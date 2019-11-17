@@ -38,7 +38,7 @@ internal class HandleViewLoadMoreTest: Spek({
 
             Then("assert similar search state is success and contains two page of product list") {
                 val similarSearchLiveData = similarSearchViewModel.getSimilarSearchLiveData().value
-                val expectedSimilarProductList = similarProductModelTwoPage.getProductList().subList(0, similarProductModelTwoPage.getProductList().size)
+                val expectedSimilarProductList = similarProductModelTwoPage.getSimilarProductList().subList(0, similarProductModelTwoPage.getSimilarProductList().size)
 
                 similarSearchLiveData.shouldBeInstanceOf<State.Success<*>>()
                 similarSearchLiveData.shouldHaveCorrectViewModelListWithoutLoadingMore(expectedSimilarProductList)
@@ -74,7 +74,7 @@ internal class HandleViewLoadMoreTest: Spek({
 
             Then("assert similar search state is success and contains two page of product list") {
                 val similarSearchLiveData = similarSearchViewModel.getSimilarSearchLiveData().value
-                val expectedSimilarProductList = similarProductModelThreePage.getProductList().subList(0, SIMILAR_PRODUCT_ITEM_SIZE_PER_PAGE * 2)
+                val expectedSimilarProductList = similarProductModelThreePage.getSimilarProductList().subList(0, SIMILAR_PRODUCT_ITEM_SIZE_PER_PAGE * 2)
 
                 similarSearchLiveData.shouldBeInstanceOf<State.Success<*>>()
                 similarSearchLiveData.shouldHaveCorrectViewModelListWithLoadingMore(expectedSimilarProductList)

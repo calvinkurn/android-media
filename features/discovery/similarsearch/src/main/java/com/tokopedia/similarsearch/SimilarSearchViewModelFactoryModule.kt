@@ -2,7 +2,6 @@ package com.tokopedia.similarsearch
 
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
-import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
 import com.tokopedia.similarsearch.di.scope.SimilarSearchModuleScope
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,9 +17,7 @@ import javax.inject.Named
     WishlistUseCaseModule::class,
     UserSessionModule::class
 ])
-internal class SimilarSearchViewModelFactoryModule(
-        private val similarSearchSelectedProduct: SimilarSearchSelectedProduct
-) {
+internal class SimilarSearchViewModelFactoryModule {
 
     @SimilarSearchModuleScope
     @Provides
@@ -34,7 +31,6 @@ internal class SimilarSearchViewModelFactoryModule(
     ): ViewModelProvider.Factory {
         return SimilarSearchViewModelFactory(
                 ProductionDispatcherProvider(),
-                similarSearchSelectedProduct,
                 getSimilarProductsUseCase,
                 addWishListUseCase,
                 removeWishListUseCase,

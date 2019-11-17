@@ -18,7 +18,7 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
 
         Scenario("Handle View Toggle Wishlist Similar Product for non-login user") {
             val similarProductModel = getSimilarProductModelCommon()
-            val productToWishlist = similarProductModel.getProductList()[2]
+            val productToWishlist = similarProductModel.getSimilarProductList()[2]
             val userSession by memoized<UserSessionInterface>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -46,7 +46,7 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
         Scenario("Handle View Toggle Wishlist Similar Product for logged in user and product is not wishlisted") {
             val userId = "123456"
             val similarProductModel = getSimilarProductModelCommon()
-            val productToWishlist = similarProductModel.getProductList()[2]
+            val productToWishlist = similarProductModel.getSimilarProductList()[2]
             val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
             val addWishListUseCase by memoized<AddWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()
@@ -79,7 +79,7 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
         Scenario("Handle View Toggle Wishlist Similar Product for logged in user and product is wishlisted") {
             val userId = "123456"
             val similarProductModel = getSimilarProductModelCommon()
-            val productToUnWishlist = similarProductModel.getProductList()[1]
+            val productToUnWishlist = similarProductModel.getSimilarProductList()[1]
             val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
             val removeWishListUseCase by memoized<RemoveWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()
@@ -151,7 +151,7 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
         Scenario("Add Wishlist Similar Product Success") {
             val userId = "123456"
             val similarProductModel = getSimilarProductModelCommon()
-            val productToWishlist = similarProductModel.getProductList()[2]
+            val productToWishlist = similarProductModel.getSimilarProductList()[2]
             val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
             val addWishListUseCase by memoized<AddWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()
@@ -213,7 +213,7 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
         Scenario("Add Wishlist Similar Product Failed") {
             val userId = "123456"
             val similarProductModel = getSimilarProductModelCommon()
-            val productToWishlist = similarProductModel.getProductList()[0]
+            val productToWishlist = similarProductModel.getSimilarProductList()[0]
             val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
             val addWishListUseCase by memoized<AddWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()
@@ -279,7 +279,7 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
         Scenario("Remove Wishlist Similar Product Success") {
             val userId = "123456"
             val similarProductModel = getSimilarProductModelCommon()
-            val productToUnWishlist = similarProductModel.getProductList()[1]
+            val productToUnWishlist = similarProductModel.getSimilarProductList()[1]
             val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
             val removeWishListUseCase by memoized<RemoveWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()
@@ -341,7 +341,7 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
         Scenario("Remove Wishlist Similar Product Failed") {
             val userId = "123456"
             val similarProductModel = getSimilarProductModelCommon()
-            val productToUnWishlist = similarProductModel.getProductList()[1]
+            val productToUnWishlist = similarProductModel.getSimilarProductList()[1]
             val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
             val removeWishListUseCase by memoized<RemoveWishListUseCase>()
             val userSession by memoized<UserSessionInterface>()

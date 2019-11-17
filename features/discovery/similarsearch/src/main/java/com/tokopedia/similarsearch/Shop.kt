@@ -4,6 +4,10 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 internal data class Shop(
+        @SerializedName("id")
+        @Expose
+        val id: Int = 0,
+
         @SerializedName("is_gold_shop")
         @Expose
         val isGoldShop: Boolean = false,

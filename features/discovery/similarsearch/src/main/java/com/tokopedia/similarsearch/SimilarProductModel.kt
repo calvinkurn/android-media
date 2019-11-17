@@ -9,7 +9,11 @@ internal data class SimilarProductModel(
         val similarProductsImageSearch: SimilarProductsImageSearch = SimilarProductsImageSearch()
 ) {
 
-        fun getProductList(): List<Product> {
+        fun getSimilarProductList(): List<Product> {
                 return similarProductsImageSearch.data.productList
+        }
+
+        fun getOriginalProduct(): Product {
+                return similarProductsImageSearch.data.originalProduct
         }
 }

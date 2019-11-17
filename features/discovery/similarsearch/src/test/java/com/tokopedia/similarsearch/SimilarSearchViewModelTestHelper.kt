@@ -1,7 +1,5 @@
 package com.tokopedia.similarsearch
 
-import com.tokopedia.discovery.common.model.SimilarSearchSelectedProduct
-import com.tokopedia.similarsearch.testinstance.getSimilarSearchSelectedProductNotWishlisted
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -29,9 +27,7 @@ internal fun FeatureBody.createTestInstance() {
     }
 }
 
-internal fun TestBody.createSimilarSearchViewModel(
-        similarSearchSelectedProduct: SimilarSearchSelectedProduct = getSimilarSearchSelectedProductNotWishlisted()
-): SimilarSearchViewModel {
+internal fun TestBody.createSimilarSearchViewModel(): SimilarSearchViewModel {
     val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
     val addWishListUseCase by memoized<AddWishListUseCase>()
     val removeWishListUseCase by memoized<RemoveWishListUseCase>()
@@ -39,7 +35,6 @@ internal fun TestBody.createSimilarSearchViewModel(
 
     return SimilarSearchViewModel(
             TestDispatcherProvider(),
-            similarSearchSelectedProduct,
             getSimilarProductsUseCase,
             addWishListUseCase,
             removeWishListUseCase,
