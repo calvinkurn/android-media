@@ -613,13 +613,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun hidePriceDetail() {
         thin_seperator_1.hide()
         rv_flight_price_detail.hide()
-        iv_see_detail_price_arrow.setImageResource(R.drawable.ic_system_action_arrow_down_normal_24)
+        iv_see_detail_price_arrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
     }
 
     private fun showPriceDetail() {
         thin_seperator_1.show()
         rv_flight_price_detail.show()
-        iv_see_detail_price_arrow.setImageResource(R.drawable.ic_system_action_arrow_up_normal_24)
+        iv_see_detail_price_arrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
