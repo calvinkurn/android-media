@@ -37,7 +37,7 @@ import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
@@ -48,11 +48,11 @@ import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -86,11 +86,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     //Data
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private lateinit var remoteConfig: RemoteConfig
-    private var useVariant = true
     private var productId: String? = null
-    private var warehouseId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
+    private var shouldShowCodP1 = false
+    private var shouldShowCodP2Shop = false
+    private var shouldShowCodP3 = false
 
 
     //View
@@ -99,28 +100,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private lateinit var varToolbar: Toolbar
     private lateinit var actionButtonView: PartialButtonActionView
     private lateinit var stickyLoginView: StickyLoginView
-
-    private var hashMapLayout: Map<String, Any>? = null
-
-    private val socialProofMap by lazy {
-        hashMapLayout?.get("social_proof") as ProductSocialProofDataModel
-    }
-
-    private val snapshotMap by lazy {
-        hashMapLayout?.get("product_snapshot") as ProductSnapshotDataModel
-    }
-
-    private val shopInfoMap by lazy {
-        hashMapLayout?.get("shop_info") as ProductShopInfoDataModel
-    }
-
-    private val productInfoMap by lazy {
-        hashMapLayout?.get("product_info") as ProductInfoDataModel
-    }
-
-    private val productDiscussionMap by lazy {
-        hashMapLayout?.get("discussion") as ProductDiscussionDataModel
-    }
+    private lateinit var pdpHashMapUtil: DynamicProductDetailHashMap
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
@@ -136,6 +116,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setHasOptionsMenu(true)
 
         activity?.run {
@@ -182,7 +163,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         viewModel.productLayout.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    hashMapLayout = DynamicProductDetailMapper.hashMapLayout(it.data)
+                    pdpHashMapUtil = DynamicProductDetailHashMap(DynamicProductDetailMapper.hashMapLayout(it.data))
                     renderList(it.data)
                 }
                 is Fail -> {
@@ -193,10 +174,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         viewModel.productInfoP1.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    snapshotMap.productInfoP1 = it.data.productInfo
-                    snapshotMap.media = it.data.productInfo.media
-                    socialProofMap.productInfo = it.data.productInfo
-                    productInfoMap.productInfo = it.data.productInfo
+                    shouldShowCodP1 = it.data.productInfo.shouldShowCod
+                    pdpHashMapUtil.updateDataP1(it.data)
                     adapter.notifyDataSetChanged()
                 }
                 is Fail -> {
@@ -210,10 +189,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         })
 
         viewModel.p2ShopDataResp.observe(this, Observer {
-            shopInfoMap.shopInfo = it.shopInfo
-            snapshotMap.shopInfo = it.shopInfo ?: ShopInfo()
-            snapshotMap.nearestWarehouse = it.nearestWarehouse
-            productInfoMap.shopInfo = it.shopInfo
+            shouldShowCodP2Shop = it.shopCod
+            pdpHashMapUtil.updateDataP2Shop(it)
             adapter.notifyDataSetChanged()
         })
 
@@ -221,15 +198,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             if (it.latestTalk.id.isEmpty()) {
                 removeDiscussionSection()
             }
-            productInfoMap.productSpecification = it.productSpecificationResponse
-            productDiscussionMap.latestTalk = it.latestTalk
-            productDiscussionMap.shopId = productInfoMap.productInfo?.basic?.shopID.toString()
-            productDiscussionMap.talkCount = productInfoMap.productInfo?.stats?.countTalk ?: 0
+            pdpHashMapUtil.updateDataP2General(it)
             adapter.notifyDataSetChanged()
         })
 
         viewModel.productInfoP3resp.observe(this, Observer {
-//            snapshotMap.shouldShowCod
+            shouldShowCodP3 = it.userCod
+            pdpHashMapUtil.snapShotMap.shouldShowCod =
+                    shouldShowCodP1 && shouldShowCodP2Shop && shouldShowCodP3
+            adapter.notifyDataSetChanged()
         })
     }
 
@@ -279,18 +256,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                    ApplinkConst.PRODUCT_TALK, productInfoMap.productInfo?.basic?.id.toString())
+                    ApplinkConst.PRODUCT_TALK, pdpHashMapUtil.productInfoMap.productInfo?.basic?.id.toString())
             startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
         }
-        productInfoMap.productInfo?.run {
+        pdpHashMapUtil.productInfoMap.productInfo?.run {
             productDetailTracking.sendMoEngageClickDiskusi(this,
-                    (productInfoMap.shopInfo?.goldOS?.isOfficial ?: 0) > 0,
-                    productInfoMap.shopInfo?.shopCore?.name ?: "")
+                    (pdpHashMapUtil.productInfoMap.shopInfo?.goldOS?.isOfficial ?: 0) > 0,
+                    pdpHashMapUtil.productInfoMap.shopInfo?.shopCore?.name ?: "")
         }
     }
 
     override fun removeDiscussionSection() {
-        adapter.clearElement(productDiscussionMap)
+        adapter.clearElement(pdpHashMapUtil.productDiscussionMap)
     }
 
     override fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>) {

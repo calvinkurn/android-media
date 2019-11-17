@@ -17,6 +17,27 @@
         app:scrimAnimationDuration="50"
         tools:visibility="visible" />
 
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/label_cod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_cod"
+        android:background="@drawable/bg_cod_label"
+        app:fontSize="small"
+        android:textColor="@color/white"
+        app:weight="medium"
+        app:drawableLeftCompat="@drawable/ic_pdp_cod"
+        android:visibility="visible"
+        android:drawablePadding="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_4"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        app:layout_constraintBottom_toTopOf="@+id/base_header"
+        app:layout_constraintTop_toBottomOf="@+id/view_picture_search_bar"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_detail"
