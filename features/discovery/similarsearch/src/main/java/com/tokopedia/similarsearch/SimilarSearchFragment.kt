@@ -232,7 +232,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_GO_TO_PRODUCT_DETAIL && data?.extras != null) {
-            val productId = data.extras?.getString(WISHLIST_PRODUCT_ID, "") ?: ""
+            val productId = data.extras?.getString(WISHLIST_PRODUCT_ID, "")
             val isWishlisted = data.extras?.getBoolean(WISHLIST_STATUS_IS_WISHLIST, false) ?: false
 
             similarSearchViewModel?.onViewUpdateProductWishlistStatus(productId, isWishlisted)

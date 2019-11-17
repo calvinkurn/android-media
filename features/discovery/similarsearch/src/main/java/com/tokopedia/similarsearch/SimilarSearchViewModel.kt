@@ -174,7 +174,7 @@ internal class SimilarSearchViewModel(
         override fun onSuccessRemoveWishlist(productId: String?) {
             removeWishlistEventLiveData.postValue(Event(true))
 
-            postUpdateWishlistSelectedProductEvent(false)
+            postUpdateWishlistSelectedProductEvent(productId,false)
         }
 
         override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
@@ -188,12 +188,12 @@ internal class SimilarSearchViewModel(
         override fun onSuccessAddWishlist(productId: String?) {
             addWishlistEventLiveData.postValue(Event(true))
 
-            postUpdateWishlistSelectedProductEvent(true)
+            postUpdateWishlistSelectedProductEvent(productId,true)
         }
     }
 
-    fun postUpdateWishlistSelectedProductEvent(isWishlisted: Boolean) {
-        if (similarSearchSelectedProduct.isWishlisted != isWishlisted) {
+    fun postUpdateWishlistSelectedProductEvent(productId: String?, isWishlisted: Boolean) {
+        if (similarSearchSelectedProduct.id == productId && similarSearchSelectedProduct.isWishlisted != isWishlisted) {
             similarSearchSelectedProduct.isWishlisted = isWishlisted
             updateWishlistSelectedProductEventLiveData.postValue(Event(isWishlisted))
         }
@@ -279,10 +279,8 @@ internal class SimilarSearchViewModel(
         return removeWishlistEventLiveData
     }
 
-    fun onViewUpdateProductWishlistStatus(productId: String, isWishlisted: Boolean) {
-        if (productId.isEmpty()) return
-
-        postUpdateWishlistSelectedProductEvent(isWishlisted)
+    fun onViewUpdateProductWishlistStatus(productId: String?, isWishlisted: Boolean) {
+        postUpdateWishlistSelectedProductEvent(productId, isWishlisted)
 
         postUpdateWishlistInSimilarSearchLiveData(productId, isWishlisted)
     }

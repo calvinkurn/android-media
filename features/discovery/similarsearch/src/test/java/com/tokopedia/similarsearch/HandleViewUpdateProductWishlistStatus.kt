@@ -28,7 +28,12 @@ internal class HandleViewUpdateProductWishlistStatus: Spek({
             }
 
             When("handle view update product wishlist status with empty product id") {
+                similarSearchViewModel.onViewUpdateProductWishlistStatus(null, true)
+                similarSearchViewModel.onViewUpdateProductWishlistStatus(null, false)
+                similarSearchViewModel.onViewUpdateProductWishlistStatus("", true)
                 similarSearchViewModel.onViewUpdateProductWishlistStatus("", false)
+                similarSearchViewModel.onViewUpdateProductWishlistStatus("randomproductid", true)
+                similarSearchViewModel.onViewUpdateProductWishlistStatus("randomproductid", false)
             }
 
             Then("update wishlist similar product event is null") {
