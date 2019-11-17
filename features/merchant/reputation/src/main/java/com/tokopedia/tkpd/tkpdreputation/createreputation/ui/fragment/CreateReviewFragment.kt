@@ -388,7 +388,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                 } else {
                     val intent = Intent()
                     intent.putExtra(ARGS_RATING, reviewClickAt.toFloat())
-                    setResult(InboxReputationDetailFragment.REQUEST_CODE_ON_SUCCESS_REVIEW, intent)
+                    setResult(Activity.RESULT_OK, intent)
                     onBackPressed()
                 }
 

@@ -558,6 +558,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if(callbackManager!= null) {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
+
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
             getActivity().setResult(Activity.RESULT_OK);
@@ -582,14 +583,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_REPORT_REVIEW && resultCode == Activity.RESULT_OK) {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
                     .success_report_review));
-        } else if (requestCode == REQUEST_GIVE_REVIEW && resultCode == REQUEST_CODE_ON_SUCCESS_REVIEW) {
-            refreshPage();
-            getActivity().setResult(Activity.RESULT_OK);
-            showRatingDialog(data.getExtras());
-            NetworkErrorHelper.showSnackbar(getActivity(),
-                    getString(R.string.review_for) + " " + data.getExtras().getString
-                            (InboxReputationFormActivity.ARGS_REVIEWEE_NAME, "")
-                            + " " + getString(R.string.is_send));
         } else
             super.onActivityResult(requestCode, resultCode, data);
     }
