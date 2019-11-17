@@ -522,7 +522,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun addToCart(query: String, getCartQuery: String, dummy: String, idempotencyKey: String) {
 
         val addToCartParam = createAddToCartParam(idempotencyKey)
-        val param = mapOf(PARAM_VERIFY_CART to addToCartParam)
+        val param = mapOf(PARAM_ATC to addToCartParam)
         //if add to cart success -> proceed to getCart with the id.
         launchCatchError(block = {
             val addToCartData = withContext(Dispatchers.Default) {
@@ -603,6 +603,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     companion object {
         val PARAM_CART_ID = "cartID"
         val PARAM_VERIFY_CART = "data"
+        val PARAM_ATC = "param"
     }
 
 }
