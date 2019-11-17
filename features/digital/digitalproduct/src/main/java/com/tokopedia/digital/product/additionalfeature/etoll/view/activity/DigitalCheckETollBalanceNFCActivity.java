@@ -111,28 +111,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         return intent;
     }
 
-//    @SuppressWarnings("unused")
-//    @DeepLink({ApplinkConst.DIGITAL_SMARTCARD})
-    public static TaskStackBuilder intentForTaskStackBuilderMethods(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent homeIntent = ((DigitalRouter) context.getApplicationContext()).getHomeIntent(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-
-        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-                .appLinks(uri.toString())
-                .categoryId(ETOLL_CATEGORY_ID)
-                .operatorId(ETOLL_EMONEY_OPERATOR_ID)
-                .build();
-        Intent intentDigitalProduct = DigitalProductActivity.newInstance(context, passData);
-        taskStackBuilder.addNextIntent(intentDigitalProduct);
-
-        Intent intentEToll = DigitalCheckETollBalanceNFCActivity.newInstance(context, DIGITAL_NFC);
-        taskStackBuilder.addNextIntent(intentEToll);
-
-        return taskStackBuilder;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         initInjector();
