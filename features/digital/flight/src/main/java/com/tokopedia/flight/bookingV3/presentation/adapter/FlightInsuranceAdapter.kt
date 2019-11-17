@@ -77,7 +77,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
         }
 
         private fun setUpTncText(description: String, tncUrl: String, title: String, listener: ActionListener?): SpannableStringBuilder{
-            val color = itemView.resources.getColor(R.color.Green_G500)
+            val color = itemView.resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500)
             var fullText = String.format("%s. ", description)
             if (tncUrl != null && tncUrl.length > 0) {
                 fullText += "Pelajari"
@@ -112,11 +112,11 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
                     if (rv_more_benefits.isVisible) {
                         seperator_3.hide()
                         rv_more_benefits.hide()
-                        iv_insurance_highlight_see_more_arrow.setImageResource(R.drawable.ic_system_action_arrow_down_normal_24)
+                        iv_insurance_highlight_see_more_arrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
                     } else {
                         seperator_3.show()
                         rv_more_benefits.show()
-                        iv_insurance_highlight_see_more_arrow.setImageResource(R.drawable.ic_system_action_arrow_up_normal_24)
+                        iv_insurance_highlight_see_more_arrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
                     }
                 }
             }
