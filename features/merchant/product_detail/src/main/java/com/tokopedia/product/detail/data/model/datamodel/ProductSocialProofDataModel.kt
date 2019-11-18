@@ -8,12 +8,14 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 
 data class ProductSocialProofDataModel(
         val type: String = "",
+        val name: String = "",
         val dataLayout: List<ComponentData> = listOf(),
         //P1
         var productInfo: ProductInfo = ProductInfo(),
         //P2
         var productInfoP2: ProductInfoP2General = ProductInfoP2General()
 ) : DynamicPDPDataModel {
+    override fun name(): String = name
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_pdp_social_proof

@@ -11,13 +11,14 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 data class ProductSnapshotDataModel(
         var dataLayout: List<ComponentData> = listOf(),
         var media: List<Media> = listOf(),
+        val name: String = "",
         var productInfoP1: ProductInfo = ProductInfo(),
         var shopInfo: ShopInfo = ShopInfo(),
         var nearestWarehouse: MultiOriginWarehouse? = null,
         var type: String = "",
         var shouldShowCod: Boolean = false
 ) : DynamicPDPDataModel {
-
+    override fun name(): String = name
     override fun type(): String = type
 
     companion object {

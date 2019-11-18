@@ -13,6 +13,18 @@ class DynamicProductDetailAdapterFactoryImpl(private val onImagePdpClick: OnImag
                                              private val childFragmentManager: FragmentManager,
                                              private val listener: DynamicProductDetailListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
 
+    override fun type(data: ProductGeneralInfoDataModel): Int {
+        return ProductGeneralInfoViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductMostHelpfulReviewDataModel): Int {
+        return ProductMostHelpfulReviewViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductImageReviewDataModel): Int {
+        return ProductImageReviewViewHolder.LAYOUT
+    }
+
     override fun type(data: ProductDiscussionDataModel): Int {
         return ProductDiscussionViewHolder.LAYOUT
     }
@@ -29,15 +41,19 @@ class DynamicProductDetailAdapterFactoryImpl(private val onImagePdpClick: OnImag
         return ProductShopInfoDataModel.LAYOUT
     }
 
-    override fun type(data: ProductSnapshotDataModel): Int = ProductSnapshotDataModel.LAYOUT
+    override fun type(data: ProductSnapshotDataModel): Int {
+        return ProductSnapshotViewHolder.LAYOUT
+    }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ProductSnapshotDataModel.LAYOUT -> ProductSnapshotViewHolder(view, onImagePdpClick, childFragmentManager)
+            ProductImageReviewViewHolder.LAYOUT -> ProductImageReviewViewHolder(view, listener)
+            ProductSnapshotViewHolder.LAYOUT -> ProductSnapshotViewHolder(view, onImagePdpClick, childFragmentManager)
             ProductShopInfoDataModel.LAYOUT -> ProductShopInfoViewHolder(view, listener)
             ProductSocialProofDataModel.LAYOUT -> ProductSocialProofViewHolder(view)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
+            ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

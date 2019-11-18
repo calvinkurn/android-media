@@ -1,36 +1,36 @@
-package com.tokopedia.product.detail.view.fragment.partialview
+package com.tokopedia.product.detail.view.viewholder
 
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
+import com.tokopedia.product.detail.data.model.datamodel.ProductImageReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
-import com.tokopedia.product.detail.data.util.OnImageReviewClick
-import com.tokopedia.product.detail.data.util.OnSeeAllReviewClick
 import com.tokopedia.product.detail.view.adapter.ImageReviewAdapter
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.partial_product_image_review.view.*
 
+class ProductImageReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductImageReviewDataModel>(view) {
 
-class PartialImageReviewView private constructor(private val view: View,
-                                                 private val onSeeAllReviewClick: OnSeeAllReviewClick? = null,
-                                                 private val onImageReviewClick: OnImageReviewClick? = null,
-                                                 private val onReviewClicked: (() -> Unit)? = null) {
     companion object {
-        fun build(_view: View, _onSeeAllReviewClick: (() -> Unit)?, _onImageReviewClick: ((List<ImageReviewItem>, Int) -> Unit)?, _onReviewClicked: (() -> Unit)?) =
-                PartialImageReviewView(_view, _onSeeAllReviewClick, _onImageReviewClick, _onReviewClicked)
+        val LAYOUT = R.layout.partial_product_image_review
     }
 
-    init {
+    override fun bind(element: ProductImageReviewDataModel) {
         with(view) {
             image_review_list.layoutManager = GridLayoutManager(context, 4)
         }
+
+        element.productInfoP2General?.let {
+            renderData(it)
+        }
     }
+
 
     fun renderData(productInfoP2: ProductInfoP2General) {
         val imageReviews = productInfoP2.imageReviews
@@ -43,10 +43,10 @@ class PartialImageReviewView private constructor(private val view: View,
             false
         }
 
-        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, onImageReviewClick, onSeeAllReviewClick)
+        view.image_review_list.adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllReviewClick)
         with(view) {
             txt_see_all_partial.setOnClickListener {
-                onReviewClicked?.invoke()
+                listener.onReviewClick()
             }
             review_count.text = context.getString(R.string.review_counter, rating.totalRating)
             review_rating.text = context.getString(R.string.counter_pattern_string, rating.ratingScore, 5)
@@ -67,20 +67,17 @@ class PartialImageReviewView private constructor(private val view: View,
 
         view.background.getPadding(drawablePadding)
 
-        val top: Int
+        val top = view.paddingTop + drawablePadding.top
         val left = view.paddingLeft + drawablePadding.left
         val right = view.paddingRight + drawablePadding.right
-        var bottom = view.paddingBottom
+        val bottom = view.paddingBottom + drawablePadding.bottom
 
-        if (reviews.isEmpty()) {
-            top = view.paddingTop
-            bottom = 24.dpToPx(view.resources.displayMetrics)
-            view.background = MethodChecker.getDrawable(view.context, R.drawable.bg_bottom_shadow_top_line)
-        } else {
-            top = view.paddingTop + drawablePadding.top
-            view.background = MethodChecker.getDrawable(view.context, R.drawable.bg_top_line)
-        }
+        view.background = if (reviews.isEmpty())
+            MethodChecker.getDrawable(view.context, R.drawable.bg_bottom_shadow_top_line)
+        else
+            MethodChecker.getDrawable(view.context, R.drawable.bg_top_line)
 
         view.setPadding(left, top, right, bottom)
     }
+
 }

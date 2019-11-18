@@ -10,10 +10,13 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductDiscussionDataModel(
         val dataLayout: List<ComponentData> = listOf(),
         val type: String = "",
+        val name:String = "",
         var latestTalk: Talk? = null,
         var talkCount: Int = 0,
         var shopId: String = ""
 ) : DynamicPDPDataModel {
+    override fun name(): String = name
+
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

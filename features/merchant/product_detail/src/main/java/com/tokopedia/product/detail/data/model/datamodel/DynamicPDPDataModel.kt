@@ -5,4 +5,5 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 
 interface DynamicPDPDataModel : Visitable<DynamicProductDetailAdapterFactory> {
     fun type(): String
+    fun name(): String
 }

@@ -51,7 +51,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     var multiOrigin: WarehouseInfo = WarehouseInfo()
 
 
-    private var productInfo = ProductInfo()
+    private var productInfoTemp = ProductInfo()
 
     fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
 
@@ -87,6 +87,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
             val productInfo = getPdpData(productParams.productId?.toInt() ?: 0)
             productLayout.value = Success(initialLayoutData)
             productInfoP1.value = Success(productInfo)
+            productInfoTemp = productInfo.productInfo
 
 
             val p2ShopDeferred = getProductInfoP2ShopAsync(productInfo.productInfo.basic.shopID,
@@ -184,7 +185,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     }
 
     fun getImageUriPaths(): ArrayList<String> {
-        return ArrayList(productInfo.run {
+        return ArrayList(productInfoTemp.run {
             media.map {
                 if (it.type == "image") {
                     it.urlOriginal

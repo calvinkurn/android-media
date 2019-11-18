@@ -7,25 +7,32 @@ object DynamicProductDetailMapper {
 
     fun mapIntoVisitable(data: List<Component>): List<DynamicPDPDataModel> {
         val listOfComponent: MutableList<DynamicPDPDataModel> = mutableListOf()
-        data.forEachIndexed { index, component ->
+        data.forEachIndexed { _, component ->
             when (component.type) {
                 "product_snapshot" -> {
-                    listOfComponent.add(ProductSnapshotDataModel(dataLayout = component.componentData, type = component.type))
+                    listOfComponent.add(ProductSnapshotDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
                 }
                 "discussion" -> {
-                    listOfComponent.add(ProductDiscussionDataModel(dataLayout = component.componentData, type = component.type))
+                    listOfComponent.add(ProductDiscussionDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
                 }
                 "product_info" -> {
-                    listOfComponent.add(ProductInfoDataModel(dataLayout = component.componentData, type = component.type))
+                    listOfComponent.add(ProductInfoDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
                 }
                 "shop_info" -> {
-                    listOfComponent.add(ProductShopInfoDataModel(dataLayout = component.componentData, type = component.type))
+                    listOfComponent.add(ProductShopInfoDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
                 }
                 "social_proof" -> {
-                    listOfComponent.add(ProductSocialProofDataModel(dataLayout = component.componentData, type = component.type))
+                    listOfComponent.add(ProductSocialProofDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
                 }
-
-
+                "image_review" -> {
+                    listOfComponent.add(ProductImageReviewDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                }
+                "most_helpful_review" -> {
+                    listOfComponent.add(ProductMostHelpfulReviewDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                }
+                "info" -> {
+                    listOfComponent.add(ProductGeneralInfoDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
@@ -33,7 +40,7 @@ object DynamicProductDetailMapper {
 
     fun hashMapLayout(data: List<DynamicPDPDataModel>): Map<String, DynamicPDPDataModel> {
         return data.associateBy({
-            it.type()
+            if (it.type() != it.name()) it.type() else it.name()
         }, {
             it
         })

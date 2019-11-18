@@ -31,6 +31,8 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.gallery.ImageReviewGalleryActivity
+import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Category
@@ -167,6 +169,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     renderList(it.data)
                 }
                 is Fail -> {
+                    showToasterError(it.throwable.message ?: "")
                 }
             }
         })
@@ -179,6 +182,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                     adapter.notifyDataSetChanged()
                 }
                 is Fail -> {
+                    showToasterError(it.throwable.message ?: "")
                 }
             }
         })
@@ -198,6 +202,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
             if (it.latestTalk.id.isEmpty()) {
                 removeDiscussionSection()
             }
+
+            if (it.imageReviews.isEmpty()) {
+                removeImageReviewSection()
+            }
+
+            if (it.helpfulReviews.isEmpty()) {
+                removeMostHelpfulReviewSection()
+            }
+
             pdpHashMapUtil.updateDataP2General(it)
             adapter.notifyDataSetChanged()
         })
@@ -266,8 +279,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         }
     }
 
-    override fun removeDiscussionSection() {
+    private fun removeDiscussionSection() {
         adapter.clearElement(pdpHashMapUtil.productDiscussionMap)
+    }
+
+    private fun removeImageReviewSection() {
+        adapter.clearElement(pdpHashMapUtil.productImageReviewMap)
+    }
+
+    private fun removeMostHelpfulReviewSection() {
+        adapter.clearElement(pdpHashMapUtil.productMostHelpfulMap)
     }
 
     override fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>) {
@@ -279,10 +300,58 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         }
     }
 
+    /**
+     * ProductImageReviewViewHolder Listener
+     */
+    override fun onSeeAllReviewClick() {
+        context?.let {
+            val productId = pdpHashMapUtil.snapShotMap.productInfoP1.basic.id
+            productDetailTracking.eventClickReviewOnSeeAllImage(productId)
+            RouteManager.route(it, ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, productId.toString())
+        }
+    }
+
+    override fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int) {
+        context?.let {
+            val productId = pdpHashMapUtil.snapShotMap.productInfoP1.basic.id
+            productDetailTracking.eventClickReviewOnBuyersImage(productId, listOfImage[position].reviewId)
+            val listOfImageReview: List<String> = listOfImage.map {
+                it.imageUrlLarge ?: ""
+            }
+
+            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImageReview), position)
+        }
+    }
+
+    override fun onReviewClick() {
+        pdpHashMapUtil.snapShotMap.productInfoP1.run {
+            productDetailTracking.eventReviewClicked()
+            productDetailTracking.sendMoEngageClickReview(this, pdpHashMapUtil.snapShotMap.shopInfo.goldOS.isOfficial == 1, pdpHashMapUtil.snapShotMap.shopInfo.shopCore.name)
+            context?.let {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, pdpHashMapUtil.snapShotMap.productInfoP1.basic.id.toString())
+                intent?.run {
+                    intent.putExtra("x_prd_nm", pdpHashMapUtil.snapShotMap.productInfoP1.basic.name)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
+    override fun onImageHelpfulReviewClick(listOfImages: List<String>, position: Int, reviewId: String?) {
+        productDetailTracking.eventClickReviewOnMostHelpfulReview(pdpHashMapUtil.snapShotMap.productInfoP1.basic.id, reviewId)
+        context?.let { ImageReviewGalleryActivity.moveTo(it, ArrayList(listOfImages), position) }
+    }
+
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
 //        userCod = productInfoP3.userCod
 //        if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
 //        headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
+    }
+
+    private fun showToasterError(message: String) {
+        context?.let {
+            Toast.makeText(it, message, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun initView() {

@@ -12,10 +12,12 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 data class ProductInfoDataModel(
         val dataLayout:List<ComponentData> = listOf(),
         val type: String = "",
+        val name:String = "",
         var productInfo: ProductInfo? = null,
         var shopInfo: ShopInfo? = null,
         var productSpecification: ProductSpecificationResponse? = null
 ) : DynamicPDPDataModel {
+    override fun name(): String = name
 
     override fun type(): String = type
 

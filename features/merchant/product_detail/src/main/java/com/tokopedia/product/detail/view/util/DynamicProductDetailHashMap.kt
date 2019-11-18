@@ -14,6 +14,8 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
         private const val SHOP_INFO = "shop_info"
         private const val PRODUCT_INFO = "product_info"
         private const val DISCUSSION = "discussion"
+        private const val IMAGE_REVIEW = "image_review"
+        private const val MOST_HELPFUL_REVIEW = "most_helpful_review"
     }
 
     val socialProofMap: ProductSocialProofDataModel
@@ -30,6 +32,12 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
 
     val productDiscussionMap: ProductDiscussionDataModel
         get() = mapOfData[DISCUSSION] as ProductDiscussionDataModel
+
+    val productImageReviewMap: ProductImageReviewDataModel
+        get() = mapOfData[IMAGE_REVIEW] as ProductImageReviewDataModel
+
+    val productMostHelpfulMap: ProductMostHelpfulReviewDataModel
+        get() = mapOfData[MOST_HELPFUL_REVIEW] as ProductMostHelpfulReviewDataModel
 
     fun updateDataP1(data: ProductInfoP1?) {
         data?.let {
@@ -49,12 +57,14 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
         }
     }
 
-    fun updateDataP2General(data: ProductInfoP2General?){
+    fun updateDataP2General(data: ProductInfoP2General?) {
         data?.let {
             productInfoMap.productSpecification = it.productSpecificationResponse
             productDiscussionMap.latestTalk = it.latestTalk
             productDiscussionMap.shopId = productInfoMap.productInfo?.basic?.shopID.toString()
             productDiscussionMap.talkCount = productInfoMap.productInfo?.stats?.countTalk ?: 0
+            productImageReviewMap.productInfoP2General = it
+            productMostHelpfulMap.listOfReviews = it.helpfulReviews
         }
     }
 
