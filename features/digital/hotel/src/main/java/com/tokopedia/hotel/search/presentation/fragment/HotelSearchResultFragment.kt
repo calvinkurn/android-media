@@ -57,6 +57,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     var searchDestinationName = ""
+    var searchDestinationType = ""
 
     companion object {
         private const val REQUEST_FILTER = 0x10
@@ -110,6 +111,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                     it.getInt(ARG_TOTAL_ROOM, 1),
                     it.getInt(ARG_TOTAL_ADULT, 0))
             searchDestinationName = it.getString(ARG_DESTINATION_NAME, "")
+            searchDestinationType = it.getString(ARG_TYPE, "")
         }
     }
 
@@ -172,6 +174,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         val searchParam = searchResultviewModel.searchParam
         trackingHotelUtil.hotelViewHotelListImpression(
                 searchDestinationName,
+                searchDestinationType,
                 searchParam,
                 data.properties)
 
@@ -229,7 +232,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun onItemClicked(property: Property, position: Int) {
         with(searchResultviewModel.searchParam) {
-            trackingHotelUtil.chooseHotel(property, checkIn, position)
+            trackingHotelUtil.chooseHotel(
+                    searchDestinationName,
+                    searchDestinationType,
+                    this,
+                    property,
+                    position)
 
             context?.run {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this,
