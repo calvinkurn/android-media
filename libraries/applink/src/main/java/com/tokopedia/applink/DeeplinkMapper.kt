@@ -67,9 +67,9 @@ object DeeplinkMapper {
                                 tempDL = deeplink.substring(0, deeplink.indexOf('?'))
                             }
                             var navFromTokopedia = getRegisteredNavigationFromTokopedia(tempDL)
-                            if(navFromTokopedia.isNotEmpty() && navFromTokopedia.contains('?')) {
-                                navFromTokopedia = navFromTokopedia.substring(0, navFromTokopedia.indexOf('?'))
-                                navFromTokopedia += "?$query"
+                            if(navFromTokopedia.isNotEmpty()) {
+                                val questionMarkIndex = navFromTokopedia.indexOf("?")
+                                navFromTokopedia += if (questionMarkIndex == -1) { "?$query" } else { "&$query" }
                             }
                             navFromTokopedia
                         } else getRegisteredNavigationFromTokopedia(deeplink)
