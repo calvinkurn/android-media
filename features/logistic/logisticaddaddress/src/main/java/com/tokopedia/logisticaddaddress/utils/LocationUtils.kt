@@ -42,10 +42,6 @@ internal fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorRes
     }
 }
 
-internal fun getDescription(): String =
-        ""
-
-
 internal fun rxPinPoint(maps: GoogleMap): Observable<Boolean> =
         Observable.create({ emitter: Emitter<Boolean> ->
             maps.setOnCameraMoveListener {
