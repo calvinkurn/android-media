@@ -140,11 +140,13 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         if (offsetAlpha >= 255) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
+            digital_homepage_order_list.setColorFilter(R.color.Neutral_N200)
             context?.run { searchBarContainer.background =
                         MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background_gray) }
         } else {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
             digital_homepage_toolbar.toInitialMode()
+            digital_homepage_order_list.clearColorFilter()
             context?.run { searchBarContainer.background =
                         MethodChecker.getDrawable(this, R.drawable.bg_digital_homepage_search_view_background) }
         }
