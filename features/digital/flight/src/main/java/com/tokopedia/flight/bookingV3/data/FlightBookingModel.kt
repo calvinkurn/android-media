@@ -10,6 +10,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewMo
 data class FlightBookingModel (
         var departureId: String = "",
         var returnId: String = "",
+        var departureDate: String = "",
         var departureTerm: String = "",
         var returnTerm: String = "",
         var cartId: String = "",

@@ -68,6 +68,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         flightPriceData.value = listOf()
         flightOtherPriceData.value = listOf()
         flightAmenityPriceData.value = listOf()
+
     }
 
     fun getSearchParam(): FlightSearchPassDataViewModel = flightBookingParam.searchParam
@@ -82,6 +83,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<FlightCart.Response>().flightCart
 
             if (data.cartData.id.isNotBlank()) {
+                flightBookingParam.departureDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.cartData.flight.journeys[0].departureTime))
                 flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                 flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
                 flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
@@ -543,9 +545,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun getDepartureId(): String = flightBookingParam.departureId
     fun getReturnId(): String = flightBookingParam.returnId
-    fun getDepartureDate(): String {
-        return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.journeySummaries[0].date else ""
-    }
+    fun getDepartureDate(): String = flightBookingParam.departureDate
 
     fun checkOutCart(query: String, price: Int, dummy: String) {
 
