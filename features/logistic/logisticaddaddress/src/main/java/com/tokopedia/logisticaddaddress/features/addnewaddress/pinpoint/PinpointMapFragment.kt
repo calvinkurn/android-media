@@ -154,7 +154,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
-        presenter.autofill(currentLat ?: 0.0, currentLong ?: 0.0)
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -245,7 +244,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 }
             }
         }
-
 
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBehavior?.isHideable = false
