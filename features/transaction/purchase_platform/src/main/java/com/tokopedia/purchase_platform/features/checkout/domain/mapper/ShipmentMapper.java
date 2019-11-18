@@ -109,7 +109,7 @@ public class ShipmentMapper implements IShipmentMapper {
         if (addresses != null) {
             if (addresses.getData() != null) {
                 DataAddressData dataAddressData = new DataAddressData();
-                if (addresses.getData().getDefaultAddress() != null) {
+                if (addresses.getData().getDefaultAddress() != null && addresses.getActive().equals(AddressesData.TRADE_IN_ADDRESS)) {
                     com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
                             addresses.getData().getDefaultAddress();
                     UserAddress defaultAddressData = new UserAddress();
