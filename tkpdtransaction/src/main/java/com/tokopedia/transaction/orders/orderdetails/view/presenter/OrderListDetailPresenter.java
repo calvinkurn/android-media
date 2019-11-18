@@ -650,6 +650,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
         }
         return null;
+    }
   
     public void showRetryButtonToaster(String message) {
         if (getView() == null)
