@@ -839,21 +839,35 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAddWishlistOnPrimaryProduct() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_RECOMMENDATION,
-                EventCategory.RECOMMENDATION_PAGE,
-                EventAction.CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE_CART
+    public void eventClickAddWishlistOnProductRecommendation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION
         );
     }
 
-    public void eventClickRemoveWishlistOnPrimaryProduct() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_RECOMMENDATION,
-                EventCategory.RECOMMENDATION_PAGE,
-                EventAction.CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE_CART
+    public void eventClickAddWishlistOnProductRecommendationEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
+        );
+    }
+
+    public void eventClickRemoveWishlistOnProductRecommendation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION
+        );
+    }
+
+    public void eventClickRemoveWishlistOnProductRecommendationEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
         );
     }
 

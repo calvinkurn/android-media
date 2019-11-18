@@ -301,8 +301,10 @@ public interface ConstantTransactionAnalytics {
         //WIDGET_RECOMMENDATION
         String IMPRESSION_ON_PRODUCT_RECOMMENDATION = "impression on product recommendation";
         String CLICK_ADD_TO_CART = "click add to cart";
-        String CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT = "click add wishlist on primary product";
-        String CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT = "click remove wishlist on primary product";
+        String CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION = "click add wishlist on product recommendation";
+        String CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART = "click add wishlist on product recommendation - empty_cart";
+        String CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "click remove wishlist on product recommendation";
+        String CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART = "click remove wishlist on product recommendation - empty_cart";
 
         //Retry Pickup
         String VIEW_TUNGGU_CARI_DRIVER = "view tunggu cari driver";

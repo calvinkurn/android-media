@@ -124,7 +124,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -751,7 +750,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     cartAdapter.notifyWishlist(productId, true);
                     cartAdapter.notifyRecentView(productId, true);
                     cartAdapter.notifyRecommendation(productId, true);
-                    cartPageAnalytics.eventClickAddWishlistOnPrimaryProduct();
+                    if (FLAG_IS_CART_EMPTY) {
+                        cartPageAnalytics.eventClickAddWishlistOnProductRecommendationEmptyCart();
+                    } else {
+                        cartPageAnalytics.eventClickAddWishlistOnProductRecommendation();
+                    }
                 }
 
                 @Override
@@ -770,7 +773,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     cartAdapter.notifyWishlist(productId, false);
                     cartAdapter.notifyRecentView(productId, false);
                     cartAdapter.notifyRecommendation(productId, false);
-                    cartPageAnalytics.eventClickRemoveWishlistOnPrimaryProduct();
+                    if (FLAG_IS_CART_EMPTY) {
+                        cartPageAnalytics.eventClickRemoveWishlistOnProductRecommendationEmptyCart();
+                    } else {
+                        cartPageAnalytics.eventClickRemoveWishlistOnProductRecommendation();
+                    }
                 }
             };
         }
@@ -844,11 +851,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onRecommendationProductClicked(@NotNull String productId) {
-        int index = 0, position = 0;
+        int index = 1;
         RecommendationItem recommendationItemClick = null;
         for (CartRecommendationItemHolderData recommendation : recommendationList) {
             if (String.valueOf(recommendation.getRecommendationItem().getProductId()).equalsIgnoreCase(productId)) {
-                position = index;
                 recommendationItemClick = recommendation.getRecommendationItem();
                 break;
             }
@@ -856,8 +862,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         if (recommendationItemClick != null) {
-            sendAnalyticsOnClickProductRecommendation(String.valueOf(position),
-                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
+            sendAnalyticsOnClickProductRecommendation(String.valueOf(index),
+                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, index));
         }
 
         onProductClicked(productId);
