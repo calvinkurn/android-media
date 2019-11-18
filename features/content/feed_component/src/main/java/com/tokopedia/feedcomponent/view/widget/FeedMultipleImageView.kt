@@ -31,7 +31,10 @@ class FeedMultipleImageView @JvmOverloads constructor(
         ImageAdapter(mutableListOf())
     }
 
+    private val itemDecoration: RecyclerView.ItemDecoration
+
     init {
+        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4))
         init()
     }
 
@@ -50,9 +53,12 @@ class FeedMultipleImageView @JvmOverloads constructor(
                 }
             }
         }
-        rv_media.layoutManager = gridLayoutManager
-        rv_media.adapter = adapter
-        rv_media.isNestedScrollingEnabled = false
+        rv_media.apply {
+            layoutManager = gridLayoutManager
+            adapter = this@FeedMultipleImageView.adapter
+            isNestedScrollingEnabled = false
+            setItemDecoration(itemDecoration)
+        }
     }
 
     fun bind(itemList: List<MediaItem>) {
@@ -60,7 +66,6 @@ class FeedMultipleImageView @JvmOverloads constructor(
     }
 
     fun bind(itemList: List<MediaItem>, feedType: String) {
-        rv_media.setItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), itemList.size))
         adapter.updateItem(itemList, feedType)
     }
 
