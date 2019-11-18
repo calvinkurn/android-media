@@ -13,8 +13,8 @@
 
     <FrameLayout
         android:id="@+id/thumbnailContainer"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
+        android:layout_width="@dimen/dp_52"
+        android:layout_height="@dimen/dp_52"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -28,10 +28,10 @@
 
         <ImageView
             android:id="@+id/ivPin"
-            android:visibility="gone"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:layout_gravity="end|bottom"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_pinned_blue" />
 
     </FrameLayout>
@@ -48,6 +48,7 @@
         android:id="@+id/user_name"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
+        android:includeFontPadding="false"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toTopOf="@+id/message"
         app:layout_constraintHorizontal_bias="0"
