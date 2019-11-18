@@ -1,9 +1,12 @@
 package com.tokopedia.digital.home.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethod
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -57,6 +60,13 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
         super.onViewCreated(view, savedInstanceState)
         digital_homepage_search_view_search_bar.setResetListener(this)
         digital_homepage_search_view_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+
+        // Show keyboard automatically
+        digital_homepage_search_view_search_bar.searchTextView.requestFocus()
+        context?.run {
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.showSoftInput(digital_homepage_search_view_search_bar.searchTextView, InputMethod.SHOW_FORCED)
+        }
 
         val recyclerView = getRecyclerView(view) as VerticalRecyclerView
         recyclerView.clearItemDecoration()
@@ -130,10 +140,7 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
     }
 
     private fun trackSearchResultCategories(list: List<DigitalHomePageSearchCategoryModel>) {
-        val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
-        if (visibleIndexes.first >= 0 && visibleIndexes.second >= 0) {
-            trackingUtil.eventSearchResultPageImpression(list.subList(visibleIndexes.first, visibleIndexes.second + 1))
-        }
+        trackingUtil.eventSearchResultPageImpression(list)
     }
 
     companion object {
