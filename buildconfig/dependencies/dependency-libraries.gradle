@@ -2,7 +2,7 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.5",
+            authentication          : "com.tokopedia.authentication:authentication:1.0.6",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
             graphql                 : "com.tokopedia.graphql:graphql:1.0.18",
