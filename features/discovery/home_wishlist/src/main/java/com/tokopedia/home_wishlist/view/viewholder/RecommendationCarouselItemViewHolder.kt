@@ -64,7 +64,7 @@ class RecommendationCarouselItemViewHolder(
             })
 
             setOnClickListener {
-                (listener as WishlistListener).onProductClick(element, adapterPosition)
+                (listener as WishlistListener).onProductClick(element, element.parentPosition, adapterPosition)
                 if (element.recommendationItem.isTopAds) {
                     ImpresionTask().execute(element.recommendationItem.clickUrl)
                 }

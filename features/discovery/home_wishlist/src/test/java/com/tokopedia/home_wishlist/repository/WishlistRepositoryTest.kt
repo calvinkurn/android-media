@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
-import com.tokopedia.recommendation_widget_common.domain.RecommendationDataSource
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,9 +25,6 @@ class RepoRepositoryTest {
     @MockK
     private lateinit var graphqlRepository: GraphqlRepository
 
-    @MockK
-    private lateinit var recommendationDataSource: RecommendationDataSource
-
     @Rule
     @JvmField
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -36,7 +32,7 @@ class RepoRepositoryTest {
     @Before
     fun init() {
         MockKAnnotations.init(this)
-        repository = WishlistRepository(graphqlRepository, recommendationDataSource, any())
+        repository = WishlistRepository(graphqlRepository, any())
     }
 
     @Test

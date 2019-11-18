@@ -3,9 +3,14 @@ package com.tokopedia.home_wishlist.viewModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.home_wishlist.TestDispatcherProvider
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
+import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
+import com.tokopedia.home_wishlist.domain.GetWishlistParameter
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.user.session.UserSessionInterface
@@ -19,7 +24,9 @@ import org.spekframework.spek2.style.gherkin.FeatureBody
 
 fun TestBody.createWishlistViewModel(): WishlistViewModel {
     val userSessionInterface by memoized<UserSessionInterface>()
-    val wishlistRepository by memoized<WishlistRepository>()
+    val getWishlistDataUseCase by memoized<GetWishlistDataUseCase>()
+    val getSingleRecommendationUseCase by memoized<GetSingleRecommendationUseCase>()
+    val getRecommendationUseCase by memoized<GetRecommendationUseCase>()
     val removeWishlistUseCase by memoized<RemoveWishListUseCase>()
     val addToCartUseCase by memoized<AddToCartUseCase>()
     val bulkRemoveWishlistUseCase by memoized<BulkRemoveWishlistUseCase>()
@@ -27,7 +34,9 @@ fun TestBody.createWishlistViewModel(): WishlistViewModel {
 
     return WishlistViewModel(
             userSessionInterface = userSessionInterface,
-            wishlistRepository = wishlistRepository,
+            getWishlistUseCase = getWishlistDataUseCase,
+            getRecommendationUseCase = getRecommendationUseCase,
+            getSingleRecommendationUseCase = getSingleRecommendationUseCase,
             wishlistCoroutineDispatcherProvider = TestDispatcherProvider(),
             removeWishListUseCase = removeWishlistUseCase,
             addToCartUseCase = addToCartUseCase,
@@ -61,19 +70,31 @@ fun FeatureBody.createWishlistTestInstance() {
     val addWishListUseCase by memoized {
         mockk<AddWishListUseCase>(relaxed = true)
     }
+
+    val getWishlistDataUseCase by memoized {
+        mockk<GetWishlistDataUseCase>(relaxed = true)
+    }
+
+    val getSingleRecommendationUseCase by memoized {
+        mockk<GetSingleRecommendationUseCase>(relaxed = true)
+    }
+
+    val getRecommendationUseCase by memoized {
+        mockk<GetRecommendationUseCase>(relaxed = true)
+    }
 }
 
 
-fun WishlistRepository.givenRepositoryGetSingleRecommendationReturnsThis(recommendationList: List<RecommendationItem>) {
-    coEvery { getSingleRecommendationData(0) } returns
+fun GetSingleRecommendationUseCase.givenGetSingleRecommendationReturnsThis(recommendationList: List<RecommendationItem>) {
+    coEvery { getData(any()) } returns
             RecommendationWidget(
                     recommendationItemList = recommendationList
             )
 }
 
-fun WishlistRepository.givenRepositoryGetRecommendationDataReturnsThis(recommendationItems: List<RecommendationItem>) {
+fun GetRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(recommendationItems: List<RecommendationItem>) {
     coEvery {
-        getRecommendationData(any(), any()) } returns
+        getData(any()) } returns
             listOf(
                     RecommendationWidget(
                             recommendationItemList = recommendationItems
@@ -81,11 +102,11 @@ fun WishlistRepository.givenRepositoryGetRecommendationDataReturnsThis(recommend
             )
 }
 
-fun WishlistRepository.givenRepositoryGetWishlistDataReturnsThis(wishlistItems: List<WishlistItem> = listOf(),
-                                                                         keyword: String = "",
-                                                                         hasNextPage: Boolean = false,
-                                                                         page: Int = 1,
-                                                                         useDefaultWishlistItem: Boolean = false) {
+fun GetWishlistDataUseCase.givenGetWishlistDataReturnsThis(wishlistItems: List<WishlistItem> = listOf(),
+                                                           keyword: String = "",
+                                                           hasNextPage: Boolean = false,
+                                                           page: Int = 1,
+                                                           useDefaultWishlistItem: Boolean = false) {
     val defaultMaxPage = 20
     if (useDefaultWishlistItem) {
         val wishlistDefaultData = mutableListOf<WishlistItem>()
@@ -95,16 +116,16 @@ fun WishlistRepository.givenRepositoryGetWishlistDataReturnsThis(wishlistItems: 
             wishlistDefaultData.add(WishlistItem(id=id.toString()))
             position++
         }
-        coEvery { getData(keyword, page) } returns WishlistEntityData(
+        coEvery { getData(GetWishlistParameter(keyword = keyword, page = page)) } returns WishlistEntityData(
                 items = wishlistDefaultData,
                 hasNextPage = hasNextPage)
     } else {
-        coEvery { getData(keyword, page) } returns WishlistEntityData(
+        coEvery { getData(GetWishlistParameter(keyword = keyword, page = page)) } returns WishlistEntityData(
                 items = wishlistItems,
                 hasNextPage = hasNextPage)
     }
 }
 
-fun WishlistRepository.givenRepositoryGetWishlistDataReturnsThisOnBulkProgress(wishlistItems: List<WishlistItem>, boolean: Boolean) {
-    coEvery { getData(any(), any()) } returns WishlistEntityData(items = wishlistItems)
+fun GetWishlistDataUseCase.givenRepositoryGetWishlistDataReturnsThisOnBulkProgress(wishlistItems: List<WishlistItem>, boolean: Boolean) {
+    coEvery { getData(GetWishlistParameter()) } returns WishlistEntityData(items = wishlistItems)
 }

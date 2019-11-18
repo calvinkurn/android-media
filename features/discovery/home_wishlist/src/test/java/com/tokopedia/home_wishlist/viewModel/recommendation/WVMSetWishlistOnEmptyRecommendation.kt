@@ -2,12 +2,15 @@ package com.tokopedia.home_wishlist.viewModel.recommendation
 
 import com.tokopedia.home_wishlist.InstantTaskExecutorRuleSpek
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
+import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_wishlist.viewModel.createWishlistTestInstance
 import com.tokopedia.home_wishlist.viewModel.createWishlistViewModel
-import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetSingleRecommendationReturnsThis
-import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetWishlistDataReturnsThis
+import com.tokopedia.home_wishlist.viewModel.givenGetSingleRecommendationReturnsThis
+import com.tokopedia.home_wishlist.viewModel.givenGetWishlistDataReturnsThis
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -28,7 +31,8 @@ class WVMSetWishlistOnEmptyRecommendation : Spek({
         val addWishListUseCase by memoized<AddWishListUseCase>()
         val removeWishlistUseCase by memoized<RemoveWishListUseCase>()
         val userSessionInterface by memoized<UserSessionInterface>()
-        val wishlistRepository by memoized<WishlistRepository>()
+        val getWishlistDataUseCase by memoized<GetWishlistDataUseCase>()
+        val getSingleRecommendationUseCase by memoized<GetSingleRecommendationUseCase>()
 
         Scenario("Set wishlist success with initial state false should update product isWishlist to true in wishlist data") {
             val mockUserId = "54321"
@@ -46,11 +50,11 @@ class WVMSetWishlistOnEmptyRecommendation : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns empty wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf())
+            Given("Get wishlist usecase returns empty wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
             }
-            Given("Repository getSingleRecommendation returns 4 recommendation data") {
-                wishlistRepository.givenRepositoryGetSingleRecommendationReturnsThis(listOf(
+            Given("Get single recommendation usecase returns 4 recommendation data") {
+                getSingleRecommendationUseCase.givenGetSingleRecommendationReturnsThis(listOf(
                         RecommendationItem(),
                         RecommendationItem(),
                         RecommendationItem(isWishlist = wishlistedInitialState),
@@ -110,11 +114,11 @@ class WVMSetWishlistOnEmptyRecommendation : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns empty wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf())
+            Given("Get wishlist usecase returns empty wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
             }
-            Given("Repository getSingleRecommendation returns 4 recommendation data") {
-                wishlistRepository.givenRepositoryGetSingleRecommendationReturnsThis(listOf(
+            Given("Get single recommendation usecase returns 4 recommendation data") {
+                getSingleRecommendationUseCase.givenGetSingleRecommendationReturnsThis(listOf(
                         RecommendationItem(),
                         RecommendationItem(),
                         RecommendationItem(isWishlist = wishlistedInitialState),
@@ -173,11 +177,11 @@ class WVMSetWishlistOnEmptyRecommendation : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns empty wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf())
+            Given("Get wishlist usecase returns empty wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
             }
-            Given("Repository getSingleRecommendation returns 4 recommendation data") {
-                wishlistRepository.givenRepositoryGetSingleRecommendationReturnsThis(listOf(
+            Given("Get single recommendation usecase returns 4 recommendation data") {
+                getSingleRecommendationUseCase.givenGetSingleRecommendationReturnsThis(listOf(
                         RecommendationItem(),
                         RecommendationItem(),
                         RecommendationItem(isWishlist = wishlistedInitialState),
@@ -237,11 +241,11 @@ class WVMSetWishlistOnEmptyRecommendation : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns empty wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf())
+            Given("Get wishlist usecase returns empty wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
             }
-            Given("Repository getSingleRecommendation returns 4 recommendation data") {
-                wishlistRepository.givenRepositoryGetSingleRecommendationReturnsThis(listOf(
+            Given("Get single recommendation usecase returns 4 recommendation data") {
+                getSingleRecommendationUseCase.givenGetSingleRecommendationReturnsThis(listOf(
                         RecommendationItem(),
                         RecommendationItem(),
                         RecommendationItem(isWishlist = wishlistedInitialState),

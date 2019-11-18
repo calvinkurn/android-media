@@ -42,7 +42,6 @@ import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.custom.CustomAppBarLayoutBehavior
 import com.tokopedia.home_wishlist.view.custom.CustomSearchView
 import com.tokopedia.home_wishlist.view.custom.SpaceBottomItemDecoration
-import com.tokopedia.home_wishlist.view.ext.isScrollable
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_PRODUCT_ID
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.PDP_EXTRA_UPDATED_POSITION
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.REQUEST_FROM_PDP
@@ -109,8 +108,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
     internal var menu: Menu? = null
-    private var modeBulkDelete = false
-    private var isInitialPage: Boolean = true
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -145,6 +142,13 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
+                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
+                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+                        false)
+                viewModel.onPDPActivityResultForWishlist(
+                        id.toInt(),
+                        wishlistStatusFromPdp
+                )
             }
         }
     }
@@ -152,8 +156,9 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        loadData()
-        observeAction()
+        hideSearchView()
+        viewModel.getWishlistData(shouldShowInitialPage = true)
+        observeData()
     }
 
     override fun onPause() {
@@ -212,11 +217,9 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     private fun initSwipeRefresh(){
         swipeToRefresh?.setOnRefreshListener{
-            if(!modeBulkDelete) {
-                updateBottomMargin()
-                endlessRecyclerViewScrollListener?.resetState()
-                viewModel.getWishlistData(searchView?.searchText ?: "")
-            }
+            updateBottomMargin()
+            endlessRecyclerViewScrollListener?.resetState()
+            viewModel.getWishlistData(searchView?.searchText ?: "")
         }
     }
 
@@ -235,7 +238,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun initDeleteBulkButton(){
-        val count = viewModel.bulkSelectActionData.value?.peekContent() ?: 0
+        val count = viewModel.bulkSelectCountActionData.value?.peekContent() ?: 0
         val title = if(count == 0) getString(R.string.wishlist_delete_zero_text) else String.format(getString(R.string.wishlist_delete_text), count.toString())
         deleteButton?.setOnClickListener {
             dialogUnify.apply {
@@ -278,67 +281,68 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         })
     }
 
-    private fun loadData(){
+    private fun observeData() {
+        observeWishlistData()
+        observeBulkModeState()
+        observeAction()
+    }
 
+    private fun observeWishlistData() {
         viewModel.wishlistLiveData.observe(viewLifecycleOwner, Observer { response ->
             if(response.isNotEmpty())
                 renderList(response)
+            swipeToRefresh?.isRefreshing = false
         })
-
         viewModel.loadMoreWishlistAction.observe(viewLifecycleOwner, Observer {
             loadMoreWishlistActionData -> updateScrollListenerState(
                 loadMoreWishlistActionData.getContentIfNotHandled()?.hasNextPage?:false)
 
         })
-
-        observeState()
-
-        hideSearchView()
-
-        viewModel.getWishlistData(shouldShowInitialPage = true)
-
     }
 
-    private fun observeState(){
-        viewModel.wishlistState.observe(viewLifecycleOwner, Observer { state ->
-            if(state.isEmpty() || state.isLoading() || state.isError()){
-                if(state.isLoading()) endlessRecyclerViewScrollListener?.resetState()
-                if(state.isEmpty() || state.isError()){
-                    if(searchView?.searchText?.isEmpty() == true) {
-                        hideSearchView()
-                    }
-                    menu?.findItem(R.id.cancel)?.isVisible = false
-                    menu?.findItem(R.id.manage)?.isVisible = false
-                    containerDelete?.hide()
-                }
-                swipeToRefresh?.isRefreshing = false
+    private fun observeBulkModeState() {
+        viewModel.isInBulkModeState.observe(viewLifecycleOwner, Observer { isInBulkMode ->
+            if (isInBulkMode) {
+                menu?.findItem(R.id.cancel)?.isVisible = true
+                menu?.findItem(R.id.manage)?.isVisible = false
+
+                containerDelete?.show()
+
+                hideSearchView()
+                val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+                (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(false)
+                swipeToRefresh?.isEnabled = false
             } else {
-                // success state
-                swipeToRefresh?.isRefreshing = false
-
-                showSearchView()
-
+                menu?.findItem(R.id.cancel)?.isVisible = false
                 menu?.findItem(R.id.manage)?.isVisible = true
 
-                if(isInitialPage) {
-                    isInitialPage = false
-                    Handler().postDelayed({
-                        if(recyclerView?.isScrollable() == true){
-                            updateScrollFlagForSearchView(false)
-                        }
-                    }, 1500)
-                }
+                containerDelete?.hide()
+
+                showSearchView()
+                val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+                (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(true)
+                swipeToRefresh?.isEnabled = true
             }
         })
     }
 
     private fun observeAction(){
-        viewModel.addToCartActionData.observe(viewLifecycleOwner, Observer { handleMessageAction(it) })
-        viewModel.removeWishlistActionData.observe(viewLifecycleOwner, Observer { handleMessageAction(it) })
-        viewModel.bulkRemoveWishlistActionData.observe(viewLifecycleOwner, Observer { handleMessageAction(it) })
-        viewModel.bulkSelectActionData.observe(viewLifecycleOwner, Observer { updateSelectedDeleteItem(it.peekContent()) })
-        viewModel.addWishlistRecommendationActionData.observe(viewLifecycleOwner, Observer { handleMessageAction(it) })
-        viewModel.removeWishlistRecommendationActionData.observe(viewLifecycleOwner, Observer { handleMessageAction(it) })
+        viewModel.addToCartActionData.observe(viewLifecycleOwner, Observer { handleAddToCartActionData(it.getContentIfNotHandled()) })
+        viewModel.removeWishlistActionData.observe(viewLifecycleOwner, Observer { handleRemoveWishlistActionData(it.getContentIfNotHandled()) })
+        viewModel.bulkRemoveWishlistActionData.observe(viewLifecycleOwner, Observer { handleBulkRemoveActionData(it.getContentIfNotHandled()) })
+        viewModel.bulkSelectCountActionData.observe(viewLifecycleOwner, Observer { updateSelectedDeleteItem(it.peekContent()) })
+        viewModel.addWishlistRecommendationActionData.observe(viewLifecycleOwner, Observer { handleAddWishlistRecommendationActionData(it.getContentIfNotHandled()) })
+        viewModel.removeWishlistRecommendationActionData.observe(viewLifecycleOwner, Observer { handleRemoveWishlistRecommendationActionData(it.getContentIfNotHandled()) })
+        viewModel.productClickActionData.observe(viewLifecycleOwner, Observer { handleProductClick(it.getContentIfNotHandled()) })
+    }
+
+    private fun handleProductClick(productClickActionData: ProductClickActionData?) {
+        productClickActionData?.let {
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, it.productId.toString()).run {
+                putExtra(PDP_EXTRA_UPDATED_POSITION, it.position)
+                startActivityForResult(this, REQUEST_FROM_PDP)
+            }
+        }
     }
 
     private fun renderList(list: List<WishlistDataModel>){
@@ -355,13 +359,12 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private fun updateScrollFlagForSearchView(isSearch: Boolean){
         if(isSearch){
             disableScrollFlagsSearch()
-
         }else {
             enableScrollFlagsSearch()
         }
     }
 
-    override fun onProductClick(dataModel: WishlistDataModel, position: Int) {
+    override fun onProductClick(dataModel: WishlistDataModel, parentPosition: Int, position: Int) {
         when (dataModel) {
             is WishlistItemDataModel -> {
                 WishlistTracking.productClick(dataModel.productItem, position.toString())
@@ -369,11 +372,19 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
             }
             is RecommendationCarouselItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
-                goToPDP(dataModel.recommendationItem.productId.toString(), position)
+                viewModel.onProductClick(
+                        dataModel.recommendationItem.productId,
+                        parentPosition,
+                        position
+                )
             }
             is RecommendationItemDataModel -> {
                 WishlistTracking.clickRecommendation(dataModel.recommendationItem, position)
-                goToPDP(dataModel.recommendationItem.productId.toString(), position)
+                viewModel.onProductClick(
+                        dataModel.recommendationItem.productId,
+                        parentPosition,
+                        position
+                )
             }
         }
     }
@@ -417,30 +428,60 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         }
     }
 
-    private fun handleMessageAction(action: Event<BaseActionData>){
-        if(action.peekContent().isSuccess){
-            when(action.peekContent()){
-                is AddToCartActionData -> {
-                    WishlistTracking.clickBuy(cartId = (action.peekContent() as AddToCartActionData).cartId.toString(), wishlistItem = (action.peekContent() as AddToCartActionData).item)
-                    showToaster(getString(R.string.wishlist_success_atc), getString(R.string.wishlist_see)){
-                        WishlistTracking.clickSeeCart()
-                        RouteManager.route(context, ApplinkConst.CART)
-                    }
+    private fun handleAddToCartActionData(addToCartActionData: AddToCartActionData?){
+        addToCartActionData?.let {
+            if(it.isSuccess){
+                WishlistTracking.clickBuy(cartId = it.cartId.toString(), wishlistItem = it.item)
+                showToaster(getString(R.string.wishlist_success_atc), getString(R.string.wishlist_see)){
+                    WishlistTracking.clickSeeCart()
+                    RouteManager.route(context, ApplinkConst.CART)
                 }
-                is AddWishlistRecommendationData -> showToaster(getString(R.string.wishlist_success_add))
-                is BulkRemoveWishlistActionData -> {
-                    WishlistTracking.clickConfirmBulkRemoveWishlist(trackingQueue, (action.peekContent() as BulkRemoveWishlistActionData).productIds)
-                    showToaster(getString(R.string.wishlist_success_remove), "Ok")
-                    resetBulkMode()
-                }
-                is RemoveWishlistActionData -> {
-                    WishlistTracking.clickConfirmRemoveWishlist(productId = (action.peekContent() as RemoveWishlistActionData).productId.toString())
-                    showToaster(getString(R.string.wishlist_success_remove), "Ok")
-                }
-                is RemoveWishlistRecommendationData -> showToaster(getString(R.string.wishlist_success_remove), "Ok")
+            }else {
+                showToaster(if(it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
             }
-        }else {
-            showToaster(if(action.peekContent().message.isNotEmpty()) action.peekContent().message else getString(R.string.wishlist_default_error_message))
+        }
+    }
+
+    private fun handleAddWishlistRecommendationActionData(addWishlistRecommendationData: AddWishlistRecommendationData?){
+        addWishlistRecommendationData?.let {
+            if(it.isSuccess){
+                showToaster(getString(R.string.wishlist_success_add))
+            }else {
+                showToaster(if(it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
+            }
+        }
+    }
+
+    private fun handleBulkRemoveActionData(bulkRemoveWishlistActionData: BulkRemoveWishlistActionData?){
+        bulkRemoveWishlistActionData?.let {
+            if(it.isSuccess){
+                WishlistTracking.clickConfirmBulkRemoveWishlist(trackingQueue, it.productIds)
+                showToaster(getString(R.string.wishlist_success_remove), "Ok")
+                viewModel.exitBulkMode()
+            }else {
+                showToaster(if(it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
+            }
+        }
+    }
+
+    private fun handleRemoveWishlistActionData(removeWishlistActionData: RemoveWishlistActionData?){
+        removeWishlistActionData?.let {
+            if(it.isSuccess){
+                WishlistTracking.clickConfirmRemoveWishlist(productId = it.productId.toString())
+                showToaster(getString(R.string.wishlist_success_remove), "Ok")
+            }else {
+                showToaster(if(it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
+            }
+        }
+    }
+
+    private fun handleRemoveWishlistRecommendationActionData(removeWishlistRecommendationData: RemoveWishlistRecommendationData?){
+        removeWishlistRecommendationData?.let {
+            if(it.isSuccess){
+                showToaster(getString(R.string.wishlist_success_remove), "Ok")
+            }else {
+                showToaster(if(it.message.isNotEmpty()) it.message else getString(R.string.wishlist_default_error_message))
+            }
         }
     }
 
@@ -497,43 +538,16 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun manageDeleteWishlist(): Boolean{
-        modeBulkDelete = true
-
-        menu?.findItem(R.id.cancel)?.isVisible = true
-        menu?.findItem(R.id.manage)?.isVisible = false
-
-        containerDelete?.show()
-
-        hideSearchView()
-        val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
-        (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(false)
-
-        viewModel.updateBulkMode(true)
-
-        swipeToRefresh?.isEnabled = false
-
+        viewModel.enterBulkMode()
         return true
     }
 
     private fun cancelDeleteWishlist(): Boolean{
-        modeBulkDelete = false
-
-        menu?.findItem(R.id.cancel)?.isVisible = false
-        menu?.findItem(R.id.manage)?.isVisible = true
-
-        containerDelete?.hide()
-
-        showSearchView()
-        val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
-        (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(true)
-        swipeToRefresh?.isEnabled = true
-        viewModel.updateBulkMode(false)
+        viewModel.exitBulkMode()
         return true
     }
 
     private fun resetBulkMode(): Boolean{
-        modeBulkDelete = false
-
         menu?.findItem(R.id.cancel)?.isVisible = false
         menu?.findItem(R.id.manage)?.isVisible = true
 

@@ -17,6 +17,8 @@ class WishlistItemViewHolder(
         private val view: View
 ) : SmartAbstractViewHolder<WishlistItemDataModel>(view){
 
+    private val parentPositionDefault: Int = -1
+
     private val productCardView: WishlistCardView by lazy { view.findViewById<WishlistCardView>(R.id.wishlist_item) }
     private val checkBox: CheckBox by lazy { view.findViewById<CheckBox>(R.id.wishlist_checkbox) }
 
@@ -44,7 +46,7 @@ class WishlistItemViewHolder(
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
 //                    if(element.productItem.isTopAds){
-//                        ImpresionTask().execute(element.productItem.trackerImageUrl)
+//                        ImpresionTask().getData(element.productItem.trackerImageUrl)
 //                    }
                     (listener as WishlistListener).onProductImpression(element, adapterPosition)
                 }
@@ -69,7 +71,7 @@ class WishlistItemViewHolder(
 
             setOnClickListener {
                 if(element.isOnBulkRemoveProgress) (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, !checkBox.isChecked)
-                else (listener as WishlistListener).onProductClick(element, adapterPosition)
+                else (listener as WishlistListener).onProductClick(element, parentPositionDefault, adapterPosition)
             }
 
             setAddToCartButtonOnClickListener {
