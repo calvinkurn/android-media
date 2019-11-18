@@ -123,7 +123,7 @@ class DigitalHomePageSearchFragment: BaseSearchListFragment<DigitalHomePageSearc
     }
 
     override fun onSearchTextChanged(text: String?) {
-        text?.let { query -> if (query.isNotEmpty()) searchCategory(query) }
+        text?.let { query -> searchCategory(query) }
     }
 
     override fun onSearchReset() {

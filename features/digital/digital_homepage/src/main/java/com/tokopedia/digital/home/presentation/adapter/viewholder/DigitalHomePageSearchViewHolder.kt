@@ -26,10 +26,12 @@ class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCateg
             digital_homepage_search_category_image.loadImage(element.icon)
 
             // Add search query shading to category name
-            val spannableString = SpannableStringBuilder(element.name)
-            val searchQueryIndex = element.name.indexOf(element.searchQuery)
-            spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, searchQueryIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableString.setSpan(StyleSpan(Typeface.BOLD), searchQueryIndex + element.searchQuery.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val spannableString = SpannableStringBuilder(element.label)
+            val searchQueryIndex = element.label.indexOf(element.searchQuery, ignoreCase = true)
+            if (searchQueryIndex > -1) {
+                spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, searchQueryIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableString.setSpan(StyleSpan(Typeface.BOLD), searchQueryIndex + element.searchQuery.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
             digital_homepage_search_category_name.text = spannableString
 
             setOnClickListener { onSearchCategoryClickListener.onSearchCategoryClicked(element, adapterPosition) }

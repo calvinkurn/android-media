@@ -31,8 +31,8 @@ class SearchCategoryHomePageUseCase(graphqlRepository: GraphqlRepository): Graph
                             item.icon
                     )
                 }
-                var filteredData = searchCategoryData.filter { it.name.contains(searchQuery, true) }
-                // Add search query to model for visual purposes
+                var filteredData = searchCategoryData.filter { it.label.contains(searchQuery, true) }
+                // Add search query to model for query highlight
                 filteredData = filteredData.map { item ->
                     item.searchQuery = searchQuery
                     return@map item
