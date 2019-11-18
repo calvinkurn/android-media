@@ -52,6 +52,7 @@ class HighlightViewHolder(val v: View,
         adapter = HighlightAdapter(element.cards, highlightListener)
         highlightRv.adapter = adapter
         highlightRv.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        highlightRv.isNestedScrollingEnabled = false
         bindTitle(element.title, element.template.cardhighlight.title)
     }
 

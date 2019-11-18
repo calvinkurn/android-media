@@ -25,6 +25,7 @@ public class ProductViewModel implements Parcelable {
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
     private SearchParameter searchParameter;
+    private CategoryFilterModel categoryFilterModel;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -87,6 +88,14 @@ public class ProductViewModel implements Parcelable {
 
     public SearchParameter getSearchParameter() {
         return searchParameter;
+    }
+
+    public CategoryFilterModel getCategoryFilterModel() {
+        return categoryFilterModel;
+    }
+
+    public void setCategoryFilterModel(CategoryFilterModel categoryFilterModel) {
+        this.categoryFilterModel = categoryFilterModel;
     }
 
     public int getTotalItem() {

@@ -14,6 +14,7 @@ include "features:discovery:filter"
 include "features:discovery:productcard"
 include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
+include "features:discovery:recommendation_widget_common"
 
 include "features:merchant:gold_merchant_resource"
 
@@ -29,3 +30,6 @@ include "libraries:tracking_optimizer"
 // search dependencies - tkpdxxx
 include "tkpdabstraction"
 include "tkpddesign"
+
+// search dependencies - module own gradle
+apply from: "../global_nav_widget/compile-globalnavwidget.gradle"

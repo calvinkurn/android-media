@@ -33,7 +33,8 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import kotlinx.android.synthetic.main.partial_product_full_descr.view.*
 
 class PartialProductDescrFullView private constructor(private val view: View,
-                                                      private val activity: Activity? = null) {
+                                                      private val activity: Activity? = null,
+                                                      private val productDetailTracking: ProductDetailTracking) {
 
     var shopInfo: ShopInfo? = null
     var productInfo: ProductInfo? = null
@@ -42,7 +43,10 @@ class PartialProductDescrFullView private constructor(private val view: View,
     companion object {
         private const val MAX_CHAR = 300
         private const val NO_DESCRIPTION = "TIDAK ADA DESKRIPSI"
-        fun build(_view: View, _activity: Activity?) = PartialProductDescrFullView(_view, _activity)
+        fun build(_view: View,
+                  _activity: Activity?,
+                  _productDetailTracking: ProductDetailTracking
+        ) = PartialProductDescrFullView(_view, _activity, _productDetailTracking)
     }
 
     init {
@@ -123,7 +127,9 @@ class PartialProductDescrFullView private constructor(private val view: View,
 
             label_see_detail_product_descr.setOnClickListener {
                 view.context.startActivity(ProductFullDescriptionTabActivity.createIntent(view.context,
-                        DescriptionData(basicName = data.basic.name,
+                        DescriptionData(
+                                basicId = data.basic.id.toString(),
+                                basicName = data.basic.name,
                                 basicPrice = data.basic.price,
                                 shopName = shopInfo?.shopCore?.name ?: "",
                                 thumbnailPicture = data.firstThumbnailPicture,
@@ -133,6 +139,9 @@ class PartialProductDescrFullView private constructor(private val view: View,
                         productSpecificationResponse?.productCatalogQuery?.data?.catalog?.specification
                                 ?: arrayListOf()))
                 activity?.overridePendingTransition(R.anim.pull_up, 0)
+                productInfo?.let{
+                    productDetailTracking.eventClickProductDescriptionReadMore(it.basic.id.toString())
+                }
             }
             visible()
         }

@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,12 +26,10 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
-import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
 import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
-import com.tokopedia.withdraw.view.listener.ToolbarUpdater;
 import com.tokopedia.withdraw.view.listener.WithdrawPasswordContract;
 import com.tokopedia.withdraw.view.presenter.WithdrawPasswordPresenter;
 
@@ -113,11 +110,10 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                     Objects.requireNonNull(getArguments()).getString(WithdrawPasswordActivity.BUNDLE_WITHDRAW)
                     , false);
             boolean isSellerWithdrawal = getArguments().getBoolean(WithdrawPasswordActivity.BUNDLE_IS_SELLER_WITHDRAWAL);
-            String programName = getArguments().getString(WithdrawPasswordActivity.BUNDLE_IS_PROGRAM_NAME);
             wrapperPassword.setError(null);
             presenter.doWithdraw(withdrawal, (BankAccount) getArguments()
                             .get(WithdrawPasswordActivity.BUNDLE_BANK)
-                    , passwordView.getText().toString(), isSellerWithdrawal, programName);
+                    , passwordView.getText().toString(), isSellerWithdrawal);
         });
 
         forgotPassword.setOnClickListener(v -> {
@@ -184,18 +180,5 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
         } catch (IOException e) {
         }
         return content;
-    }
-
-    @Override
-    public void goToSuccessPage(BankAccount bankAccount, String message, double amount) {
-        analytics.eventClickWithdrawalConfirm(getString(R.string.label_analytics_success_withdraw));
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(WithdrawConstant.Keys.BANK_ACCOUNT, bankAccount);
-        bundle.putString(WithdrawConstant.Keys.MESSAGE, message);
-        bundle.putDouble(WithdrawConstant.Keys.AMOUNT, amount);
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.parent_view, SuccessFragmentWithdrawal.getInstance(bundle));
-        fragmentTransaction.commitAllowingStateLoss();
-        ((ToolbarUpdater)getActivity()).updateToolbar(getActivity().getResources().getString(R.string.sucs_pg_ttl), R.drawable.ic_action_back);
     }
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.contactus.ContactUsModuleRouter;
+import com.tokopedia.contactus.createticket.ContactUsConstant;
 
 /**
  * Created by pranaymohapatra on 07/07/18.
@@ -20,7 +21,7 @@ public class FinishActivityReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction() == ContactUsModuleRouter.ACTION_CLOSE_ACTIVITY) {
+        if (intent.getAction() == ContactUsConstant.ACTION_CLOSE_ACTIVITY) {
             if (mActivity != null) {
                 mActivity.finish();
                 mActivity = null;

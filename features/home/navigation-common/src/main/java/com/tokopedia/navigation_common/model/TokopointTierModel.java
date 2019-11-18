@@ -16,7 +16,7 @@ public class TokopointTierModel {
     @SerializedName("nameDesc")
     @Expose
     private String nameDesc = "";
-    @SerializedName("imageURL")
+    @SerializedName("eggImageHomepageURL")
     @Expose
     private String imageUrl = "";
 

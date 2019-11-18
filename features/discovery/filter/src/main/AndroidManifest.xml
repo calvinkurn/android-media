@@ -13,7 +13,8 @@
             android:name=".newdynamicfilter.RevampedDynamicFilterActivity"
             android:label="Filter"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            android:theme="@style/Theme.White">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -30,7 +31,8 @@
         <activity
             android:name=".newdynamicfilter.SortProductActivity"
             android:label="Urutkan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -48,37 +50,44 @@
             android:name=".newdynamicfilter.DynamicFilterColorActivity"
             android:label="Warna"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterOfferingActivity"
             android:label="Penawaran"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterLocationActivity"
             android:label="Lokasi"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterRatingActivity"
             android:label="Rating"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterDetailGeneralActivity"
             android:label="Filter"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterDetailBrandActivity"
             android:label="Brand"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".newdynamicfilter.DynamicFilterCategoryActivity"
             android:label="Kategori"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

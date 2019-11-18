@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.item_multiple_media.view.*
 import kotlinx.android.synthetic.main.layout_image_grid.view.*
@@ -128,7 +129,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
                     layoutParams.setMargins(btnDeleteMargin, btnDeleteMargin, btnDeleteMargin, btnDeleteMargin)
                     delete.layoutParams = layoutParams
 
-                    ImageHandler.loadImageFit2(context, itemImageView, item.thumbnail)
+                    itemImageView.loadImageRounded(item.thumbnail, RAD_10f)
                     delete.setOnClickListener { removeItem(item, adapterPosition) }
                     delete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
                     if (item.videos.isNotEmpty()) {
@@ -170,6 +171,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
         }
 
         companion object {
+            private val RAD_10f = 10f
             private const val TYPE_VIDEO = "video"
         }
     }

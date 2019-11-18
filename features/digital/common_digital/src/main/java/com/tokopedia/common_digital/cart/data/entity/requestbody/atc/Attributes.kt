@@ -41,6 +41,12 @@ class Attributes {
     @SerializedName("show_subscribe_flag")
     @Expose
     var showSubscribeFlag: Boolean = false
+    @SerializedName("show_subscribe_pop_up")
+    @Expose
+    var showSubscribePopUp: Boolean? = null
+    @SerializedName("auto_subscribe")
+    @Expose
+    var autoSubscribe: Boolean? = null
     @SerializedName("is_thankyou_native")
     @Expose
     var isThankyouNative: Boolean = false

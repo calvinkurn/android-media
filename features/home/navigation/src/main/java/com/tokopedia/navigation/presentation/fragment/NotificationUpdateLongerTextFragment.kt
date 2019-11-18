@@ -9,6 +9,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -19,7 +20,6 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.navigation.R
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.fragment_notification_update_longer.view.*
 
 /**
  * @author by nisie on 18/02/19.
@@ -31,6 +31,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     lateinit var contentTitleView: Typography
     lateinit var ctaButton: UnifyButton
     lateinit var closeButton: ImageView
+    lateinit var ctaButtonContainer: FrameLayout
 
     private var contentImageUrl = ""
     private var contentImageViewType = ""
@@ -51,44 +52,19 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             contentTitleView = findViewById(R.id.content_title)
             ctaButton = findViewById(R.id.cta_button)
             closeButton = findViewById(R.id.iv_close)
+            ctaButtonContainer = findViewById(R.id.fl_btn)
         }
     }
-
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val bottomSheetDialog = BottomSheetDialog(requireContext(), theme)
-        bottomSheetDialog.setOnShowListener {
-            //To Anchor View Bottom
-            val dialog = it as BottomSheetDialog
-            val containerLayout: FrameLayout? = dialog.findViewById(R.id.container)
-
-            //To Expand Dialog when dialog showed
-            val bottomSheet = dialog.findViewById<View>(R.id.design_bottom_sheet) as FrameLayout
-            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.skipCollapsed = true
-
-            //To Make NestedScrollview as main concern and drag down when reach the top
-            containerLayout?.scroll_main?.viewTreeObserver
-                    ?.addOnScrollChangedListener {
-                        //When Scroll view reach the bottom
-                        if (!containerLayout.scroll_main.canScrollVertically(1)) {
-                            containerLayout.parent.requestDisallowInterceptTouchEvent(true)
-                        }
-                        //When Scroll view reach the top
-                        if (!containerLayout.scroll_main.canScrollVertically(-1)) {
-                            containerLayout.parent.requestDisallowInterceptTouchEvent(false)
-                        }
-                    }
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-        return bottomSheetDialog
+        return BottomSheetDialog(requireContext(), theme)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViewModel(savedInstanceState)
+        setupDialog(dialog)
         setupContentPadding()
+        setupViewModel(savedInstanceState)
         setupCtaButton()
         contentTitleView.text = contentTitle
         contentTextView.text = contentText
@@ -110,20 +86,44 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         }
     }
 
+    private fun setupContentPadding() {
+        ctaButtonContainer.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                ctaButtonContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                setContentPadding()
+            }
+        })
+    }
+
+    private fun setContentPadding() {
+        val ctaButtonHeight = ctaButtonContainer.height
+        with(contentTextView) {
+            setPadding(paddingLeft, paddingTop, paddingRight, ctaButtonHeight)
+        }
+    }
+
+    private fun setupDialog(dialog: Dialog?) {
+        if (dialog == null || dialog !is BottomSheetDialog) return
+        dialog.setOnShowListener {
+            //To Anchor View Bottom
+            val bottomSheetDialog = it as BottomSheetDialog
+            val bottomSheet = bottomSheetDialog.findViewById<View>(R.id.design_bottom_sheet)
+            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+            val containerLayout: FrameLayout? = bottomSheetDialog.findViewById(R.id.container)
+
+            bottomSheet?.let {
+                bottomSheetBehavior.peekHeight = bottomSheet.height
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                containerLayout?.parent?.requestLayout()
+            }
+        }
+    }
+
     private fun setupCtaButton() {
         if (btnText.isEmpty()) {
             btnText = DEFAULT_CTA_BUTTON
         }
         ctaButton.text = btnText
-    }
-
-    private fun setupContentPadding() {
-        val paddingText = contentTextView.paddingBottom
-        val titleHeight = contentTitleView.height
-        val totalPaddingBottom = paddingText + titleHeight
-        with(contentTextView) {
-            setPadding(paddingLeft, paddingTop, paddingRight, totalPaddingBottom)
-        }
     }
 
     private fun setupViewModel(savedInstanceState: Bundle?) {
@@ -138,7 +138,6 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-
         fun createInstance(bundle: Bundle): NotificationUpdateLongerTextFragment {
             val fragment = NotificationUpdateLongerTextFragment()
             fragment.arguments = bundle
@@ -146,6 +145,5 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         }
 
         val DEFAULT_CTA_BUTTON = "Klik disini"
-
     }
 }

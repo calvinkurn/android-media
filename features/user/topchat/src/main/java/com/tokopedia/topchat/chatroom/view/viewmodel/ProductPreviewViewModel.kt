@@ -15,7 +15,9 @@ class ProductPreviewViewModel(
         val colorVariant: String,
         val colorHexVariant: String,
         val sizeVariant: String,
-        val url: String
+        val url: String,
+        val productFsIsActive: Boolean = false,
+        val productFsImageUrl: String = ""
 ) : PreviewViewModel {
 
     override fun type(attachmentPreviewFactory: AttachmentPreviewFactory): Int {
@@ -44,7 +46,9 @@ class ProductPreviewViewModel(
                 messageId,
                 generateResultProduct(),
                 startTime,
-                opponentId
+                opponentId,
+                productFsIsActive,
+                productFsImageUrl
         )
         RxWebSocket.send(productPreviewParam, interceptors)
     }

@@ -34,12 +34,7 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
 
     @Override
     protected Fragment getNewFragment() {
-        if (mUserSession.isLoggedIn()) {
             return CatalogListingFragment.newInstance(getIntent().getExtras());
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            return null;
-        }
     }
 
     @Override
@@ -70,11 +65,6 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
-            inflateFragment();
-        } else {
-            finish();
-        }
     }
 
     @Override

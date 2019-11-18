@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.logisticcart.R
-import com.tokopedia.transactiondata.entity.response.cod.PriceSummary
+import com.tokopedia.purchase_platform.common.data.model.response.cod.PriceSummary
 import kotlinx.android.synthetic.main.item_summary.view.*
 import kotlinx.android.synthetic.main.item_grand_total.view.*
 

@@ -25,7 +25,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.transactiondata)
+    implementation project(rootProject.ext.features.purchase_platform_common)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

@@ -3,14 +3,18 @@ package com.tokopedia.travel.homepage.presentation.fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingUtil
@@ -64,6 +68,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        hideStatusBar()
         travel_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
         calculateToolbarView(0)
 
@@ -74,6 +79,33 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
                 calculateToolbarView(getRecyclerView(view).computeVerticalScrollOffset())
             }
         })
+    }
+
+    private fun hideStatusBar() {
+        travel_homepage_container.fitsSystemWindows = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            travel_homepage_container.requestApplyInsets()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            var flags = travel_homepage_container.systemUiVisibility
+            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            travel_homepage_container.systemUiVisibility = flags
+            activity?.window?.statusBarColor = Color.WHITE
+        }
+
+        if (Build.VERSION.SDK_INT in 19..20) {
+            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        }
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            activity?.window?.statusBarColor = Color.TRANSPARENT
+        }
     }
 
     private fun calculateToolbarView(offset: Int) {
@@ -98,9 +130,18 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         super.onActivityCreated(savedInstanceState)
 
         travelHomepageViewModel.travelItemList.observe(this, Observer {
-
             clearAllData()
             it?.run { renderList(this) }
+        })
+
+        travelHomepageViewModel.isAllError.observe(this, Observer {
+            it?.let { isAllError ->
+                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView, object : NetworkErrorHelper.RetryClickedListener {
+                    override fun onRetryClicked() {
+                        loadDataFromCloud()
+                    }
+                })
+            }
         })
     }
 
@@ -112,6 +153,13 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         travelHomepageViewModel.getIntialList(swipeToRefresh?.isRefreshing ?: false)
     }
 
+    fun loadDataFromCloud() {
+        isLoadingInitialData = true
+        adapter.clearAllElements()
+        showLoading()
+        travelHomepageViewModel.getIntialList(true)
+    }
+
     override fun initInjector() {
         getComponent(TravelHomepageComponent::class.java).inject(this)
     }
@@ -119,27 +167,33 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     override fun getScreenName(): String = ""
 
     override fun onBannerVHItemBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getBanner(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_banner), isFromCloud ?: true)
+        travelHomepageViewModel.getBanner(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_banner), isFromCloud
+                ?: true)
     }
 
     override fun onCategoryVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getCategories(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_category_list), isFromCloud ?: true)
+        travelHomepageViewModel.getCategories(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_category_list), isFromCloud
+                ?: true)
     }
 
     override fun onDestinationVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getDestination(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_destination), isFromCloud ?: true)
+        travelHomepageViewModel.getDestination(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_destination), isFromCloud
+                ?: true)
     }
 
     override fun onOrderListVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getOrderList(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list), isFromCloud ?: true)
+        travelHomepageViewModel.getOrderList(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list), isFromCloud
+                ?: true)
     }
 
     override fun onRecentSearchVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recent_search), isFromCloud ?: true)
+        travelHomepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recent_search), isFromCloud
+                ?: true)
     }
 
     override fun onRecommendationVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getRecommendation(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), isFromCloud ?: true)
+        travelHomepageViewModel.getRecommendation(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), isFromCloud
+                ?: true)
     }
 
     override fun onItemClick(appUrl: String, webUrl: String) {

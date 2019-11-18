@@ -194,7 +194,7 @@ public class VerificationActivity extends BaseSimpleActivity {
 
     public void goToOnboardingMiscallPage(MethodItem methodItem) {
         if (!(getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
-                VerificationFragment)) {
+                OnboardingOtpMiscallFragment)) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -36,10 +37,17 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/ticker_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
                 <com.tokopedia.banner.Banner
                     android:id="@+id/promo_banner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
 
                 <include layout="@layout/item_voucher_game_banner_shimmering"
                     android:id="@+id/promo_banner_shimmering"

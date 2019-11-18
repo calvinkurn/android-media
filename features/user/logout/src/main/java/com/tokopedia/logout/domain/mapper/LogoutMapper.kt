@@ -13,7 +13,7 @@ class LogoutMapper : Func1<Response<LogoutPojo>,
         LogoutDomain> {
 
     override fun call(response: Response<LogoutPojo>): LogoutDomain {
-        var messageError: String = ""
+        var messageError = ""
 
         if (response.isSuccessful) {
             val body = response.body()

@@ -4,14 +4,14 @@ import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.groupchat.common.di.scope.GroupChatScope;
 import com.tokopedia.groupchat.common.network.PlayInterceptor;
 import com.tokopedia.groupchat.common.network.StreamErrorInterceptor;
 import com.tokopedia.groupchat.common.network.StreamErrorResponse;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -27,6 +27,12 @@ import okhttp3.logging.HttpLoggingInterceptor;
 @GroupChatScope
 @Module
 public class GroupChatNetModule {
+
+    @GroupChatScope
+    @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter) context;
+    }
 
     @GroupChatScope
     @Provides
@@ -46,6 +52,13 @@ public class GroupChatNetModule {
         return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
     }
 
+    @GroupChatScope
+    @Provides
+    public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                          NetworkRouter networkRouter,
+                                                          UserSessionInterface userSessionInterface) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSessionInterface);
+    }
 
     @GroupChatScope
     @Provides

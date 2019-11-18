@@ -56,7 +56,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
         const val PARAM_CURSOR = "cursor"
         const val PARAM_SOURCE = "source"
         const val PARAM_SOURCE_ID = "sourceID"
-
+        const val PARAM_REFRESH_CURSOR = "refreshCursor"
 
         const val LIMIT_3 = 3
         const val SOURCE_FEEDS = "feeds"
@@ -66,8 +66,8 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
         const val SOURCE_TRENDING = "trending"
 
         @JvmOverloads
-        fun createRequestParams(userId: String, cursor: String = "", source: String, sourceId:
-        String = ""):
+        fun createRequestParams(userId: String, cursor: String = "", source: String,
+                                sourceId: String = "", firstPageCursor: String = ""):
                 RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_USER_ID, if (userId == "") "0" else userId)
@@ -75,6 +75,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
             requestParams.putString(PARAM_CURSOR, cursor)
             requestParams.putString(PARAM_SOURCE, source)
             requestParams.putString(PARAM_SOURCE_ID, sourceId)
+            requestParams.putString(PARAM_REFRESH_CURSOR, firstPageCursor)
             return requestParams
         }
     }

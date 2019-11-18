@@ -60,8 +60,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.globalNavWidget)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -91,6 +93,7 @@ dependencies {
     }
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
@@ -103,12 +106,15 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    implementation rootProject.ext.testDependencies.archCoreTesting
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
     testImplementation rootProject.ext.testDependencies.mockk
 
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
 }
 
 project.ext {

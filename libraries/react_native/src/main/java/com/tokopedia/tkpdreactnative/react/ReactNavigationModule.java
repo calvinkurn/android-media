@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -15,12 +17,10 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
@@ -41,6 +41,7 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
  */
 
 public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
+
     private final Context appContext;
 
     private Context context;
@@ -62,38 +63,36 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void navigate(String appLinks, String extra) {
-        if (!extra.isEmpty()) {
-            ((TkpdCoreRouter) context.getApplicationContext())
-                    .actionApplink(this.getCurrentActivity(), appLinks, extra);
+        if (extra != null && !TextUtils.isEmpty(extra)) {
+            ((ApplinkRouter) context.getApplicationContext())
+                    .goToApplinkActivity(this.getCurrentActivity(), appLinks, ReactUtils.convertBundle(extra));
         } else {
-            ((TkpdCoreRouter) context.getApplicationContext())
-                    .actionApplink(this.getCurrentActivity(), appLinks);
+            ((ApplinkRouter) context.getApplicationContext())
+                    .goToApplinkActivity(this.getCurrentActivity(), appLinks);
         }
     }
 
     @ReactMethod
     public void navigateWithMobileUrl(String appLinks, String mobileUrl, String extra) {
-        if (((IDigitalModuleRouter) context.getApplicationContext()).isSupportedDelegateDeepLink(appLinks)) {
-            ((TkpdCoreRouter) context.getApplicationContext())
-                    .actionApplink(this.getCurrentActivity(), appLinks, extra);
+        if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(appLinks)) {
+            ((ApplinkRouter) context.getApplicationContext())
+                    .goToApplinkActivity(this.getCurrentActivity(), appLinks, ReactUtils.convertBundle(extra));
         } else {
-            ((TkpdCoreRouter) context.getApplicationContext())
-                    .actionOpenGeneralWebView(this.getCurrentActivity(), mobileUrl);
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, mobileUrl));
         }
     }
 
     @ReactMethod
     public void navigateAndFinish(String appLinks, String extra) {
         navigate(appLinks, extra);
-
         finish();
     }
 
     @ReactMethod
     public void navigateToLoginWithResult(Promise promise) {
-        if (((IDigitalModuleRouter) context.getApplicationContext()).isSupportedDelegateDeepLink(Constants.Applinks.LOGIN)) {
-            ((TkpdCoreRouter) context.getApplicationContext())
-                    .actionApplink(this.getCurrentActivity(), Constants.Applinks.LOGIN);
+        if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(ApplinkConst.LOGIN)) {
+            ((ApplinkRouter) context.getApplicationContext())
+                    .goToApplinkActivity(this.getCurrentActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -188,11 +187,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void getFlavor(Promise promise) {
-        if (getCurrentActivity() != null && getCurrentActivity().getApplication() instanceof TkpdCoreRouter) {
-            promise.resolve(((TkpdCoreRouter) getCurrentActivity().getApplication()).getFlavor());
-        } else {
-            promise.resolve("");
-        }
+        promise.resolve(GlobalConfig.FLAVOR);
     }
 
     @ReactMethod

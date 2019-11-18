@@ -2,35 +2,25 @@ package com.tokopedia.webview.download
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.net.Uri
 import android.os.Bundle
-import android.webkit.URLUtil
 import android.webkit.WebView
 import com.google.gson.Gson
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.util.DownloadHelper
-import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSessionWebViewFragment
-import com.tokopedia.webview.BaseWebViewFragment
+import com.tokopedia.webview.KEY_URL
 
 class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
 
-    private var userSession: UserSessionInterface? = null
-    private var isTokopediaUrl: Boolean = false
-    val TOKOPEDIA_STRING = "tokopedia"
     private var extArray: Array<String>? = null
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
-
 
     companion object {
         val ARGS_EXT = "KEY_EXT"
 
         fun newInstance(url: String, extensions: String): BaseDownloadWebViewFragment {
             val bundle = Bundle()
-            bundle.putString(ARGS_URL,url)
+            bundle.putString(KEY_URL,url)
             bundle.putString(ARGS_EXT, extensions)
             val thisFragment = BaseDownloadWebViewFragment()
             thisFragment.arguments = bundle
@@ -44,18 +34,13 @@ class BaseDownloadWebViewFragment : BaseSessionWebViewFragment() {
         extArray= converter.fromJson<Array<String>>(arguments!!.getString(ARGS_EXT),Array<String>::class.java)
     }
 
-
-    override fun shouldOverrideUrlLoading(webView: WebView?, url: String): Boolean {
+    override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
         if (isdownloadable(url)) {
             checkPermissionAndDownload(url)
-            return true
-        } else if (!URLUtil.isNetworkUrl(url) && RouteManager.isSupportApplink(activity, url)) {
-            RouteManager.route(activity, url)
             return true
         }
         return super.shouldOverrideUrlLoading(webView, url)
     }
-
 
     private fun checkPermissionAndDownload(url: String) {
         permissionCheckerHelper = PermissionCheckerHelper()

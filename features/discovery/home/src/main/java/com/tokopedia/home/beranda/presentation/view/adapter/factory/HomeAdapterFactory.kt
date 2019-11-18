@@ -37,11 +37,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val homeFeedsListener: HomeFeedsListener,
                          private val countDownListener: CountDownView.CountDownListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
-    private val sprintLayout = HashSet(
+    private val productLayout = HashSet(
             listOf(
                     DynamicHomeChannel.Channels.LAYOUT_3_IMAGE,
                     DynamicHomeChannel.Channels.LAYOUT_SPRINT,
-                    DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO,
                     DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
     )
 
@@ -127,7 +126,14 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
          * Layout registered as sprint sale viewholder
          * refer to item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
          */
-        if (sprintLayout.contains(layout)) {
+        if (productLayout.contains(layout)) {
+            return ProductOrganicChannelViewHolder.LAYOUT
+        }
+        else if(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.contains(layout)){
+            /**
+             * Layout registered as sprint sale
+             * refer to dynamic channel sprint layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item
+             */
             return DynamicChannelSprintViewHolder.LAYOUT
         } else if (bannerLayout.contains(layout)) {
             /**
@@ -171,6 +177,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         val viewHolder: AbstractViewHolder<*>
         when (type) {
             DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, countDownListener)
+            ProductOrganicChannelViewHolder.LAYOUT -> viewHolder = ProductOrganicChannelViewHolder(view, listener, countDownListener)
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, countDownListener)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)

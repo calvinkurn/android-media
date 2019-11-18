@@ -10,8 +10,6 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.contractor.CheckoutDealContractor;
 import com.tokopedia.digital_deals.view.model.Outlet;
@@ -21,10 +19,12 @@ import com.tokopedia.digital_deals.view.model.cart.CartItems;
 import com.tokopedia.digital_deals.view.model.cart.Configuration;
 import com.tokopedia.digital_deals.view.model.cart.MetaData;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.oms.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,8 +106,7 @@ public class CheckoutDealPresenter
 
     private void goToLoyaltyActivity() {
         JsonObject requestBody = convertPackageToCartItem(packageViewModel);
-        Intent loyaltyIntent = ((DealsModuleRouter) getView().getActivity().getApplication()).
-                tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(getView().getActivity(),
+        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(),
                         DealsUrl.AppLink.DEALS,
                         DealsUrl.AppLink.DEALS,
                         Utils.LOYALTY_DEFAULT_TAB);
@@ -119,13 +118,13 @@ public class CheckoutDealPresenter
 
 
     public void getCheckoutDetails() {
+        UserSession userSession = new UserSession(getView().getActivity());
         Intent intent = getView().getActivity().getIntent();
         this.dealDetail = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_DEALDETAIL);
         this.cartData = intent.getStringExtra(CheckoutDealPresenter.EXTRA_CART);
         this.packageViewModel = intent.getParcelableExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL);
         getView().renderFromDetails(dealDetail, packageViewModel);
-        getView().setEmailIDPhoneNumber(((DealsModuleRouter) getView().getActivity().getApplication()).getUserEmailProfil(),
-                ((DealsModuleRouter) getView().getActivity().getApplication()).getUserPhoneNumber());
+        getView().setEmailIDPhoneNumber(userSession.getEmail(), userSession.getPhoneNumber());
     }
 
     private JsonObject convertCartItemToJson(String cart) {
@@ -142,7 +141,7 @@ public class CheckoutDealPresenter
                 if (outlets.size() > 1) {
                     jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
                             .getAsJsonObject().addProperty("name",
-                            String.format(getView().getActivity().getResources().getString(R.string.text_available_locations), outlets.size()));
+                            String.format(getView().getActivity().getResources().getString(com.tokopedia.digital_deals.R.string.text_available_locations), outlets.size()));
                 } else if (outlets.get(0) != null)
                     if (!TextUtils.isEmpty(outlets.get(0).getDistrict()))
                         jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
@@ -201,7 +200,7 @@ public class CheckoutDealPresenter
                 throwable.printStackTrace();
                 getView().hideProgressBar();
                 if (throwable.getMessage().equalsIgnoreCase(INVALID_EMAIL))
-                    getView().showMessage(getView().getActivity().getString(R.string.please_enter_email));
+                    getView().showMessage(getView().getActivity().getString(com.tokopedia.digital_deals.R.string.please_enter_email));
                 else {
                     NetworkErrorHelper.showEmptyState(getView().getActivity(),
                             getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {

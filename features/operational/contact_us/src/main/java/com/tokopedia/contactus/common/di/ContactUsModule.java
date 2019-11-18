@@ -10,6 +10,9 @@ import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.common.api.ContactUsURL;
 import com.tokopedia.contactus.common.data.model.ContactUsErrorResponse;
 import com.tokopedia.contactus.common.di.network.ContactUsAuthInterceptor;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,6 +27,17 @@ import retrofit2.Retrofit;
 public class ContactUsModule {
 
     @Provides
+    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter)context;
+    }
+
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+
+    @Provides
     Retrofit provideRetrofit(OkHttpClient okHttpClient,
                              Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(ContactUsURL.BASE_URL).client(okHttpClient).build();
@@ -34,19 +48,14 @@ public class ContactUsModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(contactUsAuthInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(ContactUsErrorResponse.class));
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(((ContactUsModuleRouter)context).getChuckInterceptor());
-
-        }
         return builder.build();
     }
 
     @Provides
     ContactUsAuthInterceptor provideContactUsAuthInterceptor(@ApplicationContext Context context,
-                                                             AbstractionRouter abstractionRouter) {
-        return new ContactUsAuthInterceptor(context,abstractionRouter);
+                                                             NetworkRouter networkRouter,
+                                                             UserSessionInterface userSessionInterface) {
+        return new ContactUsAuthInterceptor(context,networkRouter, userSessionInterface);
 
     }
 }

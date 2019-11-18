@@ -34,14 +34,6 @@ public class DigitalAnalytics {
         ));
     }
 
-    public void eventDigitalCategoryScreenLaunch (CategoryData categoryData) {
-        Map<String, Object> value = DataLayer.mapOf(
-                "category", categoryData.getName(),
-                "digital_category_id", categoryData.getCategoryId()
-        );
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, "Digital_Category_Screen_Launched");
-    }
-
     public void eventAddToCart(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom) {
         String productName = cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase() + " " +
                 cartDigitalInfoData.getAttributes().getPrice().toLowerCase();

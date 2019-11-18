@@ -10,28 +10,34 @@ import com.tokopedia.notifications.common.CMConstant
  */
 data class ActionButton (
         @SerializedName(CMConstant.PayloadKeys.TEXT)
-        var text: String? = null,
+        var text: String? = "",
 
         @SerializedName(CMConstant.PayloadKeys.APP_LINK)
-        var appLink: String? = null,
+        var appLink: String? = "",
 
         @SerializedName(CMConstant.PayloadKeys.ACTION_BUTTON_ICON)
-        var actionButtonIcon: String? = null,
+        var actionButtonIcon: String? = "",
 
         @SerializedName(CMConstant.PayloadKeys.PD_ACTION)
-        var pdActions: PreDefineActions? = null
+        var pdActions: PreDefineActions? = null,
+
+        @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
+        var element_id: String? = ""
+
 ) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readString(),
                 parcel.readString(),
                 parcel.readString(),
-                parcel.readParcelable(PreDefineActions::class.java.classLoader))
+                parcel.readParcelable(PreDefineActions::class.java.classLoader),
+                parcel.readString())
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeString(text)
                 parcel.writeString(appLink)
                 parcel.writeString(actionButtonIcon)
                 parcel.writeParcelable(pdActions, flags)
+                parcel.writeString(element_id)
         }
 
         override fun describeContents(): Int {

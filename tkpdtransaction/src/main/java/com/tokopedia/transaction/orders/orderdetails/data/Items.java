@@ -29,6 +29,9 @@ public class Items {
     @Expose
     private String price;
 
+    @SerializedName("freeShipping")
+    private FreeShipping freeShipping;
+
     @SerializedName("imageUrl")
     @Expose
     private String imageUrl;
@@ -113,6 +116,13 @@ public class Items {
         this.tapActions = tapActions;
     }
 
+    public void setFreeShipping(FreeShipping freeShipping) {
+        this.freeShipping = freeShipping;
+    }
+
+    public FreeShipping getFreeShipping() {
+        return freeShipping;
+    }
     public String getPrice() {
         return price;
     }
@@ -243,7 +253,6 @@ public class Items {
 
     @Override
     public String toString() {
-        return "ClassPojo [title = " + title + ", tapActions = " + tapActions + ", price = " + price + ", imageUrl = " + imageUrl + ", quantity = " + quantity + ", promotionAmount = " + promotionAmount + ", actionButtons = " + actionButtons + ", metaData = " + metaData + "]";
+        return "ClassPojo [title = " + title + ", tapActions = " + tapActions + ", price = " + price + ", imageUrl = " + imageUrl + ", quantity = " + quantity + ", promotionAmount = " + promotionAmount + ", actionButtons = " + actionButtons + ", metaData = " + metaData + ", freeShipping =" + freeShipping + "]";
     }
 }
-

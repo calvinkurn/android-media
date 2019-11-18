@@ -23,12 +23,10 @@ public class WithdrawPasswordContract {
         void showSuccessWithdraw();
 
         String loadRawString(int id);
-
-        void goToSuccessPage(BankAccount bankAccount, String message, double amount);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
 
-        void doWithdraw(int withdrawal, BankAccount bankAccount, String password, boolean isSellerWithdrawal, String programName);
+        void doWithdraw(int withdrawal, BankAccount bankAccount, String password, boolean isSellerWithdrawal);
     }
 }

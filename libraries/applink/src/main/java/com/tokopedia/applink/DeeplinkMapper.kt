@@ -1,12 +1,17 @@
 package com.tokopedia.applink
 
 import android.content.Context
+import android.net.Uri
+import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational
+import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
+import com.tokopedia.config.GlobalConfig
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -23,23 +28,42 @@ object DeeplinkMapper {
      */
     @JvmStatic
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
-        if (deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true)) {
-            return getRegisteredNavigationFromHttp(context, deeplink)
-        } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true)) {
-            if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
-                return getRegisteredNavigationDigital(context, deeplink)
-            } else if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
-                return getRegisteredNavigationSearch(deeplink)
+        /**
+            If deeplink have query parameters then we need to keep the query and map the url without query
+        */
+        val mappedDeepLink: String = when {
+            deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> getRegisteredNavigationFromHttp(context, deeplink)
+            deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
+                when {
+                    deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) ->
+                        getRegisteredNavigationDigital(context, deeplink)
+                    deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true) ->
+                        getRegisteredNavigationSearch(deeplink)
+                    deeplink.startsWith(ApplinkConst.CART) || deeplink.startsWith(ApplinkConst.CHECKOUT) ->
+                        getRegisteredNavigationMarketplace(deeplink)
+                    deeplink.startsWithPattern(ApplinkConst.DEALS_HOME) ->
+                        getRegisteredNavigationDeals(deeplink)
+                    GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
+                        ApplinkConst.SellerApp.SELLER_APP_HOME
+
+                    else -> {
+                        val query = Uri.parse(deeplink).query
+                        if(query?.isNotEmpty() == true){
+                            val tempDL = deeplink.substring(0, deeplink.indexOf('?'))
+                            var navFromTokopedia = getRegisteredNavigationFromTokopedia(tempDL)
+                            if(navFromTokopedia.isNotEmpty()) {
+                                navFromTokopedia = navFromTokopedia.substring(0, navFromTokopedia.indexOf('?'))
+                                navFromTokopedia += "?$query"
+                            }
+                            navFromTokopedia
+                        } else getRegisteredNavigationFromTokopedia(deeplink)
+                    }
+                }
             }
-            if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true)) {
-                return getRegisteredNavigationSearch(deeplink)
-            }
-            return getRegisteredNavigationFromTokopedia(deeplink)
-        } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
-            return getRegisteredNavigationFromSellerapp(deeplink)
-        } else {
-            return deeplink
+            deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(deeplink)
+            else -> deeplink
         }
+        return mappedDeepLink
     }
 
     /**
@@ -49,7 +73,7 @@ object DeeplinkMapper {
      * This function should be called after checking domain shop from server side
      * eg: https://www.tokopedia.com/pulsa/ to tokopedia://pulsa
      */
-    private fun getRegisteredNavigationFromHttp(context: Context, deeplink: String): String {
+    fun getRegisteredNavigationFromHttp(context: Context, deeplink: String): String {
         val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital
@@ -61,19 +85,21 @@ object DeeplinkMapper {
      * Mapping tokopedia link to registered deplink in manifest if necessary
      * eg: tokopedia://product/add to tokopedia-android-internal://marketplace/product-add-item
      * If not found, return current deeplink, means it registered
-     *
-     * Use this only of the tokopedia deeplink is conflicted with the other tokopedia deeplink
-     * for example: tokopedia://product/{id} conflicts with tokopedia://product/add
      */
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
         return when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
-            ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
+            ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
+            ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.SALDO -> return ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> return ApplinkConstInternalGlobal.SALDO_INTRO
+            ApplinkConst.INBOX_TICKET -> return ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
+            ApplinkConst.INSTANT_LOAN -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
+            ApplinkConst.INSTANT_LOAN_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
+            ApplinkConst.PINJAMAN_ONLINE_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
             ApplinkConst.PRODUCT_MANAGE -> return ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             else -> ""
         }
@@ -83,8 +109,6 @@ object DeeplinkMapper {
      * Mapping sellerapp link to registered deplink in manifest if necessary
      * eg: sellerapp://product/add to tokopedia-android-internal://marketplace/product-add-item
      * If not found, return current deeplink, means it registered
-     *
-     * for example: sellerapp://product/{id} conflicts with sellerapp://product/add
      */
     private fun getRegisteredNavigationFromSellerapp(deeplink: String): String {
         return when (deeplink) {

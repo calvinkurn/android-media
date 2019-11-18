@@ -6,16 +6,20 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase;
+import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
+import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.di.scope.BuyerAccountScope;
 import com.tokopedia.home.account.domain.GetBuyerAccountUseCase;
+import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase;
 import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.presenter.BuyerAccountPresenter;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.user.session.UserSession;
@@ -51,7 +55,7 @@ public class BuyerAccountModule {
     }
 
     @Provides
-    WalletPref provideWalletPref(@ApplicationContext Context context, Gson gson){
+    WalletPref provideWalletPref(@ApplicationContext Context context, Gson gson) {
         return new WalletPref(context, gson);
     }
 
@@ -68,7 +72,7 @@ public class BuyerAccountModule {
     @Provides
     GetRecommendationUseCase provideGetRecomendationUseCase(@Named("recommendationQuery") String recomQuery,
                                                             GraphqlUseCase graphqlUseCase,
-                                                            UserSession userSession){
+                                                            UserSession userSession) {
         return new GetRecommendationUseCase(recomQuery, graphqlUseCase, userSession);
     }
 
@@ -82,17 +86,24 @@ public class BuyerAccountModule {
     GetBuyerAccountUseCase provideGetBuyerAccountUseCase(@ApplicationContext Context context,
                                                          GraphqlUseCase graphqlUseCase,
                                                          BuyerAccountMapper buyerAccountMapper,
+                                                         GetBuyerWalletBalanceUseCase getBuyerWalletBalanceUseCase,
                                                          WalletPref walletPref,
                                                          UserSession userSession,
                                                          CheckAffiliateUseCase checkAffiliateUseCase) {
         return new GetBuyerAccountUseCase(
                 graphqlUseCase,
-                ((AccountHomeRouter) context).getTokoCashAccountBalance(),
+                getBuyerWalletBalanceUseCase,
                 buyerAccountMapper,
                 walletPref,
                 userSession,
                 checkAffiliateUseCase
         );
+    }
+
+    @Provides
+    GetBuyerWalletBalanceUseCase provideBuyerWalletBalance(GetWalletBalanceUseCase getWalletBalanceUseCase,
+                                                           GetPendingCasbackUseCase getPendingCasbackUseCase) {
+        return new GetBuyerWalletBalanceUseCase(getWalletBalanceUseCase, getPendingCasbackUseCase);
     }
 
     @Provides
@@ -109,5 +120,10 @@ public class BuyerAccountModule {
     @Provides
     UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @Provides
+    RemoteConfig provideRemoteConfig(@ApplicationContext Context context) {
+        return new FirebaseRemoteConfigImpl(context);
     }
 }
