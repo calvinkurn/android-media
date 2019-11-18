@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_marketplace" translatable="false">marketplace</string>
+    <string name="host_hotlist" translatable="false">hot</string>
+    <string name="host_hotlist_revamp" translatable="false">hotlist</string>
     <!--
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
@@ -28,6 +30,7 @@
     <string name="path_product_etalase_picker" translatable="false">/product-etalase-picker/.*\\/</string>
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
+    <string name="path_create_review" translatable="false">/review/create/.*\\/.*\\/</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
     <string name="path_product_report" translatable="false">/product-report/.*\\/</string>
     <string name="path_store_setting" translatable="false">/store-setting</string>
@@ -39,6 +42,7 @@
     <string name="path_shop_settings_address" translatable="false">/shop-settings-address</string>
     <string name="path_shop_settings_info" translatable="false">/shop-settings-info</string>
     <string name="path_shop_settings_etalase" translatable="false">/shop-settings-etalase</string>
+    <string name="path_shop_settings_etalase_add" translatable="false">/shop-settings-etalase/add</string>
     <string name="path_shop_settings_notes" translatable="false">/shop-settings-notes</string>
     <string name="path_shop_setting_shipping" translatable="false">/shop-setting-shipping</string>
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>

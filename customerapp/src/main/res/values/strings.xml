@@ -166,4 +166,8 @@
     <string name="title_activity_all_brands">Brands</string>
     <string name="title_digital_deals">Deals</string>
     <string name="title_activity_deals">Deals</string>
+
+    <!-- Content -->
+    <string name="title_profile">Profile</string>
+    <string name="title_profile_following">Following</string>
 </resources>

@@ -40,6 +40,11 @@
     <string name="title_add_phone">Tambah Nomor Ponsel</string>
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
+    <string name="title_change_pin">Ubah PIN Tokopedia</string>
+
+    <!-- Dynamic feature for Groupchat-->
+    <string name="title_groupchat">Groupchat</string>
+    <string name="groupchat_app_name">Play</string>
 
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>

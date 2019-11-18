@@ -57,8 +57,6 @@ import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModule;
 import com.tokopedia.feedplus.view.deeplink.FeedDeeplinkModuleLoader;
 import com.tokopedia.gamification.applink.GamificationApplinkModule;
 import com.tokopedia.gamification.applink.GamificationApplinkModuleLoader;
-import com.tokopedia.groupchat.common.applink.GroupChatApplinkModule;
-import com.tokopedia.groupchat.common.applink.GroupChatApplinkModuleLoader;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
@@ -78,6 +76,7 @@ import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModuleLoader;
+import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
@@ -105,8 +104,6 @@ import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
 import com.tokopedia.product.manage.list.applink.ProductManageApplinkModuleLoader;
-import com.tokopedia.profile.applink.ProfileApplinkModule;
-import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
@@ -167,9 +164,7 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ShopAppLinkModule.class,
-        GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
-        ProfileApplinkModule.class,
         CreatePostModule.class,
         KolApplinkModule.class,
         ExploreApplinkModule.class,
@@ -227,9 +222,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new EventsDeepLinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ShopAppLinkModuleLoader(),
-                    new GroupChatApplinkModuleLoader(),
                     new GamificationApplinkModuleLoader(),
-                    new ProfileApplinkModuleLoader(),
                     new CreatePostModuleLoader(),
                     new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
@@ -305,6 +298,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 }
             }
         }
+        LinkerManager.getInstance().initSession();
         finish();
     }
 

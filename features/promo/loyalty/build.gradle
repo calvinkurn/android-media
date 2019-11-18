@@ -51,6 +51,7 @@ dependencies {
     implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

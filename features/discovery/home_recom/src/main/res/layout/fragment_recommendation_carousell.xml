@@ -42,7 +42,7 @@
             app:typographyType="heading_5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
-    <androidx.recyclerview.widget.RecyclerView
+    <com.tokopedia.carouselproductcard.CarouselProductCardView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,0 +1,3 @@
+package com.tokopedia.tkpd.tkpdreputation.createreputation.model
+
+interface BaseImageReviewViewModel

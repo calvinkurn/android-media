@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -19,7 +20,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.explore.R
 import com.tokopedia.explore.analytics.ContentExloreEventTracking
@@ -34,6 +39,7 @@ import com.tokopedia.explore.view.viewmodel.ExploreViewModel
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
+import com.tokopedia.user.session.UserSessionInterface
 
 import javax.inject.Inject
 
@@ -76,6 +82,10 @@ class ContentExploreFragment :
     lateinit var categoryAdapter: ExploreCategoryAdapter
     @Inject
     lateinit var imageAdapter: ExploreImageAdapter
+    @Inject
+    lateinit var affiliatePreference: AffiliatePreference
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private lateinit var searchInspiration: SearchInputView
     private lateinit var exploreCategoryRv: RecyclerView
@@ -84,11 +94,13 @@ class ContentExploreFragment :
     private lateinit var appBarLayout: View
     private lateinit var scrollListener: RecyclerView.OnScrollListener
     private lateinit var performanceMonitoring: PerformanceMonitoring
+    private lateinit var coachMark: CoachMark
 
     private var categoryId: Int = 0
     private var canLoadMore: Boolean = false
     private var hasLoadedOnce: Boolean = false
     private var isTraceStopped: Boolean = false
+    private var coachMarkItemList: MutableList<CoachMarkItem> = arrayListOf()
 
     override fun getScreenName(): String {
         return ContentExloreEventTracking.Screen.SCREEN_CONTENT_STREAM
@@ -142,7 +154,8 @@ class ContentExploreFragment :
                 LinearLayoutManager.HORIZONTAL,
                 false)
         exploreCategoryRv.layoutManager = linearLayoutManager
-        categoryAdapter.setListener(this)
+        categoryAdapter = ExploreCategoryAdapter()
+        categoryAdapter.listener = this
         exploreCategoryRv.adapter = categoryAdapter
 
         val gridLayoutManager = GridLayoutManager(context,
@@ -255,7 +268,7 @@ class ContentExploreFragment :
         imageAdapter.clearData()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: Int, categoryName: String) {
+    override fun onCategoryClicked(position: Int, categoryId: Int, categoryName: String, view: View) {
         NetworkErrorHelper.removeEmptyState(view)
         clearSearch()
         resetDataParam()
@@ -283,12 +296,30 @@ class ContentExploreFragment :
                 categoryAdapter.list[position].isActive = true
                 categoryAdapter.notifyItemChanged(position)
             }
+            if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE && affiliatePreference.isCoachmarkExploreAsAffiliateShown(userSession.getUserId())) {
+                view.getViewTreeObserver().addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+                        val originalPost = IntArray(2)
+                        view.getLocationOnScreen(originalPost)
+                        val xpos2 = originalPost[0] + view.getWidth()
+                        val ypos2 = originalPost[1] + view.getHeight()
+                        val arrayList = intArrayOf(originalPost[0], originalPost[1], xpos2, ypos2)
+                        val coachMarkItem = CoachMarkItem(
+                                view,
+                                activity!!.resources.getString(R.string.coachmark_explore_title_1),
+                                activity!!.resources.getString(R.string.coachmark_explore_content_1)
+                        ).withCustomTarget(arrayList)
+                        coachMarkItemList.add(coachMarkItem)
+                    }
+                })
+            }
         }
         presenter.getExploreData(true)
     }
 
     override fun onCategoryReset() {
-        onCategoryClicked(CATEGORY_POSITION_NONE, Integer.valueOf(DEFAULT_CATEGORY), "")
+        onCategoryClicked(CATEGORY_POSITION_NONE, Integer.valueOf(DEFAULT_CATEGORY), "", View(activity))
     }
 
     override fun showRefreshing() {
@@ -330,6 +361,35 @@ class ContentExploreFragment :
                         kolPostViewModel.contentId
                 )
         ))
+    }
+
+    override fun addExploreItemCoachmark(view: View) {
+        if (!affiliatePreference.isCoachmarkExploreAsAffiliateShown(userSession.userId)) {
+            view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    val originalPost = IntArray(2)
+                    view.getLocationOnScreen(originalPost)
+                    val xpos2 = originalPost[0] + view.width
+                    val ypos2 = originalPost[1] + view.height
+                    val arrayList = intArrayOf(originalPost[0], originalPost[1], xpos2, ypos2)
+                    val coachMarkItem = CoachMarkItem(
+                            view,
+                            activity!!.resources.getString(R.string.coachmark_explore_title_2),
+                            activity!!.resources.getString(R.string.coachmark_explore_content_2)
+                    ).withCustomTarget(arrayList)
+                    coachMarkItemList.add(coachMarkItem)
+                    showCoachMark()
+                }
+
+            })
+        }
+    }
+
+    fun showCoachMark() {
+        coachMark = CoachMarkBuilder().build()
+        coachMark.show(activity, String.format(AffiliatePreference.LABEL_TAG_COACHMARK_CATEGORY, userSession.userId), ArrayList(coachMarkItemList))
+        affiliatePreference.setCoachmarkExploreAsAffiliateShown(userSession.userId)
     }
 
     override fun onSearchSubmitted(text: String) {
@@ -381,6 +441,10 @@ class ContentExploreFragment :
         updateCategoryId(0)
     }
 
+    override fun getExploreCategory(): Int {
+        return categoryId
+    }
+
     override fun stopTrace() {
         if (::performanceMonitoring.isInitialized && !isTraceStopped) {
             performanceMonitoring.stopTrace()
@@ -404,8 +468,8 @@ class ContentExploreFragment :
         imageAdapter.addList(exploreImageViewModelList)
     }
 
-    private fun loadTagData(tagViewModelList: List<ExploreCategoryViewModel>) {
-        categoryAdapter.list = tagViewModelList
+    private fun loadTagData(tagViewModelList: MutableList<ExploreCategoryViewModel>) {
+        categoryAdapter.setList(tagViewModelList)
         appBarLayout.visibility = View.VISIBLE
     }
 

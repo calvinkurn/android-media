@@ -81,6 +81,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     abstract fun reloadData()
     abstract fun getDepartMentId(): String
+    abstract fun onShareButtonClicked()
     protected abstract fun getFilterRequestCode(): Int
 
 
@@ -164,6 +165,9 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     protected fun setUpVisibleFragmentListener() {
         setTotalSearchResultCount(totalCount)
         categoryNavigationListener.setUpVisibleFragmentListener(object : CategoryNavigationListener.VisibleClickListener {
+            override fun onShareButtonClick() {
+                onShareButtonClicked()
+            }
             override fun onFilterClick() {
                 openFilterActivity()
             }

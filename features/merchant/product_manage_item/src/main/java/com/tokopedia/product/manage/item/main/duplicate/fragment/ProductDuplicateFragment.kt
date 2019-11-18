@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.item.main.duplicate.fragment
 
 import android.os.Bundle
+import com.tokopedia.product.manage.item.common.util.AddEditPageType
 import com.tokopedia.product.manage.item.common.util.ProductStatus
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel
 import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFragment
@@ -11,6 +12,7 @@ import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFrag
 
 class ProductDuplicateFragment : ProductEditFragment(){
 
+    override var addEditPageType: AddEditPageType = AddEditPageType.DUPLICATE
     override var statusUpload: Int = ProductStatus.ADD
 
     override fun onSuccessLoadProduct(model: ProductViewModel?) {
