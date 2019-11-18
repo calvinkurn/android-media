@@ -13,9 +13,9 @@ import rx.Emitter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
+import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 
 const val REVERSE_GEOCODE_DELAY = 1000L
-import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 
 internal fun String.toKilometers(): String {
     var number = 0.0
