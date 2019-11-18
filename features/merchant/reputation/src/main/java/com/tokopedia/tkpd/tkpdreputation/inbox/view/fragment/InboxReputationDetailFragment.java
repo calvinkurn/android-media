@@ -171,8 +171,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_inbox_reputation_detail, container,
                 false);
         mainView = parentView.findViewById(R.id.main);
-        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
-        listProduct = (RecyclerView) parentView.findViewById(R.id.product_list);
+        swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
+        listProduct = parentView.findViewById(R.id.product_list);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -270,14 +270,15 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToGiveReview(String productId, int shopId) {
+    public void onGoToGiveReview(String productId, int shopId, String orderId) {
         if (getContext() != null) {
             startActivityForResult(
                     CreateReviewActivity.Companion.newInstance(getContext())
                         .putExtra(InboxReputationFormActivity.ARGS_PRODUCT_ID, productId)
                         .putExtra(InboxReputationFormActivity.ARGS_SHOP_ID, Integer.toString(shopId, 10))
                         .putExtra(InboxReputationFormActivity.ARGS_REPUTATION_ID, reputationId)
-                        .putExtra(CreateReviewFragment.REVIEW_CLICK_AT, 5),
+                        .putExtra(CreateReviewFragment.REVIEW_CLICK_AT, 5)
+                        .putExtra(CreateReviewFragment.REVIEW_ORDER_ID, orderId),
                     REQUEST_GIVE_REVIEW
             );
         }
