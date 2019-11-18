@@ -54,8 +54,8 @@ class HomeRepositoryImpl(
         return homeRemoteDataSource.getOldHomeData()
     }
 
-    override suspend fun getWalletData() = walletRemoteDataSource.getWalletData()
+    override suspend fun getWalletData() = walletRemoteDataSource.getWallet()
 
-    suspend fun getTokopointData() = walletRemoteDataSource.getTokopoint()
+    override suspend fun getTokopointData() = walletRemoteDataSource.getTokopoint()
 
 }

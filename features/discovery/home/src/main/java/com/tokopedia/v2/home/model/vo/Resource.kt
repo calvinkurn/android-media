@@ -26,6 +26,14 @@ data class Resource<out T>(val status: Status, val data: T?, val error: Throwabl
             )
         }
 
+        fun <T> cache(data: T?): Resource<T>{
+            return Resource(
+                    Status.CACHE,
+                    data,
+                    null
+            )
+        }
+
         fun <T> error(error: Throwable, data: T?): Resource<T> {
             return Resource(
                     Status.ERROR,
@@ -44,6 +52,7 @@ data class Resource<out T>(val status: Status, val data: T?, val error: Throwabl
     }
 
     enum class Status {
+        CACHE,
         SUCCESS,
         ERROR,
         LOADING

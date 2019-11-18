@@ -4,36 +4,40 @@ import com.google.gson.annotations.SerializedName
 
 data class Tokopoint (
     @SerializedName("redirectURL")
-    private var redirectURL: String = "",
+    val redirectURL: String = "",
     @SerializedName("iconImageURL")
-    private val iconImageURL: String = "",
+    val iconImageURL: String = "",
     @SerializedName("sectionContent")
-    private val sectionContent: List<SectionContentItem> = listOf(),
+    val sectionContent: List<SectionContentItem> = listOf(),
     @SerializedName("offFlag")
-    private val offFlag: Boolean = false,
+    val offFlag: Boolean = false,
     @SerializedName("redirectAppLink")
-    private val redirectAppLink: String = ""
+    val redirectAppLink: String = ""
 )
 
 data class SectionContentItem(
     @SerializedName("textAttributes")
-    private var textAttributes: TextAttributes = TextAttributes(),
+    val textAttributes: TextAttributes = TextAttributes(),
     @SerializedName("tagAttributes")
-    private val tagAttributes: TagAttributes = TagAttributes(),
+    val tagAttributes: TagAttributes = TagAttributes(),
     @SerializedName("type")
-    private val type: String = ""
+    val type: String = ""
 )
 
 data class TextAttributes(
     @SerializedName("text")
-    private var text: String = "",
+    val text: String = "",
     @SerializedName("backgroundColor")
-    private val backgroundColour: String = ""
+    val backgroundColour: String = "",
+    @SerializedName("isBold")
+    val isBold: Boolean = false,
+    @SerializedName("color")
+    val color: String = "#adadad"
 )
 
 data class TagAttributes(
     @SerializedName("text")
-    private var text: String = "",
+    val text: String = "",
     @SerializedName("backgroundColor")
-    private val backgroundColour: String = ""
+    val backgroundColour: String = ""
 )

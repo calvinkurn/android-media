@@ -31,9 +31,6 @@ abstract class NetworkBoundResource<ResultType, RequestType> {
     private val supervisorJob = SupervisorJob()
 
     suspend fun build(): NetworkBoundResource<ResultType, RequestType> {
-        withContext(Dispatchers.Main) { result.value =
-                Resource.loading(null)
-        }
         CoroutineScope(coroutineContext).launch(supervisorJob) {
             val dbResult = loadFromDb()
             if (shouldFetch(dbResult)) {
@@ -55,7 +52,7 @@ abstract class NetworkBoundResource<ResultType, RequestType> {
 
     private suspend fun fetchFromNetwork(dbResult: ResultType) {
         Timber.tag(NetworkBoundResource::class.java.name).d("Fetch data from network")
-        setValue(Resource.success(dbResult)) // Dispatch latest value quickly (UX purpose)
+        setValue(Resource.cache(dbResult)) // Dispatch latest value quickly (UX purpose)
         val apiResponse = createCallAsync()
         Timber.tag(NetworkBoundResource::class.java.name).d("Data fetched from network")
         saveCallResults(processResponse(apiResponse))

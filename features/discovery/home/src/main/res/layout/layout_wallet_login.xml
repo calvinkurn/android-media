@@ -74,7 +74,6 @@
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_margin="@dimen/dp_8"
-            android:src="@drawable/wallet_ic_ovo_home"
             android:layout_centerVertical="true"/>
 
         <RelativeLayout

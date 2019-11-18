@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.constant.ConstantKey
+import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.v2.home.model.vo.Resource
 import com.tokopedia.v2.home.ui.adapter.HomeAdapter
@@ -29,9 +30,10 @@ class HomeFragment : BaseDaggerFragment(){
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val homeViewModel: HomePageViewModel by lazy { viewModelProvider.get(HomePageViewModel::class.java) }
 
-    private var homeMainToolbar: HomeMainToolbar? = null
-    private var statusBarBackground: View? = null
-    private var homeRecyclerView: NestedRecyclerView? = null
+    private val homeMainToolbar by lazy { view?.findViewById<HomeMainToolbar>(R.id.toolbar) }
+    private val statusBarBackground by lazy { view?.findViewById<View>(R.id.status_bar_bg) }
+    private val homeRecyclerView by lazy { view?.findViewById<NestedRecyclerView>(R.id.list) }
+    private val refreshLayout by lazy { view?.findViewById<ToggleableSwipeRefreshLayout>(R.id.home_swipe_refresh_layout) }
 
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
@@ -40,12 +42,12 @@ class HomeFragment : BaseDaggerFragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-        initView(view)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         initData()
     }
 
@@ -64,10 +66,9 @@ class HomeFragment : BaseDaggerFragment(){
      * View Handler
      */
 
-    private fun initView(view: View){
-        initRootRecyclerView(view)
-        homeMainToolbar = view.findViewById(R.id.toolbar)
-        statusBarBackground = view.findViewById(R.id.status_bar_bg)
+    private fun initView(){
+        initRootRecyclerView()
+        initSwipeRefresh()
         statusBarBackground?.background = ColorDrawable(
                 ContextCompat.getColor(activity!!, R.color.green_600)
         )
@@ -78,8 +79,7 @@ class HomeFragment : BaseDaggerFragment(){
         calculateSearchBarView(0)
     }
 
-    private fun initRootRecyclerView(view: View){
-        homeRecyclerView = view.findViewById(R.id.list)
+    private fun initRootRecyclerView() {
         val layoutManager = LinearLayoutManagerWithSmoothScroller(context)
         homeRecyclerView?.layoutManager = layoutManager
         homeRecyclerView?.itemAnimator!!.changeDuration = 0
@@ -87,6 +87,12 @@ class HomeFragment : BaseDaggerFragment(){
         homeRecyclerView?.adapter = adapter
         if (homeRecyclerView?.itemDecorationCount == 0) {
             homeRecyclerView?.addItemDecoration(HomeRecyclerDecoration(resources.getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)))
+        }
+    }
+
+    private fun initSwipeRefresh(){
+        refreshLayout?.setOnRefreshListener {
+            homeViewModel.getData()
         }
     }
 
@@ -127,8 +133,9 @@ class HomeFragment : BaseDaggerFragment(){
 
     private fun initData(){
         homeViewModel.homeData.observe(viewLifecycleOwner, Observer { res ->
-            if(res.status == Resource.Status.SUCCESS && res.data != null){
-                adapter.submitList(res.data)
+            refreshLayout?.isRefreshing = false
+            if(res.isNotEmpty()){
+                adapter.submitList(res)
             }
         })
         homeViewModel.getData()

@@ -1,10 +1,8 @@
 package com.tokopedia.v2.home.viewModel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.home.R
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -16,6 +14,7 @@ import com.tokopedia.v2.home.model.pojo.home.HomeData
 import com.tokopedia.v2.home.model.pojo.home.HomeFlagType
 import com.tokopedia.v2.home.model.pojo.home.Tickers
 import com.tokopedia.v2.home.model.vo.*
+import com.tokopedia.v2.home.util.HomeLiveData
 import com.tokopedia.v2.home.util.copy
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -30,31 +29,62 @@ class HomePageViewModel @Inject constructor (
 ): BaseViewModel(dispatcher) {
 
     private var walletPosition = -1
-    private val _homeData = MediatorLiveData<Resource<List<ModelViewType>>>()
-    val homeData: LiveData<Resource<List<ModelViewType>>> get() = _homeData
+    private val _homeData = HomeLiveData<List<ModelViewType>>(listOf())
+    val homeData: LiveData<List<ModelViewType>> get() = _homeData
     private var homeSource: LiveData<Resource<HomeData>> = MutableLiveData()
 
     fun getData() {
+        walletPosition = -1
         launch (dispatcher){
             _homeData.removeSource(homeSource)
             homeSource = homeRepository.getHomeDataWithCache()
             _homeData.addSource(homeSource){
-                _homeData.value = Resource(it.status, mapper(it.data), it.error)
+                _homeData.value = mapper(it.data)
+                if(it.status == Resource.Status.SUCCESS && it.data?.homeFlag?.getFlag(HomeFlagType.HAS_TOKOPOINTS) == true) {
+                    getWalletData()
+                    getTokopointData()
+                }
             }
         }
     }
 
     private fun getWalletData(){
-        val newModelList = _homeData.value?.data.copy().toMutableList()
-        val walletDataModel = _homeData.value?.data?.get(walletPosition)
         launchCatchError(block = {
             val walletData = homeRepository.getWalletData()
+
+            val newModelList = _homeData.value.copy().toMutableList()
+            val walletDataModel = _homeData.value[walletPosition]
+
             if(walletDataModel is WalletDataModel){
-                newModelList[walletPosition] = walletDataModel.copy(walletData = walletData, status = Resource.Status.SUCCESS)
+                newModelList[walletPosition] = walletDataModel.copy(walletBalance = walletData)
+                _homeData.value = newModelList
             }
         }) {
+            val newModelList = _homeData.value.copy().toMutableList()
+            val walletDataModel = _homeData.value[walletPosition]
+
             if(walletDataModel is WalletDataModel){
-                newModelList[walletPosition] = walletDataModel.copy(status = Resource.Status.ERROR)
+                newModelList[walletPosition] = walletDataModel.copy(walletBalance = walletDataModel.walletBalance.copy(status = Resource.Status.ERROR))
+                _homeData.value = newModelList
+            }
+        }
+    }
+
+    private fun getTokopointData(){
+        launchCatchError(block = {
+            val tokopointData = homeRepository.getTokopointData()
+            val newModelList = _homeData.value.copy().toMutableList()
+            val walletDataModel = _homeData.value[walletPosition]
+            if(walletDataModel is WalletDataModel){
+                newModelList[walletPosition] = walletDataModel.copy(tokopoint = tokopointData)
+                _homeData.value = newModelList
+            }
+        }) {
+            val newModelList = _homeData.value.copy().toMutableList()
+            val walletDataModel = _homeData.value[walletPosition]
+            if(walletDataModel is WalletDataModel){
+                newModelList[walletPosition] = walletDataModel.copy(tokopoint = walletDataModel.tokopoint.copy(status = Resource.Status.ERROR))
+                _homeData.value = newModelList
             }
         }
     }
@@ -75,9 +105,21 @@ class HomePageViewModel @Inject constructor (
             }
             if(homeData.homeFlag.getFlag(HomeFlagType.HAS_TOKOPOINTS)){
                 if(userSessionInterface.isLoggedIn) {
-                    walletPosition = list.size
-                    getWalletData()
-                    list.add(WalletDataModel())
+                     if(walletPosition != -1 && _homeData.value.size > walletPosition){
+                         val walletDataModel = _homeData.value[walletPosition]
+                         walletPosition = list.size
+                         list.add(walletDataModel)
+                     }else {
+                         walletPosition = list.size
+                         list.add(WalletDataModel(
+                                 walletBalance = WalletDataModel.WalletAction(
+                                         status = Resource.Status.LOADING
+                                 ),
+                                 tokopoint = WalletDataModel.TokopointAction(
+                                         status = Resource.Status.LOADING
+                                 )
+                         ))
+                     }
                 } else {
                    list.add(WalletNonLoginDataModel())
                }
