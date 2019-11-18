@@ -2,6 +2,7 @@ package com.tokopedia.profile.following_list.view.fragment
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.DeepLinkChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.profile.following_list.di.DaggerFollowingListComponent
 import com.tokopedia.profile.following_list.view.listener.FollowingList
@@ -38,7 +39,7 @@ class UserFollowingListFragment : BaseFollowListFragment<UserFollowingViewModel,
     }
 
     override fun onListItemClicked(item: UserFollowingViewModel) {
-        if (RouteManager.isSupportApplink(context, item.profileApplink) && !item.profileApplink.contains("m.tokopedia.com")) {
+        if (RouteManager.isSupportApplink(context, item.profileApplink) && !item.profileApplink.contains(DeepLinkChecker.MOBILE_HOST)) {
             RouteManager.route(context, item.profileApplink)
         }
     }
