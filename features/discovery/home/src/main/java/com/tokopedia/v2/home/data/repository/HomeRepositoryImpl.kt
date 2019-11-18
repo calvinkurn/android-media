@@ -3,6 +3,7 @@ package com.tokopedia.v2.home.data.repository
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
+import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.v2.home.base.HomeRepository
@@ -58,4 +59,5 @@ class HomeRepositoryImpl(
 
     override suspend fun getTokopointData() = walletRemoteDataSource.getTokopoint()
 
+    override suspend fun getPendingCashbackData() = walletRemoteDataSource.getPendingCashback()
 }

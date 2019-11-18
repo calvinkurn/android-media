@@ -1,5 +1,7 @@
 package com.tokopedia.v2.home.model.vo
 
+import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
 import com.tokopedia.v2.home.model.pojo.wallet.Tokopoint
 import java.util.*
@@ -41,7 +43,9 @@ data class WalletDataModel(
             val rawCashBalance: Int = 0,
             val walletType: String = "",
             val showAnnouncement: Boolean = false,
-            val status: Resource.Status = Resource.Status.LOADING
+            val status: Resource.Status = Resource.Status.LOADING,
+            val pendingTokocash: Boolean = false,
+            val cashBackData: PendingCashback = PendingCashback()
     ){
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

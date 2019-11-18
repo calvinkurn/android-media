@@ -2,6 +2,7 @@ package com.tokopedia.v2.home.data.datasource.remote
 
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
+import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -9,9 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.v2.home.data.query.TokopointQuery
-import com.tokopedia.v2.home.data.query.WalletQuery
 import com.tokopedia.v2.home.model.pojo.wallet.TokopointData
-import com.tokopedia.v2.home.model.pojo.wallet.WalletData
 import com.tokopedia.v2.home.model.vo.Resource
 import com.tokopedia.v2.home.model.vo.WalletDataModel
 import kotlinx.coroutines.Dispatchers
@@ -61,21 +60,10 @@ class WalletRemoteDataSource @Inject constructor(
         }
     }
 
-    suspend fun getPendingCashback(){
+    suspend fun getPendingCashback(): PendingCashback{
         return withContext(Dispatchers.IO){
-            val data  = getPendingCasbackUseCase.createObservable(RequestParams.EMPTY)
-        }
-    }
-
-    suspend fun getWalletData(): WalletData{
-        return withContext(Dispatchers.IO){
-            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-
-            val gqlRecommendationRequest = GraphqlRequest(
-                    WalletQuery.getQuery(),
-                    WalletData::class.java
-            )
-            graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy).getData<WalletData>(WalletData::class.java)
+            val data  = getPendingCasbackUseCase.createObservable(RequestParams.EMPTY).toBlocking().first()
+            data
         }
     }
 }

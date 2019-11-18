@@ -51,20 +51,29 @@ class HomePageViewModel @Inject constructor (
     private fun getWalletData(){
         launchCatchError(block = {
             val walletData = homeRepository.getWalletData()
-
+            val tokopointData = homeRepository.getTokopointData()
+            val pendingCashback = homeRepository.getPendingCashbackData()
             val newModelList = _homeData.value.copy().toMutableList()
             val walletDataModel = _homeData.value[walletPosition]
 
             if(walletDataModel is WalletDataModel){
-                newModelList[walletPosition] = walletDataModel.copy(walletBalance = walletData)
-                _homeData.value = newModelList
+                newModelList[walletPosition] = walletDataModel.copy(
+                        walletBalance = walletData.copy(
+                                cashBackData = pendingCashback
+                        ),
+                        tokopoint = tokopointData
+                )
             }
+            _homeData.value = newModelList.copy()
         }) {
             val newModelList = _homeData.value.copy().toMutableList()
             val walletDataModel = _homeData.value[walletPosition]
 
             if(walletDataModel is WalletDataModel){
-                newModelList[walletPosition] = walletDataModel.copy(walletBalance = walletDataModel.walletBalance.copy(status = Resource.Status.ERROR))
+                newModelList[walletPosition] = walletDataModel.copy(
+                        walletBalance = walletDataModel.walletBalance.copy(status = Resource.Status.ERROR),
+                        tokopoint = walletDataModel.tokopoint.copy(status = Resource.Status.ERROR)
+                )
                 _homeData.value = newModelList
             }
         }
@@ -86,6 +95,25 @@ class HomePageViewModel @Inject constructor (
                 newModelList[walletPosition] = walletDataModel.copy(tokopoint = walletDataModel.tokopoint.copy(status = Resource.Status.ERROR))
                 _homeData.value = newModelList
             }
+        }
+    }
+
+    private fun getPendingCashback(){
+        launchCatchError(block= {
+            val pendingCashback = homeRepository.getPendingCashbackData()
+            val newModelList = _homeData.value.copy().toMutableList()
+            val walletDataModel = newModelList[walletPosition]
+            if(walletDataModel is WalletDataModel){
+                newModelList[walletPosition] = walletDataModel.copy(
+                        walletBalance = walletDataModel.walletBalance.copy(
+                                pendingTokocash = true,
+                                cashBackData = pendingCashback
+                        )
+                )
+            }
+            _homeData.value = newModelList.copy()
+        }){
+
         }
     }
 

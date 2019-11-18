@@ -1,5 +1,6 @@
 package com.tokopedia.v2.home.ui.adapter.delegate.staticwidgets
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContextWrapper
 import android.graphics.Color
@@ -121,6 +122,7 @@ class WalletDelegateAdapter : ViewTypeDelegateAdapter {
             tokocashProgressBar.visibility = View.VISIBLE
         }
 
+        @SuppressLint("SetTextI18n")
         private fun showWallet(wallet: WalletDataModel.WalletAction){
             tokocashProgressBar.visibility = View.GONE
             textViewActionTokocash.text = wallet.labelActionButton
@@ -138,13 +140,9 @@ class WalletDelegateAdapter : ViewTypeDelegateAdapter {
                 textViewTitleTokocash.text = TITLE
                 textViewActionTokocash.visibility = View.VISIBLE
                 tvBalanceTokocash.visibility = View.GONE
-//                if (wallet.isPendingTokocashChecked && wallet.cashBalance.isNotEmpty()) {
-//                    if (element.cashBackData.amount > 0) {
-//                        tvTitleTokocash.text = "(+ ${element.cashBackData.amountText} )"
-//                    }
-//                } else {
-//                    listener.onRequestPendingCashBack()
-//                }
+                if (wallet.cashBackData.amount > 0) {
+                    textViewTitleTokocash.text = "(+ ${wallet.cashBackData.amountText} )"
+                }
             }
         }
 
@@ -178,18 +176,14 @@ class WalletDelegateAdapter : ViewTypeDelegateAdapter {
             } else {
                 tvBalanceTokocash.visibility = View.GONE
                 textViewActionTokocash.visibility = View.VISIBLE
-//                if (wallet.isPendingTokocashChecked && wallet.cashBackData != null) {
-//                    if (wallet.cashBackData.amount > 0) {
-//                        tvActionTokocash.visibility = View.GONE
-//                        tvBalanceTokocash.visibility = View.VISIBLE
-//                        tvBalanceTokocash.text = wallet.cashBackData.amountText
-//                        tvBalanceTokocash.setOnClickListener {
+                if (wallet.cashBackData.amount > 0) {
+                    textViewActionTokocash.visibility = View.GONE
+                    tvBalanceTokocash.visibility = View.VISIBLE
+                    tvBalanceTokocash.text = wallet.cashBackData.amountText
+                    tvBalanceTokocash.setOnClickListener {
 //                            listener.actionInfoPendingCashBackTokocash(wallet.cashBackData, wallet.appLinkActionButton)
-//                        }
-//                    }
-//                } else {
-//                    listener.onRequestPendingCashBack()
-//                }
+                    }
+                }
             }
         }
 
