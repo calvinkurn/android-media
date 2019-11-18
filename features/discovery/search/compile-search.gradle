@@ -1,6 +1,3 @@
-// project dependencies
-include "libraries:inappupdate"
-
 // search dependencies
 include "features:discovery:search"
 

@@ -17,8 +17,7 @@ import kotlin.math.roundToInt
  */
 
 class GridProductItemViewHolder(itemView: View,
-                                protected val productListener: ProductListener,
-                                protected val searchQuery: String) : AbstractViewHolder<ProductItem>(itemView) {
+                                protected val productListener: ProductListener) : AbstractViewHolder<ProductItem>(itemView) {
 
     protected val context = itemView.context!!
 
