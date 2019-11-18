@@ -3,7 +3,6 @@ package com.tokopedia.emoney.view.activity
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.PendingIntent
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NfcAdapter
@@ -165,7 +164,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                 intent.action == NfcAdapter.ACTION_TECH_DISCOVERED) {
 
             if (!isDigitalSmartcardEnabled()) {
-                Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.emoney_nfc_feature_unavailable), Toast.LENGTH_SHORT).show()
                 RouteManager.route(this, ApplinkConst.HOME_FEED)
                 finish()
             } else {
@@ -178,9 +177,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     override fun processGetBalanceBrizzi(refresh: Boolean) {
         brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
         brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
-            //TODO change key to use AuthKey
-            brizziInstance.Init(token, "RR1DJ8QZsYUXTZPb")
-            brizziInstance.setUserName("tXnA6Gzq9J439GI3jJ9BjcBG05tmqIQa")
+            brizziInstance.Init(token, AuthKey.BRIZZI_SECRET_KEY)
+            brizziInstance.setUserName(AuthKey.BRIZZI_USERNAME)
 
             briBrizzi = BrizziCheckBalance(brizziInstance, this)
             showLoading()
@@ -328,8 +326,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     private fun isDigitalSmartcardEnabled(): Boolean {
-//        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
-        return true
+        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
     }
 
     private fun directToNFCSettingsPage() {
@@ -434,10 +431,23 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        data?.let {
+            if (requestCode == REQUEST_CODE_LOGIN) {
+                if (userSession.isLoggedIn) {
+                    processGetBalanceBrizzi(false)
+                }
+            }
+        }
+    }
+
     companion object {
         const val DIGITAL_NFC_CALLING_TYPE = "calling_page_check_saldo"
         const val DIGITAL_NFC_FROM_PDP = "calling_from_pdp"
         const val DIGITAL_NFC = "calling_from_nfc"
+        private const val DIGITAL_SMARTCARD = "mainapp_digital_smartcard"
+
         const val REQUEST_CODE_LOGIN = 1980
 
         const val ISSUER_ID_EMONEY = 1
