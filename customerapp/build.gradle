@@ -105,8 +105,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 352001101;
-        defaultVersionName = "3.52";
+        defaultVersionCode = 341001101;
+        defaultVersionName = "3.41";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
