@@ -38,17 +38,31 @@ class OfficialCategoriesTab(context: Context,
 
         addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabReselected(tab: Tab) {
-                text_view_category_title?.apply {
-                    setTextColor(MethodChecker.getColor(
+                tab.customView?.apply {
+                    ImageHandler.loadImage(
                             context,
-                            R.color.Purple_P600
-                    ))
-                    setWeight(Typography.BOLD)
+                            image_view_category_icon,
+                            categoriesItemTab[tab.position].iconUrl,
+                            R.drawable.ic_loading_image
+                    )
+                    text_view_category_title?.apply {
+                        setTextColor(MethodChecker.getColor(
+                                context,
+                                R.color.Purple_P600
+                        ))
+                        setWeight(Typography.BOLD)
+                    }
                 }
             }
 
             override fun onTabUnselected(tab: Tab) {
                 tab.customView?.apply {
+                    ImageHandler.loadImage(
+                            context,
+                            image_view_category_icon,
+                            categoriesItemTab[tab.position].inactiveIconUrl,
+                            R.drawable.ic_loading_image
+                    )
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
@@ -61,6 +75,12 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onTabSelected(tab: Tab) {
                 tab.customView?.apply {
+                    ImageHandler.loadImage(
+                            context,
+                            image_view_category_icon,
+                            categoriesItemTab[tab.position].iconUrl,
+                            R.drawable.ic_loading_image
+                    )
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
@@ -148,7 +168,7 @@ class OfficialCategoriesTab(context: Context,
             ImageHandler.loadImage(
                     context,
                     image_view_category_icon,
-                    categoriesItemTab[position].iconUrl,
+                    categoriesItemTab[position].inactiveIconUrl,
                     R.drawable.ic_loading_image
             )
             text_view_category_title.text = categoriesItemTab[position].title
@@ -170,5 +190,5 @@ class OfficialCategoriesTab(context: Context,
         adjustCollapseExpandTab(totalScrollUp in 0..10)
     }
 
-    class CategoriesItemTab(val title: String, val iconUrl: String)
+    class CategoriesItemTab(val title: String, val iconUrl: String, val inactiveIconUrl: String)
 }
