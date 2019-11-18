@@ -166,7 +166,11 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             tg_show_e_voucher.text = metaData.evoucherButton.label
             btn_show_detail_booking.setOnClickListener {
                 trackingUmrahUtil.umrahOrderDetailDetailPDP()
-                RouteManager.route(context, metaData.productDetailButton.webURL)
+                if(RouteManager.isSupportApplink(context, metaData.productDetailButton.appURL)){
+                    RouteManager.route(context, metaData.productDetailButton.appURL)
+                }else{
+                    RouteManager.route(context, metaData.productDetailButton.webURL)
+                }
             }
             container_umrah_e_voucher.setOnClickListener {
                 trackingUmrahUtil.umrahOrderDetailDetailEVoucher()
