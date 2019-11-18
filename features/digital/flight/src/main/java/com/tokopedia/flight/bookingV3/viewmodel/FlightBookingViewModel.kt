@@ -14,6 +14,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
+import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel

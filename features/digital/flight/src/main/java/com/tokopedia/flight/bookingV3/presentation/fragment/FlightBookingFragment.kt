@@ -16,6 +16,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -118,7 +120,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val returnTerm = args.getString(EXTRA_FLIGHT_DEPARTURE_TERM, "")
             val searchParam: FlightSearchPassDataViewModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
                     ?: FlightSearchPassDataViewModel()
-            val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE) ?: FlightPriceViewModel()
+            val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE)
+                    ?: FlightPriceViewModel()
 
             bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceViewModel)
 
@@ -145,7 +148,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     if (loadingDialog.isShowing) loadingDialog.dismiss()
-                    //showErrorMessage
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
         })
@@ -189,7 +192,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendCheckOutTracking()
                 }
                 is Fail -> {
-                    //showErrorMessage
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
         })
@@ -209,11 +212,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 }
                 is Fail -> {
                     if (loadingDialog.isShowing) loadingDialog.dismiss()
-                    showErrorDialog(it.throwable)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
         })
 
+    }
+
+    fun mapThrowableToFlightError(message: String): FlightError {
+        val gson = Gson()
+        val itemType = object : TypeToken<List<FlightError>>() {}.type
+        return gson.fromJson<List<FlightError>>(message, itemType)[0]
     }
 
     private fun sendAddToCartTracking() {
@@ -675,25 +684,24 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showErrorDialog(e: Throwable) {
-        Log.d("ERROR", e.message)
-        if (e is MessageErrorException) {
-                if (activity != null) {
-                    val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-                    dialog.setTitle(e.message.toString())
-                    dialog.setDescription(e.message.toString())
-                    dialog.setPrimaryCTAText("jhrhrhr")
-                    dialog.setSecondaryCTAText("heheheee")
+    private fun showErrorDialog(e: FlightError) {
+        if (e.equals(FlightError(FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())))) {
+            if (activity != null) {
+                val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.setTitle(e.title)
+                dialog.setDescription("description")
+                dialog.setPrimaryCTAText("coba")
+                dialog.setSecondaryCTAText("coba2")
 
-                    dialog.setPrimaryCTAClickListener {
-                        //                   if error code this, do this
-                        dialog.dismiss()
-                    }
-
-                    dialog.setSecondaryCTAClickListener(dialog::dismiss)
-
-                    dialog.show()
+                dialog.setPrimaryCTAClickListener {
+                    //                   if error code this, do this
+                    dialog.dismiss()
                 }
+
+                dialog.setSecondaryCTAClickListener(dialog::dismiss)
+
+                dialog.show()
+            }
         }
     }
 
