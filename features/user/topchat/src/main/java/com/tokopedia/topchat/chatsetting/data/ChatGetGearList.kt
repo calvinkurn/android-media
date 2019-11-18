@@ -7,5 +7,5 @@ data class ChatGetGearList(
     @SerializedName("isSuccess")
     val isSuccess: Boolean = false,
     @SerializedName("list")
-    val list: List<Any> = listOf()
+    val list: List<ChatSetting> = listOf()
 )
