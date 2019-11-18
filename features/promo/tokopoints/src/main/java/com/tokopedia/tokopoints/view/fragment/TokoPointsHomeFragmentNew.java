@@ -438,7 +438,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         } else if (source.getId() == R.id.container_fab_egg_token) {
             if (mSumToken <= 0) {
                 if (mStartPurchaseBottomSheet != null) {
-                    // mStartPurchaseBottomSheet.show(getChildFragmentManager(), StartPurchaseBottomSheet.class.getName());
                     AddPointsFragment addPointsFragment = new AddPointsFragment();
                     addPointsFragment.show(getChildFragmentManager(), "");
                 }
