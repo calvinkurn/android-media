@@ -19,6 +19,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerDat
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeatures;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Donation;
@@ -70,6 +71,35 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
         dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
 
+        boolean isDisableEgold = false;
+        boolean isDisablePPP = false;
+        boolean isDisableDonation = false;
+
+        if (shipmentAddressFormDataResponse.isNewBuyer()) {
+            for (CheckoutDisabledFeatures disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
+                switch (disabledFeature) {
+                    case dropshipper:
+                        dataResult.setDropshipperDisable(true);
+                        break;
+                    case multiAddress:
+                        dataResult.setMultipleDisable(true);
+                        break;
+                    case orderPrioritas:
+                        dataResult.setOrderPrioritasDisable(true);
+                        break;
+                    case egold:
+                        isDisableEgold = true;
+                        break;
+                    case ppp:
+                        isDisablePPP = true;
+                        break;
+                    case donation:
+                        isDisableDonation = true;
+                        break;
+                }
+            }
+        }
+
         if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
             Ticker ticker = shipmentAddressFormDataResponse.getTickers().get(0);
             dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
@@ -85,37 +115,39 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setCartPromoSuggestionHolderData(cartPromoSuggestionHolderData);
         }
 
-        if (shipmentAddressFormDataResponse.getEgoldAttributes() != null) {
-            EgoldAttributeModel egoldAttributeModel = new EgoldAttributeModel();
-            egoldAttributeModel.setEligible(shipmentAddressFormDataResponse.getEgoldAttributes().isEligible());
-            egoldAttributeModel.setTiering(shipmentAddressFormDataResponse.getEgoldAttributes().isTiering());
-            if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange() != null) {
-                egoldAttributeModel.setMinEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMinEgoldValue());
-                egoldAttributeModel.setMaxEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMaxEgoldValue());
-            }
-            if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage() != null) {
-                egoldAttributeModel.setTitleText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTitleText());
-                egoldAttributeModel.setSubText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getSubText());
-                egoldAttributeModel.setTickerText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTickerText());
-                egoldAttributeModel.setTooltipText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTooltipText());
-            }
-
-            if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldTieringDataArrayList() != null) {
-                EgoldTieringModel egoldTieringModel;
-                ArrayList<EgoldTieringModel> egoldTieringModelArrayList = new ArrayList<>();
-
-                for (EgoldTieringData data : shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldTieringDataArrayList()) {
-                    egoldTieringModel = new EgoldTieringModel();
-                    egoldTieringModel.setBasisAmount(data.getBasisAmount());
-                    egoldTieringModel.setMaxAmount(data.getMaxAmount());
-                    egoldTieringModel.setMinAmount(data.getMinAmount());
-                    egoldTieringModel.setMinTotalAmount(data.getMinTotalAmount());
-                    egoldTieringModelArrayList.add(egoldTieringModel);
+        if (!isDisableEgold) {
+            if (shipmentAddressFormDataResponse.getEgoldAttributes() != null) {
+                EgoldAttributeModel egoldAttributeModel = new EgoldAttributeModel();
+                egoldAttributeModel.setEligible(shipmentAddressFormDataResponse.getEgoldAttributes().isEligible());
+                egoldAttributeModel.setTiering(shipmentAddressFormDataResponse.getEgoldAttributes().isTiering());
+                if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange() != null) {
+                    egoldAttributeModel.setMinEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMinEgoldValue());
+                    egoldAttributeModel.setMaxEgoldRange(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldRange().getMaxEgoldValue());
                 }
-                egoldAttributeModel.setEgoldTieringModelArrayList(egoldTieringModelArrayList);
-            }
+                if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage() != null) {
+                    egoldAttributeModel.setTitleText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTitleText());
+                    egoldAttributeModel.setSubText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getSubText());
+                    egoldAttributeModel.setTickerText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTickerText());
+                    egoldAttributeModel.setTooltipText(shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldMessage().getTooltipText());
+                }
 
-            dataResult.setEgoldAttributes(egoldAttributeModel);
+                if (shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldTieringDataArrayList() != null) {
+                    EgoldTieringModel egoldTieringModel;
+                    ArrayList<EgoldTieringModel> egoldTieringModelArrayList = new ArrayList<>();
+
+                    for (EgoldTieringData data : shipmentAddressFormDataResponse.getEgoldAttributes().getEgoldTieringDataArrayList()) {
+                        egoldTieringModel = new EgoldTieringModel();
+                        egoldTieringModel.setBasisAmount(data.getBasisAmount());
+                        egoldTieringModel.setMaxAmount(data.getMaxAmount());
+                        egoldTieringModel.setMinAmount(data.getMinAmount());
+                        egoldTieringModel.setMinTotalAmount(data.getMinTotalAmount());
+                        egoldTieringModelArrayList.add(egoldTieringModel);
+                    }
+                    egoldAttributeModel.setEgoldTieringModelArrayList(egoldTieringModelArrayList);
+                }
+
+                dataResult.setEgoldAttributes(egoldAttributeModel);
+            }
         }
 
         if (shipmentAddressFormDataResponse.getAutoapplyStack() != null) {
@@ -171,12 +203,14 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setGlobalCouponAttrData(globalCouponAttrData);
         }
 
-        if (shipmentAddressFormDataResponse.getDonation() != null) {
-            Donation donation = new Donation();
-            donation.setTitle(shipmentAddressFormDataResponse.getDonation().getTitle());
-            donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
-            donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
-            dataResult.setDonation(donation);
+        if (!isDisableDonation) {
+            if (shipmentAddressFormDataResponse.getDonation() != null) {
+                Donation donation = new Donation();
+                donation.setTitle(shipmentAddressFormDataResponse.getDonation().getTitle());
+                donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
+                donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
+                dataResult.setDonation(donation);
+            }
         }
 
         if (shipmentAddressFormDataResponse.getCod() != null) {
@@ -453,23 +487,25 @@ public class ShipmentMapper implements IShipmentMapper {
                                     productResult.setTradeInInfo(tradeInInfo);
                                 }
 
-                                if (product.getPurchaseProtectionPlanData() != null) {
-                                    PurchaseProtectionPlanData purchaseProtectionPlanData = new PurchaseProtectionPlanData();
-                                    com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.PurchaseProtectionPlanData pppDataMapping =
-                                            product.getPurchaseProtectionPlanData();
+                                if (!isDisablePPP) {
+                                    if (product.getPurchaseProtectionPlanData() != null) {
+                                        PurchaseProtectionPlanData purchaseProtectionPlanData = new PurchaseProtectionPlanData();
+                                        com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.PurchaseProtectionPlanData pppDataMapping =
+                                                product.getPurchaseProtectionPlanData();
 
-                                    purchaseProtectionPlanData.setProtectionAvailable(pppDataMapping.getProtectionAvailable());
-                                    purchaseProtectionPlanData.setProtectionLinkText(pppDataMapping.getProtectionLinkText());
-                                    purchaseProtectionPlanData.setProtectionLinkUrl(pppDataMapping.getProtectionLinkUrl());
-                                    purchaseProtectionPlanData.setProtectionOptIn(pppDataMapping.getProtectionOptIn());
-                                    purchaseProtectionPlanData.setProtectionPrice(pppDataMapping.getProtectionPrice());
-                                    purchaseProtectionPlanData.setProtectionPricePerProduct(pppDataMapping.getProtectionPricePerProduct());
-                                    purchaseProtectionPlanData.setProtectionSubtitle(pppDataMapping.getProtectionSubtitle());
-                                    purchaseProtectionPlanData.setProtectionTitle(pppDataMapping.getProtectionTitle());
-                                    purchaseProtectionPlanData.setProtectionTypeId(pppDataMapping.getProtectionTypeId());
-                                    purchaseProtectionPlanData.setProtectionCheckboxDisabled(pppDataMapping.getProtectionCheckboxDisabled());
+                                        purchaseProtectionPlanData.setProtectionAvailable(pppDataMapping.getProtectionAvailable());
+                                        purchaseProtectionPlanData.setProtectionLinkText(pppDataMapping.getProtectionLinkText());
+                                        purchaseProtectionPlanData.setProtectionLinkUrl(pppDataMapping.getProtectionLinkUrl());
+                                        purchaseProtectionPlanData.setProtectionOptIn(pppDataMapping.getProtectionOptIn());
+                                        purchaseProtectionPlanData.setProtectionPrice(pppDataMapping.getProtectionPrice());
+                                        purchaseProtectionPlanData.setProtectionPricePerProduct(pppDataMapping.getProtectionPricePerProduct());
+                                        purchaseProtectionPlanData.setProtectionSubtitle(pppDataMapping.getProtectionSubtitle());
+                                        purchaseProtectionPlanData.setProtectionTitle(pppDataMapping.getProtectionTitle());
+                                        purchaseProtectionPlanData.setProtectionTypeId(pppDataMapping.getProtectionTypeId());
+                                        purchaseProtectionPlanData.setProtectionCheckboxDisabled(pppDataMapping.getProtectionCheckboxDisabled());
 
-                                    productResult.setPurchaseProtectionPlanData(purchaseProtectionPlanData);
+                                        productResult.setPurchaseProtectionPlanData(purchaseProtectionPlanData);
+                                    }
                                 }
 
                                 if (product.getFreeReturns() != null) {

@@ -38,6 +38,7 @@ public class FlightOrderAuthInterceptor extends TkpdAuthInterceptor {
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
         String newPath = path.replace("/travel", "");
+        this.authKey = AuthUtil.KEY.KEY_WSV4;
         return AuthUtil.generateHeadersWithXUserId(newPath,strParam,method,this.authKey,
                 contentTypeHeader,userSession.getUserId(), userSession.getDeviceId(), userSession);
     }
