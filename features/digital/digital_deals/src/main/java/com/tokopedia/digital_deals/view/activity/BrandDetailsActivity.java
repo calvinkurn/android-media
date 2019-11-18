@@ -58,9 +58,4 @@ public class BrandDetailsActivity extends DealsBaseActivity {
         }
         return BrandDetailsFragment.createInstance(bundle);
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 }
