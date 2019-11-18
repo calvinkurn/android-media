@@ -130,6 +130,11 @@ class MerchantVoucherView : CustomVoucherView {
                     btnUseVoucher.visibility = View.VISIBLE
                     btnUseVoucher.isEnabled = false
                 }
+                (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_RESTRICTED) -> {
+                    btnUseVoucher.text = context.getString(R.string.restricted)
+                    btnUseVoucher.visibility = View.VISIBLE
+                    btnUseVoucher.isEnabled = false
+                }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE) -> {
                     //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below comment for future release
                     /*btnUseVoucher.visibility = View.GONE
