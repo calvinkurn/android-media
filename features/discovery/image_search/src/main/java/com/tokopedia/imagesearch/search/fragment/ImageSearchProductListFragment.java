@@ -56,6 +56,8 @@ import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.Catego
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.RedirectionListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
