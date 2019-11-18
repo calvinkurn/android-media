@@ -294,6 +294,7 @@ public class FlightDetailViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(id);
+        parcel.writeString(term);
         parcel.writeString(departureAirport);
         parcel.writeString(departureAirportCity);
         parcel.writeString(departureTime);
