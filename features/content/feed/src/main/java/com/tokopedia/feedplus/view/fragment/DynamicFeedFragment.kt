@@ -220,7 +220,7 @@ class DynamicFeedFragment:
         showSnackbar(err)
     }
 
-    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
+    override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (track in trackList) {
             presenter.trackAffiliate(
                     if (isClick) track.clickURL
