@@ -282,13 +282,11 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         flightCancellationPresenter.checkPassenger(passengerViewModel, position);
-        getAdapter().notifyItemChanged(position);
     }
 
     @Override
     public void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         flightCancellationPresenter.uncheckPassenger(passengerViewModel, position);
-        getAdapter().notifyItemChanged(position);
     }
 
     @Override
