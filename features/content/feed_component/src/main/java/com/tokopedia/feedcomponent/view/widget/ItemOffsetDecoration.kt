@@ -9,7 +9,7 @@ import android.view.View
 /** for gridLayout
   * space in px
  **/
-class ItemOffsetDecoration(val space: Int, val totalItem: Int) : RecyclerView.ItemDecoration(){
+class ItemOffsetDecoration(val space: Int, val totalItem: Int) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)
