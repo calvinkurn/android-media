@@ -56,8 +56,6 @@ import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.Catego
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.RedirectionListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
-import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -74,7 +72,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
-import static com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION;
 
 /**
@@ -448,7 +446,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                 && data.getExtras() != null
                 && data.getExtras().getInt(WISHLIST_STATUS_UPDATED_POSITION, -1) != -1) {
             int position = data.getExtras().getInt(WISHLIST_STATUS_UPDATED_POSITION, -1);
-            boolean isWishlist = data.getExtras().getBoolean(WIHSLIST_STATUS_IS_WISHLIST, false);
+            boolean isWishlist = data.getExtras().getBoolean(WISHLIST_STATUS_IS_WISHLIST, false);
 
             updateWishlistFromPDP(position, isWishlist);
         }
