@@ -120,6 +120,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE) ?: FlightPriceViewModel()
 
             bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceViewModel)
+
+            val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
+            bookingViewModel.addToCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart),
+                    GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
+                    GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_get_cart),
+                    requestId)
+            bookingViewModel.getProfile(GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile))
         }
     }
 
@@ -435,13 +442,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         launchLoadingPageJob.start()
-        val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
-        bookingViewModel.addToCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart),
-                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
-                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_get_cart),
-                requestId)
-        bookingViewModel.getProfile(GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile))
-
         setUpView()
         launchLoadingLayoutJob.start()
     }
