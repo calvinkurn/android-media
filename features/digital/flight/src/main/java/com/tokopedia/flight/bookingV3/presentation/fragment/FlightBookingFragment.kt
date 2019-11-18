@@ -685,23 +685,21 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun showErrorDialog(e: FlightError) {
-        if (e.equals(FlightError(FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())))) {
-            if (activity != null) {
-                val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-                dialog.setTitle(e.title)
-                dialog.setDescription("description")
-                dialog.setPrimaryCTAText("coba")
-                dialog.setSecondaryCTAText("coba2")
+        if (activity != null) {
+            val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(e.title)
+            dialog.setDescription("description")
+            dialog.setPrimaryCTAText("coba")
+            dialog.setSecondaryCTAText("coba2")
 
-                dialog.setPrimaryCTAClickListener {
-                    //                   if error code this, do this
-                    dialog.dismiss()
-                }
-
-                dialog.setSecondaryCTAClickListener(dialog::dismiss)
-
-                dialog.show()
+            dialog.setPrimaryCTAClickListener {
+                //                   if error code this, do this
+                dialog.dismiss()
             }
+
+            dialog.setSecondaryCTAClickListener(dialog::dismiss)
+
+            dialog.show()
         }
     }
 
