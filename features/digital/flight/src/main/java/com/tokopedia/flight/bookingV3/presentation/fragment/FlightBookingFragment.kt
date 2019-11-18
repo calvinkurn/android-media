@@ -53,6 +53,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewMo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
@@ -143,7 +144,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendAddToCartTracking()
                 }
                 is Fail -> {
-
+                    if (loadingDialog.isShowing) loadingDialog.dismiss()
+                    //showErrorMessage
                 }
             }
         })
@@ -156,9 +158,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     renderProfileData(it.data)
-                }
-                is Fail -> {
-
                 }
             }
         })
@@ -190,7 +189,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendCheckOutTracking()
                 }
                 is Fail -> {
-
+                    //showErrorMessage
                 }
             }
         })
@@ -198,6 +197,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightVerifyResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    if (loadingDialog.isShowing) loadingDialog.dismiss()
                     it.data.data.cartItems[0]?.let { cart ->
                         if (cart.configuration.price != cart.oldPriceNumeric) {
                             showRepriceTag(cart)
@@ -208,6 +208,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
+                    if (loadingDialog.isShowing) loadingDialog.dismiss()
                     showErrorDialog(it.throwable)
                 }
             }
@@ -296,7 +297,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun setUpTimer(timeStamp: Date) {
         countdown_timeout.setListener {
-            //call get cart again
+            launchLoadingLayoutJob.start()
+            bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
+                    bookingViewModel.getCartId(), "")
         }
         countdown_timeout.cancel()
         countdown_timeout.setExpiredDate(timeStamp)
@@ -443,7 +446,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         launchLoadingPageJob.start()
         setUpView()
-        launchLoadingLayoutJob.start()
     }
 
     private fun navigateToTopPay(checkoutData: FlightCheckoutData) {
@@ -487,6 +489,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             bookingViewModel.onTravellerAsPassenger(on)
         }
         button_submit.setOnClickListener {
+            launchLoadingLayoutJob.start()
             bookingViewModel.verifyCartData(
                     GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart),
                     totalPrice = totalCartPrice,
@@ -674,13 +677,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun showErrorDialog(e: Throwable) {
         Log.d("ERROR", e.message)
-        if (e is FlightException) {
-            val errors = e.errorList
-            if (errors.contains(FlightError(FlightBookingErrorCodeMapper.mapToFlightErrorCode(errors[0].id.toInt())))) {
+        if (e is MessageErrorException) {
                 if (activity != null) {
                     val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-                    dialog.setTitle("error")
-                    dialog.setDescription("errorrrr")
+                    dialog.setTitle(e.message.toString())
+                    dialog.setDescription(e.message.toString())
                     dialog.setPrimaryCTAText("jhrhrhr")
                     dialog.setSecondaryCTAText("heheheee")
 
@@ -693,7 +694,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
                     dialog.show()
                 }
-            }
         }
     }
 
