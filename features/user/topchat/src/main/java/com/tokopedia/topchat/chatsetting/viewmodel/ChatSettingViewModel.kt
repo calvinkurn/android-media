@@ -1,9 +1,14 @@
 package com.tokopedia.topchat.chatsetting.viewmodel
 
-import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.data.GetChatSettingResponse
 import com.tokopedia.topchat.chatsetting.usecase.GetChatSettingUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -12,19 +17,24 @@ class ChatSettingViewModel @Inject constructor(
         private val getChatSettingUseCase: GetChatSettingUseCase
 ) : BaseViewModel(mainDispatcher) {
 
+    private val _chatSettings = MutableLiveData<Result<List<ChatSetting>>>()
+    val chatSettings: LiveData<Result<List<ChatSetting>>>
+        get() = _chatSettings
+
     fun loadChatSettings() {
         getChatSettingUseCase.get(onSuccessGetChatSetting(), onErrorGetChatSetting())
     }
 
     private fun onSuccessGetChatSetting(): (GetChatSettingResponse) -> Unit {
         return { response ->
-            Log.d("RESPONSE", "success")
+            val chatSettings = response.chatGetGearList.list
+            _chatSettings.postValue(Success(chatSettings))
         }
     }
 
     private fun onErrorGetChatSetting(): (Throwable) -> Unit {
         return { error ->
-            Log.d("RESPONSE", "error")
+            _chatSettings.postValue(Fail(error))
         }
     }
 
