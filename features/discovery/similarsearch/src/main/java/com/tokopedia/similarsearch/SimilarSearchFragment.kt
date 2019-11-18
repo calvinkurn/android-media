@@ -177,7 +177,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun selectedProductOnButtonAddToCartClicked(originalProduct: Product) {
         activity?.let { activity ->
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).also {
-                it.putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, originalProduct.shop.id)
+                it.putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, originalProduct.shop.id.toString())
                 it.putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, originalProduct.id)
             }
 
