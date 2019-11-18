@@ -2,13 +2,20 @@ include 'libraries:inappupdate'
 
 include 'features:discovery:similarsearch'
 
+include 'features:common:resources_common'
+include 'features:discovery:discovery_common'
 include 'features:discovery:productcard'
 include 'features:discovery:wishlist_common'
+include 'features:discovery:topadssdk'
+include 'features:merchant:gold_merchant_resource'
 
+include 'libraries:analytics'
 include 'libraries:applink'
-include "libraries:track"
-include 'libraries:kotlin_extension'
-include 'libraries:promotion_targets'
+include 'libraries:kotlin_extensions'
+include 'libraries:promotions_target'
+include 'libraries:remote_config'
+include 'libraries:track'
+include 'libraries:tracking_optimizer'
 
 include 'tkpdabstraction'
 include 'tkpddesign'
