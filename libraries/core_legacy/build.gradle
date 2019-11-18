@@ -78,9 +78,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation(rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-firebase'
-    }
+    implementation(rootProject.ext.analyticsDependencies.moengage)
     implementation rootProject.ext.analyticsDependencies.moengageAmp
 }
 
