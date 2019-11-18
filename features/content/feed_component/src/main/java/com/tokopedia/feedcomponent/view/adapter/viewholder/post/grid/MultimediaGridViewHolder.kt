@@ -84,7 +84,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
     private fun playVideo(url: String) {
         if (!isPlaying) {
             itemView.feedMultipleImageView.performClick()
-            itemView.loading_panel.show()
+            itemView.loading_progress.show()
             itemView.layout_dummy.gone()
             itemView.frame_video.invisible()
             itemView.layout_video.setVideoURI(Uri.parse(url))
@@ -94,7 +94,7 @@ class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMu
                     mp.setOnInfoListener(object: MediaPlayer.OnInfoListener {
                         override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                             if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                                itemView.loading_panel.gone()
+                                itemView.loading_progress.gone()
                                 itemView.frame_video.visibility = View.VISIBLE
                                 return true
                             }
