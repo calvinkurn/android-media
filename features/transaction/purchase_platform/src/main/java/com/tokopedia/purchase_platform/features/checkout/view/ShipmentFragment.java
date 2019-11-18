@@ -897,16 +897,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             priceValidationDialog.setTitle(messageData.getTitle());
             priceValidationDialog.setDescription(messageData.getDesc());
             priceValidationDialog.setPrimaryCTAText(messageData.getAction());
-            priceValidationDialog.setPrimaryCTAClickListener(new Function0<Unit>() {
-                @Override
-                public Unit invoke() {
-                    shipmentPresenter.processInitialLoadCheckoutPage(
-                            true, isOneClickShipment(), isTradeIn(), true,
-                            true, null, getDeviceId(), getCheckoutLeasingId()
-                    );
-                    priceValidationDialog.dismiss();
-                    return Unit.INSTANCE;
-                }
+            priceValidationDialog.setPrimaryCTAClickListener(() -> {
+                shipmentPresenter.processInitialLoadCheckoutPage(
+                        true, isOneClickShipment(), isTradeIn(), true,
+                        true, null, getDeviceId(), getCheckoutLeasingId()
+                );
+                priceValidationDialog.dismiss();
+                return Unit.INSTANCE;
             });
 
             priceValidationDialog.show();
