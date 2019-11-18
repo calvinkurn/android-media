@@ -1,11 +1,37 @@
-query GetPublicMerchantVoucherList($shop_id: Int!, $num_voucher: Int!) {
-getPublicMerchantVoucherList(shop_id:$shop_id, num_voucher:$num_voucher) {
-vouchers { voucher_id voucher_name voucher_code voucher_type { voucher_type identifier }
-voucher_code amount { amount_type amount } minimum_spend
-owner { owner_id identifier }
-valid_thru tnc
-banner { desktop_url mobile_url }
-status { status identifier }
-in_use_expiry }
-error_message_title
-error_message} }
+query GetPublicMerchantVoucherList($shop_id: Int!, $num_voucher: Int, $cart_item_data: [MerchantVoucherCartItem]) {
+  getPublicMerchantVoucherList(shop_id: $shop_id, num_voucher: $num_voucher, cart_item_data: $cart_item_data) {
+    vouchers {
+      voucher_id
+      voucher_name
+      voucher_code
+      voucher_type {
+        voucher_type
+        identifier
+      }
+      voucher_code
+      amount {
+        amount_type
+        amount
+      }
+      minimum_spend
+      owner {
+        owner_id
+        identifier
+      }
+      valid_thru
+      tnc
+      banner {
+        desktop_url
+        mobile_url
+      }
+      status {
+        status
+        identifier
+      }
+      in_use_expiry
+      restricted_for_liquid_product
+    }
+    error_message_title
+    error_message
+  }
+}
