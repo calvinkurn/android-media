@@ -272,9 +272,11 @@ public class InboxReputationDetailItemViewHolder extends
 
         }
         showOrHideGiveReviewLayout(element);
-        giveReview.setOnClickListener( view ->
-                viewListener.onGoToGiveReview(element.getProductId(), element.getShopId())
-        );
+        giveReview.setOnClickListener( view -> viewListener.onGoToGiveReview(
+                element.getProductId(),
+                element.getShopId(),
+                ""
+        ));
 
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();
