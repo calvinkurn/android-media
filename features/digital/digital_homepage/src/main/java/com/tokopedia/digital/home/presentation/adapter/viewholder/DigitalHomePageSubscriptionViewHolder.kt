@@ -30,7 +30,9 @@ class DigitalHomePageSubscriptionViewHolder(itemView: View?, val onItemBindListe
                     addItemDecoration(object: RecyclerView.ItemDecoration() {
                         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                             super.getItemOffsets(outRect, view, parent, state)
-                            outRect.right = itemView.context.resources.getDimension(ITEM_DECORATOR_SIZE).toInt()
+                            if (parent.getChildAdapterPosition(view) < items.size - 1) {
+                                outRect.right = itemView.context.resources.getDimension(ITEM_DECORATOR_SIZE).toInt()
+                            }
                         }
                     })
                 }

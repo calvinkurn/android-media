@@ -34,7 +34,10 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
                     addItemDecoration(object: RecyclerView.ItemDecoration() {
                         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                             super.getItemOffsets(outRect, view, parent, state)
-                            outRect.right = itemView.context.resources.getDimension(ITEM_DECORATOR_SIZE).toInt()
+                            // Add offset to all items except the last one
+                            if (parent.getChildAdapterPosition(view) < items.size - 1) {
+                                outRect.right = itemView.context.resources.getDimension(ITEM_DECORATOR_SIZE).toInt()
+                            }
                         }
                     })
                 }
