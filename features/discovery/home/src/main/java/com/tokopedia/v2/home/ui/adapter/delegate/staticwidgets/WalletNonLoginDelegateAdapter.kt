@@ -21,12 +21,12 @@ class WalletNonLoginDelegateAdapter : ViewTypeDelegateAdapter {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: ModelViewType) {
         holder as WalletNonLoginViewHolder
-        holder.bind(item as WalletNonLoginDataModel)
+        holder.bind()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: ModelViewType, payload: List<Any>) {
         if(payload.isNotEmpty() && holder is WalletNonLoginViewHolder){
-            holder.bind(item as WalletNonLoginDataModel)
+            holder.bind()
         }
     }
 
@@ -41,7 +41,7 @@ class WalletNonLoginDelegateAdapter : ViewTypeDelegateAdapter {
         val containerRoot = itemView.container_wallet
         private val BG_CONTAINER_URL = "https://ecs7.tokopedia.net/img/android/bg_product_fintech_tokopoint_normal/drawable-xhdpi/bg_product_fintech_tokopoint_normal.png"
 
-        fun bind(item: WalletNonLoginDataModel){
+        fun bind() {
             containerRoot.background = ViewUtils.generateBackgroundWithShadow(containerRoot, R.color.white, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
             val radius = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP, 8f, itemView.resources.displayMetrics)

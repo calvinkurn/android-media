@@ -1,9 +1,11 @@
 package com.tokopedia.v2.home.model.vo
 
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
+import com.tokopedia.v2.home.model.pojo.wallet.WalletData
 
-class WalletDataModel(
-
+data class WalletDataModel(
+    val walletData: WalletData? = null,
+    val status: Resource.Status = Resource.Status.LOADING
 ) : ModelViewType {
     override fun getPrimaryKey(): Int {
         return 3

@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.v2.home.data.datasource.remote.HomeRemoteDataSource
-import com.tokopedia.v2.home.model.pojo.HomeData
+import com.tokopedia.v2.home.model.pojo.home.HomeData
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

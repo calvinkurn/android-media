@@ -8,7 +8,7 @@ import com.tokopedia.v2.home.base.HomeRepository
 import com.tokopedia.v2.home.data.datasource.local.dao.HomeDao
 import com.tokopedia.v2.home.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.v2.home.data.repository.HomeRepositoryImpl
-import com.tokopedia.v2.home.model.pojo.HomeData
+import com.tokopedia.v2.home.model.pojo.home.HomeData
 import com.tokopedia.v2.home.model.vo.Resource
 import io.mockk.*
 import kotlinx.coroutines.*
@@ -26,12 +26,12 @@ class HomeRepositoryTest {
     private val service = mockk<HomeRemoteDataSource>()
     private lateinit var observerHome: Observer<Resource<HomeData>>
 
-    @Rule
-    @JvmField
-    val instantExecutorRule = InstantTaskExecutorRule()
+        @Rule
+        @JvmField
+        val instantExecutorRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    var coroutinesMainDispatcherRule = CoroutinesMainDispatcherRule()
+        @get:Rule
+        var coroutinesMainDispatcherRule = CoroutinesMainDispatcherRule()
 
     @Before
     fun init(){

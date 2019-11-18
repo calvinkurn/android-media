@@ -1,14 +1,14 @@
-package com.tokopedia.v2.home.model.pojo
+package com.tokopedia.v2.home.model.pojo.home
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Ticker (
-    @SerializedName("tickers")
+        @SerializedName("tickers")
     @Expose
     val tickers: List<Tickers> = listOf(),
 
-    @SerializedName("meta")
+        @SerializedName("meta")
     @Expose
     val meta: Meta
 )

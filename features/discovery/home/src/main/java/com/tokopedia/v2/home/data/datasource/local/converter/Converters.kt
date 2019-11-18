@@ -2,7 +2,7 @@ package com.tokopedia.v2.home.data.datasource.local.converter
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.tokopedia.v2.home.model.pojo.*
+import com.tokopedia.v2.home.model.pojo.home.*
 
 class Converters {
     private val gson = Gson()

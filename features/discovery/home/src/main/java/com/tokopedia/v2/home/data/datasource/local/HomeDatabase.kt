@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.tokopedia.v2.home.data.datasource.local.converter.Converters
 import com.tokopedia.v2.home.data.datasource.local.dao.HomeDao
-import com.tokopedia.v2.home.model.pojo.HomeData
+import com.tokopedia.v2.home.model.pojo.home.HomeData
 
 @Database(entities = [HomeData::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)

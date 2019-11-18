@@ -2,7 +2,7 @@ package com.tokopedia.v2.home.model.vo
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
-import com.tokopedia.v2.home.model.pojo.Banner
+import com.tokopedia.v2.home.model.pojo.home.Banner
 
 class BannerDataModel (
     val banner: Banner

@@ -5,19 +5,19 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.v2.home.model.pojo.HomeData
+import com.tokopedia.v2.home.data.query.HomeQuery
+import com.tokopedia.v2.home.model.pojo.home.HomeData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class HomeRemoteDataSource (
-        private val graphqlRepository: GraphqlRepository,
-        private val homeQuery: String
+        private val graphqlRepository: GraphqlRepository
 ){
     suspend fun getHomeData(): GraphqlResponse = withContext(Dispatchers.IO) {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
         val gqlRecommendationRequest = GraphqlRequest(
-                homeQuery,
+                HomeQuery.getQuery(),
                 HomeData::class.java
         )
 
@@ -29,7 +29,7 @@ class HomeRemoteDataSource (
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
         val gqlRecommendationRequest = GraphqlRequest(
-                homeQuery,
+                HomeQuery.getQuery(),
                 com.tokopedia.home.beranda.domain.model.HomeData::class.java
         )
 

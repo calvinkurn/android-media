@@ -8,7 +8,7 @@ import com.tokopedia.home.beranda.listener.ActivityStateListener
 import com.tokopedia.v2.home.base.adapterdelegate.ModelViewType
 import com.tokopedia.v2.home.base.adapterdelegate.ViewTypeDelegateAdapter
 import com.tokopedia.v2.home.base.adapterdelegate.inflate
-import com.tokopedia.v2.home.model.pojo.BannerSlide
+import com.tokopedia.v2.home.model.pojo.home.BannerSlide
 import com.tokopedia.v2.home.model.vo.BannerDataModel
 import kotlinx.android.synthetic.main.home_banner.view.*
 import java.util.*

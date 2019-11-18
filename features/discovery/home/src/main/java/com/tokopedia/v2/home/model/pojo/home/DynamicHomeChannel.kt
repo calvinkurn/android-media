@@ -1,4 +1,4 @@
-package com.tokopedia.v2.home.model.pojo
+package com.tokopedia.v2.home.model.pojo.home
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -9,46 +9,46 @@ data class DynamicHomeChannel(
 )
 
 data class Channel(
-    @Expose
+        @Expose
     @SerializedName("id")
     val id: String?,
 
-    @Expose
+        @Expose
     @SerializedName("layout")
     val layout: String?,
 
-    @Expose
+        @Expose
     @SerializedName("name")
     val name: String?,
 
-    @Expose
+        @Expose
     @SerializedName("grids")
     val grids: Array<Grid>?,
 
-    @Expose
+        @Expose
     @SerializedName("hero")
     val hero: Array<Hero>?,
 
-    @Expose
+        @Expose
     @SerializedName("type")
     val type: String?,
 
-    @Expose
+        @Expose
     @SerializedName("showPromoBadge")
     val showPromoBadge: Boolean?,
 
-    @Expose
+        @Expose
     @SerializedName("header")
     val header: Header?,
 
-    @Expose
+        @Expose
     @SerializedName("banner")
     val banner: Banner?,
 
-    @SerializedName("promoName")
+        @SerializedName("promoName")
     val promoName: String?,
 
-    @SerializedName("homeAttribution")
+        @SerializedName("homeAttribution")
     val homeAttribution: String?
 ){
 
@@ -147,39 +147,39 @@ data class Channel(
     )
 
     data class Banner(
-        @Expose
+            @Expose
         @SerializedName("id")
         val id: String?,
 
-        @Expose
+            @Expose
         @SerializedName("title")
         val title: String?,
 
-        @Expose
+            @Expose
         @SerializedName("description")
         val description: String?,
 
-        @Expose
+            @Expose
         @SerializedName("cta")
         val cta: CtaData?,
 
-        @Expose
+            @Expose
         @SerializedName("url")
         val url: String?,
 
-        @Expose
+            @Expose
         @SerializedName("applink")
         val applink: String?,
 
-        @Expose
+            @Expose
         @SerializedName("text_color")
         val textColor: String?,
 
-        @Expose
+            @Expose
         @SerializedName("image_url")
         val imageUrl: String?,
 
-        @Expose
+            @Expose
         @SerializedName("attribution")
         val attribution: String?
     )
