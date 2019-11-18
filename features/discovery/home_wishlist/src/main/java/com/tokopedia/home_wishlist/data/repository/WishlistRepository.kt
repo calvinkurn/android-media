@@ -9,17 +9,14 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home_wishlist.model.entity.Wishlist
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
 import com.tokopedia.home_wishlist.model.entity.WishlistResponse
-import com.tokopedia.recommendation_widget_common.domain.RecommendationDataSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
-
 class WishlistRepository @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        private val recommendationDataSource: RecommendationDataSource,
         @Named("wishlistQuery") private val query: String
 ) {
     companion object{
@@ -66,22 +63,5 @@ class WishlistRepository @Inject constructor(
                 items = data.items,
                 totalData = data.totalData
         )
-    }
-
-    suspend fun getRecommendationData(page: Int, productIds: List<String>): List<RecommendationWidget>{
-        val list = mutableListOf<RecommendationWidget>()
-        val widget = recommendationDataSource.load(
-                pageName = "wishlist",
-                pageNumber = page,
-                productIds = productIds
-        )
-        if(widget.isNotEmpty()){
-            list.add(widget[0])
-        }
-        return list
-    }
-
-    suspend fun getSingleRecommendationData(page: Int): RecommendationWidget{
-        return recommendationDataSource.loadSingleWidget(pageName = "wishlist", pageNumber = page)
     }
 }

@@ -3,12 +3,6 @@ package com.tokopedia.home_wishlist.view.ext
 import com.tokopedia.home_wishlist.util.Response
 import com.tokopedia.home_wishlist.util.Status
 
-fun <T> Response<T>?.successAvailable(callback: (T) -> Unit) {
-    if (this != null && status == Status.SUCCESS && data != null) {
-        callback.invoke(this.data)
-    }
-}
-
 fun <T> Response<T>?.available(callback: (T) -> Unit) {
     if (this != null && data != null) {
         callback.invoke(this.data)

@@ -9,8 +9,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
 import com.tokopedia.home_wishlist.common.WishlistProductionDispatcherProvider
-import com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.RecommendationDataSource
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.user.session.UserSession
@@ -43,15 +43,11 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
-    fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
-                                        @Named("singleProductRecommendation") singleRecomQuery: String,
-                                        graphqlRepository: GraphqlRepository,
-                                        userSessionInterface: UserSessionInterface): RecommendationDataSource = RecommendationDataSource(recomQuery, singleRecomQuery, graphqlRepository, userSessionInterface)
+    fun provideGetSingleRecommendationUseCase(graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(graphqlRepository)
+
     @Provides
     @WishlistScope
-    fun provideGetSingleRecommendationUseCase(@Named("singleProductRecommendation") recomQuery: String,
-                                        graphqlUseCase: GraphqlUseCase,
-                                        userSessionInterface: UserSessionInterface): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
+    fun provideGetRecommendationUseCase(coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(coroutineGqlRepository)
 
     @Provides
     @WishlistScope

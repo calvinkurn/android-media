@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 open class BulkRemoveWishlistUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase): UseCase<WishlistActionData>() {
 
+
     val bulk_remove_wishlist_req = "mutation bulkRemoveWishlist(\$productIDs: [Int]!, \$userID: Int!) {\n" +
             "    wishlist_bulk_remove(productID: \$productIDs, userID: \$userID) {\n" +
             "        id\n" +

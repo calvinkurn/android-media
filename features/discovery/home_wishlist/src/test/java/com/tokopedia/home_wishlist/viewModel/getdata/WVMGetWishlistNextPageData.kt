@@ -1,15 +1,22 @@
 package com.tokopedia.home_wishlist.viewModel.getdata
 
+import com.nhaarman.mockitokotlin2.mock
 import com.tokopedia.home_wishlist.InstantTaskExecutorRuleSpek
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
+import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
+import com.tokopedia.home_wishlist.domain.GetWishlistParameter
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataModel
+import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.viewModel.createWishlistTestInstance
 import com.tokopedia.home_wishlist.viewModel.createWishlistViewModel
+import com.tokopedia.home_wishlist.viewModel.givenGetWishlistDataReturnsThis
 import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetRecommendationDataReturnsThis
-import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetWishlistDataReturnsThis
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
@@ -26,7 +33,9 @@ class WVMGetWishlistNextPageData : Spek({
         createWishlistTestInstance()
         val mockUserId = "12345"
         val userSessionInterface by memoized<UserSessionInterface>()
-        val wishlistRepository by memoized<WishlistRepository>()
+        val getWishlistDataUseCase by memoized<GetWishlistDataUseCase>()
+        val getSingleRecommendationUseCase by memoized<GetSingleRecommendationUseCase>()
+        val getRecommendationUseCase by memoized<GetRecommendationUseCase>()
 
         Scenario("Get next page data and received empty wishlist would not change wishlist data value") {
 
@@ -36,8 +45,8 @@ class WVMGetWishlistNextPageData : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns 3 wishlist data with values for initial data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist usecase returns 3 wishlist data with values for initial data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="1"),
                         WishlistItem(id="2"),
                         WishlistItem(id="3")
@@ -49,10 +58,9 @@ class WVMGetWishlistNextPageData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository returns empty wishlist item data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(),
+            Given("Get wishlist usecase returns empty wishlist item data for next page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(),
                         hasNextPage = false, page = nextPage)
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
             }
 
             When("Viewmodel get wishlist data") {
@@ -66,15 +74,19 @@ class WVMGetWishlistNextPageData : Spek({
 
         Scenario("Get next page data success will add existing data with new data") {
 
+            val mockKeyword = "keyAja"
+            val currentPage = 1
+            val nextPage = 2
+
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns 3 wishlist data with values") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist usecase returns 3 wishlist data with values") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="1"),
                         WishlistItem(id="2"),
                         WishlistItem(id="3")
-                ))
+                ), page = currentPage)
             }
             Given("Live data is filled by data from getWishlistData") {
                 wishlistViewmodel.getWishlistData()
@@ -82,17 +94,15 @@ class WVMGetWishlistNextPageData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository returns 3 wishlist item data") {
-                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistEntityData(
-                        items = listOf(
+            Given("Get wishlist usecase returns 3 wishlist item data for next page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
+                        wishlistItems = listOf(
                                 WishlistItem(id="5"),
                                 WishlistItem(id="6"),
                                 WishlistItem(id="7")
                         ),
-                        hasNextPage = false,
-                        isSuccess = true
+                        hasNextPage = false, page = nextPage
                 )
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
             }
 
             When("Viewmodel get wishlist data") {
@@ -101,6 +111,61 @@ class WVMGetWishlistNextPageData : Spek({
 
             Then("Expect wishlistLiveData has 6 (3 old + 3 new) wishlist data") {
                 Assert.assertEquals(6, wishlistViewmodel.wishlistLiveData.value!!.size)
+            }
+        }
+
+        Scenario("Get next page data success in bulk mode will add existing data with new data in bulk mode") {
+
+            val mockKeyword = "keyAja"
+            val currentPage = 1
+            val nextPage = 2
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("Get wishlist usecase returns 3 wishlist data with values") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
+                        WishlistItem(id="1"),
+                        WishlistItem(id="2"),
+                        WishlistItem(id="3")
+                ), page = currentPage)
+            }
+            Given("Live data is filled by data from getWishlistData") {
+                wishlistViewmodel.getWishlistData()
+            }
+            Given("Wishlist viewmodel entering bulk mode") {
+                wishlistViewmodel.enterBulkMode()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Get wishlist usecase returns 3 wishlist item data for next page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
+                        wishlistItems = listOf(
+                                WishlistItem(id="5"),
+                                WishlistItem(id="6"),
+                                WishlistItem(id="7")
+                        ),
+                        hasNextPage = false, page = nextPage
+                )
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect wishlistLiveData has 6 (3 old + 3 new) wishlist data") {
+                Assert.assertEquals(6, wishlistViewmodel.wishlistLiveData.value!!.size)
+            }
+            Then("Expect all visitable is set to bulk mode") {
+                wishlistViewmodel.wishlistLiveData.value!!.forEach {
+                    if (it is RecommendationCarouselDataModel && !it.isOnBulkRemoveProgress) {
+                        Assert.assertFalse("Item recommendation carousel not in bulk mode", true)
+                    }
+                    if (it is WishlistItemDataModel && !it.isOnBulkRemoveProgress) {
+                        Assert.assertFalse("Item wishlist not in bulk mode", true)
+                    }
+                }
             }
         }
 
@@ -114,8 +179,8 @@ class WVMGetWishlistNextPageData : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns 5 wishlist data on current page") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist usecase returns 5 wishlist data on current page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="1"),
                         WishlistItem(id="2"),
                         WishlistItem(id="3"),
@@ -123,8 +188,8 @@ class WVMGetWishlistNextPageData : Spek({
                         WishlistItem(id="5")
                 ), keyword, page = currentPage)
             }
-            Given("Repository returns 9 wishlist data with values on next page") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist usecase returns 9 wishlist data with values on next page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="6"),
                         WishlistItem(id="7"),
                         WishlistItem(id="8"),
@@ -136,14 +201,18 @@ class WVMGetWishlistNextPageData : Spek({
                         WishlistItem(id="14")
                 ), keyword, page = nextPage, hasNextPage = false)
             }
-            Given("Repository returns 1 recommendation widget") {
-                wishlistRepository.givenRepositoryGetRecommendationDataReturnsThis(listOf())
+            Given("Get recommendation usecase always returns recommendation widget") {
+                getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
+                        recommendationItems = listOf()
+                )
             }
             Given("Viewmodel get initial wishlist page") {
                 wishlistViewmodel.getWishlistData(keyword)
             }
-            Given("Wishlist repository throws error") {
-                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistEntityData(isSuccess = false, errorMessage = mockErrorMessage)
+            Given("Get wishlist usecase is failed") {
+                coEvery { getWishlistDataUseCase.getData(
+                        GetWishlistParameter(keyword, nextPage)
+                ) } returns WishlistEntityData(isSuccess = false, errorMessage = mockErrorMessage)
             }
 
             When("Viewmodel get wishlist data") {
@@ -165,7 +234,7 @@ class WVMGetWishlistNextPageData : Spek({
             }
         }
 
-        Scenario("Get next page data throws error and would not change wishlist data value and trigger load more action data") {
+        Scenario("Get next page data throws error would not change wishlist data value and trigger load more action data") {
 
             val keyword = "contoh"
             val currentPage = 1
@@ -175,8 +244,8 @@ class WVMGetWishlistNextPageData : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns 5 wishlist data on current page") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist usecase returns 5 wishlist data on current page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="1"),
                         WishlistItem(id="2"),
                         WishlistItem(id="3"),
@@ -184,8 +253,8 @@ class WVMGetWishlistNextPageData : Spek({
                         WishlistItem(id="5")
                 ), keyword, page = currentPage)
             }
-            Given("Repository returns 9 wishlist data with values on next page") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist usecase returns 9 wishlist data with values on next page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="6"),
                         WishlistItem(id="7"),
                         WishlistItem(id="8"),
@@ -197,14 +266,16 @@ class WVMGetWishlistNextPageData : Spek({
                         WishlistItem(id="14")
                 ), keyword, page = nextPage, hasNextPage = false)
             }
-            Given("Repository returns 1 recommendation widget") {
-                wishlistRepository.givenRepositoryGetRecommendationDataReturnsThis(listOf())
+            Given("Get recommendation usecase returns recommendation widget") {
+                getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf())
             }
             Given("Viewmodel get initial wishlist page") {
                 wishlistViewmodel.getWishlistData(keyword)
             }
-            Given("Wishlist repository throws error") {
-                coEvery { wishlistRepository.getData(any(), nextPage) } answers {
+            Given("Get wishlist usecase throws error") {
+                coEvery { getWishlistDataUseCase.getData(
+                        GetWishlistParameter(keyword, nextPage)
+                ) } answers {
                     throw Throwable(mockErrorMessage)
                 }
             }
@@ -240,20 +311,20 @@ class WVMGetWishlistNextPageData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Repository returns 20 wishlist data on current page") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(
+            Given("Get wishlist usecase returns 20 wishlist data on current page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                         useDefaultWishlistItem = true,
                         keyword = keyword,
                         page = currentPage)
             }
-            Given("Repository returns 20 wishlist data with values on next page") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(
+            Given("Get wishlist usecase returns 20 wishlist data with values on next page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                         useDefaultWishlistItem = true,
                         keyword = keyword,
                         page = nextPage)
             }
-            Given("Repository returns 1 recommendation widget") {
-                wishlistRepository.givenRepositoryGetRecommendationDataReturnsThis(listOf())
+            Given("Get recommendation usecase returns recommendation widget") {
+                getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf())
             }
             Given("Viewmodel get initial wishlist page") {
                 wishlistViewmodel.getWishlistData(keyword)
@@ -286,21 +357,22 @@ class WVMGetWishlistNextPageData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Repository returns 20 wishlist data on current page") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(
+            Given("Get wishlist usecase returns 20 wishlist data on current page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                         useDefaultWishlistItem = true,
                         keyword = keyword,
                         page = currentPage)
             }
-            Given("Repository returns 20 wishlist data with values on next page") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(
+            Given("Get wishlist usecase returns 20 wishlist data with values on next page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                         useDefaultWishlistItem = true,
                         keyword = keyword,
                         page = nextPage)
             }
-            Given("Repository returns 1 recommendation widget") {
+            Given("Get recommendation usecase returns 1 recommendation widget") {
+
                 coEvery {
-                    wishlistRepository.getRecommendationData(any(), any()) } returns
+                    getRecommendationUseCase.getData(any()) } returns
                         listOf()
             }
             Given("Viewmodel get initial wishlist page") {
@@ -325,6 +397,7 @@ class WVMGetWishlistNextPageData : Spek({
 
         Scenario("Get next page data increase page number when fetch data success") {
 
+            val keyword = "keyword"
             val currentPage = 1
             val nextPage = 2
 
@@ -334,29 +407,27 @@ class WVMGetWishlistNextPageData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository successfully returns 3 wishlist item data") {
-                coEvery { wishlistRepository.getData(any(), nextPage) } returns WishlistEntityData(
-                        items = listOf(
-                                WishlistItem(id="1"),
-                                WishlistItem(id="2"),
-                                WishlistItem(id="3")
-                        ),
-                        hasNextPage = true,
-                        isSuccess = true
-                )
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            Given("Get wishlist usecase successfully returns 3 wishlist item data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
+                        WishlistItem(id="1"),
+                        WishlistItem(id="2"),
+                        WishlistItem(id="3")
+                ), keyword = keyword, hasNextPage = true, page = currentPage)
             }
-            Given("Wishlist repository for page 1 returns empty data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(),
-                        page = currentPage, hasNextPage = true)
+            Given("Get wishlist usecase 1 returns empty data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(),
+                        keyword = keyword, page = nextPage, hasNextPage = true)
             }
 
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getWishlistData(keyword = keyword)
+            }
             When("Viewmodel get next page wishlist data") {
                 wishlistViewmodel.getNextPageWishlistData()
             }
 
-            Then("Expect page number not increased") {
-                Assert.assertEquals(currentPage + 1, wishlistViewmodel.currentPage)
+            Then("Expect page number increased") {
+                Assert.assertEquals(nextPage, wishlistViewmodel.currentPage)
             }
         }
 
@@ -370,17 +441,23 @@ class WVMGetWishlistNextPageData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository for page 2 throws error") {
-                coEvery { wishlistRepository.getData(any(), nextPage) } returns WishlistEntityData(
+            Given("Get wishlist usecase for page 2 is failed") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
+                        wishlistItems = listOf(),
+                        hasNextPage = true,
+                        page = nextPage
+                )
+                coEvery { getWishlistDataUseCase.getData(GetWishlistParameter(page = nextPage)) } returns WishlistEntityData(
                         items = listOf(),
                         hasNextPage = true,
-                        isSuccess = false
-                )
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+                        isSuccess = false)
             }
-            Given("Wishlist repository for page 1 returns empty data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(),
-                        page = currentPage, hasNextPage = true)
+            Given("Get wishlist usecase for page 1 returns empty data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
+                        listOf(),
+                        page = currentPage,
+                        hasNextPage = true
+                )
             }
 
             When("Viewmodel get next page wishlist data") {
@@ -394,6 +471,7 @@ class WVMGetWishlistNextPageData : Spek({
 
         Scenario("Get next page data doesn't increase page number when fetch data throws error") {
 
+            val keyword = "keyword"
             val currentPage = 1
             val nextPage = 2
 
@@ -403,15 +481,20 @@ class WVMGetWishlistNextPageData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository for page 2 throws error") {
-                coEvery { wishlistRepository.getData(any(), nextPage) } answers {
+            Given("Get wishlist usecase for page 2 throws error") {
+                coEvery { getWishlistDataUseCase.getData(
+                        GetWishlistParameter(keyword, nextPage)
+                ) } answers {
                     throw Throwable("Error")
                 }
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
             }
             Given("Wishlist repository for page 1 returns empty data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(),
-                        page = currentPage, hasNextPage = true)
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
+                        keyword = keyword,
+                        wishlistItems = listOf(),
+                        page = currentPage,
+                        hasNextPage = true
+                )
             }
 
             When("Viewmodel get next page wishlist data") {

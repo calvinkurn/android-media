@@ -2,14 +2,17 @@ package com.tokopedia.home_wishlist.viewModel.removewishlist
 
 import com.tokopedia.home_wishlist.InstantTaskExecutorRuleSpek
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
+import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.viewModel.createWishlistTestInstance
 import com.tokopedia.home_wishlist.viewModel.createWishlistViewModel
+import com.tokopedia.home_wishlist.viewModel.givenGetWishlistDataReturnsThis
 import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetRecommendationDataReturnsThis
-import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetWishlistDataReturnsThis
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -26,7 +29,9 @@ class WVMRemoveWishlist : Spek({
         lateinit var wishlistViewmodel: WishlistViewModel
         val removeWishlistUseCase by memoized<RemoveWishListUseCase>()
         val userSessionInterface by memoized<UserSessionInterface>()
-        val wishlistRepository by memoized<WishlistRepository>()
+        val getWishlistDataUseCase by memoized<GetWishlistDataUseCase>()
+        val getRecommendationUseCase by memoized<GetRecommendationUseCase>()
+
         Scenario("Remove wishlist success should remove data from wishlistLiveData") {
             val mockSelectedPosition = 2
             val mockProductId = "3"
@@ -35,8 +40,8 @@ class WVMRemoveWishlist : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Wishlist repository returns wishlist data below recommendation treshold (4)") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(
+            Given("Get wishlist usecase returns wishlist data below recommendation treshold (4)") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                         listOf(
                                 WishlistItem(id="1"),
                                 WishlistItem(id="2"),
@@ -92,8 +97,8 @@ class WVMRemoveWishlist : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Wishlist repository returns wishlist data below recommendation treshold (4)") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(
+            Given("Get wishlist usecase returns wishlist data below recommendation treshold (4)") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                         listOf(
                                 WishlistItem(id="1"),
                                 WishlistItem(id="2"),
@@ -150,13 +155,13 @@ class WVMRemoveWishlist : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Wishlist repository returns wishlist data below recommendation treshold (4)") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(
+            Given("Get wishlist usecase returns wishlist data below recommendation treshold (4)") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                         useDefaultWishlistItem = true
                 )
             }
-            Given("Repository returns 1 recommendation widget") {
-                wishlistRepository.givenRepositoryGetRecommendationDataReturnsThis(listOf())
+            Given("Get recommendation usecase returns 1 recommendation widget") {
+                getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf())
             }
             Given("WishlistViewModel get wishlist data") {
                 wishlistViewmodel.getWishlistData()

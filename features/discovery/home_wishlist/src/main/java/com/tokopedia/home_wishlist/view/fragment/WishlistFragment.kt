@@ -109,7 +109,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
     internal var menu: Menu? = null
-    private var modeBulkDelete = false
     private var isInitialPage: Boolean = true
 
     companion object{
@@ -212,11 +211,9 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     private fun initSwipeRefresh(){
         swipeToRefresh?.setOnRefreshListener{
-            if(!modeBulkDelete) {
-                updateBottomMargin()
-                endlessRecyclerViewScrollListener?.resetState()
-                viewModel.getWishlistData(searchView?.searchText ?: "")
-            }
+            updateBottomMargin()
+            endlessRecyclerViewScrollListener?.resetState()
+            viewModel.getWishlistData(searchView?.searchText ?: "")
         }
     }
 
@@ -292,11 +289,38 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
         })
 
         observeState()
+        observeBulkModeState()
 
         hideSearchView()
 
         viewModel.getWishlistData(shouldShowInitialPage = true)
 
+    }
+
+    private fun observeBulkModeState() {
+        viewModel.isInBulkModeState.observe(viewLifecycleOwner, Observer { isInBulkMode ->
+            if (isInBulkMode) {
+                menu?.findItem(R.id.cancel)?.isVisible = true
+                menu?.findItem(R.id.manage)?.isVisible = false
+
+                containerDelete?.show()
+
+                hideSearchView()
+                val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+                (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(false)
+                swipeToRefresh?.isEnabled = false
+            } else {
+                menu?.findItem(R.id.cancel)?.isVisible = false
+                menu?.findItem(R.id.manage)?.isVisible = true
+
+                containerDelete?.hide()
+
+                showSearchView()
+                val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+                (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(true)
+                swipeToRefresh?.isEnabled = true
+            }
+        })
     }
 
     private fun observeState(){
@@ -431,7 +455,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 is BulkRemoveWishlistActionData -> {
                     WishlistTracking.clickConfirmBulkRemoveWishlist(trackingQueue, (action.peekContent() as BulkRemoveWishlistActionData).productIds)
                     showToaster(getString(R.string.wishlist_success_remove), "Ok")
-                    resetBulkMode()
+                    viewModel.exitBulkMode()
                 }
                 is RemoveWishlistActionData -> {
                     WishlistTracking.clickConfirmRemoveWishlist(productId = (action.peekContent() as RemoveWishlistActionData).productId.toString())
@@ -497,43 +521,16 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun manageDeleteWishlist(): Boolean{
-        modeBulkDelete = true
-
-        menu?.findItem(R.id.cancel)?.isVisible = true
-        menu?.findItem(R.id.manage)?.isVisible = false
-
-        containerDelete?.show()
-
-        hideSearchView()
-        val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
-        (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(false)
-
-        viewModel.updateBulkMode(true)
-
-        swipeToRefresh?.isEnabled = false
-
+        viewModel.enterBulkMode()
         return true
     }
 
     private fun cancelDeleteWishlist(): Boolean{
-        modeBulkDelete = false
-
-        menu?.findItem(R.id.cancel)?.isVisible = false
-        menu?.findItem(R.id.manage)?.isVisible = true
-
-        containerDelete?.hide()
-
-        showSearchView()
-        val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
-        (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(true)
-        swipeToRefresh?.isEnabled = true
-        viewModel.updateBulkMode(false)
+        viewModel.exitBulkMode()
         return true
     }
 
     private fun resetBulkMode(): Boolean{
-        modeBulkDelete = false
-
         menu?.findItem(R.id.cancel)?.isVisible = false
         menu?.findItem(R.id.manage)?.isVisible = true
 

@@ -5,12 +5,13 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.home_wishlist.InstantTaskExecutorRuleSpek
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
+import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.model.entity.Shop
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.viewModel.createWishlistTestInstance
 import com.tokopedia.home_wishlist.viewModel.createWishlistViewModel
-import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetWishlistDataReturnsThis
+import com.tokopedia.home_wishlist.viewModel.givenGetWishlistDataReturnsThis
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import io.mockk.every
 import org.junit.Assert
@@ -25,7 +26,7 @@ class WVMAddToCartWishlist : Spek({
         createWishlistTestInstance()
         lateinit var wishlistViewmodel: WishlistViewModel
         val addToCartUseCase by memoized<AddToCartUseCase>()
-        val wishlistRepository by memoized<WishlistRepository>()
+        val getWishlistDataUseCase by memoized<GetWishlistDataUseCase>()
 
         Scenario("Add to cart product success will trigger AddToCartActionData and add to cart progress flag is set to false") {
             val mockProductCardPositionCandidate = 1
@@ -39,8 +40,8 @@ class WVMAddToCartWishlist : Spek({
             Given("Create wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Wishlist repository returns wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(
+            Given("Get wishlist data returns this") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                         listOf(
                                 WishlistItem(id=mockId1, shop = Shop(id = shopId1), minimumOrder = minimumOrder),
                                 WishlistItem(id=mockId2, shop = Shop(id = shopId2), minimumOrder = minimumOrder)
@@ -107,8 +108,8 @@ class WVMAddToCartWishlist : Spek({
             Given("Create wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Wishlist repository returns wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(
+            Given("Get wishlist data returns this") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                         listOf(
                                 WishlistItem(id=mockId1, shop = Shop(id = shopId1), minimumOrder = minimumOrder),
                                 WishlistItem(id=mockId2, shop = Shop(id = shopId2), minimumOrder = minimumOrder)
@@ -180,8 +181,8 @@ class WVMAddToCartWishlist : Spek({
             Given("Create wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Wishlist repository returns wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(
+            Given("Get wishlist data returns this") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
                         listOf(
                                 WishlistItem(id=mockId1, shop = Shop(id = shopId1), minimumOrder = minimumOrder),
                                 WishlistItem(id=mockId2, shop = Shop(id = shopId2), minimumOrder = minimumOrder)

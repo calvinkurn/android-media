@@ -2,11 +2,14 @@ package com.tokopedia.home_wishlist.viewModel.getdata
 
 import com.tokopedia.home_wishlist.InstantTaskExecutorRuleSpek
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
+import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
 import com.tokopedia.home_wishlist.viewModel.*
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,15 +28,17 @@ class WVMGetWishlistData : Spek({
         createWishlistTestInstance()
         val mockUserId = "12345"
         val userSessionInterface by memoized<UserSessionInterface>()
-        val wishlistRepository by memoized<WishlistRepository>()
+        val getWishlistDataUseCase by memoized<GetWishlistDataUseCase>()
+        val getSingleRecommendationUseCase by memoized<GetSingleRecommendationUseCase>()
+        val getRecommendationUseCase by memoized<GetRecommendationUseCase>()
 
         Scenario("Get wishlist data success with empty initial wishlist data will add new wishlist data") {
 
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns wishlist data below recommendation treshold (4)") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist data returns wishlist data below recommendation treshold (4)") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="1"),
                         WishlistItem(id="2"),
                         WishlistItem(id="3")
@@ -45,8 +50,8 @@ class WVMGetWishlistData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository returns 3 wishlist item data") {
-                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistEntityData(
+            Given("Get wishlist data returns 3 wishlist item data") {
+                coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
                         items = listOf(
                                 WishlistItem(id="1"),
                                 WishlistItem(id="2"),
@@ -54,7 +59,6 @@ class WVMGetWishlistData : Spek({
                         ),
                         hasNextPage = false
                 )
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
             }
 
             When("Viewmodel get wishlist data") {
@@ -75,14 +79,19 @@ class WVMGetWishlistData : Spek({
                 every { userSessionInterface.userId } returns mockUserId
             }
             Given("Wishlist repository returns failed wishlist entity data") {
-                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistEntityData(isSuccess = false, errorMessage = "")
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+                coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(isSuccess = false, errorMessage = "")
             }
 
             When("Viewmodel get wishlist data") {
                 wishlistViewmodel.getWishlistData()
             }
 
+            Then("Expect isWishlistErrorInFirstPageState is true") {
+                Assert.assertEquals(true, wishlistViewmodel.isWishlistErrorInFirstPageState.value)
+            }
+            Then("Expect isWishlistEmptyState is false") {
+                Assert.assertEquals(false, wishlistViewmodel.isWishlistEmptyState.value)
+            }
             Then("Expect wishlistLiveData has only 1 error viewmodel") {
                 Assert.assertEquals(1, wishlistViewmodel.wishlistLiveData.value!!.size)
                 Assert.assertEquals(ErrorWishlistDataModel::class.java,
@@ -98,11 +107,11 @@ class WVMGetWishlistData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository returns empty wishlist item data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf())
+            Given("Get wishlist data returns empty wishlist item data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
             }
-            Given("Repository getSingleRecommendation returns 4 recommendation data") {
-                wishlistRepository.givenRepositoryGetSingleRecommendationReturnsThis(listOf(
+            Given("Get recommendation getSingleRecommendation returns 4 recommendation data") {
+                getSingleRecommendationUseCase.givenGetSingleRecommendationReturnsThis(listOf(
                         RecommendationItem(),
                         RecommendationItem(),
                         RecommendationItem(),
@@ -114,6 +123,12 @@ class WVMGetWishlistData : Spek({
                 wishlistViewmodel.getWishlistData()
             }
 
+            Then("Expect isWishlistErrorInFirstPageState is true") {
+                Assert.assertEquals(false, wishlistViewmodel.isWishlistErrorInFirstPageState.value)
+            }
+            Then("Expect isWishlistEmptyState is false") {
+                Assert.assertEquals(true, wishlistViewmodel.isWishlistEmptyState.value)
+            }
             Then("Expect wishlistLiveData has 6 data, 1 empty wishlist, 1 recom title model and 4 recommendation") {
                 Assert.assertEquals(6, wishlistViewmodel.wishlistLiveData.value!!.size)
                 Assert.assertEquals(EmptyWishlistDataModel::class.java,
@@ -139,8 +154,8 @@ class WVMGetWishlistData : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository for first keyword returns wishlist data above recommendation treshold (4)") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist data for first keyword returns wishlist data above recommendation treshold (4)") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="1"),
                         WishlistItem(id="2"),
                         WishlistItem(id="3"),
@@ -152,11 +167,11 @@ class WVMGetWishlistData : Spek({
                         WishlistItem(id="9")
                 ), keywordFirst)
             }
-            Given("Repository for second keyword returns empty wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(), keywordSecond)
+            Given("Get wishlist use case for second keyword returns empty wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(), keywordSecond)
             }
-            Given("Repository returns 1 recommendation data") {
-                wishlistRepository.givenRepositoryGetRecommendationDataReturnsThis(
+            Given("Get recommendation use case returns 1 recommendation data") {
+                getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
                         listOf(
                                 RecommendationItem(productId = 11),
                                 RecommendationItem(productId = 22),
@@ -166,8 +181,8 @@ class WVMGetWishlistData : Spek({
                         )
                 )
             }
-            Given("Repository getSingleRecommendation returns 4 recommendation data") {
-                coEvery { wishlistRepository.getSingleRecommendationData(0) } returns
+            Given("Get single recommendation usecase getSingleRecommendation returns 4 recommendation data") {
+                coEvery { getSingleRecommendationUseCase.getData(any()) } returns
                         RecommendationWidget(
                                 recommendationItemList = listOf(
                                         RecommendationItem(),
@@ -186,18 +201,20 @@ class WVMGetWishlistData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository returns empty wishlist item data") {
-                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistEntityData(
+            Given("Get wishlist usecase returns empty wishlist item data") {
+                coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
                         items = listOf(),
                         hasNextPage = false
                 )
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
             }
 
             When("Viewmodel get wishlist data") {
                 wishlistViewmodel.getWishlistData()
             }
 
+            Then("Expect isWishlistEmptyState is false") {
+                Assert.assertEquals(true, wishlistViewmodel.isWishlistEmptyState.value)
+            }
             Then("Expect wishlistLiveData has 6 data, 1 empty wishlist, 1 recom title model and 4 recommendation") {
                 Assert.assertEquals(6, wishlistViewmodel.wishlistLiveData.value!!.size)
                 Assert.assertEquals(EmptyWishlistDataModel::class.java,
@@ -223,21 +240,21 @@ class WVMGetWishlistData : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns wishlist data below recommendation treshold (4)") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist usecase returns wishlist data below recommendation treshold (4)") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="1"),
                         WishlistItem(id="2")
                 ), keywordFirst)
             }
-            Given("Repository returns new wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist usecase returns new wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="5"),
                         WishlistItem(id="6"),
                         WishlistItem(id="7")
                 ), keywordSecond)
             }
-            Given("Repository returns 1 recommendation data") {
-                wishlistRepository.givenRepositoryGetRecommendationDataReturnsThis(
+            Given("get recommendation usecase returns 1 recommendation data") {
+                getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(
                         listOf(
                                 RecommendationItem(productId = 11),
                                 RecommendationItem(productId = 22),
@@ -267,8 +284,8 @@ class WVMGetWishlistData : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf(
+            Given("Get wishlist usecase returns wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
                         WishlistItem(id="1"),
                         WishlistItem(id="2"),
                         WishlistItem(id="3")
@@ -280,9 +297,8 @@ class WVMGetWishlistData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository throws error") {
-                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistEntityData(isSuccess = false, errorMessage = "")
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            Given("Get wishlist usecase throws error") {
+                coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(isSuccess = false, errorMessage = "")
             }
 
             When("Viewmodel get wishlist data") {
@@ -301,8 +317,8 @@ class WVMGetWishlistData : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns empty wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf())
+            Given("Get wishlist usecase returns empty wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
             }
             Given("Live data is filled by empty data from getWishlistData") {
                 wishlistViewmodel.getWishlistData()
@@ -310,8 +326,8 @@ class WVMGetWishlistData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository returns 9 wishlist item data in a request") {
-                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistEntityData(
+            Given("Get wishlist usecase returns 9 wishlist item data in a request") {
+                coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
                         items = listOf(
                                 WishlistItem(id="1"),
                                 WishlistItem(id="2"),
@@ -325,9 +341,11 @@ class WVMGetWishlistData : Spek({
                         ),
                         hasNextPage = false
                 )
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf(
-                        RecommendationWidget()
-                )
+            }
+            Given(" Get recommendation usecase return data") {
+                getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf(
+                        RecommendationItem()
+                ))
             }
 
             When("Viewmodel get wishlist data") {
@@ -348,8 +366,8 @@ class WVMGetWishlistData : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns empty wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf())
+            Given("Get wishlist usecase returns empty wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
             }
             Given("Live data is filled by empty data from getWishlistData") {
                 wishlistViewmodel.getWishlistData()
@@ -357,8 +375,8 @@ class WVMGetWishlistData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository returns 9 wishlist item data in a request") {
-                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistEntityData(
+            Given("Get wishlist usecase returns 9 wishlist item data in a request") {
+                coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
                         items = listOf(
                                 WishlistItem(id="1"),
                                 WishlistItem(id="2"),
@@ -372,7 +390,9 @@ class WVMGetWishlistData : Spek({
                         ),
                         hasNextPage = false
                 )
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+            Given("Get recommendation usecase returns empty data") {
+                coEvery { getRecommendationUseCase.getData(any()) } returns listOf()
             }
 
             When("Viewmodel get wishlist data") {
@@ -397,8 +417,8 @@ class WVMGetWishlistData : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
-            Given("Repository returns empty wishlist data") {
-                wishlistRepository.givenRepositoryGetWishlistDataReturnsThis(listOf())
+            Given("Get wishlist usecase returns empty wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
             }
             Given("Live data is filled by empty data from getWishlistData") {
                 wishlistViewmodel.getWishlistData()
@@ -406,8 +426,8 @@ class WVMGetWishlistData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository successfully returns 3 wishlist item data") {
-                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistEntityData(
+            Given("Get wishlist usecase successfully returns 3 wishlist item data") {
+                coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
                         items = listOf(
                                 WishlistItem(id="1"),
                                 WishlistItem(id="2"),
@@ -415,7 +435,9 @@ class WVMGetWishlistData : Spek({
                         ),
                         hasNextPage = true
                 )
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+            Given("Get recommendation usecase successfully returns data") {
+                getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf())
             }
 
             When("Viewmodel get wishlist data") {
@@ -439,12 +461,14 @@ class WVMGetWishlistData : Spek({
             Given("User id") {
                 every { userSessionInterface.userId } returns mockUserId
             }
-            Given("Wishlist repository failed to fetch data") {
-                coEvery { wishlistRepository.getData(any(), any()) } returns WishlistEntityData(
+            Given("Get wishlist usecase failed to fetch data") {
+                coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
                         isSuccess = false,
                         errorMessage = ""
                 )
-                coEvery { wishlistRepository.getRecommendationData(any(), any()) } returns listOf()
+            }
+            Given("Get recommendation usecase successfuly get data"){
+                getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf())
             }
 
             When("Viewmodel get wishlist data") {

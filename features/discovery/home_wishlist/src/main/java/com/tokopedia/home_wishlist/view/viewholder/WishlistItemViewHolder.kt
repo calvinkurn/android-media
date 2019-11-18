@@ -44,7 +44,7 @@ class WishlistItemViewHolder(
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
 //                    if(element.productItem.isTopAds){
-//                        ImpresionTask().execute(element.productItem.trackerImageUrl)
+//                        ImpresionTask().getData(element.productItem.trackerImageUrl)
 //                    }
                     (listener as WishlistListener).onProductImpression(element, adapterPosition)
                 }
