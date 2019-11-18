@@ -417,12 +417,12 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun getLuggageViewModels(): List<FlightBookingAmenityMetaViewModel> {
         return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.luggageModels
-        else listOf()
+        else arrayListOf()
     }
 
     fun getMealViewModels(): List<FlightBookingAmenityMetaViewModel> {
         return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.mealModels
-        else listOf()
+        else arrayListOf()
     }
 
     fun getMandatoryDOB(): Boolean {
