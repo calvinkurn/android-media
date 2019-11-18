@@ -202,7 +202,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 is Success -> {
                     if (loadingDialog.isShowing) loadingDialog.dismiss()
                     it.data.data.cartItems[0]?.let { cart ->
-                        if (cart.configuration.price != cart.oldPriceNumeric || cart.configuration.price != totalCartPrice) {
+                        if (cart.configuration.price != cart.oldPriceNumeric && cart.configuration.price != totalCartPrice) {
                             showRepriceTag(cart)
                             renderRepricePrice(cart)
                         } else {
@@ -469,6 +469,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
         intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
         startActivity(intent)
+        activity?.finish()
     }
 
 
