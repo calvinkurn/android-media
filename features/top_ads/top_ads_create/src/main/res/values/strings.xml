@@ -75,4 +75,10 @@
     <string name="format_selected_produk">%d produk dipilih</string>
     <string name="_0_kata_kunci_dipilih">0 kata kunci dipilih</string>
     <string name="_0_produk">0 produk dipilih</string>
+    <string name="sesuaikan_kata_kunci_dengan_nama_produk">Sesuaikan kata kunci dengan nama produk</string>
+    <string name="lebih_efektif_dengan_kata_kunci_spesifik">Lebih efektif dengan kata kunci spesifik</string>
+    <string name="gunakan_kata_kunci_umum_dengan_maksimum_2_kata">Gunakan kata kunci umum dengan maksimum 2 kata</string>
+    <string name="error_max_length_keyword">Maksimum 5 kata</string>
+    <string name="error_keyword">Gunakan hanya huruf dan angka</string>
+    <string name="error_max_selected_keyword">Batas maksimum 50 kata kunci</string>
 </resources>

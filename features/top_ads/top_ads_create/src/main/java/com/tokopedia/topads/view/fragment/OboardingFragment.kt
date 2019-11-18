@@ -28,7 +28,7 @@ class OboardingFragment: TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_start_auto_ads.setOnClickListener {
-            RouteManager.route(activity, ApplinkConst.SellerApp.TOPADS_AUTOADS)
+            RouteManager.route(it.context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
         }
         btn_start_manual_ads.setOnClickListener {
             startActivity(Intent(activity, StepperActivity::class.java))

@@ -11,14 +11,28 @@
         android:id="@+id/editText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:layout_weight="1"
         android:hint="@string/ketik_kata_kunci"
+        android:lines="1"
+        android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="@+id/add_btn"
         app:layout_constraintEnd_toStartOf="@+id/add_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/add_btn" />
+        app:layout_constraintTop_toTopOf="@+id/add_btn"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/error_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/bright_red"
+        app:layout_constraintStart_toStartOf="@+id/editText"
+        app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:typographyType="body_3"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        tools:text="@string/error_max_length_keyword" />
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/add_btn"
@@ -37,12 +51,12 @@
         android:id="@+id/sparator"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
         android:background="#F3F4F5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/error_text" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/keyword_list"
@@ -61,10 +75,10 @@
         style="@style/TextView.Micro.Green"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_8"
         android:backgroundTint="#FFFCF5"
         android:text="@string/tip_memilih_kata_kunci"
         android:textAllCaps="false"
-        android:layout_marginBottom="@dimen/dp_8"
         app:buttonCompatSize="medium"
         app:buttonDrawableLeftCompat="@drawable/topads_create_ic_tips"
         app:layout_constraintBottom_toTopOf="@+id/view2"
@@ -86,10 +100,10 @@
         style="@style/Button.Submit.Green"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/lanjutkan"
-        app:buttonCompatType="primary"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
+        android:text="@string/lanjutkan"
+        app:buttonCompatType="primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/selected_info" />
@@ -99,12 +113,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
+        android:text="@string/_0_kata_kunci_dipilih"
         app:layout_constraintBottom_toBottomOf="@+id/btn_next"
         app:layout_constraintEnd_toStartOf="@+id/btn_next"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_next"
         app:typographyType="body_3"
-        android:text="@string/_0_kata_kunci_dipilih"
         tools:text="@string/format_selected_keyword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
