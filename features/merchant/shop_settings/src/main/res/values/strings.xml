@@ -145,4 +145,8 @@
     <string name="bottom_sheet_idle_desc">Skor performa tokomu kurang dari 65 poin. Segera tingkatkan performa toko untuk menggunakan %s dan fitur eksklusif Power Merchant lainnya kembali.</string>
     <string name="bottom_sheet_regular_btn">Upgrade Sekarang</string>
     <string name="bottom_sheet_idle_btn">Tip Meningkatkan Poin</string>
+
+    <string name="pm_label_price_cashback_shop_settings">Sisa biaya bulanan Power Merchant per <b>1 Juli 2019</b> akan dikembalikan ke <b>Saldo Penghasilan.</b></string>
+    <string name="pm_upgrade_shop_settings">Upgrade Tokomu</string>
+
 </resources>
