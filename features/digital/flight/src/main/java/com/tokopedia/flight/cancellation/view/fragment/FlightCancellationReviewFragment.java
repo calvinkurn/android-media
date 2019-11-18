@@ -252,7 +252,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         renderList(flightCancellationPassData.getGetCancellations());
 
         if (flightCancellationPassData.getCancellationReasonAndAttachment().getReason() != null &&
-                !flightCancellationPassData.getCancellationReasonAndAttachment().getReason().isEmpty()) {
+                flightCancellationPassData.getCancellationReasonAndAttachment().getReason().length() > 0) {
             txtReason.setText(flightCancellationPassData.getCancellationReasonAndAttachment().getReason());
         } else {
             containerAdditionalReason.setVisibility(View.GONE);
@@ -267,7 +267,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
 
         if ((flightCancellationPassData.getCancellationReasonAndAttachment().getReason() == null &&
                 flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments() == null) ||
-                (flightCancellationPassData.getCancellationReasonAndAttachment().getReason().isEmpty() &&
+                (flightCancellationPassData.getCancellationReasonAndAttachment().getReason().length() == 0 &&
                         flightCancellationPassData.getCancellationReasonAndAttachment().getAttachments().size() == 0)) {
             containerAdditionalData.setVisibility(View.GONE);
         }
