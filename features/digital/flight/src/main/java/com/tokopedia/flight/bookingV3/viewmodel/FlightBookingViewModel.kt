@@ -68,7 +68,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         flightPriceData.value = listOf()
         flightOtherPriceData.value = listOf()
         flightAmenityPriceData.value = listOf()
-
+        flightPromoResult.value = FlightPromoViewEntity()
     }
 
     fun getSearchParam(): FlightSearchPassDataViewModel = flightBookingParam.searchParam
@@ -234,12 +234,14 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 flightVerifyPassenger.title = passenger.passengerTitleId
                 flightVerifyPassenger.firstName = passenger.passengerFirstName
                 flightVerifyPassenger.lastName = passenger.passengerLastName
-                flightVerifyPassenger.dob = passenger.passengerBirthdate
-                flightVerifyPassenger.nationality = passenger.passportNationality?.countryId ?: ""
-                flightVerifyPassenger.passportNumber = passenger.passportNumber ?: ""
-                flightVerifyPassenger.passportCountry = passenger.passportIssuerCountry?.countryId
-                        ?: ""
-                flightVerifyPassenger.passportExpire = passenger.passportExpiredDate ?: ""
+                if (getMandatoryDOB()) flightVerifyPassenger.dob = passenger.passengerBirthdate
+                if (!flightIsDomestic()) {
+                    flightVerifyPassenger.nationality = passenger.passportNationality?.countryId ?: ""
+                    flightVerifyPassenger.passportNumber = passenger.passportNumber ?: ""
+                    flightVerifyPassenger.passportCountry = passenger.passportIssuerCountry?.countryId ?: ""
+                    flightVerifyPassenger.passportExpire = passenger.passportExpiredDate ?: ""
+                }
+
                 for (mealMeta in passenger.flightBookingMealMetaViewModels) {
                     for (meal in mealMeta.amenities) {
                         val amenity = FlightVerifyParam.Amenity()
@@ -459,7 +461,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     private suspend fun checkVoucher(query: String, cartId: String, dummy: String): FlightVerify.PromoEligibility {
         val promoEligibility = FlightVerify.PromoEligibility()
-        val params = mapOf(PARAM_CART_ID to cartId, "voucherCode" to "FANNYDISKON")
+        val promoCode = (flightPromoResult.value as FlightPromoViewEntity).promoData.promoCode
+        val params = mapOf(PARAM_CART_ID to cartId, PARAM_VOUCHER_CODE to promoCode)
         try {
             val voucher = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(query, FlightVoucher.Response::class.java, params)
@@ -587,6 +590,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val PARAM_CART_ID = "cartID"
         val PARAM_VERIFY_CART = "data"
         val PARAM_ATC = "param"
+        val PARAM_VOUCHER_CODE = "voucherCode"
     }
 
 }
