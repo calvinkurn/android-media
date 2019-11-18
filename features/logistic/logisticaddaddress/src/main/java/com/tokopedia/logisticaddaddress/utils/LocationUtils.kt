@@ -5,9 +5,16 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import rx.Emitter
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
+
+const val REVERSE_GEOCODE_DELAY = 1000L
 import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 
 internal fun String.toKilometers(): String {
@@ -35,6 +42,16 @@ internal fun bitmapDescriptorFromVector(context: Context, @DrawableRes vectorRes
         BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 }
+
+internal fun rxPinPoint(maps: GoogleMap): Observable<Boolean> =
+        Observable.create({ emitter: Emitter<Boolean> ->
+            maps.setOnCameraMoveListener {
+                emitter.onNext(true)
+            }
+        }, Emitter.BackpressureMode.LATEST)
+                .debounce(REVERSE_GEOCODE_DELAY, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
 
 internal fun DropoffNearbyModel.getDescription(): String =
         "${this.districtName}, ${this.cityName}, ${this.provinceName}"

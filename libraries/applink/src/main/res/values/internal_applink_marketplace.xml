@@ -20,6 +20,7 @@
     <string name="path_gold_merchant_subscribe_dashboard" translatable="false">/gold-merchant-subscribe-dashboard</string>
     <string name="path_gold_merchant_membership" translatable="false">/gold-merchant-membership</string>
     <string name="path_gold_merchant_redirect" translatable="false">/gold-merchant-redirect</string>
+    <string name="path_power_merchant_subscribe" translatable="false">/power-merchant-subscribe</string>
 
     <string name="path_product_add_item" translatable="false">/product-add-item</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>

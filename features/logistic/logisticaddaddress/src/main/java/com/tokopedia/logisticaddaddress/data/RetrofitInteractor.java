@@ -9,12 +9,7 @@ import java.util.Map;
 
 import rx.subscriptions.CompositeSubscription;
 
-/**
- * Created by Fajar Ulin Nuha on 30/10/18.
- */
 public interface RetrofitInteractor {
-
-    void generateAddress(Context context, GenerateAddressListener listener);
 
     void unSubscribe();
 
@@ -30,18 +25,5 @@ public interface RetrofitInteractor {
         void onSuccess(CoordinateViewModel model);
 
         void onError(String errorMessage);
-    }
-
-    interface GenerateAddressListener {
-
-        void onSuccess(LocationPass model);
-
-        void onError(Throwable e);
-
-        void onPreConnection();
-
-        String getAddress(double latitude, double longitude);
-
-        LocationPass convertData(double latitude, double longitude);
     }
 }

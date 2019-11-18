@@ -31,14 +31,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.purchase_platform.common.utils.Utils;
-import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.utils.WeightFormatterUtil;
-import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
-import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentInnerProductListAdapter;
-import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -53,6 +53,12 @@ import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
+import com.tokopedia.purchase_platform.R;
+import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.purchase_platform.common.utils.WeightFormatterUtil;
+import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
+import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentInnerProductListAdapter;
+import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.unifycomponents.ticker.Ticker;
@@ -1129,7 +1135,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null && courierItemData != null) {
 
-                if (!courierItemData.isAllowDropshiper() || isCorner) {
+                if (shipmentCartItemModel.isDropshipperDisable() || !courierItemData.isAllowDropshiper() || isCorner) {
                     llDropshipper.setVisibility(View.GONE);
                     llDropshipperInfo.setVisibility(View.GONE);
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
@@ -1386,7 +1392,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
             if (isCourierSelected) {
                 if (isCourierInstantOrSameday(courierItemData.getShipperId())) {
-                    if (courierItemData.getNow() && !shipmentCartItemModel.isProductIsPreorder()) {
+                    if (!shipmentCartItemModel.isOrderPrioritasDisable() && (courierItemData.getNow() && !shipmentCartItemModel.isProductIsPreorder())) {
                         tvPrioritasInfo.setText(courierItemData.getPriorityCheckboxMessage());
                         llPrioritas.setVisibility(View.VISIBLE);
                         llPrioritasTicker.setVisibility(View.VISIBLE);

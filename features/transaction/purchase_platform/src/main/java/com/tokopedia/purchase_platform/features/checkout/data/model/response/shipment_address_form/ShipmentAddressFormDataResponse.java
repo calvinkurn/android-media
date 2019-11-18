@@ -81,6 +81,12 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_ineligbile_promo_dialog_enabled")
     @Expose
     private boolean isIneligbilePromoDialogEnabled;
+    @SerializedName("is_new_buyer")
+    @Expose
+    private boolean isNewBuyer;
+    @SerializedName("disabled_features")
+    @Expose
+    private List<CheckoutDisabledFeatures> disabledFeatures = new ArrayList<>();
     @SerializedName("tickers")
     @Expose
     private List<Ticker> tickers = new ArrayList<>();
@@ -169,6 +175,14 @@ public class ShipmentAddressFormDataResponse {
 
     public boolean isIneligbilePromoDialogEnabled() {
         return isIneligbilePromoDialogEnabled;
+    }
+
+    public boolean isNewBuyer() {
+        return isNewBuyer;
+    }
+
+    public List<CheckoutDisabledFeatures> getDisabledFeatures() {
+        return disabledFeatures;
     }
 
     public List<Ticker> getTickers() {
