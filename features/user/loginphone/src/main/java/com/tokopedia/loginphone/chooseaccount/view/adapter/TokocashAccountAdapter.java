@@ -1,4 +1,4 @@
-package com.tokopedia.loginphone.choosetokocashaccount.view.adapter;
+package com.tokopedia.loginphone.chooseaccount.view.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loginphone.R;
-import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail;
-import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
+import com.tokopedia.loginphone.chooseaccount.data.UserDetail;
+import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseTokocashAccountContract;
 
 import java.util.List;
 

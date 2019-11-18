@@ -1,4 +1,4 @@
-package com.tokopedia.loginphone.choosetokocashaccount.data;
+package com.tokopedia.loginphone.chooseaccount.data;
 
 /**
  * @author by nisie on 12/5/17.

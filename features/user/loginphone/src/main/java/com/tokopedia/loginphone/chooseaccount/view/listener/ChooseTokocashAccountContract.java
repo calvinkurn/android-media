@@ -1,12 +1,12 @@
-package com.tokopedia.loginphone.choosetokocashaccount.view.listener;
+package com.tokopedia.loginphone.chooseaccount.view.listener;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
-import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList;
-import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail;
+import com.tokopedia.loginphone.chooseaccount.data.AccountList;
+import com.tokopedia.loginphone.chooseaccount.data.UserDetail;
 import com.tokopedia.sessioncommon.data.LoginTokenPojo;
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.loginphone.choosetokocashaccount.view.activity;
+package com.tokopedia.loginphone.chooseaccount.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,9 +6,9 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
+import com.tokopedia.loginphone.chooseaccount.data.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.loginphone.choosetokocashaccount.view.fragment.ChooseTokocashAccountFragment;
+import com.tokopedia.loginphone.chooseaccount.view.fragment.ChooseTokocashAccountFragment;
 
 /**
  * @author by nisie on 12/4/17.

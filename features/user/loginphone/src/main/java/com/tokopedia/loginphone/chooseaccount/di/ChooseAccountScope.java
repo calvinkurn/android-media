@@ -1,4 +1,4 @@
-package com.tokopedia.loginphone.choosetokocashaccount.di;
+package com.tokopedia.loginphone.chooseaccount.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

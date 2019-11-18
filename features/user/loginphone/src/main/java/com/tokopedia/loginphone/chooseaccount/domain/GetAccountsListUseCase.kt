@@ -1,11 +1,11 @@
-package com.tokopedia.loginphone.choosetokocashaccount.domain
+package com.tokopedia.loginphone.chooseaccount.domain
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.loginphone.R
-import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList
+import com.tokopedia.loginphone.chooseaccount.data.AccountList
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -35,6 +35,7 @@ constructor(private val resources: Resources,
     companion object {
         const val PARAM_VALIDATE_TOKEN = "validate_token" //UUID
         const val PARAM_PHONE = "phone"
+        const val PARAM_LOGIN_TYPE = "login_type"
 
         fun getParam(validateToken : String, phone: String)
                 : RequestParams {

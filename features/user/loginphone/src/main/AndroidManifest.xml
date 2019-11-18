@@ -8,7 +8,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".choosetokocashaccount.view.activity.ChooseTokocashAccountActivity"
+            android:name=".chooseaccount.view.activity.ChooseTokocashAccountActivity"
             android:label=""
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"

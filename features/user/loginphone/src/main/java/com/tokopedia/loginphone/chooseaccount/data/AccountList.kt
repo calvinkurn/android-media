@@ -1,4 +1,4 @@
-package com.tokopedia.loginphone.choosetokocashaccount.data
+package com.tokopedia.loginphone.chooseaccount.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

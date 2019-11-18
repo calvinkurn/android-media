@@ -1,5 +1,6 @@
-package com.tokopedia.loginphone.choosetokocashaccount.view.fragment
+package com.tokopedia.loginphone.chooseaccount.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -13,6 +14,8 @@ import android.text.format.DateFormat
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -32,13 +35,15 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginphone.R
-import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList
-import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel
-import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail
-import com.tokopedia.loginphone.choosetokocashaccount.di.DaggerChooseAccountComponent
-import com.tokopedia.loginphone.choosetokocashaccount.view.adapter.TokocashAccountAdapter
-import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract
-import com.tokopedia.loginphone.choosetokocashaccount.view.presenter.ChooseTokocashAccountPresenter
+import com.tokopedia.loginphone.chooseaccount.data.AccountList
+import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
+import com.tokopedia.loginphone.chooseaccount.data.ChooseTokoCashAccountViewModel
+import com.tokopedia.loginphone.chooseaccount.data.UserDetail
+import com.tokopedia.loginphone.chooseaccount.di.DaggerChooseAccountComponent
+import com.tokopedia.loginphone.chooseaccount.view.adapter.TokocashAccountAdapter
+import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseTokocashAccountContract
+import com.tokopedia.loginphone.chooseaccount.view.presenter.ChooseTokocashAccountPresenter
+import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.notifications.CMPushNotificationManager
@@ -47,6 +52,8 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.track.TrackApp
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -57,7 +64,7 @@ import kotlin.collections.HashMap
  * @author by nisie on 12/4/17.
  */
 
-class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccountContract.View,
+class ChooseTokocashAccountFragment : BaseDaggerFragment(),
         ChooseTokocashAccountContract.ViewAdapter {
 
     private val REQUEST_SECURITY_QUESTION = 101
@@ -71,7 +78,13 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
     lateinit var viewModel: ChooseTokoCashAccountViewModel
 
     @Inject
-    lateinit var presenter: ChooseTokocashAccountPresenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelProvider by lazy {
+        ViewModelProviders.of(this, viewModelFactory)
+    }
+    private val chooseAccountViewModel by lazy {
+        viewModelProvider.get(ChooseAccountViewModel::class.java)
+    }
 
     @Inject
     lateinit var analytics: LoginPhoneNumberAnalytics
@@ -140,7 +153,6 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
         mainView = view.findViewById(R.id.main_view)
         progressBar = view.findViewById(R.id.progress_bar)
         prepareView()
-        presenter.attachView(this)
         return view
     }
 
@@ -178,23 +190,55 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
         }
     }
 
+    @SuppressLint("WrongConstant")
     private fun prepareView() {
         adapter = TokocashAccountAdapter.createInstance(this, ArrayList())
 
-        listAccount.layoutManager = LinearLayoutManager(activity, LinearLayoutManager
-                .VERTICAL, false)
+        listAccount.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         listAccount.adapter = adapter
     }
 
+    private fun initObserver(){
+        chooseAccountViewModel.getAccountListFBResponse.observe(this, androidx.lifecycle.Observer {
+            when (it){
+                is Success -> {}
+                is Fail -> {}
+            }
+        })
+        chooseAccountViewModel.getAccountListPhoneResponse.observe(this, androidx.lifecycle.Observer {
+            when (it){
+                is Success -> onSuccessGetAccountList(it.data)
+                is Fail -> onErrorGetAccountList(it.throwable)
+            }
+        })
+        chooseAccountViewModel.loginPhoneNumberResponse.observe(this, androidx.lifecycle.Observer {
+            when (it){
+                is Success -> onSuccessLoginToken()
+                is Fail -> onErrorLoginToken()
+            }
+        })
+        chooseAccountViewModel.getUserInfoResponse.observe(this, androidx.lifecycle.Observer {
+            when (it){
+                is Success -> onSuccessGetUserInfo()
+                is Fail -> onErrorGetUserInfo()
+            }
+        })
+        chooseAccountViewModel.goToActivationPage.observe(this, androidx.lifecycle.Observer {
+            onGoToActivationPage()
+        })
+        chooseAccountViewModel.goToSecurityQuestion.observe(this, androidx.lifecycle.Observer {
+            onGoToSecurityQuestion()
+        })
+    }
 
     override fun onSelectedTokocashAccount(accountTokocash: UserDetail) {
-        presenter.loginWithTokocash(
+        chooseAccountViewModel.loginToken(
                 viewModel.accountList.accountListPojo.key,
                 accountTokocash,
                 viewModel.phoneNumber)
     }
 
-    override fun onSuccessLogin(userId: String) {
+    fun onSuccessLogin(userId: String) {
         activity?.let {
             dismissLoadingProgress()
             analytics.eventSuccessLoginPhoneNumber()
@@ -253,13 +297,13 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
         TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
-    override fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {
+    private fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {
         return {
-            presenter.getUserInfo()
+            chooseAccountViewModel.getUserInfo()
         }
     }
 
-    override fun onErrorLoginToken(): (Throwable) -> Unit {
+    private fun onErrorLoginToken(): (Throwable) -> Unit {
         return {
             onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
             logUnknownError(Throwable("Login Phone Number Login Token is not success"))
@@ -279,13 +323,13 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
+    private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
         return {
             onSuccessLogin(it.profileInfo.userId)
         }
     }
 
-    override fun onErrorGetUserInfo(): (Throwable) -> Unit {
+    private fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
             onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
             logUnknownError(Throwable("Login Phone Number Get User Info is not success"))
@@ -293,7 +337,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
     }
 
     //Impossible Flow
-    override fun onGoToActivationPage(): (MessageErrorException) -> Unit {
+    private fun onGoToActivationPage(): (MessageErrorException) -> Unit {
         return {
             onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, false))
             logUnknownError(Throwable("Login Phone Number Login Token go to activation"))
@@ -301,7 +345,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
     }
 
     //Impossible Flow
-    override fun onGoToSecurityQuestion(): () -> Unit {
+    private fun onGoToSecurityQuestion(): () -> Unit {
         return {
             onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
             logUnknownError(Throwable("Login Phone Number Login Token go to sq"))
@@ -309,54 +353,55 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
     }
 
     //Impossible Flow
-    override fun onGoToCreatePassword(): (String, String) -> Unit {
+    fun onGoToCreatePassword(): (String, String) -> Unit {
         return { fullName: String, userId: String ->
             onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
             logUnknownError(Throwable("Login Phone Number Login Token go to create password"))
         }
     }
 
-    override fun showLoadingProgress() {
+    private fun showLoadingProgress() {
         mainView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
     }
 
-    override fun dismissLoadingProgress() {
+    private fun dismissLoadingProgress() {
         mainView.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
     }
 
-    override fun onSuccessGetAccountList(accountList: AccountList) {
+    private fun onSuccessGetAccountList(accountList: AccountListPojo) {
         if (activity != null) {
-            this.viewModel.accountList = accountList
+            this.viewModel.accountList.accountListPojo = accountList
             activity!!.setResult(Activity.RESULT_OK)
 
-            if (accountList.accountListPojo.userDetails.size == 1) {
-                val userDetail = accountList.accountListPojo.userDetails[0]
-                presenter.loginWithTokocash(viewModel.accountList.accountListPojo.key,
+            if (accountList.userDetails.size == 1) {
+                val userDetail = accountList.userDetails[0]
+                chooseAccountViewModel.loginToken(viewModel.accountList.accountListPojo.key,
                         userDetail,
                         viewModel.phoneNumber)
             } else {
                 dismissLoadingProgress()
-                adapter.setList(accountList.accountListPojo.userDetails)
+                adapter.setList(accountList.userDetails)
                 message.text = promptText
             }
         }
     }
 
-    override fun onErrorGetAccountList(e: Throwable) {
+    private fun onErrorGetAccountList(e: Throwable) {
         dismissLoadingProgress()
         val errorMessage = ErrorHandlerSession.getErrorMessage(e, context, true)
         NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
             showLoadingProgress()
-            presenter.getAccountList(viewModel.accessToken, viewModel.phoneNumber)
+            chooseAccountViewModel.getAccountListPhoneNumber(viewModel.accessToken, viewModel.phoneNumber)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initObserver()
         showLoadingProgress()
-        presenter.getAccountList(viewModel.accessToken, viewModel.phoneNumber)
+        chooseAccountViewModel.getAccountListPhoneNumber(viewModel.accessToken, viewModel.phoneNumber)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -371,11 +416,6 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
         super.onSaveInstanceState(outState)
         outState.putString(ApplinkConstInternalGlobal.PARAM_UUID, viewModel.accessToken)
         outState.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, viewModel.phoneNumber)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
     }
 
     companion object {

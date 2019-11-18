@@ -1,11 +1,11 @@
-package com.tokopedia.loginphone.choosetokocashaccount.view.presenter
+package com.tokopedia.loginphone.chooseaccount.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList
-import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail
-import com.tokopedia.loginphone.choosetokocashaccount.domain.GetAccountsListUseCase
-import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract
+import com.tokopedia.loginphone.chooseaccount.data.AccountList
+import com.tokopedia.loginphone.chooseaccount.data.UserDetail
+import com.tokopedia.loginphone.chooseaccount.domain.GetAccountsListUseCase
+import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseTokocashAccountContract
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
