@@ -116,6 +116,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                        dummy: String, checkVoucherQuery: String, dummyCheckVoucher: String) {
 
         if (validateFields(contactName, contactEmail, contactPhone)) {
+            val promoCode = (flightPromoResult.value as FlightPromoViewEntity).promoData.promoCode
             val bookingVerifyParam = createVerifyParam(totalPrice, getCartId(), contactName, contactEmail, contactPhone, contactCountry)
             val params = mapOf(PARAM_VERIFY_CART to bookingVerifyParam)
 
@@ -127,11 +128,15 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     }.getSuccessData<FlightVerify.Response>().flightVerify
                 }
 
-                val checkPromoData = async { checkVoucher(checkVoucherQuery, getCartId(), dummyCheckVoucher) }
-                val flightVerifyData = data.await()
-                flightVerifyData.data.cartItems[0].promoEligibility = checkPromoData.await()
+                if (promoCode.isNotEmpty()) {
+                    val checkPromoData = async { checkVoucher(checkVoucherQuery, getCartId(), dummyCheckVoucher) }
+                    val flightVerifyData = data.await()
+                    flightVerifyData.data.cartItems[0].promoEligibility = checkPromoData.await()
+                    flightVerifyResult.value = Success(flightVerifyData)
+                } else {
+                    flightVerifyResult.value = Success(data.await())
+                }
 
-                flightVerifyResult.value = Success(flightVerifyData)
             }) {
                 flightVerifyResult.value = Fail(it)
             }
