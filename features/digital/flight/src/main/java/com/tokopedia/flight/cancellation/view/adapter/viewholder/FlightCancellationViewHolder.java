@@ -270,6 +270,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             this.adapterPosition = adapterPosition;
 
             if (passengerViewModel.getStatusString() != null && passengerViewModel.getStatusString().length() > 0) {
+                tgPassengerStatus.setText(passengerViewModel.getStatusString());
                 itemView.setEnabled(false);
             }
 
