@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class SubCategoryItem(
 
-        @field:SerializedName("isForAdult")
-        val isForAdult: Int? = null,
+        @field:SerializedName("isAdult")
+        val isAdult: Int? = null,
 
         @field:SerializedName("applinks")
         val applinks: String? = null,

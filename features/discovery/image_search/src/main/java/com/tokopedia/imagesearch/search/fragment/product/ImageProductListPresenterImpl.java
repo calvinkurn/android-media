@@ -1,18 +1,21 @@
 package com.tokopedia.imagesearch.search.fragment.product;
 
-import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
+import com.tokopedia.imagesearch.domain.usecase.GetImageSearchUseCase;
+import com.tokopedia.imagesearch.domain.usecase.RefreshImageSearchUseCase;
 import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
+import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
+import com.tokopedia.imagesearch.search.exception.ImageNotSupportedException;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -38,6 +41,10 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     private static final long LOAD_MORE_DELAY_MS = 1000;
 
     @Inject
+    GetImageSearchUseCase getImageSearchUseCase;
+    @Inject
+    RefreshImageSearchUseCase refreshImageSearchUseCase;
+    @Inject
     AddWishListUseCase addWishlistActionUseCase;
     @Inject
     RemoveWishListUseCase removeWishlistActionUseCase;
@@ -47,6 +54,15 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     private List<Visitable> presentedDataList = new ArrayList<>();
     private CategoryFilterModel categoryFilterModel;
     private String selectedCategoryId = "";
+    private String token = "";
+
+    @Override
+    public void detachView() {
+        if(getImageSearchUseCase != null) getImageSearchUseCase.unsubscribe();
+        if(refreshImageSearchUseCase != null) refreshImageSearchUseCase.unsubscribe();
+        if(addWishlistActionUseCase != null) addWishlistActionUseCase.unsubscribe();
+        if(removeWishlistActionUseCase != null) removeWishlistActionUseCase.unsubscribe();
+    }
 
     @Override
     public void attachView(ImageProductListFragmentView viewListener,
@@ -64,8 +80,9 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     }
 
     @Override
-    public void initData(List<Visitable> data, CategoryFilterModel categoryFilterModel) {
+    public void initData(List<Visitable> data, CategoryFilterModel categoryFilterModel, String token) {
         this.categoryFilterModel = categoryFilterModel;
+        this.token = token;
         originalDataList.clear();
         originalDataList.addAll(data);
         presentedDataList.clear();
@@ -99,6 +116,94 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     }
 
     @Override
+    public void requestImageSearch(String imagePath) {
+        getImageSearchUseCase.setImagePath(imagePath);
+        getImageSearchUseCase.execute(
+                GetImageSearchUseCase.generateParams(getView().getSearchParameter()),
+                new Subscriber<ProductViewModel>() {
+
+                    @Override
+                    public void onStart() {
+                        getView().showRefreshLayout();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().hideRefreshLayout();
+                        if (e instanceof ImageNotSupportedException) {
+                            getView().showImageNotSupportedError();
+                        } else {
+                            getView().onHandleInvalidImageSearchResponse();
+                        }
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ProductViewModel productViewModel) {
+                        getView().hideRefreshLayout();
+                        handleGetImageSearchResult(productViewModel);
+                        getView().onHandleImageResponseSearch(productViewModel);
+                    }
+                });
+    }
+
+    @Override
+    public void refreshData() {
+        refreshImageSearchUseCase.execute(
+                RefreshImageSearchUseCase.generateParams(token, getView().getSearchParameter()),
+                new Subscriber<ProductViewModel>() {
+
+                    @Override
+                    public void onStart() {
+                        getView().showRefreshLayout();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().hideRefreshLayout();
+                        getView().displayErrorRefresh();
+                    }
+
+                    @Override
+                    public void onNext(ProductViewModel productViewModel) {
+                        getView().hideRefreshLayout();
+                        handleGetImageSearchResult(productViewModel);
+                    }
+                }
+        );
+    }
+
+    private void handleGetImageSearchResult(ProductViewModel model) {
+        initData(new ArrayList<>(model.getProductList()), model.getCategoryFilterModel(), model.getToken());
+        if (!isSelectedCategoryValid(model.getCategoryFilterModel())) {
+            selectedCategoryId = "";
+        }
+        setFilterCategory(selectedCategoryId);
+        getView().renderDynamicFilter(model.getDynamicFilterModel());
+        getView().setTotalSearchResultCount(model.getTotalDataText());
+        getView().reloadData();
+    }
+
+    private boolean isSelectedCategoryValid(CategoryFilterModel categoryFilterModel) {
+        for (CategoryFilterModel.Item item : categoryFilterModel.getItemList()) {
+            if (selectedCategoryId.equals(item.getCategoryId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void loadMoreData(int page) {
         List<Visitable> responseList = new ArrayList<>();
 
@@ -109,12 +214,14 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
         final boolean hasNextPage = toIndex < presentedDataList.size();
 
         long delay = LOAD_MORE_DELAY_MS;
+
+        if (page == 0) {
+            delay = 0;
+            responseList.add(categoryFilterModel);
+            if (presentedDataList.size() == 0) responseList.add(createEmptyModel());
+        }
+
         if (fromIndex < presentedDataList.size()) {
-            if (page == 0) {
-                delay = 0;
-                responseList.add(categoryFilterModel);
-                if (presentedDataList.size() == 0) responseList.add(createEmptyModel());
-            }
             responseList.addAll(presentedDataList.subList(fromIndex, toIndex));
         }
 
@@ -204,5 +311,10 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
     private void removeWishlist(String productId, String userId) {
         removeWishlistActionUseCase.createObservable(productId, userId, wishListActionListener);
+    }
+
+    @Override
+    public String getToken() {
+        return token;
     }
 }

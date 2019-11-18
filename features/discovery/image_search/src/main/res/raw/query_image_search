@@ -7,6 +7,7 @@ query image_search($image: String!, $params: String!) {
       additional_params
     }
     data {
+      token
       source
       share_url
       q
@@ -58,4 +59,53 @@ query image_search($image: String!, $params: String!) {
       }
     }
   }
+  filter_sort_product(params: $params) {
+        data {
+          filter {
+            title
+            search {
+              searchable
+              placeholder
+            }
+        template_name
+            options {
+              name
+              key
+              icon
+              Description
+              value
+              inputType
+              totalData
+              valMax
+              valMin
+              isPopular
+              isNew
+              hexColor
+              child {
+                key
+                value
+                name
+                icon
+                inputType
+                totalData
+                child {
+                  key
+                  value
+                  name
+                  icon
+                  inputType
+                  totalData
+                }
+              }
+            }
+          }
+          sort {
+            name
+            key
+            value
+            inputType
+            applyFilter
+          }
+       }
+    }
 }
