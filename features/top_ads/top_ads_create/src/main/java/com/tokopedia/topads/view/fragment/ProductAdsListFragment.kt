@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
@@ -177,7 +178,11 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onError(t: Throwable) {
-        t.printStackTrace()
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage, object : NetworkErrorHelper.RetryClickedListener{
+            override fun onRetryClicked() {
+                refreshProduct()
+            }
+        })
     }
 
     private fun onSuccessGetProductList(data: List<ResponseProductList.Data>) {

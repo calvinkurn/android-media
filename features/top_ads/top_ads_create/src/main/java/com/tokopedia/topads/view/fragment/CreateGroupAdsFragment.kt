@@ -3,20 +3,24 @@ package com.tokopedia.topads.view.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
-import com.tokopedia.topads.data.response.ResponseGroupValidate
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.model.CreateGroupAdsViewModel
 import com.tokopedia.topads.view.sheet.InfoSheetGroupList
 import kotlinx.android.synthetic.main.topads_create_fragment_group_list.*
 import javax.inject.Inject
+import com.tokopedia.topads.data.response.ResponseGroupValidateName.TopAdsGroupValidateName
 
 /**
  * Author errysuprayogi on 29,October,2019
@@ -70,28 +74,25 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        btn_submit.isEnabled = false
         btn_submit.setOnClickListener {
             gotoNextPage()
         }
         tip_btn.setOnClickListener {
             InfoSheetGroupList.newInstance(it.context).show()
         }
-        group_name_input.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                validateGroup(s)
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
+        group_name_input.setOnEditorActionListener(object: TextView.OnEditorActionListener{
+            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                when(actionId){
+                    EditorInfo.IME_ACTION_DONE -> validateGroup(v?.text.toString())
+                }
+                return true
             }
         })
     }
 
-    private fun validateGroup(s: Editable?) {
-        s?.toString()?.let {
+    private fun validateGroup(s: String?) {
+        s?.let {
             if (s.length > 0) {
                 viewModel.validateGroup(it, this::onSuccess, this::onError)
             }
@@ -99,11 +100,16 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onError(t: Throwable) {
-        t.printStackTrace()
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage, object : NetworkErrorHelper.RetryClickedListener{
+            override fun onRetryClicked() {
+                btn_submit.isEnabled = false
+                validateGroup(group_name_input.text.toString())
+            }
+        })
     }
 
-    private fun onSuccess(data: ResponseGroupValidate.Data) {
-
+    private fun onSuccess(data: TopAdsGroupValidateName.Data) {
+        btn_submit.isEnabled = true
     }
 
 }

@@ -100,8 +100,9 @@
         style="@style/Button.Submit.Green"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/lanjutkan"
         app:buttonCompatType="primary"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -113,12 +114,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_weight="1"
+        android:padding="@dimen/dp_16"
         android:text="@string/_0_kata_kunci_dipilih"
         app:layout_constraintBottom_toBottomOf="@+id/btn_next"
         app:layout_constraintEnd_toStartOf="@+id/btn_next"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_next"
-        app:typographyType="body_3"
+        app:typographyType="heading_6"
         tools:text="@string/format_selected_keyword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

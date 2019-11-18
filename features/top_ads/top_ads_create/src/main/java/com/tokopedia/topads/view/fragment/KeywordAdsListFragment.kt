@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
@@ -78,13 +79,13 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun onKeywordSelected() {
         var count = keywordListAdapter.getSelectedItems().size
         selected_info.setText(String.format(getString(R.string.format_selected_keyword), count))
-        if (count > 0 && count <= 50) {
-            btn_next.isEnabled = true
-            error_text.visibility = View.INVISIBLE
-        } else{
+        if (count >= 50) {
             btn_next.isEnabled = false
             error_text.visibility = View.VISIBLE
             error_text.text = getString(R.string.error_max_selected_keyword)
+        } else{
+            btn_next.isEnabled = true
+            error_text.visibility = View.INVISIBLE
         }
     }
 
@@ -167,7 +168,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun validateKeyword(text: CharSequence?): CharSequence? {
         if (!text.isNullOrBlank() && text.split(" ").size > 5) {
             return getString(R.string.error_max_length_keyword)
-        } else if (!text.isNullOrBlank() && !text.matches("[A-Za-z0-9]".toRegex())) {
+        } else if (!text.isNullOrBlank() && !text.matches("^[A-Za-z0-9 ]*$".toRegex())) {
             return getString(R.string.error_keyword)
         } else {
             return null

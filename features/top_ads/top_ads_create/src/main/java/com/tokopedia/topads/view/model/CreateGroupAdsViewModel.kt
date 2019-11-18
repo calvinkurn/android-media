@@ -1,12 +1,16 @@
 package com.tokopedia.topads.view.model
 
-import com.google.gson.reflect.TypeToken
+import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.topads.UrlConstant
-import com.tokopedia.topads.data.response.ResponseGroupValidate
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.create.R
+import com.tokopedia.topads.data.response.ResponseGroupValidateName
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,31 +23,34 @@ import javax.inject.Named
  * Author errysuprayogi on 06,November,2019
  */
 class CreateGroupAdsViewModel @Inject constructor(
+        private val context: Context,
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,
-        private val repository: RestRepository,
-        private val urlMap: Map<String, String>): BaseViewModel(dispatcher) {
+        private val gqlRepository: GraphqlRepository): BaseViewModel(dispatcher) {
 
-    fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidate.Data) -> Unit),
+    companion object{
+        val SHOP_ID = "shopID"
+        val GROUP_NAME = "groupName"
+    }
+
+    fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName.Data) -> Unit),
                       onError: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    val result = withContext(Dispatchers.IO) {
-                        val queryMap = mutableMapOf<String, String>(
-                                "group_name" to groupName,
-                                "shop_id" to userSession.shopId
-                        )
-                        val restRequest = RestRequest.Builder(
-                                urlMap[UrlConstant.PATH_GROUP_VALIDATE] ?: "",
-                                object : TypeToken<ResponseGroupValidate>() {}.type)
-                                .setRequestType(RequestType.POST)
-                                .setBody(queryMap)
-                                .build()
-                        repository.getResponse(restRequest)
+                    val data = withContext(Dispatchers.IO) {
+                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_validate_group_name),
+                                ResponseGroupValidateName::class.java, mapOf(SHOP_ID to userSession.shopId.toIntOrZero(), GROUP_NAME to groupName))
+                        val cacheStrategy = GraphqlCacheStrategy
+                                .Builder(CacheType.CLOUD_THEN_CACHE).build()
+                        gqlRepository.getReseponse(listOf(request), cacheStrategy)
                     }
-                    (result.getData() as ResponseGroupValidate).data?.let{
-                        onSuccess(it)
+                    data.getSuccessData<ResponseGroupValidateName>().let {
+                        if(it.topAdsGroupValidateName.errors.isEmpty()){
+                            onSuccess(it.topAdsGroupValidateName.data)
+                        } else {
+                            onError(Exception(it.topAdsGroupValidateName.errors.get(0).detail))
+                        }
                     }
                 },
                 onError = {

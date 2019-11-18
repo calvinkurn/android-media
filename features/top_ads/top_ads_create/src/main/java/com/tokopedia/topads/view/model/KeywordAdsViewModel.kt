@@ -1,24 +1,16 @@
 package com.tokopedia.topads.view.model
 
 import android.content.Context
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.response.ResponseEtalase
-import com.tokopedia.topads.data.response.ResponseGroupValidate
 import com.tokopedia.topads.data.response.ResponseKeywordSuggestion
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

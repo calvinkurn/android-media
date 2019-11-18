@@ -182,13 +182,13 @@
         android:layout_weight="1"
         android:padding="@dimen/dp_16"
         tools:visibility="visible"
+        android:text="@string/_0_produk"
         app:layout_constraintBottom_toBottomOf="@+id/btn_next"
         app:layout_constraintEnd_toStartOf="@+id/btn_next"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_next"
-        app:typographyType="heading_6"
-        tools:text="2 produk dipilih" />
+        app:typographyType="heading_6" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
