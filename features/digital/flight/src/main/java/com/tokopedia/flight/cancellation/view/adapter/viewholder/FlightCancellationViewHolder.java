@@ -278,7 +278,6 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             if (passengerViewModel.getStatusString() != null && passengerViewModel.getStatusString().length() > 0) {
                 tgPassengerStatus.setText(passengerViewModel.getStatusString());
                 tgPassengerStatus.setVisibility(View.VISIBLE);
-                checkBoxPassenger.setChecked(true);
                 checkBoxPassenger.setEnabled(false);
                 itemView.setEnabled(false);
             } else {
