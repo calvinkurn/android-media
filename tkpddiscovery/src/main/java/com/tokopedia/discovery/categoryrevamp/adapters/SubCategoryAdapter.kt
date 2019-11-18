@@ -57,7 +57,7 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
                         getSubCategoryPath(item.url ?: "", id),
                         getCategoryNamePath(item.url ?: ""))
 
-                subCategoryListener.OnSubCategoryClicked(item.id.toString(), item.name ?: "")
+                subCategoryListener.OnSubCategoryClicked(item.id.toString(), item.name ?: "", item.appRedirectionURL ?: "")
             }
         }
     }
