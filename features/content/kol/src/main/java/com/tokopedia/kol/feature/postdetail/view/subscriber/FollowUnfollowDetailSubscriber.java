@@ -49,7 +49,7 @@ public class FollowUnfollowDetailSubscriber extends Subscriber<GraphqlResponse> 
                 view.onSuccessFollowUnfollowKol(rowNumber);
             } else {
                 String errorMessage = view.getContext().getApplicationContext().getString(
-                        R.string.default_request_error_unknown
+                        com.tokopedia.abstraction.R.string.default_request_error_unknown
                 );
                 view.onErrorFollowKol(errorMessage, id, status, rowNumber);
             }

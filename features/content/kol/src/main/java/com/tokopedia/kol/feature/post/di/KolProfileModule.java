@@ -75,6 +75,6 @@ public class KolProfileModule {
     @KolProfileScope
     @Named("atcMutation")
     String provideAddToCartMutation(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
+        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart);
     }
 }

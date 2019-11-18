@@ -228,17 +228,17 @@ class VideoDetailFragment:
 
             when(p1) {
                 MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
-                    Toast.makeText(requireContext(), getString(R.string.error_unknown), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(com.tokopedia.videoplayer.R.string.error_unknown), Toast.LENGTH_SHORT).show()
                     activity?.finish()
                     true
                 }
                 MediaPlayer.MEDIA_ERROR_SERVER_DIED -> {
-                    Toast.makeText(requireContext(), getString(R.string.default_request_error_internal_server), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(com.tokopedia.abstraction.R.string.default_request_error_internal_server), Toast.LENGTH_SHORT).show()
                     activity?.finish()
                     true
                 }
                 else -> {
-                    Toast.makeText(requireContext(), getString(R.string.default_request_error_timeout), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(com.tokopedia.abstraction.R.string.default_request_error_timeout), Toast.LENGTH_SHORT).show()
                     activity?.finish()
                     true
                 }
@@ -286,16 +286,16 @@ class VideoDetailFragment:
                 authorImage.loadImageCircle(it.avatar)
             } else {
                 authorImage.setImageDrawable(
-                        MethodChecker.getDrawable(activity!!, R.drawable.error_drawable)
+                        MethodChecker.getDrawable(activity!!, com.tokopedia.design.R.drawable.error_drawable)
                 )
             }
             if (it.avatarBadgeImage.isNotBlank()) {
                 authorBadge.show()
                 authorBadge.loadImage(it.avatarBadgeImage)
-                authorTitle.setMargin(authorTitle.getDimens(R.dimen.dp_4), 0, authorTitle.getDimens(R.dimen.dp_8), 0)
+                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_4), 0, authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0)
             } else {
                 authorBadge.hide()
-                authorTitle.setMargin(authorTitle.getDimens(R.dimen.dp_8), 0, authorTitle.getDimens(R.dimen.dp_8), 0)
+                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0, authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0)
             }
 
             authorTitle.text = it.avatarTitle
@@ -364,31 +364,31 @@ class VideoDetailFragment:
     private fun bindLike(like: Like) {
         when {
             like.isChecked -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
+                likeIcon.loadImageWithoutPlaceholder(com.tokopedia.feedcomponent.R.drawable.ic_thumb_green)
                 likeText.text = like.fmt
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeText.context, R.color.tkpd_main_green)
+                        MethodChecker.getColor(likeText.context, com.tokopedia.design.R.color.tkpd_main_green)
                 )
             }
             like.value > 0 -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.text = like.fmt
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeText.context, R.color.white)
+                        MethodChecker.getColor(likeText.context, com.tokopedia.design.R.color.white)
                 )
             }
             else -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
-                likeText.setText(R.string.kol_action_like)
+                likeText.setText(com.tokopedia.feedcomponent.R.string.kol_action_like)
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeIcon.context, R.color.white)
+                        MethodChecker.getColor(likeIcon.context, com.tokopedia.design.R.color.white)
                 )
             }
         }
     }
     private fun bindComment(comment: Comment) {
         commentText.text =
-                if (comment.value == 0) getString(R.string.kol_action_comment)
+                if (comment.value == 0) getString(com.tokopedia.feedcomponent.R.string.kol_action_comment)
                 else comment.fmt
     }
 
@@ -410,7 +410,7 @@ class VideoDetailFragment:
 
     private fun showError(message: String, listener: View.OnClickListener?) {
         ToasterError.make(view, message, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again, listener)
+                .setAction(com.tokopedia.abstraction.R.string.title_try_again, listener)
                 .show()
     }
 

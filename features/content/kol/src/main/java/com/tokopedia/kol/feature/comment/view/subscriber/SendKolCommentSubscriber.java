@@ -40,7 +40,7 @@ public class SendKolCommentSubscriber extends Subscriber<SendKolCommentDomain> {
             viewListener.onSuccessSendComment(sendKolCommentDomain);
         else {
             viewListener.onErrorSendComment(
-                    viewListener.getContext().getString(R.string.default_request_error_unknown)
+                    viewListener.getContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
             );
         }
     }

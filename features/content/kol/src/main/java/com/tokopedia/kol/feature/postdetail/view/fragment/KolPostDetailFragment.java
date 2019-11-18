@@ -485,7 +485,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onErrorToggleFavoriteShop(String errorMessage, String shopId) {
         ToasterError.make(getView(), errorMessage, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.title_try_again,
+                .setAction(com.tokopedia.abstraction.R.string.title_try_again,
                         v -> presenter.toggleFavoriteShop(shopId)
                 )
                 .show();
@@ -609,9 +609,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void onSuccessReportContent() {
         ToasterNormal
                 .make(getView(),
-                        getString(R.string.feed_content_reported),
+                        getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
                         BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close, v -> {
+                .setAction(com.tokopedia.design.R.string.label_close, v -> {
                 })
                 .show();
     }
@@ -619,7 +619,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void onErrorReportContent(String errorMsg) {
         ToasterError
                 .make(getView(), errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close, v -> {
+                .setAction(com.tokopedia.design.R.string.label_close, v -> {
                 })
                 .show();
     }
@@ -709,10 +709,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private Dialog createDeleteDialog(int positionInFeed, int postId) {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.card_dialog_delete_post));
-        dialog.setDesc(getString(R.string.card_dialog_after_delete_cant));
-        dialog.setBtnOk(getString(R.string.card_dialog_title_delete));
-        dialog.setBtnCancel(getString(R.string.card_dialog_title_cancel));
+        dialog.setTitle(getString(com.tokopedia.feedcomponent.R.string.card_dialog_delete_post));
+        dialog.setDesc(getString(com.tokopedia.feedcomponent.R.string.card_dialog_after_delete_cant));
+        dialog.setBtnOk(getString(com.tokopedia.feedcomponent.R.string.card_dialog_title_delete));
+        dialog.setBtnCancel(getString(com.tokopedia.feedcomponent.R.string.card_dialog_title_cancel));
         dialog.setOnOkClickListener(v -> {
             presenter.deletePost(postId, positionInFeed);
             dialog.dismiss();

@@ -38,7 +38,7 @@ public class DeleteKolCommentSubscriber extends Subscriber<Boolean> {
             view.onSuccessDeleteComment(adapterPosition);
         } else {
             view.onErrorDeleteComment(
-                    view.getContext().getString(R.string.default_request_error_unknown)
+                    view.getContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
             );
         }
     }

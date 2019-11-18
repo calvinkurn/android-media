@@ -409,8 +409,8 @@ public class KolCommentFragment extends BaseDaggerFragment
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         builder.setMessage(R.string.prompt_delete_comment_kol);
-        builder.setPositiveButton(R.string.kol_title_delete, (dialog, which) -> presenter.deleteComment(id, adapterPosition));
-        builder.setNegativeButton(R.string.kol_title_cancel, (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton(com.tokopedia.kolcommon.R.string.kol_title_delete, (dialog, which) -> presenter.deleteComment(id, adapterPosition));
+        builder.setNegativeButton(com.tokopedia.kolcommon.R.string.kol_title_cancel, (dialog, which) -> dialog.dismiss());
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -437,9 +437,9 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     private void setWishlist(boolean wishlisted) {
         if (wishlisted)
-            ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist_checked);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, com.tokopedia.design.R.drawable.ic_wishlist_checked);
         else
-            ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist_unchecked);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, com.tokopedia.design.R.drawable.ic_wishlist_unchecked);
     }
 
     private void routeUrl(String url) {
