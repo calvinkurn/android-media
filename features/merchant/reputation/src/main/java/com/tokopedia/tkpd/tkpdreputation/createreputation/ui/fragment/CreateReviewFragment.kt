@@ -435,7 +435,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
                 finish()
             }
-        }, 1000)
+        }, 800)
     }
 
     private fun showLoading() {
