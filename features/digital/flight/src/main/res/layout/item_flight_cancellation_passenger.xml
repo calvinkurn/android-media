@@ -12,13 +12,6 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_8">
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="@dimen/dp_36"
-        android:layout_height="@dimen/dp_36"
-        android:layout_gravity="center"
-        android:theme="@style/checkBoxStyle" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,5 +39,12 @@
             tools:text="Pembatalan sedang diproses" />
 
     </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="@dimen/dp_36"
+        android:layout_height="@dimen/dp_36"
+        android:layout_gravity="center"
+        android:theme="@style/checkBoxStyle" />
 
 </LinearLayout>

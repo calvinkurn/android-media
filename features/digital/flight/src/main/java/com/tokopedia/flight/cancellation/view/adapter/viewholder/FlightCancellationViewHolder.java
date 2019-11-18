@@ -201,13 +201,17 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
         public void checkAllData() {
             for (int index = 0; index < passengerViewHolderList.size(); index++) {
-                passengerViewHolderList.get(index).onCheck(true);
+                if (passengerViewHolderList.get(index).passengerViewModel.getStatusString() == null) {
+                    passengerViewHolderList.get(index).onCheck(true);
+                }
             }
         }
 
         public void uncheckAllData() {
             for (int index = 0; index < passengerViewHolderList.size(); index++) {
-                passengerViewHolderList.get(index).onCheck(false);
+                if (passengerViewHolderList.get(index).passengerViewModel.getStatusString() == null) {
+                    passengerViewHolderList.get(index).onCheck(false);
+                }
             }
         }
 
@@ -215,7 +219,9 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         public void checkIfAllPassengerIsChecked() {
             boolean allChecked = true;
             for (int index = 0; index < passengerViewHolderList.size(); index++) {
-                if (!passengerViewHolderList.get(index).isPassengerChecked()) {
+                if (!passengerViewHolderList.get(index).isPassengerChecked() &&
+                        !(passengerViewHolderList.get(index).passengerViewModel.getStatusString() != null &&
+                                passengerViewHolderList.get(index).passengerViewModel.getStatusString().length() > 0)) {
                     allChecked = false;
                 }
             }
@@ -271,7 +277,15 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
             if (passengerViewModel.getStatusString() != null && passengerViewModel.getStatusString().length() > 0) {
                 tgPassengerStatus.setText(passengerViewModel.getStatusString());
+                tgPassengerStatus.setVisibility(View.VISIBLE);
+                checkBoxPassenger.setChecked(true);
+                checkBoxPassenger.setEnabled(false);
                 itemView.setEnabled(false);
+            } else {
+                tgPassengerStatus.setText("");
+                tgPassengerStatus.setVisibility(View.GONE);
+                checkBoxPassenger.setEnabled(true);
+                itemView.setEnabled(true);
             }
 
             txtPassengerName.setText(String.format("%s %s %s", passengerViewModel.getTitleString(),
