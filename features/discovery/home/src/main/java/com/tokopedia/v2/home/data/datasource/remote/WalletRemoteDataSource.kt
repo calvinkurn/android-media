@@ -2,6 +2,7 @@ package com.tokopedia.v2.home.data.datasource.remote
 
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -9,7 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.v2.home.data.query.TokopointQuery
 import com.tokopedia.v2.home.data.query.WalletQuery
-import com.tokopedia.v2.home.model.pojo.wallet.Tokopoint
+import com.tokopedia.v2.home.model.pojo.wallet.TokopointData
 import com.tokopedia.v2.home.model.pojo.wallet.WalletData
 import com.tokopedia.v2.home.model.vo.Resource
 import com.tokopedia.v2.home.model.vo.WalletDataModel
@@ -52,10 +53,11 @@ class WalletRemoteDataSource @Inject constructor(
 
             val gqlRecommendationRequest = GraphqlRequest(
                     TokopointQuery.getQuery(),
-                    Tokopoint::class.java
+                    TokopointData::class.java
             )
-            val tokopoint = graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy).getData<Tokopoint>(Tokopoint::class.java)
-            WalletDataModel.TokopointAction(tokopoint, status = Resource.Status.SUCCESS)
+            val response = graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
+            val tokopointData = response.getSuccessData<TokopointData>()
+            WalletDataModel.TokopointAction(tokopointData.tokopoint, status = Resource.Status.SUCCESS)
         }
     }
 

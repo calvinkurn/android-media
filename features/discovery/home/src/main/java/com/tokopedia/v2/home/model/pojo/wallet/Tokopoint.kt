@@ -2,6 +2,11 @@ package com.tokopedia.v2.home.model.pojo.wallet
 
 import com.google.gson.annotations.SerializedName
 
+data class TokopointData(
+    @SerializedName("tokopointsDrawer")
+    val tokopoint: Tokopoint
+)
+
 data class Tokopoint (
     @SerializedName("redirectURL")
     val redirectURL: String = "",
