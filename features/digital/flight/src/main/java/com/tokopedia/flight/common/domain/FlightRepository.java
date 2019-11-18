@@ -70,7 +70,7 @@ public interface FlightRepository extends FlightOrderRepository {
 
     Observable<Boolean> updatePassengerListData(UpdatePassengerRequest request, String idempotencyKey);
 
-    Observable<List<Passenger>> getCancelablePassenger(String invoiceId);
+    Observable<Map<String, List<Passenger>>> getCancelablePassenger(String invoiceId);
 
     Observable<List<Reason>> getCancellationReasons();
 
