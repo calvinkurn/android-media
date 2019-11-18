@@ -94,9 +94,6 @@ buildscript {
         maven {
             url 'https://jitpack.io'
         }
-        flatDir {
-            dirs project(rootProject.ext.libraries.inappupdate).file('libs')
-        }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
@@ -248,8 +245,6 @@ android {
     // to disable dynamic feature, use command option -Pdisable-dynamic-feature
     dynamicFeatures = getDynamicFeatureIfEnabled(project)
     generateAssetFile(project, dynamicFeatures)
-
-
 }
 
 dependencies {
@@ -316,7 +311,6 @@ dependencies {
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.topchat)
-    implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.changepassword)
@@ -367,7 +361,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
-    implementation project(rootProject.ext.features.imageSearch)
     implementation project(rootProject.ext.features.autocomplete)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
@@ -411,8 +404,10 @@ dependencies {
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.williamchart)
+    implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
+    implementation project(rootProject.ext.libraries.cameraview)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -431,6 +426,9 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation rootProject.ext.supportLibDependencies.kotlinReflection
+    implementation rootProject.ext.supportLibDependencies.supportV13
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
     implementation rootProject.ext.miscDependencies.lottie
@@ -469,7 +467,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.expandableTextview
-    implementation project(rootProject.ext.libraries.cameraview)
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }

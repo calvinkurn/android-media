@@ -38,14 +38,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    implementation 'io.reactivex:rxkotlin:0.60.0'
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation rootProject.ext.miscDependencies.rxKotlin
 }
 
 project.ext {
     artifactId = 'onboarding'
     groupId = 'com.tokopedia.user'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="onboarding-release"
 }
 

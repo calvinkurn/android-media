@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
@@ -20,6 +21,7 @@ import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 
 class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractViewHolder<RecommendationCarouselDataModel>(view)  {
+    private val viewPool = RecyclerView.RecycledViewPool()
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val carouselProductCardView: CarouselProductCardView by lazy { view.findViewById<CarouselProductCardView>(R.id.list) }
@@ -56,10 +58,10 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                         return element.list[adapterPosition].recommendationItem
                     }
 
-                    override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        (listener as WishlistListener).onProductImpression(element.list[adapterPosition], adapterPosition)
-                    }
+                override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
+                    (listener as WishlistListener).onProductImpression(element.list[adapterPosition], adapterPosition)
                 }
+            }
         )
         carouselProductCardView.setItemDecoration(itemDecoration)
         carouselProductCardView.setSnapHelper(GravitySnapHelper(Gravity.START))

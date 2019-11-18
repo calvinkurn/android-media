@@ -76,7 +76,7 @@ dependencies {
 project.ext {
     artifactId = 'navigation'
     groupId = 'com.tokopedia.home'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "navigation-release"
 }
 
