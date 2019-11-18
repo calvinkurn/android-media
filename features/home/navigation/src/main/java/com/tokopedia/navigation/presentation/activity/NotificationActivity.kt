@@ -32,6 +32,7 @@ import com.tokopedia.navigation.listener.NotificationActivityListener
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.fragment.NotificationFragment
+import com.tokopedia.navigation.presentation.fragment.NotificationTransactionFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
@@ -62,7 +63,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     private var updateCounter = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_activity), NotificationFragment()))
+        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_activity), NotificationTransactionFragment()))
         tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_update), NotificationUpdateFragment()))
         super.onCreate(savedInstanceState)
         initInjector()
