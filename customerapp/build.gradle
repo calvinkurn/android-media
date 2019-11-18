@@ -105,8 +105,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 341001101;
-        defaultVersionName = "3.41";
+        defaultVersionCode = 352001101;
+        defaultVersionName = "3.52";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -527,7 +527,7 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     devImplementation project.ext.debugToolsDependencies.blockCanary
-    debugImplementation project.ext.debugToolsDependencies.leakCanary
+//    debugImplementation project.ext.debugToolsDependencies.leakCanary
 
     //[START] test and androidTest dependencies
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
