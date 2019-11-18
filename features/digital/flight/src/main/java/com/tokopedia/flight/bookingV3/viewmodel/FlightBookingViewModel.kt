@@ -23,6 +23,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
@@ -94,21 +95,13 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     retryCount++
                     getCart(rawQuery, cartId)
                 } else {
-//                    flightCartResult.value = Fail()
+                    retryCount = 0
+                    flightCartResult.value = Fail(MessageErrorException("Error"))
                 }
             }
         }) {
-            //            flightCartResult.value = Fail(it)
-            val gson = Gson()
-            val data = gson.fromJson(dummy, FlightCart.Response::class.java).flightCart
-            flightBookingParam.isDomestic = data.cartData.flight.isDomestic
-            flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
-            flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
-            flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
-                    data.cartData.flight.child, data.cartData.flight.infant)
-            flightPriceData.value = data.cartData.flight.priceDetail
-            flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
-            flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
+            Log.d("ERRORRR", "$it.message   ${it.localizedMessage}")
+            flightCartResult.value = Fail(it)
         }
     }
 
@@ -137,11 +130,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
                 flightVerifyResult.value = Success(flightVerifyData)
             }) {
-
-                val gson = Gson()
-                val data = gson.fromJson(dummy, FlightVerify.Response::class.java).flightVerify
-                flightVerifyResult.value = Success(data)
-//            flightVerifyResult.value = Fail(it)
+                flightVerifyResult.value = Fail(it)
             }
         } else {
 
@@ -479,10 +468,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             promoEligibility.success = true
             return promoEligibility
         } catch (e: Exception) {
-            val gson = Gson()
-            val data = gson.fromJson(dummy, FlightVoucher.Response::class.java).flightVoucher
-            promoEligibility.message = data.message
-            promoEligibility.success = true
             return promoEligibility
         }
     }
@@ -534,8 +519,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             getCart(getCartQuery, getCartId(), dummy)
         })
         {
-//            flightCartResult.value = Fail(it)
-            getCart(getCartQuery, getCartId(), dummy)
+            flightCartResult.value = Fail(it)
         }
     }
 
@@ -559,6 +543,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun getDepartureId(): String = flightBookingParam.departureId
     fun getReturnId(): String = flightBookingParam.returnId
+    fun getDepartureDate(): String {
+        return if (flightCartResult.value is Success) (flightCartResult.value as Success<FlightCartViewEntity>).data.journeySummaries[0].date else ""
+    }
 
     fun checkOutCart(query: String, price: Int, dummy: String) {
 
@@ -572,13 +559,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<FlightCheckoutData.Response>().flightCheckout
 
             flightCheckoutResult.value = Success(checkOutData)
-
         })
         {
-            val gson = Gson()
-            val data = gson.fromJson(dummy, FlightCheckoutData.Response::class.java).flightCheckout
-            flightCheckoutResult.value = Success(data)
-            //            flightCartResult.value = Fail(it)
+            flightCartResult.value = Fail(it)
         }
     }
 

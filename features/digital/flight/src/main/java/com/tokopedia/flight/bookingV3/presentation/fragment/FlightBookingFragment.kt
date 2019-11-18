@@ -377,7 +377,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 override fun onClickEditPassengerListener(passenger: FlightBookingPassengerViewModel) {
                     // if paramvm is oneoway, depaturedate = depaturedate else returndate
                     val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
-                    navigateToPassengerInfoDetail(passenger, "2020-02-02", requestId)
+                    navigateToPassengerInfoDetail(passenger, bookingViewModel.getDepartureDate(), requestId)
                 }
             }
         }
