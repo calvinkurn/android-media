@@ -159,6 +159,7 @@ public class FlightCancellationPassengerViewModel implements Parcelable {
                     this.getFirstName().equals(((FlightCancellationPassengerViewModel) obj).getFirstName()) &&
                     this.getLastName().equals(((FlightCancellationPassengerViewModel) obj).getLastName()) &&
                     this.getStatus() == ((FlightCancellationPassengerViewModel) obj).getStatus() &&
+                    this.getStatusString() != null &&
                     this.getStatusString().equals(((FlightCancellationPassengerViewModel) obj).getStatusString());
         }
 
