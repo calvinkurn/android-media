@@ -9,7 +9,7 @@ import java.util.List;
  * @author by furqan on 23/03/18.
  */
 
-public class FlightCancellationPassengerViewModel implements Parcelable{
+public class FlightCancellationPassengerViewModel implements Parcelable {
 
     private String passengerId;
     private int type;
@@ -19,6 +19,8 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
     private String lastName;
     private String relationId;
     private List<String> relations;
+    private int status;
+    private String statusString;
 
     public FlightCancellationPassengerViewModel() {
     }
@@ -32,6 +34,8 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
         lastName = in.readString();
         relationId = in.readString();
         relations = in.createStringArrayList();
+        status = in.readInt();
+        statusString = in.readString();
     }
 
     @Override
@@ -44,6 +48,8 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
         dest.writeString(lastName);
         dest.writeString(relationId);
         dest.writeStringList(relations);
+        dest.writeInt(status);
+        dest.writeString(statusString);
     }
 
     @Override
@@ -127,15 +133,33 @@ public class FlightCancellationPassengerViewModel implements Parcelable{
         this.relations = relations;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getStatusString() {
+        return statusString;
+    }
+
+    public void setStatusString(String statusString) {
+        this.statusString = statusString;
+    }
+
     @Override
     public boolean equals(Object obj) {
         boolean isEquals = false;
 
         if (obj != null && obj instanceof FlightCancellationPassengerViewModel) {
-            isEquals = this.getRelationId().equals(((FlightCancellationPassengerViewModel)obj).getRelationId()) &&
-                    this.getPassengerId().equals(((FlightCancellationPassengerViewModel)obj).getPassengerId()) &&
-                    this.getFirstName().equals(((FlightCancellationPassengerViewModel)obj).getFirstName()) &&
-                    this.getLastName().equals(((FlightCancellationPassengerViewModel)obj).getLastName());
+            isEquals = this.getRelationId().equals(((FlightCancellationPassengerViewModel) obj).getRelationId()) &&
+                    this.getPassengerId().equals(((FlightCancellationPassengerViewModel) obj).getPassengerId()) &&
+                    this.getFirstName().equals(((FlightCancellationPassengerViewModel) obj).getFirstName()) &&
+                    this.getLastName().equals(((FlightCancellationPassengerViewModel) obj).getLastName()) &&
+                    this.getStatus() == ((FlightCancellationPassengerViewModel) obj).getStatus() &&
+                    this.getStatusString().equals(((FlightCancellationPassengerViewModel) obj).getStatusString());
         }
 
         return isEquals;
