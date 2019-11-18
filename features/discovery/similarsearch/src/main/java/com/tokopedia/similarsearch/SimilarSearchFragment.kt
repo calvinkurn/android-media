@@ -31,6 +31,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
 
         const val REQUEST_CODE_GO_TO_PRODUCT_DETAIL = 123
+        const val REQUEST_CODE_GO_TO_NORMAL_CHECKOUT = 124
     }
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
@@ -156,7 +157,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             }
 
             override fun onButtonAddToCartClicked() {
-                selectedProductOnButtonAddToCartClicked()
+                selectedProductOnButtonAddToCartClicked(originalProduct)
             }
         }
     }
@@ -173,17 +174,15 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     }
 
-    private fun selectedProductOnButtonAddToCartClicked() {
-//        activity?.let { activity ->
-//            val similarSearchSelectedProduct = similarSearchViewModel?.similarSearchSelectedProduct
-//
-//            if (similarSearchSelectedProduct != null) {
-//                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).also {
-//                    it.putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, similarSearchSelectedProduct.name)
-//                    it.putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, similarSearchSelectedProduct.price)
-//                }
-//            }
-//        }
+    private fun selectedProductOnButtonAddToCartClicked(originalProduct: Product) {
+        activity?.let { activity ->
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).also {
+                it.putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, originalProduct.shop.id)
+                it.putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, originalProduct.id)
+            }
+
+            startActivityForResult(intent, REQUEST_CODE_GO_TO_NORMAL_CHECKOUT)
+        }
     }
 
     private fun updateAdapter(similarSearchLiveData: State<List<Any>>) {
