@@ -1,47 +1,37 @@
 package com.tokopedia.officialstore.category.presentation.widget
 
-import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.widget.ImageView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.officialstore.R
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import kotlinx.android.synthetic.main.view_official_store_category.view.*
 import java.util.*
 
 class OfficialCategoriesTab(context: Context,
                             attributes: AttributeSet) : TabLayout(context, attributes) {
 
-    private val DEFAULT_ANIMATION_DURATION: Long = 300
-    private val MAX_TAB_COLLAPSE_SCROLL_RANGE = 100
-    private val SCROLL_UP_THRESHOLD_BEFORE_EXPAND = 100
-
     private val categoriesItemTab = ArrayList<CategoriesItemTab>()
 
+    private var totalScrollUp: Int = 0
     private var tabMaxHeight: Int = 0
     private var tabMinHeight: Int = 0
 
-    private var totalScrollUp: Int = 0
-    private var scrollEnabled = false
-    private var lastTabCollapseFraction = 0f
-
-    private var tabHeightCollapseAnimator: ValueAnimator? = null
-
+    @SuppressLint("ClickableViewAccessibility")
     fun setup(viewPager: ViewPager, tabItemDataList: List<CategoriesItemTab>) {
         this.categoriesItemTab.clear()
         this.categoriesItemTab.addAll(tabItemDataList)
-        resetAllState()
         initResources()
-        initAnimator()
-        isSmoothScrollingEnabled = true
         clearOnTabSelectedListeners()
         viewPager.clearOnPageChangeListeners()
         setupWithViewPager(viewPager)
@@ -98,40 +88,25 @@ class OfficialCategoriesTab(context: Context,
         })
     }
 
-    private fun resetAllState() {
-        lastTabCollapseFraction = 0f
-        scrollEnabled = false
-        totalScrollUp = 0
-    }
 
     private fun initResources() {
         tabMaxHeight = resources.getDimensionPixelSize(R.dimen.os_tab_max_height)
         tabMinHeight = resources.getDimensionPixelSize(R.dimen.os_tab_min_height)
     }
 
-    private fun initAnimator() {
-        tabHeightCollapseAnimator = ValueAnimator.ofInt(tabMaxHeight, tabMinHeight)
-        tabHeightCollapseAnimator?.addUpdateListener { valueAnimator ->
-            if (isFullyCollapsed(valueAnimator.animatedFraction)) {
-                hideIconForAllTabs()
-            } else {
-                showIconForAllTabs()
-            }
-            adjustTabLayoutHeight(valueAnimator.animatedValue as Int)
+    private fun adjustCollapseExpandTab(isCollapse: Boolean) {
+        if (isCollapse) {
+            hideIconForAllTabs()
+            adjustTabLayoutHeight(tabMinHeight)
+        } else {
+            showIconForAllTabs()
+            adjustTabLayoutHeight(tabMaxHeight)
         }
-        tabHeightCollapseAnimator?.duration = DEFAULT_ANIMATION_DURATION
     }
 
     private fun startTabHeightExpandAnimation() {
-        if (tabHeightCollapseAnimator?.animatedFraction.orZero() > 0
-                && !tabHeightCollapseAnimator?.isStarted!!) {
-            tabHeightCollapseAnimator?.reverse()
-            lastTabCollapseFraction = 0f
-        }
-    }
-
-    private fun isFullyCollapsed(fraction: Float): Boolean {
-        return fraction >= 1
+        showIconForAllTabs()
+        adjustTabLayoutHeight(tabMaxHeight)
     }
 
     private fun showIconForAllTabs() {
@@ -181,26 +156,7 @@ class OfficialCategoriesTab(context: Context,
         return view
     }
 
-    private fun getTabCollapseDeltaFraction(dy: Int): Float {
-        return dy.toFloat() / MAX_TAB_COLLAPSE_SCROLL_RANGE
-    }
-
-    private fun adjustTabCollapseFraction(tabCollapseFraction: Float) {
-        tabHeightCollapseAnimator?.let {
-            if (it.isRunning) {
-                it.cancel()
-            }
-            setCurrentFraction(it, tabCollapseFraction)
-            lastTabCollapseFraction = tabCollapseFraction
-        }
-    }
-
-    private fun setCurrentFraction(animator: ValueAnimator, fraction: Float) {
-        animator.currentPlayTime = (fraction * animator.duration).toLong()
-    }
-
-    fun adjustTabCollapseOnScrolled(dy: Int, totalScrollY: Int) {
-
+    fun adjustTabCollapseOnScrolled(dy: Int) {
         if (dy == 0) {
             return
         }
@@ -211,17 +167,7 @@ class OfficialCategoriesTab(context: Context,
             totalScrollUp = 0
         }
 
-        if (dy < 0 && totalScrollY > MAX_TAB_COLLAPSE_SCROLL_RANGE && totalScrollUp < SCROLL_UP_THRESHOLD_BEFORE_EXPAND) {
-            return
-        }
-
-        val updatedFraction = lastTabCollapseFraction + getTabCollapseDeltaFraction(dy)
-
-        when {
-            updatedFraction > 1 -> adjustTabCollapseFraction(1f)
-            updatedFraction < 0 -> adjustTabCollapseFraction(0f)
-            else -> adjustTabCollapseFraction(updatedFraction)
-        }
+        adjustCollapseExpandTab(totalScrollUp in 0..10)
     }
 
     class CategoriesItemTab(val title: String, val iconUrl: String)
