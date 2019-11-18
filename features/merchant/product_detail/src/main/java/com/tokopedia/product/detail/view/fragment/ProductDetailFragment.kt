@@ -60,7 +60,7 @@ import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -244,6 +244,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
 
+    private var isWishlisted = false
+
     override val isUserSessionActive: Boolean
         get() = if (!::productInfoViewModel.isInitialized) false else productInfoViewModel.isUserSessionActive()
 
@@ -259,6 +261,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
         const val REQUEST_CODE_REPORT = 570
         const val REQUEST_CODE_SHOP_INFO = 998
+        const val REQUEST_CODE_IMAGE_PREVIEW = 999
 
         const val CART_MAX_COUNT = 99
         const val CART_ALPHA_ANIMATION_FROM = 1f
@@ -1211,6 +1214,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 if (resultCode == Activity.RESULT_OK)
                     showToastSuccessReport()
             }
+            REQUEST_CODE_IMAGE_PREVIEW -> {
+                if (data != null) {
+                    isWishlisted = data.getBooleanExtra(ImagePreviewPdpActivity.RESPONSE_CODE_IMAGE_RPEVIEW, false)
+                    updateWishlist(isWishlisted)
+                }
+            }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
         }
@@ -1317,7 +1326,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun renderProductInfoP2Login(p2Login: ProductInfoP2Login) {
         shopInfo?.let { updateWishlist(it, p2Login.isWishlisted) }
         p2Login.pdpAffiliate?.let { renderAffiliate(it) }
-
+        isWishlisted = p2Login.isWishlisted
         actionButtonView.renderData(p2Login.isExpressCheckoutType)
     }
 
@@ -1582,6 +1591,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
                 fab_detail.show()
             }
+            isWishlisted = wishlisted
         }
     }
 
@@ -1823,6 +1833,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onSuccessRemoveWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         productInfoViewModel.p2Login.value?.isWishlisted = false
+        isWishlisted = false
         updateWishlist(false)
         //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", false)
@@ -1844,6 +1855,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onSuccessAddWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         productInfoViewModel.p2Login.value?.isWishlisted = true
+        isWishlisted = true
         updateWishlist(true)
         productDetailTracking.eventBranchAddToWishlist(productInfo, (UserSession(activity)).userId)
         //TODO clear cache
@@ -1905,10 +1917,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
      * go to preview image activity to show larger image of Product
      */
     private fun onPictureProductClicked(position: Int) {
-        startActivity(ImagePreviewActivity.getCallingIntent(context!!,
-                getImageURIPaths(),
-                null,
-                position))
+        activity?.let {
+            val intent = ImagePreviewPdpActivity.createIntent(it, productId ?: "", isWishlisted, getImageURIPaths(), null, position)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE_PREVIEW)
+        }
     }
 
     private fun getImageURIPaths(): ArrayList<String> {
