@@ -11,6 +11,7 @@ private fun getProductInfoGQLQuery() = """
     image_url_700
     price
     shop {
+     id
      is_gold_shop
      location
      city
