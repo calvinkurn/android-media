@@ -28,7 +28,7 @@ class WVMUpdateBulkProgressState : Spek({
         val getWishlistDataUseCase by memoized<GetWishlistDataUseCase>()
         val getRecommendationUseCase by memoized<GetRecommendationUseCase>()
 
-        Scenario("Enter bulk mode will update all wishlist data state into bulk mode") {
+        Scenario("Enter bulk mode will update all wishlist data state into bulk mode and doesnt contains recommendation") {
             Given("Create wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
@@ -77,9 +77,16 @@ class WVMUpdateBulkProgressState : Spek({
                     }
                 }
             }
+            Then("Expect wishlist data not contains recommendation data model") {
+                wishlistViewmodel.wishlistLiveData.value?.forEach {
+                    if (it is RecommendationCarouselDataModel) {
+                        Assert.assertFalse("Wishlist contains recommendation data model in bulk load more", true)
+                    }
+                }
+            }
         }
 
-        Scenario("Exit will update all wishlist data bulk mode state to false") {
+        Scenario("Exit will update all wishlist data bulk mode state to false and has recommendation model") {
             Given("Create wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
@@ -117,6 +124,9 @@ class WVMUpdateBulkProgressState : Spek({
                 wishlistViewmodel.setWishlistOnMarkDelete(3, true)
             }
 
+            When("Wishlistviewmodel enter bulk mode") {
+                wishlistViewmodel.enterBulkMode()
+            }
             When("Wishlistviewmodel exit bulk mode") {
                 wishlistViewmodel.exitBulkMode()
             }
@@ -133,6 +143,12 @@ class WVMUpdateBulkProgressState : Spek({
                         Assert.assertFalse("Item wishlist not in bulk mode", true)
                     }
                 }
+            }
+            Then("Expect recommendation model is exist in position 4") {
+                Assert.assertEquals(
+                        RecommendationCarouselDataModel::class.java,
+                        wishlistViewmodel.wishlistLiveData.value!![4].javaClass
+                )
             }
         }
     }

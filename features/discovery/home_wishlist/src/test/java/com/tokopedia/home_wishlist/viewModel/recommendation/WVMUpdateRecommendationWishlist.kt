@@ -67,8 +67,8 @@ class WVMUpdateRecommendationWishlist : Spek({
             }
 
             When("Update wishlist data in selected parent and child") {
-                wishlistViewmodel.updateRecommendationItemWishlist(parentPosition1, childPosition1, wishlistCurrentStateFor33)
-                wishlistViewmodel.updateRecommendationItemWishlist(parentPosition2, childPosition2, wishlistCurrentStateFor55)
+                wishlistViewmodel.updateRecommendationItemWishlist(33, parentPosition1, childPosition1, wishlistCurrentStateFor33)
+                wishlistViewmodel.updateRecommendationItemWishlist(55, parentPosition2, childPosition2, wishlistCurrentStateFor55)
             }
 
             Then("Expect product in parent position = 4 and child position = 2 updated with new wishlist status in wishlist data") {

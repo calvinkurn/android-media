@@ -1,5 +1,7 @@
 package com.tokopedia.recommendation_widget_common.domain.request
 
+import android.text.TextUtils
+
 data class GetRecommendationRequestParam(
         val pageNumber: Int = 1,
         val productIds: List<String> = listOf(),
@@ -14,7 +16,7 @@ data class GetRecommendationRequestParam(
     fun toGqlRequest(): Map<String, Any?> = mapOf(
             PAGE_NUMBER to pageNumber,
             QUERY_PARAM to queryParam,
-            PRODUCT_IDS to productIds,
+            PRODUCT_IDS to TextUtils.join(",", productIds),
             PAGE_NAME to pageName
     )
 }

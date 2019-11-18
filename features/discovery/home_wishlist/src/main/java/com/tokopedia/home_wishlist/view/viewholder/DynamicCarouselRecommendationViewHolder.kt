@@ -36,8 +36,8 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                 parentView = view,
                 productCardModelList = convertIntoProductDataModel(element.list),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener{
-                    override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        (listener as WishlistListener).onProductClick(element.list[adapterPosition], adapterPosition)
+                    override fun onItemClick(productCardModel: ProductCardModel, childPosition: Int) {
+                        (listener as WishlistListener).onProductClick(element.list[childPosition], adapterPosition, childPosition)
                     }
                 },
                 carouselProductCardOnWishlistItemClickListener = object : CarouselProductCardListener.OnWishlistItemClickListener{

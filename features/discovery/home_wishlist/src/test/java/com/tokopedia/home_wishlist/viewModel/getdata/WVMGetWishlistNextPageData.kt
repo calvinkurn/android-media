@@ -114,6 +114,57 @@ class WVMGetWishlistNextPageData : Spek({
             }
         }
 
+        Scenario("Get next page data success in bulk mode should not contains recommendation carousel") {
+
+            val mockKeyword = "keyAja"
+            val currentPage = 1
+            val nextPage = 2
+
+            Given("Wishlist viewmodel") {
+                wishlistViewmodel = createWishlistViewModel()
+            }
+            Given("User id") {
+                every { userSessionInterface.userId } returns mockUserId
+            }
+            Given("Get wishlist usecase returns 20 wishlist data with values") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
+                        useDefaultWishlistItem = true,
+                        page = currentPage,
+                        hasNextPage = true)
+            }
+            Given("Get wishlist usecase returns 20 wishlist item data for next page") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(
+                        useDefaultWishlistItem = true,
+                        hasNextPage = false,
+                        page = nextPage
+                )
+            }
+            Given("Get recommendation usecase always returns data") {
+                getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf())
+            }
+            Given("Live data is filled by data from getWishlistData") {
+                wishlistViewmodel.getWishlistData()
+            }
+            Given("Wishlist enter bulk mode") {
+                wishlistViewmodel.enterBulkMode()
+            }
+
+            When("Viewmodel get wishlist data") {
+                wishlistViewmodel.getNextPageWishlistData()
+            }
+
+            Then("Expect wishlistLiveData has 40 items (20 page1 + 20 page2) wishlist data") {
+                Assert.assertEquals(40, wishlistViewmodel.wishlistLiveData.value!!.size)
+            }
+            Then("Expect wishlist data not contains recommendation data model") {
+                wishlistViewmodel.wishlistLiveData.value?.forEach {
+                    if (it is RecommendationCarouselDataModel) {
+                        Assert.assertFalse("Wishlist contains recommendation data model in bulk load more", true)
+                    }
+                }
+            }
+        }
+
         Scenario("Get next page data success in bulk mode will add existing data with new data in bulk mode") {
 
             val mockKeyword = "keyAja"

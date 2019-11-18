@@ -55,8 +55,14 @@ open class WishlistViewModel @Inject constructor(
         private val getSingleRecommendationUseCase: GetSingleRecommendationUseCase
 ) : BaseViewModel(wishlistCoroutineDispatcherProvider.ui()){
 
+    private var tempSelectedProductIdInPdp: Int? = null
+    private var tempSelectedPositionInPdp: Int? = null
+    private var tempSelectedParentPositionInPDP: Int? = null
+
     //hashmap<position, wishlistDataModel>
     private val listVisitableMarked : HashMap<Int, WishlistDataModel> = hashMapOf()
+    private val listRecommendationCarouselOnMarked : HashMap<Int, RecommendationCarouselDataModel> = hashMapOf()
+
     private val wishlistData = WishlistLiveData<List<WishlistDataModel>>(listOf())
 
     /**
@@ -82,17 +88,18 @@ open class WishlistViewModel @Inject constructor(
     val wishlistState = WishlistLiveData(Status.LOADING)
 
     val addToCartActionData = SingleObserverLiveEvent<Event<AddToCartActionData>>()
+    val productClickActionData = SingleObserverLiveEvent<Event<ProductClickActionData>>()
     val removeWishlistActionData = SingleObserverLiveEvent<Event<RemoveWishlistActionData>>()
     val bulkRemoveWishlistActionData = SingleObserverLiveEvent<Event<BulkRemoveWishlistActionData>>()
     val loadMoreWishlistAction = SingleObserverLiveEvent<Event<LoadMoreWishlistActionData>>()
     val addWishlistRecommendationActionData = SingleObserverLiveEvent<Event<AddWishlistRecommendationData>>()
     val removeWishlistRecommendationActionData = SingleObserverLiveEvent<Event<RemoveWishlistRecommendationData>>()
+    val bulkSelectCountActionData = SingleObserverLiveEvent<Event<Int>>().apply { value = Event(0) }
 
     private val isInBulkMode = SingleObserverLiveEvent<Boolean>().default(false)
     private val isWishlistEmpty = SingleObserverLiveEvent<Boolean>().default(false)
     private val isWishlistErrorInFirstPage = SingleObserverLiveEvent<Boolean>().default(false)
 
-    val bulkSelectActionData = SingleObserverLiveEvent<Event<Int>>().apply { value = Event(0) }
 
     private fun loadInitialPage(){
         wishlistData.value = listOf(LoadingDataModel())
@@ -242,7 +249,7 @@ open class WishlistViewModel @Inject constructor(
         wishlistData.value = wishlistData.value.plus(LoadMoreDataModel())
         launchCatchError(block = {
             val widget = getSingleRecommendationUseCase.getData(
-                    GetRecommendationRequestParam(pageNumber = page)
+                    GetRecommendationRequestParam(pageNumber = page, pageName = "empty_wishlist")
             )
             val newList = emptyDataVisitable.toMutableList()
             if(page == 0) newList.add(RecommendationTitleDataModel(widget.title, ""))
@@ -342,13 +349,14 @@ open class WishlistViewModel @Inject constructor(
      *
      * This function will update selected recommendation item with new wishlist state
      */
-    open fun updateRecommendationItemWishlist(parentPosition: Int, childPosition: Int, newWishlistState: Boolean){
+    open fun updateRecommendationItemWishlist(productId: Int, parentPosition: Int, childPosition: Int, newWishlistState: Boolean){
         val DEFAULT_PARENT_POSITION_EMPTY_RECOM = -1
         val newWishlistData: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
 
         if (parentPosition == DEFAULT_PARENT_POSITION_EMPTY_RECOM) {
             val newWishlistDataModel = newWishlistData[childPosition]
-            if (newWishlistDataModel is RecommendationItemDataModel) {
+            if (newWishlistDataModel is RecommendationItemDataModel &&
+                    newWishlistDataModel.recommendationItem.productId == productId) {
                 val newRecomItem = newWishlistDataModel.recommendationItem.copy(isWishlist = newWishlistState)
                 newWishlistData[childPosition] = newWishlistDataModel.copy(recommendationItem = newRecomItem)
                 wishlistData.value = newWishlistData
@@ -357,6 +365,9 @@ open class WishlistViewModel @Inject constructor(
             val newCarouselDataModel = newWishlistData[parentPosition]
             if (newCarouselDataModel is RecommendationCarouselDataModel) {
                 val oldRecomItemDataModel = newCarouselDataModel.list[childPosition]
+
+                if (oldRecomItemDataModel.recommendationItem.productId != productId) return
+
                 val oldRecomItem = oldRecomItemDataModel.recommendationItem
 
                 val newRecomItem = oldRecomItem.copy(isWishlist = newWishlistState)
@@ -508,7 +519,7 @@ open class WishlistViewModel @Inject constructor(
                                             productIds = deletedIds
                                     )
                             )
-                            bulkSelectActionData.value = Event(0)
+                            bulkSelectCountActionData.value = Event(0)
                             wishlistData.value = updatedList
                             updateBulkMode(false)
                         }
@@ -517,7 +528,7 @@ open class WishlistViewModel @Inject constructor(
                         }
 
                         override fun onError(e: Throwable) {
-                            bulkSelectActionData.value = Event(0)
+                            bulkSelectCountActionData.value = Event(0)
                             bulkRemoveWishlistActionData.value = Event(
                                     BulkRemoveWishlistActionData(
                                             message = e.message ?: "",
@@ -552,7 +563,7 @@ open class WishlistViewModel @Inject constructor(
         val deletedIds = mutableListOf<String>()
 
         //save carousel instance temporarily
-        for(i in 4 until newWishlistDataValue.size-1 step maxItemInPage) {
+        for(i in recommendationPositionInPage until newWishlistDataValue.size-1 step maxItemInPage) {
             if (newWishlistDataValue[i] is RecommendationCarouselDataModel) {
                 recommendationCarouselDataModels.add(newWishlistDataValue[i])
                 newWishlistDataValue.removeAt(i)
@@ -678,11 +689,27 @@ open class WishlistViewModel @Inject constructor(
                     newVisitable[i] = dataModel.copy(isOnBulkRemoveProgress = isBulkMode)
                 }
                 is RecommendationCarouselDataModel -> {
-                    newVisitable[i] = dataModel.copy(isOnBulkRemoveProgress = isBulkMode)
+                    if (isBulkMode) {
+                        listRecommendationCarouselOnMarked[i] = newVisitable[i] as RecommendationCarouselDataModel
+                    }
                 }
             }
         }
-        if(!isBulkMode) clearAllMarkedWishlistItem()
+
+        val listOfRecommendations = listRecommendationCarouselOnMarked.values
+
+        if(!isBulkMode) {
+            val sortFirst = listRecommendationCarouselOnMarked.toSortedMap()
+            sortFirst.forEach{
+                if (it.key < newVisitable.size) {
+                    newVisitable.add(it.key, it.value)
+                }
+            }
+            clearAllMarkedWishlistItem()
+        } else {
+            newVisitable.removeAll(listOfRecommendations)
+        }
+
         wishlistData.value = newVisitable
     }
 
@@ -699,6 +726,7 @@ open class WishlistViewModel @Inject constructor(
             if (it.value is WishlistItemDataModel) (it.value as WishlistItemDataModel).isOnChecked = false
         }
         listVisitableMarked.clear()
+        listRecommendationCarouselOnMarked.clear()
     }
 
     /**
@@ -720,7 +748,7 @@ open class WishlistViewModel @Inject constructor(
             else {
                 listVisitableMarked.remove(productPosition)
             }
-            bulkSelectActionData.value = Event(listVisitableMarked.size)
+            bulkSelectCountActionData.value = Event(listVisitableMarked.size)
             wishlistData.value = wishlistDataTemp.copy()
         }
     }
@@ -740,7 +768,7 @@ open class WishlistViewModel @Inject constructor(
             }
 
             override fun onSuccessAddWishlist(productId: String?) {
-                updateRecommendationItemWishlist(parentPosition, childPosition, !currentWishlistState)
+                updateRecommendationItemWishlist(productId?.toInt()?:-1, parentPosition, childPosition, !currentWishlistState)
                 addWishlistRecommendationActionData.value = Event(
                         AddWishlistRecommendationData(
                                 message = "",
@@ -774,7 +802,7 @@ open class WishlistViewModel @Inject constructor(
             }
 
             override fun onSuccessRemoveWishlist(productId: String?) {
-                updateRecommendationItemWishlist(parentPosition, childPosition, !currentWishlistState)
+                updateRecommendationItemWishlist(productId?.toInt()?:-1, parentPosition, childPosition, !currentWishlistState)
                 removeWishlistRecommendationActionData.value = Event(
                         RemoveWishlistRecommendationData(
                                 message = "",
@@ -801,17 +829,31 @@ open class WishlistViewModel @Inject constructor(
 
         val recommendationPositionInThisPage = ((currentPage-1) * maxItemInPage) + recommendationPositionInPage
         list.addAll(wishlistVisitable)
-        list.add(recommendationPositionInThisPage,
-                RecommendationCarouselDataModel(
-                        id = recommendationList.first().tid,
-                        title = recommendationList.first().title,
-                        list = recommendationList.first().recommendationItemList.map {
-                            RecommendationCarouselItemDataModel(it, recommendationList.first().title, getRecommendationParentPosition(
-                                    maxItemInPage,
-                                    recommendationPositionInPage,
-                                    currentPage)) } as MutableList<RecommendationCarouselItemDataModel>,
-                        isOnBulkRemoveProgress = isInBulkMode.value?:false,
-                        seeMoreAppLink = recommendationList.first().seeMoreAppLink))
+        if (isInBulkMode.value == true) {
+            listRecommendationCarouselOnMarked[recommendationPositionInThisPage] =
+                    RecommendationCarouselDataModel(
+                            id = recommendationList.first().tid,
+                            title = recommendationList.first().title,
+                            list = recommendationList.first().recommendationItemList.map {
+                                RecommendationCarouselItemDataModel(it, recommendationList.first().title, getRecommendationParentPosition(
+                                        maxItemInPage,
+                                        recommendationPositionInPage,
+                                        currentPage)) } as MutableList<RecommendationCarouselItemDataModel>,
+                            isOnBulkRemoveProgress = isInBulkMode.value?:false,
+                            seeMoreAppLink = recommendationList.first().seeMoreAppLink)
+        } else {
+            list.add(recommendationPositionInThisPage,
+                    RecommendationCarouselDataModel(
+                            id = recommendationList.first().tid,
+                            title = recommendationList.first().title,
+                            list = recommendationList.first().recommendationItemList.map {
+                                RecommendationCarouselItemDataModel(it, recommendationList.first().title, getRecommendationParentPosition(
+                                        maxItemInPage,
+                                        recommendationPositionInPage,
+                                        currentPage)) } as MutableList<RecommendationCarouselItemDataModel>,
+                            isOnBulkRemoveProgress = isInBulkMode.value?:false,
+                            seeMoreAppLink = recommendationList.first().seeMoreAppLink))
+        }
         return list
     }
 
@@ -825,5 +867,35 @@ open class WishlistViewModel @Inject constructor(
         val newList = ArrayList(firstList)
         newList.addAll(secondList)
         return newList
+    }
+
+    fun goToPdp(toString: String, parentPosition: Int, position: Int) {
+
+    }
+
+    fun onProductClick(productId: Int, parentPosition: Int, position: Int) {
+        this.tempSelectedParentPositionInPDP = parentPosition
+        this.tempSelectedPositionInPdp = position
+        this.tempSelectedProductIdInPdp = productId
+
+        productClickActionData.value = Event(
+                ProductClickActionData(
+                        parentPosition = parentPosition,
+                        position = position,
+                        productId = productId
+                )
+        )
+    }
+
+    fun onPDPActivityResultForWishlist(productId: Int, wishlistState: Boolean) {
+        if (tempSelectedParentPositionInPDP != null &&
+                tempSelectedPositionInPdp != null &&
+                tempSelectedProductIdInPdp != null) {
+            updateRecommendationItemWishlist(
+                    productId,
+                    tempSelectedParentPositionInPDP!!,
+                    tempSelectedPositionInPdp!!,
+                    wishlistState)
+        }
     }
 }

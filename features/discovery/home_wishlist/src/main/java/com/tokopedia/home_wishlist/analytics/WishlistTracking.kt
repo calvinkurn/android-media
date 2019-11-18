@@ -67,6 +67,7 @@ object WishlistTracking {
     private const val EVENT_ACTION_CLICK_ADD_WISHLIST = "click add wishlist on product recommendation"
 
     private const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN = "impression on product recommendation"
+    private const val EVENT_ACTION_IMPRESSION_WISHLIST = "product impressions"
     private const val EVENT_ACTION_CLICK_PRODUCT = "click product"
     private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation"
     private const val EVENT_ACTION_CLICK_SEE_CART = "click - cek keranjang on wishlist"
@@ -268,6 +269,7 @@ object WishlistTracking {
         val map = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_VIEW,
                 EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_WISHLIST,
                 EVENT_LABEL, VALUE_EMPTY,
                 ECOMMERCE, DataLayer.mapOf(
                         ECOMMERCE_CURRENCY_CODE, VALUE_IDR,

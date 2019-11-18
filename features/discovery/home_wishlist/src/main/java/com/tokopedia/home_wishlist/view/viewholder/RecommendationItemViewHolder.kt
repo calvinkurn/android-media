@@ -15,6 +15,7 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<RecommendationItemDataModel>(view){
 
+    private val parentPositionDefault: Int = -1
     private val productCardView: ProductCardViewSmallGrid by lazy { view.findViewById<ProductCardViewSmallGrid>(R.id.product_item) }
 
     override fun bind(element: RecommendationItemDataModel, listener: SmartListener) {
@@ -52,7 +53,7 @@ class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<Recomme
             })
 
             setOnClickListener {
-                (listener as WishlistListener).onProductClick(element, adapterPosition)
+                (listener as WishlistListener).onProductClick(element, parentPositionDefault, adapterPosition)
                 if (element.recommendationItem.isTopAds) {
                     ImpresionTask().execute(element.recommendationItem.clickUrl)
                 }
