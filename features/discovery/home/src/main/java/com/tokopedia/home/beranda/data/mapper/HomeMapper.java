@@ -18,6 +18,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TopAdsDynamicChannelModel;
@@ -121,6 +122,8 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                         } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC)
                                 || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL)) {
                             channel.setPosition(position);
+                        } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_REVIEW)){
+                            channel.setPosition(position);
                         }
                     }
 
@@ -220,6 +223,11 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                             ));
                             HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
                             break;
+                        case DynamicHomeChannel.Channels.LAYOUT_REVIEW:
+                            if (!homeData.isCache()) {
+                                list.add(mappingToReviewViewModel(channel));
+                            }
+                            break;
                         case DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER:
                             HomeVisitable playBanner = mappingPlayChannel(channel, new HashMap<>(), homeData.isCache());
                             if (!list.contains(playBanner)) list.add(playBanner);
@@ -230,6 +238,11 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
         }
 
         return new HomeViewModel(homeData.getHomeFlag(), list);
+    }
+
+    private HomeVisitable mappingToReviewViewModel(DynamicHomeChannel.Channels channel) {
+        ReviewViewModel reviewViewModel = new ReviewViewModel();
+        return reviewViewModel;
     }
 
     private HomeVisitable mappingDigitalWidget(List<Object> trackingDataForCombination, boolean isCache) {

@@ -29,7 +29,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.affiliateCommon)
 
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -57,7 +59,7 @@ dependencies {
 project.ext {
     artifactId = 'explore'
     groupId = 'com.tokopedia.content'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "explore-release"
 }
 

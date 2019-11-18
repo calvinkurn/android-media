@@ -20,6 +20,7 @@
     <string name="path_gold_merchant_subscribe_dashboard" translatable="false">/gold-merchant-subscribe-dashboard</string>
     <string name="path_gold_merchant_membership" translatable="false">/gold-merchant-membership</string>
     <string name="path_gold_merchant_redirect" translatable="false">/gold-merchant-redirect</string>
+    <string name="path_power_merchant_subscribe" translatable="false">/power-merchant-subscribe</string>
 
     <string name="path_product_add_item" translatable="false">/product-add-item</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
@@ -30,6 +31,7 @@
     <string name="path_product_etalase_picker" translatable="false">/product-etalase-picker/.*\\/</string>
     <string name="path_product_manage_list" translatable="false">/product-manage-list</string>
     <string name="path_product_review" translatable="false">/product/.*\\/review</string>
+    <string name="path_create_review" translatable="false">/review/create/.*\\/.*\\/</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
     <string name="path_product_report" translatable="false">/product-report/.*\\/</string>
     <string name="path_store_setting" translatable="false">/store-setting</string>

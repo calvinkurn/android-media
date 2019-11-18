@@ -2,12 +2,17 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPlay
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
@@ -51,8 +56,13 @@ object DeeplinkMapper {
                         getRegisteredHotlist(context,deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
+                    deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW,true) ->
+                        getCreateReviewInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(context, deeplink)
+                    deeplink.startsWith(ApplinkConst.CHAT_BOT,true) ->
+                        getChatbotDeeplink(deeplink)
+
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){
@@ -94,10 +104,12 @@ object DeeplinkMapper {
      * If not found, return current deeplink, means it registered
      */
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
-        return when (deeplink) {
+         when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+            ApplinkConst.GROUPCHAT_LIST -> return ApplinkConstInternalPlay.GROUPCHAT_LIST
+            ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
             ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
             ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
@@ -111,6 +123,30 @@ object DeeplinkMapper {
             ApplinkConst.PINJAMAN_ONLINE_TAB -> ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
             else -> ""
         }
+        when {
+            specialNavigationMapper(deeplink, ApplinkConst.Play.HOST) -> {
+                return UriUtil.buildUri(ApplinkConstInternalPlay.GROUPCHAT_DETAIL, getSegments(deeplink).first())
+            }
+        }
+        return ""
+    }
+
+    private fun getSegments(deeplink: String): List<String> {
+        return Uri.parse(deeplink).pathSegments
+    }
+
+    private fun specialNavigationMapper(deeplink: String, host: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return uri.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME
+                && uri.host == host
+                && uri.pathSegments.size > 0
+    }
+
+    private fun getCreateReviewInternal(deeplink: String): String {
+        val segments = Uri.parse(deeplink).pathSegments
+        val reputationId = segments[segments.size - 2]
+        val productId = segments.last()
+        return UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId)
     }
 
     /**

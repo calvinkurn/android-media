@@ -42,7 +42,9 @@
         android:layout_alignWithParentIfMissing="true"
         android:background="@null"
         android:text="Open Chuck"
-        android:textColor="@color/font_black_primary_70" />
+        android:textColor="@color/font_black_primary_70"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <Button
         android:visibility="visible"

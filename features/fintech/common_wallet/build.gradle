@@ -27,6 +27,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
@@ -40,7 +43,7 @@ dependencies {
 project.ext {
     artifactId = 'common_wallet'
     groupId = 'com.tokopedia.fintech'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="common_wallet-release"
 }
 

@@ -99,7 +99,7 @@ dependencies {
 project.ext {
     artifactId = 'feed'
     groupId = 'com.tokopedia.content'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "feed-release"
 }
 

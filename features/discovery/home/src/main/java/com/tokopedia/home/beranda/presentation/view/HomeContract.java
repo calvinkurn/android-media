@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
@@ -32,6 +33,12 @@ import rx.Observable;
 public interface HomeContract {
 
     interface View extends CustomerView {
+
+        void onSuccessDismissReview();
+
+        void onSuccessGetReviewData(SuggestedProductReview suggestedProductReview);
+
+        void onErrorGetReviewData();
 
         boolean isLoading();
 
@@ -93,6 +100,11 @@ public interface HomeContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
+        void dismissReview();
+
+        void getSuggestedReview();
+
         void getHomeData();
 
         void updateHomeData();

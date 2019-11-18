@@ -20,7 +20,6 @@ include "libraries:cache_manager"
 //include "libraries:image_picker"
 //include "libraries:image_preview"
 //include 'libraries:imageuploader'
-include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
 //include 'libraries:locationmanager'
 include "libraries:logger"
@@ -53,7 +52,8 @@ include 'libraries:cpm'
 //include "libraries:videouploader"
 
 //include "libraries:unify:unify_compositions:banner"
-include "libraries:promotions_target"
+include 'libraries:promotions_target'
+
 include 'tkpddesign'
 include 'tkpdabstraction'
 include "features:user:sessioncommon"
