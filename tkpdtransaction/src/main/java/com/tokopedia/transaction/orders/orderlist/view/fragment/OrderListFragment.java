@@ -53,6 +53,7 @@ import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.GetBomOrderFilter;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListUseCaseModule;
@@ -586,6 +587,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void setFilterRange(GetBomOrderFilter getBomOrderFilter) {
+        startDate = getBomOrderFilter.getDefaultDate().getStartRangeDate();
+        endDate = getBomOrderFilter.getDefaultDate().getEndRangeDate();
+
+    }
+
+    @Override
     public void addData(List<Visitable> data, Boolean isRecommendation) {
         this.isRecommendation = isRecommendation;
         if (!hasRecyclerListener) {
@@ -669,6 +677,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
             datePickerlayout = categoryView.findViewById(R.id.date_picker);
             radioGroup = categoryView.findViewById(R.id.radio_grp);
             terapkan.setOnClickListener(this);
+            sampaiButton.setText(changeDateFormat(endDate));
+            mulaiButton.setText(changeDateFormat(startDate));
 
             crossIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -707,6 +717,22 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
         }
 
+    }
+
+    private String changeDateFormat(String date) {
+        String result = "";
+        if (date != null) {
+            date = date.substring(0, 10);
+            String[] arrOfStr = date.split("/", 5);
+            arrOfStr[1] = convertMonth(Integer.parseInt(arrOfStr[1]));
+            for (int i = arrOfStr.length - 1; i >= 0; i--) {
+                result = result + " " + arrOfStr[i];
+
+            }
+
+        }
+
+        return result;
     }
 
     private String convertMonth(int num) {
