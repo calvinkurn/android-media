@@ -55,7 +55,10 @@ class FlightBookingActivity: BaseFlightActivity(), HasComponent<FlightBookingCom
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
-            REQUEST_CODE_LOGIN -> if (userSession.isLoggedIn) recreate() else finish()
+            REQUEST_CODE_LOGIN -> if (userSession.isLoggedIn) {
+                startActivity(intent)
+                finish()
+            } else finish()
         }
     }
 

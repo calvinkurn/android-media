@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -288,6 +289,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             dialog.setSecondaryCTAText("Cek Ulang")
 
             dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
                 launchLoadingLayoutJob.start()
                 bookingViewModel.checkOutCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart),
                         totalCartPrice,
@@ -721,65 +723,83 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 lateinit var dialog: DialogUnify
                 when (errorCode) {
                     FlightErrorConstant.INVALID_JSON -> {
-                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
                         dialog.setImageDrawable(R.drawable.ic_flight_booking_error_refresh)
                         dialog.setPrimaryCTAText("Cari Tiket Ulang")
                         dialog.setPrimaryCTAClickListener {
+                            dialog.dismiss()
                             navigateBackToSearch()
                         }
                     }
                     FlightErrorConstant.FAILED_ADD_FACILITY -> {
-                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
                         dialog.setImageDrawable(R.drawable.ic_flight_booking_error_add_luggage)
                         dialog.setPrimaryCTAText("Lanjut Bayar")
-                        dialog.setPrimaryCTAClickListener { proceedCheckoutWithoutLuggage() }
+                        dialog.setPrimaryCTAClickListener {
+                            dialog.dismiss()
+                            proceedCheckoutWithoutLuggage()
+                        }
                         dialog.setSecondaryCTAText("Batalkan")
                         dialog.setSecondaryCTAClickListener { dialog.dismiss() }
                     }
                     FlightErrorConstant.ERROR_PROMO_CODE -> {
-                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
                         dialog.setImageDrawable(R.drawable.ic_flight_booking_error_promo_code)
                         dialog.setPrimaryCTAText("Cek Kode Promo")
-                        dialog.setPrimaryCTAClickListener { navigateToPromoPage() }
+                        dialog.setPrimaryCTAClickListener {
+                            dialog.dismiss()
+                            navigateToPromoPage()
+                        }
                     }
                     FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING -> {
-                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
                         dialog.setImageDrawable(R.drawable.ic_flight_booking_error_wait)
                         dialog.setPrimaryCTAText("Cek Pesanan")
-                        dialog.setPrimaryCTAClickListener { navigateToFlightOrderList() }
+                        dialog.setPrimaryCTAClickListener {
+                            dialog.dismiss()
+                            navigateToFlightOrderList()
+                        }
                         dialog.setSecondaryCTAText("Pesan Tiket Lain")
-                        dialog.setSecondaryCTAClickListener { navigateBackToSearch() }
+                        dialog.setSecondaryCTAClickListener {
+                            dialog.dismiss()
+                            navigateBackToSearch()
+                        }
                     }
                     FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> {
-                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
                         dialog.setImageDrawable(R.drawable.ic_flight_booking_error_wait)
                         dialog.setPrimaryCTAText("Pesan Tiket Lain")
-                        dialog.setPrimaryCTAClickListener { navigateBackToSearch() }
+                        dialog.setPrimaryCTAClickListener {
+                            dialog.dismiss()
+                            navigateBackToSearch() }
                         dialog.setSecondaryCTAText("Oke")
                         dialog.setSecondaryCTAClickListener { dialog.dismiss() }
                     }
                     FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY -> {
-                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
                         dialog.setImageDrawable(R.drawable.ic_flight_booking_error_refresh)
                         dialog.setPrimaryCTAText("Cari Tiket Ulang")
                         dialog.setPrimaryCTAClickListener {
+                            dialog.dismiss()
                             refreshCart()
                         }
                     }
                     FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY -> {
-                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
                         dialog.setImageDrawable(R.drawable.ic_flight_booking_error_refresh)
                         dialog.setPrimaryCTAText("Coba Lagi")
                         dialog.setPrimaryCTAClickListener {
+                            dialog.dismiss()
                             refreshCart()
                         }
                     }
                     else -> {
-                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
                         dialog.setImageDrawable(R.drawable.ic_flight_booking_error_refresh)
-                        dialog.setPrimaryCTAText("Coba Lagi")
+                        dialog.setPrimaryCTAText("Cari Tiket Ulang")
                         dialog.setPrimaryCTAClickListener {
-                            verifyCart()
+                            dialog.dismiss()
+                            navigateBackToSearch()
                         }
                     }
                 }
@@ -791,10 +811,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateBackToSearch() { }
-    private fun proceedCheckoutWithoutLuggage() { }
-    private fun navigateToPromoPage() { }
-    private fun navigateToFlightOrderList() { }
+    private fun navigateBackToSearch() { Log.d("HEHE", "navigateBackToSearch()") }
+    private fun proceedCheckoutWithoutLuggage() { Log.d("HEHE", "proceedCheckoutWoLuggage()") }
+    private fun navigateToPromoPage() { Log.d("HEHE", "navigateBackToPromoPage()")}
+    private fun navigateToFlightOrderList() { Log.d("HEHE", "navigateBackToFlightOL()")}
 
     private fun showLoadingDialog(view: View) {
         if (context != null && ::loadingDialog.isInitialized) {
