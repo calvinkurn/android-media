@@ -1386,7 +1386,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
+    override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (track in trackList) {
             if (isClick) {
                 presenter.trackAffiliate(track.clickURL)
