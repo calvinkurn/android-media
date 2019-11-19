@@ -38,6 +38,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -57,6 +58,7 @@ import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentItemData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
@@ -64,6 +66,7 @@ import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.merchantvoucher.common.gql.data.request.CartItemDataVoucher;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
@@ -1895,8 +1898,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void showMerchantVoucherListBottomsheet(int shopId, String cartString, Promo promo) {
+        List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
+        ShipmentCartItemModel selectedShipmentCartItemModel = null;
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            if (shipmentCartItemModel.getCartString().equals(cartString)) {
+                selectedShipmentCartItemModel = shipmentCartItemModel;
+                break;
+            }
+        }
+
+        ArrayList<CartItemDataVoucher> cartItemDataVoucherArrayList = new ArrayList<>();
+        if (selectedShipmentCartItemModel != null) {
+            for (CartItemModel cartItemModel : selectedShipmentCartItemModel.getCartItemModels()) {
+                CartItemDataVoucher cartItemDataVoucher = new CartItemDataVoucher();
+                cartItemDataVoucher.setProductId(cartItemModel.getProductId());
+                cartItemDataVoucher.setProductName(cartItemModel.getName());
+                cartItemDataVoucherArrayList.add(cartItemDataVoucher);
+            }
+        }
+
         MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment =
-                MerchantVoucherListBottomSheetFragment.newInstance(shopId, cartString, promo, "shipment");
+                MerchantVoucherListBottomSheetFragment.newInstance(shopId, cartString, promo, "shipment", cartItemDataVoucherArrayList);
         merchantVoucherListBottomSheetFragment.setActionListener(this);
         merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
         checkoutAnalyticsCourierSelection.eventClickShowMerchantVoucherList();
