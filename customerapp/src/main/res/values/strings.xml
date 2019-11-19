@@ -170,4 +170,9 @@
     <!-- Content -->
     <string name="title_profile">Profile</string>
     <string name="title_profile_following">Following</string>
+
+    <!--affilate page-->
+    <string name="posted_product" translatable="false">Produk Dipost</string>
+    <string name="title_af_dashboard_detail" translatable="false">Riwayat</string>
+    <string name="text_button_sort" translatable="false">Sort</string>
 </resources>
