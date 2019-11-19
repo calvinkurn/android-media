@@ -914,7 +914,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     eventLabelBuilder.append(" - ");
                     eventLabelBuilder.append(TextUtils.join(",", trackerData.getProductIds()));
                 }
-                eventLabelBuilder.append(" - ");
 
                 checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString());
             }
