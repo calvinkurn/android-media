@@ -581,6 +581,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 }
             }
             EMAIL_TYPE -> {
+                registerAnalytics.trackClickEmailSignUpButton()
                 if(registerCheckData.isExist){
                     if(!registerCheckData.isPending){
                         showRegisteredEmailDialog(registerCheckData.view)
@@ -639,7 +640,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
 
         activity?.let {
-            registerAnalytics.trackClickEmailSignUpButton()
             showProgressBar()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.EMAIL_REGISTER)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
@@ -884,7 +884,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun showRegisteredEmailDialog(email: String) {
-        registerAnalytics.trackClickEmailSignUpButton()
         registerAnalytics.trackFailedClickEmailSignUpButton(RegisterAnalytics.LABEL_EMAIL_EXIST)
         activity?.let {
             val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
