@@ -42,6 +42,7 @@ import com.tokopedia.flight.bookingV3.presentation.adapter.FlightBookingPriceAda
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightInsuranceAdapter
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
+import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.data.model.FlightException
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -75,6 +76,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_flight_booking.*
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.*
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.button_submit
+import kotlinx.android.synthetic.main.layout_flight_booking_v3_error.view.*
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_loading.*
 import kotlinx.coroutines.*
 import java.util.*
@@ -512,19 +514,21 @@ class FlightBookingFragment : BaseDaggerFragment() {
         switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
             bookingViewModel.onTravellerAsPassenger(on)
         }
-        button_submit.setOnClickListener {
-            launchLoadingLayoutJob.start()
-            bookingViewModel.verifyCartData(
-                    GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart),
-                    totalPrice = totalCartPrice,
-                    contactName = widget_traveller_info.getContactName(),
-                    contactEmail = widget_traveller_info.getContactEmail(),
-                    contactPhone = widget_traveller_info.getContactPhoneNum(),
-                    contactCountry = "ID",
-                    dummy = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_verify_cart),
-                    checkVoucherQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher),
-                    dummyCheckVoucher = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_check_voucher))
-        }
+        button_submit.setOnClickListener { verifyCart() }
+    }
+
+    private fun verifyCart() {
+        launchLoadingLayoutJob.start()
+        bookingViewModel.verifyCartData(
+                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart),
+                totalPrice = totalCartPrice,
+                contactName = widget_traveller_info.getContactName(),
+                contactEmail = widget_traveller_info.getContactEmail(),
+                contactPhone = widget_traveller_info.getContactPhoneNum(),
+                contactCountry = "ID",
+                dummy = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_verify_cart),
+                checkVoucherQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher),
+                dummyCheckVoucher = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_check_voucher))
     }
 
     fun renderAutoApplyPromo(flightVoucher: FlightPromoViewEntity) {
@@ -707,22 +711,93 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun showErrorDialog(e: FlightError) {
         if (activity != null) {
             val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
-            val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(FlightBookingErrorCodeMapper.getErrorTitle(errorCode))
-            dialog.setDescription(FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode))
-            dialog.setPrimaryCTAText("Cek Pesanan")
-            dialog.setSecondaryCTAText("Coba Lagi")
-
-            dialog.setPrimaryCTAClickListener {
-                //                   if error code this, do this
-                dialog.dismiss()
+            if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME) renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
+            else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
+                layout_full_page_error.visibility = View.VISIBLE
+                layout_full_page_error.iv_error_page.setImageResource(R.drawable.ic_travel_no_ticket)
+                layout_full_page_error.tv_error_title.text = FlightBookingErrorCodeMapper.getErrorTitle(errorCode)
+                layout_full_page_error.tv_error_subtitle.text = FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode)
+                layout_full_page_error.button_error_action.text = "Cari Tiket Ulang"
+                layout_full_page_error.button_error_action.setOnClickListener { navigateBackToSearch() }
+            }
+            else {
+                lateinit var dialog: DialogUnify
+                when (errorCode) {
+                    FlightErrorConstant.INVALID_JSON -> {
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog.setImageDrawable(R.drawable.ic_flight_booking_error_refresh)
+                        dialog.setPrimaryCTAText("Cari Tiket Ulang")
+                        dialog.setPrimaryCTAClickListener {
+                            navigateBackToSearch()
+                        }
+                    }
+                    FlightErrorConstant.FAILED_ADD_FACILITY -> {
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog.setImageDrawable(R.drawable.ic_flight_booking_error_add_luggage)
+                        dialog.setPrimaryCTAText("Lanjut Bayar")
+                        dialog.setPrimaryCTAClickListener { proceedCheckoutWithoutLuggage() }
+                        dialog.setSecondaryCTAText("Batalkan")
+                        dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+                    }
+                    FlightErrorConstant.ERROR_PROMO_CODE -> {
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog.setImageDrawable(R.drawable.ic_flight_booking_error_promo_code)
+                        dialog.setPrimaryCTAText("Cek Kode Promo")
+                        dialog.setPrimaryCTAClickListener { navigateToPromoPage() }
+                    }
+                    FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING -> {
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog.setImageDrawable(R.drawable.ic_flight_booking_error_wait)
+                        dialog.setPrimaryCTAText("Cek Pesanan")
+                        dialog.setPrimaryCTAClickListener { navigateToFlightOrderList() }
+                        dialog.setSecondaryCTAText("Pesan Tiket Lain")
+                        dialog.setSecondaryCTAClickListener { navigateBackToSearch() }
+                    }
+                    FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> {
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog.setImageDrawable(R.drawable.ic_flight_booking_error_wait)
+                        dialog.setPrimaryCTAText("Pesan Tiket Lain")
+                        dialog.setPrimaryCTAClickListener { navigateBackToSearch() }
+                        dialog.setSecondaryCTAText("Oke")
+                        dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+                    }
+                    FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY -> {
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog.setImageDrawable(R.drawable.ic_flight_booking_error_refresh)
+                        dialog.setPrimaryCTAText("Cari Tiket Ulang")
+                        dialog.setPrimaryCTAClickListener {
+                            refreshCart()
+                        }
+                    }
+                    FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY -> {
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog.setImageDrawable(R.drawable.ic_flight_booking_error_refresh)
+                        dialog.setPrimaryCTAText("Coba Lagi")
+                        dialog.setPrimaryCTAClickListener {
+                            refreshCart()
+                        }
+                    }
+                    else -> {
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+                        dialog.setImageDrawable(R.drawable.ic_flight_booking_error_refresh)
+                        dialog.setPrimaryCTAText("Coba Lagi")
+                        dialog.setPrimaryCTAClickListener {
+                            verifyCart()
+                        }
+                    }
+                }
+                dialog.setTitle(FlightBookingErrorCodeMapper.getErrorTitle(errorCode))
+                dialog.setDescription(FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode))
+                dialog.show()
             }
 
-            dialog.setSecondaryCTAClickListener(dialog::dismiss)
-
-            dialog.show()
         }
     }
+
+    private fun navigateBackToSearch() { }
+    private fun proceedCheckoutWithoutLuggage() { }
+    private fun navigateToPromoPage() { }
+    private fun navigateToFlightOrderList() { }
 
     private fun showLoadingDialog(view: View) {
         if (context != null && ::loadingDialog.isInitialized) {

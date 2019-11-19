@@ -415,6 +415,7 @@
     <string name="flight_booking_loading_text_2">Nginap di hutan ketemu tupai\nNaik pesawat lebih cepat sampai</string>
     <string name="flight_booking_loading_text_3">Siang-siang main basket\nJangan lupa kencangkan seat belt!</string>
     <string name="flight_booking_loading_text_4">Pergi ke pasar di hari Jumat\nSudah siap naik pesawat?</string>
+    <string name="flight_duplicate_user_error_toaster_text">Ada nama penumpang yang sama, ubah dulu agar bisa bayar. </string>
     <string name="flight_passport_search_hint">Cari Negara Penerbit Paspor</string>
     <string name="flight_nationality_search_hint">Cari Negara Kewarganegaraan</string>
     <string name="flight_detail_order_protection_label">Terproteksi</string>

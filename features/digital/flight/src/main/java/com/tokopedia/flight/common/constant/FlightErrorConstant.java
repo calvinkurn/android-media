@@ -40,4 +40,6 @@ public @interface FlightErrorConstant {
     String FLIGHT_STILL_IN_PROCESS = "44";
     String FLIGHT_INVALID_USER = "22";
     String FLIGHT_DUPLICATE_USER_NAME = "62";
+    String FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY = "1335";
+    String FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY = "1337";
 }

@@ -261,5 +261,10 @@
         layout="@layout/layout_flight_booking_v3_loading"
         android:visibility="gone" />
 
+    <include
+        android:id="@+id/layout_full_page_error"
+        layout="@layout/layout_flight_booking_v3_error"
+        android:visibility="gone"/>
+
 
 </RelativeLayout>
