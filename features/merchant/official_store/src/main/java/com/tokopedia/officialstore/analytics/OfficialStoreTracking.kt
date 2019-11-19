@@ -12,6 +12,12 @@ import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
+/*
+OS HOME REVAMP
+Data layer docs
+https://docs.google.com/spreadsheets/d/19l7m_uveuFB6YLVLqSTaclLFf13qmtCB9jQKVwzE38o/edit?usp=sharing
+*/
+
 class OfficialStoreTracking(context: Context) {
 
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
@@ -124,7 +130,8 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
-    fun eventClickBanner(categoryName: String, bannerId: String, bannerPosition: Int, bannerName: String, imageUrl: String) {
+    fun eventClickBanner(categoryName: String, bannerPosition: Int,
+                         bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -134,11 +141,11 @@ class OfficialStoreTracking(context: Context) {
                 PROMO_CLICK, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", bannerId,
+                        "id", bannerItem.bannerId,
                         "name", "/official-store/$categoryName - slider banner",
                         "position", "$bannerPosition",
-                        "creative", bannerName,
-                        "creative_url", imageUrl,
+                        "creative", bannerItem.title,
+                        "creative_url", bannerItem.applink,
                         "promo_id", null,
                         "promo_code", null
                         )
@@ -149,7 +156,8 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
-    fun eventImpressionBanner(categoryName: String, bannerId: String, bannerPosition: Int, bannerName: String, imageUrl: String) {
+    fun eventImpressionBanner(categoryName: String, bannerPosition: Int,
+                              bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -159,11 +167,11 @@ class OfficialStoreTracking(context: Context) {
                 PROMO_VIEW, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", bannerId,
+                        "id", bannerItem.bannerId,
                         "name", "/official-store/$categoryName - slider banner",
                         "position", "$bannerPosition",
-                        "creative", bannerName,
-                        "creative_url", imageUrl,
+                        "creative", bannerItem.title,
+                        "creative_url", bannerItem.applink,
                         "promo_id", null,
                         "promo_code", null
                         )
@@ -337,21 +345,7 @@ class OfficialStoreTracking(context: Context) {
 
     fun dynamicChannelImpression(categoryName: String, channelData: Channel) {
         val headerName = channelData.header?.name ?: ""
-        val promotionBody = DataLayer.listOf()
-
-        channelData.grids?.forEachIndexed { index, grid ->
-            grid?.run {
-                promotionBody.add(DataLayer.mapOf(
-                        "id", id.toString(10),
-                        "name", "/official-store/$categoryName - dynamic channel - $headerName",
-                        "position", (index + 1).toString(10),
-                        "creative", name,
-                        "creative_url", imageUrl,
-                        "promo_id", null,
-                        "promo_code", null
-                ))
-            }
-        }
+        val promotionBody = getDynamicChannelImpressionPromotion(categoryName, channelData, "dynamic channel", headerName)
 
         trackingQueue.putEETracking(DataLayer.mapOf(
                 EVENT, "promoView",
@@ -451,21 +445,7 @@ class OfficialStoreTracking(context: Context) {
 
     fun dynamicChannelMixBannerImpression(categoryName: String, channelData: Channel) {
         val headerName = channelData.header?.name ?: ""
-        val promotionBody = DataLayer.listOf()
-
-        channelData.grids?.forEachIndexed { index, grid ->
-            grid?.run {
-                promotionBody.add(DataLayer.mapOf(
-                        "id", id.toString(10),
-                        "name", "/official-store/$categoryName - dynamic channel mix - $headerName",
-                        "position", (index + 1).toString(10),
-                        "creative", name,
-                        "creative_url", imageUrl,
-                        "promo_id", null,
-                        "promo_code", null
-                ))
-            }
-        }
+        val promotionBody = getDynamicChannelImpressionPromotion(categoryName, channelData, "dynamic channel mix", headerName)
 
         trackingQueue.putEETracking(DataLayer.mapOf(
                 EVENT, "promoView",
@@ -522,6 +502,25 @@ class OfficialStoreTracking(context: Context) {
                 convertRecommendationItemToDataImpressionObject(item, isLogin, position)
         )))
         trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    private fun getDynamicChannelImpressionPromotion(categoryName: String, channelData: Channel,
+                                                     channelType: String, headerName: String): List<Any> {
+        val promotionBody: MutableList<Any> = DataLayer.listOf()
+        channelData.grids?.forEachIndexed { index, grid ->
+            grid?.run {
+                promotionBody.add(DataLayer.mapOf(
+                        "id", id.toString(10),
+                        "name", "/official-store/$categoryName - $channelType - $headerName",
+                        "position", (index + 1).toString(10),
+                        "creative", attribution,
+                        "creative_url", applink,
+                        "promo_id", null,
+                        "promo_code", null
+                ))
+            }
+        }
+        return promotionBody
     }
 
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem, isLogin: Boolean, position: String): Any {
