@@ -517,7 +517,11 @@ open class WishlistViewModel @Inject constructor(
                                     )
                             )
                             bulkSelectCountActionData.value = Event(0)
-                            wishlistData.value = updatedList
+                            if (updatedList.isEmpty()) {
+                                wishlistData.value = listOf(EmptyWishlistDataModel())
+                            } else {
+                                wishlistData.value = updatedList
+                            }
                             updateBulkMode(false)
                         }
 

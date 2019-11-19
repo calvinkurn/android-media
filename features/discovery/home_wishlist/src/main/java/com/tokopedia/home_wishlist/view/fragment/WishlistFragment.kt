@@ -290,6 +290,8 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                     }
                 }
             }
+
+            menu?.findItem(R.id.manage)?.isVisible = false
         })
 
 
