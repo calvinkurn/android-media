@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
 import com.tokopedia.gamification.util.HexValidator
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -34,7 +35,6 @@ import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.util.ViewUtils
-import com.tokopedia.tokocash.tracker.WalletAnalytics
 import java.security.MessageDigest
 import kotlin.math.roundToInt
 
@@ -58,7 +58,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
                 "drawable-xhdpi/bg_product_fintech_tokopoint_normal.png"
     }
 
-    private val walletAnalytics: WalletAnalytics = WalletAnalytics()
+    private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
 
     override fun bind(element: HeaderViewModel) {
         if (element.isUserLogin) renderLogin(element)
@@ -81,7 +81,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
         container.setOnClickListener {
             HomePageTracking.eventTokopointNonLogin(itemView.context)
-            listener.onTokopointCheckNowClicked(ApplinkConst.LOGIN)
+            listener.onTokopointCheckNowClicked(ApplinkConst.TOKOPOINTS)
         }
         scanHolder.setOnClickListener { goToScanner() }
     }
@@ -121,6 +121,9 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             tvBalanceTokocash.visibility = View.GONE
             tokocashProgressBar.visibility = View.GONE
         } else if (element.homeHeaderWalletActionData == null && !element.isWalletDataError) {
+            tvActionTokocash.visibility = View.GONE
+            tvTitleTokocash.visibility = View.GONE
+            tvBalanceTokocash.visibility = View.GONE
             tokoCashHolder.setOnClickListener(null)
             tokocashProgressBar.visibility = View.VISIBLE
         } else {
@@ -132,6 +135,8 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
                 if (homeHeaderWalletAction.isLinked) {
                     tvTitleTokocash.text = homeHeaderWalletAction.cashBalance
+                    tvActionTokocash.visibility = View.VISIBLE
+                    tvBalanceTokocash.visibility = View.VISIBLE
                     tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
                     tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
                     tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE

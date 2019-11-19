@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import android.content.Intent
+import androidx.collection.ArrayMap
 import android.text.TextUtils
 import android.util.SparseArray
 import com.google.gson.JsonObject
@@ -8,6 +10,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
@@ -31,6 +34,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.common.data.model.product.WishlistCount
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.*
@@ -44,13 +48,13 @@ import com.tokopedia.product.detail.data.model.spesification.ProductSpecificatio
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
+import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
@@ -74,9 +78,11 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
 import rx.Observer
-import rx.Subscriber
 import rx.Subscription
 import java.lang.RuntimeException
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -89,6 +95,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                                private val getRecommendationUseCase: GetRecommendationUseCase,
                                                private val stickyLoginUseCase: StickyLoginUseCase,
+                                               private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -158,14 +165,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP1.productInfo.category.id, productInfoP1.productInfo.basic.catalogID,
                     forceRefresh)
 
-            val p2LoginDeferred: ProductInfoP2Login? = if (isUserSessionActive()) {
+            val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive()) {
                 getProductInfoP2LoginAsync(productInfoP1.productInfo.basic.id,
                         productInfoP1.productInfo.basic.shopID, forceRefresh)
             } else null
 
-            p2ShopDataResp.value = p2ShopDeferred
-            p2General.value = p2GeneralDeferred
-            p2LoginDeferred?.let { p2Login.value = it }
+            p2ShopDataResp.value = p2ShopDeferred.await()
+            p2General.value = p2GeneralDeferred.await()
+            p2LoginDeferred?.let { p2Login.value = it.await() }
 
             p2ShopDataResp.value?.let {
                 multiOrigin = it.nearestWarehouse.warehouseInfo
@@ -183,9 +190,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String, warehouseId: String,
-                                                  forceRefresh: Boolean = false): ProductInfoP2ShopData {
-
+    private fun getProductInfoP2ShopAsync(shopId: Int, productId: String,
+                                                  warehouseId: String,
+                                                  forceRefresh: Boolean = false)
+            : Deferred<ProductInfoP2ShopData> {
+        return async {
             val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
                     PARAM_SHOP_FIELDS to DEFAULT_SHOP_FIELDS)
             val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
@@ -228,15 +237,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             } catch (t: Throwable) {
                 t.debugTrace()
             }
-            return p2Shop
-
+            p2Shop
+        }
     }
 
-    private suspend fun getProductInfoP2GeneralAsync(
+    private fun getProductInfoP2GeneralAsync(
             shopId: Int, productId: Int, productPrice: Float,
             condition: String, productTitle: String, categoryId: String, catalogId: Int,
-            forceRefresh: Boolean): ProductInfoP2General {
-
+            forceRefresh: Boolean): Deferred<ProductInfoP2General> {
+        return async {
             val productInfoP2 = ProductInfoP2General()
 
             val paramsVariant = mapOf(PARAM_PRODUCT_ID to productId.toString())
@@ -404,12 +413,14 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             } catch (t: Throwable) {
                 t.debugTrace()
             }
-            return productInfoP2
-
+            productInfoP2
+        }
     }
 
-    private suspend fun getProductInfoP2LoginAsync(productId: Int, shopId: Int, forceRefresh: Boolean = false)
-            : ProductInfoP2Login {
+    private fun getProductInfoP2LoginAsync(productId: Int, shopId: Int, forceRefresh: Boolean = false)
+            : Deferred<ProductInfoP2Login> {
+        return async {
+
             val p2Login = ProductInfoP2Login()
 
             val isWishlistedParams = mapOf(PARAM_PRODUCT_ID to productId.toString())
@@ -452,7 +463,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 t.debugTrace()
             }
 
-            return p2Login
+            p2Login
+        }
     }
 
     private fun generateTopAdsParams(productInfo: ProductInfo): Map<String, Any> {
@@ -715,4 +727,64 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             const val INCLUDE_UI_PARAM = "includeUI"
         }
     }
+
+    fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
+        updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(count: Int) {
+                        onSuccessRequest(count)
+                    }
+                })
+    }
+
+    fun putChatProductInfoTo(
+            intent: Intent?,
+            productId: String?,
+            productInfo: ProductInfo?,
+            userInputVariant: String?
+    ) {
+        if (intent == null) return
+        val variants = mapSelectedProductVariants(userInputVariant)
+        val productImageUrl = productInfo?.getProductImageUrl()
+        val productName = productInfo?.getProductName()
+        val productPrice = productInfo?.getProductPrice()?.getCurrencyFormatted()
+        val productUrl = productInfo?.getProductUrl()
+        val productFsIsActive = productInfo?.getFsProductIsActive()
+        val productFsImageUrl = productInfo?.getFsProductImageUrl()
+        val productColorVariant = variants?.get("colour")?.get("value")
+        val productColorHexVariant = variants?.get("colour")?.get("hex")
+        val productSizeVariant = variants?.get("size")?.get("value")
+        with(intent) {
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, productFsIsActive)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, productFsImageUrl)
+        }
+    }
+
+    private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {
+        return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
+    }
+
+    private fun getProductVariant(): ProductVariant? {
+        return p2General.value?.variantResp
+    }
+
 }

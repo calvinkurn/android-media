@@ -36,10 +36,6 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     override fun openSettingField(settingType: SettingType) {
-        goToNewSettingPage(settingType)
-    }
-
-    private fun goToNewSettingPage(settingType: SettingType) {
         val fragment = supportFragmentManager.findFragmentByTag(settingType.name)
                 ?: settingType.createNewFragmentInstance()
 

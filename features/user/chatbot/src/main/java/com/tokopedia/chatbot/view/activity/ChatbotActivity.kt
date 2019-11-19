@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.core.app.NotificationManagerCompat
 import android.widget.ImageView
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -14,6 +15,8 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
+import com.tokopedia.pushnotif.Constant
+import com.tokopedia.pushnotif.PushNotification
 
 /**
  * @author by nisie on 23/11/18.
@@ -72,6 +75,16 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        PushNotification.setIsChatBotWindowOpen(true)
+        NotificationManagerCompat.from(this).cancel(Constant.NotificationId.CHAT_BOT)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        PushNotification.setIsChatBotWindowOpen(false)
+    }
 
    fun upadateToolbar(profileName: String?, profileImage: String?) {
         ImageHandler.loadImageCircle2(this, findViewById<ImageView>(R.id.user_avatar), profileImage)
@@ -85,6 +98,11 @@ class ChatbotActivity : BaseChatToolbarActivity() {
                 mFragment.onBackPressed()
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+            inflateFragment()
     }
 
     interface OnBackPressed {

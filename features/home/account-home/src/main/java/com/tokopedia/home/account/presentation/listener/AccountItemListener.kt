@@ -9,6 +9,7 @@ import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
  * @author okasurya on 7/26/18.
@@ -75,4 +76,10 @@ interface AccountItemListener {
     fun onProductRecommendationWishlistClicked(product: RecommendationItem, wishlistStatus: Boolean, callback: ((Boolean, Throwable?) -> Unit))
 
     fun onPowerMerchantSettingClicked()
+
+    fun onTokomemberClicked()
+
+    fun onAccountItemImpression(data: HashMap<String, Any>)
+
+    fun getTrackingQueue(): TrackingQueue
 }

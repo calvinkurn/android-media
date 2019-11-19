@@ -1,15 +1,14 @@
 package com.tokopedia.tkpdreactnative.react.data;
 
-import android.content.Context;
-
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.UnknownMethodException;
 import com.tokopedia.tkpdreactnative.react.data.factory.ReactNetworkAuthFactory;
 import com.tokopedia.tkpdreactnative.react.data.factory.ReactNetworkDefaultAuthFactory;
 import com.tokopedia.tkpdreactnative.react.data.factory.ReactNetworkFactory;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 
@@ -22,15 +21,16 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
     private ReactNetworkAuthFactory reactNetworkAuthFactory;
     private ReactNetworkFactory reactNetworkFactory;
     private ReactNetworkDefaultAuthFactory reactNetworkDefaultAuthFactory;
-    private Context context;
+    private UserSessionInterface userSession;
 
-    public ReactNetworkRepositoryImpl(Context context, ReactNetworkAuthFactory reactNetworkAuthFactory,
+    public ReactNetworkRepositoryImpl(ReactNetworkAuthFactory reactNetworkAuthFactory,
                                       ReactNetworkFactory reactNetworkFactory,
-                                      ReactNetworkDefaultAuthFactory reactNetworkDefaultAuthFactory) {
+                                      ReactNetworkDefaultAuthFactory reactNetworkDefaultAuthFactory,
+                                      UserSessionInterface userSession) {
         this.reactNetworkAuthFactory = reactNetworkAuthFactory;
         this.reactNetworkFactory = reactNetworkFactory;
         this.reactNetworkDefaultAuthFactory = reactNetworkDefaultAuthFactory;
-        this.context = context;
+        this.userSession = userSession;
     }
 
     @Override
@@ -39,7 +39,11 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
             case ReactConst.GET:
                 if (isAuth) {
                     if (isWSV4(url)) {
-                        return reactNetworkDefaultAuthFactory.createReactNetworkDataSource().get(url, AuthUtil.generateParamsNetwork(context, params));
+                        return reactNetworkDefaultAuthFactory.createReactNetworkDataSource().get(url,
+                                AuthHelper.generateParamsNetwork(
+                                        userSession.getUserId(),
+                                        userSession.getDeviceId(),
+                                        params));
                     } else {
                         return reactNetworkAuthFactory.createReactNetworkDataSource().get(url, params);
                     }
@@ -47,7 +51,11 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
             case ReactConst.POST:
                 if (isAuth) {
                     if (isWSV4(url)) {
-                        return reactNetworkDefaultAuthFactory.createReactNetworkDataSource().post(url, AuthUtil.generateParamsNetwork(context, params));
+                        return reactNetworkDefaultAuthFactory.createReactNetworkDataSource().post(url,
+                                AuthHelper.generateParamsNetwork(
+                                        userSession.getUserId(),
+                                        userSession.getDeviceId(),
+                                        params));
                     } else {
                         return reactNetworkAuthFactory.createReactNetworkDataSource().post(url, params);
                     }
@@ -65,15 +73,12 @@ public class ReactNetworkRepositoryImpl implements ReactNetworkRepository {
 
     @Override
     public Observable<String> getResponseJson(String url, String method, String params, Boolean isAuth) throws UnknownMethodException {
-        switch(method) {
-            case ReactConst.POST:
-                if (isAuth) {
-                    return reactNetworkAuthFactory.createReactNetworkDataSource().postJson(url, params);
-                }
-                else return reactNetworkFactory.createReactNetworkDataSource().postJson(url, params);
-            default:
-                throw new UnknownMethodException();
+        if (ReactConst.POST.equals(method)) {
+            if (isAuth) {
+                return reactNetworkAuthFactory.createReactNetworkDataSource().postJson(url, params);
+            } else return reactNetworkFactory.createReactNetworkDataSource().postJson(url, params);
         }
+        throw new UnknownMethodException();
     }
 
     @Override

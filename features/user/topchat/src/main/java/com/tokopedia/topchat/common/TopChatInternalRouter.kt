@@ -22,6 +22,7 @@ open class TopChatInternalRouter {
         const val RESULT_INBOX_CHAT_PARAM_INDEX = "position"
         const val RESULT_INBOX_CHAT_PARAM_MUST_REFRESH = "must_refresh"
         const val RESULT_INBOX_CHAT_PARAM_MOVE_TO_TOP = "move_to_top"
+        const val RESULT_LAST_ITEM = "last_item"
 
         const val RESULT_CHAT_SETTING_IS_BLOCKED = "is_blocked"
         const val RESULT_CHAT_SETTING_IS_PROMO_BLOCKED = "is_promo_blocked"

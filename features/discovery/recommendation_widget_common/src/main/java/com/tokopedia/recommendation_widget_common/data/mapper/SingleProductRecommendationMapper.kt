@@ -82,7 +82,8 @@ object SingleProductRecommendationMapper {
                     data.freeOngkirInformation?.imageUrl?:"",
                     labelPromo,
                     labelOffers,
-                    labelCredibility
+                    labelCredibility,
+                    false
             )
          } ?: emptyList()
     }

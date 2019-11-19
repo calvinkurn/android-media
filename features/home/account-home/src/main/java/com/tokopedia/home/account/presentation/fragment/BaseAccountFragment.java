@@ -42,20 +42,13 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
-import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
-import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
-import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_MERCHANT;
-import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
@@ -69,11 +62,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public static final int OPEN_SHOP_SUCCESS = 100;
     public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String OVO = "OVO";
+
     public Boolean isOpenShop = false;
 
     private AccountAnalytics accountAnalytics;
     UserSession userSession;
     private AffiliatePreference affiliatePreference;
+    private TrackingQueue trackingQueue;
 
     abstract void notifyItemChanged(int position);
 
@@ -83,12 +78,26 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         accountAnalytics = new AccountAnalytics(getActivity());
         userSession = new UserSession(getContext());
         affiliatePreference = new AffiliatePreference(getContext());
+        trackingQueue = new TrackingQueue(getActivity());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        trackingQueue.sendAll();
     }
 
     protected void openApplink(String applink) {
         if (getContext() != null && !TextUtils.isEmpty(applink) && isApplink(applink)) {
             RouteManager.route(getContext(), applink);
         }
+    }
+
+    protected void openWebview(String url) {
+        RouteManager.route(
+                getActivity(),
+                String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+        );
     }
 
     private boolean isApplink(String applink) {
@@ -132,13 +141,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onBuyerTokopointClicked(BuyerCardViewModel element) {
-        sendTracking(PEMBELI, AKUN_SAYA, TOKOPOINTS);
+        accountAnalytics.eventAccountPromoClick(CREATIVE_TOKOPOINTS, CREATIVE_TOKOPOINTS, POSITION_TOKOPOINT);
         openApplink(ApplinkConst.TOKOPOINTS);
     }
 
     @Override
     public void onBuyerVoucherClicked(BuyerCardViewModel element) {
-        sendTracking(PEMBELI, AKUN_SAYA, MY_COUPON);
+        accountAnalytics.eventAccountPromoClick(CREATIVE_KUPON_SAYA, CREATIVE_KUPON_SAYA, POSITION_KUPON_SAYA);
         openApplink(ApplinkConst.COUPON_LISTING);
     }
 
@@ -470,5 +479,22 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
                 ITEM_POWER_MERCHANT
         );
         RouteManager.route(getActivity(), ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
+    }
+
+    @Override
+    public void onTokomemberClicked() {
+        accountAnalytics.eventAccountPromoClick(CREATIVE_TOKO_MEMBER, CREATIVE_TOKO_MEMBER, POSITION_TOKOMEMBER);
+        openWebview("https://m.tokopedia.com/membership");
+    }
+
+    @NotNull
+    @Override
+    public TrackingQueue getTrackingQueue() {
+        return trackingQueue;
+    }
+
+    @Override
+    public void onAccountItemImpression(@NotNull HashMap<String, Object> data) {
+        trackingQueue.putEETracking(data);
     }
 }

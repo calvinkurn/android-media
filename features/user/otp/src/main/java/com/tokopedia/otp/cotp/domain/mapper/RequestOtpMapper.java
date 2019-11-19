@@ -14,8 +14,9 @@ import rx.functions.Func1;
  * @author by nisie on 10/21/17.
  */
 
-public class RequestOtpMapper implements Func1<Response<WsResponse<RequestOtpPojo>>,
-        RequestOtpViewModel> {
+public class RequestOtpMapper implements Func1<Response<WsResponse<RequestOtpPojo>>, RequestOtpViewModel> {
+
+    private static final String OTP_CODE_SENT = "Kode OTP berhasil dikirim";
 
     @Inject
     public RequestOtpMapper() {
@@ -32,11 +33,15 @@ public class RequestOtpMapper implements Func1<Response<WsResponse<RequestOtpPoj
             int SUCCESS = 1;
             if (response.body().getMessageStatus() != null
                     && !response.body().getMessageStatus().isEmpty()) {
-                return new RequestOtpViewModel(pojo.getIsSuccess() == SUCCESS,
-                        response.body().getMessageStatus().get(0));
+                return new RequestOtpViewModel(
+                        pojo.getIsSuccess() == SUCCESS,
+                        response.body().getMessageStatus().get(0),
+                        pojo.getClientView().getPhoneHint());
             } else {
-                return new RequestOtpViewModel(pojo.getIsSuccess() == SUCCESS,
-                        "Kode OTP berhasil dikirim");
+                return new RequestOtpViewModel(
+                        pojo.getIsSuccess() == SUCCESS,
+                        OTP_CODE_SENT,
+                        pojo.getClientView().getPhoneHint());
             }
 
         } else if (response.body() != null && response.body().getMessageError() != null) {

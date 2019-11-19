@@ -39,6 +39,12 @@
             </com.tokopedia.design.loading.LoadingStateView>
 
             <fragment
+                android:id="@+id/widget_topads_statistic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="com.tokopedia.topads.widget.dashboard.view.DashboardWidgetFragment"/>
+
+            <fragment
                 android:id="@+id/mlp"
                 android:name="com.tokopedia.mlp.fragment.MerchantLendingFragment"
                 android:layout_width="match_parent"

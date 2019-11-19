@@ -28,4 +28,11 @@ class TopupBillsTicker(
         @SerializedName("ActionText")
         @Expose
         val actionText: String
-)
+) {
+        companion object {
+                const val TYPE_INFO = "info"
+                const val TYPE_WARNING = "warning"
+                const val TYPE_SUCCESS = "success"
+                const val TYPE_ERROR = "error"
+        }
+}

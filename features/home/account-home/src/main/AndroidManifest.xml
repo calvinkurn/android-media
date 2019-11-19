@@ -27,35 +27,25 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.activity.TkpdPaySettingActivity"
-            android:label="@string/screentitle_tkpd_pay_setting"
+        <activity
+            android:name=".presentation.activity.AdvancedSettingActivity"
+            android:label="@string/title_app_advanced_setting"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
-
-        <activity android:name=".presentation.activity.AppNotificationSettingActivity"
-            android:label="@string/title_app_notif_setting"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Preference">
-
+            android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
-                    android:path="@string/path_user_push_notification_setting"/>
+                    android:host="@string/host_global"
+                    android:path="@string/path_advanced_setting"/>
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.activity.EmailNotificationSettingActivity"
-            android:label="@string/title_email_notif_setting"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Preference"/>
-
-        <activity android:name=".presentation.activity.NotificationSettingActivity"
-            android:label="@string/screentitle_notification_setting"
+        <activity android:name=".presentation.activity.TkpdPaySettingActivity"
+            android:label="@string/screentitle_tkpd_pay_setting"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
@@ -68,5 +58,21 @@
             android:label="@string/title_favorite_page"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
+
+        <activity android:name=".presentation.activity.PushNotificationCheckerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:path="@string/path_push_notification_troubleshooter"/>
+            </intent-filter>
+        </activity>
+
     </application>
 </manifest>

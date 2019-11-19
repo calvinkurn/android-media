@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
@@ -21,33 +22,25 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.analytics.ImageSearchTracking;
 import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
+import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListAdapter;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.decoration.ProductItemDecoration;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.ProductListener;
+import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.CategoryFilterListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.RedirectionListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
-import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
-import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -68,7 +61,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.W
 
 public class ImageSearchProductListFragment extends BaseDaggerFragment implements
         ImageProductListFragmentView,
-        ProductListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener {
+        ProductListener, WishListActionListener, CategoryFilterListener {
 
     public static final String SCREEN_IMAGE_SEARCH_TAB = "Image Search result - Image tab";
     public static final int REQUEST_CODE_LOGIN = 561;
@@ -86,17 +79,16 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private Config topAdsConfig;
     private ImageProductListAdapter adapter;
-    protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private ProductViewModel productViewModel;
     private ImageProductListTypeFactory imageProductListTypeFactory;
     private SearchParameter searchParameter;
-    private GridLayoutManager gridLayoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
+    private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
     private RedirectionListener redirectionListener;
 
     public int spanCount;
     private TrackingQueue trackingQueue;
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
-
 
 
     public static ImageSearchProductListFragment newInstance(ProductViewModel productViewModel) {
@@ -180,7 +172,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         initSpan();
         bindView(view);
         initTopAdsConfig();
-        initTopAdsParams();
         setupAdapter();
         setupListener();
     }
@@ -202,34 +193,36 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void setupAdapter() {
-        imageProductListTypeFactory = new ImageProductListTypeFactoryImpl(this, getQueryKey());
+        imageProductListTypeFactory = new ImageProductListTypeFactoryImpl(this, this, getQueryKey());
         adapter = new ImageProductListAdapter(imageProductListTypeFactory);
-        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
-        topAdsRecyclerAdapter.setConfig(topAdsConfig);
-        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
-        recyclerView.setAdapter(topAdsRecyclerAdapter);
-        recyclerView.addItemDecoration(new ProductItemDecoration(
-                getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                getContext().getResources().getColor(com.tokopedia.design.R.color.white)
-                ));
-        recyclerView.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.design.R.color.white));
-        topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
-        topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
-            @Override
-            public void onLoad(int page, int totalCount) {
-                presenter.loadMoreData(page - 1);
-            }
-        });
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)));
+        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
 
-        if (productViewModel.getProductList().isEmpty()) {
-            setEmptyProduct();
-            setHeaderTopAds(false);
-        } else {
-            presenter.initData(initMappingProduct());
-            presenter.loadMoreData(0);
-            setHeaderTopAds(true);
-        }
-        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
+        presenter.initData(initMappingProduct(), productViewModel.getCategoryFilterModel());
+        presenter.loadMoreData(0);
+    }
+
+    private void setupListener() {
+        staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
+        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
+    }
+
+    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(RecyclerView.LayoutManager recyclerViewLayoutManager) {
+        return new EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                if (isAllowLoadMore()) {
+                    presenter.loadMoreData(page - 1);
+                } else {
+                    adapter.hideLoading();
+                }
+            }
+        };
+    }
+
+    private boolean isAllowLoadMore() {
+        return adapter.isLoading();
     }
 
     private List<Visitable> initMappingProduct() {
@@ -238,44 +231,18 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         return list;
     }
 
-    private void setupListener() {
-        topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setTopAdsListener(this);
-        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
-            @Override
-            public void onImpressionProductAdsItem(int position, Product product) {
-                TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, position);
-            }
-        });
-    }
-
-    protected GridLayoutManager getGridLayoutManager() {
-        return gridLayoutManager;
+    protected StaggeredGridLayoutManager getStaggeredGridLayoutManager() {
+        return staggeredGridLayoutManager;
     }
 
     private void bindView(View rootView) {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.image_search_recyclerview);
-        gridLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
-        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(getSpanCount(), StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
     }
 
     protected ImageProductListPresenter getPresenter() {
         return presenter;
-    }
-
-    protected GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
-        return new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (topAdsRecyclerAdapter.isLoading(position) ||
-                        topAdsRecyclerAdapter.isTopAdsViewHolder(position) ||
-                        adapter.isEmptyItem(position)) {
-                    return spanCount;
-                } else {
-                    return 1;
-                }
-            }
-        };
     }
 
     @Override
@@ -343,37 +310,26 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void initTopAdsParams() {
-        TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
-        adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
-
-        if (canGetDepartmentIdFromSearchParameter()) {
-            adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().get(SearchApiConst.SC));
-        }
-    }
-
-    private boolean canGetDepartmentIdFromSearchParameter() {
-        String departmentId = getSearchParameter().get(SearchApiConst.SC);
-        return !departmentId.isEmpty() && !departmentId.equals("0");
+    public void onLoadMoreEmpty() {
+        adapter.hideLoading();
     }
 
     @Override
-    public void unSetTopAdsEndlessListener() {
-        topAdsRecyclerAdapter.unsetEndlessScrollListener();
-        topAdsRecyclerAdapter.hideLoading();
-    }
-
-    @Override
-    public void setHeaderTopAds(boolean hasHeader) {
-        topAdsRecyclerAdapter.setHasHeader(hasHeader);
-    }
-
-    @Override
-    public void appendProductList(List<Visitable> list) {
+    public void appendProductList(List<Visitable> list, boolean hasNextPage) {
         sendImageTrackingData(list);
-        topAdsRecyclerAdapter.hideLoading();
+        adapter.hideLoading();
         adapter.addMoreData(list);
+
+        if (hasNextPage) {
+            adapter.showLoading();
+        }
+        staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+    }
+
+    public void reloadData() {
+        adapter.clearAllElements();
+        staggeredGridLayoutLoadMoreTriggerListener.resetState();
+        presenter.loadMoreData(0);
     }
 
     private void sendImageTrackingData(List<Visitable> list) {
@@ -392,7 +348,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onPause() {
         super.onPause();
-        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey());
+        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey(), SCREEN_IMAGE_SEARCH_TAB);
         trackingQueue.sendAll();
     }
 
@@ -409,12 +365,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public String getQueryKey() {
         return productViewModel.getQuery();
-    }
-
-    @Override
-    public void setEmptyProduct() {
-        topAdsRecyclerAdapter.shouldLoadAds(false);
-        adapter.showEmpty(getContext());
     }
 
     @Override
@@ -436,16 +386,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void hideRefreshLayout() {
-    }
-
-    @Override
-    public void onTopAdsLoaded(List<Item> list) {
-
-    }
-
-    @Override
-    public void onTopAdsFailToLoad(int errorCode, String message) {
-        topAdsRecyclerAdapter.hideLoading();
     }
 
     @Override
@@ -482,11 +422,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.image_search_msg_remove_wishlist));
     }
 
-    @Override
-    public void onProductItemClicked(int position, Product product) {
-        moveToProductDetailPage(position, product.getId());
-    }
-
     private void moveToProductDetailPage(int adapterPosition, String productId) {
         Intent intent = getProductIntent(productId);
 
@@ -502,17 +437,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         } else {
             return null;
         }
-    }
-
-
-    @Override
-    public void onShopItemClicked(int position, Shop shop) {
-        RouteManager.route(getActivity(), ApplinkConst.SHOP, shop.getId());
-    }
-
-    @Override
-    public void onAddFavorite(int position, Data data) {
-
     }
 
     @Override
@@ -543,5 +467,26 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         ImageSearchTracking.trackEventClickImageSearchResultProduct(
                 item.getProductAsObjectDataLayerForImageSearchClick()
         );
+    }
+
+    @Override
+    public boolean isCategoryFilterSelected(String categoryId) {
+        return presenter.isCategoryFilterSelected(categoryId);
+    }
+
+    @Override
+    public void onCategoryFilterSelected(CategoryFilterModel.Item item) {
+        boolean isCategoryFilterSelectedReversed = !isCategoryFilterSelected(item.getCategoryId());
+        if (isCategoryFilterSelectedReversed) {
+            presenter.setFilterCategory(item.getCategoryId());
+        } else {
+            presenter.setFilterCategory("");
+        }
+        reloadData();
+    }
+
+    @Override
+    public String getEmptyResultMessage() {
+        return getString(R.string.image_search_msg_empty_product_title);
     }
 }

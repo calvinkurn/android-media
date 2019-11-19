@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
@@ -11,7 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topads.R;
@@ -167,7 +169,8 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
 
     void onNameClicked() {
         if (ad != null) {
-            DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
+            String domain = Uri.parse(ad.getShopUri()).getPathSegments().get(0);
+            RouteManager.route(getActivity(), ApplinkConstInternalMarketplace.SHOP_PAGE_DOMAIN, domain);
         }
     }
 

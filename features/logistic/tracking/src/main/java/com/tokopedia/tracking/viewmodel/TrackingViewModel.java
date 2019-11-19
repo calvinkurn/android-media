@@ -40,6 +40,8 @@ public class TrackingViewModel {
 
     private List<TrackingHistoryViewModel> historyList;
 
+    private List<AdditionalInfoUiModel> additionalInfoList;
+
     public int getChange() {
         return change;
     }
@@ -142,5 +144,13 @@ public class TrackingViewModel {
 
     public void setHistoryList(List<TrackingHistoryViewModel> historyList) {
         this.historyList = historyList;
+    }
+
+    public List<AdditionalInfoUiModel> getAdditionalInfoList() {
+        return additionalInfoList;
+    }
+
+    public void setAdditionalInfoList(List<AdditionalInfoUiModel> additionalInfoList) {
+        this.additionalInfoList = additionalInfoList;
     }
 }

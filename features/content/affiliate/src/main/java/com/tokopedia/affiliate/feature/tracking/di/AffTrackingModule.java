@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.tracking.view.contract.AffContract;
 import com.tokopedia.affiliate.feature.tracking.view.presenter.AffTrackingPresenter;
 import com.tokopedia.user.session.UserSession;
@@ -24,9 +24,8 @@ public class AffTrackingModule {
 
     @AffTrackingScope
     @Provides
-    AffiliateAnalytics provideAffiliateAnalytics(@ApplicationContext Context context,
-                                                 UserSessionInterface userSessionInterface) {
-        return new AffiliateAnalytics((AbstractionRouter) context, userSessionInterface);
+    AffiliateAnalytics provideAffiliateAnalytics(UserSessionInterface userSessionInterface) {
+        return new AffiliateAnalytics(userSessionInterface);
     }
 
     @AffTrackingScope

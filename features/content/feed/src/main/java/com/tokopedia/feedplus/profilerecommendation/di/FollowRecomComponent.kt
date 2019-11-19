@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.profilerecommendation.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.feedplus.profilerecommendation.view.fragment.FollowRecomFragment
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
 /**
@@ -15,4 +16,6 @@ import dagger.Component
 interface FollowRecomComponent {
 
     fun inject(fragment: FollowRecomFragment)
+
+    fun providesUserSessionInterface(): UserSessionInterface
 }

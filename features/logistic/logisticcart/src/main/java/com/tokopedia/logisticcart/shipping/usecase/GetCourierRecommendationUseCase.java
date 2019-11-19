@@ -159,6 +159,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
             destinationStringBuilder.append(",").append(shippingParam.getDestinationLongitude());
         }
         String productJson = gson.toJson(shippingParam.getProducts());
+        productJson = productJson.replace("\n", "");
         queryStringBuilder = setParam(queryStringBuilder, Param.DESTINATION, destinationStringBuilder.toString());
 
         double weightInKilograms = shippingParam.getWeightInKilograms();

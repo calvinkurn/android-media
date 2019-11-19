@@ -116,6 +116,11 @@ public class OrderDetailMapper {
         viewData.setTotalProtectionItem(responseData.getSummary().getTotalProtectionItem());
         viewData.setTotalProtectionFee(responseData.getSummary().getTotalProtectionFee());
         viewData.setFulfillment(responseData.getSummary().getFulfillBy() == 1);
+        viewData.setFreeShipping(responseData.getFreeShipping());
+
+        if (responseData.getOriginInfo() != null) {
+            viewData.setOriginAddress(responseData.getOriginInfo().getOriginAddress());
+        }
 
         if (responseData.getDetail().getInsurance() != null) {
             viewData.setShowInsuranceNotification(

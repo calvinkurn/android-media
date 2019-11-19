@@ -1,0 +1,19 @@
+<resources>
+   <!-- OVO Activation-->
+    <string name="wallet_title_header_ovo">TokoCash to OVO</string>
+    <string name="wallet_title_header_activation_ovo">Aktivasi OVO</string>
+    <string name="wallet_announcement_ovo_title">TokoCash Kini Berpindah ke OVO</string>
+    <string name="wallet_announcement_activation_ovo_title">Aktivasi OVO Sekarang</string>
+    <string name="wallet_announcement_ovo_description">TokoCash sudah tidak bisa lagi digunakan, segera aktifkan OVO Anda untuk transaksi lebih cepat dan praktis!</string>
+    <string name="wallet_announcement_ovo_second_desc">Jangan khawatir, TokoCash Anda tetap aman &amp; akan otomatis berpindah ke OVO setelah aktivasi selesai.</string>
+    <string name="wallet_announcement_activation_ovo_description">Aktifkan OVO di akun Tokopedia Anda untuk kemudahan dan keuntungan yang lebih banyak!</string>
+    <string name="wallet_announcement_activation_ovo_second_desc">Dapatkan juga kenyamanan bertransaksi di semua merchant yang telah bekerja sama dengan OVO, dengan penawaran yang menarik.</string>
+    <string name="wallet_announcement_ovo_btn_activation">Aktifkan OVO Sekarang</string>
+    <string name="wallet_announcement_ovo_btn_learn_more">Pelajari Lebih Lanjut</string>
+    <string name="wallet_announcement_ovo_text_tnc">Lihat syarat dan ketentuan OVO di sini</string>
+    <string name="wallet_activation_ovo_title">Aktivasi OVO</string>
+    <string name="wallet_activation_ovo_desc">Akun OVO dengan nomor %s akan dibuat untuk Anda. \n\nJika ingin menggunakan akun OVO dengan nomor ponsel lain, silakan ubah nomor ponsel yang terdaftar di Tokopedia terlebih dahulu.</string>
+    <string name="wallet_activation_ovo_btn_activate">Buat Akun OVO Baru</string>
+    <string name="wallet_activation_ovo_btn_change_number">Ubah Nomor Ponsel Sekarang</string>
+    <string name="wallet_button_label_cancel">Batal</string>
+</resources>

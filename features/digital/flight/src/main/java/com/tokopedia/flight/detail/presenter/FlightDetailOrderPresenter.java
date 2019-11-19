@@ -6,7 +6,10 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
+import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -31,6 +34,7 @@ import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -55,6 +59,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private static final String NEW_LINE = "\n";
 
     private final FlightGetOrderUseCase flightGetOrderUseCase;
+    private final TravelCrossSellingUseCase crossSellingUseCase;
     private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
     private UserSessionInterface userSession;
     private CompositeSubscription compositeSubscription;
@@ -64,16 +69,22 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Inject
     public FlightDetailOrderPresenter(FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
                                       UserSessionInterface userSession,
-                                      FlightGetOrderUseCase flightGetOrderUseCase) {
+                                      FlightGetOrderUseCase flightGetOrderUseCase,
+                                      TravelCrossSellingUseCase crossSellingUseCase) {
         this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
         this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
+        this.crossSellingUseCase = crossSellingUseCase;
         compositeSubscription = new CompositeSubscription();
     }
 
     public void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData) {
         getView().showProgressDialog();
         flightGetOrderUseCase.execute(flightGetOrderUseCase.createRequestParams(orderId), getSubscriberGetDetailOrder(flightOrderDetailPassData));
+    }
+
+    public void getCrossSellingItems(String orderId, String crossSellingQuery) {
+        crossSellingUseCase.executeRx(crossSellingQuery, crossSellingUseCase.createRequestParams(orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT), getTravelCrossSelling());
     }
 
     @Override
@@ -113,6 +124,28 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         getView().navigateToInputEmailForm(userSession.getUserId(), userResendEmail);
     }
 
+    private Subscriber<GraphqlResponse> getTravelCrossSelling() {
+        return new Subscriber<GraphqlResponse>() {
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideCrossSellingItems();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                TravelCrossSelling.Response crossSellingResponse = response.getData(TravelCrossSelling.Response.class);
+                if (crossSellingResponse.getResponse().getItems().isEmpty()) getView().hideCrossSellingItems();
+                else getView().showCrossSellingItems(crossSellingResponse.getResponse());
+            }
+        };
+    }
+
     private Subscriber<FlightOrder> getSubscriberGetDetailOrder(final FlightOrderDetailPassData flightOrderDetailPassData) {
         return new Subscriber<FlightOrder>() {
             @Override
@@ -149,7 +182,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 );
                 getView().updateFlightList(flightOrderJourneyList);
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
-                getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
+                getView().updatePrice(transformToSimpleModelPrice(flightOrder), FlightCurrencyFormatUtil.Companion.convertToIdrPrice(totalPrice));
                 getView().setTransactionDate(
                         FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                 FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime())
@@ -249,7 +282,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().setPaymentLabel(R.string.flight_order_payment_label);
                 getView().setPaymentDescription(renderPaymentDescriptionText(flightOrder.getPayment()));
                 if (flightOrder.getPayment().getNeedToPayAmount() > 0) {
-                    getView().setTotalTransfer(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightOrder.getPayment().getNeedToPayAmount()));
+                    getView().setTotalTransfer(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(flightOrder.getPayment().getNeedToPayAmount()));
                 } else {
                     getView().hideTotalTransfer();
                 }
@@ -473,14 +506,14 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             simpleViewModelList.add(new SimpleViewModel(
                     String.format("%s %s", getView().getString(R.string.flight_price_detail_prefix_luggage_label),
                             entry.getKey()),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
+                    FlightCurrencyFormatUtil.Companion.convertToIdrPrice(entry.getValue())));
         }
 
         for (Map.Entry<String, Integer> entry : meals.entrySet()) {
             simpleViewModelList.add(new SimpleViewModel(
                     String.format("%s %s", getView().getString(R.string.flight_price_detail_prefixl_meal_label),
                             entry.getKey()),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
+                    FlightCurrencyFormatUtil.Companion.convertToIdrPrice(entry.getValue())));
         }
 
         int totalPassenger = passengerAdultCount + passengerChildCount + passengerInfantCount;
@@ -504,7 +537,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 String.format("%s x%d",
                         label,
                         passengerCount),
-                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(price));
+                FlightCurrencyFormatUtil.Companion.convertToIdrPrice(price));
     }
 
     private List<FlightDetailPassenger> transformToListPassenger(List<FlightOrderPassengerViewModel> passengerViewModels) {

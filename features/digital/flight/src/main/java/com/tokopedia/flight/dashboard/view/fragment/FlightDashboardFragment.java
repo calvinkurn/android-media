@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
@@ -480,12 +481,16 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,
                                        String tagFragment) {
+        String minDateStr = null;
+        String selectedDateStr = null;
+        if (minDate != null) minDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate);
+        if (selectedDate != null) selectedDateStr = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate);
+
         SelectionRangeCalendarWidget flightCalendarDialog = SelectionRangeCalendarWidget.Companion.getInstance(
-                TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
-                TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, selectedDate),
-                1, 360,
-                getString(R.string.flight_min_date_label),
-                getString(R.string.flight_max_date_label));
+                minDateStr, selectedDateStr,
+                SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR, SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED, getString(R.string.flight_min_date_label),
+                getString(R.string.flight_max_date_label), SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY, true);
+
         flightCalendarDialog.setListener((dateIn, dateOut) -> {
             Calendar calendarDepartureSelected = Calendar.getInstance();
             calendarDepartureSelected.setTime(dateIn);
@@ -681,12 +686,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     && uri.getPathSegments().size() == 2
                     && uri.getPathSegments().get(0).equalsIgnoreCase(PROMO_PATH)) {
                 String slug = uri.getPathSegments().get(1);
-                if (getActivity().getApplication() instanceof FlightModuleRouter
-                        && ((FlightModuleRouter) getActivity().getApplication())
-                        .getPromoDetailIntent(getActivity(), slug) != null) {
+                Intent intent = RouteManager.getIntentNoFallback(getActivity(), ApplinkConst.PROMO_DETAIL, slug);
+                if (intent!= null) {
                     presenter.onBannerItemClick(position, getBannerData(position));
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getPromoDetailIntent(getActivity(), slug));
+                    startActivity(intent);
                 }
             } else {
                 if (getActivity().getApplication() instanceof FlightModuleRouter
@@ -711,8 +714,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private void bannerAllClickAction() {
         if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
             if (isPromoNativeActive()) {
-                startActivity(((FlightModuleRouter) getActivity().getApplication())
-                        .getPromoListIntent(getActivity()));
+                RouteManager.route(getActivity(), ApplinkConst.PROMO_LIST);
             } else {
                 startActivity(((FlightModuleRouter) getActivity().getApplication())
                         .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));

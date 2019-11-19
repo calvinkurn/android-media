@@ -77,6 +77,22 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.locId = arguments?.getInt(EXTRA_PARAM_ID) ?: 4712
             hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
             hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
+            hotelHomepageModel.adultCount = arguments?.getInt(EXTRA_ADULT, 1) ?: 1
+            hotelHomepageModel.roomCount = arguments?.getInt(EXTRA_ROOM, 1) ?: 1
+            hotelHomepageModel.checkInDate = arguments?.getString(EXTRA_PARAM_CHECKIN) ?: ""
+            hotelHomepageModel.checkOutDate = arguments?.getString(EXTRA_PARAM_CHECKOUT) ?: ""
+
+            if (hotelHomepageModel.checkInDate.isNotBlank()) {
+                hotelHomepageModel.checkInDateFmt =
+                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
+            }
+            if (hotelHomepageModel.checkOutDate.isNotBlank()) {
+                hotelHomepageModel.checkOutDateFmt =
+                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+            }
+            if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank()) hotelHomepageModel.nightCounter = countRoomDuration()
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -167,6 +183,19 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
             hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                     TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
+            hotelHomepageModel.nightCounter = countRoomDuration()
+        } else if (hotelHomepageModel.checkInDate.isBlank()) {
+            val checkout = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)
+            val dayBeforeCheckOut = TravelDateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
+            hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayBeforeCheckOut)
+            hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayBeforeCheckOut)
+            hotelHomepageModel.nightCounter = countRoomDuration()
+
+        } else if (hotelHomepageModel.checkOutDate.isBlank()) {
+            val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate)
+            val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
+            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
+            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterCheckIn)
             hotelHomepageModel.nightCounter = countRoomDuration()
         }
 
@@ -329,8 +358,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
-        val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(checkIn, checkOut, 1, 30,
-                getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label))
+        var minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
+        if (!(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_BOOK_FOR_TODAY, true))) minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY
+
+        val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(checkIn, checkOut, SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
+                SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH.toLong(),
+                getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label), minSelectDateFromToday)
+
         hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
@@ -367,17 +401,25 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val EXTRA_PARAM_ID = "param_id"
         const val EXTRA_PARAM_NAME = "param_name"
         const val EXTRA_PARAM_TYPE = "param_type"
+        const val EXTRA_PARAM_CHECKIN = "param_check_in"
+        const val EXTRA_PARAM_CHECKOUT = "param_check_out"
+        const val EXTRA_ADULT = "param_adult"
+        const val EXTRA_ROOM = "param_room"
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
-        fun getInstance(id: Int, name: String, type: String): HotelHomepageFragment =
+        fun getInstance(id: Int, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
                 HotelHomepageFragment().also {
                     it.arguments = Bundle().apply {
                         putInt(EXTRA_PARAM_ID, id)
                         putString(EXTRA_PARAM_NAME, name)
                         putString(EXTRA_PARAM_TYPE, type)
+                        if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)
+                        if (checkOut.isNotBlank()) putString(EXTRA_PARAM_CHECKOUT, checkOut)
+                        if (adult != 0) putInt(EXTRA_ADULT, adult)
+                        if (room != 0) putInt(EXTRA_ROOM, room)
                     }
                 }
     }

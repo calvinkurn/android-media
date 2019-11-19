@@ -12,11 +12,14 @@ public class Campaign {
     private Map<String, Object> campaignMap = new HashMap<>();
 
     public Campaign() {
-
-    }
-
-    public Campaign(Campaign campaign){
-        this.campaignMap.putAll(campaign.getCampaign());
+        campaignMap.put(AppEventTracking.GTM.UTM_SOURCE, "");
+        campaignMap.put(AppEventTracking.GTM.UTM_MEDIUM, "");
+        campaignMap.put(AppEventTracking.GTM.UTM_CAMPAIGN, "");
+        campaignMap.put(AppEventTracking.GTM.UTM_CONTENT, "");
+        campaignMap.put(AppEventTracking.GTM.UTM_TERM, "");
+        campaignMap.put(AppEventTracking.GTM.UTM_GCLID, "");
+        campaignMap.put(AppEventTracking.GTM.X_CLID, "");
+        campaignMap.put(AppEventTracking.GTM.X_ATTR, "");
     }
 
     public void setUtmSource(String utmSource) {

@@ -1,7 +1,5 @@
 package com.tokopedia.feedcomponent.view.viewmodel.posttag
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
@@ -25,6 +23,7 @@ data class ProductPostTagViewModel (
         val postTagItemPojo: PostTagItem = PostTagItem(),
         val rating: Int = 0,
         val needToResize: Boolean = false,
+        val authorType: String = "",
         override var feedType: String = "",
         override var positionInFeed: Int = 0,
         override var postId: Int = 0

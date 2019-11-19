@@ -9,4 +9,6 @@ public interface OvoPayWithQrRouter {
     long getMinAmountFromRemoteConfig();
 
     long getMaxAmountFromRemoteConfig();
+
+    Intent getOvoActivityIntent(Context context);
 }

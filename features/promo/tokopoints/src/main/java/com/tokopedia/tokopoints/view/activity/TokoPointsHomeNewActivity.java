@@ -8,41 +8,47 @@ import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
-import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
 import com.tokopedia.tokopoints.view.fragment.TokoPointsHomeFragmentNew;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.user.session.UserSession;
+
+import static com.tokopedia.tokopoints.view.util.CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN;
 
 public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent>, onAppBarCollapseListener {
     private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
     private UserSession mUserSession;
+    private boolean initialLoggedInState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mUserSession = new UserSession(getApplicationContext());
         super.onCreate(savedInstanceState);
+        initialLoggedInState = mUserSession.isLoggedIn();
         toolbar.setVisibility(View.GONE);
         updateTitle(getString(R.string.tp_title_tokopoints));
     }
 
     @Override
     protected Fragment getNewFragment() {
-        if (mUserSession.isLoggedIn()) {
-            return TokoPointsHomeFragmentNew.newInstance();
+        Bundle loginStatusBundle = new Bundle();
+        boolean isLogin = mUserSession.isLoggedIn();
+        TokoPointsHomeFragmentNew tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance();
+        if (isLogin) {
+            loginStatusBundle.putBoolean(BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin);
+            tokoPointsHomeFragmentNew.setArguments(loginStatusBundle);
+            return tokoPointsHomeFragmentNew;
         } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            return null;
+            loginStatusBundle.putBoolean(BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin);
+            tokoPointsHomeFragmentNew.setArguments(loginStatusBundle);
+            return tokoPointsHomeFragmentNew;
         }
     }
 
@@ -65,10 +71,8 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_LOGIN) {
             inflateFragment();
-        } else {
-            finish();
         }
     }
 
@@ -76,6 +80,14 @@ public class TokoPointsHomeNewActivity extends BaseSimpleActivity implements Has
     protected void openApplink(String applink) {
         if (!TextUtils.isEmpty(applink)) {
             RouteManager.route(this, applink);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mUserSession.isLoggedIn() != initialLoggedInState) {
+            inflateFragment();
         }
     }
 

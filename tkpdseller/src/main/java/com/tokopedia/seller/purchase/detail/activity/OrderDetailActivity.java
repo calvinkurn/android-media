@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -15,9 +16,13 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,8 +50,10 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.purchase.detail.fragment.ConfirmRequestPickupFragment;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
@@ -65,23 +72,33 @@ import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
 import com.tokopedia.seller.purchase.detail.fragment.CancelShipmentFragment;
 import com.tokopedia.seller.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.seller.purchase.detail.fragment.RejectOrderFragment;
-import com.tokopedia.seller.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.seller.purchase.detail.model.detail.viewmodel.BookingCodeData;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.seller.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.seller.purchase.utils.OrderDetailAnalytics;
 import com.tokopedia.seller.purchase.utils.OrderDetailConstant;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
+import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.unifyprinciples.Typography;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderBaseFragment.FRAGMENT_REJECT_ORDER_SUB_MENU_TAG;
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderFragment.REJECT_ORDER_MENU_FRAGMENT_TAG;
-import static com.tokopedia.seller.purchase.detail.fragment.RequestPickupFragment.INFO_FRAGMENT_TAG;
+import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.PARAM_CONFIRM_PICKUP_ORDER_ID;
+import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.PARAM_CONFIRM_PICKUP_ORIGIN_ADDRESS;
 
 /**
  * Created by kris on 11/2/17. Tokopedia
@@ -109,6 +126,8 @@ public class OrderDetailActivity extends TActivity
     private TkpdProgressDialog mainProgressDialog;
 
     private TkpdProgressDialog smallProgressDialog;
+
+    private BottomSheetUnify bottomSheetUnify;
 
     @DeepLink({ApplinkConst.PURCHASE_ORDER_DETAIL})
     public static Intent createInstance(Context context, Bundle bundle) {
@@ -193,9 +212,15 @@ public class OrderDetailActivity extends TActivity
 
     private void setBookingCode(OrderDetailData data) {
         ViewGroup layout = findViewById(R.id.booking_code_layout);
+        TextView tvBookingCode = findViewById(R.id.booking_code);
+        TextView tvBookingCodePlaceholder = findViewById(R.id.booking_code_placeholder);
+        TextView seeDetailBtn = findViewById(R.id.see_detail_button);
         if (data.getBookingCode() != null && getExtraUserMode() == SELLER_MODE) {
-            TextView text = findViewById(R.id.booking_code);
-            text.setText(data.getBookingCode());
+            layout.setVisibility(View.VISIBLE);
+            tvBookingCodePlaceholder.setVisibility(View.GONE);
+            tvBookingCode.setVisibility(View.VISIBLE);
+            seeDetailBtn.setVisibility(View.VISIBLE);
+            tvBookingCode.setText(data.getBookingCode());
             BookingCodeData codeData = new BookingCodeData(
                     data.getBookingCode(), data.getBarcodeType(), data.getBookingCodeMessage()
             );
@@ -208,6 +233,31 @@ public class OrderDetailActivity extends TActivity
         } else {
             layout.setVisibility(View.GONE);
         }
+
+        RelativeLayout rlWajibDicantumkan = findViewById(R.id.rl_wajib_dicantumkan);
+        rlWajibDicantumkan.setOnClickListener(v -> showBottomSheetInfo(getString(R.string.title_immutable_wajib_tulis_kode_booking), R.string.bottomsheet_wajib_tulis_kode_booking_desc));
+    }
+
+    private void showBottomSheetInfo(String title, int resIdDesc) {
+        bottomSheetUnify = new BottomSheetUnify();
+        bottomSheetUnify.clearClose(false);
+        bottomSheetUnify.clearHeader(false);
+        bottomSheetUnify.setTitle(title);
+        bottomSheetUnify.setCloseClickListener(view -> {
+            bottomSheetUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+
+        View childView = View.inflate(this, R.layout.bottomsheet_info, null);
+        Typography bottomSheetDesc = childView.findViewById(R.id.bottomsheet_desc);
+        bottomSheetDesc.setText(resIdDesc);
+
+
+        UnifyButton childBtn = childView.findViewById(R.id.btn_mengerti);
+        childBtn.setOnClickListener(v -> bottomSheetUnify.dismiss());
+
+        bottomSheetUnify.setChild(childView);
+        bottomSheetUnify.show(this.getSupportFragmentManager(), null);
     }
 
     private void setUploadAwb(final OrderDetailData data) {
@@ -438,6 +488,15 @@ public class OrderDetailActivity extends TActivity
         descriptionCourierName.setText(data.getCourierName());
         descriptionShippingAddess.setText(data.getShippingAddress());
         descriptionPartialOrderStatus.setText(data.getPartialOrderStatus());
+
+        RelativeLayout rlHarusSesuai = findViewById(R.id.rl_harus_sesuai);
+        if (data.isFreeShipping()) {
+            rlHarusSesuai.setVisibility(View.VISIBLE);
+            rlHarusSesuai.setOnClickListener(v -> showBottomSheetInfo(getString(R.string.title_immutable_courier), R.string.bottomsheet_harus_sesuai_desc));
+        } else {
+            rlHarusSesuai.setVisibility(View.GONE);
+        }
+
         setResponseTimeView(data);
         setPreorderView(data);
         setDropshipperView(data);
@@ -698,8 +757,53 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onAcceptOrder(OrderDetailData data) {
-        AcceptOrderDialog dialog = AcceptOrderDialog.createDialog(data.getOrderId());
-        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
+        showFreeShippingConfirmationDialog(data.isFreeShipping());
+    }
+
+    private void showFreeShippingConfirmationDialog(Boolean isFreeShipping) {
+        DialogUnify dialogUnify = new DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
+        dialogUnify.setUnlockVersion();
+
+        View dialogView = View.inflate(this, R.layout.dialog_accept_order_free_shipping, null);
+        dialogUnify.setChild(dialogView);
+
+        RelativeLayout rlConfirmation1 = dialogView.findViewById(R.id.rl_confirmation_1);
+        String msgReguler2, msg3;
+        if (isFreeShipping) {
+            rlConfirmation1.setVisibility(View.VISIBLE);
+            String msgReguler1 = getString(R.string.confirm_msg_1a);
+            String msgBold1 = getString(R.string.confirm_msg_1b);
+            SpannableString str1 = new SpannableString(msgReguler1 + " " + msgBold1);
+            str1.setSpan(new StyleSpan(Typeface.BOLD), msgReguler1.length()+1, str1.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            Typography label1 = dialogView.findViewById(R.id.label_confirmation_msg_1);
+            label1.setText(str1);
+
+            msgReguler2 = getString(R.string.confirm_msg_2a_free_shipping);
+            msg3 = getString(R.string.confirm_msg_3_free_shipping);
+        } else {
+            msgReguler2 = getString(R.string.confirm_msg_2a_reguler);
+            msg3 = getString(R.string.confirm_msg_3_reguler);
+            rlConfirmation1.setVisibility(View.GONE);
+        }
+
+        String msgBold2 = getString(R.string.confirm_msg_2b);
+        SpannableString str2 = new SpannableString(msgReguler2 + " " + msgBold2);
+        str2.setSpan(new StyleSpan(Typeface.BOLD), msgReguler2.length()+1, str2.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        Typography label2 = dialogView.findViewById(R.id.label_confirmation_msg_2);
+        label2.setText(str2);
+
+        Typography label3 = dialogView.findViewById(R.id.label_confirmation_msg_3);
+        label3.setText(msg3);
+
+        UnifyButton btnBatal = dialogView.findViewById(R.id.btn_batal);
+        btnBatal.setOnClickListener(v -> dialogUnify.dismiss());
+
+        UnifyButton btnTerima = dialogView.findViewById(R.id.btn_terima);
+        btnTerima.setOnClickListener(v -> onAcceptOrder(getExtraOrderId()));
+
+        dialogUnify.show();
     }
 
     @Override
@@ -711,8 +815,20 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onRequestPickup(OrderDetailData data) {
         if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
-            RequestPickupFragment requestPickupFragment = RequestPickupFragment
+            // DO NOT DELETE - TO BE REPLACED LATER
+            /*RequestPickupFragment requestPickupFragment = RequestPickupFragment
                     .createFragment(data.getOrderId());
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, requestPickupFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();*/
+
+            Bundle bundle = new Bundle();
+            bundle.putString(PARAM_CONFIRM_PICKUP_ORDER_ID, data.getOrderId());
+            bundle.putString(PARAM_CONFIRM_PICKUP_ORIGIN_ADDRESS, data.getOriginAddress());
+            ConfirmRequestPickupFragment requestPickupFragment = ConfirmRequestPickupFragment
+                    .newInstance(bundle);
+            requestPickupFragment.setListeners(this);
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                     .add(R.id.main_view, requestPickupFragment, VALIDATION_FRAGMENT_TAG)
@@ -964,9 +1080,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().findFragmentByTag(INFO_FRAGMENT_TAG) != null) {
-            removeFragmentOnBackPressed(INFO_FRAGMENT_TAG);
-        } else if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
             toolbar.setTitle(getString(R.string.title_detail_transaction));
             removeFragmentOnBackPressed(VALIDATION_FRAGMENT_TAG);
         } else if (getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
@@ -1040,26 +1154,6 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onConfirmPickup(String orderId) {
-        presenter.processInstantCourierShipping(this, orderId);
-    }
-
-    @Override
-    public void onWebViewSuccessLoad() {
-
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-
-    }
-
-    @Override
     public void onRemoveTitle() {
         toolbar.setTitle("");
     }
@@ -1067,5 +1161,14 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onChangeTitle(String toolbarTitle) {
         toolbar.setTitle(toolbarTitle);
+    }
+
+    @Override
+    public void onClickRequestPickupBtn(@NotNull String orderId) {
+        presenter.processInstantCourierShipping(this, orderId);
+    }
+
+    public void setActionBarTitle(String title) {
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
     }
 }

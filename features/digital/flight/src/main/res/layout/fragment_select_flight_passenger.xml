@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:spv_icon="@drawable/ic_passenger_infant"
-                app:spv_max_value="7"
+                app:spv_max_value="4"
                 app:spv_min_value="0"
                 app:spv_subtitle="@string/select_passenger_infant_subtitle"
                 app:spv_title="@string/select_passenger_infant_title"

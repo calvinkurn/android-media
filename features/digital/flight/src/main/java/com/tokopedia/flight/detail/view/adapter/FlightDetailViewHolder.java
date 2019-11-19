@@ -52,8 +52,10 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
     private TextView pnrCode;
     private ImageView copyPnr;
     private FlightDetailAdapterTypeFactory.OnFlightDetailListener onFlightDetailListener;
+    private boolean isShowRefundableTag;
 
-    public FlightDetailViewHolder(View itemView, FlightDetailAdapterTypeFactory.OnFlightDetailListener onFlightDetailListener) {
+    public FlightDetailViewHolder(View itemView, FlightDetailAdapterTypeFactory.OnFlightDetailListener onFlightDetailListener,
+                                  boolean isShowRefundableTag) {
         super(itemView);
         imageAirline = itemView.findViewById(R.id.airline_icon);
         airlineName = itemView.findViewById(R.id.airline_name);
@@ -80,6 +82,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         stopOverTextView = itemView.findViewById(R.id.tv_flight_stop_over);
         stopOverContainerLayout = itemView.findViewById(R.id.container_flight_stop_over);
         this.onFlightDetailListener = onFlightDetailListener;
+        this.isShowRefundableTag = isShowRefundableTag;
     }
 
     @Override
@@ -193,7 +196,8 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         } else {
             refundableInfo.setText(R.string.flight_label_non_refundable_info);
         }
-        refundableInfo.setVisibility(View.VISIBLE);
+        if (isShowRefundableTag) refundableInfo.setVisibility(View.VISIBLE);
+        else refundableInfo.setVisibility(View.GONE);
     }
 
     //set color circle to green if position holder is on first index

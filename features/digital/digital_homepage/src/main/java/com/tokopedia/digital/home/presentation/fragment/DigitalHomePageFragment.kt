@@ -3,14 +3,18 @@ package com.tokopedia.digital.home.presentation.fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
@@ -56,6 +60,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        hideStatusBar()
         digital_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
         calculateToolbarView(0)
 
@@ -66,6 +71,33 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 calculateToolbarView(getRecyclerView(view).computeVerticalScrollOffset())
             }
         })
+    }
+
+    private fun hideStatusBar() {
+        digital_homepage_container.fitsSystemWindows = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            digital_homepage_container.requestApplyInsets()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            var flags = digital_homepage_container.systemUiVisibility
+            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            digital_homepage_container.systemUiVisibility = flags
+            activity?.window?.statusBarColor = Color.WHITE
+        }
+
+        if (Build.VERSION.SDK_INT in 19..20) {
+            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        }
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            activity?.window?.statusBarColor = Color.TRANSPARENT
+        }
     }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
@@ -109,8 +141,30 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
         viewModel.digitalHomePageList.observe(this, Observer {
             clearAllData()
-            it?.run { renderList(this) }
+            it?.run {
+                mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_ORDER])?.let { categoryData ->
+                    trackingUtil.eventCategoryImpression(categoryData)
+                }
+                renderList(this)
+            }
         })
+
+        viewModel.isAllError.observe(this, Observer {
+            it?.let { isAllError ->
+                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView, object : NetworkErrorHelper.RetryClickedListener {
+                    override fun onRetryClicked() {
+                        loadDataFromCloud()
+                    }
+                })
+            }
+        })
+    }
+
+    fun loadDataFromCloud() {
+        isLoadingInitialData = true
+        adapter.clearAllElements()
+        showLoading()
+        viewModel.getInitialList(true)
     }
 
     override fun loadData(page: Int) {
@@ -150,7 +204,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
-        trackingUtil.eventCategoryImpression(element, position)
+        // do nothing
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
@@ -179,6 +233,19 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     override fun onClickMyBills() {
         trackingUtil.eventClickLangganan()
         RouteManager.route(activity, APPLINK_HOME_MYBILLS)
+    }
+
+    private fun mapCategoryData(data: DigitalHomePageItemModel): List<DigitalHomePageCategoryModel.Submenu>? {
+        if (data is DigitalHomePageCategoryModel) {
+            val categoryList = mutableListOf<DigitalHomePageCategoryModel.Submenu>()
+            for (subtitle in data.listSubtitle) {
+                for (submenu in subtitle.submenu) {
+                    categoryList.add(submenu)
+                }
+            }
+            return categoryList
+        }
+        return null
     }
 
     companion object {

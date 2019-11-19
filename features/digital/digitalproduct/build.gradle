@@ -35,6 +35,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.commonDigital)
+    implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.libraries.fingerprint)

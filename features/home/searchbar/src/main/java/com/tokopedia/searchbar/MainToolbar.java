@@ -168,8 +168,6 @@ public class MainToolbar extends Toolbar {
                 RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
-
-        setNotificationNumber(0);
     }
 
     public void inflateResource(Context context) {

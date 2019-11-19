@@ -1,1 +1,0 @@
-{"query":"query {\n mf_autosweep_detail() {\n show_autosweep\n dashboard_link\n mutualfund_account_status\n autosweep_status\n mf_autosweep_info_link\n amount_limit\n text {\n title\n status\n tooltip_content\n description_content\n dialog{\n title\n content\n positive_label\n negative_label\n negative_label_link\n }\n }\n result {\n code\n message\n success\n }\n }\n }"}

@@ -9,8 +9,9 @@ import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.google.gson.Gson
+import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.cod.view.CodActivity
-import com.tokopedia.transactiondata.entity.response.cod.Data
+import com.tokopedia.purchase_platform.common.data.model.response.cod.Data
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

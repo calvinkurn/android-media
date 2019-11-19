@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -46,7 +47,6 @@ import com.tokopedia.tkpd.home.wishlist.mapper.WishlistProductMapper;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -125,7 +125,8 @@ public class WishListImpl implements WishList {
         userSession = new UserSession(context);
         addToCartUseCase = new AddToCartUseCase(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart),
-                new GraphqlUseCase()
+                new GraphqlUseCase(),
+                new AddToCartDataMapper()
         );
         getRecommendationUseCase = new GetRecommendationUseCase(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.query_recommendation_widget), new GraphqlUseCase(), new UserSession(context));
@@ -255,6 +256,7 @@ public class WishListImpl implements WishList {
         wishListView.displayLoadMore(false);
         wishListView.loadDataChange();
         mPaging.resetPage();
+        dataWishlist.clear();
         if (context != null)
             fetchDataFromInternet(context);
     }
@@ -631,6 +633,8 @@ public class WishListImpl implements WishList {
             product.setLabels(wishlists.get(i).getLabels());
             product.setShopLocation(wishlists.get(i).getShop().getLocation());
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
+            product.setFreeOngkir(wishlists.get(i).getFreeOngkir().getActive());
+            product.setImageFreeOngkir(wishlists.get(i).getFreeOngkir().getImageUrl());
             products.add(new WishlistProductViewModel(product));
         }
         if (products.size() >= TOPADS_INDEX && adsModel != null && !adsModel.getData().isEmpty()) {
@@ -755,8 +759,6 @@ public class WishListImpl implements WishList {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                    wishListView.showAddToCartErrorMessage(e.getMessage());
-                } else if (e instanceof ResponseCartApiErrorException) {
                     wishListView.showAddToCartErrorMessage(e.getMessage());
                 } else {
                     /* Ini diluar dari segalanya hahahaha */

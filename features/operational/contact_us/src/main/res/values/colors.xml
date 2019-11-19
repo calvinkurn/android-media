@@ -24,4 +24,5 @@
     <color name="black_alpha_12">#26000000</color>
     <color name="color_white_fafafa">#fafafa</color>
     <color name="color_notification">#ea212d</color>
+    <color name="red_150">#d43000</color>
 </resources>

@@ -1,7 +1,7 @@
 package com.tokopedia.flight.bookingV2.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice
 import com.tokopedia.flight.booking.view.viewmodel.*
@@ -62,18 +62,18 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
 
                             val paxFares = arrayListOf<Fare>()
                             paxFares.add(Fare(
-                                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.departureTrip.adultNumericPrice),
-                                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.departureTrip.childNumericPrice),
-                                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.departureTrip.infantNumericPrice),
+                                    FlightCurrencyFormatUtil.convertToIdrPrice(t.departureTrip.adultNumericPrice),
+                                    FlightCurrencyFormatUtil.convertToIdrPrice(t.departureTrip.childNumericPrice),
+                                    FlightCurrencyFormatUtil.convertToIdrPrice(t.departureTrip.infantNumericPrice),
                                     t.departureTrip.adultNumericPrice,
                                     t.departureTrip.childNumericPrice,
                                     t.departureTrip.infantNumericPrice
                             ))
                             if (t.returnTrip != null) {
                                 paxFares.add(Fare(
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.returnTrip.adultNumericPrice),
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.returnTrip.childNumericPrice),
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(t.returnTrip.infantNumericPrice),
+                                        FlightCurrencyFormatUtil.convertToIdrPrice(t.returnTrip.adultNumericPrice),
+                                        FlightCurrencyFormatUtil.convertToIdrPrice(t.returnTrip.childNumericPrice),
+                                        FlightCurrencyFormatUtil.convertToIdrPrice(t.returnTrip.infantNumericPrice),
                                         t.returnTrip.adultNumericPrice,
                                         t.returnTrip.childNumericPrice,
                                         t.returnTrip.infantNumericPrice
@@ -105,9 +105,9 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
 
                             if (!journeyAffected.contains(view.getDepartureFlightDetailViewModel().id)) {
                                 fares.add(Fare(
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(view.getDepartureFlightDetailViewModel().adultNumericPrice),
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(view.getDepartureFlightDetailViewModel().childNumericPrice),
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(view.getDepartureFlightDetailViewModel().infantNumericPrice),
+                                        FlightCurrencyFormatUtil.convertToIdrPrice(view.getDepartureFlightDetailViewModel().adultNumericPrice),
+                                        FlightCurrencyFormatUtil.convertToIdrPrice(view.getDepartureFlightDetailViewModel().childNumericPrice),
+                                        FlightCurrencyFormatUtil.convertToIdrPrice(view.getDepartureFlightDetailViewModel().infantNumericPrice),
                                         view.getDepartureFlightDetailViewModel().adultNumericPrice,
                                         view.getDepartureFlightDetailViewModel().childNumericPrice,
                                         view.getDepartureFlightDetailViewModel().infantNumericPrice
@@ -117,9 +117,9 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                             if (view.getReturnFlightDetailViewModel() != null &&
                                     !journeyAffected.contains(view.getReturnFlightDetailViewModel()!!.id)) {
                                 fares.add(Fare(
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(view.getReturnFlightDetailViewModel()!!.adultNumericPrice),
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(view.getReturnFlightDetailViewModel()!!.childNumericPrice),
-                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(view.getReturnFlightDetailViewModel()!!.infantNumericPrice),
+                                        FlightCurrencyFormatUtil.convertToIdrPrice(view.getReturnFlightDetailViewModel()!!.adultNumericPrice),
+                                        FlightCurrencyFormatUtil.convertToIdrPrice(view.getReturnFlightDetailViewModel()!!.childNumericPrice),
+                                        FlightCurrencyFormatUtil.convertToIdrPrice(view.getReturnFlightDetailViewModel()!!.infantNumericPrice),
                                         view.getReturnFlightDetailViewModel()!!.adultNumericPrice,
                                         view.getReturnFlightDetailViewModel()!!.childNumericPrice,
                                         view.getReturnFlightDetailViewModel()!!.infantNumericPrice
@@ -156,8 +156,8 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                         onCountDownTimestampChanged(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT))
 
                         if (baseCartData.total != getCurrentCartData().total && getCurrentCartData().total > 0) {
-                            view.showPriceChangesDialog(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(baseCartData.total),
-                                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getCurrentCartData().total))
+                            view.showPriceChangesDialog(FlightCurrencyFormatUtil.convertToIdrPrice(baseCartData.total),
+                                    FlightCurrencyFormatUtil.convertToIdrPrice(getCurrentCartData().total))
                             updateTotalPrice(baseCartData.total)
                             actionCalculatePriceAndRender(
                                     baseCartData.newFarePrices,
@@ -380,14 +380,14 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
             simpleViewModels.add(SimpleViewModel(
                     String.format("%s %s", view.getString(R.string.flight_price_detail_prefixl_meal_label),
                             key),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(value)))
+                    FlightCurrencyFormatUtil.convertToIdrPrice(value)))
 
         }
         for ((key, value) in luggages) {
             simpleViewModels.add(SimpleViewModel(
                     String.format("%s %s", view.getString(R.string.flight_price_detail_prefix_luggage_label),
                             key),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(value)))
+                    FlightCurrencyFormatUtil.convertToIdrPrice(value)))
 
         }
         val totalPassenger = departureDetailViewModel.countAdult + departureDetailViewModel.countChild + departureDetailViewModel.countInfant
@@ -395,7 +395,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
         for (insuranceViewModel in insurances) {
             simpleViewModels.add(SimpleViewModel(
                     String.format("%s x%d", insuranceViewModel.name, totalPassenger),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(insuranceViewModel.totalPrice.toInt())))
+                    FlightCurrencyFormatUtil.convertToIdrPrice(insuranceViewModel.totalPrice.toInt())))
         }
 
         view.renderPriceListDetails(simpleViewModels)
@@ -420,6 +420,6 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                             arrivalAirport,
                             label,
                             passengerCount),
-                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(price))
+                    FlightCurrencyFormatUtil.convertToIdrPrice(price))
 
 }

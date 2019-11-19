@@ -982,7 +982,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
+        val shop = postTagItem.shop.firstOrNull()
+        feedAnalytics.eventProfileAddToCart(
+                postTagItem.id,
+                postTagItem.text,
+                postTagItem.price,
+                1,
+                shop?.shopId?.toIntOrZero() ?: -1,
+                ""
+        )
         presenter.addPostTagItemToCart(postTagItem)
     }
 
@@ -1172,7 +1181,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         this.profileHeader = element
         app_bar_layout.visibility = View.VISIBLE
         app_bar_layout.setExpanded(true)
-        iv_image_collapse.loadImageRounded(element.avatar)
+        iv_image_collapse.loadImageWithoutPlaceholder(element.avatar)
         iv_profile.loadImageCircle(element.avatar)
         tv_name.text = element.name
         val affName = if (element.affiliateName.isNotBlank()) {

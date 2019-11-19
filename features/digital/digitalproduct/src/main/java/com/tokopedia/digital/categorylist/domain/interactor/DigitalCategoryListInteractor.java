@@ -1,9 +1,11 @@
 package com.tokopedia.digital.categorylist.domain.interactor;
 
-import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData;
+import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
+import com.tokopedia.common_wallet.balance.view.WalletBalanceModel;
 import com.tokopedia.digital.categorylist.domain.IDigitalCategoryListRepository;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -21,13 +23,16 @@ public class DigitalCategoryListInteractor implements IDigitalCategoryListIntera
     private final CompositeSubscription compositeSubscription;
     private final IDigitalCategoryListRepository digitalCategoryListRepository;
     private DigitalModuleRouter digitalModuleRouter;
+    private GetWalletBalanceUseCase getWalletBalanceUseCase;
 
     public DigitalCategoryListInteractor(CompositeSubscription compositeSubscription,
                                          IDigitalCategoryListRepository digitalCategoryListRepository,
+                                         GetWalletBalanceUseCase getWalletBalanceUseCase,
                                          DigitalModuleRouter digitalModuleRouter) {
         this.compositeSubscription = compositeSubscription;
         this.digitalCategoryListRepository = digitalCategoryListRepository;
         this.digitalModuleRouter = digitalModuleRouter;
+        this.getWalletBalanceUseCase = getWalletBalanceUseCase;
     }
 
     @Override
@@ -40,8 +45,8 @@ public class DigitalCategoryListInteractor implements IDigitalCategoryListIntera
     }
 
     @Override
-    public void getTokoCashData(Subscriber<TokoCashData> subscriber) {
-        Observable<TokoCashData> observable = digitalModuleRouter.getDigitalTokoCashBalance();
+    public void getTokoCashData(Subscriber<WalletBalanceModel> subscriber) {
+        Observable<WalletBalanceModel> observable = getWalletBalanceUseCase.createObservable(RequestParams.EMPTY);
         if (observable != null) {
             compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())

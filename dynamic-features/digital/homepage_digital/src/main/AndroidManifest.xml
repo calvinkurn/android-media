@@ -1,9 +1,10 @@
-<manifest xmlns:dist="http://schemas.android.com/apk/distribution"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.homepage.digital.customerapp">
 
     <dist:module
         dist:instant="false"
-        dist:onDemand="true"
+        dist:onDemand="false"
         dist:title="@string/digital_subhomepage_app_name">
         <dist:fusing dist:include="true" />
     </dist:module>

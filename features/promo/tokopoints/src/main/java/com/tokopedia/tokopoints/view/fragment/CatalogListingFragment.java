@@ -147,7 +147,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTvFlashTimer = view.findViewById(R.id.tv_flash_time);
         mTvFlashTimerLabel = view.findViewById(R.id.tv_timer_label);
         mTvFlashTimerLabel.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_tp_flash_green), null, null , null);
+                (getActivity(), R.drawable.ic_tp_flash_green), null, null, null);
         mProgressFlash = view.findViewById(R.id.progress_timer);
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container);
         serverErrorView = view.findViewById(R.id.server_error_view);
@@ -239,7 +239,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(rewardValue, false));
         if (!eggUrl.isEmpty())
             ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, eggUrl);
-        mContainerPointDetail.setVisibility(View.VISIBLE);
+
         isPointsAvailable = true;
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation);
         mAppBarHeader.addOnOffsetChangedListener(offsetChangedListenerBottomView);
@@ -520,7 +520,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
                     R.anim.tp_bottom_up);
             bottomViewMembership.startAnimation(bottomUp);
-            bottomViewMembership.setVisibility(View.VISIBLE);
+            bottomViewMembership.setVisibility(View.GONE);
         }
 
     }

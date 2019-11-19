@@ -1,12 +1,9 @@
 package com.tokopedia.recommendation_widget_common.domain
 
-import android.content.Context
 import android.text.TextUtils
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -41,11 +38,18 @@ constructor(
                 .map(RecommendationEntityMapper())
     }
 
-    fun getRecomParams(pageNumber: Int = 1,
-                       xSource: String = "",
-                       pageName: String = "",
-                       productIds: List<String> = arrayListOf(),
-                       ref: String = ""): RequestParams {
+    fun getRecomParams(pageNumber: Int,
+                       xSource: String,
+                       pageName: String,
+                       productIds: List<String>): RequestParams {
+        return getRecomParams(pageNumber, xSource, pageName, productIds, "")
+    }
+
+    fun getRecomParams(pageNumber: Int,
+                       xSource: String = DEFAULT_VALUE_X_SOURCE,
+                       pageName: String,
+                       productIds: List<String>,
+                       queryParam: String = ""): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
 
@@ -54,22 +58,15 @@ constructor(
         } else {
             params.putInt(USER_ID, 0)
         }
-        params.putInt(PAGE_NUMBER, pageNumber)
-        params.putString(PRODUCT_IDS, productIdsString)
-        params.putString(REF, ref)
-
         if(xSource.isEmpty()) {
             params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
         } else {
             params.putString(X_SOURCE, xSource)
         }
-
-        if(pageName.isEmpty()) {
-            params.putString(PAGE_NAME, DEFAULT_PAGE_NAME)
-        } else {
-            params.putString(PAGE_NAME, pageName)
-        }
-
+        params.putInt(PAGE_NUMBER, pageNumber)
+        params.putString(PAGE_NAME, pageName)
+        params.putString(PRODUCT_IDS, productIdsString)
+        params.putString(QUERY_PARAM, queryParam)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         return params
     }
@@ -80,7 +77,7 @@ constructor(
         val PAGE_NUMBER = "pageNumber"
         val X_DEVICE = "xDevice"
         val PAGE_NAME = "pageName"
-        val REF = "ref"
+        val QUERY_PARAM = "queryParam"
         val DEFAULT_VALUE_X_SOURCE = "recom_widget"
         val DEFAULT_VALUE_X_DEVICE = "android"
         val DEFAULT_PAGE_NAME = ""

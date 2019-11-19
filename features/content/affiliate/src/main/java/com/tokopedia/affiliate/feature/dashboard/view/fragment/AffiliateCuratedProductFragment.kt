@@ -14,6 +14,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
@@ -69,6 +70,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     private var currentSort: Int? = null
 
     private lateinit var cvSort: CardView
+    private lateinit var tvSort: TextView
     private lateinit var svEmptyState: NestedScrollView
     private lateinit var esShareNow: EmptyState
 
@@ -113,12 +115,14 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     private fun initView(view: View) {
         view.run {
             cvSort = findViewById(R.id.cv_sort)
+            tvSort = findViewById(R.id.tv_sort)
             svEmptyState = findViewById(R.id.sv_empty_state)
             esShareNow = findViewById(R.id.es_share_now)
         }
     }
 
     private fun setupView(view: View) {
+        tvSort.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_system_action_sort_grayscale_24), null, null, null)
         if (type == null) {
             cvSort.visible()
             getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {

@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
@@ -168,7 +169,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public void onGimickItemClicked(LayoutRows data) {
 
         if (NAME_PINJAMAN_ONLINE.equalsIgnoreCase(data.getName())) {
-            RouteManager.route(getActivity(), ApplinkConst.INSTANT_LOAN);
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN);
             return;
         }
 

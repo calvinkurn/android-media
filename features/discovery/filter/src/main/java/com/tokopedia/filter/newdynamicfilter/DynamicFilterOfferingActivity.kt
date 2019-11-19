@@ -24,7 +24,7 @@ class DynamicFilterOfferingActivity : DynamicFilterDetailGeneralActivity() {
                             isSearchable: Boolean,
                             searchHint: String,
                             isUsingTracking: Boolean,
-                            trackingData: FilterTrackingData) {
+                            trackingData: FilterTrackingData?) {
 
             if (activity != null) {
                 val intent = Intent(activity, DynamicFilterOfferingActivity::class.java)

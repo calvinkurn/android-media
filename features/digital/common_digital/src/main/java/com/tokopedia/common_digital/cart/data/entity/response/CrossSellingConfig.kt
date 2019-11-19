@@ -13,4 +13,7 @@ class CrossSellingConfig {
     @SerializedName("wording")
     @Expose
     var wording: CrossSellingWording? = null
+    @SerializedName("wording_is_subscribed")
+    @Expose
+    var wordingIsSubscribed: CrossSellingWording? = null
 }
