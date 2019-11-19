@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.analytics
 
 import android.content.Context
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
@@ -80,21 +81,21 @@ class OfficialStoreTracking(context: Context) {
         tracker.sendScreenAuthenticated(screenName, customDimension)
     }
 
-    fun eventClickCategory(categoryName: String, categoryId: String, categoryPosition: Int, imageUrl: String) {
+    fun eventClickCategory(categoryPosition: Int, categorySelected: Category) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_CATEGORY, "$OS_MICROSITE${categorySelected.title}",
                 EVENT_ACTION, "$CATEGORY - $CLICK",
                 EVENT_LABEL, "$CLICK $CATEGORY",
                 ECOMMERCE, DataLayer.mapOf(
                 PROMO_CLICK, DataLayer.mapOf(
                         "promotions",DataLayer.listOf(
                             DataLayer.mapOf(
-                                    "id", categoryId,
-                                    "name", "/official-store/$categoryName - category navigation",
+                                    "id", categorySelected.categoryId,
+                                    "name", "/official-store/${categorySelected.title} - category navigation",
                                     "position", "$categoryPosition",
-                                    "creative", categoryName,
-                                    "creative_url", imageUrl,
+                                    "creative", categorySelected.title,
+                                    "creative_url", categorySelected.icon,
                                     "promo_id", null,
                                     "promo_code", null
                             )
@@ -326,8 +327,8 @@ class OfficialStoreTracking(context: Context) {
                         "id", gridData.id.toString(10),
                         "name", "/official-store/$categoryName - dynamic channel - $headerName",
                         "position", position,
-                        "creative", gridData.name,
-                        "creative_url", gridData.imageUrl,
+                        "creative", gridData.attribution,
+                        "creative_url", gridData.applink,
                         "promo_id", null,
                         "promo_code", null
                 ))
@@ -426,8 +427,8 @@ class OfficialStoreTracking(context: Context) {
                         "id", bannerData.id.toString(10),
                         "name", "/official-store/$categoryName - dynamic channel mix - $headerName",
                         "position", "0",
-                        "creative", bannerData.title,
-                        "creative_url", bannerData.imageUrl,
+                        "creative", bannerData.attribution,
+                        "creative_url", bannerData.applink,
                         "promo_id", null,
                         "promo_code", null
                 ))
