@@ -49,7 +49,7 @@ class AffiliateDashboardActivity : BaseSimpleActivity() {
 
     object DeeplinkIntent {
 
-        @DeepLink(ApplinkConst.AFFILIATE_DASHBOARD)
+//        @DeepLink(ApplinkConst.AFFILIATE_DASHBOARD)
         @JvmStatic
         fun getInstance(context: Context): Intent {
             val intent = Intent(context, AffiliateDashboardActivity::class.java)

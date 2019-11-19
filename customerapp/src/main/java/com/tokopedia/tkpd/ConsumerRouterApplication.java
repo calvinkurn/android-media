@@ -31,7 +31,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.affiliate.AffiliateRouter;
 import com.tokopedia.analytics.debugger.TetraDebugger;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
@@ -135,7 +134,6 @@ import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
-import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -310,7 +308,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         IHomeRouter,
         DiscoveryRouter,
         DigitalModuleRouter,
-        AffiliateRouter,
         ApplinkRouter,
         ShopModuleRouter,
         LoyaltyModuleRouter,
@@ -755,15 +752,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Deprecated
     @Override
     public void actionApplink(Activity activity, String linkUrl) {
-        goToApplinkActivity(activity, linkUrl, new Bundle());
-    }
-
-    /**
-     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
-     */
-    @Deprecated
-    @Override
-    public void actionApplinkFromActivity(Activity activity, String linkUrl) {
         goToApplinkActivity(activity, linkUrl, new Bundle());
     }
 
@@ -1313,15 +1301,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getInboxChannelsIntent(Context context) {
         return InboxChatActivity.getChannelCallingIntent(context);
-    }
-
-    @Override
-    public void openRedirectUrl(Activity activity, String url) {
-        if (isSupportedDelegateDeepLink(url)) {
-            actionApplinkFromActivity(activity, url);
-        } else {
-            activity.startActivity(RouteManager.getIntent(activity, ApplinkConstInternalGlobal.WEBVIEW, url));
-        }
     }
 
     @Override

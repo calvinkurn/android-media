@@ -19,7 +19,7 @@ public class ExploreActivity extends BaseActivity {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
 
-    @DeepLink(ApplinkConst.AFFILIATE_EXPLORE)
+//    @DeepLink(ApplinkConst.AFFILIATE_EXPLORE)
     public static Intent getInstance(Context context) {
         Intent intent = new Intent(context, ExploreActivity.class);
         Bundle bundle = new Bundle();

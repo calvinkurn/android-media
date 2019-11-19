@@ -11,7 +11,14 @@
             android:label="@string/title_af_dashboard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <intent-filter>
+                <data
+                    android:host="@string/host_affiliate"
+                    android:path="@string/path_af_dashboard"
+                    android:scheme="@string/internal_scheme"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".feature.dashboard.view.activity.AffiliateCuratedProductActivity"
             android:label="@string/posted_product"
@@ -28,7 +35,14 @@
             android:name=".feature.explore.view.activity.ExploreActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+            <intent-filter>
+                <data
+                    android:host="@string/host_affiliate"
+                    android:path="@string/path_af_explore"
+                    android:scheme="@string/internal_scheme"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".feature.explore.view.activity.FilterActivity"
             android:label="@string/text_title_filter"
@@ -40,7 +54,14 @@
             android:label="@string/title_af_tokopedia_byme"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden" >
+            <intent-filter>
+                <data
+                    android:host="@string/host_affiliate"
+                    android:path="@string/path_af_education"
+                    android:scheme="@string/internal_scheme"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".feature.explore.view.activity.SortActivity"
             android:label="@string/text_button_sort"
