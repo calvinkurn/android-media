@@ -30,6 +30,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.model.MessageData;
+import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
@@ -71,8 +72,6 @@ public interface ShipmentContract {
 
         void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse);
 
-        void renderCheckShipmentPrepareCheckoutSuccess();
-
         void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
                 CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
         );
@@ -91,7 +90,7 @@ public interface ShipmentContract {
 
         void renderCheckoutCartErrorReporter(CheckoutData checkoutData);
 
-        void renderCheckoutPriceUpdated(MessageData messageData);
+        void renderCheckoutPriceUpdated(PriceValidationData priceValidationData);
 
         void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult);
 

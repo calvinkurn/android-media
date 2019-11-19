@@ -290,6 +290,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO_LOGISTIC_TICKER = "view promo logistic ticker";
         String CLICK_X_ON_PROMO_STACKING_LOGISTIC = "click x on promo stacking logistic";
         String VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT = "view information and warning ticker in checkout";
+        String VIEW_POP_UP_PRICE_INCREASE = "view pop up price increase";
 
         //Promo not eligible bottomsheet
         String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";

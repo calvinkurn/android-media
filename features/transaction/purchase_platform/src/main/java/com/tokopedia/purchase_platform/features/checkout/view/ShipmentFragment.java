@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -101,6 +102,8 @@ import com.tokopedia.purchase_platform.common.data.model.response.insurance.enti
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShopItems;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
+import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
+import com.tokopedia.purchase_platform.common.domain.model.TrackerData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
@@ -770,14 +773,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    @Deprecated
-    @Override
-    public void renderCheckShipmentPrepareCheckoutSuccess() {
-        CheckPromoParam checkPromoParam = new CheckPromoParam();
-        checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
-        shipmentPresenter.processCheckout(checkPromoParam, hasInsurance, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
-    }
-
     @Override
     public void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
             CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
@@ -891,22 +886,39 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutPriceUpdated(com.tokopedia.purchase_platform.common.domain.model.MessageData messageData) {
+    public void renderCheckoutPriceUpdated(PriceValidationData priceValidationData) {
         if (getActivity() != null) {
-            DialogUnify priceValidationDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
-            priceValidationDialog.setTitle(messageData.getTitle());
-            priceValidationDialog.setDescription(messageData.getDesc());
-            priceValidationDialog.setPrimaryCTAText(messageData.getAction());
-            priceValidationDialog.setPrimaryCTAClickListener(() -> {
-                shipmentPresenter.processInitialLoadCheckoutPage(
-                        true, isOneClickShipment(), isTradeIn(), true,
-                        true, null, getDeviceId(), getCheckoutLeasingId()
-                );
-                priceValidationDialog.dismiss();
-                return Unit.INSTANCE;
-            });
+            com.tokopedia.purchase_platform.common.domain.model.MessageData messageData =
+                    priceValidationData.getMessage();
+            if (messageData != null) {
+                DialogUnify priceValidationDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+                priceValidationDialog.setTitle(messageData.getTitle());
+                priceValidationDialog.setDescription(messageData.getDesc());
+                priceValidationDialog.setPrimaryCTAText(messageData.getAction());
+                priceValidationDialog.setPrimaryCTAClickListener(() -> {
+                    shipmentPresenter.processInitialLoadCheckoutPage(
+                            true, isOneClickShipment(), isTradeIn(), true,
+                            true, null, getDeviceId(), getCheckoutLeasingId()
+                    );
+                    priceValidationDialog.dismiss();
+                    return Unit.INSTANCE;
+                });
 
-            priceValidationDialog.show();
+                priceValidationDialog.show();
+
+                StringBuilder eventLabelBuilder = new StringBuilder();
+                TrackerData trackerData = priceValidationData.getTrackerData();
+                if (trackerData != null) {
+                    eventLabelBuilder.append(trackerData.getProductChangesType());
+                    eventLabelBuilder.append(" - ");
+                    eventLabelBuilder.append(trackerData.getCampaignType());
+                    eventLabelBuilder.append(" - ");
+                    eventLabelBuilder.append(new Gson().toJson(trackerData.getProductIds()));
+                }
+                eventLabelBuilder.append(" - ");
+
+                checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString());
+            }
         }
     }
 

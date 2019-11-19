@@ -6,10 +6,12 @@ import com.tokopedia.purchase_platform.common.domain.model.ErrorReporter;
 import com.tokopedia.purchase_platform.common.domain.model.ErrorReporterText;
 import com.tokopedia.purchase_platform.common.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
+import com.tokopedia.purchase_platform.common.domain.model.TrackerData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.CheckoutDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.CheckoutResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.ErrorReporterResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Message;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Tracker;
 
 import javax.inject.Inject;
 
@@ -20,7 +22,8 @@ import javax.inject.Inject;
 public class CheckoutMapper implements ICheckoutMapper {
 
     @Inject
-    public CheckoutMapper() {}
+    public CheckoutMapper() {
+    }
 
     @Override
     public CheckoutData convertCheckoutData(CheckoutResponse checkoutResponse) {
@@ -41,6 +44,15 @@ public class CheckoutMapper implements ICheckoutMapper {
             PriceValidationData priceValidationData = new PriceValidationData();
             priceValidationData.setUpdated(true);
             priceValidationData.setMessage(messageData);
+
+            Tracker tracker = checkoutDataResponse.getData().getPriceValidation().getTrackerData();
+            if (tracker != null) {
+                TrackerData trackerData = new TrackerData();
+                trackerData.setCampaignType(tracker.getCampaignType());
+                trackerData.setProductChangesType(tracker.getProductChangesType());
+                trackerData.setProductIds(tracker.getProductIds());
+                priceValidationData.setTrackerData(trackerData);
+            }
 
             checkoutData.setPriceValidationData(priceValidationData);
         }

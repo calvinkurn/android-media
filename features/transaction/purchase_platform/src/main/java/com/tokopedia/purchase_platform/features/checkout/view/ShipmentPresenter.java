@@ -973,7 +973,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     getView().renderCheckoutCartErrorReporter(checkoutData);
                 } else if (checkoutData.getPriceValidationData() != null && checkoutData.getPriceValidationData().isUpdated() &&
                         checkoutData.getPriceValidationData().getMessage() != null) {
-                    getView().renderCheckoutPriceUpdated(checkoutData.getPriceValidationData().getMessage());
+                    getView().renderCheckoutPriceUpdated(checkoutData.getPriceValidationData());
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
                     if (checkoutData.getErrorMessage() != null && !checkoutData.getErrorMessage().isEmpty()) {
