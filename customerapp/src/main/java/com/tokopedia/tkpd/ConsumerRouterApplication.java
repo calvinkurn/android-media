@@ -46,10 +46,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.challenges.ChallengesModuleRouter;
-import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
@@ -108,8 +105,6 @@ import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
-import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
-import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
@@ -134,9 +129,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
-import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -327,7 +319,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsWebViewRouter,
         ChangePasswordRouter,
         EventModuleRouter,
-        ChallengesModuleRouter,
         MitraToppersRouter,
         DigitalBrowseRouter,
         PhoneVerificationRouter,
@@ -342,7 +333,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsRouter,
         CMRouter,
         ILoyaltyRouter,
-        ChatbotRouter,
         ResolutionRouter,
         TradeInRouter,
         ProductDetailRouter,
@@ -414,11 +404,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .appComponent(getApplicationComponent())
                 .reactNativeModule(new ReactNativeModule(this));
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
-
-        FeedPlusComponent feedPlusComponent =
-                DaggerFeedPlusComponent.builder()
-                        .kolComponent(KolComponentInstance.getKolComponent(this))
-                        .build();
 
         eventComponent = DaggerEventComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
@@ -1160,10 +1145,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
     }
 
-    public Intent getKolFollowingPageIntent(Context context, int userId) {
-        return KolFollowingListActivity.getCallingIntent(context, userId);
-    }
-
     @Override
     public Intent getOvoActivityIntent(Context context) {
         return new Intent(context, PaymentQRSummaryActivity.class);
@@ -1742,7 +1723,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
-        new IndiSession(activity).doLogout();
         refreshFCMTokenFromForegroundToCM();
 
         mIris.setUserId("");
@@ -1787,39 +1767,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isEnableInterestPick() {
         return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
-    }
-
-    @Override
-    public void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_desc, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType(LinkerData.INDI_CHALLENGE_TYPE)
-                .setName(title)
-                .setUri(url)
-                .setSource(channel)
-                .setOgUrl(og_url)
-                .setOgTitle(og_title)
-                .setDescription(og_desc)
-                .setOgImageUrl(og_image)
-                .setDeepLink(deepLink)
-                .build();
-
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
-                    @Override
-                    public void urlCreated(LinkerShareResult linkerShareData) {
-                        listener.onGenerateLink(linkerShareData.getShareContents(), linkerShareData.getShareUri());
-                    }
-
-                    @Override
-                    public void onError(LinkerError linkerError) {
-
-                    }
-                }));
-    }
-
-    @Override
-    public void shareBranchUrlForChallenge(Activity context, String packageName, String url, String shareContents) {
-        ShareSocmedHandler.ShareBranchUrl(context, packageName, "text/plain", url, shareContents);
     }
 
     @Override

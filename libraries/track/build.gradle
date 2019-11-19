@@ -16,7 +16,7 @@ dependencies {
 project.ext {
     artifactId = 'track'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "track-release"
 }
 

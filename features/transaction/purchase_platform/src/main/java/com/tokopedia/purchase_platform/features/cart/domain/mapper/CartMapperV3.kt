@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.base.IMapperUtil
 import com.tokopedia.purchase_platform.common.data.model.response.Messages
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack
@@ -26,7 +25,7 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 2019-10-17.
  */
 
-class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context, val iMapperUtil: IMapperUtil) {
+class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context) {
 
     companion object {
         const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
@@ -233,11 +232,6 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
         }
     }
 
-    private fun mapCartItemDatErrorState(cartItemData: CartItemData, isDisabledAllProduct: Boolean, shopData: Any) {
-        cartItemData.let {
-        }
-    }
-
     private fun mapCartItemDataError(cartDetail: CartDetail, it: CartItemData) {
         if (cartDetail.errors != null && cartDetail.errors.size > 0) {
             it.isError = true
@@ -248,8 +242,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
             }
 
             if (cartDetail.errors.size > 1) {
-                it.errorMessageDescription = iMapperUtil.convertToString(
-                        cartDetail.errors.subList(1, cartDetail.errors.size - 1))
+                it.errorMessageDescription = cartDetail.errors.subList(1, cartDetail.errors.size - 1).joinToString()
             }
         }
     }
@@ -260,8 +253,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
             it.warningMessageTitle = cartDetail.messages[0]
 
             if (cartDetail.messages.size > 1) {
-                it.warningMessageDescription = iMapperUtil.convertToString(
-                        cartDetail.messages.subList(1, cartDetail.messages.size - 1))
+                it.warningMessageDescription = cartDetail.messages.subList(1, cartDetail.messages.size - 1).joinToString()
             }
         }
     }
@@ -291,12 +283,12 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
             it.isPreOrder = cartDetail.product.isPreorder == 1
             it.isCod = cartDetail.product.isCod
             it.isFreeReturn = cartDetail.product.isFreereturns == 1
-            it.isCashBack = !iMapperUtil.isEmpty(cartDetail.product.productCashback)
+            it.isCashBack = !cartDetail.product.productCashback.isNullOrEmpty()
             it.isFavorite = false
             it.productCashBack = cartDetail.product.productCashback
             it.cashBackInfo = "Cashback ${cartDetail.product.productCashback}"
             it.freeReturnLogo =
-                    if (!iMapperUtil.isEmpty(cartDetail.product.freeReturns)) cartDetail.product.freeReturns.freeReturnsLogo
+                    if (cartDetail.product.freeReturns != null) cartDetail.product.freeReturns.freeReturnsLogo
                     else ""
             it.category = cartDetail.product.category
             it.categoryId = cartDetail.product.categoryId.toString()
@@ -434,7 +426,7 @@ class CartMapperV3 @Inject constructor(@ApplicationContext val context: Context,
     private fun mapShopGroupWithErrorData(shopGroupWithError: ShopGroupWithError,
                                           cartDataListResponse: CartDataListResponse): ShopGroupWithErrorData {
         return ShopGroupWithErrorData().let {
-            it.isError = !iMapperUtil.isEmpty(shopGroupWithError.errors)
+            it.isError = !shopGroupWithError.errors.isNullOrEmpty()
             it.errorLabel = shopGroupWithError.errors.firstOrNull() ?: ""
             it.shopName = shopGroupWithError.shop.shopName
             it.shopId = shopGroupWithError.shop.shopId.toString()
