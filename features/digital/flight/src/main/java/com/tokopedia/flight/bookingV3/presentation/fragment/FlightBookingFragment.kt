@@ -138,7 +138,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (layout_loading.isVisible) launchLoadingPageJob.cancel()
-                    if (loadingDialog.isShowing) loadingDialog.dismiss()
+                    if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
                     renderData(it.data)
                     setUpTimer(it.data.orderDueTimeStamp)
                     sendAddToCartTracking()
@@ -185,7 +185,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightCheckoutResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (loadingDialog.isShowing) loadingDialog.dismiss()
+                    if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
                     navigateToTopPay(it.data)
                     sendCheckOutTracking()
                 }
@@ -198,7 +198,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightVerifyResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (loadingDialog.isShowing) loadingDialog.dismiss()
+                    if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
                     it.data.data.cartItems[0]?.let { cart ->
                         if (cart.newPrice.isNotEmpty()) {
                             showRepriceTag(cart)
@@ -209,7 +209,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    if (loadingDialog.isShowing) loadingDialog.dismiss()
+                    if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
