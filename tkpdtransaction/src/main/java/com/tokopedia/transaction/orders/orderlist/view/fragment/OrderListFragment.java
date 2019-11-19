@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -28,6 +31,8 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.datepicker.DatePickerUnify;
+import com.tokopedia.datepicker.OnDateChangedListener;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -61,16 +66,19 @@ import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContra
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.unifycomponents.Toaster;
-
+import com.tokopedia.unifycomponents.UnifyButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
-
+import java.util.Locale;
 import javax.inject.Inject;
+import kotlin.Unit;
 
 
 public class OrderListFragment extends BaseDaggerFragment implements
@@ -105,11 +113,21 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String ACTION_TRACK_IT = "lacak";
     private static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
     private static final String ACTION_DONE = "selesai";
+    private static final String  MULAI_DARI= "Mulai Dari";
+    private static final String  SAMPAI= "Sampai";
+
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     LinearLayout filterDate;
     RelativeLayout mainContent;
+    private ImageView crossIcon;
+    private EditText mulaiButton;
+    private EditText sampaiButton;
+    private UnifyButton terapkan;
+    private RelativeLayout datePickerlayout;
+    private RadioGroup radioGroup;
+    private DatePickerUnify datePickerUnify;
     private RefreshHandler refreshHandler;
     private boolean isLoading = false;
     private int page_num = 1;
@@ -284,6 +302,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         }
     }
 
+    private Locale getCurrentLocale(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return context.getResources().getConfiguration().getLocales().get(0);
+        } else return context.getResources().getConfiguration().locale;
+    }
+
+
     protected void initView(View view) {
         recyclerView = view.findViewById(R.id.order_list_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
@@ -294,47 +319,20 @@ public class OrderListFragment extends BaseDaggerFragment implements
         surveyBtn = view.findViewById(R.id.survey_bom);
         surveyBtn.setOnClickListener(this);
         mainContent = view.findViewById(R.id.mainContent);
+        changeDateBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         if (orderLabelList != null && orderLabelList.getFilterStatusList() != null && orderLabelList.getFilterStatusList().size() > 0) {
             presenter.buildAndRenderFilterList(orderLabelList.getFilterStatusList());
         }
-
-        changeDateBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-
-        filterDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                orderListAnalytics.sendDateFilterClickEvent();
-//                startActivityForResult(SaveDateBottomSheetActivity.getDateInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
-                View categoryView = getLayoutInflater().inflate(R.layout.change_bom_deadline_bottomsheet, null);
-                ImageView crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
-                crossIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        changeDateBottomSheetDialog.dismiss();
-                    }
-                });
-                changeDateBottomSheetDialog.setCustomContentView(categoryView, "", false);
-                changeDateBottomSheetDialog.show();
-//                startActivityForResult(SaveDateBottomSheetActivity.getDateInstance(getContext(), startDate, endDate), FILTER_DATE_REQUEST);
-            }
-        });
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == FILTER_DATE_REQUEST) {
-                startDate = data.getStringExtra(SaveDateBottomSheetActivity.START_DATE);
-                endDate = data.getStringExtra(SaveDateBottomSheetActivity.END_DATE);
-                refreshHandler.startRefresh();
-                orderListAnalytics.sendDateFilterSubmitEvent();
-            } else if (requestCode == SUBMIT_SURVEY_REQUEST) {
+            if (requestCode == SUBMIT_SURVEY_REQUEST) {
                 presenter.insertSurveyRequest(data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3), data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
             }
-        } else
-        if (requestCode == REQUEST_CANCEL_ORDER) {
+        } else if (requestCode == REQUEST_CANCEL_ORDER) {
             String reason = "";
             int reasonCode = 1;
             if (resultCode == REJECT_BUYER_REQUEST) {
@@ -363,6 +361,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         quickSingleFilterView.setquickFilterListener(this);
         simpleSearchView.setListener(this);
         simpleSearchView.setResetListener(this);
+        filterDate.setOnClickListener(this);
     }
 
     private void addRecyclerListener() {
@@ -655,7 +654,142 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void onClick(View v) {
         if (v.getId() == R.id.survey_bom) {
             startActivityForResult(SaveDateBottomSheetActivity.getSurveyInstance(getContext(), OPEN_SURVEY_PAGE), SUBMIT_SURVEY_REQUEST);
+        } else if (v.getId() == R.id.terapkan) {
+            refreshHandler.startRefresh();
+            orderListAnalytics.sendDateFilterSubmitEvent();
+            changeDateBottomSheetDialog.dismiss();
+
+        } else if (v.getId() == R.id.filterDate) {
+            orderListAnalytics.sendDateFilterClickEvent();
+            View categoryView = getLayoutInflater().inflate(R.layout.change_bom_deadline_bottomsheet, null);
+            crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
+            mulaiButton = categoryView.findViewById(R.id.et_start_date);
+            sampaiButton = categoryView.findViewById(R.id.et_end_date);
+            terapkan = categoryView.findViewById(R.id.terapkan);
+            datePickerlayout = categoryView.findViewById(R.id.date_picker);
+            radioGroup = categoryView.findViewById(R.id.radio_grp);
+            terapkan.setOnClickListener(this);
+
+            crossIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changeDateBottomSheetDialog.dismiss();
+                }
+            });
+            changeDateBottomSheetDialog.setCustomContentView(categoryView, "", false);
+            changeDateBottomSheetDialog.show();
+            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    if (checkedId == R.id.radio2) {
+                        datePickerlayout.setVisibility(View.VISIBLE);
+                    } else {
+                        datePickerlayout.setVisibility(View.INVISIBLE);
+                    }
+
+                }
+            });
+
+            mulaiButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDatePicker(MULAI_DARI);
+                }
+            });
+
+            sampaiButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDatePicker(SAMPAI);
+                }
+            });
+
+
         }
+
+    }
+
+    private String convertMonth(int num) {
+
+        String monthString = "";
+        switch (num) {
+            case (0):
+                monthString = "Jan";
+                break;
+            case (1):
+                monthString = "Feb";
+                break;
+            case (2):
+                monthString = "Mar";
+                break;
+            case (3):
+                monthString = "Apr";
+                break;
+            case (4):
+                monthString = "Mei";
+                break;
+            case (5):
+                monthString = "Jun";
+                break;
+            case (6):
+                monthString = "Jul";
+                break;
+            case (7):
+                monthString = "Ags";
+                break;
+            case (8):
+                monthString = "Sep";
+                break;
+            case (9):
+                monthString = "Okt";
+                break;
+            case (10):
+                monthString = "Nov";
+                break;
+            case (11):
+                monthString = "Des";
+                break;
+        }
+        return monthString;
+    }
+
+
+    private void showDatePicker(String title) {
+
+        Calendar minDate = new GregorianCalendar(1900, 1, 1);
+        Calendar maxDate = new GregorianCalendar(getCurrentLocale(getActivity()));
+        Calendar defaultDate = new GregorianCalendar(getCurrentLocale(getActivity()));
+        datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
+            @Override
+            public void onDateChanged(long l) {
+                //
+            }
+        });
+        datePickerUnify.show(getFragmentManager(), "");
+        if (title.equalsIgnoreCase(MULAI_DARI)) {
+            datePickerUnify.setTitle(MULAI_DARI);
+
+        } else {
+            datePickerUnify.setTitle(SAMPAI);
+        }
+
+        datePickerUnify.getDatePickerButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (title.equalsIgnoreCase(SAMPAI)) {
+                    sampaiButton.setText(datePickerUnify.getDate()[0] + " " + convertMonth(datePickerUnify.getDate()[1]) + " " + datePickerUnify.getDate()[2]);
+                } else {
+                    mulaiButton.setText(datePickerUnify.getDate()[0] + " " + convertMonth(datePickerUnify.getDate()[1]) + " " + datePickerUnify.getDate()[2]);
+                }
+                datePickerUnify.dismiss();
+
+            }
+        });
+        datePickerUnify.setCloseClickListener(view -> {
+            datePickerUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+
     }
 
     private void setVisibilitySurveyBtn(boolean isVisible) {
