@@ -154,7 +154,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         createReviewViewModel.getSubmitReviewResponse.observe(this, Observer {
             when (it) {
-                is LoadingView -> showLoading()
+                is LoadingView -> progressBarReview.show()
                 is Fail -> {
                     stopLoading()
                     showLayout()
@@ -170,7 +170,6 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showLoading()
         reviewUserName = createReviewViewModel.userSessionInterface.name
         getReviewData()
         anonymous_text.text = generateAnonymousText()
@@ -250,6 +249,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun getReviewData() {
+        showLoading()
         createReviewViewModel.getProductReputation(productId, reviewId)
     }
 
@@ -459,7 +459,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         progressBarReview.hide()
     }
 
-    private fun hideLayout(){
+    private fun hideLayout() {
         btn_submit_container.hide()
         create_review_container.hide()
     }
