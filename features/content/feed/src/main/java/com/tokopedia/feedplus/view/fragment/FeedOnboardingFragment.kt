@@ -23,7 +23,6 @@ import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
-import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -37,8 +36,8 @@ import javax.inject.Inject
 class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestPickItemListener, FeedOnboardingActivity.FeedOnboardingActivityListener {
 
     companion object {
-        private val OPEN_RECOM_PROFILE = 1236
-        val EXTRA_SELECTED_IDS = "EXTRA_SELECTED_IDS"
+        private const val OPEN_RECOM_PROFILE = 1236
+        const val EXTRA_SELECTED_IDS = "EXTRA_SELECTED_IDS"
         fun getInstance(bundle: Bundle): FeedOnboardingFragment {
             val fragment = FeedOnboardingFragment()
             fragment.arguments = bundle
@@ -122,7 +121,6 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     override fun initInjector() {
         activity?.application?.let {
             DaggerFeedPlusComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(it))
                     .build()
                     .inject(this)
         }

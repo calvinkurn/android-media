@@ -1,9 +1,8 @@
 package com.tokopedia.purchase_platform.features.cart.domain.mapper;
 
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
-import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher;
-import com.tokopedia.purchase_platform.common.base.IMapperUtil;
+import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
 
 import javax.inject.Inject;
 
@@ -13,22 +12,18 @@ import javax.inject.Inject;
 
 public class VoucherCouponMapper implements IVoucherCouponMapper {
 
-    private final IMapperUtil mapperUtil;
-
     @Inject
-    public VoucherCouponMapper(IMapperUtil mapperUtil) {
-        this.mapperUtil = mapperUtil;
-    }
+    public VoucherCouponMapper() {}
 
     @Override
     public PromoCodeCartListData convertPromoCodeCartListData(
             DataVoucher dataVoucherPromo
     ) {
         PromoCodeCartListData promoCodeCartListData = new PromoCodeCartListData();
-        promoCodeCartListData.setError(mapperUtil.isEmpty(dataVoucherPromo));
+        promoCodeCartListData.setError(dataVoucherPromo == null);
         promoCodeCartListData.setErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
 
-        if (!mapperUtil.isEmpty(dataVoucherPromo)) {
+        if (dataVoucherPromo != null) {
             PromoCodeCartListData.DataVoucher dataVoucher = new PromoCodeCartListData.DataVoucher();
             dataVoucher.setCashbackAmount(dataVoucherPromo.getCashbackAmount());
             dataVoucher.setCashbackTopCashAmount(dataVoucherPromo.getCashbackTopCashAmount());

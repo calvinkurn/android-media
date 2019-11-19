@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
+import com.tokopedia.withdraw.view.fragment.SuccessFragmentWithdrawal;
 import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
 import com.tokopedia.withdraw.view.fragment.WithdrawPasswordFragment;
 
@@ -30,4 +31,6 @@ public interface WithdrawComponent {
     void inject(WithdrawPasswordFragment withdrawPasswordFragment);
 
     void inject(WithdrawPasswordActivity withdrawPasswordActivity);
+
+    void inject(SuccessFragmentWithdrawal successFragmentWithdrawal);
 }

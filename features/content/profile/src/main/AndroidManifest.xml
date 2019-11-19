@@ -7,9 +7,22 @@
             android:label="@string/title_profile"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:host="@string/host_profile"
+                    android:pathPattern="@string/path_profile_detail"
+                    android:scheme="@string/internal_scheme"
+                />
+            </intent-filter>
+        </activity>
         <activity
-            android:name=".view.activity.FollowingListActivity"
+            android:name=".following_list.view.activity.FollowingListActivity"
             android:label="@string/title_profile_following"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

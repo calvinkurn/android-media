@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.officialstore.ApplinkConstant
@@ -94,8 +95,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     // config collapse & expand tablayout
-    override fun onContentScrolled(dy: Int, totalScrollY: Int) {
-        tabLayout?.adjustTabCollapseOnScrolled(dy, totalScrollY)
+    override fun onContentScrolled(dy: Int) {
+        tabLayout?.adjustTabCollapseOnScrolled(dy)
     }
 
     // from: GlobalNav, to show notification maintoolbar
@@ -123,8 +124,13 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                     populateCategoriesData(it.data)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG)
+                    if (BuildConfig.DEBUG) {
                         it.throwable.printStackTrace()
+                    }
+
+                    NetworkErrorHelper.showEmptyState(context, view) {
+                        viewModel.getOfficialStoreCategories()
+                    }
                 }
             }
         })
@@ -175,7 +181,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private fun convertToCategoriesTabItem(data: List<Category>): List<OfficialCategoriesTab.CategoriesItemTab> {
         val tabItemDataList = ArrayList<OfficialCategoriesTab.CategoriesItemTab>()
         data.forEach {
-            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(it.title, it.icon))
+            tabItemDataList.add(OfficialCategoriesTab.CategoriesItemTab(it.title, it.icon, it.imageInactiveURL))
         }
         return tabItemDataList
     }

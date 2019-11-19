@@ -61,7 +61,7 @@ abstract class ProductCardView: BaseCustomView {
      */
     protected var cardViewProductCard: CardView? = null
     protected var constraintLayoutProductCard: ConstraintLayout? = null
-    protected var imageProduct: SquareImageView? = null
+    protected var imageProduct: ImageView? = null
     protected var buttonWishlist: ImageView? = null
     protected var labelPromo: Label? = null
     protected var textViewShopName: Typography? = null
@@ -328,7 +328,7 @@ abstract class ProductCardView: BaseCustomView {
         initShopLocation(productCardModel.shopLocation)
         initRating(productCardModel.ratingCount)
         initReview(productCardModel.reviewCount)
-        initLabelCredibility(productCardModel.labelCredibility)
+        initLabelCredibility(productCardModel.ratingCount, productCardModel.reviewCount, productCardModel.labelCredibility)
         initLabelOffers(productCardModel.labelOffers)
         initFreeOngkir(productCardModel.freeOngkir)
         initTopAdsIcon(productCardModel.isTopAds)
@@ -397,7 +397,7 @@ abstract class ProductCardView: BaseCustomView {
     private fun initShopBadgeList(shopBadgeList: List<ProductCardModel.ShopBadge>) {
         removeAllShopBadges()
 
-        linearLayoutShopBadges.shouldShowWithAction(hasAnyBadgesShown(shopBadgeList)) {
+        linearLayoutShopBadges.configureVisibilityWithBlankSpaceConfig(hasAnyBadgesShown(shopBadgeList), blankSpaceConfig.shopBadge) {
             loopBadgesListToLoadShopBadgeIcon(shopBadgeList)
         }
     }
@@ -469,12 +469,17 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    private fun initLabelCredibility(labelCredibilityModel: ProductCardModel.Label) {
-        labelCredibility.configureVisibilityWithBlankSpaceConfig(
-                labelCredibilityModel.title.isNotEmpty(), blankSpaceConfig.labelCredibility) {
+    private fun initLabelCredibility(ratingCount: Int, reviewCount: Int, labelCredibilityModel: ProductCardModel.Label) {
+        val isLabelCredibilityVisible = isLabelCredibilityVisible(ratingCount, reviewCount, labelCredibilityModel)
+
+        labelCredibility.configureVisibilityWithBlankSpaceConfig(isLabelCredibilityVisible, blankSpaceConfig.labelCredibility) {
             it.text = labelCredibilityModel.title
             it.setLabelType(getLabelTypeFromString(labelCredibilityModel.type))
         }
+    }
+
+    private fun isLabelCredibilityVisible(ratingCount: Int, reviewCount: Int, labelCredibilityModel: ProductCardModel.Label): Boolean {
+        return labelCredibilityModel.title.isNotEmpty() && ratingCount == 0 && reviewCount == 0
     }
 
     private fun initLabelOffers(labelOffersModel: ProductCardModel.Label) {
@@ -700,6 +705,12 @@ abstract class ProductCardView: BaseCustomView {
 
     open fun setLabelDiscountInvisible(isInvisible: Boolean){
         labelDiscount?.visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+    }
+
+    open fun setCardHeight(height: Int) {
+        val layoutParams = cardViewProductCard?.layoutParams
+        layoutParams?.height = height
+        cardViewProductCard?.layoutParams = layoutParams
     }
 
     protected open fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {

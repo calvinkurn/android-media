@@ -244,7 +244,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         sendGeneralEvent(viewEvent,
                 category,
                 TradeInGTMConstants.ACTION_VIEW_HARGA_FINAL,
-                deviceId);
+                TRADEIN_TYPE == TRADEIN_MONEYIN ? String.format("diagnostic id - %s", deviceId) : "");
     }
 
     private void setVisibilityGroup(int visibility) {
@@ -315,12 +315,12 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         mTvTnc.setClickable(true);
         mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
         mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_orange);
-        mTvButtonPayOrKtp.setText(checkoutString);
+        mTvButtonPayOrKtp.setText(getString(checkoutString));
         mTvButtonPayOrKtp.setOnClickListener(v -> {
             goToCheckout();
             sendGeneralEvent(clickEvent,
                     category,
-                    "click "+checkoutString+" button",
+                    "click "+getString(checkoutString).toLowerCase()+" button",
                     "");
         });
     }

@@ -38,7 +38,7 @@ dependencies {
 project.ext {
     artifactId = 'ovo'
     groupId = 'com.tokopedia.fintech'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="ovo_pay_with_qr-release"
 }
 

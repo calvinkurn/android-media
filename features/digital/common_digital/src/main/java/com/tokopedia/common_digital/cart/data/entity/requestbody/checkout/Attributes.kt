@@ -38,4 +38,7 @@ class Attributes {
     @SerializedName("deals_ids")
     @Expose
     var dealsIds: List<Int>? = null
+    @SerializedName("fintech_product")
+    @Expose
+    var fintechProduct: List<FintechProductCheckout>? = null
 }

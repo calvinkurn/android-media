@@ -58,6 +58,7 @@ ext {
     playServiceFirebaseCore = '16.0.6'
     playServiceTagManager = '16.0.6'
     playServiceSafetyNet = '16.0.0'
+    playServiceMeasurementApi = '16.0.4'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
@@ -66,6 +67,7 @@ ext {
     SpekVersion = "1.1.5"
     crashlyticsGradleVersion = '1.27.1'
     googleServiceGradleVersion = '4.3.0'
+    coroutineTestVersion = '1.3.2'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -73,17 +75,17 @@ ext {
     // Sort and categorize alphabetically by folder name
     app = [
         customerapp     : ":customerapp",
-        sellerapp       : ":sellerapp",
-        mitraapp        : ":kelontongapp"
+        sellerapp       : ":sellerapp"
     ]
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.0.0'
-    unifyComponentsVersion = '1.1.1'
+    unifyComponentsVersion = '1.1.0'
     unifyCoachMarkVersion = '1.2.0'
     unifyCalendarVersion = '1.0.0'
     unifyBannerVersion = '1.0.0'
     unifyDialogVersion = '1.0.0'
+    unifyDatePickerVersion = '0.0.1'
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -139,7 +141,8 @@ ext {
             ads              : "com.google.android.gms:play-services-ads:${playServiceAds}",
             tagManagerImpl   : "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
             tagManager       : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
-            safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}"
+            safetyNet        : "com.google.android.gms:play-services-safetynet:${playServiceSafetyNet}",
+            measurementApi   : "com.google.android.gms:play-services-measurement-api:${playServiceMeasurementApi}",
     ]
 
     firebase = [
@@ -169,7 +172,6 @@ ext {
 
     serviceDependencies = [
             crashlytics : "com.crashlytics.sdk.android:crashlytics:2.9.9",
-            crashlyticsAnswers : "com.crashlytics.sdk.android:answers:1.4.6@aar",
             anrWatchDogs: "com.salomonbrys.anrwatchdog:anrwatchdog:1.3.0"
     ]
 
@@ -182,10 +184,8 @@ ext {
             moengageSdk         : "com.moengage:moengagesdk:3.3.02",
             moengagePushbase    : "com.moengage:pushbase:3.2.00",
             moengageInapp   : "com.moengage:inapp:3.2.02",
-            moengageMSG: "com.moengage:addon-messaging:3.2.01",
             branch     : "io.branch.sdk.android:library:4.1.1",
-            rapid7     : "com.rapid7:r7insight_java:1.1.39",
-            cashshield : "com.cashshield.android:cashshield:2.5.1@aar"
+            rapid7     : "com.rapid7:r7insight_java:1.1.39"
     ]
 
     deeplinkDispatchDependencies = [
@@ -200,13 +200,14 @@ ext {
             parceler              : "org.parceler:parceler:1.1.12",
             gson                  : "com.google.code.gson:gson:2.7",
             rxAndroid             : "io.reactivex:rxandroid:1.0.1",
+            rxKotlin             : "io.reactivex:rxkotlin:0.60.0",
             rxJava                : "io.reactivex:rxjava:1.2.9",
             rxJavaMath            : "io.reactivex:rxjava-math:1.0.0",
             rxJavaComputation     : 'io.reactivex:rxjava-computation-expressions:0.21.0',
             multiDex              : "androidx.multidex:multidex:$multiDexVersion",
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
-            dagger                : "com.google.dagger:dagger:2.9",
-            daggerCompiler        : "com.google.dagger:dagger-compiler:2.9",
+            dagger                : "com.google.dagger:dagger:2.5",
+            daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
             bcaxcoWidget          : "com.bca.xco.widget:BCAXCOWidget:1.0@aar",
 
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
@@ -215,7 +216,7 @@ ext {
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
-            imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.8.0",
+            imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
             hansel                : "io.hansel.preprocessor:preprocessor:8.3.5",
@@ -269,7 +270,8 @@ ext {
             spek2Dsl           : "org.spekframework.spek2:spek-dsl-jvm:2.0.8",
             platformEngine     : "org.jetbrains.spek:spek-junit-platform-engine:${SpekVersion}",
             junitPlatformRunner: "org.junit.platform:junit-platform-runner:1.0.0",
-            archCoreTesting    : "androidx.arch.core:core-testing:$lifeCycleVersion"
+            archCoreTesting    : "androidx.arch.core:core-testing:$lifeCycleVersion",
+            couroutinesTest    : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineTestVersion"
     ]
 
     debugToolsDependencies = [
@@ -304,6 +306,7 @@ ext {
        coach_mark   : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
        calendar     : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar",
        banner       : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
-       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar"
+       dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
+       datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar"
     ]
 }

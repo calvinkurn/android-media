@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="chip_home_play_live">#FD412B</color>
+    <color name="chip_home_play_viewers">#F3F4F5</color>
+</resources>

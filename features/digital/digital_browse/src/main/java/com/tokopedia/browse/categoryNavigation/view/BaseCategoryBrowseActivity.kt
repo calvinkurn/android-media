@@ -22,16 +22,16 @@ import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragmen
 import com.tokopedia.browse.categoryNavigation.fragments.Listener
 import com.tokopedia.browse.homepage.presentation.activity.DigitalBrowseHomeActivity
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.APP_CATEGORY_BROWSE_V1
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.activity_category_browse.*
 import kotlinx.android.synthetic.main.activity_category_browse.empty_view
 import kotlinx.android.synthetic.main.empty_category_view.*
 
+open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener, ActivityStateListener {
 
-open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener {
-
-
+    private val trackingQueue: TrackingQueue by lazy {
+        TrackingQueue(this)
+    }
     private var masterFragment = Fragment()
     private var slaveFragment = Fragment()
 
@@ -105,6 +105,11 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
         setupToolbar(TOOLBAR_NAME)
     }
 
+    override fun onPause() {
+        super.onPause()
+        getActivityTrackingQueue().sendAll()
+    }
+
     private fun setupToolbar(toolbarTitle: String) {
         toolbar_top.contentInsetStartWithNavigation = 0
         setSupportActionBar(toolbar_top)
@@ -143,6 +148,14 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
         supportFragmentManager.beginTransaction()
                 .replace(R.id.master_view, masterFragment, tagFragment)
                 .commit()
+    }
+
+    override fun onAttachFragment(fragment: Fragment?) {
+        if (fragment is CategorylevelOneFragment) {
+            fragment.activityStateListener = this
+        } else if (fragment is CategoryLevelTwoFragment) {
+            fragment.activityStateListener = this
+        }
     }
 
     override fun getLayoutRes(): Int {
@@ -188,8 +201,14 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
         return super.onPrepareOptionsMenu(menu)
     }
 
+    override fun getActivityTrackingQueue(): TrackingQueue {
+        return trackingQueue
+    }
 }
 
+interface ActivityStateListener {
+    fun getActivityTrackingQueue(): TrackingQueue
+}
 
 interface CategoryChangeListener {
     fun onCategoryChanged(id: String, categoryName: String, applink: String?)
