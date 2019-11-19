@@ -7,13 +7,6 @@ import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.PagerAdapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
-import com.tokopedia.kol.feature.following_list.view.fragment.BaseFollowListFragment
-import com.tokopedia.kol.feature.following_list.view.fragment.KolFollowingListFragment
-import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment
-import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingListEmptyListener
-import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingResultViewModel
-import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.profile.R
 import com.tokopedia.profile.following_list.view.fragment.BaseFollowListFragment
 import com.tokopedia.profile.following_list.view.fragment.ShopFollowingListFragment
@@ -96,8 +89,14 @@ class FollowingListActivity : BaseTabActivity(), FollowingListEmptyListener {
         )
     }
 
-    override fun onFollowingEmpty() {
-
+    override fun onFollowingEmpty(javaClass: Class<out BaseFollowListFragment<FollowingViewModel, FollowingResultViewModel<*>>>) {
+        synchronized(this) {
+            if (::pagerAdapter.isInitialized) {
+                pagerAdapter.removeByInstance(javaClass)
+                pagerAdapter.notifyDataSetChanged()
+                if (pagerAdapter.count == 0) tabLayout.visibility = View.GONE
+            }
+        }
     }
 
     override fun onFollowingNotEmpty() {

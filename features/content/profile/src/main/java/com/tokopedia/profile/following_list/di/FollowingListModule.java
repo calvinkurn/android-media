@@ -20,6 +20,8 @@ import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewMode
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,12 +52,14 @@ public class FollowingListModule {
     public FollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel> provideShopFollowingListPresenter(
             @ApplicationContext Context context,
             GetShopFollowingListUseCase getShopFollowingListUseCase,
-            ToggleFavouriteShopUseCase toggleFavouriteShopUseCase
+            ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
+            UserSessionInterface userSession
     ) {
         return new ShopFollowingListPresenter(
                 context,
                 getShopFollowingListUseCase,
-                toggleFavouriteShopUseCase
+                toggleFavouriteShopUseCase,
+                userSession
         );
     }
 
@@ -76,4 +80,8 @@ public class FollowingListModule {
     public FollowerMapper providesKolFollowerMapper() {
         return new FollowerMapper();
     }
+
+    @FollowingListScope
+    @Provides
+    public UserSessionInterface provideUserSession(@ApplicationContext Context context) { return new UserSession(context); }
 }
