@@ -77,7 +77,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun getCart(rawQuery: String, cartId: String, dummy: String = "") {
         val params = mapOf(PARAM_CART_ID to cartId)
-        launchCatchError(block = {
+//        launchCatchError(block = {
+        launch {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCart.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -102,10 +103,11 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightCartResult.value = Fail(MessageErrorException("Error"))
                 }
             }
-        }) {
-            Log.d("ERRORRR", "$it.message   ${it.localizedMessage}")
-            flightCartResult.value = Fail(it)
         }
+//        }) {
+//            Log.d("ERRORRR", "$it.message   ${it.localizedMessage}")
+//            flightCartResult.value = Fail(it)
+//        }
     }
 
     fun flightIsDomestic(): Boolean = flightBookingParam.isDomestic
