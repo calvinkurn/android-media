@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.moe.pushlibrary.MoEHelper;
 import com.moe.pushlibrary.PayloadBuilder;
+import com.moengage.core.Logger;
 import com.moengage.core.MoEngage;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.config.GlobalConfig;
@@ -45,6 +46,8 @@ public class MoengageAnalytics extends ContextAnalytics {
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
                         .optOutTokenRegistration()
+                        .setLogLevel(Logger.VERBOSE)
+                        .enableLogsForSignedBuild()
                         //.setNotificationType(R.integer.notification_type_multiple)
                         .build();
         MoEngage.initialise(moEngage);
