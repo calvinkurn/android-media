@@ -48,14 +48,14 @@ open class BaseChatViewStateImpl(
     var isTyping: Boolean = false
 
     override fun initView() {
-        recyclerView = view.findViewById(R.id.recycler_view)
-        mainLoading = view.findViewById(R.id.progress)
-        replyEditText = view.findViewById(R.id.new_comment)
-        replyBox = view.findViewById(R.id.reply_box)
-        actionBox = view.findViewById(R.id.add_comment_area)
-        sendButton = view.findViewById(R.id.send_but)
-        notifier = view.findViewById(R.id.notifier)
-        chatMenuButton = view.findViewById(R.id.iv_chat_menu)
+        recyclerView = view.findViewById(getRecyclerViewId())
+        mainLoading = view.findViewById(getProgressId())
+        replyEditText = view.findViewById(getNewCommentId())
+        replyBox = view.findViewById(getReplyBoxId())
+        actionBox = view.findViewById(getActionBoxId())
+        sendButton = view.findViewById(getSendButtonId())
+        notifier = view.findViewById(getNotifierId())
+        chatMenuButton = view.findViewById(getChatMenuId())
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
@@ -236,4 +236,14 @@ open class BaseChatViewStateImpl(
     override fun onReceiveRead() {
         getAdapter().changeReadStatus()
     }
+
+    open fun getRecyclerViewId() = R.id.recyclerView
+    open fun getProgressId() = R.id.progress
+    open fun getNewCommentId() = R.id.new_comment
+    open fun getReplyBoxId() = R.id.reply_box
+    open fun getActionBoxId() = R.id.add_comment_area
+    open fun getSendButtonId() = R.id.send_but
+    open fun getNotifierId() = R.id.notifier
+    open fun getChatMenuId() = R.id.iv_chat_menu
+
 }

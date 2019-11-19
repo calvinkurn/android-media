@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.createreputation.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class ProductRevResponse(
@@ -8,6 +7,8 @@ data class ProductRevResponse(
     val productData: ProductData = ProductData(),
     @SerializedName("reputationID")
     val reputationID: Int = 0,
+    @SerializedName("orderID")
+    val orderID: String = "",
     @SerializedName("shopData")
     val shopData: ShopData = ShopData(),
     @SerializedName("userData")
