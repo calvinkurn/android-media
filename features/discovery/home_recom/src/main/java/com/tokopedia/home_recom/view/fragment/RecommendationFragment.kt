@@ -346,7 +346,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private fun loadData(){
         activity?.let{
             if(productId.isNotBlank()) {
-                primaryProductViewModel.getPrimaryProduct(productId)
+                primaryProductViewModel.getPrimaryProduct(productId, queryParam)
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
                         queryParam,
                         onErrorGetRecommendation = this::onErrorGetRecommendation)

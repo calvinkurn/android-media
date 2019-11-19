@@ -1,7 +1,7 @@
 package com.tokopedia.home_recom.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
 import android.text.TextUtils
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel

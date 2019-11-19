@@ -1,16 +1,17 @@
 package com.tokopedia.home_recom.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
@@ -21,13 +22,15 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
-import com.tokopedia.home_recom.util.*
+import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
+import com.tokopedia.home_recom.util.Status
+import com.tokopedia.home_recom.util.fadeShow
+import com.tokopedia.home_recom.util.startFade
 import com.tokopedia.home_recom.view.fragment.ProductInfoFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
@@ -130,14 +133,19 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 container_loading.hide()
                 container_error.hide()
                 container_empty.hide()
+                container_product.hide()
                 when(response.status){
                     Status.LOADING -> {
                         container_loading.fadeShow()
                         container_error.hide()
                         container_empty.hide()
+                        container_product.hide()
                     }
                     Status.SUCCESS -> {
                         container_loading.hide()
+                        container_error.hide()
+                        container_empty.hide()
+                        container_product.fadeShow()
                         response.data?.let { primaryProduct ->
                             initView(primaryProduct)
                         }
@@ -145,14 +153,16 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     Status.EMPTY -> {
                         container_loading.hide()
                         container_error.hide()
+                        container_product.hide()
                         container_empty.fadeShow()
                     }
                     else -> {
                         container_loading.hide()
                         container_empty.hide()
+                        container_product.hide()
                         container_error.fadeShow()
                         buttonReload.setOnClickListener {
-                            primaryProductViewModel.getPrimaryProduct(productId)
+                            primaryProductViewModel.getPrimaryProduct(productId, queryParam)
                         }
                     }
                 }
@@ -182,6 +192,19 @@ class ProductInfoFragment : BaseDaggerFragment() {
         ImageHandler.loadImageRounded2(context, product_image, productDataModel.productDetailData.imageUrl)
         setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
 
+        when(productDataModel.productDetailData.status){
+            0 -> {
+                container_loading.hide()
+                container_error.hide()
+                container_product.hide()
+                container_empty.fadeShow()
+            }
+            3 -> {
+                add_to_cart.isEnabled = false
+                buy_now.hide()
+                add_to_cart.text = "Stok Habis"
+            }
+        }
 
         onProductImpression()
         onClickAddToCart(productDataModel.productDetailData.id, productDataModel.productDetailData.shop.id, productDataModel.productDetailData.minOrder)
@@ -261,13 +284,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onClickAddToCart(productId: Int, shopId: Int, minOrder: Int){
         add_to_cart.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
-                pb_add_to_cart.show()
+                add_to_cart.isEnabled = false
                 addToCart(
                         productId, shopId, minOrder,
                         success = { result ->
                             recommendationItem.cartId = result[CART_ID] as Int
                             RecommendationPageTracking.eventUserClickAddToCartWithProductId(recommendationItem, ref)
-                            pb_add_to_cart.hide()
+                            add_to_cart.isEnabled = true
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else{
@@ -278,7 +301,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                             }
                         },
                         error = {
-                            pb_add_to_cart.hide()
+                            add_to_cart.isEnabled = true
                             showToastError(it)
                         }
                 )
@@ -298,11 +321,11 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onClickBuyNow(productId: Int, shopId: Int, minOrder: Int){
         buy_now.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()){
-                pb_buy_now.show()
+                buy_now.isEnabled = false
                 addToCart(
                         productId, shopId, minOrder,
                         success = { result ->
-                            pb_buy_now.hide()
+                            buy_now.isEnabled = true
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else if(result.containsKey(CART_ID) && result[CART_ID].toString().isNotEmpty()){
@@ -311,7 +334,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                             }
                         },
                         error = {
-                            pb_buy_now.hide()
+                            buy_now.isEnabled = true
                             showToastError(it)
                         }
                 )
