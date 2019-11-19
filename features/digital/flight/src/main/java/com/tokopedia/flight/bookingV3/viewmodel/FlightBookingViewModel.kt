@@ -411,7 +411,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun getRouteForFlightDetail(id: String): FlightDetailViewModel {
         for (item in flightDetailViewModels) {
-            if (item.id == id) {
+            if (item.id.equals(id, false)) {
                 return item
             }
         }

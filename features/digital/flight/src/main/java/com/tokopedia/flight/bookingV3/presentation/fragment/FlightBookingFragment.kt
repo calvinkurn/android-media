@@ -141,7 +141,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     if (loadingDialog.isShowing) loadingDialog.dismiss()
                     renderData(it.data)
                     setUpTimer(it.data.orderDueTimeStamp)
-//                    sendAddToCartTracking()
+                    sendAddToCartTracking()
                 }
                 is Fail -> {
                     if (loadingDialog.isShowing) loadingDialog.dismiss()
@@ -703,7 +703,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun showErrorDialog(e: FlightError) {
         if (activity != null) {
             val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(e.title)
+            dialog.setTitle(e.status)
             dialog.setDescription("description")
             dialog.setPrimaryCTAText("coba")
             dialog.setSecondaryCTAText("coba2")
