@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -38,7 +37,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -58,7 +56,6 @@ import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShipmentItemData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
@@ -152,7 +149,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -916,7 +912,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     eventLabelBuilder.append(" - ");
                     eventLabelBuilder.append(trackerData.getCampaignType());
                     eventLabelBuilder.append(" - ");
-                    eventLabelBuilder.append(new Gson().toJson(trackerData.getProductIds()));
+                    eventLabelBuilder.append(TextUtils.join(",", trackerData.getProductIds()));
                 }
                 eventLabelBuilder.append(" - ");
 

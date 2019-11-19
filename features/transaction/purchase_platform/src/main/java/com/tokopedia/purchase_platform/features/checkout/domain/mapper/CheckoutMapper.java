@@ -13,6 +13,9 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.che
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Message;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Tracker;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -50,7 +53,11 @@ public class CheckoutMapper implements ICheckoutMapper {
                 TrackerData trackerData = new TrackerData();
                 trackerData.setCampaignType(tracker.getCampaignType());
                 trackerData.setProductChangesType(tracker.getProductChangesType());
-                trackerData.setProductIds(tracker.getProductIds());
+                List<String> productIds = new ArrayList<>();
+                for (Long aLong : tracker.getProductIds()) {
+                    productIds.add(String.valueOf(aLong));
+                }
+                trackerData.setProductIds(productIds);
                 priceValidationData.setTrackerData(trackerData);
             }
 

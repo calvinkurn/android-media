@@ -10,16 +10,18 @@ import android.os.Parcelable
 data class TrackerData(
         var productChangesType: String = "",
         var campaignType: String = "",
-        var productIds: List<Long> = emptyList()
+        var productIds: List<String> = emptyList()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
-            parcel.readString() ?: "") {
+            parcel.readString() ?: "",
+            parcel.createStringArrayList() ?: emptyList()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productChangesType)
         parcel.writeString(campaignType)
+        parcel.writeStringList(productIds)
     }
 
     override fun describeContents(): Int {
