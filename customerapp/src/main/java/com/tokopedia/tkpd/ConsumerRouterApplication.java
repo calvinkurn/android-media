@@ -104,8 +104,6 @@ import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
-import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
-import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
@@ -130,9 +128,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
-import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -411,11 +406,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .appComponent(getApplicationComponent())
                 .reactNativeModule(new ReactNativeModule(this));
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
-
-        FeedPlusComponent feedPlusComponent =
-                DaggerFeedPlusComponent.builder()
-                        .kolComponent(KolComponentInstance.getKolComponent(this))
-                        .build();
 
         eventComponent = DaggerEventComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
@@ -1155,10 +1145,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
-    }
-
-    public Intent getKolFollowingPageIntent(Context context, int userId) {
-        return KolFollowingListActivity.getCallingIntent(context, userId);
     }
 
     @Override

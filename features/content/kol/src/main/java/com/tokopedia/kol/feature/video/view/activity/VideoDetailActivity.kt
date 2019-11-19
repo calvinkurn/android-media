@@ -19,6 +19,9 @@ class VideoDetailActivity: BaseSimpleActivity() {
 
     companion object {
         const val PARAM_ID = "PARAM_ID"
+
+        @Deprecated("Use ApplinkConstInternalContent")
+        @JvmStatic
         fun getInstance(context: Context,
                         id: String): Intent {
             val intent = Intent(context, VideoDetailActivity::class.java)
@@ -31,14 +34,17 @@ class VideoDetailActivity: BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState, persistentState)
     }
 
     override fun getNewFragment(): Fragment {
         toolbar.hide()
-        return VideoDetailFragment.getInstance(intent.extras)
+        val extras = intent.extras ?: Bundle()
+        intent.data?.lastPathSegment?.let { id -> extras.putString(PARAM_ID, id) }
+
+        return VideoDetailFragment.getInstance(extras)
     }
 
     override fun onBackPressed() {
