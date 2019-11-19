@@ -25,16 +25,18 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
                 if (!errors.isNullOrEmpty()) {
                     val rawErrorMessage = errors[0].message
                     val errorMessage = Gson().fromJson(rawErrorMessage.substring(1, rawErrorMessage.length - 1), HotelCheckVoucherError::class.java)
-                    throw MessageErrorException(errorMessage.title)
+                    view.onErrorCheckPromo(MessageErrorException(errorMessage.title))
                 } else {
                     val checkVoucherData = objects.getData<HotelCheckVoucher.Response>(HotelCheckVoucher.Response::class.java).response
-                    view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
+                    if (checkVoucherData.isSuccess) {
+                        view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
+                    } else {
+                        view.onErrorCheckPromo(MessageErrorException(checkVoucherData.errorMessage))
+                    }
                 }
             }
 
-            override fun onCompleted() {
-
-            }
+            override fun onCompleted() { }
 
             override fun onError(e: Throwable) {
                 if (isViewAttached) {

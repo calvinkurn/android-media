@@ -220,7 +220,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         if (e is CheckPromoCodeException) {
             message = e.message
         }
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, message, { onClickUse() }).showRetrySnackbar()
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, message) { onClickUse() }.showRetrySnackbar()
     }
 
     override fun onErrorCheckPromoStacking(e: Throwable) {

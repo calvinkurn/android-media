@@ -189,9 +189,9 @@ class TrackingHotelUtil {
         // TODO change to HOTEL_LABEL, destType, destination, total room, total guest, checkin day, total stay
         map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $available - $price - $directPayment"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
-                CURRENCY_LABEL, IDR_LABEL, // TODO add to constant
+                CURRENCY_LABEL, IDR_LABEL,
                 DETAIL_LABEL, DataLayer.mapOf(
-                ACTION_FIELD_LABEL, DataLayer.mapOf(LIST_LABEL, SLASH_HOTEL_SLASH_LABEL), //  change to constant
+                ACTION_FIELD_LABEL, DataLayer.mapOf(LIST_LABEL, SLASH_HOTEL_SLASH_LABEL),
                 PRODUCTS_LABEL, DataLayer.listOf(
                 DataLayer.mapOf(
                         NAME_LABEL, hotelName,

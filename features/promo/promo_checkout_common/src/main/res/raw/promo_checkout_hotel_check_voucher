@@ -8,5 +8,7 @@ query PropertyVoucher($data: PropertyCheckVoucherRequest!) {
         message
         titleDescription
         isCoupon
+        isSuccess
+        errorMessage
     }
 }

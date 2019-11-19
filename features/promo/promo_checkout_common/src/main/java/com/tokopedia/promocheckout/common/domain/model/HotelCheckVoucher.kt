@@ -28,7 +28,13 @@ class HotelCheckVoucher (
         var cashbackAmountPlain: Long = 0,
         @SerializedName("message")
         @Expose
-        var message: String = ""
+        var message: String = "",
+        @SerializedName("isSuccess")
+        @Expose
+        var isSuccess: Boolean = true,
+        @SerializedName("errorMessage")
+        @Expose
+        var errorMessage: String = ""
 
 ) {
     class Response(
