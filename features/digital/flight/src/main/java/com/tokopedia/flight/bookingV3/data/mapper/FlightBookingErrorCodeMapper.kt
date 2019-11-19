@@ -23,5 +23,32 @@ class FlightBookingErrorCodeMapper {
                 else -> FlightErrorConstant.INVALID_JSON
             }
         }
+
+        fun getErrorTitle(errorCode: String): String {
+            return when (errorCode) {
+                FlightErrorConstant.FLIGHT_SOLD_OUT -> "Yaah... Tiketnya habis"
+                FlightErrorConstant.INVALID_JSON -> "Oops, ada sedikit gangguan"
+                FlightErrorConstant.FAILED_ADD_FACILITY -> "Oops, nggak bisa tambah fasilitas"
+                FlightErrorConstant.ERROR_PROMO_CODE -> "Kode promo ini nggak bisa dipakai"
+                FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING -> "Kamu sudah beli tiket ini sebelumnya"
+                FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> "Pesananmu sebelumnya masih diproses"
+                FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME -> "Ada nama penumpang yang sama, ubah dulu agar bisa bayar"
+                FlightErrorConstant.FLIGHT_INVALID_USER -> "Tiket tidak bisa dipesan untuk nama ini"
+                else -> "Oops, ada sedikit gangguan"
+            }
+        }
+
+        fun getErrorSubtitle(errorCode: String): String {
+            return when (errorCode) {
+                FlightErrorConstant.FLIGHT_SOLD_OUT -> "Maaf, penerbangan yang kamu pilih nggak tersedia lagi. Kamu bisa cek penerbangan lain yang tak kalah oke."
+                FlightErrorConstant.INVALID_JSON -> "Tenang, kami sedang memperbaiki gangguan ini. Tunggu beberapa saat untuk cari ulang tiketmu, ya. "
+                FlightErrorConstant.FAILED_ADD_FACILITY -> "Bagasi & makanan hanya bisa ditambah maks. 12 jam sebelum keberangkatan. Lanjut bayar untuk pesan tiket tanpa tambah fasilitas."
+                FlightErrorConstant.ERROR_PROMO_CODE -> "Coba cek kode promo lainnya dan pilih yang sesuai dengan pesananmu. "
+                FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING -> "Untuk pesan tiket dengan rute perjalanan yang sama, kamu bisa tunggu x menit. "
+                FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> "Untuk pesan tiket dengan rute perjalanan yang sama, kamu bisa tunggu x menit"
+                FlightErrorConstant.FLIGHT_INVALID_USER -> "Nama penumpang yang kamu tulis tidak diperkenankan oleh Tokopedia. Pastikan nama sudah benar, ya."
+                else -> "Oops, ada sedikit gangguan"
+            }
+        }
     }
 }

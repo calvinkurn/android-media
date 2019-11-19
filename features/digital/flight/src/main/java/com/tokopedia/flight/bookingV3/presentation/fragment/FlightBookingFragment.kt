@@ -704,11 +704,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun showErrorDialog(e: FlightError) {
         if (activity != null) {
+            val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
             val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(e.status)
-            dialog.setDescription("description")
-            dialog.setPrimaryCTAText("coba")
-            dialog.setSecondaryCTAText("coba2")
+            dialog.setTitle(FlightBookingErrorCodeMapper.getErrorTitle(errorCode))
+            dialog.setDescription(FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode))
+            dialog.setPrimaryCTAText("Cek Pesanan")
+            dialog.setSecondaryCTAText("Coba Lagi")
 
             dialog.setPrimaryCTAClickListener {
                 //                   if error code this, do this
