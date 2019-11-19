@@ -141,7 +141,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     if (loadingDialog.isShowing) loadingDialog.dismiss()
                     renderData(it.data)
                     setUpTimer(it.data.orderDueTimeStamp)
-                    sendAddToCartTracking()
+//                    sendAddToCartTracking()
                 }
                 is Fail -> {
                     if (loadingDialog.isShowing) loadingDialog.dismiss()
