@@ -102,6 +102,7 @@ class OfficialHomeFragment :
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
+            refreshData()
             tracking?.sendScreen(category?.title.toEmptyStringIfNull())
         }
     }
@@ -144,7 +145,9 @@ class OfficialHomeFragment :
     }
 
     private fun refreshData() {
-        viewModel.loadFirstData(category)
+        if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
+            viewModel.loadFirstData(category)
+        }
     }
 
     private fun observeBannerData() {
