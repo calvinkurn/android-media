@@ -52,6 +52,7 @@
     <string name="path_cod" translatable="false">/cod</string>
 
     <string name="path_chat_search">/chat-search</string>
+    <string name="path_chat_template_setting">/chat/settings/templatechat</string>
 
     <string name="path_user_notification_setting" translatable="false">/user-notification-setting</string>
     <string name="title_open_shop">Buka Toko Gratis</string>

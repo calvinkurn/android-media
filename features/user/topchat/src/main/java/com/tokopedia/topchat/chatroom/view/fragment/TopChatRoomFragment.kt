@@ -482,12 +482,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         val intent = ChatSettingActivity.getIntent(context)
         startActivity(intent)
         activity?.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
-//        var isSeller = getUserSession().shopId == shopId.toString()
-//        val intent = TemplateChatActivity.createInstance(context, isSeller)
-//        activity?.let {
-//            startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
-//            it.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
-//        }
     }
 
     override fun onSuccessGetTemplate(list: List<Visitable<Any>>) {

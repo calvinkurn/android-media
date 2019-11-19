@@ -19,7 +19,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".chatsetting.view.activity.ChatSettingActivity"
             android:label="@string/title_chat_setting"
@@ -39,7 +38,17 @@
         <activity
             android:name=".chattemplate.view.activity.TemplateChatActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_chat_template_setting"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".chattemplate.view.activity.EditTemplateChatActivity"
             android:screenOrientation="portrait"
