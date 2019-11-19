@@ -29,10 +29,10 @@ internal class SimilarSearchItemDecoration(
             horizontalCardViewOffset = getHorizontalCardViewOffset(view)
             verticalCardViewOffset = getVerticalCardViewOffset(view)
 
-//            outRect.left = getLeftOffset()
-//            outRect.top = getTopOffset(parent, absolutePosition, relativePosition, totalSpanCount)
-//            outRect.right = getRightOffset()
-//            outRect.bottom = getBottomOffset()
+            outRect.left = getLeftOffset()
+            outRect.top = getTopOffset(parent, position, relativePosition, totalSpanCount)
+            outRect.right = getRightOffset()
+            outRect.bottom = getBottomOffset()
         }
     }
 

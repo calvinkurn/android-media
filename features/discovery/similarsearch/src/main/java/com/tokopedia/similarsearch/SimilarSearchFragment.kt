@@ -75,14 +75,17 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun initRecyclerView() {
-        similarSearchAdapter = SimilarSearchAdapter(this)
-        recyclerViewLayoutManager = createRecyclerViewSimilarSearchLayoutManager()
-        endlessRecyclerViewScrollListener = createEndlessRecyclerViewScrollListener()
+        activity?.let { activity ->
+            similarSearchAdapter = SimilarSearchAdapter(this)
+            recyclerViewLayoutManager = createRecyclerViewSimilarSearchLayoutManager()
+            endlessRecyclerViewScrollListener = createEndlessRecyclerViewScrollListener()
 
-        recyclerViewSimilarSearch?.adapter = similarSearchAdapter
-        recyclerViewSimilarSearch?.layoutManager = recyclerViewLayoutManager
-        endlessRecyclerViewScrollListener?.let {
-            recyclerViewSimilarSearch?.addOnScrollListener(it)
+            recyclerViewSimilarSearch?.adapter = similarSearchAdapter
+            recyclerViewSimilarSearch?.layoutManager = recyclerViewLayoutManager
+            recyclerViewSimilarSearch?.addItemDecoration(createSimilarSearchItemDecoration(activity))
+            endlessRecyclerViewScrollListener?.let {
+                recyclerViewSimilarSearch?.addOnScrollListener(it)
+            }
         }
     }
 
@@ -98,6 +101,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
                 similarSearchViewModel?.onViewLoadMore()
             }
         }
+    }
+
+    private fun createSimilarSearchItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
+        return SimilarSearchItemDecoration(activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16))
     }
 
     private fun disableSwipeRefreshLayout() {
