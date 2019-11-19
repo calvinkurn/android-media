@@ -32,6 +32,7 @@ query PropertyCart($data: PropertyGetCartRequest!) {
         phone
         phoneCode
       }
+      roomContent
     }
     property {
       propertyID

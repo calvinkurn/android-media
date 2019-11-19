@@ -18,8 +18,8 @@ object ApplinkConstInternalPromo {
      * PromoCheckoutListHotelActivity
      * PromoCheckoutDetailHotelActivity
      */
-    const val PROMO_LIST_HOTEL = "${INTERNAL_PROMO}/list/hotel"
-    const val PROMO_DETAIL_HOTEL = "${INTERNAL_PROMO}/detail/hotel"
+    const val PROMO_LIST_HOTEL = "$INTERNAL_PROMO/list/hotel"
+    const val PROMO_DETAIL_HOTEL = "$INTERNAL_PROMO/detail/hotel"
 
     const val PROMO_LIST_MARKETPLACE = "${INTERNAL_PROMO}/list/marketplace"
     const val PROMO_DETAIL_MARKETPLACE = "${INTERNAL_PROMO}/detail/marketplace"
