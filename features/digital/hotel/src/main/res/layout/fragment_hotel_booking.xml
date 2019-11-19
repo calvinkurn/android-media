@@ -153,7 +153,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_2"
-                    android:text="@string/hotel_booking_room_general_info"
                     app:fontSize="micro"
                     app:textViewTheme="lightSecondary"
                     tools:text="2 Kamar • 2 Tamu" />
