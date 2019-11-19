@@ -33,6 +33,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingErrorCodeMapper
@@ -71,7 +72,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.fragment_flight_booking.*
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.*
+import kotlinx.android.synthetic.main.fragment_flight_booking_v3.button_submit
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_loading.*
 import kotlinx.coroutines.*
 import java.util.*
@@ -103,6 +106,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = "/flight/booking"
 
     lateinit var loadingDialog: DialogUnify
+    var needRefreshCart = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -220,7 +224,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun sendAddToCartTracking() {
         flightAnalytics.eventAddToCart(bookingViewModel.getSearchParam().flightClass,
-                null, 0,
+                FlightBookingCartData(), 0,
                 bookingViewModel.getRouteForFlightDetail(bookingViewModel.getDepartureId()),
                 bookingViewModel.getRouteForFlightDetail(bookingViewModel.getReturnId()),
                 bookingViewModel.getFlightPriceModel().comboKey)
@@ -299,13 +303,19 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun setUpTimer(timeStamp: Date) {
         countdown_timeout.setListener {
-            launchLoadingLayoutJob.start()
-            bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
-                    bookingViewModel.getCartId(), "")
+            if (context != null) {
+                refreshCart()
+            } else needRefreshCart = true
         }
         countdown_timeout.cancel()
         countdown_timeout.setExpiredDate(timeStamp)
         countdown_timeout.start()
+    }
+
+    private fun refreshCart() {
+        launchLoadingLayoutJob.start()
+        bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
+                bookingViewModel.getCartId(), "")
     }
 
     private fun renderData(cart: FlightCartViewEntity) {
@@ -457,6 +467,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToTopPay(checkoutData: FlightCheckoutData) {
+        countdown_finish_transaction.cancel()
         val paymentPassData = PaymentPassData()
         paymentPassData.paymentId = checkoutData.parameter.pid
         paymentPassData.transactionId = checkoutData.parameter.transactionId
@@ -681,6 +692,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
             }
+        }
+
+        if (needRefreshCart) {
+            needRefreshCart = false
+            refreshCart()
         }
     }
 

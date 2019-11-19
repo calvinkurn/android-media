@@ -195,6 +195,7 @@ class FlightBookingMapper {
             for (journey in flight.journeys) {
                 val flightDetailViewModel = FlightDetailViewModel()
 
+                flightDetailViewModel.beforeTotal = ""
                 flightDetailViewModel.id = journey.id
 
                 for (includedItem in included) {
