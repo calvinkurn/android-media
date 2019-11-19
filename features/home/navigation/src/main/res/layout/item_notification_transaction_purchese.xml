@@ -13,15 +13,16 @@
         android:layout_marginBottom="@dimen/dp_8">
 
         <TextView
+            android:id="@+id/txt_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="Pembelian"
+            android:text="Pembayaran"
             android:textColor="#31353b"
             android:textSize="@dimen/sp_16"/>
 
         <TextView
-            android:id="@+id/btnLoadMore"
+            android:id="@+id/btn_load_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lihat Semua"
@@ -33,12 +34,14 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/view_other"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_18"
         android:layout_marginBottom="@dimen/dp_18">
 
         <TextView
+            android:id="@+id/txt_waiting_payment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Menunggu Pembayaran"
@@ -52,97 +55,98 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <ImageView
+                android:id="@+id/img_waiting_confirm"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/txt_waiting_confirm"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:textAlignment="center"
+                android:text="Menunggu Konfirmasi"
+                android:textSize="@dimen/sp_12" />
 
-                <ImageView
-                    android:layout_width="@dimen/dp_60"
-                    android:layout_height="@dimen/dp_60"
-                    android:src="@mipmap/ic_launcher" />
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:text="Menunggu Konfirmasi"
-                    android:textSize="@dimen/sp_12" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/img_order_process"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:src="@mipmap/ic_launcher" />
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/txt_order_process"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:textAlignment="center"
+                android:text="Menunggu Konfirmasi"
+                android:textSize="@dimen/sp_12" />
 
-                <ImageView
-                    android:layout_width="@dimen/dp_60"
-                    android:layout_height="@dimen/dp_60"
-                    android:src="@mipmap/ic_launcher" />
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:text="Menunggu Konfirmasi"
-                    android:textSize="@dimen/sp_12" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/img_goods_sent"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:src="@mipmap/ic_launcher" />
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/txt_goods_sent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:textAlignment="center"
+                android:text="Menunggu Konfirmasi"
+                android:textSize="@dimen/sp_12" />
 
-                <ImageView
-                    android:layout_width="@dimen/dp_60"
-                    android:layout_height="@dimen/dp_60"
-                    android:src="@mipmap/ic_launcher" />
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:text="Menunggu Konfirmasi"
-                    android:textSize="@dimen/sp_12" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/img_goods_receive"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:src="@mipmap/ic_launcher" />
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/txt_goods_receive"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="@dimen/dp_60"
-                    android:layout_height="@dimen/dp_60"
-                    android:src="@mipmap/ic_launcher" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:text="Menunggu Konfirmasi"
-                    android:textSize="@dimen/sp_12" />
-
-            </LinearLayout>
+                android:gravity="center"
+                android:textAlignment="center"
+                android:text="Menunggu Konfirmasi"
+                android:textSize="@dimen/sp_12" />
 
         </LinearLayout>
 
