@@ -34,6 +34,7 @@ object IrisAnalyticsEvents {
     const val INAPP_RECEIVED = "inappReceived"
     const val INAPP_CLICKED = "inappClicked"
     const val INAPP_DISMISSED = "inappDismissed"
+    const val INAPP_CANCELLED = "inappCancelled"
 
     private const val EVENT_NAME = "event"
     private const val EVENT_TIME = "event_time"

@@ -8,6 +8,8 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 
 import java.util.Map;
 
+import static com.tokopedia.notifications.common.PayloadConverterKt.HOURS_24_IN_MILLIS;
+
 public class CmInAppBundleConvertor {
 
     public static CMInApp getCmInApp(RemoteMessage remoteMessage) {
@@ -32,8 +34,17 @@ public class CmInAppBundleConvertor {
             if (map.containsKey("st"))
                 cmInApp.setStartTime(getLongFromStr(map.get("st")));
 
+
+            if (cmInApp.getStartTime() == 0L) {
+                cmInApp.setStartTime(System.currentTimeMillis());
+            }
+
             if (map.containsKey("et"))
                 cmInApp.setEndTime(getLongFromStr(map.get("et")));
+
+            if (cmInApp.getEndTime() == 0L) {
+                cmInApp.setEndTime(System.currentTimeMillis() + HOURS_24_IN_MILLIS);
+            }
 
             /*if (map.containsKey("ct"))
                 cmInApp.set(getLongFromStr(map.get("ct")));*/

@@ -15,9 +15,9 @@ import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
-import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
+import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
@@ -141,10 +141,6 @@ public class CMInAppManager implements CmInAppListener {
         RulesManager.getInstance().dataConsumed(id);
     }
 
-    private void putDataToStore(CMInApp inAppData) {
-        RepositoryManager.getInstance().getStorageProvider().putDataToStore(inAppData);
-    }
-
     public void viewDismissed(long id) {
         RulesManager.getInstance().viewDismissed(id);
     }
@@ -153,8 +149,8 @@ public class CMInAppManager implements CmInAppListener {
         try {
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
             if (null != cmInApp) {
-                cmInApp.currentTime = System.currentTimeMillis();
-                putDataToStore(cmInApp);
+                if (currentActivity != null && currentActivity.get() != null)
+                    new CMInAppController().downloadImagesAndUpdateDB(currentActivity.get(), cmInApp);
             }
         } catch (Exception e) {
         }
@@ -219,4 +215,3 @@ public class CMInAppManager implements CmInAppListener {
         RulesManager.getInstance().dataInflateError(inApp.id);
     }
 }
-
