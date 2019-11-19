@@ -72,6 +72,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         flightOtherPriceData.value = listOf()
         flightAmenityPriceData.value = listOf()
         flightPromoResult.value = FlightPromoViewEntity()
+        flightPassengersData.value = listOf()
     }
 
     fun getSearchParam(): FlightSearchPassDataViewModel = flightBookingParam.searchParam
@@ -90,7 +91,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                 flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
                 flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
-                flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
+                if (flightPassengersData.value?.isEmpty() != false) flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
                         data.cartData.flight.child, data.cartData.flight.infant)
                 flightPriceData.value = data.cartData.flight.priceDetail
                 flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
@@ -107,6 +108,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 }
             }
         }) {
+            Log.d("ERRORR", it.message + " " + it.localizedMessage)
             flightCartResult.value = Fail(it)
         }
     }
@@ -167,6 +169,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 }
 
             }) {
+                Log.d("ERRORRV", it.message + " " + it.localizedMessage)
                 flightVerifyResult.value = Fail(it)
             }
         } else {
@@ -561,6 +564,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             getCart(getCartQuery, getCartId(), dummy)
         })
         {
+            Log.d("ERRORRATC", it.message + " " + it.localizedMessage)
             flightCartResult.value = Fail(it)
         }
     }
@@ -601,6 +605,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             flightCheckoutResult.value = Success(checkOutData)
         })
         {
+            Log.d("ERRORRCHECKOUT", it.message + " " + it.localizedMessage)
             flightCartResult.value = Fail(it)
         }
     }
