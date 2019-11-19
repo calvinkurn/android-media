@@ -62,6 +62,10 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         tvDraftProductInfo.visibility = View.GONE
     }
 
+    override fun getSearchInputViewResourceId(): Int {
+        return R.id.search_input_view
+    }
+
     override fun initInjector() {
         super.initInjector()
         DaggerProductDraftListCountComponent
