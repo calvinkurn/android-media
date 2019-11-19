@@ -44,7 +44,6 @@ import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
-import com.tokopedia.flight.common.data.model.FlightException
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
@@ -54,10 +53,8 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isNotVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA

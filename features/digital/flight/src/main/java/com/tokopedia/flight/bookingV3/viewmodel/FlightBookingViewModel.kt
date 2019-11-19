@@ -99,6 +99,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             } else {
                 if (data.meta.needRefresh && data.meta.maxRetry >= retryCount) {
                     retryCount++
+                    delay(data.meta.refreshTime * 1000.toLong())
                     getCart(rawQuery, cartId)
                 } else {
                     retryCount = 0
@@ -141,6 +142,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     } else {
                         if (flightVerifyData.meta.needRefresh && flightVerifyData.meta.maxRetry >= verifyRetryCount) {
                             verifyRetryCount++
+                            delay(flightVerifyData.meta.refreshTime * 1000.toLong())
                             verifyCartData(query, totalPrice, contactName, contactEmail, contactPhone, contactCountry, dummy, checkVoucherQuery, dummyCheckVoucher)
                         } else {
                             verifyRetryCount = 0
@@ -155,6 +157,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     } else {
                         if (flightVerifyData.meta.needRefresh && flightVerifyData.meta.maxRetry >= verifyRetryCount) {
                             verifyRetryCount++
+                            delay(flightVerifyData.meta.refreshTime * 1000.toLong())
                             verifyCartData(query, totalPrice, contactName, contactEmail, contactPhone, contactCountry, dummy, checkVoucherQuery, dummyCheckVoucher)
                         } else {
                             verifyRetryCount = 0
