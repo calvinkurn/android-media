@@ -63,6 +63,8 @@
         android:id="@+id/message"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:includeFontPadding="false"
         android:marqueeRepeatLimit="marquee_forever"
         android:maxLines="1"
         android:textColor="@color/Neutral_N700_68"
@@ -72,7 +74,7 @@
         app:layout_constraintStart_toEndOf="@+id/space"
         app:layout_constraintTop_toBottomOf="@+id/user_name"
         app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         app:typographyWeight="reguler"
         tools:text="lorem ipsum dolor sit amet" />
 
@@ -114,13 +116,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/unread_counter"
-        android:layout_width="@dimen/dp_10"
-        android:layout_height="@dimen/dp_10"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_6"
         android:background="@drawable/circle_red_notification"
         android:textColor="@color/Neutral_N700_44"
-        app:layout_constraintBottom_toBottomOf="@id/message"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/message"
+        app:layout_constraintEnd_toEndOf="@+id/time"
+        app:layout_constraintTop_toBottomOf="@+id/time"
         app:typographyType="body_3"
         tools:text="1" />
 
