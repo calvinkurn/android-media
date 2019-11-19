@@ -170,8 +170,6 @@ open class WishlistViewModel @Inject constructor(
             }else {
                 wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
             }
-
-//            wishlistState.value = Status.ERROR
             currentPage--
         }
     }
@@ -517,12 +515,19 @@ open class WishlistViewModel @Inject constructor(
                                     )
                             )
                             bulkSelectCountActionData.value = Event(0)
+
+                            //update bulk mode first, so view can have empty state listener properly
+                            updateBulkMode(false)
+
+                            //check is list is empty
                             if (updatedList.isEmpty()) {
                                 wishlistData.value = listOf(EmptyWishlistDataModel())
+                                getRecommendationOnEmptyWishlist(0)
+                                isWishlistEmpty.value = true
                             } else {
                                 wishlistData.value = updatedList
                             }
-                            updateBulkMode(false)
+
                         }
 
                         override fun onCompleted() {
@@ -683,7 +688,7 @@ open class WishlistViewModel @Inject constructor(
      */
     private fun updateBulkMode(isBulkMode: Boolean){
         isInBulkMode.value = isBulkMode
-        val newVisitable: MutableList<WishlistDataModel> = wishlistData.value.toMutableList()
+        val newVisitable: MutableList<WishlistDataModel> = wishlistData.value.toMutableList().copy()
         for (i in 0 until newVisitable.size){
             when (val dataModel = newVisitable[i]) {
                 is WishlistItemDataModel -> {
@@ -702,7 +707,7 @@ open class WishlistViewModel @Inject constructor(
         if(!isBulkMode) {
             val sortFirst = listRecommendationCarouselOnMarked.toSortedMap()
             sortFirst.forEach{
-                if (it.key < newVisitable.size) {
+                if (it.key <= newVisitable.size) {
                     newVisitable.add(it.key, it.value)
                 }
             }
@@ -868,10 +873,6 @@ open class WishlistViewModel @Inject constructor(
         val newList = ArrayList(firstList)
         newList.addAll(secondList)
         return newList
-    }
-
-    fun goToPdp(toString: String, parentPosition: Int, position: Int) {
-
     }
 
     fun onProductClick(productId: Int, parentPosition: Int, position: Int) {

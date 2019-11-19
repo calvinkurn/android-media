@@ -455,6 +455,9 @@ class WVMGetWishlistData : Spek({
             Given("Wishlist viewmodel") {
                 wishlistViewmodel = createWishlistViewModel()
             }
+            Given("Get wishlist usecase returns empty wishlist data") {
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
+            }
             Given("Live data is filled by empty data from getWishlistData") {
                 wishlistViewmodel.getWishlistData()
             }

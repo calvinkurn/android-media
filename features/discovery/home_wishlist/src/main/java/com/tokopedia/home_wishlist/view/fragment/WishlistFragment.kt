@@ -293,7 +293,8 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 }
             }
             recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
-            menu?.findItem(R.id.manage)?.isVisible = false
+
+            menu?.findItem(R.id.manage)?.isVisible = !isEmpty
         })
 
 

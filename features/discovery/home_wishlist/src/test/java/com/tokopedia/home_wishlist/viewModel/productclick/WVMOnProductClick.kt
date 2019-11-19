@@ -67,7 +67,7 @@ class WVMOnProductClick : Spek({
 
             When("Wishlistviewmodel onProductClick called") {
                 wishlistViewmodel.onProductClick(
-                        any(),
+                        productId,
                         parentPosition,
                         position
                 )

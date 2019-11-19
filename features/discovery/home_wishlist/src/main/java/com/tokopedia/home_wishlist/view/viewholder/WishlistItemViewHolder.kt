@@ -70,9 +70,6 @@ class WishlistItemViewHolder(
             productCardView.setDeleteButtonVisible(!element.isOnBulkRemoveProgress)
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
-//                    if(element.productItem.isTopAds){
-//                        ImpresionTask().getData(element.productItem.trackerImageUrl)
-//                    }
                     (listener as WishlistListener).onProductImpression(element, adapterPosition)
                 }
             })
@@ -127,6 +124,12 @@ class WishlistItemViewHolder(
             if(bundle.containsKey("isOnBulkRemoveProgress")){
                 element.isOnBulkRemoveProgress = bundle.getBoolean("isOnBulkRemoveProgress")
                 checkBox.visibility = if(bundle.getBoolean("isOnBulkRemoveProgress")) View.VISIBLE else View.GONE
+                productCardView.setAddToCartButtonVisible(!element.isOnBulkRemoveProgress)
+                productCardView.setDeleteButtonVisible(!element.isOnBulkRemoveProgress)
+                productCardView.setOnClickListener {
+                    if(element.isOnBulkRemoveProgress) (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, !checkBox.isChecked)
+                    else (listener as WishlistListener).onProductClick(element, parentPositionDefault, adapterPosition)
+                }
             }
 
         }
