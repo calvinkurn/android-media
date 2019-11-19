@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -22,6 +21,9 @@ import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
+import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
+import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
+import com.tokopedia.purchase_platform.common.constant.ProductAction
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
@@ -156,7 +158,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             }
 
             override fun onButtonBuyClicked() {
-                selectedProductOnButtonBuyClicked()
+                selectedProductOnButtonBuyClicked(originalProduct)
             }
 
             override fun onButtonAddToCartClicked() {
@@ -173,15 +175,20 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
     }
 
-    private fun selectedProductOnButtonBuyClicked() {
-
+    private fun selectedProductOnButtonBuyClicked(originalProduct: Product) {
+        routeToCheckout(originalProduct, ATC_AND_BUY)
     }
 
     private fun selectedProductOnButtonAddToCartClicked(originalProduct: Product) {
+        routeToCheckout(originalProduct, ATC_ONLY)
+    }
+
+    private fun routeToCheckout(originalProduct: Product, @ProductAction action: Int) {
         activity?.let { activity ->
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).also {
                 it.putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, originalProduct.shop.id.toString())
                 it.putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, originalProduct.id)
+                it.putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
             }
 
             startActivityForResult(intent, REQUEST_CODE_GO_TO_NORMAL_CHECKOUT)

@@ -35,6 +35,7 @@ dependencies {
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
+    implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)

@@ -8,19 +8,21 @@ include 'features:discovery:productcard'
 include 'features:discovery:wishlist_common'
 include 'features:discovery:topadssdk'
 include 'features:merchant:gold_merchant_resource'
+include 'features:transaction:purchase_platform_common'
 
 include 'libraries:analytics'
 include 'libraries:applink'
+//include 'libraries:cache_api'
+//include 'libraries:core_legacy'
+//include 'libraries:core_network'
+//include "libraries:cpm"
+//include "libraries:iris"
 include 'libraries:kotlin_extensions'
 include 'libraries:promotions_target'
 include 'libraries:remote_config'
 include 'libraries:track'
 include 'libraries:tracking_optimizer'
-include 'libraries:core_legacy'
 
 include 'tkpdabstraction'
 include 'tkpddesign'
 include 'tkpdtransaction-common'
-
-//include ":libraries:iris"
-//include ":libraries:cpm"
