@@ -260,7 +260,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private fun initRecyclerView(){
         recyclerView?.layoutManager = staggeredGridLayoutManager
         recyclerView?.adapter = adapter
-        recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -278,6 +277,9 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     private fun observeWishlistState() {
         viewModel.isWishlistEmptyState.observe(viewLifecycleOwner, Observer { isEmpty->
+            endlessRecyclerViewScrollListener?.let {
+                recyclerView?.removeOnScrollListener(it)
+            }
             endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
                 override fun getCurrentPage(): Int = 1
 
@@ -290,7 +292,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                     }
                 }
             }
-
+            recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
             menu?.findItem(R.id.manage)?.isVisible = false
         })
 
