@@ -53,7 +53,7 @@ class MandiriCheckBalance(val listener: MandiriActionListener) : MandiriElectron
                         listener.onSuccess(mapAttributes)
                     } else {
                         isoDep.close()
-                        listener.onErrorCardNotFound(ISSUER_ID_EMONEY)
+                        listener.onErrorCardNotFound(ISSUER_ID_EMONEY, intent)
                     }
                 }
             } catch (e: IOException) {

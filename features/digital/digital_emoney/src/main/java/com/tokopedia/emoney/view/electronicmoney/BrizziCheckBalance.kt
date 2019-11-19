@@ -18,7 +18,7 @@ class BrizziCheckBalance(val brizziInstance: Brizzi, val listener: BrizziActionL
         brizziInstance.getBalanceInquiry(intent, object : Callback {
             override fun OnFailure(brizziException: BrizziException?) {
                 brizziException?.let {
-                    handleError(it)
+                    handleError(it, intent)
                 }
             }
 
@@ -51,10 +51,10 @@ class BrizziCheckBalance(val brizziInstance: Brizzi, val listener: BrizziActionL
                 error = error)
     }
 
-    private fun handleError(brizziException: BrizziException) {
+    private fun handleError(brizziException: BrizziException, intent: Intent) {
         when {
-            brizziException.errorCode == BRIZZI_TOKEN_EXPIRED -> listener.processGetBalanceBrizzi(true)
-            brizziException.errorCode == BRIZZI_CARD_NOT_FOUND -> listener.onErrorCardNotFound(ISSUER_ID_BRIZZI)
+            brizziException.errorCode == BRIZZI_TOKEN_EXPIRED -> listener.processGetBalanceBrizzi(true, intent)
+            brizziException.errorCode == BRIZZI_CARD_NOT_FOUND -> listener.onErrorCardNotFound(ISSUER_ID_BRIZZI, intent)
             else -> listener.onError(R.string.emoney_update_balance_failed)
         }
     }
@@ -63,7 +63,7 @@ class BrizziCheckBalance(val brizziInstance: Brizzi, val listener: BrizziActionL
         brizziInstance.doUpdateBalance(intent, System.currentTimeMillis().toString(), object : Callback {
             override fun OnFailure(brizziException: BrizziException?) {
                 brizziException?.let {
-                    handleError(it)
+                    handleError(it, intent)
                 }
             }
 

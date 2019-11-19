@@ -94,7 +94,6 @@ object DeeplinkMapperDigital {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         var paramValue = uri.getQueryParameter(NFC_CALLING_TYPE)
 
-
         return if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SMARTCARD_BRIZZI))
             UriUtil.buildUri(ApplinkConsInternalDigital.SMARTCARD_WITH_BRIZZI, paramValue)
         else

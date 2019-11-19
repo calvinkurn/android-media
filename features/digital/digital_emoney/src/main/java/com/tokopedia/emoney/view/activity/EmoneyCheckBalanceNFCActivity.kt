@@ -6,8 +6,6 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
 import android.nfc.NfcAdapter
-import android.nfc.tech.IsoDep
-import android.nfc.tech.NfcA
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -52,15 +50,12 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     private lateinit var tapETollCardView: TapETollCardView
     private lateinit var nfcDisabledView: NFCDisabledView
     private lateinit var eTollUpdateBalanceResultView: ETollUpdateBalanceResultView
-    private lateinit var pendingIntent: PendingIntent
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var emoneyInquiryBalanceViewModel: EmoneyInquiryBalanceViewModel
     private lateinit var brizziViewModel: BrizziViewModel
     private lateinit var brizziInstance: Brizzi
     private lateinit var mandiriCheckBalance: MandiriElectronicMoney
     private lateinit var briBrizzi: BriElectronicMoney
-
-    private var techListsArrayBrizzi: Array<Array<String>>? = null
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -131,7 +126,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         })
 
         brizziInstance = Brizzi.getInstance()
-        brizziInstance.setNfcAdapter(this)
         handleIntent(intent)
     }
 
@@ -161,7 +155,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     private fun handleIntent(intent: Intent) {
         //process intent filter
         if (intent != null && !TextUtils.isEmpty(intent.action) &&
-                intent.action == NfcAdapter.ACTION_TECH_DISCOVERED) {
+                (intent.action == NfcAdapter.ACTION_TECH_DISCOVERED ||
+                        intent.action == NfcAdapter.ACTION_TAG_DISCOVERED)) {
 
             if (!isDigitalSmartcardEnabled()) {
                 Toast.makeText(this, getString(R.string.emoney_nfc_feature_unavailable), Toast.LENGTH_SHORT).show()
@@ -169,12 +164,12 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                 finish()
             } else {
                 // nfc enabled and process BRI NFC as default
-                processGetBalanceBrizzi(false)
+                processGetBalanceBrizzi(false, intent)
             }
         }
     }
 
-    override fun processGetBalanceBrizzi(refresh: Boolean) {
+    override fun processGetBalanceBrizzi(refresh: Boolean, intent: Intent) {
         brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
         brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
             brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
@@ -186,7 +181,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         })
     }
 
-    private fun executeMandiri() {
+    private fun executeMandiri(intent: Intent) {
         mandiriCheckBalance = MandiriCheckBalance(this)
         showLoading()
         mandiriCheckBalance.processTagIntent(intent)
@@ -221,9 +216,9 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                 this::onErrorInquiryBalance)
     }
 
-    override fun onErrorCardNotFound(issuerIdEmoney: Int) {
+    override fun onErrorCardNotFound(issuerIdEmoney: Int, intent: Intent) {
         when (issuerIdEmoney) {
-            ISSUER_ID_BRIZZI -> executeMandiri()
+            ISSUER_ID_BRIZZI -> executeMandiri(intent)
             ISSUER_ID_EMONEY -> {
                 emoneyAnalytics.onErrorReadingCard()
                 showError(resources.getString(R.string.emoney_card_isnot_supported))
@@ -326,7 +321,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     private fun isDigitalSmartcardEnabled(): Boolean {
-        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
+//        return remoteConfig.getBoolean(DIGITAL_SMARTCARD, false)
+        return true
     }
 
     private fun directToNFCSettingsPage() {
@@ -353,6 +349,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
 
     override fun onResume() {
         super.onResume()
+
         if (!::permissionCheckerHelper.isInitialized) {
             permissionCheckerHelper = PermissionCheckerHelper()
         }
@@ -392,6 +389,12 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     fun detectNFC() {
+        brizziInstance.setNfcAdapter(this)
+        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val filters = arrayOf<IntentFilter>()
+        brizziInstance.nfcAdapter.enableForegroundDispatch(this, pendingIntent, filters, null)
+
         if (!brizziInstance.nfcAdapter.isEnabled) {
             eTollUpdateBalanceResultView.visibility = View.GONE
             tapETollCardView.visibility = View.GONE
@@ -408,12 +411,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                     }.show()
         } else {
             if (userSession.isLoggedIn) {
-                pendingIntent = PendingIntent.getActivity(this, 0,
-                        Intent(this, EmoneyCheckBalanceNFCActivity::class.java)
-                                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
-                val intentFilter = arrayOf(IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED))
-                techListsArrayBrizzi = arrayOf(arrayOf(IsoDep::class.java.name, NfcA::class.java.name))
-                brizziInstance.nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilter, null)
                 nfcDisabledView.visibility = View.GONE
 
                 if (eTollUpdateBalanceResultView.visibility == View.GONE) {
@@ -426,7 +423,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         }
     }
 
-    fun navigateToLoginPage() {
+    private fun navigateToLoginPage() {
         val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
@@ -436,7 +433,9 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         data?.let {
             if (requestCode == REQUEST_CODE_LOGIN) {
                 if (userSession.isLoggedIn) {
-                    processGetBalanceBrizzi(false)
+                    data?.let {
+                        processGetBalanceBrizzi(false, data)
+                    }
                 }
             }
         }
