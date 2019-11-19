@@ -328,7 +328,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
         rv_flight_booking_route_summary.adapter = flightRouteAdapter
         flightRouteAdapter.listener = object : FlightJourneyAdapter.ViewHolder.ActionListener {
             override fun onClickRouteDetail(id: String) {
-                navigateToDetailTrip(bookingViewModel.getRouteForFlightDetail(id))
+                bookingViewModel.getRouteForFlightDetail(id)?.let {
+                    navigateToDetailTrip(it)
+                }
             }
         }
         flightRouteAdapter.updateRoutes(cart.journeySummaries)
