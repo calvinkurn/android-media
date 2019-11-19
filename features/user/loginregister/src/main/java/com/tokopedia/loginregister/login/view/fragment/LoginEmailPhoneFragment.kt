@@ -722,6 +722,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                             R.string.email_not_registered_info), email))
             dialog.setBtnOk(getString(R.string.not_registered_yes))
             dialog.setOnOkClickListener { v ->
+                analytics.eventClickYesSmartLoginDialogButton()
                 dialog.dismiss()
                 val intent = RouteManager.getIntent(context, ApplinkConst.REGISTER)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
@@ -733,6 +734,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
             dialog.setBtnCancel(getString(R.string.already_registered_no))
             dialog.setOnCancelClickListener { v ->
+                analytics.eventClickNoSmartLoginDialogButton()
                 dialog.dismiss()
                 onChangeButtonClicked()
                 emailPhoneEditText.setText(email)
