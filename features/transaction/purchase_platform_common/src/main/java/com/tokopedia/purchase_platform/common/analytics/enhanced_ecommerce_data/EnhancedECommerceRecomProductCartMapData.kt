@@ -71,8 +71,7 @@ class EnhancedECommerceRecomProductCartMapData {
     }
 
     fun setQty(qty: Int) {
-//        val qtyString = qty.toString()
-        Product[KEY_QTY] = qty
+        Product[KEY_QTY] = qty.coerceAtLeast(1)
     }
 
     fun setCategory(category: String) {

@@ -799,6 +799,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_VIEW,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.IMPRESSION_ON_PRODUCT_RECOMMENDATION,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
