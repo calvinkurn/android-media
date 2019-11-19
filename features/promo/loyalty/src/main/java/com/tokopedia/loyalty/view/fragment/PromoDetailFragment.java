@@ -251,6 +251,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void onItemPromoCodeCopyClipboardClicked(String promoName, String promoCode) {
+        promoDetailPresenter.cachePromoCodeData(promoCode, getResources());
         this.promoDetailAnalytics.userClickCopyIcon(promoName);
         String message = getString(R.string.voucher_code_copy_to_clipboard);
 
@@ -307,6 +308,9 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                promoDetailPresenter.cachePromoCodeData(promoData.getPromoCode(), getResources());
+
                 promoDetailAnalytics.userClickCta(
                         promoData.getTitle(),
                         promoData.getId(),
@@ -323,7 +327,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                 if (getActivity().getApplication() instanceof LoyaltyModuleRouter) {
                     LoyaltyModuleRouter loyaltyModuleRouter = (LoyaltyModuleRouter) getActivity().getApplication();
 
-                    if (!TextUtils.isEmpty(appLink) && RouteManager.isSupportApplink(getActivity(),appLink)) {
+                    if (!TextUtils.isEmpty(appLink) && RouteManager.isSupportApplink(getActivity(), appLink)) {
                         RouteManager.route(getActivity(), appLink);
                     } else {
                         loyaltyModuleRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);

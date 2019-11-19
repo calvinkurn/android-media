@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.official.presentation
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -18,7 +20,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.BuildConfig
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -31,17 +32,16 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
+import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.topads.sdk.view.adapter.viewholder.home.DynamicChannelViewHolder
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.function.Predicate
 import javax.inject.Inject
 
 class OfficialHomeFragment :
@@ -70,14 +70,28 @@ class OfficialHomeFragment :
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
     private var layoutManager: StaggeredGridLayoutManager? = null
-    private var endlesScrollListener: EndlessRecyclerViewScrollListener? = null
     private var category: Category? = null
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
-    private var totalScroll = 0
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
+    private var isScrolling = false
+
+    private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
+        object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (swipeRefreshLayout?.isRefreshing == false) {
+                    counterTitleShouldBeRendered += 1
+                    viewModel.loadMore(category, page)
+
+                    if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
+                        adapter?.showLoading()
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,23 +112,12 @@ class OfficialHomeFragment :
         recyclerView = view.findViewById(R.id.recycler_view)
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
-        endlesScrollListener = getEndlessRecyclerViewScrollListener()
 
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
         return view
-    }
-
-    private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                counterTitleShouldBeRendered += 1
-                adapter?.showLoading()
-                viewModel.loadMore(category, page)
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -137,7 +140,7 @@ class OfficialHomeFragment :
     private fun resetData() {
         adapter?.clearAllElements()
         adapter?.resetState()
-        endlesScrollListener?.resetState()
+        endlessScrollListener?.resetState()
     }
 
     private fun refreshData() {
@@ -150,6 +153,7 @@ class OfficialHomeFragment :
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
+                    setLoadMoreListener()
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -165,6 +169,7 @@ class OfficialHomeFragment :
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBenefit(it.data, adapter)
+                    setLoadMoreListener()
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -181,6 +186,7 @@ class OfficialHomeFragment :
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title)
+                    setLoadMoreListener()
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -215,7 +221,7 @@ class OfficialHomeFragment :
                 is Success -> {
                     PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
                     adapter?.hideLoading()
-                    endlesScrollListener?.updateStateAfterGetData()
+                    endlessScrollListener.updateStateAfterGetData()
                     swipeRefreshLayout?.isRefreshing = false
                     if (counterTitleShouldBeRendered == 1) {
                         OfficialHomeMapper.mappingProductrecommendationTitle(it.data.title, adapter)
@@ -223,9 +229,8 @@ class OfficialHomeFragment :
                     OfficialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
                 }
                 is Fail -> {
-                    if (BuildConfig.DEBUG) {
-                        it.throwable.printStackTrace()
-                    }
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
                 }
             }
         })
@@ -251,15 +256,18 @@ class OfficialHomeFragment :
     }
 
     private fun setListener() {
-        endlesScrollListener?.let {
-            recyclerView?.addOnScrollListener(it)
-        }
+        setLoadMoreListener()
 
         swipeRefreshLayout?.setOnRefreshListener {
             adapter?.getVisitables()?.removeAll {
-                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+                it is DynamicChannelViewModel
+                        || it is ProductRecommendationViewModel
+                        || it is ProductRecommendationTitleViewModel
+                        || it is LoadingMoreModel
             }
+            counterTitleShouldBeRendered = 0
             adapter?.notifyDataSetChanged()
+            recyclerView?.removeOnScrollListener(endlessScrollListener)
             refreshData()
         }
 
@@ -269,15 +277,26 @@ class OfficialHomeFragment :
                 recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
-                        totalScroll += dy
 
-                        scrollListener.onContentScrolled(dy, totalScroll)
+                        if (!isScrolling) {
+                            isScrolling = true
+                            scrollListener.onContentScrolled(dy)
+
+                            Handler().postDelayed({
+                                isScrolling = false
+                            }, 200)
+                        }
+
                     }
 
                 })
             }
         }
 
+    }
+
+    private fun setLoadMoreListener() {
+        recyclerView?.addOnScrollListener(endlessScrollListener)
     }
 
     override fun getScreenName(): String {
@@ -378,6 +397,12 @@ class OfficialHomeFragment :
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
+
+        tracking?.eventClickWishlist(
+                category?.title.toEmptyStringIfNull(),
+                isAddWishlist,
+                viewModel.isLoggedIn(),
+                PRODUCT_RECOMMENDATION_TITLE_SECTION)
     }
 
     override fun onCountDownFinished() {
@@ -493,16 +518,20 @@ class OfficialHomeFragment :
     }
 
     override fun mixImageImpression(channelData: Channel) {
-        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+        val impressionTag = "Images Impression"
+
+        if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
             tracking?.dynamicChannelMixCardImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id)
+            sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
     }
 
     override fun mixBannerImpression(channelData: Channel) {
-        if (!sentDynamicChannelTrackers.contains(channelData.id)) {
+        val impressionTag = "Banner Impression"
+
+        if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
             tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
-            sentDynamicChannelTrackers.add(channelData.id)
+            sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
     }
 }

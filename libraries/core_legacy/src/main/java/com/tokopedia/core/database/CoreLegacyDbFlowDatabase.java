@@ -39,4 +39,8 @@ public abstract class CoreLegacyDbFlowDatabase extends RoomDatabase {
                 CoreLegacyDbFlowDatabase.class,
                 NAME).build();
     }
+
+    public static void reset(){
+        instance = null;
+    }
 }

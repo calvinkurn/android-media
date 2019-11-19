@@ -29,9 +29,9 @@ public interface SaldoDetailContract {
 
         void setRetry(String error);
 
-        float getSellerSaldoBalance();
+        long getSellerSaldoBalance();
 
-        float getBuyerSaldoBalance();
+        long getBuyerSaldoBalance();
 
         void showWithdrawalNoPassword();
 
@@ -41,7 +41,7 @@ public interface SaldoDetailContract {
 
         void showHoldWarning(String warningText);
 
-        void setBuyerSaldoBalance(float amount, String text);
+        void setBuyerSaldoBalance(long amount, String text);
 
         void showSaldoPrioritasFragment(GqlDetailsResponse sellerDetails);
 
@@ -65,7 +65,7 @@ public interface SaldoDetailContract {
 
         void showSellerSaldoRL();
 
-        void setSellerSaldoBalance(float amount, String formattedAmount);
+        void setSellerSaldoBalance(long amount, String formattedAmount);
 
         void showBuyerSaldoRL();
 

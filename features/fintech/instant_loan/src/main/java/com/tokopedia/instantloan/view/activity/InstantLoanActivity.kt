@@ -344,17 +344,17 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun populateOneTabItem() {
-        tanpaAgunanFragmentInstance = getTanpaAgunanFragment(PINJAMAN_ONLINE_TAB_POSITION)
+        tanpaAgunanFragmentInstance = getTanpaAgunanFragment()
         instantLoanItemList.add(InstantLoanItem(getPageTitle(PINJAMAN_ONLINE_TAB_POSITION),
                 tanpaAgunanFragmentInstance))
     }
 
     private fun populateTwoTabItem() {
-        tanpaAgunanFragmentInstance = getTanpaAgunanFragment(PINJAMAN_ONLINE_TAB_POSITION)
+        tanpaAgunanFragmentInstance = getTanpaAgunanFragment()
         instantLoanItemList.add(InstantLoanItem(getPageTitle(PINJAMAN_ONLINE_TAB_POSITION),
                 tanpaAgunanFragmentInstance))
         instantLoanItemList.add(InstantLoanItem(getPageTitle(DANA_INSTAN_TAB_POSITION),
-                getDanaInstantFragment(DANA_INSTAN_TAB_POSITION)))
+                getDanaInstantFragment()))
     }
 
     private fun populatePartnerItemList() {
@@ -387,12 +387,12 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
                 })
     }
 
-    private fun getDanaInstantFragment(position: Int): DanaInstantFragment {
-        return DanaInstantFragment.createInstance(position)
+    private fun getDanaInstantFragment(): DanaInstantFragment {
+        return DanaInstantFragment.createInstance()
     }
 
-    private fun getTanpaAgunanFragment(position: Int): TanpaAgunanFragment {
-        return TanpaAgunanFragment.createInstance(position)
+    private fun getTanpaAgunanFragment(): TanpaAgunanFragment {
+        return TanpaAgunanFragment.createInstance()
     }
 
     private fun getPartnerFragment(partnerItemList: ArrayList<GqlLendingPartnerData>): Fragment {
@@ -552,7 +552,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     override fun onBannerClick(view: View, position: Int) {
-        val url = view.getTag(position) as String
+        val url = view.tag as String
         val eventLabel = url + " - " + position.toString()
         instantLoanAnalytics.eventLoanBannerClick(eventLabel)
         if (!TextUtils.isEmpty(url)) {

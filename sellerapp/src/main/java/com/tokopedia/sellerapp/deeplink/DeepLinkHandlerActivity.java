@@ -181,10 +181,10 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
 
         //map applink to internal if any
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
-        if (!TextUtils.isEmpty(mappedDeeplink)) {
-            routeToApplink(deepLinkDelegate, mappedDeeplink);
-        } else {
+        if (TextUtils.isEmpty(mappedDeeplink)) {
             routeToApplink(deepLinkDelegate, applinkString);
+        } else {
+            routeToApplink(deepLinkDelegate, mappedDeeplink);
         }
     }
 

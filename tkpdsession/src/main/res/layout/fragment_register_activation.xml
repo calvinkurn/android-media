@@ -26,7 +26,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="center"
-        android:text="@string/activation_title"
+        android:text="@string/validation_title"
         android:textColor="@color/black_70"
         android:textSize="@dimen/text_size_16"
         android:textStyle="bold" />
@@ -117,7 +117,7 @@
         android:background="@drawable/grey_button_rounded"
         android:enabled="false"
         android:gravity="center"
-        android:text="@string/title_activation_otp"
+        android:text="@string/title_validation_otp"
         android:textColor="@color/black_12"
         android:textStyle="bold" />
 
@@ -130,7 +130,7 @@
         android:textSize="@dimen/sp_12"
         android:textColor="@color/black_38"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/activation_resend_email_2" />
+        android:text="@string/validation_resend_email" />
 
 
 </RelativeLayout>

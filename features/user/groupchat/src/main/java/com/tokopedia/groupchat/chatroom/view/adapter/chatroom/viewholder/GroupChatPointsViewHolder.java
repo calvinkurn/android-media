@@ -36,7 +36,7 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
     public GroupChatPointsViewHolder(View itemView, ChatroomContract.ChatItem.GroupChatPointsViewHolderListener imageListener) {
         super(itemView);
         mainView = itemView;
-        messageView = itemView.findViewById(R.id.text);
+        messageView = itemView.findViewById(com.tokopedia.design.R.id.text);
         icon = itemView.findViewById(R.id.icon);
         listener = imageListener;
     }

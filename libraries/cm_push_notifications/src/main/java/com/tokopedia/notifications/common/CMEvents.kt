@@ -52,7 +52,7 @@ object IrisAnalyticsEvents {
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, baseNotificationModel)
-            irisAnalytics.saveEvent(values)
+            irisAnalytics.sendEvent(values)
         }
     }
 
@@ -64,7 +64,7 @@ object IrisAnalyticsEvents {
                 values[CLICKED_ELEMENT_ID] = elementID
 
             }
-            irisAnalytics.saveEvent(values)
+            irisAnalytics.sendEvent(values)
         }
 
     }
@@ -93,7 +93,7 @@ object IrisAnalyticsEvents {
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, cmInApp)
-            irisAnalytics.saveEvent(values)
+            irisAnalytics.sendEvent(values)
         }
     }
 
@@ -107,7 +107,7 @@ object IrisAnalyticsEvents {
             }
 
 
-            irisAnalytics.saveEvent(values)
+            irisAnalytics.sendEvent(values)
         }
 
     }

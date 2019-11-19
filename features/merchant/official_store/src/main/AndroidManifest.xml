@@ -3,6 +3,9 @@
 
     <application>
         <activity
+            android:name=".reactnative.ReactNativeOfficialStoreCategoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".brandlist.activity.ReactNativeBrandListOsActivity"
             android:screenOrientation="portrait" />
     </application>

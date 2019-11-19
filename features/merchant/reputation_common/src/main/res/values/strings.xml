@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Reputation Common</string>
+
+    <string name="rating_1_star">Mengecewakan</string>
+    <string name="rating_2_star">Buruk</string>
+    <string name="rating_3_star">Cukup</string>
+    <string name="rating_4_star">Baik</string>
+    <string name="rating_5_star">Memuaskan</string>
 </resources>

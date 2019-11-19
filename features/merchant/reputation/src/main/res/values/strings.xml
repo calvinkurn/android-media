@@ -128,4 +128,17 @@
     <string name="review_min_character">Minimal 30 karakter</string>
     <string name="review_label_all">Semua</string>
     <string name="review_label_with_photo">Dengan Foto</string>
+
+    <string name="review_add_photo_txt">Tambah \nfoto</string>
+    <string name="image_picker_title">Pilih foto</string>
+    <string name="review_overlay_count">%1$d +</string>
+    <string name="review_text_1">Hai %s, tuliskan hal yang <![CDATA[<b>tidak sesuai harapan</b>]]> dari barang ini?</string>
+    <string name="review_text_2">Hai %s, tuliskan hal yang kamu <![CDATA[<b>tidak suka</b>]]> dari barang ini?</string>
+    <string name="review_text_3">Hai %s, tuliskan hal yang kamu <![CDATA[<b>kurang suka</b>]]> dari barang ini?</string>
+    <string name="review_text_4">Hai %s, suka dengan barang ini? Yuk, berikan ulasan dan rekomendasikan barang ini!</string>
+    <string name="review_text_5">Hai %s, suka barang ini? Beri ulasan dan rekomendasikan barang ini ke pembeli lain!</string>
+    <string name="anonymous_review_prefix">Kirim sebagai anonim %s</string>
+    <string name="txt_btn_submit_review">Kirim Ulasan</string>
+    <string name="review_msg_placeholder">Ulasan saya</string>
+    <string name="txt_success_submit_review">Terima kasih %s sudah memberikan ulasanmu untuk barang ini</string>
 </resources>
