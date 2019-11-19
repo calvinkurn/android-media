@@ -20,7 +20,6 @@ import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCatego
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
 import com.tokopedia.product.manage.item.category.view.adapter.ProductCategoryRecommendationAdapter
 import com.tokopedia.product.manage.item.category.view.model.ProductCategory
-import com.tokopedia.product.manage.item.category.view.model.categoryrecomm.ProductCategoryPredictionViewModel
 import com.tokopedia.product.manage.item.category.view.presenter.ProductEditCategoryPresenter
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.Catalog
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.categoryrecommendationdata.Category
