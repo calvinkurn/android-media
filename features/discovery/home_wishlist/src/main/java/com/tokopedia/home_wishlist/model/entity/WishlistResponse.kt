@@ -96,9 +96,9 @@ data class WishlistItem(
     @SerializedName("badges")
     @Expose
     val badges: List<Badge> = listOf(),
-    @SerializedName("labels")
+    @SerializedName("label_group")
     @Expose
-    val labels: List<Label> = listOf(),
+    val labels: List<LabelGroup> = listOf(),
     @SerializedName("free_ongkir")
     @Expose
     val freeOngkir: FreeOngkir = FreeOngkir()
@@ -132,13 +132,16 @@ data class WishlistItem(
     }
 }
 
-data class Label(
+data class LabelGroup(
     @SerializedName("title")
     @Expose
     val title: String,
-    @SerializedName("color")
+    @SerializedName("type")
     @Expose
-    val color: String
+    val type: String,
+    @SerializedName("position")
+    @Expose
+    val position: String
 )
 
 data class Shop (

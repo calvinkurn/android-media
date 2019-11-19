@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.CheckBox
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
+import com.tokopedia.home_wishlist.model.entity.LabelGroup
 import com.tokopedia.home_wishlist.view.custom.WishlistCardView
 import com.tokopedia.home_wishlist.view.ext.setSafeOnClickListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
@@ -16,7 +17,11 @@ import com.tokopedia.smart_recycler_helper.SmartListener
 class WishlistItemViewHolder(
         private val view: View
 ) : SmartAbstractViewHolder<WishlistItemDataModel>(view){
-
+    companion object{
+        private const val LABEL_POSITION_OFFERS = "offers"
+        private const val LABEL_POSITION_PROMO = "promo"
+        private const val LABEL_POSITION_CREDIBILITY = "credibility"
+    }
     private val parentPositionDefault: Int = -1
 
     private val productCardView: WishlistCardView by lazy { view.findViewById<WishlistCardView>(R.id.wishlist_item) }
@@ -24,6 +29,23 @@ class WishlistItemViewHolder(
 
     override fun bind(element: WishlistItemDataModel, listener: SmartListener) {
         productCardView.run {
+            var labelCredibility = ProductCardModel.Label()
+            var labelPromo = ProductCardModel.Label()
+            var labelOffers = ProductCardModel.Label()
+
+            for (label: LabelGroup in element.productItem.labels){
+                when(label.position){
+                    LABEL_POSITION_CREDIBILITY -> {
+                        labelCredibility = if (element.productItem.rating == 0 && element.productItem.reviewCount == 0) ProductCardModel.Label(label.title, label.type) else labelCredibility
+                    }
+                    LABEL_POSITION_PROMO -> {
+                        labelPromo = ProductCardModel.Label(label.title, label.type)
+                    }
+                    LABEL_POSITION_OFFERS -> {
+                        labelOffers = ProductCardModel.Label(label.title, label.type)
+                    }
+                }
+            }
             setProductModel(
                     ProductCardModel(
                             productName = element.productItem.name,
@@ -38,7 +60,10 @@ class WishlistItemViewHolder(
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.productItem.freeOngkir.isActive,
                                     imageUrl = element.productItem.freeOngkir.imageUrl
-                            )
+                            ),
+                            labelCredibility = labelCredibility,
+                            labelOffers = labelOffers,
+                            labelPromo = labelPromo
                     )
             )
             productCardView.setAddToCartButtonVisible(!element.isOnBulkRemoveProgress)
