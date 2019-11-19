@@ -760,6 +760,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
      */
     @Deprecated
     @Override
+    public void actionApplinkFromActivity(Activity activity, String linkUrl) {
+        goToApplinkActivity(activity, linkUrl, new Bundle());
+    }
+
+    /**
+     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
+     */
+    @Deprecated
+    @Override
     public void actionApplink(Activity activity, String linkUrl, String extra) {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA, extra);

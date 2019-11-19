@@ -13,8 +13,6 @@ import androidx.core.app.TaskStackBuilder;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
-import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
-import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -177,7 +175,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         AccountHomeApplinkModule.class,
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
-        AffiliateApplinkModule.class,
         ChallengesDeepLinkModule.class,
         InboxTalkApplinkModule.class,
         ProductManageApplinkModule.class,
@@ -235,7 +232,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new AccountHomeApplinkModuleLoader(),
                     new RecentViewApplinkModuleLoader(),
                     new ChangePasswordDeeplinkModuleLoader(),
-                    new AffiliateApplinkModuleLoader(),
                     new ChallengesDeepLinkModuleLoader(),
                     new InboxTalkApplinkModuleLoader(),
                     new ProductManageApplinkModuleLoader(),
