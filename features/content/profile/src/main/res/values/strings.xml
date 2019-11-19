@@ -89,4 +89,7 @@
     <string name="shop_following_delete_description">Apakah Anda ingin menghapus Toko Favorit ini ?</string>
     <string name="shop_following_delete_yes">Ya</string>
     <string name="shop_following_delete_no">Tidak</string>
+
+    <string name="string_follow_empty">Kamu belum \nmengikuti influencer</string>
+    <string name="string_follow_empty_button">Explore Influencer</string>
 </resources>

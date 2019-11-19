@@ -55,7 +55,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (viewType == TYPE_KOL) {
             return new KolFollowingViewHolder(
                     LayoutInflater.from(context).inflate(
-                            R.layout.item_kol_following,
+                            R.layout.item_profile_following,
                             viewGroup,
                             false)
             );

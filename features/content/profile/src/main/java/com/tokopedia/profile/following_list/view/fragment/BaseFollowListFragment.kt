@@ -70,7 +70,7 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val parentView = inflater.inflate(R.layout.fragment_kol_following_list, container, false)
+        val parentView = inflater.inflate(R.layout.fragment_following_list, container, false)
         rvItem = parentView.findViewById(R.id.rv_item)
         progressBar = parentView.findViewById(R.id.progress_bar)
         emptyState = parentView.findViewById(R.id.view_empty_state)
