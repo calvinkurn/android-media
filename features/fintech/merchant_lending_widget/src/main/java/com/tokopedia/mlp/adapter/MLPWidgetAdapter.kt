@@ -3,7 +3,7 @@ package com.tokopedia.mlp.adapter
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.webkit.URLUtil
 import android.widget.LinearLayout

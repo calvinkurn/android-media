@@ -6,9 +6,9 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -200,6 +200,6 @@ public class WishlistProductListViewHolder extends AbstractViewHolder<WishlistPr
 
     private void setFreeOngkir(ProductItem data){
         imageFreeOngkirPromo.setVisibility(data.getFreeOngkir() ? View.VISIBLE : View.GONE);
-        ImageHandler.loadImageThumbs(context, imageFreeOngkirPromo, data.getImageFreeOngkir());
+        ImageHandler.loadImageRounded2(context, imageFreeOngkirPromo, data.getImageFreeOngkir());
     }
 }

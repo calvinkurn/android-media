@@ -1,6 +1,6 @@
 package com.tokopedia.contactus.inboxticket2.view.contract;
 
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;

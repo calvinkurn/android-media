@@ -1,6 +1,6 @@
 package com.tokopedia.cpm;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface CharacterPerMinuteInterface {
     String KEY = "CPM";

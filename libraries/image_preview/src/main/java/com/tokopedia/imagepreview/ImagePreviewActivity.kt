@@ -1,7 +1,6 @@
 package com.tokopedia.imagepreview
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -13,17 +12,17 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
-import android.support.v4.app.NotificationCompat
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.fragment.app.Fragment
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
@@ -38,7 +37,7 @@ import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import java.io.File
 import java.util.*
 
-class ImagePreviewActivity : BaseSimpleActivity() {
+open class ImagePreviewActivity : BaseSimpleActivity() {
     private var title: String? = null
     private var description: String? = null
     private var adapter: TouchImageAdapter? = null
@@ -48,6 +47,14 @@ class ImagePreviewActivity : BaseSimpleActivity() {
 
     private val viewPager by lazy {
         findViewById<TouchViewPager>(R.id.viewPager)
+    }
+
+    open fun layoutId(): Int {
+        return if (title.isNullOrEmpty()) {
+            R.layout.activity_image_preview_button
+        } else {
+            R.layout.activity_image_preview
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,11 +73,7 @@ class ImagePreviewActivity : BaseSimpleActivity() {
             fileLocations = ArrayList()
         }
 
-        if (title.isNullOrEmpty()) {
-            setContentView(R.layout.activity_image_preview_button)
-        } else {
-            setContentView(R.layout.activity_image_preview)
-        }
+        setContentView(layoutId())
 
         adapter = TouchImageAdapter(this@ImagePreviewActivity, fileLocations)
 
@@ -147,12 +150,8 @@ class ImagePreviewActivity : BaseSimpleActivity() {
                 .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(notificationId, notificationBuilder.build())
-        val targetListener: SimpleTarget<Bitmap> = object : SimpleTarget<Bitmap>() {
-            @SuppressLint("Range")
-            override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                if (resource == null) {
-                    return;
-                }
+        val targetListener: CustomTarget<Bitmap> = object : CustomTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 var path: String?
                 try {
                     path = saveImageFromBitmap(
@@ -205,11 +204,15 @@ class ImagePreviewActivity : BaseSimpleActivity() {
                 }
             }
 
-            override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
-                super.onLoadFailed(e, errorDrawable)
+            override fun onLoadFailed(errorDrawable: Drawable?) {
+                super.onLoadFailed(errorDrawable)
                 showFailedDownload(notificationId, notificationBuilder)
             }
-        };
+
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
+        }
         fileLocations?.getOrNull(viewPager.currentItem)?.let {
             ImageHandler.loadImageBitmap2(
                     this@ImagePreviewActivity,
@@ -237,16 +240,16 @@ class ImagePreviewActivity : BaseSimpleActivity() {
 
     companion object {
 
-        private const val IMAGE_URIS = "image_uris"
-        private const val IMG_POSITION = "img_pos"
-        private const val IMAGE_DESC = "image_desc"
-        private const val TITLE = "title"
-        private const val DESCRIPTION = "desc"
+        const val IMAGE_URIS = "image_uris"
+        const val IMG_POSITION = "img_pos"
+        const val IMAGE_DESC = "image_desc"
+        const val TITLE = "title"
+        const val DESCRIPTION = "desc"
 
 
-        private const val ANDROID_GENERAL_CHANNEL = "ANDROID_GENERAL_CHANNEL"
-        private const val REQUEST_PERMISSIONS = 109
-        private const val SCREEN_NAME = "Preview Image Product page"
+        const val ANDROID_GENERAL_CHANNEL = "ANDROID_GENERAL_CHANNEL"
+        const val REQUEST_PERMISSIONS = 109
+        const val SCREEN_NAME = "Preview Image Product page"
         //TODO
         //for log
         //private val PREVIEW_IMAGE_PDP = "PREVIEW_IMAGE_PDP"

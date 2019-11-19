@@ -29,7 +29,7 @@
                 android:layout_marginTop="@dimen/margin_small_sm"
                 android:layout_marginBottom="@dimen/margin_small_sm"/>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/price_info_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                         android:visibility="gone"
                         app:pdiv_title="@string/opportunity_detail_info_shipping_price_title" />
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
             <com.tokopedia.seller.opportunity.customview.OpportunityDetailSummaryView

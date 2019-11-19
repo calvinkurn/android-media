@@ -1,7 +1,7 @@
 package com.tokopedia.imagepicker.common.util;
 
 import android.os.Environment;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.File;

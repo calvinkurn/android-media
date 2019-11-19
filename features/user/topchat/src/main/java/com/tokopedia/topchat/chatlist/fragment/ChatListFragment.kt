@@ -1,18 +1,18 @@
 package com.tokopedia.topchat.chatlist.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
 import android.view.*
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -44,8 +44,8 @@ import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
-import com.tokopedia.topchat.chatlist.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
+import com.tokopedia.topchat.chatlist.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
@@ -164,6 +164,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { url ->
             if (url.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
+                chatListAnalytics.eventClickBroadcastButton()
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
             }
         })
@@ -549,6 +550,14 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
         activityContract?.loadNotificationCounter()
+    }
+
+    override fun trackChangeReadStatus(element: ItemChatListPojo) {
+        chatListAnalytics.trackChangeReadStatus(element)
+    }
+
+    override fun trackDeleteChat(element: ItemChatListPojo) {
+        chatListAnalytics.trackDeleteChat(element)
     }
 
     private fun isTabSeller(): Boolean {

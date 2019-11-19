@@ -1,9 +1,9 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.cod_bottomsheet;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import android.text.Editable;
 import android.text.Html;
 import android.view.LayoutInflater;

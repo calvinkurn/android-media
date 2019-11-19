@@ -1,10 +1,10 @@
 package com.tokopedia.design.component.ticker;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.view.PagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;

@@ -1,6 +1,6 @@
 package com.tokopedia.common.travel.utils.typedef;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger.ADULT;
 import static com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger.CHILD;

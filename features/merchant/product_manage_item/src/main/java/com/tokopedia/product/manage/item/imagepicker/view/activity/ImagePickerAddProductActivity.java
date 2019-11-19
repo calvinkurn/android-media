@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.item.imagepicker.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;

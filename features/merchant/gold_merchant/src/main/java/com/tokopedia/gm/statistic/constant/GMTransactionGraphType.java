@@ -4,7 +4,7 @@ package com.tokopedia.gm.statistic.constant;
  * Created by normansyahputa on 7/11/17.
  */
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

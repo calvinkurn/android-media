@@ -9,13 +9,8 @@ import com.tokopedia.power_merchant.subscribe.view.subscriber.GetPmStatusInfoSub
 import javax.inject.Inject
 
 class PmSubscribePresenter @Inject constructor(
-        private val getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase,
-        private val deactivationPowerMerchant: DeactivatePowerMerchantUseCase)
-    : BaseDaggerPresenter<PmSubscribeContract.View>(), PmSubscribeContract.Presenter {
-
-    override fun setAutoExtendOff() {
-        deactivationPowerMerchant.execute(GetInfoToggleAutoExtendSubscriber(view))
-    }
+        private val getPowerMerchantStatusUseCase: GetPowerMerchantStatusUseCase
+) : BaseDaggerPresenter<PmSubscribeContract.View>(), PmSubscribeContract.Presenter {
 
     override fun getPmStatusInfo(shopId: String){
         getPowerMerchantStatusUseCase.execute(GetPowerMerchantStatusUseCase.createRequestParams(shopId),
@@ -24,6 +19,5 @@ class PmSubscribePresenter @Inject constructor(
 
     override fun detachView() {
         getPowerMerchantStatusUseCase.unsubscribe()
-        deactivationPowerMerchant.unsubscribe()
     }
 }

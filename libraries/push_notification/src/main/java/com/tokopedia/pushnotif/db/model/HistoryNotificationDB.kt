@@ -1,8 +1,8 @@
 package com.tokopedia.pushnotif.db.model
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.tokopedia.pushnotif.db.HISTORY_NOTIFICATION_TABLE
 import org.jetbrains.annotations.Nullable
 

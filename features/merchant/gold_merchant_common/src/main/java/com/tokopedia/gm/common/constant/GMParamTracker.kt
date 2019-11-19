@@ -29,4 +29,23 @@ object GMParamTracker {
     const val LABEL_CANCEL_MEMBERSHIP= "cancel membership"
     const val LABEL_LEARN_MORE= "learn more"
 
+    object Category {
+        const val PM_QUESTIONNAIRE = "power merchant questionnaire"
+    }
+
+    object Action {
+        const val CLICK_FEATURES = "click features"
+        const val CLICK_RATING = "click rating"
+        const val CLICK_CANCELLATION_REASON = "click cancellation reason"
+
+    }
+
+    object Label {
+        const val SEND_ANSWER = "kirim jawaban"
+        const val BACK_BUTTON = "back button"
+        const val NEXT = "Selanjutnya"
+        const val OPTION_BACK_BUTTON = "<"
+
+    }
+
 }

@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.addpin.view.activity.PinCompleteActivity
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant.Screen.SCREEN_POPUP_PIN_SUCCESS
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -41,6 +43,26 @@ class PinCompleteFragment: BaseDaggerFragment() {
                 it.finish()
             }
         }
+        initViews()
+    }
+
+    private fun initViews(){
+        when(arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)){
+            SOURCE_CHANGE_PIN -> {
+                titleComplete.text = getString(R.string.change_pin_success)
+                setToolbarTitle(resources.getString(R.string.title_change_pin))
+            }
+            SOURCE_FORGOT_PIN -> {
+                titleComplete.text = getString(R.string.change_pin_success)
+                setToolbarTitle(resources.getString(R.string.change_pin_title_setting))
+            }
+        }
+    }
+
+    private fun setToolbarTitle(title: String){
+        if(activity is PinCompleteActivity){
+            (activity as PinCompleteActivity).supportActionBar?.title = title
+        }
     }
 
     override fun onStart() {
@@ -60,6 +82,10 @@ class PinCompleteFragment: BaseDaggerFragment() {
 
     companion object {
         const val COMPLETE_PICT_URL = "https://ecs7.tokopedia.net/android/others/complete_add_pin.png"
+
+        const val SOURCE_ADD_PIN = 1
+        const val SOURCE_CHANGE_PIN = 2
+        const val SOURCE_FORGOT_PIN = 3
 
         fun createInstance(bundle: Bundle): PinCompleteFragment {
             val fragment = PinCompleteFragment()

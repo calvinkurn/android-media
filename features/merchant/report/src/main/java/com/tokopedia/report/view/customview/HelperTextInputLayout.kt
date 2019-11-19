@@ -3,9 +3,9 @@ package com.tokopedia.report.view.customview
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Build
-import android.support.design.widget.TextInputLayout
-import android.support.v4.view.animation.FastOutSlowInInterpolator
-import android.support.v4.widget.TextViewCompat
+import com.google.android.material.textfield.TextInputLayout
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.core.widget.TextViewCompat
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup

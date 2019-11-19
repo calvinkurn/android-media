@@ -1,8 +1,8 @@
 package com.tokopedia.broadcast.message.view.viewholder
 
 import android.graphics.Typeface
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder

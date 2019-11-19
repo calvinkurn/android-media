@@ -1,6 +1,6 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.domain.GetSortListHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
@@ -24,10 +24,12 @@ class DigitalHomePageViewModel  @Inject constructor(
     : BaseViewModel(dispatcher) {
 
     val digitalHomePageList = MutableLiveData<List<DigitalHomePageItemModel>>()
+    val isAllError = MutableLiveData<Boolean>()
 
     fun getInitialList(isLoadFromCloud: Boolean) {
         val list: List<DigitalHomePageItemModel> = getSortListHomePageUseCase.getSortEmptyList(isLoadFromCloud)
         digitalHomePageList.value = list
+        isAllError.value = false
     }
 
     fun getBannerList(rawQuery: String, isLoadFromCloud: Boolean){
@@ -55,6 +57,7 @@ class DigitalHomePageViewModel  @Inject constructor(
                 updatedList[BANNER_ORDER].isLoaded = true
                 updatedList[BANNER_ORDER].isSuccess = false
                 digitalHomePageList.value = updatedList
+                checkIfAllError()
             }
         }
     }
@@ -84,7 +87,21 @@ class DigitalHomePageViewModel  @Inject constructor(
                 updatedList[CATEGORY_ORDER].isLoaded = true
                 updatedList[CATEGORY_ORDER].isSuccess = false
                 digitalHomePageList.value = updatedList
+                checkIfAllError()
             }
+        }
+    }
+
+    fun checkIfAllError() {
+        digitalHomePageList.value?.let {
+            var isSuccess = false
+            for (item in it) {
+                if (item.isSuccess || !item.isLoaded) {
+                    isSuccess = true
+                    break
+                }
+            }
+            if (!isSuccess) isAllError.value = true
         }
     }
 

@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel

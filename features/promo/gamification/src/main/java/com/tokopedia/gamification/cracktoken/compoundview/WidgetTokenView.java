@@ -8,10 +8,11 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +25,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationConstants;
 import com.tokopedia.gamification.R;
@@ -128,7 +129,7 @@ public class WidgetTokenView extends FrameLayout {
         imageViewFull.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onClick();
+                setTokenClicked();
                 timesFullEggClicked++;
             }
         });
@@ -204,23 +205,29 @@ public class WidgetTokenView extends FrameLayout {
         String cracked = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_CRACKED);
         String imageLeftUrl = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_LEFT);
         String imageRightUrl = imageUrls.get(GamificationConstants.EggImageUrlIndex.INDEX_TOKEN_RIGHT);
+        String token = String.valueOf(tokenAsset.getVersion());
 
-        StringSignature stringSignature = new StringSignature(String.valueOf(tokenAsset.getVersion()));
+        ObjectKey signature = new ObjectKey(token);
 
-        ImageHandler.loadImageWithSignature(imageViewFull, full, stringSignature);
+        ImageHandler.loadImageWithSignature(imageViewFull, full, signature);
         Glide.with(getContext())
-                .load(cracked)
                 .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .signature(new StringSignature(String.valueOf(tokenAsset.getVersion())))
-                .into(new SimpleTarget<Bitmap>() {
+                .load(cracked)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .signature(signature)
+                .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         imageViewCracked.setImageBitmap(resource);
                     }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
                 });
-        ImageHandler.loadImageWithSignature(imageViewRight, imageRightUrl, stringSignature);
-        ImageHandler.loadImageWithSignature(imageViewLeft, imageLeftUrl, stringSignature);
+        ImageHandler.loadImageWithSignature(imageViewRight, imageRightUrl, signature);
+        ImageHandler.loadImageWithSignature(imageViewLeft, imageLeftUrl, signature);
 
         reset();
         show();

@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.viewholder.ClashingViewHolder

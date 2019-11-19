@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewholder
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.CompoundButton
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

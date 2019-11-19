@@ -18,7 +18,7 @@ package com.db.williamchart.animation;
 
 import android.graphics.Path;
 import android.graphics.PathMeasure;
-import android.support.annotation.FloatRange;
+import androidx.annotation.FloatRange;
 
 import com.db.williamchart.animation.easing.BaseEasingMethod;
 import com.db.williamchart.animation.easing.QuintEase;

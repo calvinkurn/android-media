@@ -3,7 +3,7 @@ package com.tokopedia.loyalty.view.fragment;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +20,7 @@ import com.tokopedia.applink.RouteManager;
 /**
  * @author okasurya on 1/29/18.
  */
-
+@Deprecated
 public class TokoPointWebViewFragment extends BaseSessionWebViewFragment {
 
     public static TokoPointWebViewFragment createInstance(String url) {

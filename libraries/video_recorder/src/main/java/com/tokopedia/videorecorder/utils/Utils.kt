@@ -1,7 +1,7 @@
 package com.tokopedia.videorecorder.utils
 
 import android.content.Context
-import android.support.design.widget.TabLayout
+import com.google.android.material.tabs.TabLayout
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast

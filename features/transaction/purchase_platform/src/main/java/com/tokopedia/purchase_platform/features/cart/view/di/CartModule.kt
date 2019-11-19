@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.di
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -13,7 +13,6 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
-import com.tokopedia.purchase_platform.common.base.IMapperUtil
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
@@ -68,8 +67,8 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideICartMapper(mapperUtil: IMapperUtil): ICartMapper {
-        return CartMapper(mapperUtil)
+    fun provideICartMapper(): ICartMapper {
+        return CartMapper()
     }
 
     @Provides
@@ -80,8 +79,8 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideIVoucherCouponMapper(mapperUtil: IMapperUtil): IVoucherCouponMapper {
-        return VoucherCouponMapper(mapperUtil)
+    fun provideIVoucherCouponMapper(): IVoucherCouponMapper {
+        return VoucherCouponMapper()
     }
 
     @Provides
@@ -168,10 +167,16 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideICartListPresenter(getCartListUseCase: GetCartListUseCase,
+    @Named("shopGroupSimplifiedQuery")
+    fun provideGetCartListSimplifiedQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_shop_group_simplified)
+    }
+
+    @Provides
+    @CartScope
+    fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
                                   deleteCartListUseCase: DeleteCartListUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
-                                  resetCartGetCartListUseCase: ResetCartGetCartListUseCase,
                                   checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                                   checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
                                   checkPromoCodeCartListUseCase: CheckPromoCodeCartListUseCase,
@@ -189,8 +194,8 @@ class CartModule {
                                   getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                   removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase): ICartListPresenter {
-        return CartListPresenter(getCartListUseCase, deleteCartListUseCase,
-                updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
+        return CartListPresenter(getCartListSimplifiedUseCase, deleteCartListUseCase,
+                updateCartUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface,

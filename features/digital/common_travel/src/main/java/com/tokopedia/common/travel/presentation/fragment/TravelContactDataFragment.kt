@@ -1,8 +1,8 @@
 package com.tokopedia.common.travel.presentation.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
@@ -72,7 +72,7 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        contactViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
+        contactViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
             contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 

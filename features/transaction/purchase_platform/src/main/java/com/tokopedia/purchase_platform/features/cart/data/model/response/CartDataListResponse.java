@@ -45,9 +45,12 @@ public class CartDataListResponse {
     @SerializedName("default_promo_dialog_tab")
     @Expose
     private String defaultPromoDialogTab = "";
-    @SerializedName("shop_group")
+    @SerializedName("shop_group_available")
     @Expose
-    private List<ShopGroup> shopGroups = new ArrayList<>();
+    private List<ShopGroupAvailable> shopGroupAvailables = new ArrayList<>();
+    @SerializedName("shop_group_with_errors")
+    @Expose
+    private List<ShopGroupWithError> shopGroupWithErrors = new ArrayList<>();
     @SerializedName("donation")
     @Expose
     private Donation donation = new Donation();
@@ -112,8 +115,12 @@ public class CartDataListResponse {
         return autoApply;
     }
 
-    public List<ShopGroup> getShopGroups() {
-        return shopGroups;
+    public List<ShopGroupAvailable> getShopGroupAvailables() {
+        return shopGroupAvailables;
+    }
+
+    public List<ShopGroupWithError> getShopGroupWithErrors() {
+        return shopGroupWithErrors;
     }
 
     public Donation getDonation() {

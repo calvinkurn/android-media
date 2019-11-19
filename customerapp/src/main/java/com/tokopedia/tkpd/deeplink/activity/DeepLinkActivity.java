@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v4.app.TaskStackBuilder;
+import androidx.annotation.NonNull;
+import androidx.core.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,13 +42,13 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
@@ -59,7 +59,6 @@ import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
         DeepLinkView, DeepLinkWebViewHandleListener,
         DetailFragmentInteractionListener,
-        FragmentGeneralWebView.OnFragmentInteractionListener,
         ReportFragmentListener,
         ProductInfoResultReceiver.Receiver,
         ICatalogActionFragment {
@@ -248,24 +247,12 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void onWebViewSuccessLoad() {
-    }
-
-    @Override
-    public void onWebViewErrorLoad() {
-    }
-
-    @Override
-    public void onWebViewProgressLoad() {
-    }
-
-    @Override
     public void inflateFragment(Fragment fragment, String tag) {
         getFragmentManager().beginTransaction().add(R.id.main_view, fragment, tag).commit();
     }
 
     @Override
-    public void inflateFragmentV4(android.support.v4.app.Fragment fragment, String tag) {
+    public void inflateFragmentV4(androidx.fragment.app.Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction().replace(R.id.main_view, fragment, tag).commit();
     }
 
@@ -296,8 +283,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void catchToWebView(String url) {
         actionChangeToolbarWithBackToNative();
-        getFragmentManager().beginTransaction()
-                .replace(R.id.main_view, FragmentGeneralWebView.createInstance(url))
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_view, BaseSessionWebViewFragment.newInstance(url))
                 .commit();
     }
 

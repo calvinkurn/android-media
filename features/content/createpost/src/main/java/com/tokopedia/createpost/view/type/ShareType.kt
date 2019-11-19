@@ -1,8 +1,8 @@
 package com.tokopedia.createpost.view.type
 
 import android.content.Context
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.kotlin.extensions.view.toCompactAmountString
 

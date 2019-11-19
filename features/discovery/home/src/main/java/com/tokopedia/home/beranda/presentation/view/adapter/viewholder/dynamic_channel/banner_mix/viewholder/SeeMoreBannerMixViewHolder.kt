@@ -1,9 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder
 
-import android.support.annotation.LayoutRes
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -30,7 +31,7 @@ class SeeMoreBannerMixViewHolder(view: View,
         }
         Glide.with(itemView.context)
                 .load(channel.header.backImage)
-                .crossFade()
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .centerCrop()
                 .into(bannerBackgroundImage)
         container.setOnClickListener {

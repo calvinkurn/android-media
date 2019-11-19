@@ -3,28 +3,29 @@ package com.tokopedia.home.explore.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.abstraction.constant.TkpdAppLink;
-import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
-import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.explore.di.DaggerExploreComponent;
 import com.tokopedia.home.explore.di.ExploreComponent;
@@ -33,7 +34,6 @@ import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel
 import com.tokopedia.home.explore.view.fragment.ExploreFragment;
 import com.tokopedia.home.explore.view.presentation.ExploreContract;
 import com.tokopedia.home.explore.view.presentation.ExplorePresenter;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,7 +212,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             TextView labelTxt = view.findViewById(R.id.label);
             ImageView iconView = view.findViewById(R.id.icon);
             String title = model.getName();
-            Glide.with(this).load(model.getImageUrl()).diskCacheStrategy(DiskCacheStrategy.RESULT).into(iconView);
+            Glide.with(this).load(model.getImageUrl()).diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(iconView);
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             labelTxt.setText(title);
             view.setOnClickListener(new OnTabExplorerClickListener(this, title, tabLayout, i));

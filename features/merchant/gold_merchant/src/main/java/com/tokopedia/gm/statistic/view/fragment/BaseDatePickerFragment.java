@@ -2,7 +2,7 @@ package com.tokopedia.gm.statistic.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;

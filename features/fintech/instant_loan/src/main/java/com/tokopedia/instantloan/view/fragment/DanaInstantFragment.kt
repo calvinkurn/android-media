@@ -4,9 +4,9 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
 import android.text.TextUtils
 import android.view.*
 import android.widget.Toast
@@ -46,13 +46,11 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     @Inject
     lateinit var userSession: UserSession
 
-    private var mCurrentTab: Int = 0
     private var mCurrentPagePosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
-        mCurrentTab = arguments?.getInt(TAB_POSITION) ?: 0
     }
 
     override fun initInjector() {
@@ -339,11 +337,9 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     companion object {
 
         val LOGIN_REQUEST_CODE = 1005
-        private val TAB_POSITION = "tab_position"
 
-        fun createInstance(position: Int): DanaInstantFragment {
+        fun createInstance(): DanaInstantFragment {
             val args = Bundle()
-            args.putInt(TAB_POSITION, position)
             val danaInstantFragment = DanaInstantFragment()
             danaInstantFragment.arguments = args
             return danaInstantFragment

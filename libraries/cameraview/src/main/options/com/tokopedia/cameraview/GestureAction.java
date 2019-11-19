@@ -1,7 +1,7 @@
 package com.tokopedia.cameraview;
 
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Gestures actions are actions over camera controls that can be mapped to certain gestures over

@@ -1,6 +1,6 @@
 package com.tokopedia.wallet.ovoactivation.view
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 
 /**
  * Created by nabillasabbaha on 20/09/18.

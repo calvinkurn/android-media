@@ -1,10 +1,10 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
 import android.os.Handler
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
@@ -42,6 +42,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
@@ -107,6 +108,7 @@ open class DynamicPostViewHolder(v: View,
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
         bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
         bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
+        bindTracking(element.impressHolder, element.tracking)
     }
 
     override fun bind(element: DynamicPostViewModel?, payloads: MutableList<Any>) {
@@ -388,20 +390,21 @@ open class DynamicPostViewHolder(v: View,
         when {
             like.isChecked -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
-                itemView.likeText.text = like.fmt
+                val likeCount = if (like.fmt.isEmpty()) like.value.toString() else like.fmt
+                itemView.likeText.text = likeCount
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeText.context, R.color.tkpd_main_green)
                 )
             }
             like.value > 0 -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
+                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 itemView.likeText.text = like.fmt
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeText.context, R.color.black_54)
                 )
             }
             else -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
+                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 itemView.likeText.setText(R.string.kol_action_like)
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
@@ -495,6 +498,12 @@ open class DynamicPostViewHolder(v: View,
             }
         }
         return itemList
+    }
+
+    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingViewModel>) {
+        itemView.addOnImpressionListener(impressHolder) {
+            listener.onAffiliateTrackClicked(trackList, false)
+        }
     }
 
     interface DynamicPostListener {

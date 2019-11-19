@@ -4,7 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.text.SearchInputView;
@@ -186,10 +188,8 @@ public class ShopProductListActivity extends BaseSimpleActivity
     @Override
     public void onBackPressed() {
         if (isTaskRoot()) {
-            String applink = GlobalConfig.isSellerApp()? ApplinkConst.SellerApp.SELLER_APP_HOME: ApplinkConst.HOME;
-            ApplinkRouter router = (ApplinkRouter) getApplicationContext();
-            if (router.isSupportApplink(applink)) {
-                Intent intent = router.getApplinkIntent(this, applink);
+            Intent intent = RouteManager.getIntentNoFallback(this, ApplinkConst.HOME);
+            if (intent != null) {
                 startActivity(intent);
                 finish();
             } else {

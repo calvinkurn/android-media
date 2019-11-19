@@ -1,8 +1,9 @@
 package com.tokopedia.product.manage.list.view.listener;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 
@@ -14,15 +15,11 @@ import java.util.List;
 
 public interface ProductManageView extends CustomerView {
 
-    void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem);
+    void onLoadListEmpty();
 
-    void onLoadSearchError(Throwable t);
-
-    void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage);
+    void onSuccessGetProductList(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage);
 
     void onSuccessGetShopInfo(boolean goldMerchant, boolean officialStore, String shopDomain);
-
-    void onSuccessGetFeaturedProductList(List<String> data);
 
     void onErrorEditPrice(Throwable t, String productId, String price, String currencyId, String currencyText);
 
@@ -32,7 +29,7 @@ public interface ProductManageView extends CustomerView {
 
     void onSuccessSetCashback(String productId, int cashback);
 
-    void onErrorMultipleDeleteProduct(Throwable e, List<String> productIdDeletedList, List<String> productIdFailToDeleteList);
+    void onErrorMultipleDeleteProduct(Throwable e, ProductUpdateV3SuccessFailedResponse listOfResponse);
 
     void onSuccessMultipleDeleteProduct();
 
@@ -47,4 +44,8 @@ public interface ProductManageView extends CustomerView {
     void onSuccessGetPopUp(boolean isShowPopup, String productId);
 
     void onErrorGetPopUp(Throwable e);
+
+    void onSuccessBulkUpdateProduct(ProductUpdateV3SuccessFailedResponse listOfResponse);
+
+    void onErrorBulkUpdateProduct(Throwable e);
 }

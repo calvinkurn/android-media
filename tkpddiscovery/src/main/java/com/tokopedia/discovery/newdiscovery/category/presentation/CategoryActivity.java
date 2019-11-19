@@ -3,10 +3,11 @@ package com.tokopedia.discovery.newdiscovery.category.presentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -112,10 +113,11 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         }
     }
 
-    public static void moveTo(Context context, String categoryUrl) {
+    public static void moveTo(Context context, String categoryUrl, @NonNull Bundle bundle) {
         if (context != null) {
             Intent intent = new Intent(context, CategoryActivity.class);
-            intent.putExtra(BrowseProductRouter.EXTRA_CATEGORY_URL, categoryUrl);
+            bundle.putString(BrowseProductRouter.EXTRA_CATEGORY_URL, categoryUrl);
+            intent.putExtras(bundle);
             context.startActivity(intent);
         }
     }

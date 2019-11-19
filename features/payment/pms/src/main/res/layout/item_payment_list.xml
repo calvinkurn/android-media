@@ -11,7 +11,7 @@
     android:paddingRight="@dimen/dp_10"
     android:paddingTop="@dimen/dp_2">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardElevation="3sp"
@@ -28,27 +28,27 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:padding="@dimen/dp_10">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/image_product_type"
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"
                     android:layout_alignParentLeft="true"
                     android:layout_marginRight="@dimen/dp_10" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_order_date"
                     style="@style/TextView.Micro.BlackSecondary"
                     android:layout_toRightOf="@id/image_product_type"
                     tools:text="8 Nov 2018" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_product_type"
                     style="@style/TextView.Micro.Bold"
                     android:layout_alignLeft="@+id/tv_order_date"
                     android:layout_below="@+id/tv_order_date"
                     tools:text="Belanja" />
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_overflow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_due_payment_date"
                     style="@style/TextView.Micro"
                     android:layout_width="match_parent"
@@ -89,20 +89,20 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_10">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/image_payment"
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"
                     android:layout_marginRight="@dimen/dp_10" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_total"
                     style="@style/TextView.Micro.BlackSecondary"
                     android:layout_toRightOf="@id/image_payment"
                     android:text="@string/payment_label_total"
                     />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_value_total"
                     style="@style/TextView.Small.OrangeRed.Bold"
                     android:layout_alignLeft="@+id/tv_total"
@@ -118,23 +118,23 @@
                     android:layout_below="@id/tv_value_total"
                     android:orientation="vertical">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_payment_code"
                         style="@style/TextView.Micro.BlackSecondary"
                         tools:text="Kode Pembayaran" />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_value_payment_code"
                         style="@style/TextView.Small"
                         android:layout_marginBottom="@dimen/dp_10"
                         tools:text="2349ojasfdpaosfd09" />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_payment_method"
                         style="@style/TextView.Micro.BlackSecondary"
                         android:text="@string/payment_label_method_payment" />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_value_payment_method"
                         style="@style/TextView.Small"
                         android:layout_marginBottom="@dimen/dp_10"
@@ -159,18 +159,18 @@
                         android:layout_toStartOf="@+id/separator_vertical"
                         android:layout_alignParentStart="true">
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_label_sender_account"
                             style="@style/TextView.Micro.BlackSecondary"
                             android:layout_marginBottom="@dimen/dp_8"
                             android:text="@string/payment_label_acc_sender" />
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_number_sender_account"
                             style="@style/TextView.Micro.BlackSecondary.Bold"
                             tools:text="****5555" />
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_name_sender_account"
                             style="@style/TextView.Micro.BlackSecondary.Bold"
                             tools:text="****5555" />
@@ -194,18 +194,18 @@
                         android:layout_toEndOf="@+id/separator_vertical"
                         android:layout_alignParentEnd="true">
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_label_receiver_account"
                             style="@style/TextView.Micro.BlackSecondary"
                             android:layout_marginBottom="@dimen/dp_8"
                             android:text="@string/payment_label_acc_dest" />
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_number_receiver_account"
                             style="@style/TextView.Micro.BlackSecondary.Bold"
                             tools:text="****5555" />
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_name_receiver_account"
                             style="@style/TextView.Micro.BlackSecondary.Bold"
                             tools:text="****5555" />
@@ -213,7 +213,7 @@
 
                 </RelativeLayout>
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_see_detail"
                     style="@style/TextView.Small.Green"
                     android:layout_alignParentEnd="true"
@@ -237,5 +237,5 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

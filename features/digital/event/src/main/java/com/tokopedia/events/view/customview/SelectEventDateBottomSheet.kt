@@ -1,7 +1,7 @@
 package com.tokopedia.events.view.customview
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -74,7 +74,7 @@ class SelectEventDateBottomSheet : RoundedBottomSheetDialogFragment(), HasCompon
         loading_progress_bar.visible()
 
         holidayViewModel?.getTravelHolidayDate()
-        holidayViewModel?.holidayResult?.observe(this, android.arch.lifecycle.Observer {
+        holidayViewModel?.holidayResult?.observe(this, androidx.lifecycle.Observer {
             loading_progress_bar.hide()
             when (it) {
                 is Success -> {

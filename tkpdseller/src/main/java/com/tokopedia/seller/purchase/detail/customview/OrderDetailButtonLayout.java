@@ -1,7 +1,7 @@
 package com.tokopedia.seller.purchase.detail.customview;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,14 +116,16 @@ public class OrderDetailButtonLayout extends LinearLayout{
 
         Button confirmShipping;
         confirmShipping = mainView.findViewById(R.id.confirm_shipping);
-        switchConfirmButtonMode(confirmShipping,
-                buttonData.getConfirmShippingVisibility(),
-                buttonData.getChangeCourier(),
-                data,
-                presenter,
-                context);
-        if (data.isFreeShipping()) confirmShipping.setVisibility(View.GONE);
-        else confirmShipping.setVisibility(View.VISIBLE);
+        if (data.isFreeShipping()) {
+            confirmShipping.setVisibility(View.GONE);
+        } else {
+            switchConfirmButtonMode(confirmShipping,
+                    buttonData.getConfirmShippingVisibility(),
+                    buttonData.getChangeCourier(),
+                    data,
+                    presenter,
+                    context);
+        }
 
         Button requestPickup;
         requestPickup = mainView.findViewById(R.id.request_pickup);

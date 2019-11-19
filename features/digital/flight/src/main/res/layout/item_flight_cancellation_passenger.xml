@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/dp_8"
     android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_8"
     android:paddingRight="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_8">
+    android:paddingBottom="@dimen/dp_8">
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/checkbox"
         android:layout_width="@dimen/dp_36"
         android:layout_height="@dimen/dp_36"
@@ -35,6 +36,14 @@
             style="@style/TextView.Small"
             android:padding="@dimen/dp_2"
             tools:text="@string/flight_label_departure_flight" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_passenger_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_2"
+            app:typographyType="body_3"
+            tools:text="Pembatalan sedang diproses" />
 
     </LinearLayout>
 

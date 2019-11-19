@@ -4,21 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.product.manage.list.R;
-import com.tokopedia.seller.ProductEditItemComponentInstance;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
+import com.tokopedia.seller.ProductEditItemComponentInstance;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by zulfikarrahman on 9/25/17.
@@ -26,6 +26,7 @@ import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragme
 public class ProductManageActivity extends BaseTemporaryDrawerActivity implements HasComponent<ProductComponent> {
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();
+    public UserSessionInterface userSession;
 
     @DeepLink(ApplinkConst.PRODUCT_MANAGE)
     public static Intent getApplinkIntent(Context context, Bundle extras) {
@@ -38,6 +39,7 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userSession = new UserSession(this);
         inflateView(R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -52,14 +54,12 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
     }
 
     private void checkLogin() {
-        if (getApplication() instanceof TkpdCoreRouter) {
-            if (!SessionHandler.isV4Login(this)) {
-                startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
-                finish();
-            } else if (!SessionHandler.isUserHasShop(this)) {
-                startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
-                finish();
-            }
+        if (!userSession.isLoggedIn()) {
+            RouteManager.route(this, ApplinkConst.LOGIN);
+            finish();
+        } else if (!userSession.hasShop()) {
+            RouteManager.route(this, ApplinkConst.HOME);
+            finish();
         }
     }
 

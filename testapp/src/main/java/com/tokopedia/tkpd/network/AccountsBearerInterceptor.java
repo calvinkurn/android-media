@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.network;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.user.session.UserSessionInterface;
 

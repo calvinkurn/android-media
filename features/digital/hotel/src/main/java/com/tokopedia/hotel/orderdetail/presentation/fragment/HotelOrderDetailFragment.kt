@@ -1,15 +1,15 @@
 package com.tokopedia.hotel.orderdetail.presentation.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.Intent.ACTION_DIAL
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.v7.widget.LinearLayoutManager
+import androidx.annotation.StringRes
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
@@ -160,7 +160,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) {
                 orderDetailViewModel.getOrderDetail(
                         GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                        GraphqlHelper.loadRawString(resources, R.raw.query_travel_cross_selling),
+                        GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_cross_selling),
                         orderId, orderCategory)
             } else {
                 orderDetailViewModel.getOrderDetail(

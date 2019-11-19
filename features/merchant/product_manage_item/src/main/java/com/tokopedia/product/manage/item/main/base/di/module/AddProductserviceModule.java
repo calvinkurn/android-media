@@ -39,6 +39,8 @@ import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataS
 import com.tokopedia.product.manage.item.video.data.source.FetchVideoEditProductDataSource;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -140,5 +142,17 @@ public class AddProductserviceModule {
     @Provides
     UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
+        return productDraftDB.getProductDraftDao();
     }
 }

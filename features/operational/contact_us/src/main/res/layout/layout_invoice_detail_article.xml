@@ -43,7 +43,7 @@
         android:layout_above="@id/link_bottom"
         android:layout_alignParentTop="true">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="0dp"
@@ -73,6 +73,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/txt_title" />
 
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </RelativeLayout>

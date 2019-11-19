@@ -105,7 +105,7 @@
                     android:visibility="gone"
                     context:visibility="visible"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_prove"
                     android:layout_width="wrap_content"
                     android:layout_height="80dp"
@@ -144,7 +144,7 @@
                     android:textSize="@dimen/fontvs"
                     android:textStyle="bold"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_complained_product"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

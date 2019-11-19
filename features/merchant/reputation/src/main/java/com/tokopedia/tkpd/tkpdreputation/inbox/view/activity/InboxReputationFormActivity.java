@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -144,27 +144,6 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     @Override
     public Object getComponent() {
         return getApplicationComponent();
-    }
-
-    public static Intent getGiveReviewIntent(Context context, String reviewId,
-                                             String reputationId, String productId,
-                                             String shopId, boolean reviewIsSkippable,
-                                             String productAvatar, String productName,
-                                             String productUrl, String revieweeName,
-                                             int productStatus) {
-        Intent intent = new Intent(context, InboxReputationFormActivity.class);
-        intent.putExtra(ARGS_PRODUCT_ID, productId);
-        intent.putExtra(ARGS_REPUTATION_ID, reputationId);
-        intent.putExtra(ARGS_REVIEW_ID, reviewId);
-        intent.putExtra(ARGS_SHOP_ID, shopId);
-        intent.putExtra(ARGS_IS_SKIPPABLE, reviewIsSkippable);
-        intent.putExtra(ARGS_IS_EDIT, false);
-        intent.putExtra(ARGS_PRODUCT_AVATAR, productAvatar);
-        intent.putExtra(ARGS_PRODUCT_NAME, productName);
-        intent.putExtra(ARGS_PRODUCT_URL, productUrl);
-        intent.putExtra(ARGS_REVIEWEE_NAME, revieweeName);
-        intent.putExtra(ARGS_PRODUCT_STATUS, productStatus);
-        return intent;
     }
 
     public static Intent getEditReviewIntent(Context context, String reviewId,

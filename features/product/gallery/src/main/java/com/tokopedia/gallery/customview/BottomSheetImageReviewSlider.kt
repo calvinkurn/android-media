@@ -1,12 +1,12 @@
 package com.tokopedia.gallery.customview
 
 import android.content.Context
-import android.support.annotation.AttrRes
-import android.support.annotation.LayoutRes
-import android.support.design.widget.BottomSheetBehavior
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.PagerSnapHelper
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.AttrRes
+import androidx.annotation.LayoutRes
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater

@@ -1,7 +1,7 @@
 package com.tokopedia.cacheapi.data.source.db.model
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
+import androidx.room.ColumnInfo
+import androidx.room.Entity
 
 @Entity(tableName = CacheApiWhitelist.TABLE_NAME, primaryKeys = [CacheApiWhitelist.COLUMN_HOST, CacheApiWhitelist.COLUMN_PATH])
 class CacheApiWhitelist(

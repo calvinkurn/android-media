@@ -21,7 +21,9 @@ data class QuantityViewModel(
         var errorProductAvailableStockDetail: String,
         var errorProductMaxQuantity: String,
         var errorProductMinQuantity: String,
-        var isStateError: Boolean
+        var isStateError: Boolean,
+        var stockFromWarehouse: Int,
+        var stockWordingFromWarehouse: String
 ) : Visitable<CheckoutVariantAdapterTypeFactory>, Parcelable {
 
     override fun type(typeFactory: CheckoutVariantAdapterTypeFactory): Int {
@@ -40,7 +42,10 @@ data class QuantityViewModel(
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
-            parcel?.readByte() != 0.toByte())
+            parcel?.readByte() != 0.toByte(),
+            parcel?.readInt() ?: 0,
+            parcel?.readString() ?: ""
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(stockWording)
@@ -55,6 +60,8 @@ data class QuantityViewModel(
         parcel.writeString(errorProductMaxQuantity)
         parcel.writeString(errorProductMinQuantity)
         parcel.writeByte(if (isStateError) 1 else 0)
+        parcel.writeInt(stockFromWarehouse)
+        parcel.writeString(stockWordingFromWarehouse)
     }
 
     override fun describeContents(): Int {

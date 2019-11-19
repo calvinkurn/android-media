@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.presenter
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.feedplus.data.pojo.onboarding.DataItem
 import com.tokopedia.feedplus.data.pojo.onboarding.OnboardingData

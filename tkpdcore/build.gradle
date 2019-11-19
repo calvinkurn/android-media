@@ -53,6 +53,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.webview)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -98,7 +99,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro
     implementation (rootProject.ext.viewDependencies.ahBottomNavigation) {
         exclude group: 'com.android.support', module: 'design'
@@ -131,14 +131,14 @@ dependencies {
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="tkpdcore-release"
 }
 
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="tkpdcore-release"
 }
 

@@ -5,8 +5,9 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.user.session.UserSessionInterface
 
-class HomeVisitableFactoryImpl : HomeVisitableFactory {
+class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) : HomeVisitableFactory {
     val DEFAULT_BANNER_APPLINK_1 = "tokopedia://category-explore?type=2&tab=1"
     val DEFAULT_BANNER_APPLINK_2 = ApplinkConst.OFFICIAL_STORE
     val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/android/others/home_banner_default_1.jpg"
@@ -15,7 +16,8 @@ class HomeVisitableFactoryImpl : HomeVisitableFactory {
     override fun createOvoTokopointVisitable(hasTokopoints: Boolean, isCache: Boolean): HeaderViewModel? {
         if(hasTokopoints) {
             val headerViewModel = HeaderViewModel()
-            headerViewModel.setPendingTokocashChecked(false)
+            headerViewModel.isPendingTokocashChecked = false
+            headerViewModel.isUserLogin = userSessionInterface.isLoggedIn
             return headerViewModel
         }
         return null

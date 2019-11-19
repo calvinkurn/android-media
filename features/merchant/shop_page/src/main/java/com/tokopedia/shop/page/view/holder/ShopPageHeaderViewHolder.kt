@@ -3,10 +3,10 @@ package com.tokopedia.shop.page.view.holder
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
-import android.support.annotation.DrawableRes
-import android.support.v4.content.ContextCompat
-import android.support.v7.content.res.AppCompatResources
-import android.support.v7.view.ContextThemeWrapper
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.view.ContextThemeWrapper
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View

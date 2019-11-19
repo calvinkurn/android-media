@@ -1,9 +1,9 @@
 package com.tokopedia.flight.cancellation.view.adapter.viewholder;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +31,7 @@ import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.INFAN
 public class FlightReviewCancellationViewHolder extends AbstractViewHolder<FlightCancellationViewModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_cancellation_review;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_cancellation_review;
 
     private Context context;
     private TextView txtDepartureNumber;
@@ -47,13 +47,13 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
 
         context = itemView.getContext();
 
-        txtDepartureNumber = itemView.findViewById(R.id.tv_departure_label);
-        txtDepartureDetail = itemView.findViewById(R.id.tv_departure_time_label);
-        txtJourneyDetail = itemView.findViewById(R.id.tv_journey_detail_label);
-        txtAirlineName = itemView.findViewById(R.id.airline_name);
-        txtDuration = itemView.findViewById(R.id.duration);
+        txtDepartureNumber = itemView.findViewById(com.tokopedia.flight.R.id.tv_departure_label);
+        txtDepartureDetail = itemView.findViewById(com.tokopedia.flight.R.id.tv_departure_time_label);
+        txtJourneyDetail = itemView.findViewById(com.tokopedia.flight.R.id.tv_journey_detail_label);
+        txtAirlineName = itemView.findViewById(com.tokopedia.flight.R.id.airline_name);
+        txtDuration = itemView.findViewById(com.tokopedia.flight.R.id.duration);
 
-        verticalRecyclerView = itemView.findViewById(R.id.recycler_view_passenger);
+        verticalRecyclerView = itemView.findViewById(com.tokopedia.flight.R.id.recycler_view_passenger);
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         passengerAdapter = new PassengerAdapter();
         verticalRecyclerView.setAdapter(passengerAdapter);
@@ -94,7 +94,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
         );
         txtAirlineName.setText(element.getFlightCancellationJourney().getAirlineName());
         txtDuration.setText(
-                String.format(getString(R.string.flight_booking_trip_info_airport_format),
+                String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_airport_format),
                         departureTime,
                         arrivalTime)
         );
@@ -130,7 +130,7 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
         @Override
         public PassengerViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             View view = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.item_flight_review_cancellation_passenger, viewGroup, false);
+                    .inflate(com.tokopedia.flight.R.layout.item_flight_review_cancellation_passenger, viewGroup, false);
             return new PassengerViewHolder(view);
         }
 
@@ -161,8 +161,8 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
 
         public PassengerViewHolder(View itemView) {
             super(itemView);
-            txtPassengerName = itemView.findViewById(R.id.tv_passenger_name);
-            txtPassengerType = itemView.findViewById(R.id.tv_passenger_type);
+            txtPassengerName = itemView.findViewById(com.tokopedia.flight.R.id.tv_passenger_name);
+            txtPassengerType = itemView.findViewById(com.tokopedia.flight.R.id.tv_passenger_type);
         }
 
         public void bindData(FlightCancellationPassengerViewModel passengerViewModel, int adapterPosition) {
@@ -173,16 +173,16 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
 
             switch (passengerViewModel.getType()) {
                 case ADULT:
-                    txtPassengerType.setText(R.string.flightbooking_price_adult_label);
+                    txtPassengerType.setText(com.tokopedia.flight.R.string.flightbooking_price_adult_label);
                     break;
                 case CHILDREN:
-                    txtPassengerType.setText(R.string.flightbooking_price_child_label);
+                    txtPassengerType.setText(com.tokopedia.flight.R.string.flightbooking_price_child_label);
                     break;
                 case INFANT:
-                    txtPassengerType.setText(R.string.flightbooking_price_infant_label);
+                    txtPassengerType.setText(com.tokopedia.flight.R.string.flightbooking_price_infant_label);
                     break;
                 default:
-                    txtPassengerType.setText(R.string.flightbooking_price_adult_label);
+                    txtPassengerType.setText(com.tokopedia.flight.R.string.flightbooking_price_adult_label);
             }
         }
 

@@ -47,7 +47,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_32"
         android:layout_margin="@dimen/dp_16"
@@ -58,17 +58,16 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_shimmer_home_bg">
 
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_8"
-                android:drawableLeft="@drawable/ic_search_deal"
-
+                app:drawableLeftCompat="@drawable/ic_search_deal"
                 android:drawablePadding="@dimen/dp_8"
                 android:text="Lokasi hits, area, atau kota" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
     <ImageView

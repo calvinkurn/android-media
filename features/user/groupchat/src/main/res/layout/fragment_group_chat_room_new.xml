@@ -5,7 +5,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,7 +16,7 @@
         android:orientation="vertical">
 
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/bg_rounded_chat_input"
+                android:background="@drawable/bg_reverse_rounded_chat_input"
                 android:inputType="textMultiLine"
                 android:maxLength="200"
                 android:maxLines="5"
@@ -86,9 +86,9 @@
                 android:textStyle="normal"
                 tools:visibility="gone" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chat_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -142,7 +142,7 @@
                 android:layout_height="@dimen/arrow_size"
                 android:layout_gravity="center_vertical"
                 android:rotation="180"
-                app:srcCompat="@drawable/ic_arrow_up_green"/>
+                app:srcCompat="@drawable/ic_arrow_up_green_thick"/>
 
         </LinearLayout>
 
@@ -183,7 +183,7 @@
 
         </RelativeLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/quick_reply"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -217,7 +217,7 @@
             app:layout_constraintBottom_toTopOf="@id/quick_reply"
             app:layout_constraintEnd_toEndOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/loading"

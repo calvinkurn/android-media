@@ -53,7 +53,7 @@
             android:visibility="visible"
             />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/image_upload_layout"
             android:layout_below="@id/message"
             android:layout_width="match_parent"

@@ -1,6 +1,7 @@
 package com.tokopedia.profilecompletion.data
 
 object ProfileCompletionQueryConstant {
+    const val MUTATION_CHANGE_NAME = "change_name"
     const val MUTATION_CHANGE_GENDER = "change_gender"
     const val MUTATION_ADD_EMAIL = "add_email"
     const val MUTATION_CHECK_EMAIL = "check_email"
@@ -18,6 +19,7 @@ object ProfileCompletionQueryConstant {
     const val QUERY_VALIDATE_PIN = "validate_pin"
     const val QUERY_SKIP_OTP_PIN = "skip_otp_pin"
 
+    const val PARAM_NAME= "name"
     const val PARAM_GENDER = "gender"
     const val PARAM_EMAIL = "email"
     const val PARAM_MSISDN = "msisdn"
@@ -27,7 +29,7 @@ object ProfileCompletionQueryConstant {
     const val PARAM_PIC_OBJ = "pic_obj"
     const val PARAM_TOKEN = "token"
     const val PARAM_PIN = "pin"
-    const val PARAM_PIN_CONFIRM = "pin_confirm"
-    const val PARAM_PIN_OLD = "pin_old"
+    const val PARAM_PIN_CONFIRM = "pinConfirm"
+    const val PARAM_PIN_OLD = "pinOld"
     const val PARAM_OTP_TYPE = "otpType"
 }

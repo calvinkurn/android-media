@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatCheckBox;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;

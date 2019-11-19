@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.features.cart.view;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v4.app.JobIntentService;
+import androidx.annotation.NonNull;
+import androidx.core.app.JobIntentService;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;

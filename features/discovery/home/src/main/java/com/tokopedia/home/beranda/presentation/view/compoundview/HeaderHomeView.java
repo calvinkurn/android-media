@@ -16,10 +16,6 @@ import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -27,6 +23,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
@@ -37,6 +38,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.gamification.util.HexValidator;
@@ -46,6 +48,9 @@ import com.tokopedia.home.beranda.data.model.SectionContentItem;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
@@ -132,7 +137,7 @@ public class HeaderHomeView extends BaseCustomView {
 
             Glide.with(getContext())
                     .load(BG_CONTAINER_URL)
-                    .bitmapTransform(new RoundedRightCornerTransformation(getContext(), radius))
+                    .transform(new RoundedRightCornerTransformation(getContext(), radius))
                     .into(imgNonLogin);
 
             container.setOnClickListener(onCheckNowListener());
@@ -174,7 +179,7 @@ public class HeaderHomeView extends BaseCustomView {
     private OnClickListener onCheckNowListener() {
         return v -> {
             HomePageTracking.eventTokopointNonLogin(getContext());
-            listener.onTokopointCheckNowClicked(ApplinkConst.TOKOPOINTS);
+            listener.onTokopointCheckNowClicked(ApplinkConstInternalPromo.TOKOPOINTS_HOME);
         };
     }
 
@@ -444,24 +449,26 @@ public class HeaderHomeView extends BaseCustomView {
             mDiameter = mRadius * 2;
         }
 
+        @NonNull
         @Override
-        public Resource<Bitmap> transform(Resource<Bitmap> resource, int outWidth, int outHeight) {
+        public Resource<Bitmap> transform(@NonNull Context context, @NonNull Resource<Bitmap> resource, int outWidth, int outHeight) {
             Bitmap source = resource.get();
-
             int width = source.getWidth();
             int height = source.getHeight();
 
             Bitmap bitmap = mBitmapPool.get(width, height, Bitmap.Config.ARGB_8888);
-            if (bitmap == null) {
-                bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            }
-
             Canvas canvas = new Canvas(bitmap);
             Paint paint = new Paint();
             paint.setAntiAlias(true);
             paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
             drawRoundRect(canvas, paint, width, height);
             return BitmapResource.obtain(bitmap, mBitmapPool);
+        }
+
+        @Override
+        public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+            String id = "RoundedRightCornerTransformation(radius=" + mRadius + ", diameter=" + mDiameter + ")";
+            messageDigest.update(id.getBytes(Charset.forName("UTF-8")));
         }
 
         private void drawRoundRect(Canvas canvas, Paint paint, float width, float height) {
@@ -471,11 +478,6 @@ public class HeaderHomeView extends BaseCustomView {
             canvas.drawRoundRect(new RectF(right - mDiameter, 0, right, bottom), mRadius, mRadius,
                     paint);
             canvas.drawRect(new RectF(0, 0, right - mRadius, bottom), paint);
-        }
-
-        @Override public String getId() {
-            return "RoundedRightCornerTransformation(radius=" + mRadius + ", diameter="
-                    + mDiameter + ")";
         }
     }
 }

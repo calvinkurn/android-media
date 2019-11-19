@@ -5,9 +5,9 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.CoordinatorLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -23,9 +23,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.merchantvoucher.R
-import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.di.MerchantVoucherModule
+import com.tokopedia.merchantvoucher.common.gql.data.request.CartItemDataVoucher
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherViewUsed
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -62,6 +62,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     private var cartString: String = ""
     private var source: String = ""
     private val CART: String = "cart"
+    private var cartItemDataVoucherList: ArrayList<CartItemDataVoucher> = arrayListOf()
 
     var bottomsheetView: View? = null
 
@@ -85,14 +86,16 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         val ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM = "ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM"
         val ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING"
         val ARGUMENT_SOURCE = "ARGUMENT_SOURCE"
+        val ARGUMENT_CART_ITEM_DATA = "ARGUMENT_CART_ITEM_DATA"
 
         @JvmStatic
-        fun newInstance(shopId: Int, cartString: String, promo: Promo, source: String): MerchantVoucherListBottomSheetFragment {
+        fun newInstance(shopId: Int, cartString: String, promo: Promo, source: String, cartItemDataVoucherList: ArrayList<CartItemDataVoucher>): MerchantVoucherListBottomSheetFragment {
             val bundle = Bundle()
             bundle.putParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM, promo)
             bundle.putInt(ARGUMENT_SHOP_ID, shopId)
             bundle.putString(ARGUMENT_CART_STRING, cartString)
             bundle.putString(ARGUMENT_SOURCE, source)
+            bundle.putParcelableArrayList(ARGUMENT_CART_ITEM_DATA, cartItemDataVoucherList)
 
             val fragment = MerchantVoucherListBottomSheetFragment()
             fragment.arguments = bundle
@@ -170,12 +173,13 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         promo = arguments?.getParcelable(ARGUMENT_CHECK_PROMO_FIRST_STEP_PARAM)
         cartString = arguments?.getString(ARGUMENT_CART_STRING) ?: ""
         source = arguments?.getString(ARGUMENT_SOURCE) ?: ""
+        cartItemDataVoucherList = arguments?.getParcelableArrayList(ARGUMENT_CART_ITEM_DATA) ?: arrayListOf()
     }
 
     fun loadData() {
         showProgressLoading()
         presenter.clearCache()
-        presenter.getVoucherList(shopId.toString(), 0)
+        presenter.getVoucherList(shopId.toString(), 0, cartItemDataVoucherList)
     }
 
     override fun getLayoutResourceId(): Int {

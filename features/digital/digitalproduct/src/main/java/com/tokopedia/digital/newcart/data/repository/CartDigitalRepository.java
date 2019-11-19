@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.data.repository;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

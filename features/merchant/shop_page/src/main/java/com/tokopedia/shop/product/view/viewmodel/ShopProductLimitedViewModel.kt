@@ -1,6 +1,6 @@
 package com.tokopedia.shop.product.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -207,8 +207,10 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
         addWishListUseCase.createObservable(productId, userId, listener)
     }
 
-    fun clearEtalaseCache() {
+    fun clearCache() {
         getShopEtalaseByShopUseCase.clearCache()
+        getShopProductUseCase.clearCache()
+        getShopFeaturedProductUseCase.clearCache()
     }
 
 

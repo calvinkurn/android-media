@@ -6,15 +6,12 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
-
-import com.tokopedia.digital_deals.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +37,8 @@ public class ExpandableTextView extends TextView {
     public ExpandableTextView(final Context context, @Nullable final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
-        final TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.ExpandableTextView, defStyle, 0);
-        this.animationDuration = attributes.getInt(R.styleable.ExpandableTextView_animation_duration, 200);
+        final TypedArray attributes = context.obtainStyledAttributes(attrs, com.tokopedia.digital_deals.R.styleable.ExpandableTextView, defStyle, 0);
+        this.animationDuration = attributes.getInt(com.tokopedia.digital_deals.R.styleable.ExpandableTextView_animation_duration, 200);
         attributes.recycle();
         this.maxLines = this.getMaxLines();
         this.onExpandListeners = new ArrayList<>();

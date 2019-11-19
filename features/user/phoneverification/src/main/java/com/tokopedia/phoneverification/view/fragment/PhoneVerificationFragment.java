@@ -3,7 +3,7 @@ package com.tokopedia.phoneverification.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -194,15 +194,14 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     public void setRequestOtpButtonListener(){
         requestOtpButton.setOnClickListener(v -> {
             if (isValid()) {
-                Intent intent = VerificationActivity.getCallingIntent(
+                Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                         getActivity(),
-                        getPhoneNumber(),
                         RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
-                        true,
-                        RequestOtpUseCase.MODE_SMS
+                        getPhoneNumber(),
+                        ""
                 );
                 startActivityForResult(intent, RESULT_PHONE_VERIFICATION);
-            }else {
+            } else {
                 showErrorPhoneNumber(getString(R.string
                         .error_field_required));
             }

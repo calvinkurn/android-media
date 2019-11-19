@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.tabs.TabLayout
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -344,17 +344,17 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun populateOneTabItem() {
-        tanpaAgunanFragmentInstance = getTanpaAgunanFragment(PINJAMAN_ONLINE_TAB_POSITION)
+        tanpaAgunanFragmentInstance = getTanpaAgunanFragment()
         instantLoanItemList.add(InstantLoanItem(getPageTitle(PINJAMAN_ONLINE_TAB_POSITION),
                 tanpaAgunanFragmentInstance))
     }
 
     private fun populateTwoTabItem() {
-        tanpaAgunanFragmentInstance = getTanpaAgunanFragment(PINJAMAN_ONLINE_TAB_POSITION)
+        tanpaAgunanFragmentInstance = getTanpaAgunanFragment()
         instantLoanItemList.add(InstantLoanItem(getPageTitle(PINJAMAN_ONLINE_TAB_POSITION),
                 tanpaAgunanFragmentInstance))
         instantLoanItemList.add(InstantLoanItem(getPageTitle(DANA_INSTAN_TAB_POSITION),
-                getDanaInstantFragment(DANA_INSTAN_TAB_POSITION)))
+                getDanaInstantFragment()))
     }
 
     private fun populatePartnerItemList() {
@@ -387,12 +387,12 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
                 })
     }
 
-    private fun getDanaInstantFragment(position: Int): DanaInstantFragment {
-        return DanaInstantFragment.createInstance(position)
+    private fun getDanaInstantFragment(): DanaInstantFragment {
+        return DanaInstantFragment.createInstance()
     }
 
-    private fun getTanpaAgunanFragment(position: Int): TanpaAgunanFragment {
-        return TanpaAgunanFragment.createInstance(position)
+    private fun getTanpaAgunanFragment(): TanpaAgunanFragment {
+        return TanpaAgunanFragment.createInstance()
     }
 
     private fun getPartnerFragment(partnerItemList: ArrayList<GqlLendingPartnerData>): Fragment {

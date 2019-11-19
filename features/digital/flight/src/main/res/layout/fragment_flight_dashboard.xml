@@ -17,7 +17,7 @@
         android:visibility="visible"
         tools:visibility="visible" />
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/dashboard_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,6 +54,6 @@
                 android:layout_below="@+id/flight_ticker_view" />
         </RelativeLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>

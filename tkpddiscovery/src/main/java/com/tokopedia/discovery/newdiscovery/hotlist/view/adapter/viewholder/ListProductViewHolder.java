@@ -3,8 +3,6 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +11,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
@@ -189,7 +191,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
 
     private void loadShopBadgeIcon(HotlistProductViewModel.BadgeModel badgeItem) {
         if(simpleTargetBitmapShopBadge != null) {
-            Glide.clear(simpleTargetBitmapShopBadge);
+            Glide.with(context).clear(simpleTargetBitmapShopBadge);
         }
 
         View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
@@ -200,13 +202,13 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
     private SimpleTarget<Bitmap> createSimpleTargetBitmapForLoadBadge(final View view) {
         return new SimpleTarget<Bitmap>() {
             @Override
-            public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
+            public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
                 loadShopBadgeSuccess(bitmap, view);
             }
 
             @Override
-            public void onLoadFailed(@Nullable Exception e, @Nullable Drawable errorDrawable) {
-                super.onLoadFailed(e, errorDrawable);
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
                 loadShopBadgeFailed(view);
             }
         };

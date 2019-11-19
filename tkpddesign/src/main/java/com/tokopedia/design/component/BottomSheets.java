@@ -4,10 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -16,13 +12,18 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.tokopedia.design.R;
 
 /**
  * Created by meta on 15/03/18.
  * <p>
  * Note: to avoid error "Fatal Exception: java.lang.IllegalArgumentException: The view is not a child of CoordinatorLayout"
- * please use `android.support.design.widget.CoordinatorLayout` as parent layout on your xml
+ * please use `androidx.coordinatorlayout.widget.CoordinatorLayout` as parent layout on your xml
  */
 
 public abstract class BottomSheets extends BottomSheetDialogFragment {
@@ -80,10 +81,14 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         }
 
         View layoutTitle = parentView.findViewById(R.id.layout_title);
-        layoutTitle.setOnClickListener(v -> onCloseButtonClick());
+        if (layoutTitle != null) {
+            layoutTitle.setOnClickListener(v -> onCloseButtonClick());
+        }
 
         View closeButton = parentView.findViewById(R.id.btn_close);
-        closeButton.setOnClickListener(view -> BottomSheets.this.dismiss());
+        if (closeButton != null) {
+            closeButton.setOnClickListener(view -> BottomSheets.this.dismiss());
+        }
 
         FrameLayout frameParent = parentView.findViewById(R.id.bottomsheet_container);
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);
@@ -213,7 +218,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
         if (state() == BottomSheetsState.FLEXIBLE) {
             bottomSheetDialog.setOnShowListener(dialog -> {
-                FrameLayout bottomSheet = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);

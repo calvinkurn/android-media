@@ -1,8 +1,8 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.view.model.section.ImageList;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -133,7 +133,7 @@ public class SectionCarouselAdapter extends RecyclerView.Adapter<SectionCarousel
 
     void handledClick(String appLink, String webLink) {
         if (TextUtils.isEmpty(appLink)) {
-            ((TokopointRouter) context.getApplicationContext()).openTokoPoint(context, webLink);
+            RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW,webLink));
         } else {
             RouteManager.route(context, appLink);
         }

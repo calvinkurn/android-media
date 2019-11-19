@@ -2,10 +2,10 @@ package com.tokopedia.abstraction.common.utils.snackbar;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -57,13 +57,13 @@ public class SnackbarManager {
     }
 
     private static void setViewForText(Context context, Snackbar snackbar, @ColorRes int colorRes){
-        TextView textView = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setTextColor(ContextCompat.getColor(context, colorRes));
         textView.setMaxLines(5);
     }
 
     private static void setViewForAction(Context context, Snackbar snackbar, @ColorRes int colorRes){
-        Button snackBarAction = (Button) snackbar.getView().findViewById(android.support.design.R.id.snackbar_action);
+        Button snackBarAction = (Button) snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_action);
         snackBarAction.setTextColor(ContextCompat.getColor(context, colorRes));
         snackBarAction.setAllCaps(false);
     }

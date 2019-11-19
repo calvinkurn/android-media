@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -120,7 +120,7 @@ class ProductAddVideoRecommendationFragment : BaseListFragment<ProductAddVideoRe
 
     companion object {
 
-        fun createInstance(): android.support.v4.app.Fragment {
+        fun createInstance(): androidx.fragment.app.Fragment {
             return ProductAddVideoRecommendationFragment()
         }
     }

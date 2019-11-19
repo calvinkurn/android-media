@@ -1,15 +1,15 @@
 package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -550,13 +550,13 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         if (!item.isTopAds) {
             ImpresionTask().execute(item.productClickTrackingUrl)
         }
-            catAnalyticsInstance.eventClickProductList(item.id.toString(),
-                    mDepartmentId,
-                    item.name,
-                    CurrencyFormatHelper.convertRupiahToInt(item.price),
-                    adapterPosition,
-                    item.categoryBreadcrumb ?: "",
-                    getProductItemPath(item.categoryBreadcrumb ?: "", mDepartmentId))
+        catAnalyticsInstance.eventClickProductList(item.id.toString(),
+                mDepartmentId,
+                item.name,
+                CurrencyFormatHelper.convertRupiahToInt(item.price),
+                adapterPosition,
+                item.categoryBreadcrumb ?: "",
+                getProductItemPath(item.categoryBreadcrumb ?: "", mDepartmentId))
 
     }
 
@@ -677,4 +677,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         })
     }
 
+    override fun onShareButtonClicked() {
+    }
 }

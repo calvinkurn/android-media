@@ -15,7 +15,7 @@ android {
     configurations {
         all {
             resolutionStrategy {
-                force "android.arch.core:runtime:1.1.1"
+                force "androidx.arch.core:core-runtime:2.0.0-rc01"
             }
         }
     }
@@ -31,19 +31,19 @@ android {
 project.ext {
     artifactId = 'graphql'
     groupId = 'com.tokopedia.graphql'
-    versionName = "1.0.17-test"
+    versionName = "1.0.18"
     artifactName = "graphql"
 }
 
 dependencies {
-    implementation "com.tokopedia.akamai:akamai_bot_lib:1.0.5-test"
-    implementation "com.tokopedia.usecase:usecase:1.0.2"
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.miscDependencies.gson
-    implementation "com.tokopedia.url:url:1.0.2"
-    implementation "com.tokopedia.user.session:user_session:1.0.7"
-    implementation "com.tokopedia.config:global_config:1.0.3"
-    implementation "com.tokopedia.network:network:1.0.10-test"
-    implementation "com.tokopedia.authentication:authentication:1.0.0"
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -52,8 +52,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-
-    implementation "com.jakewharton.timber:timber:4.7.1"
 }
 
 apply from: '../publish_local.gradle'

@@ -2,7 +2,7 @@ package com.tokopedia.cameraview;
 
 import android.content.Context;
 import android.hardware.SensorManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.Display;
 import android.view.OrientationEventListener;
 import android.view.Surface;

@@ -12,7 +12,7 @@
     android:paddingTop="@dimen/dynamic_filter_rating_item_vertical_padding"
     android:paddingBottom="@dimen/dynamic_filter_rating_item_vertical_padding">
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/filter_detail_item_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

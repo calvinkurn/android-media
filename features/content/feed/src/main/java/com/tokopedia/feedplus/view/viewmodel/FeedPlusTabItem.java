@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.viewmodel;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * @author by milhamj on 09/08/18.

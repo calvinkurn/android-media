@@ -8,12 +8,12 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/dp_16"
@@ -84,7 +84,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/media_attachment"/>
             
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/product_attachment"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_86"
@@ -98,9 +98,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:listitem="@layout/item_af_product_suggestion"/>
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout android:id="@+id/layout_default_caption"
         android:layout_width="match_parent"
@@ -115,7 +115,7 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_captions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -147,7 +147,7 @@
             app:typographyType="body_2"
             app:typographyWeight="bold" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_product_suggestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
             android:paddingLeft="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </LinearLayout>
 
@@ -180,7 +180,7 @@
         android:paddingEnd="@dimen/dp_16"
         android:gravity="center_vertical">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon_add_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -198,7 +198,7 @@
             app:typographyWeight="bold"
             android:text="@string/label_add_product"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/video_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -206,7 +206,7 @@
             android:layout_marginStart="@dimen/dp_16"
             app:srcCompat="@drawable/ic_af_pick_video"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -226,7 +226,7 @@
             android:visibility="gone"
             tools:visibility="visible"/>
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/add_coupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

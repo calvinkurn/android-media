@@ -2,8 +2,6 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
 import android.app.Activity;
 import android.graphics.Typeface;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -13,15 +11,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticcart.R;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
-import com.tokopedia.unifycomponents.ticker.Ticker;
 
 import java.util.ArrayList;
 
@@ -64,7 +64,8 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(ShippingDurationViewModel shippingDurationViewModel,
-                         ShippingDurationAdapterListener shippingDurationAdapterListener) {
+                         ShippingDurationAdapterListener shippingDurationAdapterListener,
+                         boolean isDisableOrderPrioritas) {
 
         if (shippingDurationAdapterListener.isToogleYearEndPromotionOn() &&
                 shippingDurationViewModel.getServiceData().getIsPromo() == 1) {
@@ -92,7 +93,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
                 tvTextDesc.setVisibility(View.GONE);
             }
 
-            if (shippingDurationViewModel.getServiceData().getOrderPriority().getNow()) {
+            if (!isDisableOrderPrioritas && shippingDurationViewModel.getServiceData().getOrderPriority().getNow()) {
                 String orderPrioritasTxt = itemView.getContext().getString(R.string.order_prioritas);
                 SpannableString orderPrioritasLabel = new SpannableString(orderPrioritasTxt);
                 orderPrioritasLabel.setSpan(new StyleSpan(Typeface.BOLD),16,orderPrioritasTxt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

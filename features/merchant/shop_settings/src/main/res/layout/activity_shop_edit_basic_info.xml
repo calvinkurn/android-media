@@ -113,7 +113,7 @@
                 app:counterEnabled="true"
                 app:counterMaxLength="@integer/max_slogan_char">
 
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etShopSlogan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
                 app:counterEnabled="true"
                 app:counterMaxLength="@integer/max_shop_desc_char">
 
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etShopDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

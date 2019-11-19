@@ -2,7 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -72,14 +72,6 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
 
     override fun getUrl(): String {
         return TERMS_AND_CONDITION_URL
-    }
-
-    override fun getUserIdForHeader(): String? {
-        return userSession.userId
-    }
-
-    override fun getAccessToken(): String? {
-        return userSession.accessToken
     }
 
     override fun onLoadFinished() {

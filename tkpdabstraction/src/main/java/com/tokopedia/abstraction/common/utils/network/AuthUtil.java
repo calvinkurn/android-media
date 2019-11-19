@@ -2,7 +2,7 @@ package com.tokopedia.abstraction.common.utils.network;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 import android.util.Base64;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;

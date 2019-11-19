@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.AppCompatImageView
+import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

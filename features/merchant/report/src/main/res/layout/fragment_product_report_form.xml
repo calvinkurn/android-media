@@ -62,7 +62,7 @@
                 tools:text="Upload foto yang membuktikan Harga Eceran Tertinggi produk."
                 app:fontSize="micro"/>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_uploaded_foto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

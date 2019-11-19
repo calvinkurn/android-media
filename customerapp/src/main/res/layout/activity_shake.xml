@@ -137,7 +137,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/shake_shake_message_button"
         android:layout_width="288dp"
         android:layout_height="38dp"
@@ -147,7 +147,7 @@
         android:gravity="center"
         android:padding="@dimen/dp_5">
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linear_layout_button_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -198,11 +198,11 @@
 
             </TextView>
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </android.support.v7.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/cancel_button"
         android:layout_width="288dp"
         android:layout_height="38dp"
@@ -212,7 +212,7 @@
         android:gravity="center"
         android:visibility="gone">
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -244,8 +244,8 @@
                 android:layout_marginLeft="@dimen/dp_25"
                 app:srcCompat="@drawable/ic_cross" />
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </android.support.v7.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </FrameLayout>

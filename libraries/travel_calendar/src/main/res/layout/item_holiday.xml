@@ -10,7 +10,7 @@
     android:layout_marginTop="@dimen/dp_5"
     android:layout_marginBottom="@dimen/dp_5">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/date_holiday"
         android:layout_width="@dimen/dp_80"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         android:textStyle="bold"
         tools:text="1 Ags"/>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/event_holiday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

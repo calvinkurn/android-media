@@ -3,8 +3,8 @@ package com.tokopedia.flight.dashboard.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -53,11 +53,11 @@ public class TextInputView extends BaseCustomView {
 
         // get resource full name, to use later for checking is it png or vector
         TypedValue value = new TypedValue();
-        getContext().getResources().getValue(styledAttributes.getResourceId(R.styleable.TextInputView_tiv_icon, R.drawable.ic_smiley_good), value, true);
+        getContext().getResources().getValue(styledAttributes.getResourceId(R.styleable.TextInputView_tiv_icon, com.tokopedia.design.R.drawable.ic_smiley_good), value, true);
 
         try {
             if (value.string.toString().contains(SVG_EXTENSION)) {
-                iconDrawable = VectorDrawableCompat.create(getContext().getResources(), styledAttributes.getResourceId(R.styleable.TextInputView_tiv_icon, R.drawable.ic_smiley_good), getContext().getTheme());
+                iconDrawable = VectorDrawableCompat.create(getContext().getResources(), styledAttributes.getResourceId(R.styleable.TextInputView_tiv_icon, com.tokopedia.design.R.drawable.ic_smiley_good), getContext().getTheme());
             } else if (value.string.toString().contains(PNG_EXTENSION)) {
                 iconDrawable = styledAttributes.getDrawable(R.styleable.TextInputView_tiv_icon);
             }
@@ -72,9 +72,9 @@ public class TextInputView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_text_input_view, this);
-        AppCompatImageView imageView = (AppCompatImageView) view.findViewById(R.id.image_view);
-        textInputLayout = (TkpdHintTextInputLayout) view.findViewById(R.id.text_input_layout);
+        View view = inflate(getContext(), com.tokopedia.flight.R.layout.flight_widget_text_input_view, this);
+        AppCompatImageView imageView = (AppCompatImageView) view.findViewById(com.tokopedia.flight.R.id.image_view);
+        textInputLayout = (TkpdHintTextInputLayout) view.findViewById(com.tokopedia.flight.R.id.text_input_layout);
         EditText etText = textInputLayout.getEditText();
 
         if (removeBackground) {

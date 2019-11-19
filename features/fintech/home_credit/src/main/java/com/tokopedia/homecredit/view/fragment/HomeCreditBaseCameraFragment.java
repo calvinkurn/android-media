@@ -9,8 +9,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -119,6 +119,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     public void initCameraProp() {
         cameraView.open();
+        cameraLayout.setVisibility(View.VISIBLE);
         imageCaptured.setVisibility(View.GONE);
         cameraActionsRL.setVisibility(View.VISIBLE);
         pictureActionLL.setVisibility(View.GONE);
@@ -253,6 +254,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     public void hideCameraProp() {
         cameraView.close();
+        cameraLayout.setVisibility(View.GONE);
         imageCaptured.setVisibility(View.VISIBLE);
         cameraActionsRL.setVisibility(View.GONE);
         pictureActionLL.setVisibility(View.VISIBLE);

@@ -2,14 +2,16 @@ package com.tokopedia.gm.statistic.view.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.NestedScrollView;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -35,7 +37,6 @@ import com.tokopedia.gm.statistic.view.holder.GmStatisticBuyerViewHolder;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMDashboardPresenter;
-import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
@@ -242,8 +243,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
                     getString(R.string.gm_statistic_feature_name)
             );
         else if (!isPowerMerchant())
-            startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(getActivity()));
-
+            onViewNotGmClicked();
     }
 
     @Override
@@ -319,7 +319,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onViewNotGmClicked() {
-        startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(getActivity()));
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
     }
 
     @Override

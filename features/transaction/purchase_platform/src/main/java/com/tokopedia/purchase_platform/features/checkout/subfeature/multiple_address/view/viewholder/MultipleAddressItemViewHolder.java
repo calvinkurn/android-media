@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.viewholder;
 
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;

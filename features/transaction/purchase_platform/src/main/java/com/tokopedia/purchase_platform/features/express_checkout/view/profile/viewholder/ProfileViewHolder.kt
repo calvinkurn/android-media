@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.profile.viewholder
 
 import android.os.Build
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Html
 import android.text.Spanned
 import android.view.View

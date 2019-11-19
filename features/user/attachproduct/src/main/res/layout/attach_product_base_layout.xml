@@ -20,7 +20,7 @@
         android:paddingBottom="@dimen/dp_10"
         android:gravity="center_vertical">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/attach_product_chat_image_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 app:srcCompat="@drawable/ic_loading_toped"/>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <RelativeLayout
             android:id="@+id/name_layout"

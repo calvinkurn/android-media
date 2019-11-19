@@ -40,10 +40,6 @@ import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
-import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
-import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
-import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
 import com.tokopedia.seller.shop.common.di.scope.DeleteCacheScope;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoTomeUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
@@ -73,18 +69,6 @@ public class SellerDashboardModule {
     @Provides
     ShopScoreRepository provideShopScoreRepository(ShopScoreFactory shopScoreFactory) {
         return new ShopScoreRepositoryImpl(shopScoreFactory);
-    }
-
-    @SellerDashboardScope
-    @Provides
-    GetProductListSellingRepository productListSellingRepository(GetProductListSellingDataSource getProductListSellingDataSource){
-        return new GetProductListSellingRepositoryImpl(getProductListSellingDataSource);
-    }
-
-    @SellerDashboardScope
-    @Provides
-    GetProductListSellerApi provideGetProductListApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
-        return retrofit.create(GetProductListSellerApi.class);
     }
 
     @Provides

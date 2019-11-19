@@ -1,10 +1,10 @@
 package com.tokopedia.tkpd;
 
-import android.support.test.espresso.IdlingResource;
+import androidx.test.espresso.IdlingResource;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import static android.support.v4.util.Preconditions.checkNotNull;
+import static androidx.core.util.Preconditions.checkNotNull;
 
 /**
  * Created by normansyahputa on 3/27/18.

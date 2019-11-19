@@ -1,7 +1,7 @@
 package com.tokopedia.core.drawer2.di;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.TkpdCoreRouter;

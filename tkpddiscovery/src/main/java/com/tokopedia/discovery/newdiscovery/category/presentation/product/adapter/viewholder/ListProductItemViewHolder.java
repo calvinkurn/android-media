@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.discovery.R;

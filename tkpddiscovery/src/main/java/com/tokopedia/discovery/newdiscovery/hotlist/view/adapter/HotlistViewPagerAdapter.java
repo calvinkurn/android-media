@@ -1,8 +1,8 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.adapter;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.PagerAdapter;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;

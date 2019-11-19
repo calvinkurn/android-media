@@ -2,10 +2,11 @@ package com.tokopedia.product.manage.item.main.edit.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
+import com.tokopedia.product.manage.item.common.util.AddEditPageType
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity
 import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFragment
 import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFragment.Companion.EDIT_PRODUCT_ID
@@ -16,6 +17,8 @@ import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance
  * use ApplinkConstInternalMarketplace.PRODUCT_EDIT
  */
 class ProductEditActivity : ProductAddActivity(), HasComponent<ProductComponent> {
+
+    override var addEditPageType: AddEditPageType = AddEditPageType.EDIT
     override fun getNewFragment(): Fragment {
         val uri = intent.data
         val productId = if (uri != null){

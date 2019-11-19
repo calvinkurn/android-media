@@ -7,7 +7,7 @@
     >
     <!--android:padding="@dimen/padding_small"-->
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/hot_list_cardview_listproduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,6 +71,6 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </FrameLayout>
 

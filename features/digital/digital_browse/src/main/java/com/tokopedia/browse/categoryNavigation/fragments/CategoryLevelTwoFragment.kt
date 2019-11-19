@@ -1,13 +1,13 @@
 package com.tokopedia.browse.categoryNavigation.fragments
 
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +23,7 @@ import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
 import com.tokopedia.browse.categoryNavigation.di.CategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.di.DaggerCategoryNavigationComponent
+import com.tokopedia.browse.categoryNavigation.view.ActivityStateListener
 import com.tokopedia.browse.categoryNavigation.viewmodel.CategoryLevelTwoViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -36,14 +37,12 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     @Inject
     lateinit var categoryLevelTwoViewModel: CategoryLevelTwoViewModel
 
-
     private lateinit var categoryLevelTwoAdapter: CategoryLevelTwoAdapter
     private lateinit var gridLayoutManager: GridLayoutManager
 
     private val childList = ArrayList<ChildItem>()
 
     private val categoryHotlist = ArrayList<ListItem>()
-
 
     val default_case_id = "0"
 
@@ -52,6 +51,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     var categoryApplink: String? = null
     var currentCategoryName: String = ""
 
+    var activityStateListener: ActivityStateListener? = null
 
     companion object {
         @JvmStatic
@@ -120,7 +120,6 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         component.inject(this)
@@ -144,7 +143,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
                     childList.clear()
                     childList.addAll(it.data as List<ChildItem>)
                     removeShimmer()
-                    slave_list.adapter = CategoryLevelTwoAdapter(childList)
+                    slave_list.adapter = CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
                 }
 
                 is Fail -> {
@@ -173,7 +172,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         }
 
 
-        categoryLevelTwoAdapter = CategoryLevelTwoAdapter(childList)
+        categoryLevelTwoAdapter = CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
         gridLayoutManager = GridLayoutManager(context, 2)
 
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -191,7 +190,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         slave_list.isNestedScrollingEnabled = false
 
 
-        val hotlistAdapter = HotlistAdapter(categoryHotlist)
+        val hotlistAdapter = HotlistAdapter(categoryHotlist, activityStateListener?.getActivityTrackingQueue())
         val horizontalLayout = GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
         hotlist.layoutManager = horizontalLayout
         hotlist.adapter = hotlistAdapter

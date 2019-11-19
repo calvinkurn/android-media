@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.home.favorite.data.source.local;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;

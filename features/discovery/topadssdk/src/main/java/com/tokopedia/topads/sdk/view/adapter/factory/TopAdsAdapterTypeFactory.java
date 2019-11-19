@@ -1,8 +1,8 @@
 package com.tokopedia.topads.sdk.view.adapter.factory;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException;

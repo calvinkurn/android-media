@@ -3,8 +3,8 @@ package com.tokopedia.digital.home.presentation.customview
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.Toolbar
 import android.util.AttributeSet
 import com.tokopedia.digital.home.R
 

@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.di.module;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.purchase_platform.common.di.scope.CartListScope;
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;

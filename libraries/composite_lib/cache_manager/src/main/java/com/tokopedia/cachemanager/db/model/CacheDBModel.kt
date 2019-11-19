@@ -1,6 +1,6 @@
 package com.tokopedia.cachemanager.db.model
 
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.PrimaryKey
 
 abstract class CacheDbModel {
     @PrimaryKey

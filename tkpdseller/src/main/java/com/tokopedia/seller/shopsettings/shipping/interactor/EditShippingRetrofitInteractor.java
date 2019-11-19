@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shopsettings.shipping.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.EditShippingCouriers;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 

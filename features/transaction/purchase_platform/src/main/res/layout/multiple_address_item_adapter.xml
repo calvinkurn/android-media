@@ -95,7 +95,7 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler"/>
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_notes_for_seller"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -204,7 +204,7 @@
                     android:layout_height="@dimen/dp_24"
                     app:srcCompat="@drawable/bg_button_counter_minus_checkout" />
 
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_qty"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"

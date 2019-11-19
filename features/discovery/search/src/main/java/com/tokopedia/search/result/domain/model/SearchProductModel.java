@@ -20,10 +20,6 @@ public class SearchProductModel {
     @Expose
     private DynamicFilterModel dynamicFilterModel = new DynamicFilterModel();
 
-    @SerializedName("ace_guide")
-    @Expose
-    private GuidedSearchModel guidedSearchModel = new GuidedSearchModel();
-
     @SerializedName("quick_filter")
     @Expose
     private DataValue quickFilterModel = new DataValue();
@@ -54,10 +50,6 @@ public class SearchProductModel {
 
     public DynamicFilterModel getDynamicFilterModel() {
         return dynamicFilterModel;
-    }
-
-    public GuidedSearchModel getGuidedSearchModel() {
-        return guidedSearchModel;
     }
 
     public DataValue getQuickFilterModel() {

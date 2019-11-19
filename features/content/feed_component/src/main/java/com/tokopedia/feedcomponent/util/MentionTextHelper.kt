@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.util
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import com.tokopedia.feedcomponent.view.span.MentionSpan
@@ -23,9 +23,11 @@ object MentionTextHelper {
     private const val OPENING_MENTION_TAG = "<$MENTION_TAG>"
     private const val CLOSING_MENTION_TAG = "</$MENTION_TAG>"
 
+    private const val WHITESPACE = ' '
+
     private const val ID_NAME_DELIMITER = "|"
 
-    private const val ALLOWED_CHARS_REGEX = "[A-Za-z0-9-_ ]"
+    private const val ALLOWED_CHARS_REGEX = "[a-zA-Z \\[\\]+`~'\",.|\\{\\}!@#\\$%^&*()\\-_+=\\\\]"
     private const val TOKENIZER_FULL_EDIT_REGEX = "($MENTION_CHAR$OPENING_MENTION_TAG\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?\\}$CLOSING_MENTION_TAG)"
     private const val TOKENIZER_CONTENT_ONLY_REGEX = "(?<=($MENTION_CHAR)?$OPENING_MENTION_TAG\\{)(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?(?=\\}$CLOSING_MENTION_TAG)"
 
@@ -39,9 +41,20 @@ object MentionTextHelper {
     private val readContentOnlyPattern = Pattern.compile(READ_CONTENT_ONLY_REGEX)
 
     /**
+     * Create mention text with format @<mention>$params</mention>
+     * @param mentioned the text to be enclosed by <mention> tag
+     * @return Valid mention text format that will be rendered as Mention User on {@link MentionEditText}
+     */
+    @JvmStatic
+    fun createValidMentionText(mentioned: CharSequence): CharSequence {
+        return "$MENTION_CHAR${createMentionTag(mentioned)}"
+    }
+
+    /**
      * Create mention tag with format <mention>$params</mention>
      * @param mentioned the text to be enclosed by <mention> tag
      */
+    @JvmStatic
     fun createMentionTag(mentioned: CharSequence): CharSequence {
         return "$OPENING_MENTION_TAG$mentioned$CLOSING_MENTION_TAG"
     }
@@ -60,7 +73,7 @@ object MentionTextHelper {
 
                 if (isFromEdit) {
                     spannableString.replace(
-                            startIndex + 1,
+                            startIndex + MENTION_CHAR.length,
                             endIndex,
                             mentionSpan.fullName)
                 } else {
@@ -71,6 +84,19 @@ object MentionTextHelper {
                     )
                 }
 
+                if (startIndex > 0 && spannableString[startIndex -1] != WHITESPACE && isFromEdit) {
+                    spannableString.insert(startIndex, WHITESPACE.toString())
+                }
+
+                val newStartIndex = spannableString.getSpanStart(mentionSpan)
+                val newEndIndex = newStartIndex + mentionSpan.displayedText.length
+                if (
+                        ((newEndIndex < spannableString.length && spannableString[newEndIndex] != WHITESPACE) ||
+                        newEndIndex == spannableString.length) &&
+                        isFromEdit
+                ) {
+                    spannableString.insert(newEndIndex, WHITESPACE.toString())
+                }
             }
         }
 
@@ -91,7 +117,15 @@ object MentionTextHelper {
         }
     }
 
-    fun getAllMentionSpansFromText(text: Spannable, start: Int = 0, end: Int = text.length): Array<MentionSpan> {
+    fun getRenewedMentionSpans(text: Spannable, start: Int = 0, end: Int = text.length): Array<MentionSpan> {
+        val currentMentionSpan = getAllMentionSpansFromText(text, start, end)
+        currentMentionSpan.forEach {
+            it.start = text.getSpanStart(it)
+        }
+        return currentMentionSpan
+    }
+
+    private fun getAllMentionSpansFromText(text: Spannable, start: Int = 0, end: Int = text.length): Array<MentionSpan> {
         return text.getSpans(start, end, MentionSpan::class.java)
     }
 
@@ -108,7 +142,11 @@ object MentionTextHelper {
                         spanEnd,
                         ""
                 )
-                if (spanStart != text.indexOf(replacingText) ||
+
+                /**
+                 * Replace text with the char that user writes
+                 */
+                if (spanStart != text.indexOf(replacingText, startIndex = spanStart) ||
                         replacingText.length != span.length - 1)
                     spannableStringBuilder.insert(spanStart, replacingText)
             }
@@ -133,6 +171,8 @@ object MentionTextHelper {
             )
         } else null
     }
+
+
 
     fun deSpanMentionTag(text: Spannable): String {
         val spannableStringBuilder = SpannableStringBuilder(text)

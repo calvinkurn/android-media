@@ -1,8 +1,8 @@
 package com.tokopedia.travelcalendar.singlecalendar
 
 import android.app.Application
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -90,7 +90,7 @@ class SinglePickCalendarWidget : RoundedBottomSheetDialogFragment() {
 
         loadingProgressBar.visibility = View.VISIBLE
         holidayCalendarViewModel.getCalendarHoliday()
-        holidayCalendarViewModel.holidayCalendarData.observe(this, android.arch.lifecycle.Observer {
+        holidayCalendarViewModel.holidayCalendarData.observe(this, androidx.lifecycle.Observer {
             loadingProgressBar.visibility = View.GONE
             it?.let {
                 renderSinglePickCalendar(it)

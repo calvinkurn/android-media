@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.list.di;
 
-import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
 
 import dagger.Component;
 

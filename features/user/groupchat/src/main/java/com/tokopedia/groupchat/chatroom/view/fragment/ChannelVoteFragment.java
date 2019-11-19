@@ -6,14 +6,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,7 +136,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             public void onShow(DialogInterface dialog) {
                 BottomSheetDialog d = (BottomSheetDialog) dialog;
 
-                FrameLayout bottomSheet = d.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet)
@@ -192,9 +192,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
     private void checkDateTime() {
         if (MethodChecker.isTimezoneNotAutomatic(getActivity()) && snackBar == null) {
-            snackBar = SnackbarManager.make(getActivity(), getString(R.string.check_timezone),
+            snackBar = SnackbarManager.make(getActivity(), getString(com.tokopedia.abstraction.R.string.check_timezone),
                     Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.action_check, new View.OnClickListener() {
+                    .setAction(com.tokopedia.abstraction.R.string.action_check, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if (getActivity() != null && isAdded()) {
@@ -286,7 +286,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         if (getActivity() != null) {
             progressBarWithTimer.setVisibility(View.GONE);
             voteStatus.setText(R.string.vote_has_ended);
-            voteStatus.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
+            voteStatus.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.black_54));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 ImageHandler.loadImageWithIdWithoutPlaceholder(iconVote, R.drawable.ic_timer_inactive);
             } else {
@@ -357,7 +357,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void showHasVoted() {
         canVote = true;
         View view = getLayoutInflater().inflate(R.layout.has_voted_bottom_sheet_dialog, null);
-        TextView title = view.findViewById(R.id.title);
+        TextView title = view.findViewById(com.tokopedia.design.R.id.title);
         title.setText(R.string.has_voted);
         channelInfoDialog.setContentView(view);
         channelInfoDialog.show();
@@ -449,7 +449,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
         if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
             voteLayoutManager = new GridLayoutManager(getActivity(), 2);
-            itemDecoration = new GridVoteItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), (int) getActivity().getResources().getDimension(R.dimen.dp_16), 2, voteInfoViewModel.getListOption().size());
+            itemDecoration = new GridVoteItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), (int) getActivity().getResources().getDimension(com.tokopedia.design.R.dimen.dp_16), 2, voteInfoViewModel.getListOption().size());
         } else {
             voteLayoutManager = new LinearLayoutManager(getActivity());
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);

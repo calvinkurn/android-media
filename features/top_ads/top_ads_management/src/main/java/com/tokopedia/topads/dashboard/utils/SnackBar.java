@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.utils;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -130,8 +130,8 @@ public class SnackBar {
 
 
         View sbView = snackbar.getView();
-        TextView txtTitle = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-        TextView txtAction = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_action);
+        TextView txtTitle = (TextView) sbView.findViewById(com.google.android.material.R.id.snackbar_text);
+        TextView txtAction = (TextView) sbView.findViewById(com.google.android.material.R.id.snackbar_action);
 
         // Changing message text color
         txtTitle.setTextColor(mTitleTextColor);

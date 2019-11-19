@@ -8,9 +8,9 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
+import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.track.TrackApp;
 
 
@@ -42,6 +43,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
     private boolean pauseFlag;
+
+    private GratificationSubscriber gratificationSubscriber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +113,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     protected void sendScreenAnalytics() {
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated( getScreenName());
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
     }
 
     private void registerForceLogoutReceiver() {
@@ -145,7 +148,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public void onServerError() {
         final Snackbar snackBar = SnackbarManager.make(this,
-                getString(R.string.msg_server_error_2),Snackbar.LENGTH_INDEFINITE)
+                getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.action_report, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -215,8 +218,25 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void setLogCrash() {
-        if(!GlobalConfig.DEBUG) {
+        if (!GlobalConfig.DEBUG) {
             Crashlytics.log(this.getClass().getCanonicalName());
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (gratificationSubscriber == null) {
+            gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
+        }
+        gratificationSubscriber.onNewIntent(this, intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (gratificationSubscriber != null) {
+            gratificationSubscriber.onActivityDestroyed(this);
         }
     }
 }

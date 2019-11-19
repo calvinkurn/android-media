@@ -7,14 +7,14 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.banner.Banner
@@ -123,11 +123,15 @@ class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, at
         })
     }
 
-    fun getBitmapImageViewTarget(): SimpleTarget<Bitmap> {
-        return object : SimpleTarget<Bitmap>() {
-            override fun onResourceReady(blurredBitmap: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                blurredBitmap?.run {
-                    showImage(blurredBitmap)
+    fun getBitmapImageViewTarget(): CustomTarget<Bitmap> {
+        return object : CustomTarget<Bitmap>() {
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
+
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                resource.run {
+                    showImage(resource)
                 }
             }
         }

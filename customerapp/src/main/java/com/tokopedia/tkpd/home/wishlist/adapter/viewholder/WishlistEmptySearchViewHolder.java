@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.wishlist.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.Button;
 

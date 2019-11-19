@@ -16,7 +16,7 @@
         android:scrollbars="none"
         android:layout_marginBottom="-6dp">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_11"
-                android:background="@drawable/bg_red_rounded_discount"
+                android:background="@drawable/bg_red_rounded_discount_tokopoints"
                 android:gravity="center_horizontal"
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_3"
@@ -82,12 +82,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_quota_count"
                 app:typographyType="small" />
 
-            <View
+            <RelativeLayout
                 android:id="@+id/top_separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 android:layout_margin="@dimen/dp_16"
-                android:background="@color/bg_label_grey"
+                android:background="@color/bg_label_grey_tokopoints"
                 app:layout_constraintLeft_toLeftOf="@+id/text_description"
                 app:layout_constraintRight_toRightOf="@+id/text_description"
                 app:layout_constraintTop_toBottomOf="@+id/text_disabled_error" />
@@ -131,13 +131,15 @@
                 app:typographyWeight="bold" />
 
             <View
-                android:id="@+id/mid_separator"
+                android:id="@+id/tp_mid_separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 android:layout_margin="@dimen/dp_16"
-                android:background="@color/bg_label_grey"
-                app:layout_constraintLeft_toLeftOf="@+id/tnc_see_more"
-                app:layout_constraintRight_toRightOf="@+id/tnc_see_more"
+                android:background="@color/bg_label_grey_tokopoints"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tnc_see_more" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -148,8 +150,8 @@
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:text="@string/how_to_use_coupon_catalog"
                 android:textColor="@color/clr_f531353b"
-                app:layout_constraintLeft_toLeftOf="@+id/mid_separator"
-                app:layout_constraintTop_toBottomOf="@+id/mid_separator"
+                app:layout_constraintLeft_toLeftOf="@+id/tp_mid_separator"
+                app:layout_constraintTop_toBottomOf="@+id/tp_mid_separator"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold" />
 
@@ -178,19 +180,27 @@
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
+
+
+
+
+
+
+
+
             <View
-                android:id="@+id/bottom_separator"
+                android:id="@+id/tp_bottom_separator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_2"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:background="@color/bg_label_grey"
-                app:layout_constraintLeft_toLeftOf="@+id/how_to_use_see_more"
-                app:layout_constraintRight_toRightOf="@+id/how_to_use_see_more"
+                android:background="@color/bg_label_grey_tokopoints"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/how_to_use_see_more"
                 app:layout_goneMarginBottom="@dimen/dp_8" />
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/gift_section_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -198,9 +208,9 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                app:layout_constraintLeft_toLeftOf="@+id/bottom_separator"
-                app:layout_constraintRight_toRightOf="@+id/bottom_separator"
-                app:layout_constraintTop_toBottomOf="@+id/bottom_separator">
+                app:layout_constraintLeft_toLeftOf="@+id/tp_bottom_separator"
+                app:layout_constraintRight_toRightOf="@+id/tp_bottom_separator"
+                app:layout_constraintTop_toBottomOf="@+id/tp_bottom_separator">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/gift_image"
@@ -228,7 +238,7 @@
                     android:id="@+id/gift_btn"
                     android:layout_width="@dimen/dp_120"
                     android:layout_height="@dimen/dp_40"
-                    android:background="@drawable/rounded_red_border_only"
+                    android:background="@drawable/rounded_red_border_only_tokopoints"
                     android:gravity="center"
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:paddingLeft="@dimen/dp_24"
@@ -241,20 +251,20 @@
                     app:typographyWeight="bold" />
 
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/catalog_bottom_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/transparent"
+        android:background="@android:color/transparent"
         android:orientation="vertical">
 
-        <View
+        <RelativeLayout
             android:id="@+id/top_shaded_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
@@ -282,7 +292,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
-            android:background="@drawable/bg_red_rounded_discount"
+            android:background="@drawable/bg_red_rounded_discount_tokopoints"
             android:paddingLeft="@dimen/tp_padding_xsmall"
             android:paddingTop="@dimen/tp_padding_xxsmall"
             android:paddingRight="@dimen/tp_padding_xsmall"
@@ -344,7 +354,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_12"
             android:layout_weight="1"
-            android:background="@drawable/bg_button_buy_orange"
+            android:background="@drawable/bg_button_buy_orange_tokopoints"
             android:gravity="center"
             android:textAllCaps="false"
             android:textColor="@color/white"
@@ -354,5 +364,5 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/top_shaded_view" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl4">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/edited_key"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:textColor="#273238"
         android:textSize="@dimen/fontSize_lvl4" />
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/new_config_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         android:paddingBottom="@dimen/spacing_lvl3"
         android:background="@color/Green_G500">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/remote_config_edit_btn_save"

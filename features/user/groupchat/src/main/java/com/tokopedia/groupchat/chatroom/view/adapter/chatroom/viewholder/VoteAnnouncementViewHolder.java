@@ -2,7 +2,7 @@ package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -77,7 +77,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         }
 
         voteTitle.setText(R.string.title_poll_finished);
-        voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.black_54));
+        voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), com.tokopedia.design.R.color.black_54));
     }
 
     private void setVoteStarted(VoteAnnouncementViewModel element) {

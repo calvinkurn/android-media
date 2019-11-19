@@ -1,7 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter.viewmodel.home;
 
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;

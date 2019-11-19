@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view.customdialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;

@@ -5,7 +5,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,7 +44,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view"
             app:srcCompat="@drawable/ic_send_24dp_green"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chat_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -67,7 +67,7 @@
             android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
-            android:background="@drawable/bg_rounded_chat_input"
+            android:background="@drawable/bg_reverse_rounded_chat_input"
             android:inputType="textMultiLine"
             android:maxLines="5"
             android:paddingBottom="@dimen/dp_8"
@@ -119,11 +119,11 @@
                 android:layout_height="@dimen/arrow_size"
                 android:layout_gravity="center_vertical"
                 android:rotation="180"
-                app:srcCompat="@drawable/ic_arrow_up_green" />
+                app:srcCompat="@drawable/ic_arrow_up_green_thick" />
 
         </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/loading"

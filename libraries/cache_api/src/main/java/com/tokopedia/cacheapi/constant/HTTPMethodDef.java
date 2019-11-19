@@ -1,6 +1,6 @@
 package com.tokopedia.cacheapi.constant;
 
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 
 import static com.tokopedia.cacheapi.constant.HTTPMethodDef.TYPE_DELETE;
 import static com.tokopedia.cacheapi.constant.HTTPMethodDef.TYPE_GET;

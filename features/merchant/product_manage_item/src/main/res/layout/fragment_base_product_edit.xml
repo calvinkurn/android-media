@@ -91,13 +91,13 @@
                 android:orientation="vertical"
                 android:layout_marginLeft="@dimen/dp_16">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewCategory"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_weight="1"
                     style="@style/TextView.Title.Bold" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/textViewCatalog"
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_weight="1"
@@ -117,7 +117,7 @@
                         android:layout_height="wrap_content"
                         app:srcCompat="@drawable/ic_edit_product"/>
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_weight="1"
                         style="@style/TextView.Small.Green"
                         android:text="@string/label_edit"

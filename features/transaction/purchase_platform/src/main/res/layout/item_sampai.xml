@@ -59,7 +59,7 @@
         android:textSize="@dimen/sp_12"
         tools:text="@string/corner_info_ticker" />
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/view_tkpd_corner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
                 android:theme="@style/TransactionToggleButton" />
 
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/button_tkpd_corner"

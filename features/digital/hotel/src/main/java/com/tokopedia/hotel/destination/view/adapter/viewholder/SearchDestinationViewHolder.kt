@@ -1,6 +1,6 @@
 package com.tokopedia.hotel.destination.view.adapter.viewholder
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextUtils

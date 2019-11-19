@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.listener
 
 import android.app.Activity
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

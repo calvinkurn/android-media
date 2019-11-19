@@ -2,11 +2,11 @@ package com.tokopedia.tokopoints.view.customview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -78,17 +78,17 @@ public class ServerErrorView extends NestedScrollView {
 
         int noConnectionImageId = R.drawable.ic_tp_toped_sorry;
         int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_medium);
-        int buttonColor = MethodChecker.getColor(getContext(), R.color.transparent);
-        int buttonFontColor = MethodChecker.getColor(getContext(), R.color.tkpd_main_green);
+        int buttonColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.transparent);
+        int buttonFontColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.tkpd_main_green);
 
         if (!hasInternet) {
 
             noConnectionImageId = R.drawable.ic_tp_no_connection;
             buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_large);
 
-            buttonColor = MethodChecker.getColor(getContext(), R.color.bg_button_green_border_outline);
+            buttonColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.bg_button_green_border_outline);
 
-            buttonFontColor = MethodChecker.getColor(getContext(), R.color.white);
+            buttonFontColor = MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.white);
             errorTitle = getResources().getText(R.string.tp_no_internet_title);
             errorSubTitle = getResources().getText(R.string.tp_no_internet_label);
         }

@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.filter.common.data.Option;
 

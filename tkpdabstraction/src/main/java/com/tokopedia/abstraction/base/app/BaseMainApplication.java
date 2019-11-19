@@ -1,7 +1,7 @@
 package com.tokopedia.abstraction.base.app;
 
 import android.content.Context;
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;

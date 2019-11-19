@@ -1,9 +1,8 @@
 package com.tokopedia.flight.passenger.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator;
 import com.tokopedia.flight.passenger.domain.FlightPassengerUpdateDataUseCase;
@@ -105,9 +104,9 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
 
         if (flightPassengerInfoValidator.validateDateNotBetween(minDate, maxDate, newReturnDate)) {
             if (isChildPassenger()) {
-                getView().showPassengerChildBirthdateShouldMoreThan2Years(R.string.flight_booking_passenger_birthdate_child_shoud_more_than_two_years);
+                getView().showPassengerChildBirthdateShouldMoreThan2Years(com.tokopedia.flight.R.string.flight_booking_passenger_birthdate_child_shoud_more_than_two_years);
             } else if (isInfantPassenger()) {
-                getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
+                getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(com.tokopedia.flight.R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
             }
         } else {
             String birthdateStr = FlightDateUtil.dateToString(newReturnDate,
@@ -128,7 +127,7 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
         maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, PLUS_ONE);
 
         if (flightPassengerInfoValidator.validateDateExceedMaxDate(maxDate, newReturnDate)) {
-            getView().showPassengerAdultBirthdateShouldMoreThan12Years(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
+            getView().showPassengerAdultBirthdateShouldMoreThan12Years(com.tokopedia.flight.R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
         } else {
             String birthdateStr = FlightDateUtil.dateToString(newReturnDate,
                     FlightDateUtil.DEFAULT_VIEW_FORMAT);
@@ -176,12 +175,12 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
         if (!flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(FlightDateUtil
                 .dateToString(expiredDate, FlightDateUtil.DEFAULT_VIEW_FORMAT), minDate)) {
             getView().showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(
-                    R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
+                    com.tokopedia.flight.R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
                     FlightDateUtil.dateToString(minDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
         } else if (!flightPassengerInfoValidator.validateExpiredDateOfPassportMax20Years(FlightDateUtil
                 .dateToString(expiredDate, FlightDateUtil.DEFAULT_VIEW_FORMAT), maxDate)) {
             getView().showPassportExpiredDateMax20Years(
-                    R.string.flight_passenger_passport_expired_date_more_than_20_year_error,
+                    com.tokopedia.flight.R.string.flight_passenger_passport_expired_date_more_than_20_year_error,
                     FlightDateUtil.dateToString(maxDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
         } else {
             String expiredDateStr = FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
@@ -253,16 +252,16 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
         if (isAdultPassenger()) {
             getView().renderSpinnerForAdult();
             getView().renderPassengerType(
-                    getView().getString(R.string.flightbooking_price_adult_label));
+                    getView().getString(com.tokopedia.flight.R.string.flightbooking_price_adult_label));
         } else {
             getView().renderSpinnerForChildAndInfant();
 
             if (isChildPassenger()) {
                 getView().renderPassengerType(
-                        getView().getString(R.string.flightbooking_price_child_label));
+                        getView().getString(com.tokopedia.flight.R.string.flightbooking_price_child_label));
             } else if (isInfantPassenger()) {
                 getView().renderPassengerType(
-                        getView().getString(R.string.flightbooking_price_infant_label));
+                        getView().getString(com.tokopedia.flight.R.string.flightbooking_price_infant_label));
             }
         }
 
@@ -351,73 +350,73 @@ public class FlightPassengerUpdatePresenter extends BaseDaggerPresenter<FlightPa
 
         if (flightPassengerInfoValidator.validateNameIsEmpty(getView().getPassengerFirstName())) {
             isValid = false;
-            getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_first_name_empty_error);
+            getView().showPassengerNameEmptyError(com.tokopedia.flight.R.string.flight_booking_passenger_first_name_empty_error);
         } else if (flightPassengerInfoValidator.validateNameIsNotAlphabetAndSpaceOnly(getView().getPassengerFirstName())) {
             isValid = false;
-            getView().showPassengerFirstNameShouldAlphabetAndSpaceOnlyError(R.string.flight_booking_passenger_first_name_alpha_space_error);
+            getView().showPassengerFirstNameShouldAlphabetAndSpaceOnlyError(com.tokopedia.flight.R.string.flight_booking_passenger_first_name_alpha_space_error);
         } else if (flightPassengerInfoValidator.validateNameIsMoreThanMaxLength(
                 getView().getPassengerFirstName(), getView().getPassengerLastName())) {
             isValid = false;
-            getView().showPassengerFirstNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_first_last_name_max_error);
+            getView().showPassengerFirstNameShouldNoMoreThanMaxError(com.tokopedia.flight.R.string.flight_booking_passenger_first_last_name_max_error);
         } else if (flightPassengerInfoValidator.validateNameIsEmpty(getView().getPassengerLastName())) {
             isValid = false;
-            getView().showPassengerLastNameShouldSameWithFirstNameError(R.string.flight_booking_passenger_last_name_should_same_error);
+            getView().showPassengerLastNameShouldSameWithFirstNameError(com.tokopedia.flight.R.string.flight_booking_passenger_last_name_should_same_error);
         } else if (flightPassengerInfoValidator.validateLastNameIsLessThanMinLength(getView().getPassengerLastName())) {
             isValid = false;
-            getView().showPassengerLastNameEmptyError(R.string.flight_booking_passenger_last_name_empty_error);
+            getView().showPassengerLastNameEmptyError(com.tokopedia.flight.R.string.flight_booking_passenger_last_name_empty_error);
         } else if (flightPassengerInfoValidator.validateLastNameIsNotSingleWord(getView().getPassengerLastName())) {
             isValid = false;
-            getView().showPassengerLastNameShouldOneWordError(R.string.flight_booking_passenger_last_name_single_word_error);
+            getView().showPassengerLastNameShouldOneWordError(com.tokopedia.flight.R.string.flight_booking_passenger_last_name_single_word_error);
         } else if (flightPassengerInfoValidator.validateNameIsNotAlphabetAndSpaceOnly(getView().getPassengerLastName())) {
             isValid = false;
-            getView().showPassengerLastNameShouldAlphabetAndSpaceOnlyError(R.string.flight_booking_passenger_last_name_alpha_space_error);
+            getView().showPassengerLastNameShouldAlphabetAndSpaceOnlyError(com.tokopedia.flight.R.string.flight_booking_passenger_last_name_alpha_space_error);
         } else if (flightPassengerInfoValidator.validateTitleIsEmpty(getView().getPassengerTitle())) {
             isValid = false;
-            getView().showPassengerTitleEmptyError(R.string.flight_bookingpassenger_title_error);
+            getView().showPassengerTitleEmptyError(com.tokopedia.flight.R.string.flight_bookingpassenger_title_error);
         } else if ((isChildPassenger() || isInfantPassenger()) &&
                 !flightPassengerInfoValidator.validateBirthdateNotEmpty(getView().getPassengerBirthdate())) {
             isValid = false;
-            getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
+            getView().showPassengerBirthdateEmptyError(com.tokopedia.flight.R.string.flight_booking_passenger_birthdate_empty_error);
         } else if ((isAdultPassenger()) && !flightPassengerInfoValidator.validateBirthdateNotEmpty(
                 getView().getPassengerBirthdate())) {
             isValid = false;
-            getView().showPassengerBirthdateEmptyError(R.string.flight_booking_passenger_birthdate_empty_error);
+            getView().showPassengerBirthdateEmptyError(com.tokopedia.flight.R.string.flight_booking_passenger_birthdate_empty_error);
         } else if (isAdultPassenger() && flightPassengerInfoValidator.validateBirthdateNotEmpty(
                 getView().getPassengerBirthdate()) &&
                 flightPassengerInfoValidator.validateDateMoreThan(getView().getPassengerBirthdate(), twelveYearsAgo)) {
             isValid = false;
-            getView().showPassengerAdultBirthdateShouldMoreThan12Years(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
+            getView().showPassengerAdultBirthdateShouldMoreThan12Years(com.tokopedia.flight.R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
         } else if (isChildPassenger() && flightPassengerInfoValidator.validateDateMoreThan(
                 getView().getPassengerBirthdate(), twoYearsAgo)) {
             isValid = false;
-            getView().showPassengerChildBirthdateShouldMoreThan2Years(R.string.flight_booking_passenger_birthdate_child_shoud_more_than_two_years);
+            getView().showPassengerChildBirthdateShouldMoreThan2Years(com.tokopedia.flight.R.string.flight_booking_passenger_birthdate_child_shoud_more_than_two_years);
         } else if (isInfantPassenger() && flightPassengerInfoValidator.validateDateLessThan(
                 getView().getPassengerBirthdate(), twoYearsAgo)) {
             isValid = false;
-            getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
+            getView().showPassengerInfantBirthdateShouldNoMoreThan2Years(com.tokopedia.flight.R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
         } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberNotEmpty(getView().getPassportNumber())) {
             isValid = false;
-            getView().showPassengerPassportNumberEmptyError(R.string.flight_booking_passport_number_empty_error);
+            getView().showPassengerPassportNumberEmptyError(com.tokopedia.flight.R.string.flight_booking_passport_number_empty_error);
         } else if (isNeedPassport && getView().getCurrentPassengerViewModel().getPassportExpiredDate() == null) {
             isValid = false;
-            getView().showPassengerPassportExpiredDateEmptyError(R.string.flight_booking_passport_expired_date_empty_error);
+            getView().showPassengerPassportExpiredDateEmptyError(com.tokopedia.flight.R.string.flight_booking_passport_expired_date_empty_error);
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
                 getView().getPassportExpiredDate(), sixMonthFromDeparture)) {
             isValid = false;
             getView().showPassportExpiredDateShouldMoreThan6MonthsFromDeparture(
-                    R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
+                    com.tokopedia.flight.R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
                     FlightDateUtil.dateToString(sixMonthFromDeparture, FlightDateUtil.DEFAULT_VIEW_FORMAT));
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportMax20Years(
                 getView().getPassportExpiredDate(), twentyYearsFromToday)) {
             getView().showPassportExpiredDateMax20Years(
-                    R.string.flight_passenger_passport_expired_date_more_than_20_year_error,
+                    com.tokopedia.flight.R.string.flight_passenger_passport_expired_date_more_than_20_year_error,
                     FlightDateUtil.dateToString(twentyYearsFromToday, FlightDateUtil.DEFAULT_VIEW_FORMAT));
         } else if (isNeedPassport && getView().getCurrentPassengerViewModel().getPassportNationality() == null) {
             isValid = false;
-            getView().showPassportNationalityEmptyError(R.string.flight_booking_passport_nationality_empty_error);
+            getView().showPassportNationalityEmptyError(com.tokopedia.flight.R.string.flight_booking_passport_nationality_empty_error);
         } else if (isNeedPassport && getView().getCurrentPassengerViewModel().getPassportIssuerCountry() == null) {
             isValid = false;
-            getView().showPassportIssuerCountryEmptyError(R.string.flight_booking_passport_issuer_country_empty_error);
+            getView().showPassportIssuerCountryEmptyError(com.tokopedia.flight.R.string.flight_booking_passport_issuer_country_empty_error);
         }
 
         return isValid;

@@ -49,8 +49,8 @@ public class GetKolFollowingListSubscriber extends Subscriber<KolFollowingResult
     public static KolFollowingResultViewModel mappingViewModel(KolFollowingResultDomain domain) {
         return new KolFollowingResultViewModel(
                 domain.isCanLoadMore(),
-                domain.getLastCursor(),
                 mappingViewModels(domain.getKolFollowingDomainList()),
+                domain.getLastCursor(),
                 domain.getButtonText(),
                 domain.getButtonApplink());
     }

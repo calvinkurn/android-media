@@ -3,8 +3,8 @@ package com.tokopedia.flight.common.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.flight.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,15 +53,15 @@ public class FlightMultiAirlineView extends LinearLayout {
             airlineLogoList = new ArrayList<>();
             airlineLogoList.add("");
         } else if (airlineLogoList.size() > 1) {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.view_airline_logo, this, false);
-            ImageView ivAirline = view.findViewById(R.id.iv_airline_logo);
-            ivAirline.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_multi_airlines));
+            View view = LayoutInflater.from(getContext()).inflate(com.tokopedia.flight.R.layout.view_airline_logo, this, false);
+            ImageView ivAirline = view.findViewById(com.tokopedia.flight.R.id.iv_airline_logo);
+            ivAirline.setImageDrawable(ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.flight_ic_multi_airlines));
             addView(ivAirline);
         } else if (airlineLogoList.size() == 1) {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.view_airline_logo, this, false);
-            ImageView ivAirline = view.findViewById(R.id.iv_airline_logo);
+            View view = LayoutInflater.from(getContext()).inflate(com.tokopedia.flight.R.layout.view_airline_logo, this, false);
+            ImageView ivAirline = view.findViewById(com.tokopedia.flight.R.id.iv_airline_logo);
             ImageHandler.loadImageWithoutPlaceholder(ivAirline, airlineLogoList.get(0),
-                    ContextCompat.getDrawable(getContext(), R.drawable.ic_airline_default)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.flight_ic_airline_default)
             );
             addView(view);
         }

@@ -2,10 +2,11 @@ package com.tokopedia.chat_common.view.fragment
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.tokopedia.chat_common.view.adapter.ChatMenuAdapter
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import java.lang.IllegalStateException
+
 
 class BottomChatMenuFragment : BottomSheetDialogFragment() {
 
@@ -32,10 +34,6 @@ class BottomChatMenuFragment : BottomSheetDialogFragment() {
         }
 
         initChatMenuFactory()
-    }
-
-    override fun getTheme(): Int {
-        return R.style.BottomSheetDialogTheme
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -65,5 +63,9 @@ class BottomChatMenuFragment : BottomSheetDialogFragment() {
         val TAG = "rounded_bottom_chat_menu"
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        (view?.parent as View).setBackgroundColor(Color.TRANSPARENT)
+    }
 
 }

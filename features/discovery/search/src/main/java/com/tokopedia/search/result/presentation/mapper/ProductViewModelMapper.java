@@ -2,12 +2,10 @@ package com.tokopedia.search.result.presentation.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.search.result.domain.model.GuidedSearchModel;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
@@ -32,13 +30,6 @@ public class ProductViewModelMapper {
         if (searchProduct.getRelated() != null &&
                 !TextUtils.isEmpty(searchProduct.getRelated().getRelatedKeyword())) {
             productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProduct.getRelated()));
-        } else if (searchProductModel.getGuidedSearchModel() != null) {
-            productViewModel.setGuidedSearchViewModel(
-                    convertToGuidedSearchViewModel(
-                            searchProductModel.getGuidedSearchModel(),
-                            searchProduct.getQuery()
-                    )
-            );
         }
         productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts()));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
@@ -118,28 +109,6 @@ public class ProductViewModelMapper {
         relatedSearchModel.setOtherRelated(otherRelatedList);
 
         return relatedSearchModel;
-    }
-
-    private GuidedSearchViewModel convertToGuidedSearchViewModel(GuidedSearchModel guidedSearchModel, String query) {
-        GuidedSearchViewModel model = new GuidedSearchViewModel();
-        List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
-
-        if (guidedSearchModel.getData() != null) {
-            for (int position = 0; position < guidedSearchModel.getData().size(); position++) {
-                itemList.add(mappingGuidedSearchItem(guidedSearchModel.getData().get(position), position, query));
-            }
-        }
-        model.setItemList(itemList);
-        return model;
-    }
-
-    private GuidedSearchViewModel.Item mappingGuidedSearchItem(GuidedSearchModel.GuidedSearchItem networkItem, int position, String query) {
-        GuidedSearchViewModel.Item viewModelItem = new GuidedSearchViewModel.Item();
-        viewModelItem.setKeyword(networkItem.getKeyword());
-        viewModelItem.setUrl(networkItem.getUrl());
-        viewModelItem.setPosition(position);
-        viewModelItem.setPreviousKey(query);
-        return viewModelItem;
     }
 
     private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels) {

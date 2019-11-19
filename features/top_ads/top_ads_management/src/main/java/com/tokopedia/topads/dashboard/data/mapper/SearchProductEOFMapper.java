@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.data.mapper;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.topads.dashboard.data.model.data.Product;
 import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;

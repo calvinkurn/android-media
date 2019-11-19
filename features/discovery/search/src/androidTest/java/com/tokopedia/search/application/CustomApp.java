@@ -1,6 +1,6 @@
 package com.tokopedia.search.application;
 
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 
 public class CustomApp extends MultiDexApplication {
 

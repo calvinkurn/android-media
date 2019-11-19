@@ -1,18 +1,17 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
@@ -44,6 +43,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+
+;
 
 
 public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContract.View>
@@ -229,7 +230,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        if (id == R.id.action_menu_share) {
+        if (id == com.tokopedia.digital_deals.R.id.action_menu_share) {
             Utils.getSingletonInstance().shareDeal(dealsDetailsResponse.getSeoUrl(),
                     getView().getActivity(), dealsDetailsResponse.getDisplayName(),
                     dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getDesktopUrl());

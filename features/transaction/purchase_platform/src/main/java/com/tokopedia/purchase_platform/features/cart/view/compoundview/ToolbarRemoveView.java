@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.features.cart.view.compoundview;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +16,9 @@ import com.tokopedia.design.base.BaseCustomView;
  */
 public class ToolbarRemoveView extends BaseCustomView {
 
-    public interface OnToolbarRemoveAllCartListener {
+    public interface ToolbarCartListener {
         void onToolbarRemoveAllCart();
+        void onGoToChuck();
     }
 
     public ToolbarRemoveView(@NonNull Context context) {
@@ -49,7 +50,7 @@ public class ToolbarRemoveView extends BaseCustomView {
             textView.setText(title);
     }
 
-    public void setOnClickRemove(OnToolbarRemoveAllCartListener clickRemove) {
+    public void setOnClickRemove(ToolbarCartListener clickRemove) {
         if (btnRemove != null)
             btnRemove.setOnClickListener(v -> clickRemove.onToolbarRemoveAllCart());
     }

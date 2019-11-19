@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -44,6 +45,7 @@ public class HomeDataSource {
 
     public HomeDataSource(HomeDataApi homeDataApi,
                           HomeAceApi homeAceApi,
+                          HomeMapper homeMapper,
                           Context context,
                           CacheManager cacheManager,
                           Gson gson) {
@@ -52,6 +54,7 @@ public class HomeDataSource {
         this.context = context;
         this.cacheManager = cacheManager;
         this.gson = gson;
+        this.homeMapper = homeMapper;
     }
 
     public Observable<HomeViewModel> getCache() {
@@ -67,7 +70,7 @@ public class HomeDataSource {
             throw new RuntimeException("Cache is empty!!");
         }).map(response -> {
             if(response.isSuccessful() && response.body() != null){
-                return new HomeViewModel(response.body().getData());
+                return response.body().getData();
             }else {
                 String messageError = getErrorMessage(response);
                 if (!TextUtils.isEmpty(messageError)) {
@@ -76,7 +79,7 @@ public class HomeDataSource {
                     throw new RuntimeException(String.valueOf(response.code()));
                 }
             }
-        });
+        }).map(homeMapper);
     }
 
     public Observable<HomeViewModel> getHomeData() {
@@ -85,7 +88,7 @@ public class HomeDataSource {
                 .map(saveToCache())
                 .map(response -> {
                     if(response.isSuccessful() && response.body() != null){
-                        return new HomeViewModel(response.body().getData());
+                        return response.body().getData();
                     }else {
                         String messageError = getErrorMessage(response);
                         if (!TextUtils.isEmpty(messageError)) {
@@ -94,7 +97,7 @@ public class HomeDataSource {
                             throw new RuntimeException(String.valueOf(response.code()));
                         }
                     }
-                });
+                }).map(homeMapper);
     }
 
     public Observable<Response<String>> sendGeolocationInfo() {

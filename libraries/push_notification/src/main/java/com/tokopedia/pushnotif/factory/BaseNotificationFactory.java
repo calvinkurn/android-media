@@ -51,6 +51,8 @@ public abstract class BaseNotificationFactory {
             return Constant.NotificationGroup.NEW_ORDER;
         } else if (appLink.contains("resolution")) {
             return Constant.NotificationGroup.RESOLUTION;
+        } else if (appLink.contains("review")) {
+            return Constant.NotificationGroup.REVIEW;
         } else {
             return Constant.NotificationGroup.GENERAL;
         }
@@ -78,9 +80,10 @@ public abstract class BaseNotificationFactory {
 
     protected Bitmap getBitmap(String url) {
         try {
-            return Glide.with(context).load(url)
+            return Glide.with(context)
                     .asBitmap()
-                    .into(getImageWidth(), getImageHeight())
+                    .load(url)
+                    .submit(getImageWidth(), getImageHeight())
                     .get(3, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e) {
             return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());

@@ -8,6 +8,7 @@ object ProductTrackingConstant {
         const val PRODUCT_PAGE = "Product Page"
         const val PDP_AFTER_ATC = "product detail page after atc"
         const val TOP_NAV_SEARCH_PDP = "top nav - search - product detail page"
+        const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
 
     }
 
@@ -30,6 +31,13 @@ object ProductTrackingConstant {
         const val CLICK_SEARCH_BOX = "click search box"
         const val CLICK_RIBBON_TRADE_IN = "click - ribbon trade in"
         const val CLICK_SEE_MORE_WIDGET = "click - see more on widget %s"
+        const val CLICK_SHARE_PDP = "click - share button"
+        const val CLICK_READ_MORE = "click - baca selengkapnya"
+        const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
+        const val CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION = "click - tab spesifikasi on description area"
+        const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - lihat semua metode on simulasi cicilan widget"
+
+
 
     }
 

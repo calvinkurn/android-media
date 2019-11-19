@@ -1,6 +1,6 @@
 package com.tokopedia.travel.homepage.presentation.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +29,10 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
         holder.bind(list[position], position, listener)
     }
 
+    fun updateList(newList: List<TravelHomepageDestinationModel.Destination>) {
+        this.list = newList
+        notifyDataSetChanged()
+    }
 
     class DestinationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

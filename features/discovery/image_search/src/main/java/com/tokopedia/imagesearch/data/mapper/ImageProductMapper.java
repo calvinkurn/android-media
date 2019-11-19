@@ -1,10 +1,13 @@
 package com.tokopedia.imagesearch.data.mapper;
 
+import android.content.Context;
+
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.imagesearch.domain.model.BadgeModel;
-import com.tokopedia.imagesearch.domain.model.LabelModel;
-import com.tokopedia.imagesearch.domain.model.ProductModel;
-import com.tokopedia.imagesearch.domain.model.SearchResultModel;
+import com.tokopedia.imagesearch.analytics.ImageSearchTracking;
+import com.tokopedia.imagesearch.domain.viewmodel.BadgeItem;
+import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
+import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
+import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
 import com.tokopedia.imagesearch.network.response.ImageSearchProductResponse;
 import com.tokopedia.imagesearch.network.response.SearchProductResponse;
 
@@ -17,89 +20,91 @@ import rx.functions.Func1;
  * Created by sachinbansal on 5/29/18.
  */
 
-public class ImageProductMapper implements Func1<GraphqlResponse, SearchResultModel> {
+public class ImageProductMapper implements Func1<GraphqlResponse, ProductViewModel> {
 
     @Override
-    public SearchResultModel call(GraphqlResponse response) {
+    public ProductViewModel call(GraphqlResponse response) {
         ImageSearchProductResponse searchProductResponse = response.getData(ImageSearchProductResponse.class);
-        return mappingPojoIntoDomain(searchProductResponse.getSearchProductResponse());
+        return convertToProductViewModel(searchProductResponse);
     }
 
-    public SearchResultModel mappingPojoIntoDomain(SearchProductResponse searchProductResponse) {
-        SearchResultModel model = new SearchResultModel();
-        model.setTotalData(searchProductResponse.getHeader().getTotalData());
-        model.setAdditionalParams(searchProductResponse.getHeader().getAdditionalParams());
+    public ProductViewModel convertToProductViewModel(ImageSearchProductResponse response) {
+        SearchProductResponse searchProductResponse = response.getSearchProductResponse();
 
-        model.setProductList(mappingProduct(searchProductResponse.getData().getProducts()));
-        model.setQuery(searchProductResponse.getData().getQuery());
-        model.setShareUrl(searchProductResponse.getData().getShareUrl());
-
-        return model;
+        ProductViewModel productViewModel = new ProductViewModel();
+        productViewModel.setProductList(convertToProductItemList(searchProductResponse.getData().getProducts()));
+        productViewModel.setCategoryFilterModel(convertToCategoryFilterModel(searchProductResponse.getData().getCategories()));
+        productViewModel.setQuery(searchProductResponse.getData().getQuery());
+        productViewModel.setToken(searchProductResponse.getData().getToken());
+        productViewModel.setDynamicFilterModel(response.getDynamicFilterModel());
+        productViewModel.setTotalData(searchProductResponse.getHeader().getTotalData());
+        productViewModel.setTotalDataText(searchProductResponse.getHeader().getTotalDataText());
+        return productViewModel;
     }
 
-    private List<ProductModel> mappingProduct(List<SearchProductResponse.Data.Products> products) {
-        List<ProductModel> list = new ArrayList<>();
-        for (SearchProductResponse.Data.Products data : products) {
-            ProductModel model = new ProductModel();
-            model.setProductID(data.getId());
-            model.setProductName(data.getName());
-            model.setProductUrl(data.getUrl());
-            model.setImageUrl(data.getImageUrl());
-            model.setImageUrl700(data.getImageUrl700());
-            model.setRating(data.getRating());
-            model.setCountReview(data.getCountReview());
-            model.setCountCourier(data.getCountCourier());
-            model.setDiscountPercentage(data.getDiscountPercentage());
-            model.setOriginalPrice(data.getOriginalPrice());
-            model.setPrice(data.getPrice());
-            model.setPriceRange(data.getPriceRange());
-            model.setShopID(data.getShop().getId());
-            model.setShopName(data.getShop().getName());
-            model.setShopCity(data.getShop().getCity());
-            model.setGoldMerchant(data.getShop().isIsGold());
-            model.setOfficial(data.getShop().isOfficial());
-            model.setLabelList(mappingLabels(data.getLabels()));
-            model.setBadgesList(mappingBadges(data.getBadges()));
-            model.setFeatured(data.getIsFeatured() == 1);
-            model.setTopLabel(isContainItems(data.getTopLabel()) ? data.getTopLabel().get(0) : "");
-            model.setBottomLabel(isContainItems(data.getBottomLabel()) ? data.getBottomLabel().get(0) : "");
-            model.setCategoryId(data.getCategoryId());
-            model.setCategoryName(data.getCategoryName());
-            model.setCategoryBreadcrumb(data.getCategoryBreadcrumb());
-            list.add(model);
+    private CategoryFilterModel convertToCategoryFilterModel(List<SearchProductResponse.Data.Categories> categories) {
+        List<CategoryFilterModel.Item> itemList = new ArrayList<>();
+        for (SearchProductResponse.Data.Categories category : categories) {
+            itemList.add(new CategoryFilterModel.Item(category.getName(), category.getId()));
         }
-        return list;
+        return new CategoryFilterModel(itemList);
     }
 
-    private boolean isContainItems(List list) {
-        return list != null && !list.isEmpty();
-    }
+    private List<ProductItem> convertToProductItemList(List<SearchProductResponse.Data.Products> responseProductList) {
+        List<ProductItem> productItemList = new ArrayList<>();
 
-    private List<LabelModel> mappingLabels(List<SearchProductResponse.Data.Products.Labels> labels) {
-        List<LabelModel> list = new ArrayList<>();
+        int position = 0;
 
-        if (labels == null || labels.size() == 0) return list;
-
-        for (SearchProductResponse.Data.Products.Labels data : labels) {
-            LabelModel model = new LabelModel();
-            model.setTitle(data.getTitle());
-            model.setColor(data.getColor());
-            list.add(model);
+        for (SearchProductResponse.Data.Products product : responseProductList) {
+            position++;
+            productItemList.add(convertToProductItem(product, position));
         }
-        return list;
+
+        return productItemList;
     }
 
-    private List<BadgeModel> mappingBadges(List<SearchProductResponse.Data.Products.Badges> badges) {
-        List<BadgeModel> list = new ArrayList<>();
-        if (badges == null || badges.size() == 0) return list;
-        for (SearchProductResponse.Data.Products.Badges data : badges) {
-            BadgeModel model = new BadgeModel();
-            model.setTitle(data.getTitle());
-            model.setImageUrl(data.getImageUrl());
-            model.setShown(data.isShown());
-            list.add(model);
+    private static ProductItem convertToProductItem(SearchProductResponse.Data.Products product, int position) {
+        ProductItem productItem = new ProductItem();
+        productItem.setProductID(product.getId());
+        productItem.setProductName(product.getName());
+        productItem.setImageUrl(product.getImageUrl());
+        productItem.setImageUrl700(product.getImageUrl700());
+        productItem.setRating(product.getRating());
+        productItem.setCountReview(product.getCountReview());
+        productItem.setCountCourier(product.getCountCourier());
+        productItem.setDiscountPercentage(product.getDiscountPercentage());
+        productItem.setOriginalPrice(product.getOriginalPrice());
+        productItem.setPrice(product.getPrice());
+        productItem.setPriceRange(product.getPriceRange());
+        productItem.setShopID(product.getShop().getId());
+        productItem.setShopName(product.getShop().getName());
+        productItem.setShopCity(product.getShop().getCity());
+        productItem.setGoldMerchant(product.getShop().isIsGold());
+        productItem.setOfficial(product.getShop().isOfficial());
+        productItem.setWishlisted(product.isWishlist());
+        productItem.setBadgesList(convertToBadgesItemList(product.getBadges()));
+        productItem.setPosition(position);
+        productItem.setCategoryID(product.getCategoryId());
+        productItem.setCategoryBreadcrumb(product.getCategoryBreadcrumb());
+        productItem.setCategoryName(product.getCategoryName());
+        return productItem;
+    }
+
+    private static List<BadgeItem> convertToBadgesItemList(List<SearchProductResponse.Data.Products.Badges> badgesList) {
+        List<BadgeItem> badgeItemList = new ArrayList<>();
+
+        for (SearchProductResponse.Data.Products.Badges badgeModel : badgesList) {
+            badgeItemList.add(convertToBadgeItem(badgeModel));
         }
-        return list;
+        return badgeItemList;
+    }
+
+    private static BadgeItem convertToBadgeItem(SearchProductResponse.Data.Products.Badges badgeModel) {
+        BadgeItem badgeItem = new BadgeItem();
+        badgeItem.setImageUrl(badgeModel.getImageUrl());
+        badgeItem.setTitle(badgeModel.getTitle());
+        badgeItem.setShown(badgeModel.isShown());
+        return badgeItem;
     }
 }
 

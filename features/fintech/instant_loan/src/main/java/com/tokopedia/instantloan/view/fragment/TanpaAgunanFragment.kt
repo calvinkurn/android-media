@@ -63,13 +63,11 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     private var loanPeriodTypeList: ArrayList<LoanPeriodType> = ArrayList()
     private var loanCategoryTypeList: ArrayList<GqlLendingCategoryData> = ArrayList()
     private var loanAmountList: ArrayList<GqlLoanAmountResponse> = ArrayList()
-    private var mCurrentTab: Int = 0
     private var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
-        mCurrentTab = arguments?.getInt(TAB_POSITION) ?: 0
     }
 
     override fun onAttachActivity(context: Context) {
@@ -372,7 +370,6 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
 
     companion object {
 
-        private val TAB_POSITION = "tab_position"
 
         private val DEFAULT_LOAN_CATEGORY = 0
         private val DEFAULT_MONTH_VALUE = "Month"
@@ -385,9 +382,8 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         private val LOAN_PERIOD_YEAR = 14
         private val LOAN_CATEGORY_TYPE = 15
 
-        fun createInstance(position: Int): TanpaAgunanFragment {
+        fun createInstance(): TanpaAgunanFragment {
             val bundle = Bundle()
-            bundle.putInt(TAB_POSITION, position)
             val tanpaAgunanFragment = TanpaAgunanFragment()
             tanpaAgunanFragment.arguments = bundle
             return tanpaAgunanFragment

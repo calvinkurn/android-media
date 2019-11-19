@@ -10,17 +10,17 @@
     android:gravity="center"
     android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/dp_8"
         android:layout_height="@dimen/dp_8"
-        app:srcCompat="@drawable/circle_green_stroke" />
+        app:srcCompat="@drawable/flight_circle_green_stroke" />
 
     <View
         android:layout_width="20dp"
         android:layout_height="5dp"
-        android:background="@drawable/bg_dash_stroke_flight" />
+        android:background="@drawable/flight_bg_dash_stroke_flight" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         app:srcCompat="@drawable/ic_plane_flight" />

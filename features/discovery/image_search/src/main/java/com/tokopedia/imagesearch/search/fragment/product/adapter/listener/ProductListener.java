@@ -1,7 +1,7 @@
 package com.tokopedia.imagesearch.search.fragment.product.adapter.listener;
 
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 
@@ -16,7 +16,6 @@ public interface ProductListener {
 
     void onProductImpressed(ProductItem item, int adapterPosition);
 
-    void onEmptyButtonClicked();
     boolean isUserHasLogin();
     String getUserId();
 }

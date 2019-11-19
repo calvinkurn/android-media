@@ -1,7 +1,7 @@
 package com.tokopedia.imagepicker.picker.instagram.data.source.exception;
 
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 /**
  * Created by zulfikarrahman on 5/4/18.

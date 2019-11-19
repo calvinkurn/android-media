@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.presenter;
 
-import android.support.v7.widget.GridLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.tokopedia.core.var.RecyclerViewItem;
 

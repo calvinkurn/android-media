@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.imagesearch.R
 
@@ -19,12 +19,17 @@ class BadgeHelper {
         fun loadShopBadgesIcon(url: String, linearLayoutShopBadges: LinearLayout, context: Context) {
             if (!TextUtils.isEmpty(url)) {
                 val view = LayoutInflater.from(context).inflate(R.layout.image_search_product_item_badge_layout, null)
-                ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {
-                        loadShopBadgeSuccess(view, linearLayoutShopBadges, bitmap)
+                ImageHandler.loadImageBitmap2(context, url, object : CustomTarget<Bitmap>() {
+                    override fun onLoadCleared(placeholder: Drawable?) {
+
                     }
 
-                    override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        loadShopBadgeSuccess(view, linearLayoutShopBadges, resource)
+                    }
+
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        super.onLoadFailed(errorDrawable)
                         loadShopBadgeFailed(view)
                     }
                 })

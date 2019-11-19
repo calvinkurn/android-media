@@ -2,7 +2,7 @@ package com.tokopedia.core.webview.fragment;
 
 import android.graphics.Bitmap;
 import android.net.http.SslError;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;

@@ -3,7 +3,7 @@ package com.tokopedia.chatbot.attachinvoice.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
@@ -41,12 +41,12 @@ class AttachInvoiceActivity : BaseSimpleActivity(), AttachInvoiceContract.Activi
         title = getString(R.string.string_attach_invoice_activity_title);
         super.setupLayout(savedInstanceState)
         if (supportActionBar != null) {
-            supportActionBar?.setBackgroundDrawable(resources.getDrawable(R.drawable
+            supportActionBar?.setBackgroundDrawable(resources.getDrawable(com.tokopedia.design.R.drawable
                     .bg_white_toolbar_drop_shadow))
-            supportActionBar?.setHomeAsUpIndicator(resources.getDrawable(R.drawable
+            supportActionBar?.setHomeAsUpIndicator(resources.getDrawable(com.tokopedia.design.R.drawable
                     .ic_close_default));
-            toolbar.setSubtitleTextAppearance(this, R.style.AttachProductToolbarSubTitle_SansSerif);
-            toolbar.setTitleTextAppearance(this, R.style.AttachProductToolbarTitle_SansSerif);
+            toolbar.setSubtitleTextAppearance(this, com.tokopedia.attachproduct.R.style.AttachProductToolbarSubTitle_SansSerif);
+            toolbar.setTitleTextAppearance(this, com.tokopedia.attachproduct.R.style.AttachProductToolbarTitle_SansSerif);
         }
     }
 

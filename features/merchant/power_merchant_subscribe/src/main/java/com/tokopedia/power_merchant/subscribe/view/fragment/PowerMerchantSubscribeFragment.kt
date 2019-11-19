@@ -36,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.showEmptyState
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
@@ -80,12 +81,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        activity?.let {
-            val appComponent = (it.application as BaseMainApplication).baseAppComponent
-            DaggerPowerMerchantSubscribeComponent.builder()
-                    .baseAppComponent(appComponent)
-                    .build().inject(this)
-        }
+            activity?.let {
+                val appComponent = (it.application as BaseMainApplication).baseAppComponent
+                DaggerPowerMerchantSubscribeComponent.builder()
+                        .baseAppComponent(appComponent)
+                        .build().inject(this)
+            }
         presenter.attachView(this)
     }
 
@@ -93,6 +94,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         fun createInstance() = PowerMerchantSubscribeFragment()
         const val ACTIVATE_INTENT_CODE = 123
         const val AUTOEXTEND_INTENT_CODE = 321
+        const val TURN_OFF_AUTOEXTEND_INTENT_CODE = 322
         const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
         const val MINIMUM_SCORE_ACTIVATE_IDLE = 65
     }
@@ -165,7 +167,14 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun cancelMembership() {
         bottomSheetCancel.dismiss()
-        presenter.setAutoExtendOff()
+        redirectToPMCancellationQuestionnairePage()
+    }
+
+    private fun redirectToPMCancellationQuestionnairePage() {
+        context?.let {
+            val intent = PMCancellationQuestionnaireActivity.newInstance(it)
+            startActivityForResult(intent, TURN_OFF_AUTOEXTEND_INTENT_CODE)
+        }
     }
 
     override fun onSuccessCancelMembership() {
@@ -398,6 +407,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             refreshData()
         } else if (requestCode == AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK) {
             isSuccessActivatedPm = true
+            refreshData()
+        } else if (requestCode == TURN_OFF_AUTOEXTEND_INTENT_CODE && resultCode == Activity.RESULT_OK){
             refreshData()
         }
     }

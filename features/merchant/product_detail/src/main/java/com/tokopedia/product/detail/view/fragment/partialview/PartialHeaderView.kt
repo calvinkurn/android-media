@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.fragment.partialview
 import android.app.Activity
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.style.ImageSpan
 import android.text.style.StyleSpan
@@ -94,7 +94,7 @@ class PartialHeaderView private constructor(private val view: View,
             product_name.text = MethodChecker.fromHtml(data.basic.name)
             when {
                 data.freeOngkir.isFreeOngkirActive -> {
-                    ImageHandler.loadImage(context, img_free_ongkir, data.freeOngkir.freeOngkirImgUrl, R.drawable.ic_loading_image)
+                    ImageHandler.loadImageRounded2(context, img_free_ongkir, data.freeOngkir.freeOngkirImgUrl)
                     img_free_ongkir.visibility = View.VISIBLE
                 }
                 else -> img_free_ongkir.visibility = View.GONE

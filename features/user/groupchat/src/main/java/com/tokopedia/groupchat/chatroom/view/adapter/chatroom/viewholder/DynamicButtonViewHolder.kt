@@ -1,6 +1,6 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
@@ -71,8 +71,8 @@ class DynamicButtonViewHolder(
                         .autoHide(true, intervalToHideMs)
                         .corner(30)
                         .clickToHide(false)
-                        .color(MethodChecker.getColor(icon.context, R.color.white))
-                        .textColor(MethodChecker.getColor(icon.context, R.color.black_70))
+                        .color(MethodChecker.getColor(icon.context, com.tokopedia.design.R.color.white))
+                        .textColor(MethodChecker.getColor(icon.context, com.tokopedia.design.R.color.black_70))
                         .position(ViewTooltip.Position.TOP)
                         .text(element.tooltip)
                         .textSize(TypedValue.COMPLEX_UNIT_SP, 12f)

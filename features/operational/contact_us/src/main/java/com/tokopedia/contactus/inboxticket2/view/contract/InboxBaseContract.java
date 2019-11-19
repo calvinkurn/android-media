@@ -2,7 +2,7 @@ package com.tokopedia.contactus.inboxticket2.view.contract;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.BottomSheetDialogFragment;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;

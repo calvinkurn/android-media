@@ -1,9 +1,8 @@
 package com.tokopedia.ovop2p.viewmodel
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.Context
+import androidx.lifecycle.ViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
@@ -15,11 +14,11 @@ import com.tokopedia.ovop2p.view.viewStates.WalletData
 import com.tokopedia.ovop2p.view.viewStates.WalletError
 import rx.Subscriber
 
-class GetWalletBalanceViewModel(application: Application) : AndroidViewModel(application) {
+class GetWalletBalanceViewModel : ViewModel() {
     var walletLiveData: MutableLiveData<WalletBalanceState> = MutableLiveData()
     var walletBalanceSubscriber: Subscriber<GraphqlResponse>? = null
     fun fetchWalletDetails(context: Context) {
-        OvoP2pUtil.executeOvoGetWalletData(context, getWalletDataSubscriber())
+        OvoP2pUtil.executeOvoGetWalletData(context, getWalletDataSubscriber(context))
     }
 
     override fun onCleared() {
@@ -29,14 +28,14 @@ class GetWalletBalanceViewModel(application: Application) : AndroidViewModel(app
         }
     }
 
-    private fun getWalletDataSubscriber(): Subscriber<GraphqlResponse> {
+    private fun getWalletDataSubscriber(context:Context): Subscriber<GraphqlResponse> {
         walletBalanceSubscriber = (object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
             }
 
             override fun onError(e: Throwable) {
-                walletLiveData.value = WalletError(getApplication<Application>().resources.getString(R.string.general_error))
+                walletLiveData.value = WalletError(context.resources.getString(R.string.general_error))
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -53,7 +52,7 @@ class GetWalletBalanceViewModel(application: Application) : AndroidViewModel(app
                         walletLiveData.value = WalletData(cashBal, sndrAmt)
                     }
                 } ?: run {
-                    walletLiveData.value = WalletError(getApplication<Application>().resources.getString(R.string.general_error))
+                    walletLiveData.value = WalletError(context.resources.getString(R.string.general_error))
                 }
             }
         })

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -75,7 +75,7 @@
                 android:textColor="@color/tkpd_grey_text"
                 android:textSize="12sp" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_shop_score_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -156,22 +156,6 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/button_go_to_gm_subscribe"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/background_shop_score_button_to_gm_subscribe"
-                android:gravity="center"
-                android:text="@string/button_go_to_gm_subscribe"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/button_go_to_seller_center"
@@ -194,4 +178,4 @@
     </FrameLayout>
 
 
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>

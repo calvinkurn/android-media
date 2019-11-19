@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

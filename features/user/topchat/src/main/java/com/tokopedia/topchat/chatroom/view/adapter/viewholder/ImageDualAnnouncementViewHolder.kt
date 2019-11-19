@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -45,11 +45,11 @@ class ImageDualAnnouncementViewHolder(itemView: View, private val viewListener: 
     override fun onViewRecycled() {
         super.onViewRecycled()
         if (top != null) {
-            Glide.clear(top)
+            Glide.with(itemView.context).clear(top)
         }
 
         if (bottom != null) {
-            Glide.clear(bottom)
+            Glide.with(itemView.context).clear(bottom)
         }
     }
 

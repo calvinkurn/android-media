@@ -1,8 +1,8 @@
 package com.tokopedia.train.seat.presentation.fragment.viewpager;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.tokopedia.train.seat.presentation.fragment.TrainWagonFragment;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;

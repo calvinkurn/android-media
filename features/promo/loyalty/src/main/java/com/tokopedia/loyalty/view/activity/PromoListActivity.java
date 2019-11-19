@@ -5,8 +5,8 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.ticker.TouchViewPager2;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.applink.LoyaltyAppLink;
@@ -88,7 +89,7 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     }
 
     @SuppressWarnings("unused")
-    @DeepLink(LoyaltyAppLink.PROMO_NATIVE)
+    @DeepLink(ApplinkConst.PROMO_LIST)
     public static Intent getAppLinkIntent(Context context, Bundle extras) {
         String autoSelectedMenuId = extras.getString(
                 LoyaltyAppLink.PROMO_NATIVE_QUERY_MENU_ID, DEFAULT_AUTO_SELECTED_MENU_ID

@@ -5,24 +5,28 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.support.annotation.LayoutRes
-import android.support.design.widget.Snackbar
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.support.v7.widget.CardView
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.*
@@ -30,10 +34,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactoryImpl
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder.ProductItemViewHolder
+import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.home_dc_banner_recyclerview.view.*
 
 class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCategoryListener, countDownListener: CountDownView.CountDownListener)
     : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener) {
@@ -67,19 +74,21 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     var bannerImage = itemView.findViewById<ImageView>(R.id.banner_image)
     var backgroundBanner = itemView.findViewById<ContainerUnify>(R.id.backgroundBanner)
     val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
+    private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
 
     companion object {
         val TYPE_CAROUSEL = "carousel"
         val TYPE_NON_CAROUSEL = "non carousel"
         @LayoutRes
         val LAYOUT = R.layout.home_dc_banner_recyclerview
+        val DEFAULT_BANNER_MIX_SPAN_COUNT = 3
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         clearItemRecyclerViewDecoration(recyclerView)
         mappingBackgroundContainerUnify(channel)
-        mappingView(channel)
         valuateRecyclerViewDecoration(channel)
+        mappingView(channel)
     }
 
     private fun valuateRecyclerViewDecoration(channel: DynamicHomeChannel.Channels) {
@@ -87,7 +96,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> {
                 recyclerView.layoutManager = GridLayoutManager(
                         itemView.context,
-                        3
+                        DEFAULT_BANNER_MIX_SPAN_COUNT
                 )
                 /**
                  * Add margin for recyclerview on for non-carousel banner
@@ -107,7 +116,10 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                         LinearLayoutManager.HORIZONTAL,
                         false
                 )
-
+                /**
+                 * Attach startSnapHelper to recyclerView
+                 */
+                startSnapHelper.attachToRecyclerView(recyclerView)
                 /**
                  * Make recyclerview to fill viewport width
                  */
@@ -131,16 +143,18 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
         bannerTitle.text = bannerItem.title
         bannerDescription.text = bannerItem.description
-
-        bannerTitle.setTextColor(Color.parseColor(bannerItem.textColor))
-        bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
+        val textColor = if(bannerItem.textColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
+        bannerTitle.setTextColor(textColor)
+        bannerDescription.setTextColor(textColor)
 
         Glide.with(itemView.context)
-                .load(bannerItem.imageUrl)
                 .asBitmap()
+                .load(bannerItem.imageUrl)
                 .centerCrop()
                 .dontAnimate()
                 .into(getRoundedImageViewTarget(bannerImage, 24f))
+
+        measureParentView(homeCategoryListener.getWindowWidth(), recyclerView)
 
         recyclerView.adapter = BannerItemAdapter(
                 BannerMixTypeFactoryImpl(homeCategoryListener),
@@ -148,7 +162,10 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 channel.grids,
                 channel,
                 homeCategoryListener,
-                visitables
+                visitables,
+                getMaxProductCardContentHeight(
+                        getLayoutType(channel), visitables
+                )
         )
 
         itemView.setOnClickListener {
@@ -237,7 +254,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
     private fun getRoundedImageViewTarget(imageView: ImageView, radius: Float): BitmapImageViewTarget {
         return object : BitmapImageViewTarget(imageView) {
-            override fun setResource(resource: Bitmap) {
+            override fun setResource(resource: Bitmap?) {
                 val circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
                 circularBitmapDrawable.cornerRadius = radius
                 imageView.setImageDrawable(circularBitmapDrawable)
@@ -245,4 +262,75 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         }
     }
 
+
+    private fun measureParentView(deviceWidth: Int, parentView: View) {
+        parentView.measure(
+                View.MeasureSpec.makeMeasureSpec(deviceWidth, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.UNSPECIFIED
+        )
+    }
+
+    private fun getMaxProductCardContentHeight(channelType: Int, productCardModelList: MutableList<Visitable<BannerMixTypeFactory>>) : Int {
+        var contentHeight = 0
+        recyclerView?.let {
+            var layoutViewHolder = ProductItemViewHolder.LAYOUT_ITEM
+            if (channelType == TYPE_BANNER_CAROUSEL){
+                layoutViewHolder = ProductItemViewHolder.LAYOUT_ITEM_CAROUSEL
+            }
+            /**
+             * Inflate product card for measuring purpose
+             */
+            val productCardViewHolder = LayoutInflater
+                    .from(it.context)
+                    .inflate(layoutViewHolder, it.parent as ViewGroup, false)
+            val targetLayoutManager = it.layoutManager
+            val eachSpanSize = if(channelType == TYPE_BANNER)
+                getSizeForEachSpan(recyclerView.measuredWidth, (targetLayoutManager as GridLayoutManager).spanCount) else
+                it.context.resources.getDimensionPixelOffset(R.dimen.home_banner_mix_carousel_width)
+
+            /**
+             * Compare product card in list
+             */
+
+            /**
+             * Map first to product visitables
+             */
+            val productVisitable = mutableListOf<ProductBannerMixDataModel>()
+            productCardModelList.map { item ->
+                if (item is ProductBannerMixDataModel) productVisitable.add(item)
+            }
+            productVisitable.forEach {
+                val sampleProductCard = productCardViewHolder.findViewById<ThematicCardView>(R.id.banner_item)
+                sampleProductCard?.run {
+                    val gridItem = it.grid
+                    initFreeOngkir(gridItem.freeOngkir.isActive, gridItem.freeOngkir.imageUrl)
+                    initSlashedPrice(gridItem.slashedPrice)
+                    initProductPrice(gridItem.price)
+                    initProductImage(gridItem.imageUrl)
+                    initProductName(gridItem.name)
+                    initLabelDiscount(gridItem.discount)
+                }
+                /**
+                 * Measure product card after setProductModel
+                 * to ensure product card have final height
+                 *
+                 * MeasureSpec.EXACTLY is used to ensure this product
+                 * card have width EXACTLY as given eachSpanSize
+                 */
+                productCardViewHolder.measure(
+                        View.MeasureSpec.makeMeasureSpec(eachSpanSize, View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.UNSPECIFIED)
+                val measuredContentHeight = sampleProductCard?.measuredHeight?:0
+                if (contentHeight < measuredContentHeight) {
+                    contentHeight = measuredContentHeight
+                }
+
+            }
+        }
+        return contentHeight
+    }
+
+    private fun getSizeForEachSpan(maxWidth: Int, spanCount: Int) : Int {
+        return maxWidth/spanCount
+    }
 }

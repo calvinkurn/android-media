@@ -28,7 +28,7 @@
             android:textColor="#ae31353b"
             android:textSize="10sp" />
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/date_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             android:textColor="#ae31353b"
             android:textSize="10sp" />
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/date_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -299,6 +299,15 @@ public class UnifyTracking extends TrackingUtils {
 
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
 
+    public static void eventCampaign(Context context, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CAMPAIGN,
+                AppEventTracking.Category.CAMPAIGN,
+                AppEventTracking.Action.DEEPLINK,
+                label
+        ).getEvent());
+    }
+
     public static void eventWishlistView(Context context, String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.WISHLIST,

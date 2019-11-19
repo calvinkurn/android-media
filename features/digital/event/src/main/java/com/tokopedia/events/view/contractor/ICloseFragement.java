@@ -1,6 +1,6 @@
 package com.tokopedia.events.view.contractor;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 public interface ICloseFragement {
     void closeFragmentSelf();

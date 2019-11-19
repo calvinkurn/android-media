@@ -35,7 +35,7 @@ class DigitalSearchNumberActivity : BaseTelcoActivity(), DigitalSearchNumberFrag
         updateTitle(getString(R.string.digital_title_fav_number))
     }
 
-    override fun getNewFragment(): android.support.v4.app.Fragment {
+    override fun getNewFragment(): androidx.fragment.app.Fragment {
         return DigitalSearchNumberFragment
                 .newInstance(clientNumberType, number, numberList)
     }

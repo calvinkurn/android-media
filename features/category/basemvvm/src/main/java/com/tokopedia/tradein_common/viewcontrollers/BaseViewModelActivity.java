@@ -1,15 +1,15 @@
 package com.tokopedia.tradein_common.viewcontrollers;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -239,11 +239,22 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
-        accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);
         accessDialog.setPositiveButton(positiveButton);
         accessDialog.setNegativeButton(negativeButton);
+        accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
+    }
+
+    protected void showAgeVerificationDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
+        accessDialog.setLayoutResId(R.layout.age_restriction_verifcation_dialog);
+        accessDialog.setBodyText(bodyText);
+        accessDialog.setTitle(titleText);
+        accessDialog.setPositiveButton(positiveButton);
+        accessDialog.setNegativeButton(negativeButton);
+        accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
     }
 
     protected void sendGeneralEvent(String event, String category, String action, String label) {

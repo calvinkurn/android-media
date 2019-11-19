@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.widget.NestedScrollView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,23 +19,28 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.referral.Constants;
-import com.tokopedia.referral.view.HeightWrappingViewPager;
 import com.tokopedia.referral.R;
-import com.tokopedia.referral.view.adapter.ReferralGuidePagerAdapter;
+import com.tokopedia.referral.analytics.ReferralAnalytics;
 import com.tokopedia.referral.data.ReferralCodeEntity;
+import com.tokopedia.referral.di.DaggerReferralComponent;
 import com.tokopedia.referral.di.ReferralComponent;
-import com.tokopedia.referral.ReferralRouter;
-import com.tokopedia.referral.view.listener.ReferralView;
 import com.tokopedia.referral.domain.model.ShareApps;
+import com.tokopedia.referral.view.HeightWrappingViewPager;
+import com.tokopedia.referral.view.adapter.ReferralGuidePagerAdapter;
+import com.tokopedia.referral.view.listener.ReferralView;
 import com.tokopedia.referral.view.presenter.ReferralPresenter;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by ashwanityagi on 18/09/17.
@@ -45,6 +50,9 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
 
     @Inject
     ReferralPresenter presenter;
+    @Inject
+    ReferralAnalytics referralAnalytics;
+
     private TextView referralCodeTextView;
     private TextView referralContentTextView;
     private TextView TextViewHelpLink;
@@ -67,7 +75,7 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
     public static final int REFERRAL_PHONE_VERIFY_REQUEST_CODE = 1011;
     public static final int LOGIN_REQUEST_CODE = 1012;
 
-    private void assignViews(View view){
+    private void assignViews(View view) {
         referralCodeTextView = view.findViewById(R.id.tv_referral_code);
         referralContentTextView = view.findViewById(R.id.tv_referral_desc);
         TextViewHelpLink = view.findViewById(R.id.tv_referral_help_link);
@@ -75,7 +83,7 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
         pagerGuide = view.findViewById(R.id.view_pager_referral_guide);
         tabGuide = view.findViewById(R.id.tab_referral_guide);
         llShareIcons = view.findViewById(R.id.ll_share_icons);
-        nestedScrollView = view.findViewById(R.id.nested_scroll_view);
+        nestedScrollView = view.findViewById(com.tokopedia.design.R.id.nested_scroll_view);
         viewLine = view.findViewById(R.id.view_line);
         referralCount = view.findViewById(R.id.referral_count);
         imgTick = view.findViewById(R.id.img_tick);
@@ -133,7 +141,7 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
             TextViewHelpLink.setVisibility(View.VISIBLE);
             TextViewHelpLink.setOnClickListener(view1 -> {
                 focusOnView();
-                ((ReferralRouter)getActivity().getApplicationContext()).eventReferralAndShare(getActivity(),
+                referralAnalytics.eventReferralAndShare(
                         Constants.Action.Companion.CLICK_HOW_IT_WORKS, "");
             });
         } else {
@@ -158,7 +166,9 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
 
     @Override
     protected void initInjector() {
-        getComponent(ReferralComponent.class).inject(this);
+        ReferralComponent referralComponent = DaggerReferralComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent()).build();
+        referralComponent.inject(this);
     }
 
     public void clickOnCopyButton() {
@@ -197,17 +207,14 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = ((ReferralRouter) getContext().getApplicationContext()).getLoginIntent(getActivity());
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
         startActivityForResult(intent, LOGIN_REQUEST_CODE);
     }
 
     @Override
     public void showVerificationPhoneNumberPage() {
-        if (getActivity().getApplicationContext() instanceof ReferralRouter) {
-            ReferralRouter referralOtpRouter = (ReferralRouter) getActivity().getApplicationContext();
-            startActivityForResult(referralOtpRouter.getReferralPhoneNumberActivityIntent(getActivity()),
-                    REFERRAL_PHONE_VERIFY_REQUEST_CODE);
-        }
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_REFERRAL_PHONE_VERIFICATION);
+        startActivityForResult(intent, REFERRAL_PHONE_VERIFY_REQUEST_CODE);
     }
 
     @Override
@@ -270,7 +277,7 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
             llShareIcons.removeAllViews();
         }
         ImageView imageView = new ImageView(getActivity());
-        imageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),shareApps.getIcon()));
+        imageView.setImageDrawable(MethodChecker.getDrawable(getActivity(), shareApps.getIcon()));
         imageView.setTag(shareApps);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
         imageView.setLayoutParams(layoutParams);

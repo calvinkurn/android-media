@@ -1,6 +1,6 @@
 package com.tokopedia.base.list.seller.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.base.list.seller.common.util.ItemIdType;

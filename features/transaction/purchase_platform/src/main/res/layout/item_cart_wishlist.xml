@@ -5,11 +5,12 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_wishlist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12" />
+        android:paddingRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_6"/>
 
 </LinearLayout>

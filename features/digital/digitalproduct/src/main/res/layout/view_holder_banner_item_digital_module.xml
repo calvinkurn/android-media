@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingTop="@dimen/dp_3">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
@@ -85,5 +85,5 @@
                 tools:text="Beli voucher game lebih hemat, diskon langsung sebesar Rp5.000. Banyak pilihan!" />
 
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

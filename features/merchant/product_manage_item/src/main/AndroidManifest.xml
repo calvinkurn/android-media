@@ -108,6 +108,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".stock.view.activity.ProductBulkEditStockActivity"
+            android:label="@string/title_activity_edit_product"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".main.draft.view.activity.ProductDraftAddActivity"
             android:label="@string/title_activity_add_product"
             android:theme="@style/Theme.White"

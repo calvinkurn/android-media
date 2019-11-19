@@ -10,6 +10,8 @@ import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftData
 import com.tokopedia.product.manage.item.main.draft.domain.DeleteSingleDraftProductUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
@@ -39,6 +41,18 @@ public class ProductDraftListModule extends ProductAddModule {
                                                     ClearAllDraftProductUseCase clearAllDraftProductUseCase){
         return new ProductDraftListPresenterImpl(fetchAllDraftProductUseCase, deleteSingleDraftProductUseCase,
                 updateUploadingDraftProductUseCase, clearAllDraftProductUseCase);
+    }
+
+    @ProductAddScope
+    @Provides
+    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context);
+    }
+
+    @ProductAddScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
+        return productDraftDB.getProductDraftDao();
     }
 
 }

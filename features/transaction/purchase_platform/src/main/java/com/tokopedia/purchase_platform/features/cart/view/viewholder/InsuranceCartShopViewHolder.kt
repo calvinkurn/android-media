@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
 import android.app.Activity
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher

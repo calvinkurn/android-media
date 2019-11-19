@@ -18,14 +18,14 @@
             android:orientation="vertical"
             android:paddingTop="@dimen/dp_4">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_name"
                 style="@style/TextView.TitleBig.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="Asuransi Perjalanan" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_description"
                 style="@style/TextView.Micro.BlackSecondary.Bold"
                 android:layout_width="match_parent"
@@ -33,7 +33,7 @@
                 tools:text="Rp8.000/orang" />
         </LinearLayout>
 
-        <android.support.v7.widget.AppCompatCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cb_insurance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_highlight"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40" />
@@ -66,13 +66,13 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_highlight"
                 style="@style/TextView.Small.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_highlight_detail"
                 style="@style/TextView.Small"
                 android:layout_width="match_parent"
@@ -80,7 +80,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_highlight_tnc"
         style="@style/TextView.Micro"
         android:layout_width="match_parent"

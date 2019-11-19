@@ -6,10 +6,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.AppCompatDrawableManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.appcompat.widget.AppCompatDrawableManager
 import android.text.TextUtils
 import android.view.View
 import android.webkit.WebSettings
@@ -111,7 +111,7 @@ fun updateEditTextBackground(mEditText: TextView, colorInt: Int, isErrorShowing:
 
     var editTextBackground: Drawable = mEditText.background ?: return
 
-    if (android.support.v7.widget.DrawableUtils.canSafelyMutateDrawable(editTextBackground)) {
+    if (androidx.appcompat.widget.DrawableUtils.canSafelyMutateDrawable(editTextBackground)) {
         editTextBackground = editTextBackground.mutate()
     }
 
@@ -173,7 +173,7 @@ fun openBottomSheetWebView(context: Context, appLinkUrl: String, title: String) 
 
     closeableBottomSheetDialog.setOnShowListener { dialog ->
         val d = dialog as BottomSheetDialog
-        val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+        val bottomSheet = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
         if (bottomSheet != null) {
             BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }

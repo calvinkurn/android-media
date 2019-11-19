@@ -1,7 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.di
 
 import android.content.Context
-import android.support.annotation.RawRes
+import androidx.annotation.RawRes
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.settingnotif.usersetting.domain.usecase.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.usecase.SetUserSettingUseCase

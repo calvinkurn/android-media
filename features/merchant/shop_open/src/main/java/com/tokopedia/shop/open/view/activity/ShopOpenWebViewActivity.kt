@@ -2,7 +2,7 @@ package com.tokopedia.shop.open.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.Menu
 import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment

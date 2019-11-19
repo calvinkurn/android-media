@@ -1,6 +1,6 @@
 package com.tokopedia.travelcalendar.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.calendar.Legend
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY_MM_DD

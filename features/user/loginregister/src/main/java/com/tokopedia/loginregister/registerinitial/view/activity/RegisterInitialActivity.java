@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -16,7 +16,6 @@ import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment;
-import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -72,8 +71,8 @@ public class RegisterInitialActivity extends BaseSimpleActivity implements HasCo
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
-                RegisterInitialContract.View) {
-            ((RegisterInitialContract.View) getSupportFragmentManager().findFragmentById(R.id
+                RegisterInitialFragment) {
+            ((RegisterInitialFragment) getSupportFragmentManager().findFragmentById(R.id
                     .parent_view)).onBackPressed();
         }
 

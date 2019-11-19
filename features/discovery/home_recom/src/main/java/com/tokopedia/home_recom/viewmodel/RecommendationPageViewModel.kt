@@ -1,6 +1,6 @@
 package com.tokopedia.home_recom.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase

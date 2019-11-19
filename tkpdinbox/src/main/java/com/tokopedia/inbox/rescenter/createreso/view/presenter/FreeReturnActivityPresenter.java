@@ -2,8 +2,8 @@ package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.FreeReturnActivityListener;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 /**
  * Created by yoasfs on 24/08/17.
@@ -31,7 +31,7 @@ public class FreeReturnActivityPresenter
 
     @Override
     public void initFragment(String url) {
-        mainView.inflateFragment(FragmentGeneralWebView.createInstance(url),
-                FragmentGeneralWebView.class.getSimpleName());
+        mainView.inflateFragment(BaseSessionWebViewFragment.newInstance(url),
+                BaseSessionWebViewFragment.class.getCanonicalName());
     }
 }

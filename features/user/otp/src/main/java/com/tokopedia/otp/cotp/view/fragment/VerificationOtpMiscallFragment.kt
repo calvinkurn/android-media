@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Parcelable
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -26,13 +26,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.otp.R
-import com.tokopedia.otp.common.OTPAnalytics
+import com.tokopedia.otp.common.analytics.OTPAnalytics
 import com.tokopedia.otp.common.di.DaggerOtpComponent
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter
-import com.tokopedia.otp.cotp.view.viewlistener.Verification
 import com.tokopedia.otp.cotp.view.viewlistener.VerificationOtpMiscall
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel

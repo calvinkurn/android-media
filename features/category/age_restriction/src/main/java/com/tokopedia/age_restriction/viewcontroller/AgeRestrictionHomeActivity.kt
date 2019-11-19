@@ -1,10 +1,10 @@
 package com.tokopedia.age_restriction.viewcontroller
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Intent
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.view.View
 import com.tokopedia.age_restriction.R
 import com.tokopedia.age_restriction.viewmodel.ARHomeViewModel
@@ -192,7 +192,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         super.onStart()
         arHomeViewModel.notFilled.observe(this, Observer<Int> {
             selection = notFilledDob
-            showDialogFragment(getString(R.string.ar_text_adult_content),
+            showAgeVerificationDialogFragment(getString(R.string.ar_text_adult_content),
                     getString(R.string.ar_text_dob_verify),
                     getString(R.string.ar_text_verify_dob),
                     getString(R.string.ar_label_back))

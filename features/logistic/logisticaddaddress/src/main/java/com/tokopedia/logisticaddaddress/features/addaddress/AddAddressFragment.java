@@ -6,9 +6,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -134,7 +134,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     PerformanceMonitoring performanceMonitoring;
 
     private int instanceType;
-    private CompositeSubscription compositeSubscription;
 
     public static AddAddressFragment newInstance(Bundle extras) {
         Bundle bundle = new Bundle(extras);
@@ -194,7 +193,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        compositeSubscription.unsubscribe();
         mPresenter.detachView();
     }
 
@@ -258,7 +256,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        compositeSubscription = new CompositeSubscription();
         BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
         DaggerAddressComponent.builder()
                 .baseAppComponent(appComponent)
@@ -277,18 +274,13 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public CompositeSubscription getCompositeSubscription() {
-        return compositeSubscription;
-    }
-
-    @Override
     public boolean isEdit() {
-        return getArguments().getBoolean(IS_EDIT, false);
+        return address != null;
     }
 
     @Override
     public boolean isDistrictRecommendation() {
-        return getArguments().getBoolean(IS_DISTRICT_RECOMMENDATION, false);
+        return true;
     }
 
     @Override

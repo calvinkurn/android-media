@@ -2,7 +2,7 @@ package com.tokopedia.topads.keyword.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.util.SparseArrayCompat;
+import androidx.collection.SparseArrayCompat;
 
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;

@@ -1,6 +1,6 @@
 package com.tokopedia.common.travel.utils.typedef;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.common.travel.utils.typedef.TravelPassengerTitle.NONA;
 import static com.tokopedia.common.travel.utils.typedef.TravelPassengerTitle.NYONYA;

@@ -2,11 +2,11 @@ package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;

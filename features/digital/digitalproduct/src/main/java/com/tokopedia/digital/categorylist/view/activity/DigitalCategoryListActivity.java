@@ -64,7 +64,7 @@ public class DigitalCategoryListActivity extends BaseSimpleActivity {
     }
 
     @Override
-    protected android.support.v4.app.Fragment getNewFragment() {
+    protected androidx.fragment.app.Fragment getNewFragment() {
         DigitalCategoryListFragment digitalCategoryListFragment = DigitalCategoryListFragment.newInstance();
 
         if (getIntent() != null) {

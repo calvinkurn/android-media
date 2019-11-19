@@ -2,10 +2,10 @@ package com.tokopedia.purchase_platform.features.cart.view.viewholder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProduct;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProductData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher;
@@ -605,8 +605,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void handleRefreshType(CartItemHolderData data, ViewHolderListener viewHolderListener, int parentPosition) {
-        if (data.getCartItemData().getOriginData().getWholesalePrice() != null &&
-                data.getCartItemData().getOriginData().getWholesalePrice().size() > 0) {
+        if (data.getCartItemData().getOriginData().getWholesalePriceData() != null &&
+                data.getCartItemData().getOriginData().getWholesalePriceData().size() > 0) {
             if (data.getCartItemData().getOriginData().isPreOrder()) {
                 viewHolderListener.onNeedToRefreshAllShop();
             } else {
@@ -687,7 +687,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             renderCartItemActionOnErrorProduct();
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
 
-            SimilarProduct similarProduct = data.getCartItemData().getSimilarProduct();
+            SimilarProductData similarProductData = data.getCartItemData().getSimilarProductData();
 
             if (!TextUtils.isEmpty(data.getCartItemData().getErrorMessageTitle())) {
                 String errorDescription = data.getCartItemData().getErrorMessageDescription();
@@ -701,11 +701,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             }
 
             vDeviderOnCartError.setVisibility(View.GONE);
-            if (similarProduct != null) {
+            if (similarProductData != null) {
                 vDeviderOnCartError.setVisibility(View.VISIBLE);
-                tvSimilarProductOnCartError.setText(similarProduct.getText());
+                tvSimilarProductOnCartError.setText(similarProductData.getText());
                 tvSimilarProductOnCartError.setOnClickListener(view ->
-                        actionListener.onCartItemSimilarProductUrlClicked(similarProduct.getUrl()));
+                        actionListener.onCartItemSimilarProductUrlClicked(similarProductData.getUrl()));
                 actionListener.onCartItemShowTickerOutOfStock(data.getCartItemData().getOriginData().getProductId());
             }
             tickerError.setTickerType(Ticker.TYPE_ERROR);
@@ -781,14 +781,14 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private void validateWithAvailableQuantity(CartItemHolderData data, int qty) {
         if (data.getCartItemData().getOriginData().getInvenageValue() != 0 &&
                 qty > data.getCartItemData().getOriginData().getInvenageValue()) {
-            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
+            String errorMessage = data.getCartItemData().getMessageErrorData().getErrorProductMaxQuantity();
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             String numberAsString = numberFormat.format(data.getCartItemData().getOriginData().getInvenageValue());
             String maxValue = numberAsString.replace(",", ".");
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else if (qty < data.getCartItemData().getOriginData().getMinimalQtyOrder()) {
-            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMinQuantity();
+            String errorMessage = data.getCartItemData().getMessageErrorData().getErrorProductMinQuantity();
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}",
                     String.valueOf(data.getCartItemData().getOriginData().getMinimalQtyOrder())));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
@@ -796,7 +796,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             String numberAsString = numberFormat.format(data.getCartItemData().getOriginData().getInvenageValue());
             String maxValue = numberAsString.replace(",", ".");
-            String errorMessage = data.getCartItemData().getErrorData().getErrorProductMaxQuantity();
+            String errorMessage = data.getCartItemData().getMessageErrorData().getErrorProductMaxQuantity();
             tvErrorFormValidation.setText(errorMessage.replace("{{value}}", maxValue));
             tvErrorFormValidation.setVisibility(View.VISIBLE);
         } else {

@@ -2,7 +2,7 @@ package com.tokopedia.wallet.ovoactivation.view
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint

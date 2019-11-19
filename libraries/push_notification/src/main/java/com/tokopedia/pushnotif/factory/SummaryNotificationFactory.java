@@ -3,7 +3,7 @@ package com.tokopedia.pushnotif.factory;
 import android.app.Notification;
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
@@ -57,7 +57,7 @@ public class SummaryNotificationFactory extends BaseNotificationFactory {
         if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroupSummary(true);
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
-            builder.setGroupAlertBehavior(Notification.GROUP_ALERT_CHILDREN);
+            builder.setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN);
         }
         builder.setContentIntent(createPendingIntent(getGenericApplinks(notificationType), notificationType, 0));
         builder.setDeleteIntent(createDismissPendingIntent(notificationType, 0));

@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
-import android.support.v4.util.ArrayMap
+import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 

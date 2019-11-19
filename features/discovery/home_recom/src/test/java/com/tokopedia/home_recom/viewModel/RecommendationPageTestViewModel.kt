@@ -1,7 +1,7 @@
 package com.tokopedia.home_recom.viewModel
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.MutableLiveData
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.any
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imagefull"
         android:layout_width="@dimen/width_egg"
         android:layout_height="@dimen/height_egg"
@@ -10,7 +10,7 @@
         android:layout_gravity="center"
         tools:srcCompat="@drawable/ic_empty_egg" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageleft"
         android:layout_width="@dimen/width_egg"
         android:layout_height="@dimen/height_egg"
@@ -20,7 +20,7 @@
         tools:srcCompat="@drawable/ic_empty_egg"
         android:layout_gravity="center"/>
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageright"
         android:layout_width="@dimen/width_egg"
         android:layout_height="@dimen/height_egg"

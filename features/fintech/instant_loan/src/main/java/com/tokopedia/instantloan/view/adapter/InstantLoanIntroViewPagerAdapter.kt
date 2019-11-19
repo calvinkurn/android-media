@@ -1,7 +1,7 @@
 package com.tokopedia.instantloan.view.adapter
 
 import android.content.Context
-import android.support.v4.view.PagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint

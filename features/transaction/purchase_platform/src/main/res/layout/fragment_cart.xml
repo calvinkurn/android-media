@@ -8,7 +8,7 @@
     android:background="@color/checkout_module_color_background"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:visibility="invisible"
             app:layout_collapseMode="pin" />
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
@@ -33,7 +33,7 @@
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -55,18 +55,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/card_footer"
-                    android:layout_alignParentTop="true"
+                    android:layout_below="@+id/card_header"
                     android:orientation="vertical">
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_cart"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight="1" />
 
                 </LinearLayout>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/card_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -75,41 +75,11 @@
                     app:cardElevation="@dimen/dp_2"
                     tools:visibility="visible">
 
-                    <LinearLayout
-                        android:id="@+id/ll_header"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:foreground="?selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingLeft="@dimen/dp_9"
-                        android:paddingTop="@dimen/dp_16"
-                        android:paddingRight="@dimen/dp_25"
-                        android:paddingBottom="@dimen/dp_16">
+                    <include layout="@layout/item_select_all"/>
 
-                        <CheckBox
-                            android:id="@+id/cb_select_all"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_4"
-                            android:paddingRight="@dimen/dp_10"
-                            android:button="@drawable/ic_cart_check_box" />
+                </androidx.cardview.widget.CardView>
 
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:lineSpacingExtra="@dimen/sp_5"
-                            android:text="@string/label_select_all_product"
-                            android:textSize="@dimen/sp_12"
-                            app:typographyType="body_3"
-                            app:typographyWeight="reguler"
-                            tools:ignore="RelativeOverlap" />
-
-                    </LinearLayout>
-
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/card_footer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -189,7 +159,7 @@
 
                     </LinearLayout>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
             </RelativeLayout>
 

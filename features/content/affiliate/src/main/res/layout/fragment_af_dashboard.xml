@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,20 +13,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.design.widget.CoordinatorLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/cl_dashboard"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
             tools:visibility="visible">
 
-            <android.support.design.widget.AppBarLayout
+            <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/abl_af_dashboard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/Neutral_N0">
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_scrollFlags="scroll">
@@ -41,7 +41,7 @@
                         app:layout_constraintTop_toTopOf="@+id/ll_dashboard"
                         app:layout_constraintBottom_toBottomOf="@+id/ll_dashboard"/>
 
-                    <android.support.constraint.ConstraintLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/cl_income_dashboard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent">
 
-                            <android.support.constraint.ConstraintLayout
+                            <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/dp_12"
@@ -70,7 +70,7 @@
                                 android:layout_marginTop="@dimen/dp_14"
                                 android:layout_marginBottom="@dimen/dp_14">
 
-                                <android.support.v7.widget.AppCompatImageView
+                                <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/iv_total_saldo_title"
                                     android:layout_width="@dimen/dp_24"
                                     android:layout_height="@dimen/dp_24"
@@ -124,7 +124,7 @@
                                     app:layout_constraintTop_toBottomOf="@+id/view_separator"
                                     app:typographyType="body_3" />
 
-                                <android.support.v7.widget.AppCompatImageView
+                                <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/iv_af_income_info"
                                     android:layout_width="@dimen/dp_12"
                                     android:layout_height="@dimen/dp_12"
@@ -146,7 +146,7 @@
                                     app:typographyType="body_3"
                                     tools:text="Rp10.000" />
 
-                            </android.support.constraint.ConstraintLayout>
+                            </androidx.constraintlayout.widget.ConstraintLayout>
 
                         </com.tokopedia.unifycomponents.CardUnify>
 
@@ -162,7 +162,7 @@
                             app:layout_constraintEnd_toEndOf="@id/cu_income_overview"
                             app:layout_constraintTop_toBottomOf="@id/cu_income_overview"/>
 
-                    </android.support.constraint.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
                         android:id="@+id/ll_dashboard"
@@ -191,12 +191,12 @@
                                 android:layout_marginEnd="@dimen/dp_12"
                                 android:layout_marginBottom="@dimen/dp_14">
 
-                                <android.support.constraint.ConstraintLayout
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/cl_posted_product"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content">
 
-                                    <android.support.v7.widget.AppCompatImageView
+                                    <androidx.appcompat.widget.AppCompatImageView
                                         android:id="@+id/iv_posted_product"
                                         android:layout_width="@dimen/dp_24"
                                         android:layout_height="@dimen/dp_24"
@@ -234,7 +234,7 @@
                                         app:typographyType="body_3"
                                         app:typographyWeight="bold" />
 
-                                </android.support.constraint.ConstraintLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <View
                                     android:id="@+id/v_posted_viewed_separator"
@@ -244,14 +244,14 @@
                                     android:visibility="gone"
                                     tools:visibility="visible"/>
 
-                                <android.support.constraint.ConstraintLayout
+                                <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/cl_viewed_clicked"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:visibility="gone"
                                     tools:visibility="visible">
 
-                                    <android.support.v7.widget.AppCompatImageView
+                                    <androidx.appcompat.widget.AppCompatImageView
                                         android:id="@+id/iv_total_viewed"
                                         android:layout_width="@dimen/dp_24"
                                         android:layout_height="@dimen/dp_24"
@@ -275,7 +275,7 @@
                                         app:typographyType="body_3"
                                         tools:text="38 Kali Dikunjungi" />
 
-                                    <android.support.v7.widget.AppCompatImageView
+                                    <androidx.appcompat.widget.AppCompatImageView
                                         android:id="@+id/iv_total_clicked"
                                         android:layout_width="@dimen/dp_24"
                                         android:layout_height="@dimen/dp_24"
@@ -299,7 +299,7 @@
                                         app:typographyType="body_3"
                                         tools:text="27 Klik Produk" />
 
-                                </android.support.constraint.ConstraintLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
 
                             </LinearLayout>
 
@@ -361,7 +361,7 @@
                                             android:layout_gravity="center_vertical"
                                             android:layout_marginTop="@dimen/dp_2">
 
-                                            <android.support.v7.widget.AppCompatImageView
+                                            <androidx.appcompat.widget.AppCompatImageView
                                                 android:id="@+id/iv_start_date"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
@@ -410,7 +410,7 @@
                                             android:layout_gravity="center_vertical"
                                             android:layout_marginTop="@dimen/dp_2">
 
-                                            <android.support.v7.widget.AppCompatImageView
+                                            <androidx.appcompat.widget.AppCompatImageView
                                                 android:id="@+id/iv_end_date"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
@@ -460,7 +460,7 @@
 
                     </LinearLayout>
 
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.tokopedia.design.component.Tabs
                     android:id="@+id/tl_curated_products"
@@ -477,16 +477,16 @@
                     app:tabTextAppearance="@style/Tabs.Secondary"
                     app:tabTextColor="@color/font_black_disabled_38" />
 
-            </android.support.design.widget.AppBarLayout>
+            </com.google.android.material.appbar.AppBarLayout>
 
-            <android.support.v4.view.ViewPager
+            <androidx.viewpager.widget.ViewPager
                 android:id="@+id/vp_curated_product"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-        </android.support.design.widget.CoordinatorLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </LinearLayout>
 
-</android.support.v4.widget.SwipeRefreshLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

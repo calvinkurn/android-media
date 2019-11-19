@@ -1,13 +1,12 @@
 package com.tokopedia.flight.detail.view.adapter;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
-import com.tokopedia.flight.R;
 
 /**
  * Created by zulfikarrahman on 12/11/17.
@@ -28,6 +27,6 @@ public class FlightDetailRecyclerView extends VerticalRecyclerView {
 
     @Override
     protected ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getContext(), ContextCompat.getDrawable(getContext(), R.drawable.line_divider_flight_search));
+        return new DividerItemDecoration(getContext(), ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.line_divider_flight_search));
     }
 }

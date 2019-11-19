@@ -1,10 +1,10 @@
 package com.tokopedia.tradein.view.viewcontrollers
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Intent
 import android.graphics.Typeface
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -21,7 +21,7 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tradein.R
@@ -149,7 +149,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             when (it) {
                 is Success -> {
                     sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
-                            TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                            TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION_DROP,
                             TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
                             TradeInGTMConstants.SUCCESS)
                     val paymentPassData = PaymentPassData()
@@ -307,8 +307,16 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             if (isTimeSet && isCourierSet) {
                 moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
             } else if (!isCourierSet) {
+                sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                        TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                        TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
+                        TradeInGTMConstants.SUCCESS)
                 showMessage(getString(R.string.select_shipping))
             } else if (!isTimeSet) {
+                sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                        TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                        TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
+                        TradeInGTMConstants.SUCCESS)
                 showMessage(getString(R.string.select_fetch_time))
             }
         }

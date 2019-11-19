@@ -1,6 +1,6 @@
 package com.tokopedia.kol.feature.post.domain.model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 

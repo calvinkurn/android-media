@@ -1,7 +1,7 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom;
 
 import android.graphics.Paint;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +85,7 @@ public class SprintSaleAdapter extends RecyclerView.Adapter<SprintSaleAdapter.Vi
 
         holder.stockProgress.setProgress((int) list.get(position).getStockPercentage());
         ImageHandler.loadImage(holder.productImage.getContext(), holder.productImage,
-                list.get(position).getProductImage(), R.drawable.ic_loading_toped_new);
+                list.get(position).getProductImage(), com.tokopedia.design.R.drawable.ic_loading_toped_new);
     }
 
     @Override

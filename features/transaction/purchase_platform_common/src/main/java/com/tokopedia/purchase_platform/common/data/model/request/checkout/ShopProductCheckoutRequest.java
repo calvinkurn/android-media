@@ -45,6 +45,9 @@ public class ShopProductCheckoutRequest implements Parcelable {
     @SerializedName("promo_codes")
     @Expose
     public ArrayList<String> promoCodes;
+    @SerializedName("promos")
+    @Expose
+    public List<PromoRequest> promos;
     @SerializedName("is_order_priority")
     @Expose
     public int isOrderPriority;
@@ -66,6 +69,7 @@ public class ShopProductCheckoutRequest implements Parcelable {
         fcancelPartial = builder.fcancelPartial;
         warehouseId = builder.warehouseId;
         promoCodes = builder.promoCodes;
+        promos = builder.promos;
         isOrderPriority = builder.isOrderPriority;
         cartString = builder.cartString;
     }
@@ -134,6 +138,7 @@ public class ShopProductCheckoutRequest implements Parcelable {
         private int fcancelPartial;
         private int warehouseId;
         private ArrayList<String> promoCodes;
+        private List<PromoRequest> promos;
         private int isOrderPriority;
         private String cartString;
 
@@ -187,6 +192,11 @@ public class ShopProductCheckoutRequest implements Parcelable {
 
         public Builder promoCodes(ArrayList<String> val) {
             promoCodes = val;
+            return this;
+        }
+
+        public Builder promos(List<PromoRequest> val) {
+            promos = val;
             return this;
         }
 

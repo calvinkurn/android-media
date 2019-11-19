@@ -1,7 +1,7 @@
 package com.tokopedia.trackingoptimizer.db.dao
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Query
+import androidx.room.Dao
+import androidx.room.Query
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 
 @Dao
@@ -16,7 +16,13 @@ interface TrackingEEDatabaseDao : TrackingDatabaseDao<TrackingEEDbModel> {
     @Query("SELECT * FROM ${TrackingEEDbModel.TRACKING_EE_TABLE_NAME}")
     override fun getTrackingModelList(): Array<TrackingEEDbModel>?
 
+    @Query("SELECT * FROM ${TrackingEEDbModel.TRACKING_EE_TABLE_NAME} LIMIT :limit")
+    override fun getTrackingModelList(limit: Int): Array<TrackingEEDbModel>?
+
     @Query("DELETE FROM ${TrackingEEDbModel.TRACKING_EE_TABLE_NAME} WHERE key = :key")
     override fun deleteByKey(key: String)
+
+    @Query("DELETE FROM ${TrackingEEDbModel.TRACKING_EE_TABLE_NAME} WHERE key in (:keyList)")
+    override fun deleteByKeyList(keyList: List<String>)
 
 }

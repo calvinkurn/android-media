@@ -2,7 +2,7 @@ package com.tokopedia.groupchat.common.design;
 
 import android.app.Application;
 import android.graphics.Rect;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.groupchat.R;
@@ -28,6 +28,6 @@ public class QuickReplyItemDecoration extends RecyclerView.ItemDecoration {
         } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
             outRect.right = space;
         }
-        outRect.top = (int) view.getContext().getResources().getDimension(R.dimen.dp_8);
+        outRect.top = (int) view.getContext().getResources().getDimension(com.tokopedia.design.R.dimen.dp_8);
     }
 }

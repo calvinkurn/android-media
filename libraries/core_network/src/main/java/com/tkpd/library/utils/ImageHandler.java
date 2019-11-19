@@ -15,19 +15,20 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.core.network.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
+import com.tokopedia.core.network.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -108,7 +109,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     public static Bitmap getBitmapFromUri(Context context, Uri uri, int width, int height) {
         Bitmap bitmap = null;
         try {
-            bitmap = Glide.with(context).load(uri).asBitmap().into(width, height).get();
+            bitmap = Glide.with(context).asBitmap().load(uri).into(width, height).get();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -214,7 +215,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .load(url)
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .into(imageview);
         }
     }
@@ -227,7 +228,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
                     .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(imageview);
         }
     }
@@ -240,7 +241,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .into(imageview);
         }
     }
@@ -251,7 +252,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         if (isContextValid(context)) {
             Glide.with(context.getApplicationContext())
                     .load(url)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .fitCenter()
                     .into(imageview);
         }
@@ -263,7 +264,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         if (isContextValid(context)) {
             Glide.with(context.getApplicationContext())
                     .load(url)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .centerCrop()
                     .into(imageview);
         }
@@ -277,7 +278,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .placeholder(placeholder)
                     .error(R.drawable.error_drawable)
                     .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .into(imageview);
         }
     }
@@ -290,7 +291,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .placeholder(placeholder)
                     .error(error_image)
                     .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .into(imageview);
         }
     }
@@ -332,11 +333,11 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
+    public static void loadImageWithTarget(Context context, String url, CustomTarget<Bitmap> simpleTarget) {
         if (isContextValid(context)) {
             Glide.with(context)
-                    .load(url)
                     .asBitmap()
+                    .load(url)
                     .fitCenter()
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
@@ -362,7 +363,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageChat(ImageView imageview, String url, RequestListener<String, GlideDrawable> requestListener) {
+    public static void loadImageChat(ImageView imageview, String url, RequestListener<Drawable> requestListener) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
@@ -374,7 +375,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageChatBlurred(ImageView imageview, String url, RequestListener<String, GlideDrawable> requestListener) {
+    public static void loadImageChatBlurred(ImageView imageview, String url, RequestListener<Drawable> requestListener) {
         if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
@@ -390,7 +391,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     public static void loadImageAndCache(ImageView imageview, String url) {
         Glide.with(imageview.getContext())
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .dontAnimate()
                 .into(imageview);
     }
@@ -405,12 +406,12 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
         if (isContextValid(context)) {
             Glide.with(context)
-                    .load(url)
                     .asBitmap()
+                    .load(url)
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .centerCrop()
                     .into(target);
         }

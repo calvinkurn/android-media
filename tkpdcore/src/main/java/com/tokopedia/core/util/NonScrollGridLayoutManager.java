@@ -1,7 +1,7 @@
 package com.tokopedia.core.util;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 

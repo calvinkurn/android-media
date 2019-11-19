@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.atc_variant.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.purchase_platform.R
@@ -92,6 +92,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                     getBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH),
                     getBoolean(ApplinkConst.Transaction.EXTRA_IS_LEASING),
                     getString(ApplinkConst.Transaction.EXTRA_REFERENCE),
+                    getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL),
+                    getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION),
                     tradeInParams
             )
             return normalCheckoutFragment!!

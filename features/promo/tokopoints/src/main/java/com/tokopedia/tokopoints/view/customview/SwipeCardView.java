@@ -5,11 +5,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.cardview.widget.CardView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -63,7 +63,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTouchView.getLayoutParams();
         mMinWidth = params.width;
         mTouchView.setOnTouchListener(this);
 
@@ -117,7 +117,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
                 if (event.getX() > mMinWidth
                         && isLeftSwipe(dx)
                         && event.getX() < getMaxSwipeWidth()) {
-                    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTouchView.getLayoutParams();
                     layoutParams.width = (int) event.getX();
                     mTouchView.setLayoutParams(layoutParams);
                     if (event.getX() > getMaxSwipeWidth() * .3) {
@@ -133,7 +133,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
                 if (Math.abs(x1 - event.getX()) > MIN_SWIPE_AMOUNT_PX) {
                     if (event.getX() > getMaxSwipeWidth() * .75) {
                         isSwipeEnable = false;
-                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
+                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTouchView.getLayoutParams();
                         ValueAnimator anim = ValueAnimator.ofInt(layoutParams.width, getMaxSwipeWidth());
                         anim.addUpdateListener(valueAnimator -> {
                             int val = (Integer) valueAnimator.getAnimatedValue();
@@ -153,7 +153,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
                         }, DELAY_SHOW_CHECK_MS);
                     } else {
                         isSwipeEnable = true;
-                        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
+                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTouchView.getLayoutParams();
                         ValueAnimator anim = ValueAnimator.ofInt(layoutParams.width, mMinWidth);
                         anim.addUpdateListener(valueAnimator -> {
                             int val = (Integer) valueAnimator.getAnimatedValue();
@@ -164,7 +164,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
 
                         anim.setDuration(DELAY_BACK_MS);
                         anim.start();
-                        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
+                        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.black_38));
                         mSwipeIcon.setVisibility(VISIBLE);
 
                         if (mOnSwipeListener != null) {
@@ -181,7 +181,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
     }
 
     private int getMaxSwipeWidth() {
-        return mView.getWidth() - getResources().getDimensionPixelOffset(R.dimen.dp_6);
+        return mView.getWidth() - getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_6);
     }
 
     private boolean isLeftSwipe(float dx) {
@@ -199,7 +199,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
     }
 
     public void reset() {
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTouchView.getLayoutParams();
         ValueAnimator anim = ValueAnimator.ofInt(layoutParams.width, mMinWidth);
         anim.addUpdateListener(valueAnimator -> {
             int val = (Integer) valueAnimator.getAnimatedValue();
@@ -210,7 +210,7 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
 
         anim.setDuration(DELAY_BACK_MS);
         anim.start();
-        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
+        mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.design.R.color.black_38));
 
         mCouponContainer.postDelayed(new Runnable() {
             @Override
@@ -235,5 +235,9 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
         void onComplete();
 
         void onPartialSwipe();
+    }
+
+    public String getCouponCode(){
+        return mTextCoupon.getText().toString();
     }
 }

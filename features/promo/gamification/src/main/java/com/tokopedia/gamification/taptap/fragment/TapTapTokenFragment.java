@@ -13,11 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,9 +25,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -302,12 +303,18 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     private void loadBackgroundImage(String backgroundImgURL) {
-        ImageHandler.loadImageBitmap2(getContext(), backgroundImgURL, new SimpleTarget<Bitmap>() {
+        CustomTarget<Bitmap> target = new CustomTarget<Bitmap>() {
             @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 ivContainer.setImageBitmap(resource);
             }
-        });
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+            }
+        };
+        ImageHandler.loadImageBitmap2(getContext(), backgroundImgURL, target);
     }
 
     private void setActionButtons() {
@@ -716,9 +723,16 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void onSuccessDownloadAllAsset() {
-        renderViewCrackEgg();
-        if (fpmRender != null)
-            fpmRender.stopTrace();
+        if (getActivity() == null) {
+            return;
+        }
+
+        getActivity().runOnUiThread(() -> {
+            hideLoading();
+            renderViewCrackEgg();
+            if (fpmRender != null)
+                fpmRender.stopTrace();
+        });
     }
 
     @Override
@@ -728,24 +742,30 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         }
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
                 !TextUtils.isEmpty(crackResult.getImageUrl())) {
-            Glide.with(getContext())
-                    .load(crackResult.getImageUrl())
-                    .asBitmap()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            crackResult.setImageBitmap(resource);
-                            showCrackWidgetSuccess(crackResult);
-                        }
+            CustomTarget<Bitmap> target = new CustomTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                    crackResult.setImageBitmap(resource);
+                    showCrackWidgetSuccess(crackResult);
+                }
 
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            crackResult.setImageBitmap(null);
-                            // image load is failed, but we need to show the text instead.
-                            showCrackWidgetSuccess(crackResult);
-                        }
-                    });
+                @Override
+                public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                    super.onLoadFailed(errorDrawable);
+                    crackResult.setImageBitmap(null);
+                    // image load is failed, but we need to show the text instead.
+                    showCrackWidgetSuccess(crackResult);
+                }
+
+                @Override
+                public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                }
+            };
+            Glide.with(getContext())
+                    .asBitmap()
+                    .load(crackResult.getImageUrl())
+                    .into(target);
         } else {
             showCrackWidgetSuccess(crackResult);
         }

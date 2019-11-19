@@ -3,7 +3,7 @@ package com.tokopedia.digital.common.router;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.digital.categorylist.data.cloud.entity.tokocash.TokoCashData;
@@ -38,10 +38,6 @@ public interface DigitalModuleRouter {
                                boolean enableRecommendation,
                                boolean enableShare,
                                boolean enableLike);
-
-    Intent getPromoDetailIntent(Context context, String slug);
-
-    Intent getPromoListIntent(Activity activity);
 
     Intent getOrderListIntent(Context activity);
 

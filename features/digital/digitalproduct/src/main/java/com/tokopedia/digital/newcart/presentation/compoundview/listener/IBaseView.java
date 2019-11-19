@@ -1,7 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.compoundview.listener;
 
 import android.content.Intent;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;

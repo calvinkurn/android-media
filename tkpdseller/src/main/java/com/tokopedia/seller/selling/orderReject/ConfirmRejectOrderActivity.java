@@ -2,8 +2,8 @@ package com.tokopedia.seller.selling.orderReject;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.analytics.AppScreen;

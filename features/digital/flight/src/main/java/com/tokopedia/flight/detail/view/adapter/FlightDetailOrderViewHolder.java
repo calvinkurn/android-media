@@ -1,17 +1,21 @@
 package com.tokopedia.flight.detail.view.adapter;
 
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
+import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModelMapper;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +24,9 @@ import java.util.List;
  * Created by zulfikarrahman on 12/13/17.
  */
 
-public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJourney> {
+public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetailOrderJourney> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_flight_detail_order;
+    public static final int LAYOUT = com.tokopedia.flight.R.layout.item_flight_detail_order;
     private TextView flightCounter;
     private View journeyView;
     private TextView titleJourney;
@@ -31,7 +35,8 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
     private TextView cekSyaratText;
     private View separatorLine;
     private FlightDetailAdapter flightDetailAdapter;
-    private FlightOrderJourney flightOrderJourney;
+    private FlightDetailOrderJourney flightOrderJourney;
+    private FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper;
 
     private ExpandableOnClickListener expandableOnClickListener;
 
@@ -40,14 +45,15 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
     public FlightDetailOrderViewHolder(final View layoutView, ExpandableOnClickListener expandableOnClickListener, float titleFontSize) {
         super(layoutView);
         this.expandableOnClickListener = expandableOnClickListener;
+        flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
 
-        flightCounter = layoutView.findViewById(R.id.counter_flight);
-        journeyView = layoutView.findViewById(R.id.layout_expendable_flight);
-        titleJourney = layoutView.findViewById(R.id.title_expendable_passenger);
-        imageJourney = layoutView.findViewById(R.id.image_expendable_passenger);
-        recyclerViewFlightJourney = layoutView.findViewById(R.id.recycler_view_flight_detail_journey);
-        cekSyaratText = layoutView.findViewById(R.id.text_view_flight_cek_syarat);
-        separatorLine = layoutView.findViewById(R.id.flight_detail_order_separator_line);
+        flightCounter = layoutView.findViewById(com.tokopedia.flight.R.id.counter_flight);
+        journeyView = layoutView.findViewById(com.tokopedia.flight.R.id.layout_expendable_flight);
+        titleJourney = layoutView.findViewById(com.tokopedia.flight.R.id.title_expendable_passenger);
+        imageJourney = layoutView.findViewById(com.tokopedia.flight.R.id.image_expendable_passenger);
+        recyclerViewFlightJourney = layoutView.findViewById(com.tokopedia.flight.R.id.recycler_view_flight_detail_journey);
+        cekSyaratText = layoutView.findViewById(com.tokopedia.flight.R.id.text_view_flight_cek_syarat);
+        separatorLine = layoutView.findViewById(com.tokopedia.flight.R.id.flight_detail_order_separator_line);
         FlightDetailRouteTypeFactory detailRouteTypeFactory = new FlightDetailAdapterTypeFactory(
                 new FlightDetailAdapterTypeFactory.OnFlightDetailListener() {
                     @Override
@@ -64,7 +70,7 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
         journeyView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageJourney.startAnimation(AnimationUtils.loadAnimation(layoutView.getContext(), R.anim.rotate_reverse));
+                imageJourney.startAnimation(AnimationUtils.loadAnimation(layoutView.getContext(), R.anim.flight_rotate_reverse));
                 toggleFlightInfo();
             }
         });
@@ -74,13 +80,13 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
     }
 
     @Override
-    public void bind(FlightOrderJourney flightOrderJourney) {
+    public void bind(FlightDetailOrderJourney flightOrderJourney) {
         this.flightOrderJourney = flightOrderJourney;
-        flightCounter.setText(itemView.getContext().getString(R.string.flight_label_detail_counter, getAdapterPosition() + 1));
-        titleJourney.setText(itemView.getContext().getString(R.string.flight_label_detail_format,
+        flightCounter.setText(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_label_detail_counter, getAdapterPosition() + 1));
+        titleJourney.setText(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_label_detail_format,
                 flightOrderJourney.getDepartureCity(), flightOrderJourney.getDepartureAiportId(), flightOrderJourney.getArrivalCity(), flightOrderJourney.getArrivalAirportId()));
         List<Visitable> visitables = new ArrayList<>();
-        visitables.addAll(this.flightOrderJourney.getRouteViewModels());
+        visitables.addAll(transform(this.flightOrderJourney.getRouteViewModels()));
         flightDetailAdapter.addElement(visitables);
         flightDetailAdapter.notifyDataSetChanged();
     }
@@ -110,5 +116,37 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
         expandableOnClickListener.onCloseExpand(getAdapterPosition());
     }
 
+    private List<FlightDetailRouteViewModel> transform(List<FlightOrderDetailRouteViewModel> routeList) {
+        List<FlightDetailRouteViewModel> routeViewModelList = new ArrayList<>();
 
+        for (FlightOrderDetailRouteViewModel item : routeList) {
+            FlightDetailRouteViewModel viewModel = new FlightDetailRouteViewModel();
+            viewModel.setPnr(item.getPnr());
+            viewModel.setAirlineName(item.getAirlineName());
+            viewModel.setAirlineCode(item.getAirlineCode());
+            viewModel.setAirlineLogo(item.getAirlineLogo());
+            viewModel.setFlightNumber(item.getFlightNumber());
+            viewModel.setDepartureTimestamp(item.getDepartureTimestamp());
+            viewModel.setDepartureAirportCity(item.getDepartureAirportCity());
+            viewModel.setDepartureAirportCode(item.getDepartureAirportCode());
+            viewModel.setDepartureAirportName(item.getDepartureAirportName());
+            viewModel.setDepartureTerminal(item.getDepartureTerminal());
+            viewModel.setRefundable(item.isRefundable());
+            viewModel.setDuration(item.getDuration());
+            viewModel.setArrivalTimestamp(item.getArrivalTimestamp());
+            viewModel.setArrivalAirportCity(item.getArrivalAirportCity());
+            viewModel.setArrivalAirportCode(item.getArrivalAirportCode());
+            viewModel.setArrivalAirportName(item.getArrivalAirportName());
+            viewModel.setArrivalTerminal(item.getArrivalTerminal());
+            viewModel.setLayover(item.getLayover());
+            viewModel.setStopOver(item.getStopOver());
+            viewModel.setInfos(flightDetailRouteInfoViewModelMapper.transformOrderInfo(item.getInfos()));
+            viewModel.setAmenities(flightDetailRouteInfoViewModelMapper.transformOrderAmenities(item.getAmenities()));
+            viewModel.setStopOverDetail(item.getStopOverDetail());
+
+            routeViewModelList.add(viewModel);
+        }
+
+        return routeViewModelList;
+    }
 }

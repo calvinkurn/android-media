@@ -1,7 +1,7 @@
 package com.tokopedia.age_restriction.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.age_restriction.data.UserDOBUpdateResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel

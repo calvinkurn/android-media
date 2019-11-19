@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.profile
 
 import android.graphics.drawable.Drawable
-import android.support.constraint.ConstraintSet
+import androidx.constraintlayout.widget.ConstraintSet
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

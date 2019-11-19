@@ -7,12 +7,16 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
+import com.tokopedia.dynamicbanner.entity.PlayCardHome;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 
 import java.util.List;
 
@@ -99,20 +103,40 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
         notifyDataSetChanged();
     }
 
-    public void updateHomeQueryItems(List<Visitable> newVisitable) {
-        int headerHomePosition = hasHomeHeaderViewModel();
-        if (headerHomePosition != POSITION_UNDEFINED) {
-            newVisitable.add(headerHomePosition, getItems().get(headerHomePosition));
+    public int hasReview() {
+        for (int i = 0; i < visitables.size(); i++) {
+            if (visitables.get(i) instanceof ReviewViewModel) {
+                return i;
+            }
         }
+        return -1;
+    }
+
+    public void updateReviewItem(SuggestedProductReview suggestedProductReview) {
+        if (visitables.get(hasReview()) instanceof ReviewViewModel && hasReview() != -1) {
+            ((ReviewViewModel) visitables.get(hasReview())).setSuggestedProductReview(suggestedProductReview);
+            notifyItemChanged(hasReview());
+        }
+    }
+
+    public void updateHomeQueryItems(List<Visitable> newVisitable) {
         clearItems();
         this.visitables = newVisitable;
-
         notifyDataSetChanged();
     }
 
     public void removeGeolocationViewModel() {
         int removedPosition = removeGeolocation();
-        notifyItemRemoved(removedPosition);
+        if (removedPosition != -1) {
+            notifyItemRemoved(removedPosition);
+        }
+    }
+
+    public void removeReviewViewModel() {
+        int reviewPosition = removeReview();
+        if (reviewPosition != -1) {
+            notifyItemRemoved(reviewPosition);
+        }
     }
 
     public void setHomeHeaderViewModel(HeaderViewModel homeHeaderViewModel) {
@@ -171,6 +195,16 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     private int removeGeolocation() {
         for(int i=0; i<visitables.size(); i++){
             if(visitables.get(i) instanceof GeolocationPromptViewModel){
+                visitables.remove(i);
+                return i;
+            }
+        }
+        return POSITION_UNDEFINED;
+    }
+
+    private int removeReview() {
+        for(int i=0; i<visitables.size(); i++){
+            if(visitables.get(i) instanceof ReviewViewModel){
                 visitables.remove(i);
                 return i;
             }
@@ -239,4 +273,12 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
     public boolean isRetryShown() {
         return visitables.contains(retryModel);
     }
+
+    public void setPlayData(PlayCardHome playContentBanner, int adapterPosition) {
+        if (visitables.get(adapterPosition) instanceof PlayCardViewModel) {
+            ((PlayCardViewModel) visitables.get(adapterPosition)).setPlayCardHome(playContentBanner);
+        }
+        notifyItemChanged(adapterPosition);
+    }
+
 }

@@ -1,13 +1,13 @@
 package com.tokopedia.vouchergame.list.view.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -131,10 +131,9 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
-            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
+            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_menu_detail),
                     voucherGameViewModel.createMenuDetailParams(it))
         }
-        voucherGameAnalytics.eventPDPLanding()
         initView()
     }
 
@@ -223,7 +222,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                 RouteManager.route(context, ApplinkConst.PROMO_LIST)
             }
             context?.let {
-                promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, R.color.unify_G500))
+                promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.design.R.color.unify_G500))
             }
             promo_banner.setBannerIndicator(Indicator.GREEN)
 
@@ -264,7 +263,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         return VoucherGameListAdapterFactory(this)
     }
 
-    override fun getScreenName(): String = getString(R.string.app_label)
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(VoucherGameListComponent::class.java).inject(this)
@@ -361,10 +360,22 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         voucherGameAnalytics.eventClickBackButton()
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
+    override fun getSearchInputViewResourceId(): Int {
+        return R.id.search_input_view
+    }
+
     companion object {
 
-        val BANNER_SEE_ALL_TEXT_SIZE = R.dimen.sp_16
-        val ITEM_DECORATOR_SIZE = R.dimen.dp_8
+        val BANNER_SEE_ALL_TEXT_SIZE = com.tokopedia.design.R.dimen.sp_16
+        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
 
         const val FULL_SCREEN_SPAN_SIZE = 1
         const val OPERATOR_ITEM_SPAN_SIZE = 3

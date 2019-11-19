@@ -1,6 +1,6 @@
 package com.tokopedia.topads.common.data.model;
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 /**
  * Created by hadi.putra on 24/05/18.

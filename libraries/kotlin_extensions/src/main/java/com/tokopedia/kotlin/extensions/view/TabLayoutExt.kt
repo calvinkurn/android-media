@@ -1,6 +1,6 @@
 package com.tokopedia.kotlin.extensions.view
 
-import android.support.design.widget.TabLayout
+import com.google.android.material.tabs.TabLayout
 
 /**
  * @author by milhamj on 16/01/19.

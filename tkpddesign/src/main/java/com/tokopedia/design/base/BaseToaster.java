@@ -1,11 +1,11 @@
 package com.tokopedia.design.base;
 
 import android.app.Activity;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IntDef;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IntDef;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -33,8 +33,8 @@ public class BaseToaster {
         public Builder(View view, String snackbarText, @Duration int duration) {
             this.view = view;
             snackbar = Snackbar.make(view, snackbarText, duration);
-            snackbarTextView = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-            snackbarActionButton = snackbar.getView().findViewById(android.support.design.R.id.snackbar_action);
+            snackbarTextView = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+            snackbarActionButton = snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_action);
 
             setDefaultSetting();
         }

@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdreactnative.react;
 
-import android.support.annotation.Nullable;
+import android.os.Bundle;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
@@ -14,9 +15,10 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
  */
 
 public class ReactUtils {
-    private static
-    @Nullable
-    ReactUtils reactUtils;
+
+    private static final String EXTRA = "extra";
+
+    private static @Nullable ReactUtils reactUtils;
     private ReactInstanceManager reactInstanceManager;
 
     private static PerformanceMonitoring perfMonitor;
@@ -116,6 +118,13 @@ public class ReactUtils {
                 ReactConst.EventEmitter.PAGE_DESTROYED,
                 params
         );
+    }
+
+
+    public static Bundle convertBundle(String extra) {
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA, extra);
+        return bundle;
     }
 
     public static ReactUtils init(ReactInstanceManager reactInstanceManager) {

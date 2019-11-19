@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.recyclerview
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView

@@ -70,6 +70,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
+    // CreateReviewActivity
+    @JvmField
+    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
+
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
 
@@ -80,6 +84,9 @@ object ApplinkConstInternalMarketplace {
     //ShopOpenRoutingActivity
     @JvmField
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
+
+    @JvmField
+    val SHOP_PAGE_DOMAIN = "$INTERNAL_MARKETPLACE/shop-page/?domain={domain}"
 
     // GmSubscribeHomeActivity
     @JvmField
@@ -111,6 +118,9 @@ object ApplinkConstInternalMarketplace {
     //ShopSettingsEtalaseActivity
     @JvmField
     val SHOP_SETTINGS_ETALASE = "$SHOP_SETTINGS_BASE-etalase"
+
+    @JvmField
+    val SHOP_SETTINGS_ETALASE_ADD = "$SHOP_SETTINGS_ETALASE/add"
 
     //ShopSettingsAddressActivity
     @JvmField
@@ -147,5 +157,9 @@ object ApplinkConstInternalMarketplace {
     // ChatSearchActivity
     @JvmField
     val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
+
+    // PowerMerchantSubscribeActivity
+    @JvmField
+    val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
 
 }

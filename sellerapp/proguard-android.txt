@@ -188,7 +188,6 @@ public protected *;
 -keep class com.tokopedia.core.util.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
 -keep class com.tokopedia.payment.model.PaymentPassData
--keep class com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData
 
 # -- Feeds --
 -keep class com.tkpdfeed.feeds.** { *; }
@@ -212,3 +211,6 @@ public protected *;
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 -keep class com.github.anrwatchdog.** { *; }
+
+# -- laku6
+-dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn

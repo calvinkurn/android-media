@@ -1,7 +1,7 @@
 
 package com.tokopedia.flight.booking.view.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Patterns;
 
 import com.tokopedia.common.travel.domain.GetPhoneCodeUseCase;
@@ -16,7 +16,6 @@ import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
@@ -34,10 +33,14 @@ import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.data.api.single.response.Fare;
-import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase;
+import com.tokopedia.flight.search.domain.FlightSearchJourneyByIdUseCase;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo;
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -75,6 +78,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightAnalytics flightAnalytics;
     private UserSessionInterface userSession;
     private TravelTickerUseCase travelTickerUseCase;
+    private GetProfileUseCase getProfileUseCase;
 
     private static final int GENDER_MAN = 1;
     private static final int GENDER_WOMAN = 2;
@@ -88,7 +92,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                   FlightAnalytics flightAnalytics,
                                   UserSessionInterface userSession,
                                   FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase,
-                                  TravelTickerUseCase travelTickerUseCase) {
+                                  TravelTickerUseCase travelTickerUseCase,
+                                  GetProfileUseCase getProfileUseCase) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightAddToCartUseCase = flightAddToCartUseCase;
         this.flightBookingCartDataMapper = flightBookingCartDataMapper;
@@ -97,6 +102,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         this.userSession = userSession;
         this.flightSearchJourneyByIdUseCase = flightSearchJourneyByIdUseCase;
         this.travelTickerUseCase = travelTickerUseCase;
+        this.getProfileUseCase = getProfileUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -122,7 +128,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     public void onButtonSubmitClicked() {
         if (validateFields()) {
-            flightAnalytics.eventBookingNextClick(getView().getString(R.string.flight_booking_analytics_customer_page));
+            flightAnalytics.eventBookingNextClick(getView().getString(com.tokopedia.flight.R.string.flight_booking_analytics_customer_page));
             getView().getCurrentBookingParamViewModel().setContactName(getView().getContactName());
             getView().getCurrentBookingParamViewModel().setContactEmail(getView().getContactEmail());
             getView().getCurrentBookingParamViewModel().setContactPhone(getView().getContactPhoneNumber());
@@ -132,10 +138,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             getView().getCurrentCartPassData(),
                             getView().getDepartureTripId(),
                             getView().getReturnTripId(),
-                            getView().getString(R.string.flight_luggage_prefix),
-                            getView().getString(R.string.flight_meal_prefix),
-                            getView().getString(R.string.flight_birthdate_prefix),
-                            getView().getString(R.string.flight_passenger_passport_number_hint)
+                            getView().getString(com.tokopedia.flight.R.string.flight_luggage_prefix),
+                            getView().getString(com.tokopedia.flight.R.string.flight_meal_prefix),
+                            getView().getString(com.tokopedia.flight.R.string.flight_birthdate_prefix),
+                            getView().getString(com.tokopedia.flight.R.string.flight_passenger_passport_number_hint)
                     );
             getView().navigateToReview(flightBookingReviewModel);
         }
@@ -587,49 +593,41 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     public void onGetProfileData() {
-        compositeSubscription.add(getView().getProfileObservable()
-                .onBackpressureDrop()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ProfileInfo>() {
-                    @Override
-                    public void onCompleted() {
+        getProfileUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                ProfilePojo data = graphqlResponse.getData(ProfilePojo.class);
+                ProfileInfo profileInfo = data.getProfileInfo();
+                if (profileInfo != null && isViewAttached()) {
+                    if (getView().getContactName().length() == 0) {
+                        getView().setContactName(profileInfo.getFullName());
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (isViewAttached()) {
-
-                        }
-
+                    if (getView().getContactEmail().length() == 0) {
+                        getView().setContactEmail(profileInfo.getEmail());
                     }
-
-                    @Override
-                    public void onNext(ProfileInfo profileInfo) {
-                        if (profileInfo != null && isViewAttached()) {
-                            if (getView().getContactName().length() == 0) {
-                                getView().setContactName(profileInfo.getFullname());
-                            }
-                            if (getView().getContactEmail().length() == 0) {
-                                getView().setContactEmail(profileInfo.getEmail());
-                            }
-                            if (getView().getContactPhoneNumber().length() == 0) {
-                                getView().setContactPhoneNumber(transform(profileInfo.getPhoneNumber()));
-                            }
-                            getView().setContactBirthdate(
-                                    FlightDateUtil.dateToString(
-                                            FlightDateUtil.stringToDate(profileInfo.getBday()),
-                                            FlightDateUtil.DEFAULT_FORMAT
-                                    )
-                            );
-                            getView().setContactGender(profileInfo.getGender());
-                        }
+                    if (getView().getContactPhoneNumber().length() == 0) {
+                        getView().setContactPhoneNumber(transform(profileInfo.getPhone()));
                     }
-                })
-        );
+                    getView().setContactBirthdate(
+                            FlightDateUtil.dateToString(
+                                    FlightDateUtil.stringToDate(profileInfo.getBirthday()),
+                                    FlightDateUtil.DEFAULT_FORMAT
+                            )
+                    );
+                    getView().setContactGender(Integer.parseInt(profileInfo.getGender()));
+                }
+            }
+        });
     }
 
     @Override
@@ -666,6 +664,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         flightAddToCartUseCase.unsubscribe();
         getPhoneCodeUseCase.unsubscribe();
         flightSearchJourneyByIdUseCase.unsubscribe();
+        getProfileUseCase.unsubscribe();
         detachView();
     }
 
@@ -677,7 +676,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     private String formatPassengerHeader(String prefix, int number, String postix) {
-        return String.format(getView().getString(R.string.flight_booking_header_passenger_format),
+        return String.format(getView().getString(com.tokopedia.flight.R.string.flight_booking_header_passenger_format),
                 prefix,
                 number,
                 postix
@@ -694,9 +693,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             viewModel.setType(FlightBookingPassenger.ADULT);
             viewModel.setHeaderTitle(
                     formatPassengerHeader(
-                            getView().getString(R.string.flight_booking_prefix_passenger),
+                            getView().getString(com.tokopedia.flight.R.string.flight_booking_prefix_passenger),
                             passengerNumber,
-                            getView().getString(R.string.flight_booking_postfix_adult_passenger)
+                            getView().getString(com.tokopedia.flight.R.string.flight_booking_postfix_adult_passenger)
                     )
             );
             viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
@@ -710,9 +709,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             viewModel.setType(FlightBookingPassenger.CHILDREN);
             viewModel.setHeaderTitle(
                     formatPassengerHeader(
-                            getView().getString(R.string.flight_booking_prefix_passenger),
+                            getView().getString(com.tokopedia.flight.R.string.flight_booking_prefix_passenger),
                             passengerNumber,
-                            getView().getString(R.string.flight_booking_postfix_children_passenger))
+                            getView().getString(com.tokopedia.flight.R.string.flight_booking_postfix_children_passenger))
             );
             viewModel.setFlightBookingMealMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
             viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
@@ -726,9 +725,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             viewModel.setType(FlightBookingPassenger.INFANT);
             viewModel.setHeaderTitle(
                     formatPassengerHeader(
-                            getView().getString(R.string.flight_booking_prefix_passenger),
+                            getView().getString(com.tokopedia.flight.R.string.flight_booking_prefix_passenger),
                             passengerNumber,
-                            getView().getString(R.string.flight_booking_postfix_infant_passenger))
+                            getView().getString(com.tokopedia.flight.R.string.flight_booking_postfix_infant_passenger))
             );
 
             viewModel.setFlightBookingLuggageMetaViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
@@ -748,34 +747,34 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         boolean isValid = true;
         if (getView().getContactName().length() == 0) {
             isValid = false;
-            getView().showContactNameEmptyError(R.string.flight_booking_contact_name_empty_error);
+            getView().showContactNameEmptyError(com.tokopedia.flight.R.string.flight_booking_contact_name_empty_error);
         } else if (getView().getContactName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getContactName())) {
             isValid = false;
-            getView().showContactNameInvalidError(R.string.flight_booking_contact_name_alpha_space_error);
+            getView().showContactNameInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_name_alpha_space_error);
         } else if (getView().getContactEmail().length() == 0) {
             isValid = false;
-            getView().showContactEmailEmptyError(R.string.flight_booking_contact_email_empty_error);
+            getView().showContactEmailEmptyError(com.tokopedia.flight.R.string.flight_booking_contact_email_empty_error);
         } else if (!isValidEmail(getView().getContactEmail())) {
             isValid = false;
-            getView().showContactEmailInvalidError(R.string.flight_booking_contact_email_invalid_error);
+            getView().showContactEmailInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_email_invalid_error);
         } else if (!isEmailWithoutProhibitSymbol(getView().getContactEmail())) {
             isValid = false;
-            getView().showContactEmailInvalidSymbolError(R.string.flight_booking_contact_email_invalid_symbol_error);
+            getView().showContactEmailInvalidSymbolError(com.tokopedia.flight.R.string.flight_booking_contact_email_invalid_symbol_error);
         } else if (getView().getContactPhoneNumber().length() == 0) {
             isValid = false;
-            getView().showContactPhoneNumberEmptyError(R.string.flight_booking_contact_phone_empty_error);
+            getView().showContactPhoneNumberEmptyError(com.tokopedia.flight.R.string.flight_booking_contact_phone_empty_error);
         } else if (getView().getContactPhoneNumber().length() > 0 && !isNumericOnly(getView().getContactPhoneNumber())) {
             isValid = false;
-            getView().showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_invalid_error);
+            getView().showContactPhoneNumberInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_phone_invalid_error);
         } else if (getView().getContactPhoneNumber().length() > 13) {
             isValid = false;
-            getView().showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_max_length_error);
+            getView().showContactPhoneNumberInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_phone_max_length_error);
         } else if (getView().getContactPhoneNumber().length() < 9) {
             isValid = false;
-            getView().showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_min_length_error);
+            getView().showContactPhoneNumberInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_phone_min_length_error);
         } else if (!isAllPassengerFilled(getView().getCurrentBookingParamViewModel().getPassengerViewModels())) {
             isValid = false;
-            getView().showPassengerInfoNotFullfilled(R.string.flight_booking_passenger_not_fullfilled_error);
+            getView().showPassengerInfoNotFullfilled(com.tokopedia.flight.R.string.flight_booking_passenger_not_fullfilled_error);
         }
         return isValid;
     }
@@ -911,13 +910,13 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
         if (getView().getContactName().isEmpty() || getView().getContactName().length() == 0) {
             isValid = false;
-            getView().showContactNameEmptyError(R.string.flight_booking_checkbox_same_as_contact_name_empty_error);
+            getView().showContactNameEmptyError(com.tokopedia.flight.R.string.flight_booking_checkbox_same_as_contact_name_empty_error);
         } else if (getView().getContactName().length() > MAX_CONTACT_NAME_LENGTH) {
             isValid = false;
-            getView().showContactNameInvalidError(R.string.flight_booking_contact_name_max_length_error);
+            getView().showContactNameInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_name_max_length_error);
         } else if (getView().getContactName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getContactName())) {
             isValid = false;
-            getView().showContactNameInvalidError(R.string.flight_booking_contact_name_alpha_space_error);
+            getView().showContactNameInvalidError(com.tokopedia.flight.R.string.flight_booking_contact_name_alpha_space_error);
         } else if (isMandatoryDoB() &&
                 FlightDateUtil.stringToDate(getView().getContactBirthdate()).after(twelveYearsAgo)) {
             isValid = false;

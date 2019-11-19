@@ -2,12 +2,13 @@ package com.tokopedia.tkpdreactnative.react.data.datasource;
 
 import android.net.Uri;
 
-import com.tokopedia.core.base.common.service.CommonService;
-import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.common.data.interceptor.ReactNativeBearerInterceptor;
+import com.tokopedia.tkpdreactnative.react.common.data.service.CommonService;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
+import com.tokopedia.user.session.UserSessionInterface;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import rx.Observable;
 
@@ -17,19 +18,23 @@ import rx.Observable;
 
 public class UnifyReactNetworkBearerDataSource {
     private Retrofit.Builder retrofit;
-    private SessionHandler sessionHandler;
+    private OkHttpClient okHttpClient;
+    private UserSessionInterface sessionInterface;
 
-    public UnifyReactNetworkBearerDataSource(Retrofit.Builder retrofit, SessionHandler sessionHandler) {
+    public UnifyReactNetworkBearerDataSource(Retrofit.Builder retrofit,
+                                             OkHttpClient okHttpClient,
+                                             UserSessionInterface sessionInterface) {
         this.retrofit = retrofit;
-        this.sessionHandler = sessionHandler;
+        this.okHttpClient = okHttpClient;
+        this.sessionInterface = sessionInterface;
     }
 
     public Observable<String> request(ReactNetworkingConfiguration configuration) {
-        String token = sessionHandler.getAccessToken(sessionHandler.getActiveContext());
+        String token = sessionInterface.getAccessToken();
 
         Uri uri = Uri.parse(configuration.getUrl());
         CommonService commonService = retrofit.baseUrl(uri.getScheme() + "://" + uri.getHost())
-                .client(OkHttpFactory.create().buildClientReactNativeBearer(configuration.getHeaders(), token))
+                .client(okHttpClient.newBuilder().addInterceptor(new ReactNativeBearerInterceptor(configuration.getHeaders(), token)).build())
                 .build().create(CommonService.class);
         return requestToNetwork(configuration, commonService);
     }

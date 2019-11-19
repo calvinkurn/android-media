@@ -15,7 +15,7 @@
               android:paddingStart="@dimen/dp_10"
               android:paddingTop="@dimen/dp_10">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.TitleBig.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         android:hint="@string/flight_booking_contact_name_hint"
         android:padding="0dp">
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_contact_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
         android:layout_marginTop="@dimen/dp_5"
         android:hint="@string/flight_booking_contact_email_hint">
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_contact_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
         android:layout_marginBottom="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_5">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/contact_phone_number_label"
             style="@style/TextView.Micro"
             android:layout_width="match_parent"
@@ -130,7 +130,7 @@
             </LinearLayout>
 
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/et_phone_number"
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"

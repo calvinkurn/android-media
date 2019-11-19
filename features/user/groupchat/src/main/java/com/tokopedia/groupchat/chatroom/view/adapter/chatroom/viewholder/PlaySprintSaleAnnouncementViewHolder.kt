@@ -1,8 +1,8 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
 import android.graphics.Paint
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -34,7 +34,7 @@ class PlaySprintSaleAnnouncementViewHolder(itemView: View, var listener: Chatroo
 
     init {
         icon = itemView.findViewById(R.id.icon)
-        title = itemView.findViewById(R.id.title)
+        title = itemView.findViewById(com.tokopedia.design.R.id.title)
         contentImage = itemView.findViewById(R.id.content_image)
         price = itemView.findViewById(R.id.price)
         priceBefore = itemView.findViewById(R.id.price_before_discount)
@@ -54,7 +54,7 @@ class PlaySprintSaleAnnouncementViewHolder(itemView: View, var listener: Chatroo
         }
 
         var item = element.listProducts[0]
-        ImageHandler.loadImage(contentImage.context, contentImage, item.productImage, R.drawable.ic_loading_toped_new)
+        ImageHandler.loadImage(contentImage.context, contentImage, item.productImage, com.tokopedia.design.R.drawable.ic_loading_toped_new)
         price.text = item.productPrice
         priceBefore.text = item.productPriceBeforeDiscount
         priceBefore.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG

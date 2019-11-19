@@ -3,7 +3,7 @@ package com.tokopedia.referral.view.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
@@ -15,17 +15,26 @@ import com.tokopedia.abstraction.common.network.exception.ResponseDataNullExcept
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.ShareCallback;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.LinkerShareData;
+import com.tokopedia.linker.model.LinkerShareResult;
+import com.tokopedia.linker.model.UserData;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
 import com.tokopedia.referral.Util;
+import com.tokopedia.referral.analytics.ReferralAnalytics;
 import com.tokopedia.referral.data.ReferralCodeEntity;
 import com.tokopedia.referral.domain.GetReferralDataUseCase;
-import com.tokopedia.referral.ReferralRouter;
-import com.tokopedia.referral.view.listener.ReferralView;
 import com.tokopedia.referral.domain.model.ShareApps;
+import com.tokopedia.referral.view.listener.ReferralView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.sharedata.DefaultShareData;
 import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
@@ -56,10 +65,12 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private UserSession userSession;
     private final static int MAX_APPS = 4;
     private String url = "";
+    private ReferralAnalytics referralAnalytics;
 
     @Inject
-    public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase) {
+    public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, ReferralAnalytics referralAnalytics) {
         this.getReferralDataUseCase = getReferralDataUseCase;
+        this.referralAnalytics = referralAnalytics;
     }
 
 
@@ -79,7 +90,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     getReferralVoucherCode();
                 } else {
                     getView().showVerificationPhoneNumberPage();
-                    ((ReferralRouter)activity.getApplicationContext()).sendMoEngageReferralScreenOpen(activity,
+                    referralAnalytics.sendMoEngageReferralScreenOpen(
                             activity.getString(R.string.referral_phone_number_verify_screen_name));
                 }
             }
@@ -101,9 +112,25 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         keyValueMap.put(Constants.Key.Companion.SHARING_CONTENT, formatSharingContents());
         keyValueMap.put(Constants.Key.Companion.URI, Constants.Values.Companion.WEB_PLAYSTORE_BUYER_APP_URL);
         keyValueMap.put(Constants.Key.Companion.URL, url);
-        ((ReferralRouter)activity.getApplicationContext()).executeDefaultShare(activity, keyValueMap);
-        ((ReferralRouter)activity.getApplicationContext()).sendMoEngageReferralScreenOpen(activity,
+        executeDefaultShare(activity, keyValueMap);
+        referralAnalytics.sendMoEngageReferralScreenOpen(
                 activity.getString(R.string.referral_share_screen_name));
+    }
+
+    private void executeDefaultShare(Activity activity, HashMap<String, String> keyValueMap) {
+        new DefaultShareData(activity, createShareDataFromHashMap(keyValueMap)).show();
+    }
+
+    private LinkerData createShareDataFromHashMap(HashMap<String, String> keyValueMap) {
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.TYPE))
+                .setId(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.REFERRAL_CODE))
+                .setName(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.NAME))
+                .setTextContent(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.SHARING_CONTENT))
+                .setUri(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URI))
+                .setShareUrl(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URL))
+                .build();
+        return shareData;
     }
 
     private String formatSharingContents() {
@@ -121,7 +148,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public void getReferralVoucherCode() {
         getView().showProcessDialog();
-        getReferralDataUseCase.execute(Util.getPostRequestBody(userSession),new Subscriber<Map<Type, RestResponse>>() {
+        getReferralDataUseCase.execute(Util.getPostRequestBody(userSession), new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
 
@@ -186,7 +213,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         } else {
             getView().showToastMessage(getView().getActivity().getString(R.string.copy_coupon_code_text) + " " + voucherCode);
         }
-        ((ReferralRouter)getView().getActivity().getApplicationContext()).eventReferralAndShare(getView().getActivity(),
+        referralAnalytics.eventReferralAndShare(
                 Constants.Action.Companion.CLICK_COPY_REFERRAL_CODE, voucherCode);
     }
 
@@ -250,15 +277,15 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.FACEBOOK)) {
-            shareApps = new ShareApps(Constants.PackageName.Companion.FACEBOOK, R.drawable.ic_btn_fb);
+            shareApps = new ShareApps(Constants.PackageName.Companion.FACEBOOK, com.tokopedia.design.R.drawable.ic_btn_fb);
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.GPLUS)) {
-            shareApps = new ShareApps(Constants.PackageName.Companion.GPLUS, R.drawable.ic_btn_g);
+            shareApps = new ShareApps(Constants.PackageName.Companion.GPLUS, com.tokopedia.design.R.drawable.ic_btn_g);
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.TWITTER)) {
-            shareApps = new ShareApps(Constants.PackageName.Companion.TWITTER, R.drawable.ic_btn_twitter);
+            shareApps = new ShareApps(Constants.PackageName.Companion.TWITTER, com.tokopedia.design.R.drawable.ic_btn_twitter);
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.GMAIL)) {
@@ -266,7 +293,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.SMS)) {
-            shareApps = new ShareApps(Constants.PackageName.Companion.SMS, R.drawable.ic_btn_sms);
+            shareApps = new ShareApps(Constants.PackageName.Companion.SMS, com.tokopedia.design.R.drawable.ic_btn_sms);
             selectedApps[index++] = shareApps;
         }
         if (index < MAX_APPS && appInstalledOrNot(Constants.PackageName.Companion.PINTEREST)) {
@@ -369,7 +396,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             actionShare(shareData, Constants.PackageName.Companion.PINTEREST, Constants.Label.Companion.PINTEREST);
         } else {
             shareApp(fragmentManager);
-            ((ReferralRouter)activity.getApplicationContext()).eventReferralAndShare(activity.getApplicationContext(),
+            referralAnalytics.eventReferralAndShare(
                     Constants.Values.Companion.SELECT_CHANNEL, Constants.Label.Companion.OTHER);
 
         }
@@ -378,10 +405,48 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private void actionShare(HashMap<String, String> data, String packageName, String media) {
         data.put(Constants.Key.Companion.MEDIA, media);
 
-        ((ReferralRouter)getView().getActivity().getApplicationContext()).executeShareSocmedHandler(
-                getView().getActivity(), data, packageName
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                mapperLinkerData(data), new ShareCallback() {
+                    @Override
+                    public void urlCreated(LinkerShareResult linkerShareData) {
+                        Util.shareData(getView().getActivity(), packageName, "text/plain",
+                                linkerShareData.getShareContents(),
+                                linkerShareData.getShareUri(), null, null);
+                    }
+
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                })
         );
-        ((ReferralRouter)getView().getActivity().getApplicationContext()).sendAnalyticsToGTM(getView().getActivity().getApplicationContext(),
-                data.get(Constants.Key.Companion.TYPE), media);
+        referralAnalytics.sendAnalyticsEventToGtm(media);
+    }
+
+    private static LinkerShareData mapperLinkerData(HashMap<String, String> keyValueMap) {
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.TYPE))
+                .setId(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.REFERRAL_CODE))
+                .setName(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.NAME))
+                .setTextContent(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.SHARING_CONTENT))
+                .setUri(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URI))
+                .setShareUrl(keyValueMap.get(com.tokopedia.referral.Constants.Key.Companion.URL))
+                .build();
+
+        UserSession userSession = new UserSession(LinkerManager.getInstance().getContext());
+
+        UserData userData = new UserData();
+        userData.setName(userSession.getName());
+        userData.setPhoneNumber(userSession.getPhoneNumber());
+        userData.setUserId(userSession.getUserId());
+        userData.setEmail(userSession.getEmail());
+        userData.setFirstTimeUser(userSession.isFirstTimeUser());
+        userData.setLoggedin(userSession.isLoggedIn());
+
+        LinkerShareData linkerShareData = new LinkerShareData();
+        linkerShareData.setLinkerData(shareData);
+        linkerShareData.setUserData(userData);
+
+        return linkerShareData;
     }
 }

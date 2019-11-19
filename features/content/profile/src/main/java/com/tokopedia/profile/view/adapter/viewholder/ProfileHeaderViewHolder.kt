@@ -1,6 +1,6 @@
 package com.tokopedia.profile.view.adapter.viewholder
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -124,7 +124,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
             override fun updateDrawState(ds: TextPaint?) {
                 super.updateDrawState(ds)
                 ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(itemView.context, R.color.black_54)
+                ds?.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
             }
         }
 
@@ -136,7 +136,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
             override fun updateDrawState(ds: TextPaint?) {
                 super.updateDrawState(ds)
                 ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(itemView.context, R.color.black_54)
+                ds?.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
             }
         }
         if (spannableString.indexOf(followers) != -1) {

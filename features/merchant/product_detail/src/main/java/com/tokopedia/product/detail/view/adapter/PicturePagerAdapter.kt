@@ -2,10 +2,10 @@ package com.tokopedia.product.detail.view.adapter
 
 import android.content.Context
 import android.content.res.Configuration
-import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.product.detail.common.data.model.product.Picture
@@ -30,15 +30,15 @@ class PicturePagerAdapter(private val context: Context,
             if (!urlTemp.isNullOrEmpty() && position == 0) {
                 Glide.with(context).load(urlImage)
                         .dontAnimate().dontTransform().fitCenter()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .thumbnail(Glide.with(context).load(urlTemp)
                                 .dontAnimate().dontTransform().fitCenter()
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE))
+                                .diskCacheStrategy(DiskCacheStrategy.DATA))
                         .into(imageView)
             } else if (!urlImage.isEmpty()) {
                 Glide.with(context)
                         .load(if (urlImage.equals(urlTemp, true)) urlTemp else urlImage)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .fitCenter()
                         .into(imageView)
             }
@@ -48,15 +48,15 @@ class PicturePagerAdapter(private val context: Context,
             if (!urlTemp.isNullOrEmpty() && position == 0) {
                 Glide.with(context).load(urlImage)
                         .dontAnimate().dontTransform().centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .thumbnail(Glide.with(context).load(urlTemp)
                                 .dontAnimate().dontTransform().centerCrop()
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE))
+                                .diskCacheStrategy(DiskCacheStrategy.DATA))
                         .into(imageView)
             } else if (!urlImage.isEmpty()) {
                 Glide.with(context)
                         .load(if (urlImage.equals(urlTemp, true)) urlTemp else urlImage)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .centerCrop()
                         .into(imageView)
             }

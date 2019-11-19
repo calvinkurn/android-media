@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.rescenter.edit.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;

@@ -40,5 +40,4 @@ public interface PdpRouter {
                                  String productId,
                                  String reviewId);
 
-    void getDynamicShareMessage(Context dataObj, ActionCreator<String, Integer> actionCreator, ActionUIDelegate<String, String> actionUIDelegate);
 }

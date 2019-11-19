@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.listener
 
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.FragmentManager
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
@@ -70,6 +70,7 @@ interface HomeCategoryListener {
 
     fun onTokopointCheckNowClicked(applink: String)
 
+
     fun launchPermissionChecker()
 
     fun onCloseGeolocationView()
@@ -77,4 +78,8 @@ interface HomeCategoryListener {
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
     fun putEEToIris(data: HashMap<String, Any>)
+
+    fun onGetPlayBanner(adapterPosition: Int)
+
+    fun getWindowWidth(): Int
 }

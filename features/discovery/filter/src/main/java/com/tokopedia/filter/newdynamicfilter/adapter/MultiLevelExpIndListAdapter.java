@@ -7,7 +7,7 @@
 
 package com.tokopedia.filter.newdynamicfilter.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -2,7 +2,7 @@ package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -36,7 +36,7 @@ public class GroupChatPointsViewHolder extends BaseChatViewHolder<GroupChatPoint
     public GroupChatPointsViewHolder(View itemView, ChatroomContract.ChatItem.GroupChatPointsViewHolderListener imageListener) {
         super(itemView);
         mainView = itemView;
-        messageView = itemView.findViewById(R.id.text);
+        messageView = itemView.findViewById(com.tokopedia.design.R.id.text);
         icon = itemView.findViewById(R.id.icon);
         listener = imageListener;
     }

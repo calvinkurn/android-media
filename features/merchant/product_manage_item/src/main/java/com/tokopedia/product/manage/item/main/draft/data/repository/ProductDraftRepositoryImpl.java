@@ -9,13 +9,10 @@ import com.tokopedia.product.manage.item.main.draft.data.mapper.ProductDraftMapp
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
-import com.tokopedia.productdraftdatabase.ProductDraftDataBase;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -48,33 +45,16 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     public Observable<List<ProductDraftViewModel>> getAllDraft() {
         String shopId = SessionHandler.getShopID(context);
         return productDraftDataSource.getAllDraft(shopId)
-                .flatMap(new Func1<List<ProductDraftDataBase>, Observable<ProductDraftDataBase>>() {
-                    @Override
-                    public Observable<ProductDraftDataBase> call(List<ProductDraftDataBase> productDraftDataBases) {
-                        return Observable.from(productDraftDataBases);
-                    }
+                .flatMap(Observable::from)
+                .map(productDraftDataBase -> {
+                    final long id = productDraftDataBase.getId();
+                    return Observable.just(productDraftDataBase)
+                            .map(new ProductDraftMapper())
+                            .map(productViewModel -> ProductDraftListMapper.mapDomainToView(productViewModel, id))
+                            .toBlocking().first();
                 })
-                .map(new Func1<ProductDraftDataBase, ProductDraftViewModel>() {
-                    @Override
-                    public ProductDraftViewModel call(ProductDraftDataBase productDraftDataBase) {
-                        final long id = productDraftDataBase.getId();
-                        return Observable.just(productDraftDataBase)
-                                .map(new ProductDraftMapper())
-                                .map(new Func1<ProductViewModel, ProductDraftViewModel>() {
-                                    @Override
-                                    public ProductDraftViewModel call(ProductViewModel productViewModel) {
-                                        return ProductDraftListMapper.mapDomainToView(productViewModel, id);
-                                    }
-                                })
-                                .toBlocking().first();
-                    }
-                })
-                .toSortedList(new Func2<ProductDraftViewModel, ProductDraftViewModel, Integer>() {
-                    @Override
-                    public Integer call(ProductDraftViewModel productViewModel, ProductDraftViewModel productViewModel2) {
-                        return (int) (productViewModel2.getProductDraftId() - productViewModel.getProductDraftId());
-                    }
-                });
+                .toSortedList((productViewModel, productViewModel2) ->
+                        (int) (productViewModel2.getProductDraftId() - productViewModel.getProductDraftId()));
     }
 
     @Override

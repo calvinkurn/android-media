@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * @author by alifa on 10/26/17.

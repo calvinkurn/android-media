@@ -1,13 +1,13 @@
 package com.tokopedia.hotel.homepage.presentation.fragment
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,15 +81,18 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.roomCount = arguments?.getInt(EXTRA_ROOM, 1) ?: 1
             hotelHomepageModel.checkInDate = arguments?.getString(EXTRA_PARAM_CHECKIN) ?: ""
             hotelHomepageModel.checkOutDate = arguments?.getString(EXTRA_PARAM_CHECKOUT) ?: ""
-            if (hotelHomepageModel.checkInDate.isNotBlank()) hotelHomepageModel.checkInDateFmt =
-                    TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                            TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
+
+            if (hotelHomepageModel.checkInDate.isNotBlank()) {
+                hotelHomepageModel.checkInDateFmt =
+                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
+                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
+            }
             if (hotelHomepageModel.checkOutDate.isNotBlank()) {
                 hotelHomepageModel.checkOutDateFmt =
                         TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                                 TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
-                hotelHomepageModel.nightCounter = countRoomDuration()
             }
+            if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank()) hotelHomepageModel.nightCounter = countRoomDuration()
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -180,6 +183,19 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
             hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
                     TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
+            hotelHomepageModel.nightCounter = countRoomDuration()
+        } else if (hotelHomepageModel.checkInDate.isBlank()) {
+            val checkout = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)
+            val dayBeforeCheckOut = TravelDateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
+            hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayBeforeCheckOut)
+            hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayBeforeCheckOut)
+            hotelHomepageModel.nightCounter = countRoomDuration()
+
+        } else if (hotelHomepageModel.checkOutDate.isBlank()) {
+            val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate)
+            val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
+            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
+            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterCheckIn)
             hotelHomepageModel.nightCounter = countRoomDuration()
         }
 
@@ -401,7 +417,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         putString(EXTRA_PARAM_NAME, name)
                         putString(EXTRA_PARAM_TYPE, type)
                         if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)
-                        if (checkOut.isNotBlank()) putString (EXTRA_PARAM_CHECKOUT, checkOut)
+                        if (checkOut.isNotBlank()) putString(EXTRA_PARAM_CHECKOUT, checkOut)
                         if (adult != 0) putInt(EXTRA_ADULT, adult)
                         if (room != 0) putInt(EXTRA_ROOM, room)
                     }

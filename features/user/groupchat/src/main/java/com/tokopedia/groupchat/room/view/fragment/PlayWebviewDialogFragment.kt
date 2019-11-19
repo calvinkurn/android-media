@@ -7,9 +7,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.BottomSheetDialogFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.FrameLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
@@ -46,6 +47,8 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     private var callbackAfterL: ValueCallback<Array<Uri>>? = null
     private lateinit var behavior: BottomSheetBehavior<FrameLayout?>
 
+    lateinit var webview: TkpdWebView
+    lateinit var progressBar: ProgressBar
     private val userSession: UserSessionInterface by lazy {
         UserSession(context)
     }
@@ -61,7 +64,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
         webViewDialog.setOnShowListener { dialog ->
             val bottomSheetDialog = dialog as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             val behavior = BottomSheetBehavior.from(bottomSheet)
             this.behavior = behavior
 
@@ -107,12 +110,13 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.bottom_sheet_webview, container, false)
+        val view = inflater.inflate(R.layout.bottom_sheet_webview, container, false)
+        initWebView(view)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initWebView()
         loadWebView()
 
         ImageHandler.LoadImage(errorImage, GroupChatUrl.ERROR_WEBVIEW_IMAGE_URL)
@@ -149,9 +153,11 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun initWebView() {
+    private fun initWebView(view: View) {
         CookieManager.getInstance().setAcceptCookie(true)
 
+        webview = view.findViewById(R.id.webview)
+        progressBar = view.findViewById(R.id.progress_bar)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE

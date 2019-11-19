@@ -3,11 +3,12 @@ package com.tokopedia.digital_deals.view.contractor;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -27,6 +28,9 @@ public class DealsLocationContract {
 
         void showProgressBar(boolean showProgressBar);
 
+        void setCurrentLocation(LocationResponse locationResponse);
+
+        void setDefaultLocation();
     }
 
     public interface Presenter extends CustomerPresenter<DealsLocationContract.View> {

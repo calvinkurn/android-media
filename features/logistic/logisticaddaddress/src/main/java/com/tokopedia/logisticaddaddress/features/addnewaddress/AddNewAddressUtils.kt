@@ -9,8 +9,8 @@ import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.Secure.getInt
-import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
@@ -48,8 +48,8 @@ object AddNewAddressUtils {
             msg = activity.getString(R.string.default_request_error_unknown)
         }
         val snackbar = view.let { Snackbar.make(it, msg, BaseToaster.LENGTH_SHORT) }
-        val snackbarTextView = snackbar.view.findViewById<TextView>(android.support.design.R.id.snackbar_text)
-        val snackbarActionButton = snackbar.view.findViewById<Button>(android.support.design.R.id.snackbar_action)
+        val snackbarTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        val snackbarActionButton = snackbar.view.findViewById<Button>(com.google.android.material.R.id.snackbar_action)
         snackbar.view.background = ContextCompat.getDrawable(activity, com.tokopedia.design.R.drawable.bg_snackbar_error)
         snackbarTextView?.setTextColor(ContextCompat.getColor(activity, R.color.font_black_secondary_54))
         snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, R.color.font_black_primary_70))

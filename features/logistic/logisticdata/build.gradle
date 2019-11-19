@@ -23,7 +23,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.track)
 
-
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -35,14 +34,14 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.playServicesDependencies.analytics;
 }
 
 project.ext {
     artifactId = "data"
     groupId = "com.tokopedia.logistic"
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "logisticdata-release"
 }
 

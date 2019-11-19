@@ -1,6 +1,6 @@
 package com.tokopedia.digital.categorylist.view.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel;

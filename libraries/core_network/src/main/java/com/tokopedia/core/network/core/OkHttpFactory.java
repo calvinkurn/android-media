@@ -13,11 +13,8 @@ import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthIntercept
 import com.tokopedia.core.network.retrofit.interceptors.DynamicTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.MsisdnInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.ReactNativeBearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.ReactNativeInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
@@ -209,14 +206,6 @@ public class OkHttpFactory {
                 .build();
     }
 
-    public OkHttpClient buildClientBearerWithClientDefaultAuth() {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new TkpdBearerWithAuthTypeJsonUtInterceptor())
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
-
     public OkHttpClient buildClientDigitalAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
@@ -344,22 +333,6 @@ public class OkHttpFactory {
         return tkpdbBuilder.build();
     }
 
-    public OkHttpClient buildDaggerClientBearerRidehailing(RideInterceptor rideInterceptor,
-                                                           OkHttpRetryPolicy okHttpRetryPolicy,
-                                                           ChuckInterceptor chuckInterceptor,
-                                                           DebugInterceptor debugInterceptor,
-                                                           HttpLoggingInterceptor loggingInterceptor) {
-        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder)
-                .addInterceptor(rideInterceptor)
-                .setOkHttpRetryPolicy(okHttpRetryPolicy);
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            tkpdOkHttpBuilder.addInterceptor(debugInterceptor);
-            tkpdOkHttpBuilder.addInterceptor(chuckInterceptor);
-            tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
-        }
-        return tkpdOkHttpBuilder.build();
-    }
-
     public OkHttpClient buildDaggerClientBearerWithClientDefaultAuth(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
                                                                      OkHttpRetryPolicy okHttpRetryPolicy,
                                                                      ChuckInterceptor chuckInterceptor,
@@ -402,7 +375,7 @@ public class OkHttpFactory {
     }
 
     public OkHttpClient buildDaggerClientResolutionAuth(FingerprintInterceptor fingerprintInterceptor,
-                                                        ResolutionInterceptor resolutionInterceptor,
+                                                        TkpdAuthInterceptor resolutionInterceptor,
                                                         OkHttpRetryPolicy okHttpRetryPolicy,
                                                         ChuckInterceptor chuckInterceptor,
                                                         DebugInterceptor debugInterceptor) {
@@ -416,16 +389,6 @@ public class OkHttpFactory {
             tkpdbBuilder.addInterceptor(chuckInterceptor);
         }
         return tkpdbBuilder.build();
-    }
-
-    public OkHttpClient buildClientTokoCashAuth(String authKey) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor(CoreNetworkApplication.getAppContext()))
-                .addInterceptor(new MsisdnInterceptor(authKey))
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-
-                .addDebugInterceptor()
-                .build();
     }
 
     public OkHttpClient buildClientCreditCardAuth() {

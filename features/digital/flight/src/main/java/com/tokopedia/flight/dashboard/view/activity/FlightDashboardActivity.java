@@ -2,14 +2,11 @@ package com.tokopedia.flight.dashboard.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.applink.ApplinkConstant;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
@@ -22,39 +19,15 @@ import com.tokopedia.flight.dashboard.view.fragment.FlightDashboardFragment;
 
 public class FlightDashboardActivity extends BaseFlightActivity implements HasComponent<FlightDashboardComponent> {
 
-    private static final String EXTRA_TRIP = "EXTRA_TRIP";
-    private static final String EXTRA_ADULT = "EXTRA_ADULT";
-    private static final String EXTRA_CHILD = "EXTRA_CHILD";
-    private static final String EXTRA_INFANT = "EXTRA_INFANT";
-    private static final String EXTRA_CLASS = "EXTRA_CLASS";
-    private static final String EXTRA_AUTO_SEARCH = "EXTRA_AUTO_SEARCH";
+    private static final String EXTRA_TRIP = "dest";
+    private static final String EXTRA_ADULT = "a";
+    private static final String EXTRA_CHILD = "c";
+    private static final String EXTRA_INFANT = "i";
+    private static final String EXTRA_CLASS = "s";
+    private static final String EXTRA_AUTO_SEARCH = "auto_search";
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, FlightDashboardActivity.class);
-    }
-
-    @DeepLink(ApplinkConstant.FLIGHT)
-    public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent intent = new Intent(context, FlightDashboardActivity.class);
-        return intent
-                .setData(uri.build())
-                .putExtras(extras);
-    }
-
-    @DeepLink(ApplinkConstant.FLIGHT_SEARCH)
-    public static Intent getCallingApplinkSearchIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent intent = new Intent(context, FlightDashboardActivity.class);
-        intent.putExtra(EXTRA_TRIP, extras.getString("dest"));
-        intent.putExtra(EXTRA_ADULT, extras.getString("a"));
-        intent.putExtra(EXTRA_CHILD, extras.getString("c"));
-        intent.putExtra(EXTRA_INFANT, extras.getString("i"));
-        intent.putExtra(EXTRA_CLASS, extras.getString("s"));
-        intent.putExtra(EXTRA_AUTO_SEARCH, extras.getString("auto_search"));
-
-        return intent
-                .setData(uri.build());
     }
 
     @Override

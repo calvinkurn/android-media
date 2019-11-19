@@ -53,6 +53,8 @@ data class FreeDeposit(
         }
 
         companion object CREATOR : Parcelable.Creator<FreeDeposit> {
+                const val DEPOSIT_ACTIVE = 1
+
                 override fun createFromParcel(parcel: Parcel): FreeDeposit {
                         return FreeDeposit(parcel)
                 }
@@ -61,4 +63,5 @@ data class FreeDeposit(
                         return arrayOfNulls(size)
                 }
         }
+
 }
