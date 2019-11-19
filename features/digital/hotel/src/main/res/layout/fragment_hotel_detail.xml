@@ -534,47 +534,64 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:elevation="@dimen/dp_4"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:orientation="vertical">
+
+        <com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
+            android:id="@+id/widget_hotel_global_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@drawable/bg_hotel_ticket_divider"
+            android:layerType="software" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_8"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_hotel_price_subtitle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/hotel_detail_room_price_from"
-                app:fontSize="micro" />
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/tv_hotel_price"
-                android:layout_width="wrap_content"
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_hotel_price_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hotel_detail_room_price_from"
+                    app:fontSize="micro" />
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_hotel_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fontSize="title"
+                    app:textViewTheme="lightPrimary"
+                    app:weight="medium"
+                    tools:text="Rp 10.800.000" />
+
+            </LinearLayout>
+
+            <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/btn_see_room"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:fontSize="title"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium"
-                tools:text="Rp 10.800.000" />
+                android:layout_weight="1"
+                android:text="@string/hotel_detail_show_room_text"
+                app:buttonCompatType="transaction" />
 
         </LinearLayout>
-
-        <com.tokopedia.design.component.ButtonCompat
-            android:id="@+id/btn_see_room"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/hotel_detail_show_room_text"
-            app:buttonCompatType="transaction" />
-
     </LinearLayout>
 
 
