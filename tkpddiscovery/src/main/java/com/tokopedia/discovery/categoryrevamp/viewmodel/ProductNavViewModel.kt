@@ -10,6 +10,7 @@ import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryI
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -21,7 +22,8 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
                                               var subCategoryUseCaseV3: SubCategoryV3UseCase,
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
                                               var quickFilterUseCase: QuickFilterUseCase,
-                                              var getProductListUseCase: GetProductListUseCase) : ViewModel() {
+                                              var getProductListUseCase: GetProductListUseCase,
+                                              var seamlessLoginUsecase: SeamlessLoginUsecase) : ViewModel() {
 
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()

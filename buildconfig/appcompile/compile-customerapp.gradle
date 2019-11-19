@@ -173,6 +173,7 @@ include "features:user:user_identification_common"
 include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
+include "features:user:seamless_login"
 
 include 'tkpdcore'
 include 'tkpdinbox'

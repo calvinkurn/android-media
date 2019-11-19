@@ -54,6 +54,7 @@ import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -421,15 +422,27 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     private fun showBannedDataScreen() {
-        layout_banned_screen.visibility = View.VISIBLE
-        swipe_refresh_layout.visibility = View.GONE
+        layout_banned_screen.show()
+        swipe_refresh_layout.hide()
         catAnalyticsInstance.eventBukaView(bannedData?.appRedirection.toString(), mDepartmentId)
         if (bannedData != null && bannedData!!.displayButton && CategoryNavActivity.isBannedNavigationEnabled(activity as Context)) {
-            category_btn_banned_navigation.visibility = View.VISIBLE
+            category_btn_banned_navigation.show()
             category_btn_banned_navigation.setOnClickListener() {
                 catAnalyticsInstance.eventBukaClick(bannedData?.appRedirection.toString(), mDepartmentId)
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(bannedData?.appRedirection))
-                startActivity(browserIntent)
+                productNavViewModel.seamlessLoginUsecase.generateSeamlessUrl(Uri.parse(bannedData?.appRedirection).toString(),
+                        object : SeamlessLoginSubscriber {
+                            override fun onUrlGenerated(url: String) {
+                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(bannedData?.appRedirection))
+                                startActivity(browserIntent)
+                            }
+
+                            override fun onError(msg: String) {
+                                layout_banned_screen.show()
+                                txt_header.text = "There is some error on server"
+                                txt_sub_header.text = "try again"
+                            }
+                        })
+
             }
         }
         txt_header.text = bannedData?.bannedMsgHeader
