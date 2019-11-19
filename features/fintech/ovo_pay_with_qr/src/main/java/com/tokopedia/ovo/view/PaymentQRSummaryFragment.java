@@ -128,8 +128,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         initRemoteConfig();
         initViews(view);
         setDataAndListeners();
-        MAX_AMOUNT = remoteConfig.getLong(RemoteConfigKey.OVO_QR_MAX_AMOUNT, 10000000);
-        MIN_AMOUNT = remoteConfig.getLong(RemoteConfigKey.OVO_QR_MIN_AMOUNT, 1000);
+        MAX_AMOUNT = remoteConfig.getLong(RemoteConfigKey.OVO_QR_MAX_AMOUNT, MAX_AMOUNT);
+        MIN_AMOUNT = remoteConfig.getLong(RemoteConfigKey.OVO_QR_MIN_AMOUNT, MIN_AMOUNT);
         return view;
     }
 
