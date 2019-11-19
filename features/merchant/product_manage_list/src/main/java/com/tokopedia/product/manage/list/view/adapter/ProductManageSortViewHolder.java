@@ -25,8 +25,8 @@ public class ProductManageSortViewHolder extends BaseViewHolder<ProductManageSor
 
     public ProductManageSortViewHolder(View layoutView) {
         super(layoutView);
-        titleSort = (TextView) layoutView.findViewById(R.id.text_view_title);
-        imageCheckList = (ImageView) layoutView.findViewById(R.id.image_view_check);
+        titleSort = (TextView) layoutView.findViewById(com.tokopedia.design.R.id.text_view_title);
+        imageCheckList = (ImageView) layoutView.findViewById(com.tokopedia.topads.common.R.id.image_view_check);
     }
 
     public void setListenerCheckedSort(ListenerCheckedSort listenerCheckedSort) {

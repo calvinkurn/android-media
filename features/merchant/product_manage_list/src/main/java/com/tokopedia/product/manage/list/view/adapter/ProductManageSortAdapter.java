@@ -26,7 +26,7 @@ public class ProductManageSortAdapter extends BaseListAdapter<ProductManageSortM
         switch (viewType) {
             case ProductManageSortModel.TYPE:
                 ProductManageSortViewHolder productManageSortViewHolder = new ProductManageSortViewHolder(
-                        getLayoutView(parent, R.layout.item_product_manage_list_sort));
+                        getLayoutView(parent, com.tokopedia.seller.R.layout.item_product_manage_list_sort));
                 productManageSortViewHolder.setListenerCheckedSort(this);
                 return productManageSortViewHolder;
             default:

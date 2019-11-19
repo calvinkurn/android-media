@@ -97,16 +97,16 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_dialog_product_manage_edit_price, container, false);
-        counterInputView = view.findViewById(R.id.counter_input_view);
-        saveButton = (TextView) view.findViewById(R.id.string_picker_dialog_confirm);
-        cancelButton = (TextView) view.findViewById(R.id.string_picker_dialog_cancel);
+        View view = inflater.inflate(com.tokopedia.product.manage.list.R.layout.fragment_dialog_product_manage_edit_price, container, false);
+        counterInputView = view.findViewById(com.tokopedia.design.R.id.counter_input_view);
+        saveButton = (TextView) view.findViewById(com.tokopedia.abstraction.R.id.string_picker_dialog_confirm);
+        cancelButton = (TextView) view.findViewById(com.tokopedia.abstraction.R.id.string_picker_dialog_cancel);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isPriceValid() && listenerDialogEditPrice != null) {
-                    UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
+                    UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(com.tokopedia.product.manage.list.R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
                     listenerDialogEditPrice.onSubmitEditPrice(productId,
                             formatDecimal(counterInputView.getDoubleValue()),
                             "1", "Rp");
@@ -120,7 +120,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 dismiss();
-                UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
+                UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(com.tokopedia.product.manage.list.R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
             }
         });
 
@@ -140,7 +140,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
         int currencyType = getCurrencyType();
         if (!ProductPriceRangeUtils.isPriceValid(priceValue, currencyType, isOfficialStore )) {
             counterInputView.setError(
-                    counterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
+                    counterInputView.getContext().getString(com.tokopedia.product.manage.item.R.string.product_error_product_price_not_valid,
                             ProductPriceRangeUtils.getMinPriceString(currencyType, isOfficialStore),
                             ProductPriceRangeUtils.getMaxPriceString(currencyType, isOfficialStore)));
             return false;

@@ -30,13 +30,13 @@ public class ProductManageFilterActivity extends BaseSimpleActivity {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_filter_product_manage;
+        return com.tokopedia.product.manage.list.R.layout.activity_filter_product_manage;
     }
 
     @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
-        optionReset = (TextView) findViewById(R.id.option_menu_reset);
+        optionReset = (TextView) findViewById(com.tokopedia.product.manage.list.R.id.option_menu_reset);
         optionReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -40,10 +40,10 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(this);
-        inflateView(R.layout.activity_simple_fragment);
+        inflateView(com.tokopedia.core2.R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new ProductManageSellerFragment(), TAG).commit();
+                    .replace(com.tokopedia.design.R.id.container, new ProductManageSellerFragment(), TAG).commit();
         }
     }
 

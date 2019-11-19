@@ -16,7 +16,7 @@ class ConfirmationProductAdapter(private var data: List<ConfirmationProductData>
     : RecyclerView.Adapter<ConfirmationProductAdapter.ConfirmationProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ConfirmationProductViewHolder {
-        return ConfirmationProductViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_confirmation_product, parent, false))
+        return ConfirmationProductViewHolder(LayoutInflater.from(parent.context).inflate(com.tokopedia.product.manage.list.R.layout.item_confirmation_product, parent, false))
     }
 
     override fun getItemCount(): Int = data.size
@@ -26,14 +26,14 @@ class ConfirmationProductAdapter(private var data: List<ConfirmationProductData>
     }
 
     inner class ConfirmationProductViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        private val txtProductTitle: TextView = view.findViewById(R.id.txt_title_product_confirmation)
-        private val imgProduct: ImageView = view.findViewById(R.id.img_product_confirmation)
-        private val txtProductStock: TextView = view.findViewById(R.id.txt_stock_confirmation)
-        private val txtProductEtalase: TextView = view.findViewById(R.id.txt_etalase_confirmation)
+        private val txtProductTitle: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.txt_title_product_confirmation)
+        private val imgProduct: ImageView = view.findViewById(com.tokopedia.product.manage.list.R.id.img_product_confirmation)
+        private val txtProductStock: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.txt_stock_confirmation)
+        private val txtProductEtalase: TextView = view.findViewById(com.tokopedia.product.manage.list.R.id.txt_etalase_confirmation)
 
         fun bind(data: ConfirmationProductData) {
             txtProductTitle.text = data.productName
-            ImageHandler.loadImage(view.context, imgProduct, data.productImgUrl, R.drawable.ic_loading_image)
+            ImageHandler.loadImage(view.context, imgProduct, data.productImgUrl, com.tokopedia.design.R.drawable.ic_loading_image)
 
             if (data.productEtalaseName != "") {
                 txtProductEtalase.visibility = View.VISIBLE
@@ -45,9 +45,9 @@ class ConfirmationProductAdapter(private var data: List<ConfirmationProductData>
             if (data.statusStock != STOCK_DEFAULT) {
                 txtProductStock.visibility = View.VISIBLE
                 txtProductStock.text = if (data.statusStock == STOCK_UNLIMITED)
-                    view.resources.getString(R.string.product_available)
+                    view.resources.getString(com.tokopedia.product.manage.list.R.string.product_available)
                 else
-                    view.resources.getString(R.string.product_label_stock_empty)
+                    view.resources.getString(com.tokopedia.product.manage.item.R.string.product_label_stock_empty)
             } else {
                 txtProductStock.visibility = View.GONE
             }

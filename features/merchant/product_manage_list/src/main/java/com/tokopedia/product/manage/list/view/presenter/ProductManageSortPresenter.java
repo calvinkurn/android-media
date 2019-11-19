@@ -31,34 +31,34 @@ public class ProductManageSortPresenter extends BaseDaggerPresenter<ProductManag
         List<ProductManageSortModel> productManageSortModels = new ArrayList<>();
         for(String title : stringArray){
             ProductManageSortModel productManageSortModel = new ProductManageSortModel();
-            if(title.equals(context.getString(R.string.sort_position))){
+            if(title.equals(context.getString(com.tokopedia.core2.R.string.sort_position))){
                 productManageSortModel.setSortId(SortProductOption.POSITION);
                 productManageSortModel.setTitleSort(title);
-            }else if(title.equals(context.getString(R.string.sort_new_product))){
+            }else if(title.equals(context.getString(com.tokopedia.core2.R.string.sort_new_product))){
                 productManageSortModel.setSortId(SortProductOption.NEW_PRODUCT);
                 productManageSortModel.setTitleSort(title);
-            }else if(title.equals(context.getString(R.string.sort_last))){
+            }else if(title.equals(context.getString(com.tokopedia.core2.R.string.sort_last))){
                 productManageSortModel.setSortId(SortProductOption.LAST_UPDATE);
                 productManageSortModel.setTitleSort(title);
-            }else if(title.equals(context.getString(R.string.sort_product_name))){
+            }else if(title.equals(context.getString(com.tokopedia.core2.R.string.sort_product_name))){
                 productManageSortModel.setSortId(SortProductOption.PRODUCT_NAME);
                 productManageSortModel.setTitleSort(title);
-            }else if(title.equals(context.getString(R.string.sort_most_viewed))){
+            }else if(title.equals(context.getString(com.tokopedia.core2.R.string.sort_most_viewed))){
                 productManageSortModel.setSortId(SortProductOption.MOST_VIEW);
                 productManageSortModel.setTitleSort(title);
-            }else if(title.equals(context.getString(R.string.sort_most_discussed))){
+            }else if(title.equals(context.getString(com.tokopedia.core2.R.string.sort_most_discussed))){
                 productManageSortModel.setSortId(SortProductOption.MOST_TALK);
                 productManageSortModel.setTitleSort(title);
-            }else if(title.equals(context.getString(R.string.sort_most_reviewed))){
+            }else if(title.equals(context.getString(com.tokopedia.core2.R.string.sort_most_reviewed))){
                 productManageSortModel.setSortId(SortProductOption.MOST_REVIEW);
                 productManageSortModel.setTitleSort(title);
-            }else if(title.equals(context.getString(R.string.sort_most_buy))){
+            }else if(title.equals(context.getString(com.tokopedia.core2.R.string.sort_most_buy))){
                 productManageSortModel.setSortId(SortProductOption.MOST_BUY);
                 productManageSortModel.setTitleSort(title);
-            }else if(title.equals(context.getString(R.string.sort_lowest_price))){
+            }else if(title.equals(context.getString(com.tokopedia.core2.R.string.sort_lowest_price))){
                 productManageSortModel.setSortId(SortProductOption.LOWEST_PRICE);
                 productManageSortModel.setTitleSort(title);
-            }else if(title.equals(context.getString(R.string.sort_highest_price))){
+            }else if(title.equals(context.getString(com.tokopedia.core2.R.string.sort_highest_price))){
                 productManageSortModel.setSortId(SortProductOption.HIGHEST_PRICE);
                 productManageSortModel.setTitleSort(title);
             }else{

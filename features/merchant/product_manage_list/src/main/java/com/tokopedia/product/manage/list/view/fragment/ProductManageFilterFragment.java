@@ -90,18 +90,18 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_product_manage_filter, container, false);
+        return inflater.inflate(com.tokopedia.seller.R.layout.fragment_product_manage_filter, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        etalaseLabelView = (LabelView) view.findViewById(R.id.etalase);
-        categoryLabelView = (LabelView) view.findViewById(R.id.category);
-        conditionLabelView = (LabelView) view.findViewById(R.id.condition);
-        catalogLabelView = (LabelView) view.findViewById(R.id.catalog);
-        productPictureLabelView = (LabelView) view.findViewById(R.id.product_picture);
-        submitButton = (Button) view.findViewById(R.id.button_submit);
+        etalaseLabelView = (LabelView) view.findViewById(com.tokopedia.core2.R.id.etalase);
+        categoryLabelView = (LabelView) view.findViewById(com.tokopedia.core2.R.id.category);
+        conditionLabelView = (LabelView) view.findViewById(com.tokopedia.core2.R.id.condition);
+        catalogLabelView = (LabelView) view.findViewById(com.tokopedia.core2.R.id.catalog);
+        productPictureLabelView = (LabelView) view.findViewById(com.tokopedia.seller.R.id.product_picture);
+        submitButton = (Button) view.findViewById(com.tokopedia.seller.R.id.button_submit);
 
         updateFilterView();
 
@@ -145,66 +145,66 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
 
     private void updateFilterView() {
         if (TextUtils.isEmpty(productManageFilterModel.getEtalaseProductOptionName())) {
-            productManageFilterModel.setEtalaseProductOptionName(getString(R.string.product_manage_filter_menu_etalase_all));
+            productManageFilterModel.setEtalaseProductOptionName(getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_menu_etalase_all));
         }
         etalaseLabelView.setContent(MethodChecker.fromHtml(productManageFilterModel.getEtalaseProductOptionName()));
         if (TextUtils.isEmpty(productManageFilterModel.getCategoryName())) {
-            productManageFilterModel.setCategoryName(getString(R.string.product_manage_filter_menu_category_all));
+            productManageFilterModel.setCategoryName(getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_menu_category_all));
         }
         categoryLabelView.setContent(productManageFilterModel.getCategoryName());
         switch (productManageFilterModel.getConditionProductOption()) {
             case ConditionProductOption.ALL_CONDITION:
-                conditionLabelView.setContent(getString(R.string.product_manage_filter_menu_both_condition));
+                conditionLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_both_condition));
                 break;
             case ConditionProductOption.NEW:
-                conditionLabelView.setContent(getString(R.string.product_manage_filter_menu_condition_new));
+                conditionLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_condition_new));
                 break;
             case ConditionProductOption.USED:
-                conditionLabelView.setContent(getString(R.string.product_manage_filter_menu_condition_old));
+                conditionLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_condition_old));
                 break;
             default:
-                conditionLabelView.setContent(getString(R.string.product_manage_filter_menu_both_condition));
+                conditionLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_both_condition));
                 break;
         }
         switch (productManageFilterModel.getCatalogProductOption()) {
             case CatalogProductOption.WITH_AND_WITHOUT:
-                catalogLabelView.setContent(getString(R.string.product_manage_filter_menu_both_catalog));
+                catalogLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_both_catalog));
                 break;
             case CatalogProductOption.WITH_CATALOG:
-                catalogLabelView.setContent(getString(R.string.product_manage_filter_menu_with_catalog));
+                catalogLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_with_catalog));
                 break;
             case CatalogProductOption.WITHOUT_CATALOG:
-                catalogLabelView.setContent(getString(R.string.product_manage_filter_menu_without_catalog));
+                catalogLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_without_catalog));
                 break;
             default:
-                catalogLabelView.setContent(getString(R.string.product_manage_filter_menu_both_catalog));
+                catalogLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_both_catalog));
                 break;
         }
         switch (productManageFilterModel.getPictureStatusOption()) {
             case PictureStatusProductOption.WITH_AND_WITHOUT:
-                productPictureLabelView.setContent(getString(R.string.product_manage_filter_menu_picture_both));
+                productPictureLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_picture_both));
                 break;
             case PictureStatusProductOption.WITH_IMAGE:
-                productPictureLabelView.setContent(getString(R.string.product_manage_filter_menu_with_picture));
+                productPictureLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_with_picture));
                 break;
             case PictureStatusProductOption.WITHOUT_IMAGE:
-                productPictureLabelView.setContent(getString(R.string.product_manage_filter_menu_without_picture));
+                productPictureLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_without_picture));
                 break;
             default:
-                productPictureLabelView.setContent(getString(R.string.product_manage_filter_menu_picture_both));
+                productPictureLabelView.setContent(getString(com.tokopedia.seller.R.string.product_manage_filter_menu_picture_both));
                 break;
         }
     }
 
     private void showEtalaseOption() {
         ArrayList<MyEtalaseItemViewModel> myEtalaseItemViewModels = new ArrayList<>();
-        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_PRODUK, getString(R.string.product_manage_filter_menu_etalase_all)));
-        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_SOLD_PRODUK, getString(R.string.product_manage_filter_sold)));
-        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_EMPTY_STOK, getString(R.string.product_manage_filter_empty_stok)));
-        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PENDING, getString(R.string.product_manage_filter_pending)));
-        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_FREE_RETURNS, getString(R.string.product_manage_filter_free_returns)));
-        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PREORDER, getString(R.string.product_manage_filter_preorder)));
-        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_SHOWCASE, getString(R.string.product_manage_filter_all_showcase)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_PRODUK, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_menu_etalase_all)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_SOLD_PRODUK, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_sold)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_EMPTY_STOK, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_empty_stok)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PENDING, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_pending)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_FREE_RETURNS, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_free_returns)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_PREORDER, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_preorder)));
+        myEtalaseItemViewModels.add(new MyEtalaseItemViewModel(ProductManageConstant.FILTER_ALL_SHOWCASE, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_all_showcase)));
         Intent intent = EtalaseDynamicPickerActivity.createInstance(getActivity(), productManageFilterModel.getEtalaseProductOption(), myEtalaseItemViewModels);
         startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_ETALASE);
     }
@@ -244,16 +244,16 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     }
 
     private void showProductPictureOption() {
-        showBottomSheetOption(productPictureLabelView.getTitle(), R.menu.menu_product_manage_filter_picture_option,
+        showBottomSheetOption(productPictureLabelView.getTitle(), com.tokopedia.seller.R.menu.menu_product_manage_filter_picture_option,
                 productPictureLabelView.getContent(), new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
                 int itemId = item.getItemId();
-                if (itemId == R.id.both_picture_option_menu) {
+                if (itemId == com.tokopedia.seller.R.id.both_picture_option_menu) {
                     productManageFilterModel.setPictureStatusOption(PictureStatusProductOption.WITH_AND_WITHOUT);
-                } else if (itemId == R.id.without_picture_option_menu) {
+                } else if (itemId == com.tokopedia.seller.R.id.without_picture_option_menu) {
                     productManageFilterModel.setPictureStatusOption(PictureStatusProductOption.WITHOUT_IMAGE);
-                } else if (itemId == R.id.with_picture_option_menu) {
+                } else if (itemId == com.tokopedia.seller.R.id.with_picture_option_menu) {
                     productManageFilterModel.setPictureStatusOption(PictureStatusProductOption.WITH_IMAGE);
                 }
                 updateFilterView();
@@ -262,16 +262,16 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     }
 
     private void showCatalogOption() {
-        showBottomSheetOption(catalogLabelView.getTitle(), R.menu.menu_product_manage_filter_catalog_option,
+        showBottomSheetOption(catalogLabelView.getTitle(), com.tokopedia.seller.R.menu.menu_product_manage_filter_catalog_option,
                 catalogLabelView.getContent(), new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
                 int itemId = item.getItemId();
-                if (itemId == R.id.both_catalog_option_menu) {
+                if (itemId == com.tokopedia.seller.R.id.both_catalog_option_menu) {
                     productManageFilterModel.setCatalogProductOption(CatalogProductOption.WITH_AND_WITHOUT);
-                } else if (itemId == R.id.without_catalog_option_menu) {
+                } else if (itemId == com.tokopedia.seller.R.id.without_catalog_option_menu) {
                     productManageFilterModel.setCatalogProductOption(CatalogProductOption.WITHOUT_CATALOG);
-                } else if (itemId == R.id.with_catalog_option_menu) {
+                } else if (itemId == com.tokopedia.seller.R.id.with_catalog_option_menu) {
                     productManageFilterModel.setCatalogProductOption(CatalogProductOption.WITH_CATALOG);
                 }
                 updateFilterView();
@@ -280,16 +280,16 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     }
 
     private void showConditionOption() {
-        showBottomSheetOption(conditionLabelView.getTitle(), R.menu.menu_product_manage_filter_condition_option,
+        showBottomSheetOption(conditionLabelView.getTitle(), com.tokopedia.seller.R.menu.menu_product_manage_filter_condition_option,
                 conditionLabelView.getContent(), new BottomSheetItemClickListener() {
             @Override
             public void onBottomSheetItemClick(MenuItem item) {
                 int itemId = item.getItemId();
-                if (itemId == R.id.both_condtion_option_menu) {
+                if (itemId == com.tokopedia.seller.R.id.both_condtion_option_menu) {
                     productManageFilterModel.setConditionProductOption(ConditionProductOption.ALL_CONDITION);
-                } else if (itemId == R.id.new_condition_option_menu) {
+                } else if (itemId == com.tokopedia.seller.R.id.new_condition_option_menu) {
                     productManageFilterModel.setConditionProductOption(ConditionProductOption.NEW);
-                } else if (itemId == R.id.old_condition_option_menu) {
+                } else if (itemId == com.tokopedia.seller.R.id.old_condition_option_menu) {
                     productManageFilterModel.setConditionProductOption(ConditionProductOption.USED);
                 }
                 updateFilterView();
@@ -305,7 +305,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
             categoryId = 0;
         }
         ArrayList<ProductManageCategoryViewModel> categoryViewModels = new ArrayList<>();
-        categoryViewModels.add(new ProductManageCategoryViewModel(getString(R.string.product_manage_filter_menu_category_all), ProductManageConstant.FILTER_ALL_CATEGORY, false));
+        categoryViewModels.add(new ProductManageCategoryViewModel(getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_menu_category_all), ProductManageConstant.FILTER_ALL_CATEGORY, false));
         Intent intent = CategoryDynamicPickerActivity.createIntent(getActivity(), categoryId, categoryViewModels);
         startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_CATEGORY);
     }

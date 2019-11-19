@@ -51,13 +51,13 @@ public class ProductManageImageSticker {
     public Bitmap processStickerToImage(Bitmap source, Context context){
         LayoutInflater mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         RelativeLayout view = new RelativeLayout(context);
-        mInflater.inflate(R.layout.partial_product_manage_image_sticker, view, true);
+        mInflater.inflate(com.tokopedia.seller.R.layout.partial_product_manage_image_sticker, view, true);
 
-        ImageView imgSource = view.findViewById(R.id.img_source);
-        TextView tvPrice = view.findViewById(R.id.tv_price);
-        TextView tvName = view.findViewById(R.id.tv_name);
-        TextView tvShopLink = view.findViewById(R.id.tv_shop_link);
-        TextView tvCashback = view.findViewById(R.id.tv_cashback);
+        ImageView imgSource = view.findViewById(com.tokopedia.seller.R.id.img_source);
+        TextView tvPrice = view.findViewById(com.tokopedia.seller.R.id.tv_price);
+        TextView tvName = view.findViewById(com.tokopedia.core2.R.id.tv_name);
+        TextView tvShopLink = view.findViewById(com.tokopedia.seller.R.id.tv_shop_link);
+        TextView tvCashback = view.findViewById(com.tokopedia.seller.R.id.tv_cashback);
 
         imgSource.setImageBitmap(source);
         tvPrice.setText(getPrice());

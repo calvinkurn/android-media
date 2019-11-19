@@ -54,7 +54,7 @@ public class ProductManageSortFragment extends BaseListFragment<ProductManageSor
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_product_manage_sort;
+        return com.tokopedia.seller.R.layout.fragment_product_manage_sort;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ProductManageSortFragment extends BaseListFragment<ProductManageSor
 
     @Override
     protected void searchForPage(int page) {
-        productManageSortPresenter.getListSortManageProduct(getResources().getStringArray(R.array.sort_option));
+        productManageSortPresenter.getListSortManageProduct(getResources().getStringArray(com.tokopedia.core2.R.array.sort_option));
     }
 
     @Override

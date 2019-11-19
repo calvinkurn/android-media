@@ -96,8 +96,6 @@ import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
-import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
-import com.tokopedia.product.manage.list.applink.ProductManageApplinkModuleLoader;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
@@ -173,7 +171,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         ChangePasswordDeeplinkModule.class,
         AffiliateApplinkModule.class,
         InboxTalkApplinkModule.class,
-        ProductManageApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
@@ -228,7 +225,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ChangePasswordDeeplinkModuleLoader(),
                     new AffiliateApplinkModuleLoader(),
                     new InboxTalkApplinkModuleLoader(),
-                    new ProductManageApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
                     new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),

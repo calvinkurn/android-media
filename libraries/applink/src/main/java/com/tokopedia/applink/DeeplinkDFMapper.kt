@@ -101,6 +101,8 @@ object DeeplinkDFMapper {
     private val DFM_PROFILE = "profile"
     private val DFM_CHAT_BOT = "chatbot"
     private val DFM_POWER_MERCHANT_SUBSCRIBE = "power_merchant_subscribe"
+    private val DFM_PRODUCT_MANAGE_CUSTOMER = "product_manage_customer"
+    private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
 
     @JvmField
     val DFM_ONBOARDING = "onboarding"
@@ -150,6 +152,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
             add(DFP({it.startsWith(CHAT_BOT)}, DFM_CHAT_BOT, R.string.title_applink_chatbot))
             add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DFM_POWER_MERCHANT_SUBSCRIBE, R.string.title_applink_pm_subscribe))
+            add(DFP({ it.startsWith(DFM_PRODUCT_MANAGE_CUSTOMER) }, DFM_PRODUCT_MANAGE_CUSTOMER, R.string.title_applink_product_manage))
 
         }
     }
@@ -160,6 +163,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(REPORT_PRODUCT) }, DFM_SELLER_REPORT_PRODUCT, R.string.applink_report_title))
+            add(DFP({ it.startsWith(DFM_PRODUCT_MANAGE_SELLER) }, DFM_PRODUCT_MANAGE_SELLER, R.string.title_applink_product_manage))
         }
     }
 
