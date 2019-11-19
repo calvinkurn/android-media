@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -318,7 +319,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
     @Override
     public void onViewNotGmClicked() {
-        RouteManager.route(getContext(),ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
+        RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
     }
 
     @Override
