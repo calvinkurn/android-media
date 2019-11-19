@@ -54,11 +54,49 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             title = getString(KEY_TITLE, DEFAULT_TITLE)
         }
         intent.data?.run {
-            url = (getQueryParameter(KEY_URL) ?: "").decode()
+            url = getEncodedParameterUrl(this)
             showTitleBar = getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: true
             allowOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: true
             needLogin = getQueryParameter(KEY_NEED_LOGIN)?.toBoolean() ?: false
             title = getQueryParameter(KEY_TITLE) ?: DEFAULT_TITLE
+        }
+    }
+
+    /**
+     * This function is to get the url from the Uri
+     * Example:
+     * Input: tokopedia://webview?url=http://www.tokopedia.com/help
+     * Output:http://www.tokopedia.com/help
+     *
+     * Input: tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2F
+     * Output:http://www.tokopedia.com/help
+     *
+     * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help
+     * Output:https://js.tokopedia.com?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2F
+     *
+     * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help?id=4&target=5&title=3
+     * Output:https://js.tokopedia.com?target=5&title=3&url=http%3A%2F%2Fwww.tokopedia.com%2Fhelp%3Fid%3D4%26target%3D5%26title%3D3
+     */
+    private fun getEncodedParameterUrl(intentUri: Uri): String {
+        val query = intentUri.query
+        return if (query != null && query.contains("$KEY_URL=")) {
+            url = query.substringAfter("$KEY_URL=").decode()
+            if (!url.contains("$KEY_URL=")) {
+                return url
+            }
+            val url2 = url.substringAfter("$KEY_URL=")
+            if (url2.isNotEmpty()) {
+                val url2BeforeAnd = url2.substringBefore("&")
+                val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "")
+                    .replaceFirst("&&", "&").replaceFirst("?&", "&"))
+                uriFromUrl.buildUpon()
+                    .appendQueryParameter(KEY_URL, url2.encodeOnce())
+                    .build().toString()
+            } else {
+                url
+            }
+        } else {
+            ""
         }
     }
 
@@ -87,7 +125,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         super.onResume()
         if (PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1) {
             PersistentCacheManager.instance.put(KEY_CACHE_RELOAD_WEBVIEW, 0)
-            val f:Fragment? = fragment
+            val f: Fragment? = fragment
             if (f is BaseSessionWebViewFragment) {
                 f.reloadPage()
             }
