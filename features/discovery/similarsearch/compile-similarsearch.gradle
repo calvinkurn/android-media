@@ -12,11 +12,11 @@ include 'features:transaction:purchase_platform_common'
 
 include 'libraries:analytics'
 include 'libraries:applink'
-//include 'libraries:cache_api'
-//include 'libraries:core_legacy'
-//include 'libraries:core_network'
-//include "libraries:cpm"
-//include "libraries:iris"
+include 'libraries:cache_api'
+include 'libraries:core_legacy'
+include 'libraries:core_network'
+include "libraries:cpm"
+include "libraries:iris"
 include 'libraries:kotlin_extensions'
 include 'libraries:promotions_target'
 include 'libraries:remote_config'

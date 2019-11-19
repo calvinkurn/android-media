@@ -36,7 +36,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
 
         const val REQUEST_CODE_GO_TO_PRODUCT_DETAIL = 123
-        const val REQUEST_CODE_GO_TO_NORMAL_CHECKOUT = 124
+        const val REQUEST_CODE_GO_TO_CHECKOUT = 124
     }
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
@@ -191,7 +191,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
                 it.putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
             }
 
-            startActivityForResult(intent, REQUEST_CODE_GO_TO_NORMAL_CHECKOUT)
+            startActivityForResult(intent, REQUEST_CODE_GO_TO_CHECKOUT)
         }
     }
 
@@ -236,14 +236,14 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun handleAddWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
-            showSnackbar(R.string.similar_search_add_wishlist_success, Toaster.TYPE_NORMAL)
+            showSnackbar(R.string.similar_search_add_wishlist_success)
         }
         else {
             showSnackbar(R.string.similar_search_add_wishlist_failed, Toaster.TYPE_ERROR)
         }
     }
 
-    private fun showSnackbar(@StringRes messageStringResource: Int, toasterType: Int) {
+    private fun showSnackbar(@StringRes messageStringResource: Int, toasterType: Int = Toaster.TYPE_NORMAL) {
         view?.let { view ->
             Toaster.make(view, getString(messageStringResource), Snackbar.LENGTH_SHORT, toasterType)
         }
@@ -251,7 +251,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun handleRemoveWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
-            showSnackbar(R.string.similar_search_remove_wishlist_success, Toaster.TYPE_NORMAL)
+            showSnackbar(R.string.similar_search_remove_wishlist_success)
         }
         else {
             showSnackbar(R.string.similar_search_remove_wishlist_failed, Toaster.TYPE_ERROR)
@@ -271,7 +271,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
         when(requestCode) {
             REQUEST_CODE_GO_TO_PRODUCT_DETAIL -> handleResultFromProductDetail(data)
-            REQUEST_CODE_GO_TO_NORMAL_CHECKOUT -> handleResultFromNormalCheckout(resultCode)
+            REQUEST_CODE_GO_TO_CHECKOUT -> handleResultFromNormalCheckout(resultCode)
         }
     }
 
@@ -287,7 +287,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun handleResultFromNormalCheckout(resultCode: Int) {
         when(resultCode) {
             RESULT_CODE_ERROR_TICKET -> showSnackbar(R.string.similar_search_add_to_cart_failed, Toaster.TYPE_ERROR)
-            Activity.RESULT_OK -> showSnackbar(R.string.similar_search_add_to_cart_failed, Toaster.TYPE_ERROR)
+            Activity.RESULT_OK -> showSnackbar(R.string.similar_search_add_to_cart_success)
         }
     }
 }
