@@ -85,8 +85,6 @@ open class WishlistViewModel @Inject constructor(
     val isWishlistEmptyState: LiveData<Boolean> get() = isWishlistEmpty
     val isWishlistErrorInFirstPageState: LiveData<Boolean> get() = isWishlistErrorInFirstPage
 
-    val wishlistState = WishlistLiveData(Status.LOADING)
-
     val addToCartActionData = SingleObserverLiveEvent<Event<AddToCartActionData>>()
     val productClickActionData = SingleObserverLiveEvent<Event<ProductClickActionData>>()
     val removeWishlistActionData = SingleObserverLiveEvent<Event<RemoveWishlistActionData>>()
@@ -133,7 +131,6 @@ open class WishlistViewModel @Inject constructor(
             if(data.items.isEmpty()){
                 isWishlistEmpty.value = true
 
-                wishlistState.value = Status.EMPTY
                 wishlistData.value = listOf(
                         if(keyword.isEmpty()) EmptyWishlistDataModel() else EmptySearchWishlistDataModel(keyword)
                 )
@@ -174,7 +171,7 @@ open class WishlistViewModel @Inject constructor(
                 wishlistData.value = listOf(ErrorWishlistDataModel(it.message))
             }
 
-            wishlistState.value = Status.ERROR
+//            wishlistState.value = Status.ERROR
             currentPage--
         }
     }

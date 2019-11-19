@@ -260,18 +260,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private fun initRecyclerView(){
         recyclerView?.layoutManager = staggeredGridLayoutManager
         recyclerView?.adapter = adapter
-        endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
-            override fun getCurrentPage(): Int = 1
-
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if(viewModel.wishlistState.value == Status.EMPTY){
-                    updateBottomMargin()
-                    viewModel.getRecommendationOnEmptyWishlist(page + 1)
-                }else{
-                    viewModel.getNextPageWishlistData()
-                }
-            }
-        }
         recyclerView?.addOnScrollListener(endlessRecyclerViewScrollListener as EndlessRecyclerViewScrollListener)
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -284,7 +272,27 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private fun observeData() {
         observeWishlistData()
         observeBulkModeState()
+        observeWishlistState()
         observeAction()
+    }
+
+    private fun observeWishlistState() {
+        viewModel.isWishlistEmptyState.observe(viewLifecycleOwner, Observer { isEmpty->
+            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
+                override fun getCurrentPage(): Int = 1
+
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    if(isEmpty){
+                        updateBottomMargin()
+                        viewModel.getRecommendationOnEmptyWishlist(page + 1)
+                    }else{
+                        viewModel.getNextPageWishlistData()
+                    }
+                }
+            }
+        })
+
+
     }
 
     private fun observeWishlistData() {
@@ -324,6 +332,8 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
                 swipeToRefresh?.isEnabled = true
             }
         })
+
+
     }
 
     private fun observeAction(){
@@ -544,18 +554,6 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
 
     private fun cancelDeleteWishlist(): Boolean{
         viewModel.exitBulkMode()
-        return true
-    }
-
-    private fun resetBulkMode(): Boolean{
-        menu?.findItem(R.id.cancel)?.isVisible = false
-        menu?.findItem(R.id.manage)?.isVisible = true
-
-        containerDelete?.hide()
-
-        showSearchView()
-
-        swipeToRefresh?.isEnabled = true
         return true
     }
 
