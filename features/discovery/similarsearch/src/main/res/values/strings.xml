@@ -16,5 +16,7 @@
     <string name="similar_search_add_wishlist_success">Sukses menambah wishlist</string>
     <string name="similar_search_remove_wishlist_failed">Gagal menghapus wishlist</string>
     <string name="similar_search_add_wishlist_failed">Gagal menambah wishlist</string>
+    <string name="similar_search_add_to_cart_success">Sukses menambah ke keranjang</string>
+    <string name="similar_search_add_to_cart_failed">Gagal menambah ke keranjang</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.tokopedia.similarsearch
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +22,8 @@ import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
+import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener {
@@ -226,27 +229,25 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun handleAddWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
-            showSnackbar(R.string.similar_search_add_wishlist_success)
+            showSnackbar(R.string.similar_search_add_wishlist_success, Toaster.TYPE_NORMAL)
         }
         else {
-            showSnackbar(R.string.similar_search_add_wishlist_failed)
+            showSnackbar(R.string.similar_search_add_wishlist_failed, Toaster.TYPE_ERROR)
         }
     }
 
-    private fun showSnackbar(@StringRes messageStringResource: Int) {
-        SnackbarManager.make(
-                activity,
-                getString(messageStringResource),
-                Snackbar.LENGTH_SHORT
-        ).show()
+    private fun showSnackbar(@StringRes messageStringResource: Int, toasterType: Int) {
+        view?.let { view ->
+            Toaster.make(view, getString(messageStringResource), Snackbar.LENGTH_SHORT, toasterType)
+        }
     }
 
     private fun handleRemoveWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
-            showSnackbar(R.string.similar_search_remove_wishlist_success)
+            showSnackbar(R.string.similar_search_remove_wishlist_success, Toaster.TYPE_NORMAL)
         }
         else {
-            showSnackbar(R.string.similar_search_remove_wishlist_failed)
+            showSnackbar(R.string.similar_search_remove_wishlist_failed, Toaster.TYPE_ERROR)
         }
     }
 
@@ -261,11 +262,25 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_CODE_GO_TO_PRODUCT_DETAIL && data?.extras != null) {
+        when(requestCode) {
+            REQUEST_CODE_GO_TO_PRODUCT_DETAIL -> handleResultFromProductDetail(data)
+            REQUEST_CODE_GO_TO_NORMAL_CHECKOUT -> handleResultFromNormalCheckout(resultCode)
+        }
+    }
+
+    private fun handleResultFromProductDetail(data: Intent?) {
+        if (data?.extras != null) {
             val productId = data.extras?.getString(WISHLIST_PRODUCT_ID, "")
             val isWishlisted = data.extras?.getBoolean(WISHLIST_STATUS_IS_WISHLIST, false) ?: false
 
             similarSearchViewModel?.onViewUpdateProductWishlistStatus(productId, isWishlisted)
+        }
+    }
+
+    private fun handleResultFromNormalCheckout(resultCode: Int) {
+        when(resultCode) {
+            RESULT_CODE_ERROR_TICKET -> showSnackbar(R.string.similar_search_add_to_cart_failed, Toaster.TYPE_ERROR)
+            Activity.RESULT_OK -> showSnackbar(R.string.similar_search_add_to_cart_failed, Toaster.TYPE_ERROR)
         }
     }
 }

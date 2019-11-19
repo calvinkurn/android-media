@@ -16,11 +16,11 @@ include 'libraries:promotions_target'
 include 'libraries:remote_config'
 include 'libraries:track'
 include 'libraries:tracking_optimizer'
+include 'libraries:core_legacy'
 
 include 'tkpdabstraction'
 include 'tkpddesign'
+include 'tkpdtransaction-common'
 
-// for instrumentation test - disabled for now
-//include ':libraries:core_legacy'
 //include ":libraries:iris"
 //include ":libraries:cpm"
