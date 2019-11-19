@@ -160,7 +160,7 @@
     <string name="shop_search_product_in_this_shop_etalase">di Etalase Toko ini</string>
     <string name="shop_search_product_in_tokopedia">di Tokopedia</string>
     <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
-    <string name="shop_note_detail_date_format">%s, pukul %s</string>
+    <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
 
 
 </resources>
