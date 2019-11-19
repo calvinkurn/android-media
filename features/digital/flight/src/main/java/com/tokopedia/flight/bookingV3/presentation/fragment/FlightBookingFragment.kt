@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,6 +53,7 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isNotVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
@@ -185,6 +185,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightCheckoutResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    if (loadingDialog.isShowing) loadingDialog.dismiss()
                     navigateToTopPay(it.data)
                     sendCheckOutTracking()
                 }
@@ -288,6 +289,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             dialog.setSecondaryCTAText("Cek Ulang")
 
             dialog.setPrimaryCTAClickListener {
+                launchLoadingLayoutJob.start()
                 bookingViewModel.checkOutCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart),
                         totalCartPrice,
                         GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_checkout_data))
@@ -600,7 +602,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         return list.shuffled()
     }
 
-    var launchLoadingPageJob = uiScope.launch {
+    private var launchLoadingPageJob = uiScope.launch {
         val list = randomLoadingSubtitle()
         layout_loading.visibility = View.VISIBLE
         tv_loading_subtitle.text = list[0]
@@ -613,7 +615,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         layout_shimmering.visibility = View.VISIBLE
     }
 
-    var launchLoadingLayoutJob = uiScope.launch {
+    private var launchLoadingLayoutJob = uiScope.launch {
         val list = randomLoadingSubtitle()
         val view = View.inflate(context, R.layout.layout_flight_booking_loading, null)
         val loadingText = view.findViewById(R.id.tv_loading_subtitle) as Typography
@@ -727,7 +729,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             loadingDialog.setUnlockVersion()
             loadingDialog.setChild(view)
             loadingDialog.setOverlayClose(false)
-            loadingDialog.show()
+            if (!layout_loading.isVisible) loadingDialog.show()
         }
     }
 

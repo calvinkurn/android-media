@@ -14,6 +14,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewM
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
+import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
@@ -83,7 +84,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCart.Response>().flightCart
 
-            if (data.cartData.id.isNotBlank()) {
+            if (data.cartData.id.isNotBlank() && !data.meta.needRefresh) {
                 flightBookingParam.departureDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.cartData.flight.journeys[0].departureTime))
                 flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                 flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
@@ -99,7 +100,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     getCart(rawQuery, cartId)
                 } else {
                     retryCount = 0
-                    flightCartResult.value = Fail(MessageErrorException("Error"))
+                    flightCartResult.value = Fail(MessageErrorException(FlightErrorConstant.INVALID_JSON))
                 }
             }
         }) {
