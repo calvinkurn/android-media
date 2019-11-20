@@ -4,6 +4,8 @@
     <string name="title_som_filter">Filter</string>
     <string name="title_som_detail">Detail Pesanan</string>
     <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
+    <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
+    <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="hint_search_product">Cari produk atau invoice</string>
     <string name="response_due">Batas Response</string>
     <string name="seller_info">Seller Info</string>
@@ -117,8 +119,19 @@
     <string name="courier_notes_example">Tidak perlu memberikan ongkir ke kurir</string>
 
     <string name="cancel_order_batal">Batal</string>
-    <string name="cancel_order_konfirmasi">Konfirmasi</string>
+    <string name="btn_konfirmasi">Konfirmasi</string>
     <string name="cancel_order_notes_hint">Keterangan</string>
     <string name="cancel_order_notes_max">Maksimum 512 Karakter</string>
+    <string name="change_courier_label">Ganti Kurir Pengiriman</string>
+
+    <string name="courier_service_label">Paket Pengiriman</string>
+    <string name="courier_choosen_example">JNE</string>
+    <string name="courier_service_choosen_example">Reguler</string>
+    <string name="tf_no_resi_label">Nomor Resi</string>
+    <string name="tf_no_resi_placeholder">Isi Nomor Resi</string>
+    <string name="tf_no_resi_message">Min. 8 karakter dan Maks. 17 karakter</string>
+
+    <string name="scan_barcode_msg">Arahkan kamera ponsel Anda pada nomor resi barang.
+        Pastikan barcode berada di dalam frame. Nomor resi akan otomatis terpindai.</string>
 
 </resources>

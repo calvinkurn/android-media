@@ -10,6 +10,8 @@ object SomConsts {
     const val PARAM_LIST_ORDER = "param_list_order"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
+    const val PARAM_CURR_SHIPMENT_NAME = "shipment_name"
+    const val PARAM_CURR_SHIPMENT_PRODUCT_NAME = "shipment_product_name"
     const val PARAM_SHOP_ID = "shop_id"
     const val PARAM_IS_FROM_FINTECH = "is_from_fintech"
 
@@ -49,6 +51,7 @@ object SomConsts {
     const val KEY_REJECT_ORDER = "reject_order"
     const val KEY_TRACK_SELLER = "track_seller"
     const val KEY_REQUEST_PICKUP = "request_pickup"
+    const val KEY_CONFIRM_SHIPPING = "confirm_shipping"
 
     const val KEY_REASON_EMPTY_STOCK = "empty_stock"
     const val KEY_REASON_SHOP_CLOSED = "shop_closed"
@@ -92,4 +95,6 @@ object SomConsts {
     const val RESULT_OK = "OK"
     const val RESULT_ERROR = "ERROR"
     const val INPUT_ORDER_ID = "#orderId"
+
+    const val RESULT_SCAN_BARCODE = "result_scan_barcode"
 }

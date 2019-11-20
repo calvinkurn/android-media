@@ -85,10 +85,14 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import android.net.Uri
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
+import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
@@ -116,6 +120,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private lateinit var dialogUnify: DialogUnify
     private lateinit var bottomSheetUnify: BottomSheetUnify
     private val FLAG_CONFIRM_REQ_PICKUP = 3535
+    private val FLAG_CONFIRM_SHIPPING = 3553
 
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
@@ -337,6 +342,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
                 } else if (buttonResp.key.equals(KEY_REQUEST_PICKUP, true)) {
                     setActionRequestPickup()
+
+                } else if (buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true)) {
+                    setActionConfirmShipping()
                 }
             }
 
@@ -407,6 +415,17 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
                 putExtra(PARAM_ORDER_ID, orderId)
                 startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
+            }
+        }
+    }
+
+    private fun setActionConfirmShipping() {
+        btn_primary?.setOnClickListener {
+            Intent(activity, SomConfirmShippingActivity::class.java).apply {
+                putExtra(PARAM_ORDER_ID, orderId)
+                putExtra(PARAM_CURR_SHIPMENT_NAME, detailResponse.shipment.name)
+                putExtra(PARAM_CURR_SHIPMENT_PRODUCT_NAME, detailResponse.shipment.productName)
+                startActivityForResult(this, FLAG_CONFIRM_SHIPPING)
             }
         }
     }

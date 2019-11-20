@@ -73,7 +73,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var isLoading = false
     private var tabActive = ""
     private val FLAG_DETAIL = 3333
-
+    private val FLAG_CONFIRM_REQ_PICKUP = 3553
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -394,7 +394,11 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     val resultRejectOrder = data.getParcelableExtra<SomRejectOrder.Data.RejectOrder>(RESULT_REJECT_ORDER)
                     refreshThenShowToasterOk(resultRejectOrder.message.first())
 
-                } else if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
+                }
+            }
+        } else if (requestCode == FLAG_CONFIRM_REQ_PICKUP && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
                     val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
                     refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
                 }
