@@ -63,7 +63,7 @@ class ShopFollowingListPresenter @Inject constructor(
                 addRequestWithParam(userId, page)
             }.executeOnBackground()
             view.run {
-                onSuccessLoadMoreKolFollowingList(userFollow.convertToUiModel(page, userId == userSession.userId.toInt()))
+                onSuccessLoadMoreKolFollowingList(userFollow.convertToUiModel(page, userId == userSession.userId.toIntOrZero()))
                 hideLoading()
             }
         }
