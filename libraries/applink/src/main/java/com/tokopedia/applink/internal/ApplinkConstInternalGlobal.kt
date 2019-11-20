@@ -258,6 +258,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/email-register
     @JvmField
     val EMAIL_REGISTER = "$INTERNAL_GLOBAL/email-register"
+    // ChatbotActivity
+    // tokopedia-android-internal://global/chatbot
+    @JvmField
+    val CHAT_BOT = "$INTERNAL_GLOBAL/chatbot"
+
 
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"
