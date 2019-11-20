@@ -3,8 +3,10 @@ package com.tokopedia.imagesearch.search.fragment.product.adapter.viewholder
 import androidx.annotation.LayoutRes
 import android.text.TextUtils
 import android.view.View
+import androidx.annotation.Nullable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.imagesearch.R
+import com.tokopedia.imagesearch.domain.viewmodel.LabelGroup
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.ProductListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -12,9 +14,9 @@ import com.tokopedia.productcard.v2.ProductCardModel
 import kotlinx.android.synthetic.main.image_search_result_product_item.view.*
 import kotlin.math.roundToInt
 
-/**
- * Created by henrypriyono on 10/11/17.
- */
+const val LABEL_GROUP_POSITION_PROMO = "promo"
+const val LABEL_GROUP_POSITION_CREDIBILITY = "credibility"
+const val LABEL_GROUP_POSITION_OFFERS = "offers"
 
 class GridProductItemViewHolder(itemView: View,
                                 protected val productListener: ProductListener) : AbstractViewHolder<ProductItem>(itemView) {
@@ -23,7 +25,11 @@ class GridProductItemViewHolder(itemView: View,
 
     override fun bind(productItem: ProductItem) {
 
+        val productCardLabelPromoModel = createProductCardLabelPromo(productItem)
+        val productCardLabelCredibilityModel = createProductCardLabelCredibility(productItem)
+        val productCardLabelOffersModel = createProductCardLabelOffers(productItem)
         val productCardShopBadgesList = createProductCardShopBadges(productItem)
+        val productCardFreeOngkir = createProductCardFreeOngkir(productItem)
 
         val productCardModel = ProductCardModel(
                 productImageUrl = productItem.imageUrl,
@@ -38,7 +44,11 @@ class GridProductItemViewHolder(itemView: View,
                 shopLocation = productItem.shopCity,
                 ratingCount = getStarCount(productItem),
                 reviewCount = productItem.countReview,
-                isTopAds = productItem.isTopAds
+                isTopAds = productItem.isTopAds,
+                labelPromo = productCardLabelPromoModel,
+                labelCredibility = productCardLabelCredibilityModel,
+                labelOffers = productCardLabelOffersModel,
+                freeOngkir = productCardFreeOngkir
         )
         itemView.productCardView?.setProductModel(productCardModel)
 
@@ -96,6 +106,58 @@ class GridProductItemViewHolder(itemView: View,
             (productItem.rating / 20f).roundToInt()
         else
             productItem.rating
+    }
+
+    private fun createProductCardLabelPromo(productItem: ProductItem): ProductCardModel.Label {
+        val promoLabelViewModel =
+                getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_PROMO)
+                        ?: return ProductCardModel.Label()
+
+        return ProductCardModel.Label(promoLabelViewModel.title, promoLabelViewModel.type)
+    }
+
+    private fun createProductCardLabelCredibility(productItem: ProductItem): ProductCardModel.Label {
+        val credibilityLabelViewModel =
+                getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY)
+                        ?: return ProductCardModel.Label()
+
+        val isLabelCredibilityShown = isLabelCredibilityShown(productItem)
+
+        val title = if (isLabelCredibilityShown) credibilityLabelViewModel.title else ""
+        val type = if (isLabelCredibilityShown) credibilityLabelViewModel.type else ""
+
+        return ProductCardModel.Label(title, type)
+    }
+
+    private fun isLabelCredibilityShown(productItem: ProductItem): Boolean {
+        return productItem.rating == 0 && productItem.countReview == 0
+    }
+
+    private fun createProductCardLabelOffers(productItem: ProductItem): ProductCardModel.Label {
+        val offersLabelViewModel =
+                getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_OFFERS)
+                        ?: return ProductCardModel.Label()
+
+        return ProductCardModel.Label(offersLabelViewModel.title, offersLabelViewModel.type)
+    }
+
+    @Nullable
+    protected fun getFirstLabelGroupOfPosition(productItem: ProductItem, position: String): LabelGroup? {
+        val labelGroupOfPosition = getLabelGroupOfPosition(productItem, position)
+
+        return if(labelGroupOfPosition != null && labelGroupOfPosition.isNotEmpty()) labelGroupOfPosition[0] else null
+    }
+
+    @Nullable
+    protected fun getLabelGroupOfPosition(productItem: ProductItem, position: String): List<LabelGroup>? {
+        return productItem.labelGroupList.filter { labelGroup -> labelGroup.position == position }
+    }
+
+    private fun createProductCardFreeOngkir(productItem: ProductItem): ProductCardModel.FreeOngkir {
+        return ProductCardModel.FreeOngkir(
+                productItem.freeOngkir.isActive,
+                productItem.freeOngkir.imageUrl
+        )
     }
 
     companion object {
