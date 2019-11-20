@@ -30,7 +30,9 @@ import android.graphics.Color.TRANSPARENT
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.PorterDuff.Mode.SRC_IN
 
-
+/**
+ * @author by firman on 06/11/2019
+ */
 class CustomTicketView : View {
 
 
