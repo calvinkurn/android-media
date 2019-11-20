@@ -15,7 +15,6 @@ import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory;
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl;
-import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
 import com.tokopedia.home.beranda.data.source.HomeDataSource;
 import com.tokopedia.home.beranda.di.HomeScope;

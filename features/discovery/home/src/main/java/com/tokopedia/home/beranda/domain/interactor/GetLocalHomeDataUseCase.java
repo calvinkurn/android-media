@@ -1,12 +1,8 @@
 package com.tokopedia.home.beranda.domain.interactor;
 
-import com.tokopedia.home.beranda.data.repository.HomeRepository;
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-
-import java.util.List;
 
 import rx.Observable;
 

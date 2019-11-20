@@ -63,6 +63,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.features.tkpdsession)
 
+    // Room
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation rootProject.ext.dbDependencies.dbRoomCoroutine
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -102,6 +107,16 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.libraries.iris)
+
+
+    // Test
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.kotlinMockito2
+    testImplementation rootProject.ext.testDependencies.powerMockito
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
 }
 
 project.ext {
