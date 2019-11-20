@@ -30,15 +30,21 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.features.commonTravel)
+    implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
+    implementation project(rootProject.ext.features.flightOrderList)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.features.commonPayment)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -74,10 +80,7 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.playServicesDependencies.analytics
     testImplementation rootProject.ext.testDependencies.junit
@@ -86,12 +89,21 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 }
 
 project.ext {
     artifactId = 'flight'
     groupId = 'com.tokopedia.travel'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="flight-release"
 }
 

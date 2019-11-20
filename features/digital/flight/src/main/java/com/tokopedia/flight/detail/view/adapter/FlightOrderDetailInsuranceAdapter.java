@@ -6,11 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.flight.R;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 
 import java.util.List;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class FlightOrderDetailInsuranceAdapter extends RecyclerView.Adapter<FlightOrderDetailInsuranceAdapter.ViewHolder> {
     private List<FlightInsurance> insurances;
@@ -21,7 +20,7 @@ public class FlightOrderDetailInsuranceAdapter extends RecyclerView.Adapter<Flig
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_flight_order_detail_insurance, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(com.tokopedia.flight.R.layout.item_flight_order_detail_insurance, parent, false);
         return new ViewHolder(view);
     }
 
@@ -42,12 +41,12 @@ public class FlightOrderDetailInsuranceAdapter extends RecyclerView.Adapter<Flig
 
         public ViewHolder(View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.tv_title);
-            taglineTextView = itemView.findViewById(R.id.tv_tagline);
-            InsuranceProtTv = itemView.findViewById(R.id.ic_flight_insurance_protection_tv);
+            titleTextView = itemView.findViewById(com.tokopedia.flight.R.id.tv_title);
+            taglineTextView = itemView.findViewById(com.tokopedia.flight.R.id.tv_tagline);
+            InsuranceProtTv = itemView.findViewById(com.tokopedia.flight.R.id.ic_flight_insurance_protection_tv);
 
             InsuranceProtTv.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                    (InsuranceProtTv.getContext(), R.drawable.ic_flight_insurance_protection), null);
+                    (InsuranceProtTv.getContext(), com.tokopedia.flight.R.drawable.ic_flight_insurance_protection), null);
         }
 
         public void bind(FlightInsurance insurance) {

@@ -134,7 +134,6 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_menu_detail),
                     voucherGameViewModel.createMenuDetailParams(it))
         }
-        voucherGameAnalytics.eventPDPLanding()
         initView()
     }
 
@@ -223,7 +222,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                 RouteManager.route(context, ApplinkConst.PROMO_LIST)
             }
             context?.let {
-                promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, R.color.unify_G500))
+                promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.design.R.color.unify_G500))
             }
             promo_banner.setBannerIndicator(Indicator.GREEN)
 

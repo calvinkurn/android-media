@@ -106,11 +106,10 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     private void updateDisplayFreeDeliveryBanner(ShopProductViewModel shopProductViewModel) {
         if (shopProductViewModel.isShowFreeOngkir()) {
-            ImageHandler.loadImage(
+            ImageHandler.loadImageRounded2(
                     freeOngkirBanner.getContext(),
                     freeOngkirBanner,
-                    shopProductViewModel.getFreeOngkirPromoIcon(),
-                    R.drawable.ic_loading_image
+                    shopProductViewModel.getFreeOngkirPromoIcon()
             );
             freeOngkirBanner.setVisibility(View.VISIBLE);
         } else

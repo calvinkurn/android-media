@@ -72,12 +72,12 @@ public class DynamicLinkAdapter extends RecyclerView.Adapter<DynamicLinkAdapter.
                 layoutParams.setMargins(0, 0, 0, 0);
                 tvDynamicText.setGravity(Gravity.CENTER);
             } else {
-                layoutParams.setMargins(context.getResources().getDimensionPixelSize(R.dimen.dp_8), 0, 0, 0);
+                layoutParams.setMargins(context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8), 0, 0, 0);
                 tvDynamicText.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
             }
 
             if (URLUtil.isValidUrl(linksItemEntity.getBackgroundURL())) {
-                ImageHandler.loadImage(context, ivBack, linksItemEntity.getBackgroundURL(), R.color.medium_green, R.color.medium_green);
+                ImageHandler.loadImage(context, ivBack, linksItemEntity.getBackgroundURL(), com.tokopedia.design.R.color.medium_green, com.tokopedia.design.R.color.medium_green);
             } else {
                 ivBack.setBackgroundColor(Color.parseColor(linksItemEntity.getBackgroundColor()));
             }

@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.view;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewItemHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData;
@@ -36,7 +36,7 @@ public interface ICartListPresenter {
 
     void processToUpdateCartData(List<CartItemData> cartItemDataList);
 
-    void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupData shopGroupData);
+    void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupAvailableData shopGroupAvailableData);
 
     void processUpdateCartDataPromoStacking(List<CartItemData> cartItemDataList, PromoStackingData promoStackingData, int goToDetail);
 
@@ -45,8 +45,6 @@ public interface ICartListPresenter {
     void reCalculateSubTotal(List<CartShopHolderData> dataList, ArrayList<InsuranceCartShops> insuranceCartShops);
 
     void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply);
-
-    void processResetAndRefreshCartData();
 
     void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 

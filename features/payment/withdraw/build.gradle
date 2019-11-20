@@ -48,12 +48,20 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
+    implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.libraries.webview)
+
 }
 
 project.ext {
     artifactId = "withdraw"
     groupId = "com.tokopedia.payment"
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "withdraw-release"
 }
 

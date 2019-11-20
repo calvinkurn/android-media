@@ -11,6 +11,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.*
 import com.tokopedia.search.result.*
+import com.tokopedia.search.result.common.EventObserver
 import com.tokopedia.search.result.common.State.Error
 import com.tokopedia.search.result.common.State.Success
 import com.tokopedia.search.result.common.UseCase
@@ -479,6 +480,14 @@ internal class SearchShopViewModelTest : Spek({
         Scenario("Search Shop First Page Successful") {
             val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
             val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            var searchShopFirstPagePerformanceMonitoringIsStarted = false
+            var searchShopFirstPagePerformanceMonitoringIsEnded = false
+            val searchShopFirstPagePerformanceMonitoringEventObserver = EventObserver<Boolean> {
+                when(it) {
+                    true -> searchShopFirstPagePerformanceMonitoringIsStarted = true
+                    false -> searchShopFirstPagePerformanceMonitoringIsEnded = true
+                }
+            }
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -491,8 +500,19 @@ internal class SearchShopViewModelTest : Spek({
                 getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
             }
 
+            Given("search shop first page performance monitoring observer") {
+                searchShopViewModel.getSearchShopFirstPagePerformanceMonitoringEventLiveData().observeForever(
+                        searchShopFirstPagePerformanceMonitoringEventObserver
+                )
+            }
+
             When("handle view is visible and added") {
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert search shop performance monitoring is started and ended") {
+                searchShopFirstPagePerformanceMonitoringIsStarted shouldBe true
+                searchShopFirstPagePerformanceMonitoringIsEnded shouldBe true
             }
 
             Then("assert search shop state is success and contains search shop data") {
@@ -1319,6 +1339,14 @@ internal class SearchShopViewModelTest : Spek({
             val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
             val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
             val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
+            var searchShopFirstPagePerformanceMonitoringIsStarted = false
+            var searchShopFirstPagePerformanceMonitoringIsEnded = false
+            val searchShopFirstPagePerformanceMonitoringEventObserver = EventObserver<Boolean> {
+                when(it) {
+                    true -> searchShopFirstPagePerformanceMonitoringIsStarted = true
+                    false -> searchShopFirstPagePerformanceMonitoringIsEnded = true
+                }
+            }
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -1335,6 +1363,12 @@ internal class SearchShopViewModelTest : Spek({
                 searchShopViewModel.onViewLoadMore(isViewVisible = true)
             }
 
+            Given("search shop first page performance monitoring observer") {
+                searchShopViewModel.getSearchShopFirstPagePerformanceMonitoringEventLiveData().observeForever(
+                        searchShopFirstPagePerformanceMonitoringEventObserver
+                )
+            }
+
             When("handle view reload search shop") {
                 searchShopViewModel.onViewReloadData()
             }
@@ -1346,6 +1380,11 @@ internal class SearchShopViewModelTest : Spek({
 
             Then("verify dynamic filter API is called once") {
                 getDynamicFilterUseCase.isExecuted(2)
+            }
+
+            Then("assert search shop performance monitoring is started and ended") {
+                searchShopFirstPagePerformanceMonitoringIsStarted shouldBe true
+                searchShopFirstPagePerformanceMonitoringIsEnded shouldBe true
             }
 
             Then("assert search shop state success after reload") {

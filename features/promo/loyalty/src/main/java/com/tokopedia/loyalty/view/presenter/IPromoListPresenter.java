@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.content.res.Resources;
+
 import com.tokopedia.loyalty.view.data.PromoData;
 
 import java.util.List;
@@ -18,7 +20,10 @@ public interface IPromoListPresenter {
 
     void sendClickItemPromoListTrackingData(PromoData promoData, int position, String categoryName);
 
+    void cachePromoCodeData(String promoData, Resources resources);
+
     void setPage(int page);
 
     int getPage();
+
 }

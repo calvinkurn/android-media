@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.FeedAuthInterceptor;
@@ -22,13 +23,14 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
@@ -126,8 +128,9 @@ public class FeedPlusModule {
     @Provides
     DynamicFeedContract.Presenter provideDynamicFeedPresenter(UserSessionInterface userSession,
                                                               GetDynamicFeedUseCase getDynamicFeedUseCase,
-                                                              LikeKolPostUseCase likeKolPostUseCase) {
-        return new DynamicFeedPresenter(userSession, getDynamicFeedUseCase, likeKolPostUseCase);
+                                                              LikeKolPostUseCase likeKolPostUseCase,
+                                                              TrackAffiliateClickUseCase trackAffiliateClickUseCase) {
+        return new DynamicFeedPresenter(userSession, getDynamicFeedUseCase, likeKolPostUseCase, trackAffiliateClickUseCase);
     }
 
     //SHOP COMMON
@@ -209,5 +212,11 @@ public class FeedPlusModule {
     @FeedPlusScope
     CoroutineDispatcher provideMainDispatcher() {
         return Dispatchers.getMain();
+    }
+
+    @FeedPlusScope
+    @Provides
+    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

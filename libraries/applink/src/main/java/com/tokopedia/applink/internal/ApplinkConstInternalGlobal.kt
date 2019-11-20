@@ -1,5 +1,6 @@
 package com.tokopedia.applink.internal
 
+import android.webkit.WebView
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
@@ -29,6 +30,18 @@ object ApplinkConstInternalGlobal {
     val PARAM_EMAIL = "email"
     @JvmField
     val PARAM_SOURCE = "source"
+    @JvmField
+    val PARAM_NAME = "name"
+    @JvmField
+    val PARAM_PASS = "pass"
+    @JvmField
+    val PARAM_TOKEN = "token"
+    @JvmField
+    val PARAM_ACTION = "action"
+    @JvmField
+    val PARAM_IS_SMART_LOGIN = "isSmartLogin"
+    @JvmField
+    val PARAM_IS_PENDING = "isPending"
 
     //VerificationActivity Param
     @JvmField
@@ -107,6 +120,13 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHANGE_GENDER = "$INTERNAL_GLOBAL/change-gender"
 
+    // ChangeNameActivity
+    // tokopedia-android-internal://global/change-name
+    @JvmField
+    val CHANGE_NAME = "$INTERNAL_GLOBAL/change-name?oldName={oldName}"
+    @JvmField
+    val PARAM_FULL_NAME = "oldName"
+
     // AddEmailActivity
     // tokopedia-android-internal://global/add-email
     @JvmField
@@ -142,6 +162,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
 
+    // ValidatorActivity
+    // tokopedia-android-internal://global/otp-validator
+    @JvmField
+    val OTP_VALIDATOR = "$INTERNAL_GLOBAL/otp-validator"
+
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
@@ -157,6 +182,10 @@ object ApplinkConstInternalGlobal {
     // Activity can have title by putting "title=.."
     @JvmField
     val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
+
+
+    @JvmField
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}&title={title}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification
@@ -219,6 +248,20 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/saldo-intro
     @JvmField
     val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
+
+    // ChangeEmailActivity
+    // tokopedia-android-internal://global/change-email-register
+    @JvmField
+    val CHANGE_EMAIL_REGISTER = "$INTERNAL_GLOBAL/change-email-register"
+
+    // RegisterEmailActivity
+    // tokopedia-android-internal://global/email-register
+    @JvmField
+    val EMAIL_REGISTER = "$INTERNAL_GLOBAL/email-register"
+    // ChatbotActivity
+    // tokopedia-android-internal://global/chatbot
+    @JvmField
+    val CHAT_BOT = "$INTERNAL_GLOBAL/chatbot"
 
 
     @JvmField

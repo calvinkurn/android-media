@@ -17,4 +17,6 @@ interface NotificationUpdateItemListener {
     fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit)
 
     fun showTextLonger(element: NotificationUpdateItemViewModel)
+
+    fun trackNotificationImpression(element: NotificationUpdateItemViewModel)
 }

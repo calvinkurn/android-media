@@ -5,12 +5,13 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.kol.common.network.GraphqlErrorException;
-import com.tokopedia.kol.common.util.TimeConverter;
+import com.tokopedia.kolcommon.util.GraphqlErrorException;
+import com.tokopedia.kolcommon.util.TimeConverter;
 import com.tokopedia.kol.feature.comment.data.pojo.get.Comment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetUserPostComment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.PostKol;
+import com.tokopedia.kol.feature.comment.data.type.SourceType;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
@@ -50,8 +51,10 @@ public class KolGetCommentMapper
                 postKol.getCreateTime() == null ? "" :
                         TimeConverter.generateTime(context, postKol.getCreateTime()),
                 String.valueOf(postKol.getUserId()),
+                postKol.getUserUrl(),
                 getTagsLink(postKol),
-                !postKol.getUserBadges().isEmpty() ? postKol.getUserBadges().get(0) : ""
+                !postKol.getUserBadges().isEmpty() ? postKol.getUserBadges().get(0) : "",
+                postKol.getSource().getType() == SourceType.SHOP.getTypeInt()
         );
 
         return new KolComments(
@@ -91,6 +94,7 @@ public class KolGetCommentMapper
             KolCommentViewModel kolCommentViewModel = new KolCommentViewModel(
                     String.valueOf(comment.getId()),
                     String.valueOf(comment.getUserID()),
+                    null,
                     comment.getUserPhoto() == null ? "" : comment.getUserPhoto(),
                     comment.getUserName() == null ? "" : comment.getUserName(),
                     comment.getComment() == null ? "" : comment.getComment(),
@@ -98,7 +102,8 @@ public class KolGetCommentMapper
                             TimeConverter.generateTime(context, comment.getCreateTime()),
                     comment.isKol(),
                     comment.isCommentOwner(),
-                    comment.getUserBadges()
+                    comment.getUserBadges(),
+                    comment.isShop()
             );
             viewModelList.add(kolCommentViewModel);
         }

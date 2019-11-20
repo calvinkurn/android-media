@@ -1,7 +1,7 @@
 package com.tokopedia.common.travel.data
 
 import com.tokopedia.common.travel.data.entity.FlightCountryEntity
-import com.tokopedia.flight.country.database.CountryPhoneCodeTable
+import com.tokopedia.common.travel.database.CountryPhoneCodeTable
 import javax.inject.Inject
 
 /**
@@ -9,13 +9,13 @@ import javax.inject.Inject
  */
 class PhoneCodeListMapper @Inject constructor() {
 
-    fun mapEntitiesToTables(entities: List<FlightCountryEntity>) : List<CountryPhoneCodeTable> {
+    fun mapEntitiesToTables(entities: List<FlightCountryEntity>): List<CountryPhoneCodeTable> {
         return entities.map {
-                mapEntityToTable(it)
+            mapEntityToTable(it)
         }
     }
 
-    fun mapEntityToTable(flightCountryEntity: FlightCountryEntity) : CountryPhoneCodeTable {
+    fun mapEntityToTable(flightCountryEntity: FlightCountryEntity): CountryPhoneCodeTable {
         return CountryPhoneCodeTable(
                 flightCountryEntity.id,
                 flightCountryEntity.attributesEntity.name,

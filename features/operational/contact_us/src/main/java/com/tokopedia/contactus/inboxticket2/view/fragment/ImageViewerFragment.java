@@ -67,7 +67,7 @@ public class ImageViewerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.contactus_layout_fragment_image_viewer, container, false);
         vpImageViewer = contentView.findViewById(R.id.vp_image_viewer);
-        closeButton = contentView.findViewById(com.tokopedia.design.R.id.close_button);
+        closeButton = contentView.findViewById(R.id.close_button);
         TouchImageAdapter imageAdapter = new TouchImageAdapter(getContext(), IMAGES_LOC);
         vpImageViewer.setAdapter(imageAdapter);
         imageAdapter.SetonImageStateChangeListener(new TouchImageAdapter.OnImageStateChange() {

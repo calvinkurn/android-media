@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.network.constant.ErrorNetMessage
 import rx.Subscriber
@@ -28,7 +28,7 @@ class FollowSubscriber(private val view: VideoDetailContract.View) : Subscriber<
             throwable?.printStackTrace()
         }
         view.onErrorFollowKol(
-                ErrorHandler.getErrorMessage(view.getContext(), throwable)
+                ErrorHandler.getErrorMessage(view.androidContext, throwable)
         )
     }
 

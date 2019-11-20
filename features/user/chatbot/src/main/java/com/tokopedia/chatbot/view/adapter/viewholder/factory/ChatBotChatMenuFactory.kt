@@ -17,7 +17,7 @@ class ChatBotChatMenuFactory : ChatMenuFactory {
 
     override fun createChatMenuItems(): List<ChatMenu> {
         return listOf(
-                ChatMenu(icon = R.drawable.ic_image_picker_grey, title = "Gambar")
+                ChatMenu(icon = com.tokopedia.chat_common.R.drawable.ic_image_picker_grey, title = "Gambar", label = "image")
         )
     }
 

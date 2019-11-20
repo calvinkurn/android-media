@@ -1,0 +1,78 @@
+query osHomePage($categoryId: Int!, $device: String!, $deviceCode: Int!){
+        OfficialStoreCategories {
+            categories{
+                id
+                name
+                imageUrl
+                url
+                categories
+                fullUrl
+            }
+            total
+        }
+        OfficialStoreBenefits{
+          benefits{
+            id
+            iconUrl
+            label
+            position
+            redirectUrl
+          }
+        }
+        OfficialStoreBanners(categoryId: $categoryId, device: $deviceCode, source: 0) {
+            banners {
+                id
+                description
+                device
+                expireTime
+                htmlId
+                imageUrl
+                isDefault
+                redirectAppUrl
+                redirectUrl
+                shopName
+                startTime
+                state
+                title
+            }
+            total
+        }
+        dynamicHomeChannel {
+          channels(source:"os", type: "all") {
+            id
+            name
+            layout
+            header {
+              id
+              name
+              url
+              applink
+            }
+            grids {
+              id
+              name
+              url
+              applink
+              imageUrl
+              attribution
+            }
+          }
+        }
+        OfficialStoreBrands(device: $device, lang:"id", source: "microsite", total:10) {
+          brands {
+            category
+            shops {
+              id
+              name
+              label
+              url
+              logoUrl
+            }
+          }
+        }
+      }`,
+    variables: {
+      categoryId: 1,
+      device: isAndroid() ? 'android' : 'ios',
+      deviceCode,
+    }

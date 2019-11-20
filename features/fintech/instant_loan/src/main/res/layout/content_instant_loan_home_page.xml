@@ -131,7 +131,7 @@
         android:layout_weight="1"
         android:background="@drawable/il_card_background"
         android:padding="@dimen/dp_8"
-        android:src="@drawable/il_koin_works_logo"
+        android:src="@drawable/il_solusiku_logo"
         app:layout_constraintEnd_toStartOf="@+id/imageview_2"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="@+id/text_form_description"

@@ -12,4 +12,6 @@ public interface WrapperInterface {
     void createShareUrl(LinkerShareRequest linkerShareRequest, Context context);
     void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context);
     void sendEvent(LinkerGenericRequest linkerGenericRequest, Context context);
+    void setGaClientId(String gaClientId);
+    void initSession();
 }
