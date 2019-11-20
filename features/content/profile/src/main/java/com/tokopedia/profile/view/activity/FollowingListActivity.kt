@@ -56,7 +56,6 @@ class FollowingListActivity : BaseTabActivity(), KolFollowingListEmptyListener {
         super.setupLayout(savedInstanceState)
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         tabLayout.setupWithViewPager(viewPager)
-//        tabLayout.visibility = View.GONE
     }
 
     override fun getViewPagerAdapter(): PagerAdapter {

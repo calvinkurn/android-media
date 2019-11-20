@@ -11,6 +11,7 @@ import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList
 import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingResultViewModel
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase.Action
@@ -46,7 +47,7 @@ class ShopFollowingListPresenter @Inject constructor(
                 addRequestWithParam(userId, page)
             }.executeOnBackground()
             view.run {
-                val uiModelList = userFollow.convertToUiModel(page, userId == userSession.userId.toInt())
+                val uiModelList = userFollow.convertToUiModel(page, userId == userSession.userId.toIntOrZero())
                 if (uiModelList.followingViewModelList.isEmpty()) onSuccessGetKolFollowingListEmptyState()
                 onSuccessGetKolFollowingList(uiModelList)
                 hideLoading()
