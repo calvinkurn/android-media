@@ -840,7 +840,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             loadingDialog.setUnlockVersion()
             loadingDialog.setChild(view)
             loadingDialog.setOverlayClose(false)
-            if (!layout_loading.isVisible) loadingDialog.show()
+            loadingDialog.show()
         }
     }
 
