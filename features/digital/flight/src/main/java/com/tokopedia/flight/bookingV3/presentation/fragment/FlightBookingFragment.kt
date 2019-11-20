@@ -811,10 +811,29 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateBackToSearch() { Log.d("HEHE", "navigateBackToSearch()") }
-    private fun proceedCheckoutWithoutLuggage() { Log.d("HEHE", "proceedCheckoutWoLuggage()") }
-    private fun navigateToPromoPage() { Log.d("HEHE", "navigateBackToPromoPage()")}
-    private fun navigateToFlightOrderList() { Log.d("HEHE", "navigateBackToFlightOL()")}
+    private fun navigateBackToSearch() {
+        Log.d("HEHE", "navigateBackToSearch()")
+        RouteManager.route(context, "tokopedia://pesawat")
+        activity?.finish()
+    }
+    private fun proceedCheckoutWithoutLuggage() {
+        Log.d("HEHE", "proceedCheckoutWoLuggage()")
+        launchLoadingLayoutJob.start()
+        bookingViewModel.proceedCheckoutWithoutLuggage(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart),
+                totalCartPrice)
+    }
+    private fun navigateToPromoPage() {
+        Log.d("HEHE", "navigateBackToPromoPage()")
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
+        intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, 0)
+        intent.putExtra(COUPON_EXTRA_CART_ID, bookingViewModel.getCartId())
+        startActivityForResult(intent, COUPON_EXTRA_LIST_ACTIVITY_RESULT)
+    }
+    private fun navigateToFlightOrderList() {
+        Log.d("HEHE", "navigateBackToFlightOL()")
+        RouteManager.route(context, "tokopedia://pesawat/order")
+        activity?.finish()
+    }
 
     private fun showLoadingDialog(view: View) {
         if (context != null && ::loadingDialog.isInitialized) {

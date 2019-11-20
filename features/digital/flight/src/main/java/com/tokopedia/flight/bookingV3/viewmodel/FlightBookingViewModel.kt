@@ -628,6 +628,15 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         return checkoutParam
     }
 
+    fun proceedCheckoutWithoutLuggage(query: String, price: Int) {
+        val passengerViewModels = flightPassengersData.value ?: listOf()
+        for (passenger in passengerViewModels) {
+            passenger.flightBookingLuggageMetaViewModels = listOf()
+        }
+        flightPassengersData.value = passengerViewModels
+        checkOutCart(query, price, "")
+    }
+
     companion object {
         val PARAM_CART_ID = "cartID"
         val PARAM_VERIFY_CART = "data"
