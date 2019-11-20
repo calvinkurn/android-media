@@ -5,14 +5,13 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/dp_16"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/digital_homepage_trust_mark_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_2"
+        android:layout_marginBottom="@dimen/dp_16"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardElevation="@dimen/dp_2">
 
@@ -20,8 +19,8 @@
             android:id="@+id/rv_digital_homepage_trust_mark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_8"
-            android:orientation="horizontal" />
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_8" />
 
     </androidx.cardview.widget.CardView>
 
@@ -29,6 +28,7 @@
         android:id="@+id/digital_homepage_trust_mark_shimmering"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_16"
         app:corners="16" />
 
 </LinearLayout>

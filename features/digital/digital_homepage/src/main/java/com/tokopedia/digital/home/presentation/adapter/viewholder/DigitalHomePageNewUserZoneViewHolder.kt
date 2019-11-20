@@ -17,12 +17,17 @@ class DigitalHomePageNewUserZoneViewHolder(itemView: View?, val onItemBindListen
 
     override fun bind(element: DigitalHomePageNewUserZoneModel) {
         if (element.isLoaded) {
-            element.data?.section?.run {
+            if (element.isSuccess) {
+                element.data?.section?.run {
+                    itemView.digital_homepage_new_user_zone_shimmering.hide()
+                    itemView.digital_homepage_new_user_zone_container.show()
+                    ImageHandler.loadImageWithoutFit(itemView.context, itemView.digital_homepage_new_user_zone_image, items[0].mediaUrl)
+                    onItemBindListener.onSectionItemImpression(NEW_USER_IMPRESSION)
+                    itemView.setOnClickListener { onItemBindListener.onSectionItemClicked(items[0], adapterPosition, NEW_USER_BANNER_CLICK) }
+                }
+            } else {
                 itemView.digital_homepage_new_user_zone_shimmering.hide()
-                itemView.digital_homepage_new_user_zone_container.show()
-                ImageHandler.loadImageWithoutFit(itemView.context, itemView.digital_homepage_new_user_zone_image, items[0].mediaUrl)
-                onItemBindListener.onSectionItemImpression(NEW_USER_IMPRESSION)
-                itemView.setOnClickListener { onItemBindListener.onSectionItemClicked(items[0], adapterPosition, NEW_USER_BANNER_CLICK) }
+                itemView.digital_homepage_new_user_zone_container.hide()
             }
         } else {
             itemView.digital_homepage_new_user_zone_shimmering.show()

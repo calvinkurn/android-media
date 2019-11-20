@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_16"
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_digital_homepage_subscription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_16"
@@ -19,6 +19,7 @@
         android:id="@+id/digital_homepage_subscription_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
         android:orientation="horizontal">
 
         <com.elyeproj.loaderviewlibrary.LoaderImageView

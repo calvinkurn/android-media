@@ -18,10 +18,15 @@ class DigitalHomePageTrustMarkViewHolder(itemView: View?, val onItemBindListener
         val layoutManager = GridLayoutManager(itemView.context, TRUST_MARK_SPAN_COUNT)
         itemView.rv_digital_homepage_trust_mark.layoutManager = layoutManager
         if (element.isLoaded) {
-            element.data?.section?.run {
+            if (element.isSuccess) {
+                element.data?.section?.run {
+                    itemView.digital_homepage_trust_mark_shimmering.hide()
+                    itemView.digital_homepage_trust_mark_container.show()
+                    itemView.rv_digital_homepage_trust_mark.adapter = DigitalItemTrustMarkAdapter(items, onItemBindListener)
+                }
+            } else {
                 itemView.digital_homepage_trust_mark_shimmering.hide()
-                itemView.digital_homepage_trust_mark_container.show()
-                itemView.rv_digital_homepage_trust_mark.adapter = DigitalItemTrustMarkAdapter(items, onItemBindListener)
+                itemView.digital_homepage_trust_mark_container.hide()
             }
         } else {
             itemView.digital_homepage_trust_mark_shimmering.show()

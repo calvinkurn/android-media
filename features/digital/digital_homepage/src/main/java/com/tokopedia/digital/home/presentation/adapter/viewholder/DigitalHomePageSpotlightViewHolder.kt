@@ -22,25 +22,30 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
         val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         itemView.rv_digital_homepage_spotlight.layoutManager = layoutManager
         if (element.isLoaded) {
-            element.data?.section?.run {
-                onItemBindListener.onSectionItemImpression(SPOTLIGHT_IMPRESSION)
-                itemView.digital_homepage_spotlight_shimmering.hide()
-                itemView.digital_homepage_spotlight_container.show()
-                itemView.digital_homepage_spotlight_title.text = title
+            if (element.isSuccess) {
+                element.data?.section?.run {
+                    onItemBindListener.onSectionItemImpression(SPOTLIGHT_IMPRESSION)
+                    itemView.digital_homepage_spotlight_shimmering.hide()
+                    itemView.digital_homepage_spotlight_container.show()
+                    itemView.digital_homepage_spotlight_title.text = title
 
-                itemView.rv_digital_homepage_spotlight.apply {
-                    adapter = DigitalItemSpotlightAdapter(items, onItemBindListener)
-                    while (itemDecorationCount > 0) removeItemDecorationAt(0)
-                    addItemDecoration(object: RecyclerView.ItemDecoration() {
-                        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                            super.getItemOffsets(outRect, view, parent, state)
-                            // Add offset to all items except the last one
-                            if (parent.getChildAdapterPosition(view) < items.size - 1) {
-                                outRect.right = itemView.context.resources.getDimension(ITEM_DECORATOR_SIZE).toInt()
+                    itemView.rv_digital_homepage_spotlight.apply {
+                        adapter = DigitalItemSpotlightAdapter(items, onItemBindListener)
+                        while (itemDecorationCount > 0) removeItemDecorationAt(0)
+                        addItemDecoration(object : RecyclerView.ItemDecoration() {
+                            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                                super.getItemOffsets(outRect, view, parent, state)
+                                // Add offset to all items except the last one
+                                if (parent.getChildAdapterPosition(view) < items.size - 1) {
+                                    outRect.right = itemView.context.resources.getDimension(ITEM_DECORATOR_SIZE).toInt()
+                                }
                             }
-                        }
-                    })
+                        })
+                    }
                 }
+            } else {
+                itemView.digital_homepage_spotlight_shimmering.hide()
+                itemView.digital_homepage_spotlight_container.hide()
             }
         } else {
             itemView.digital_homepage_spotlight_shimmering.show()
