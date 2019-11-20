@@ -22,6 +22,7 @@ import com.tokopedia.kol.feature.following_list.view.viewmodel.KolFollowingViewM
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingResultViewModel;
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingViewModel;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
@@ -56,12 +57,14 @@ public class KolFollowingListModule {
     public KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel> provideShopFollowingListPresenter(
             @ApplicationContext Context context,
             GetShopFollowingListUseCase getShopFollowingListUseCase,
-            ToggleFavouriteShopUseCase toggleFavouriteShopUseCase
+            ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
+            UserSessionInterface userSession
     ) {
         return new ShopFollowingListPresenter(
                 context,
                 getShopFollowingListUseCase,
-                toggleFavouriteShopUseCase
+                toggleFavouriteShopUseCase,
+                userSession
         );
     }
 

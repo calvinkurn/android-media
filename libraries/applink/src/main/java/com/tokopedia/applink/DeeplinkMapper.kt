@@ -63,11 +63,14 @@ object DeeplinkMapper {
                     else -> {
                         val query = Uri.parse(deeplink).query
                         if(query?.isNotEmpty() == true){
-                            val tempDL = deeplink.substring(0, deeplink.indexOf('?'))
+                            var tempDL = deeplink
+                            if(deeplink.contains('?')) {
+                                tempDL = deeplink.substring(0, deeplink.indexOf('?'))
+                            }
                             var navFromTokopedia = getRegisteredNavigationFromTokopedia(tempDL)
                             if(navFromTokopedia.isNotEmpty()) {
-                                navFromTokopedia = navFromTokopedia.substring(0, navFromTokopedia.indexOf('?'))
-                                navFromTokopedia += "?$query"
+                                val questionMarkIndex = navFromTokopedia.indexOf("?")
+                                navFromTokopedia += if (questionMarkIndex == -1) { "?$query" } else { "&$query" }
                             }
                             navFromTokopedia
                         } else getRegisteredNavigationFromTokopedia(deeplink)

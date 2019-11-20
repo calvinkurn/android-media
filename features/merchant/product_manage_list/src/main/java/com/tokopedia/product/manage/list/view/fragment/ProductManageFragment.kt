@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -41,7 +42,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.core.router.productdetail.PdpRouter
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.ToasterError
@@ -106,6 +106,7 @@ import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -145,7 +146,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private var isOfficialStore: Boolean = false
     private var shopDomain: String = ""
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
-    lateinit var adapter: ProductManageListAdapter
+    lateinit var productManageListAdapter: ProductManageListAdapter
 
     private var productManageViewModels: List<ProductManageViewModel> = listOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
@@ -218,9 +219,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
 
         bulkCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            productManageViewModels.forEachIndexed { index, _ ->
-                if (!isChecked || !adapter.isChecked(index)) {
-                    adapter.updateListByCheck(isChecked, index)
+            if (!isListEmpty) {
+                adapter.data.forEachIndexed { index, productManageViewModel ->
+                    if (!isChecked || !productManageListAdapter.isChecked(index)) {
+                        productManageListAdapter.updateListByCheck(isChecked, index)
+                    }
                 }
             }
         }
@@ -300,8 +303,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun createAdapterInstance(): BaseListAdapter<ProductManageViewModel, ProductManageFragmentFactoryImpl> {
-        adapter = ProductManageListAdapter(adapterTypeFactory, this)
-        return adapter
+        productManageListAdapter = ProductManageListAdapter(adapterTypeFactory, this)
+        return productManageListAdapter
     }
 
     override fun getAdapterTypeFactory(): ProductManageFragmentFactoryImpl = ProductManageFragmentFactoryImpl(this, this)
@@ -334,33 +337,18 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         /**
          * Keep checklist after user search or filter
          */
-        val listPositionChecked = list.withIndex().filter {
-            itemsChecked.map { it.id }.contains(it.value.id)
-        }.map {
-            it.index
-        }.toHashSet()
 
-        adapter.setCheckedPositionList(listPositionChecked)
-        adapter.notifyDataSetChanged()
+        if (list.isEmpty()) {
+            containerChechBoxBulk.visibility = View.GONE
+        } else {
+            containerChechBoxBulk.visibility = View.VISIBLE
+        }
+        renderCheckedView()
     }
 
     override fun onSearchSubmitted(text: String) {
         ProductManageTracking.eventProductManageSearch()
-        isLoadingInitialData = true
-        val tempShopEtalaseViewModels = ArrayList<ProductManageViewModel>()
-
-        if (productManageViewModels.isNotEmpty()) {
-            val textLowerCase = text.toLowerCase()
-
-            for (data in productManageViewModels) {
-                if (data.productName.toLowerCase().contains(textLowerCase)) {
-                    tempShopEtalaseViewModels.add(data)
-                }
-            }
-        }
-
-        renderList(tempShopEtalaseViewModels, false)
-        showSearchViewWithDataSizeCheck()
+        loadInitialData()
     }
 
     override fun onSearchTextChanged(text: String?) {
@@ -382,6 +370,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         this.shopDomain = shopDomain ?: ""
     }
 
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        bulkCheckBox.isChecked = false
+        productManageListAdapter.resetCheckedItemSet()
+        itemsChecked.clear()
+        renderCheckedView()
+    }
+
     override fun onErrorEditPrice(t: Throwable?, productId: String?, price: String?, currencyId: String?, currencyText: String?) {
         context?.let {
             showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
@@ -395,7 +391,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onSuccessEditPrice(productId: String?, price: String?, currencyId: String?, currencyText: String?) {
-        adapter.updatePrice(
+        productManageListAdapter.updatePrice(
                 productId ?: "",
                 price ?: "",
                 currencyId ?: "",
@@ -451,7 +447,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onSuccessSetCashback(productId: String, cashback: Int) {
-        adapter.updateCashback(productId, cashback)
+        productManageListAdapter.updateCashback(productId, cashback)
     }
 
     override fun onErrorMultipleDeleteProduct(e: Throwable?, listOfResponse: ProductUpdateV3SuccessFailedResponse?) {
@@ -586,13 +582,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             showToasterNormal(getString(R.string.product_manage_bulk_snackbar_sucess, listOfResponse.successResponse.size.toString()))
         }
 
-        adapter.resetCheckedItemSet()
+        productManageListAdapter.resetCheckedItemSet()
         itemsChecked.clear()
         renderCheckedView()
         loadInitialData()
     }
 
-    override fun onErrorBulkUpdateProduct(e: Throwable?) {
+    override fun onErrorBulkUpdateProduct(e: Throwable) {
         activity?.let {
             showToasterError(ViewUtils.getErrorMessage(it, e), getString(R.string.close)) {
                 //No OP
@@ -677,9 +673,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
-    override fun isChecked(position: Int): Boolean = adapter.isChecked(position)
+    override fun isChecked(position: Int): Boolean = productManageListAdapter.isChecked(position)
 
-    override fun updateListByCheck(isChecked: Boolean, position: Int) = adapter.updateListByCheck(isChecked, position)
+    override fun updateListByCheck(isChecked: Boolean, position: Int) = productManageListAdapter.updateListByCheck(isChecked, position)
 
     override fun onClickOptionItem(productManageViewModel: ProductManageViewModel) {
         showActionProductDialog(productManageViewModel)
@@ -750,13 +746,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun onPromoTopAdsClicked(productManageViewModel: ProductManageViewModel) {
-        activity?.let {
-            (it.application as PdpRouter).goToCreateTopadsPromo(it,
-                    productManageViewModel.itemId, userSession.userId,
-                    if (GlobalConfig.isSellerApp())
-                        TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
-                    else
-                        TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT)
+        context?.let {
+            val uri = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, userSession.shopId)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productManageViewModel.itemId)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                            if (GlobalConfig.isSellerApp())
+                                TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
+                            else
+                                TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT).build().toString()
+
+            RouteManager.route(it, uri)
         }
     }
 
