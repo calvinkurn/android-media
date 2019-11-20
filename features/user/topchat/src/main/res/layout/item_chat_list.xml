@@ -116,8 +116,8 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/unread_counter"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="@dimen/dp_10"
+        android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_6"
         android:background="@drawable/circle_red_notification"
         android:textColor="@color/Neutral_N700_44"
