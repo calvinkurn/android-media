@@ -478,12 +478,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    override fun goToSettingTemplate() {
-        val intent = ChatSettingActivity.getIntent(context)
-        startActivity(intent)
-        activity?.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
-    }
-
     override fun onSuccessGetTemplate(list: List<Visitable<Any>>) {
         getViewState().setTemplate(list)
     }
