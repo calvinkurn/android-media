@@ -1,19 +1,19 @@
 package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.widget.NestedScrollView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -46,11 +46,11 @@ import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.utils.ImpresionTask
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -275,10 +275,16 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 if ((scrollY >= (v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight)) &&
                         scrollY > oldScrollY) {
                     if (isPagingAllowed) {
-                        incrementpage()
-                        fetchProductData(getProductListParamMap(getPage()))
-                        productNavListAdapter?.addLoading()
-                        isPagingAllowed = false
+                        val numOfPages: Int = (totalCount.toInt() - 1) / 10
+                        if (getPage() < numOfPages) {
+                            incrementpage()
+                            fetchProductData(getProductListParamMap(getPage()))
+                            productNavListAdapter?.addLoading()
+                            isPagingAllowed = false
+                        } else {
+                            productNavListAdapter?.removeLoading()
+                        }
+
                     }
 
                 }
