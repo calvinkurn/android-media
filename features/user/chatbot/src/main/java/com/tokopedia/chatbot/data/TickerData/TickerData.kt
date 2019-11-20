@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName
 data class TickerData(
 
 		@SerializedName("is_success")
-		val isSuccess: Int? = null,
+		val isSuccess: Int = 0,
 
 		@SerializedName("type")
-		val type: String? = null,
+		val type: String? = "",
 
 		@SerializedName("items")
 		val items: List<ItemsItem?>? = null

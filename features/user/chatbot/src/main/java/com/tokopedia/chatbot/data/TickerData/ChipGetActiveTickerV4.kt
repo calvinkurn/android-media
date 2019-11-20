@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ChipGetActiveTickerV4(
 
         @SerializedName("server_process_time")
-        val serverProcessTime: String? = null,
+        val serverProcessTime: String? = "",
 
         @SerializedName("data")
         val data: TickerData? = null,
@@ -15,5 +15,5 @@ data class ChipGetActiveTickerV4(
         val messageError: List<Any?>? = null,
 
         @SerializedName("status")
-        val status: String? = null
+        val status: String? = ""
 )

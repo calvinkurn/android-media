@@ -255,7 +255,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun showSingleTicker(tickerData: TickerData) {
         ticker.tickerTitle = tickerData.items?.get(0)?.title
         ticker.setTextDescription(tickerData.items?.get(0)?.text?:"")
-        ticker.tickerShape = getTickerType(tickerData.type ?: "")
+        ticker.tickerType = getTickerType(tickerData.type ?: "")
     }
 
     private fun showMultiTicker(tickerData: TickerData) {

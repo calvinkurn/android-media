@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class ItemsItem(
 
         @SerializedName("text")
-        val text: String? = null,
+        val text: String? = "",
 
         @SerializedName("title")
-        val title: String? = null
+        val title: String? = ""
 )

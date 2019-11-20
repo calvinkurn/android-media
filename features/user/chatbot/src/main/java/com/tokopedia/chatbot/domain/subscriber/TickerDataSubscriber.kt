@@ -6,13 +6,13 @@ import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
 
-class TickerDataSubscriber(val onError: (Throwable) -> Unit,
+class TickerDataSubscriber(val onTickerError: (Throwable) -> Unit,
                            val onSuccess: (TickerData) -> Unit)
     : Subscriber<GraphqlResponse>() {
 
     override fun onNext(graphqlResponse: GraphqlResponse) {
         handleError(graphqlResponse, TickerDataResponse::class.java,
-                routingOnNext(graphqlResponse), onError)
+                routingOnNext(graphqlResponse), onTickerError)
     }
 
     private fun routingOnNext(graphqlResponse: GraphqlResponse): (GraphqlResponse) -> Unit {
@@ -27,7 +27,7 @@ class TickerDataSubscriber(val onError: (Throwable) -> Unit,
     }
 
     override fun onError(e: Throwable) {
-        onError(e)
+        onTickerError(e)
     }
 
 }
