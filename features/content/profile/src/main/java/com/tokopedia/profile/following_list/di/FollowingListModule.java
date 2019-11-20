@@ -13,7 +13,7 @@ import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListLo
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetShopFollowingListUseCase;
 import com.tokopedia.profile.following_list.view.listener.FollowingList;
-import com.tokopedia.profile.following_list.view.presenter.UserFollowingListPresenter;
+import com.tokopedia.profile.following_list.view.presenter.UserFollowListPresenter;
 import com.tokopedia.profile.following_list.view.presenter.ShopFollowingListPresenter;
 import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewModel;
@@ -38,7 +38,7 @@ public class FollowingListModule {
             GetFollowingListLoadMoreUseCase getFollowingListLoadMoreUseCase,
             GetFollowerListUseCase getFollowerListUseCase
     ) {
-        return new UserFollowingListPresenter(
+        return new UserFollowListPresenter(
                 getFollowingListUseCase,
                 getFollowingListLoadMoreUseCase,
                 getFollowerListUseCase

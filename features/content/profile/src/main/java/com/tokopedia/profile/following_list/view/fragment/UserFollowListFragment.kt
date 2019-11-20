@@ -14,14 +14,17 @@ import javax.inject.Inject
 /**
  * Created by jegul on 2019-10-22
  */
-class UserFollowingListFragment : BaseFollowListFragment<UserFollowingViewModel, UserFollowingResultViewModel>() {
+class UserFollowListFragment : BaseFollowListFragment<UserFollowingViewModel, UserFollowingResultViewModel>() {
 
     companion object {
 
         @JvmStatic
-        fun createInstance(bundle: Bundle?): UserFollowingListFragment {
-            return UserFollowingListFragment().apply {
-                arguments = bundle
+        fun createInstance(userId: Int, type: FollowListType): UserFollowListFragment {
+            return UserFollowListFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(EXTRA_USER_ID, userId)
+                    putSerializable(EXTRA_FOLLOW_TYPE, type)
+                }
             }
         }
     }

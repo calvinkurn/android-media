@@ -88,6 +88,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewMod
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
+import com.tokopedia.profile.following_list.view.activity.UserFollowerListActivity
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -544,11 +545,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun goToFollowing() {
         profileAnalytics.eventClickFollowing(isOwner, userId.toString())
-        startActivity(FollowingListActivity.getFollowingInstance(requireContext(), userId))
+        startActivity(FollowingListActivity.createIntent(requireContext(), userId.toString()))
     }
 
     override fun goToFollower() {
-        startActivity(com.tokopedia.profile.following_list.view.activity.FollowingListActivity.getFollowerInstance(requireContext(), userId))
+        startActivity(UserFollowerListActivity.getFollowingIntent(requireContext(), userId))
     }
 
     override fun updateCursor(cursor: String) {

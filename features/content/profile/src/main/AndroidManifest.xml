@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".following_list.view.activity.FollowingListActivity"
+            android:name=".following_list.view.activity.UserFollowerListActivity"
             android:label="@string/title_profile_following"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

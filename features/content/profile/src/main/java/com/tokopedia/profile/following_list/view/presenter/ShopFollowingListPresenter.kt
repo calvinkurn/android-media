@@ -12,6 +12,7 @@ import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultVi
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profile.R
+import com.tokopedia.profile.following_list.view.fragment.BaseFollowListFragment
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase.Action
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +37,7 @@ class ShopFollowingListPresenter @Inject constructor(
 
     private val job = SupervisorJob()
 
-    override fun getFollowingList(userId: Int) {
+    override fun getFollowList(userId: Int, type: BaseFollowListFragment.FollowListType) {
         val page = 1
         launch {
             val userFollow = getUserShopFollowingListUseCase.apply {
@@ -50,7 +51,7 @@ class ShopFollowingListPresenter @Inject constructor(
         }
     }
 
-    override fun getFollowingListLoadMore(userId: Int, cursor: String?) {
+    override fun getFollowListLoadMore(userId: Int, cursor: String?, type: BaseFollowListFragment.FollowListType) {
         val page = try { cursor?.toInt()?.plus(1) } catch (e: Exception) { null } ?: return
         launch {
             val userFollow = getUserShopFollowingListUseCase.apply {
@@ -62,14 +63,6 @@ class ShopFollowingListPresenter @Inject constructor(
                 hideLoading()
             }
         }
-    }
-
-    override fun getFollowersList(userId: Int) {
-
-    }
-
-    override fun getFollowersLoadMore(userId: Int, cursor: String?) {
-
     }
 
     override fun unfollowShop(model: FollowingViewModel) {
