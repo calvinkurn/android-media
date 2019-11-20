@@ -472,7 +472,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToTopPay(checkoutData: FlightCheckoutData) {
-        countdown_finish_transaction.cancel()
+        countdown_timeout.cancel()
         val paymentPassData = PaymentPassData()
         paymentPassData.paymentId = checkoutData.parameter.pid
         paymentPassData.transactionId = checkoutData.parameter.transactionId
