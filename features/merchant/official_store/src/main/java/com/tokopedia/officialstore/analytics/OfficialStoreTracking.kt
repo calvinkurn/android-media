@@ -201,7 +201,7 @@ class OfficialStoreTracking(context: Context) {
                                 "$CLICK view all"))
     }
 
-    fun eventClickFeaturedBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, imageUrl: String, additionalInformation: String) {
+    fun eventClickFeaturedBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, url: String, additionalInformation: String) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -215,7 +215,7 @@ class OfficialStoreTracking(context: Context) {
                         "name", "/official-store/$categoryName - popular brands",
                         "position", "$shopPosition",
                         "creative", "$shopName - $additionalInformation",
-                        "creative_url", imageUrl,
+                        "creative_url", url,
                         "promo_id", null,
                         "promo_code", null
                         )
@@ -226,7 +226,7 @@ class OfficialStoreTracking(context: Context) {
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
-    fun eventImpressionFeatureBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, imageUrl: String, additionalInformation: String) {
+    fun eventImpressionFeatureBrand(categoryName: String, shopId: String, shopPosition: Int, shopName: String, url: String, additionalInformation: String) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
@@ -236,11 +236,11 @@ class OfficialStoreTracking(context: Context) {
                 PROMO_VIEW, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", shopId.toString(),
+                        "id", shopId,
                         "name", "/official-store/$categoryName - popular brands",
                         "position", "$shopPosition",
                         "creative", "$shopName - $additionalInformation",
-                        "creative_url", imageUrl,
+                        "creative_url", url,
                         "promo_id", VALUE_NONE_OTHER,
                         "promo_code", VALUE_NONE_OTHER
                         )
