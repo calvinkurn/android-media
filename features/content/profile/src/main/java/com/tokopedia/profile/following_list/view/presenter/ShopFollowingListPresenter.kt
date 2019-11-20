@@ -3,6 +3,7 @@ package com.tokopedia.profile.following_list.view.presenter
 import android.content.Context
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.GetShopFollowingData
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.UserShopFollowDetail
 import com.tokopedia.profile.following_list.domain.interactor.GetShopFollowingListUseCase
@@ -47,7 +48,7 @@ class ShopFollowingListPresenter @Inject constructor(
                 addRequestWithParam(userId, page)
             }.executeOnBackground()
             view.run {
-                val uiModelList = userFollow.convertToUiModel(page, userId == userSession.userId.toInt())
+                val uiModelList = userFollow.convertToUiModel(page, userId == userSession.userId.toIntOrZero())
                 if (uiModelList.followingViewModelList.isEmpty()) onSuccessGetKolFollowingListEmptyState()
                 onSuccessGetKolFollowingList(uiModelList)
                 hideLoading()
