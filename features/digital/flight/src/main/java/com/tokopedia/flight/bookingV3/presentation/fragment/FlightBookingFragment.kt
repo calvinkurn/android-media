@@ -135,6 +135,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
 
         bookingViewModel.flightCartResult.observe(this, Observer {
+            hideShimmering()
             when (it) {
                 is Success -> {
                     if (layout_loading.isVisible) launchLoadingPageJob.cancel()
@@ -144,7 +145,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendAddToCartTracking()
                 }
                 is Fail -> {
-                    if (loadingDialog.isShowing) loadingDialog.dismiss()
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
@@ -155,6 +155,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.profileResult.observe(this, Observer {
+            hideShimmering()
             when (it) {
                 is Success -> {
                     renderProfileData(it.data)
@@ -183,6 +184,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.flightCheckoutResult.observe(this, Observer {
+            hideShimmering()
             when (it) {
                 is Success -> {
                     if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
@@ -196,6 +198,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.flightVerifyResult.observe(this, Observer {
+            hideShimmering()
             when (it) {
                 is Success -> {
                     if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
@@ -336,8 +339,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun renderData(cart: FlightCartViewEntity) {
-        hideShimmering()
-
         if (!::flightRouteAdapter.isInitialized) flightRouteAdapter = FlightJourneyAdapter()
         val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_flight_booking_route_summary.layoutManager = layoutManager
