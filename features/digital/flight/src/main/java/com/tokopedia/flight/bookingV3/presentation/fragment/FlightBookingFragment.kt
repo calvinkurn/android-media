@@ -638,16 +638,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
         val view = View.inflate(context, R.layout.layout_flight_booking_loading, null)
         val loadingText = view.findViewById(R.id.tv_loading_subtitle) as Typography
         showLoadingDialog(view)
-        while (true) {
-            loadingText.text = list[0]
-            delay(2000L)
-            loadingText.text = list[1]
-            delay(2000L)
-            loadingText.text = list[2]
-            delay(2000L)
-            loadingText.text = list[3]
-            delay(2000L)
-        }
+        loadingText.text = list[0]
+        delay(2000L)
+        loadingText.text = list[1]
+        delay(2000L)
+        loadingText.text = list[2]
+        delay(2000L)
+        loadingText.text = list[3]
+        delay(2000L)
     }
 
     private fun hideShimmering() {
