@@ -62,6 +62,10 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         tvDraftProductInfo.visibility = View.GONE
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun getSearchInputViewResourceId(): Int {
         return R.id.search_input_view
     }
