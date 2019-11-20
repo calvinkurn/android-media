@@ -530,16 +530,12 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         startActivity(intent)
     }
 
-    override fun OnSubCategoryClicked(id: String, categoryName: String, appRedirectionURL: String) {
+    override fun OnSubCategoryClicked(id: String, categoryName: String) {
         activity?.let {
-            if (appRedirectionURL.equals("")) {
-                val intent = Intent(it, CategoryNavActivity::class.java)
-                intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, id)
-                intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, categoryName)
-                it.startActivity(intent)
-            } else {
-                RouteManager.route(activity, appRedirectionURL)
-            }
+            val intent = Intent(it, CategoryNavActivity::class.java)
+            intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, id)
+            intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, categoryName)
+            it.startActivity(intent)
         }
     }
 
