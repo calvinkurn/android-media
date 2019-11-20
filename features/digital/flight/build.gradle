@@ -45,6 +45,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.features.commonPayment)
+    implementation project(rootProject.ext.libraries.linker)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles

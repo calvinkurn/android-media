@@ -187,7 +187,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 is Success -> {
                     if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
                     navigateToTopPay(it.data)
-                    sendCheckOutTracking()
+                    sendCheckOutTracking(it.data.parameter.pid)
                 }
                 is Fail -> {
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
@@ -231,12 +231,26 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 bookingViewModel.getFlightPriceModel().comboKey)
     }
 
-    private fun sendCheckOutTracking() {
+    private fun sendCheckOutTracking(pid: String) {
         flightAnalytics.eventCheckoutClick(
                 bookingViewModel.getRouteForFlightDetail(bookingViewModel.getDepartureId()),
                 bookingViewModel.getRouteForFlightDetail(bookingViewModel.getReturnId()),
                 bookingViewModel.getSearchParam(),
                 bookingViewModel.getFlightPriceModel().comboKey)
+
+        flightAnalytics.eventBranchCheckoutFlight(
+                "${bookingViewModel.getDepartureJourney()?.departureAirportCity}-${bookingViewModel.getDepartureJourney()?.arrivalAirportCity}",
+                getTrackingJourneyId(),
+                bookingViewModel.getInvoiceId(), pid,
+                bookingViewModel.getUserId(),
+                totalCartPrice.toString()
+        )
+    }
+
+    fun getTrackingJourneyId(): String {
+        if (bookingViewModel.getFlightPriceModel().comboKey.isNotEmpty()) return "${bookingViewModel.getFlightPriceModel().comboKey} ${bookingViewModel.getFlightPriceModel().comboKey}"
+        else if (bookingViewModel.getReturnId().isNotEmpty()) return "${bookingViewModel.getDepartureId()} ${bookingViewModel.getReturnId()}"
+        else return bookingViewModel.getDepartureId()
     }
 
     private fun renderErrorToast(resId: Int) {
@@ -718,8 +732,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 layout_full_page_error.tv_error_subtitle.text = FlightBookingErrorCodeMapper.getErrorSubtitle(errorCode)
                 layout_full_page_error.button_error_action.text = "Cari Tiket Ulang"
                 layout_full_page_error.button_error_action.setOnClickListener { navigateBackToSearch() }
-            }
-            else {
+            } else {
                 lateinit var dialog: DialogUnify
                 when (errorCode) {
                     FlightErrorConstant.INVALID_JSON -> {
@@ -771,7 +784,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         dialog.setPrimaryCTAText("Pesan Tiket Lain")
                         dialog.setPrimaryCTAClickListener {
                             dialog.dismiss()
-                            navigateBackToSearch() }
+                            navigateBackToSearch()
+                        }
                         dialog.setSecondaryCTAText("Oke")
                         dialog.setSecondaryCTAClickListener { dialog.dismiss() }
                     }
@@ -816,12 +830,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
         RouteManager.route(context, "tokopedia://pesawat")
         activity?.finish()
     }
+
     private fun proceedCheckoutWithoutLuggage() {
         Log.d("HEHE", "proceedCheckoutWoLuggage()")
         launchLoadingLayoutJob.start()
         bookingViewModel.proceedCheckoutWithoutLuggage(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart),
                 totalCartPrice)
     }
+
     private fun navigateToPromoPage() {
         Log.d("HEHE", "navigateBackToPromoPage()")
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
@@ -829,6 +845,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         intent.putExtra(COUPON_EXTRA_CART_ID, bookingViewModel.getCartId())
         startActivityForResult(intent, COUPON_EXTRA_LIST_ACTIVITY_RESULT)
     }
+
     private fun navigateToFlightOrderList() {
         Log.d("HEHE", "navigateBackToFlightOL()")
         RouteManager.route(context, "tokopedia://pesawat/order")
@@ -840,7 +857,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             loadingDialog.setUnlockVersion()
             loadingDialog.setChild(view)
             loadingDialog.setOverlayClose(false)
-            loadingDialog.show()
+            if (!launchLoadingPageJob.isActive) loadingDialog.show()
         }
     }
 

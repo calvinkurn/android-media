@@ -441,6 +441,17 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
+    fun getDepartureJourney(): FlightDetailViewModel? = getRouteForFlightDetail(getDepartureId())
+    fun getReturnJourney(): FlightDetailViewModel? = getRouteForFlightDetail(getReturnId())
+    fun getInvoiceId(): String {
+        return if (flightVerifyResult.value is Success) (flightVerifyResult.value as Success<FlightVerify.FlightVerifyMetaAndData>).data.data.cartItems[0].metaData.invoiceId
+        else ""
+    }
+    fun getUserId(): String {
+        return if (profileResult.value is Success<ProfileInfo>) (profileResult.value as Success<ProfileInfo>).data.userId
+        else ""
+    }
+
     fun getRouteForFlightDetail(id: String): FlightDetailViewModel? {
         for (item in flightDetailViewModels) {
             if (item.id.equals(id, false)) {

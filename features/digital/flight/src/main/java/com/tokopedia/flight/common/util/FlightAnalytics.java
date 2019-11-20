@@ -17,6 +17,10 @@ import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -902,6 +906,24 @@ public class FlightAnalytics {
         ));
     }
 
+    public void eventBranchCheckoutFlight(String productName, String journeyId, String invoiceId,
+                                    String paymentId, String userId, String totalPrice) {
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_PURCHASE_FLIGHT,
+                createLinkerData(productName, journeyId, invoiceId, paymentId, userId, totalPrice)));
+    }
+
+    private LinkerData createLinkerData(String productName, String journeyId, String invoiceId,
+                                        String paymentId, String userId, String totalPrice) {
+        LinkerData linkerData = new LinkerData();
+        linkerData.setProductCategory(Label.FLIGHT_SMALL);
+        linkerData.setProductName(productName);
+        linkerData.setJourneyId(journeyId);
+        linkerData.setUserId(userId);
+        linkerData.setInvoiceId(invoiceId);
+        linkerData.setPaymentId(paymentId);
+        linkerData.setPrice(totalPrice);
+        return linkerData;
+    }
 
     public static final class Screen {
 
