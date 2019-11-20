@@ -49,7 +49,7 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
             when(it) {
                 is Success -> {
                     if (NotificationMapper.isHasShop(it.data)) {
-                        adapter.addMoreData(sellerMenu())
+                        adapter.addElement(sellerMenu())
                     }
                 }
                 is Fail -> {
