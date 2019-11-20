@@ -1,6 +1,7 @@
 package com.tokopedia.profile.following_list.view.fragment
 
 import android.os.Bundle
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -48,6 +49,9 @@ class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel,
 
     override fun initInjector() {
         DaggerFollowingListComponent.builder()
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
                 .build()
                 .inject(this)
     }
