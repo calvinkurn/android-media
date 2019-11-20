@@ -81,7 +81,7 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        this.followingIntent = intent
+        this.intent = intent
         inflateFragment()
     }
 
