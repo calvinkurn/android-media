@@ -60,9 +60,13 @@ class ProductManagePresenterImpl @Inject constructor(
             val isGoldMerchant: Boolean? = shopInfo.goldOS.isGold == 1
             val isOfficialStore: Boolean? = shopInfo.goldOS.isOfficial == 1
             val shopDomain: String? = shopInfo.shopCore.domain
-
-            view.onSuccessGetShopInfo(isGoldMerchant
-                    ?: false, isOfficialStore ?: false, shopDomain ?: "")
+            if (isViewAttached) {
+                view.onSuccessGetShopInfo(
+                        isGoldMerchant ?: false,
+                        isOfficialStore ?: false,
+                        shopDomain ?: ""
+                )
+            }
         }) {
             it.printStackTrace()
         }
