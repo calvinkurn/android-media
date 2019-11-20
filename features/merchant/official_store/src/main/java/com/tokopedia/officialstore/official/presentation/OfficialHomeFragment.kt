@@ -75,6 +75,7 @@ class OfficialHomeFragment :
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
+    private var isLoadedOnce: Boolean = false
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
     private var isScrolling = false
 
@@ -102,8 +103,7 @@ class OfficialHomeFragment :
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            refreshData()
-            tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+            loadData()
         }
     }
 
@@ -129,7 +129,7 @@ class OfficialHomeFragment :
         observeDynamicChannel()
         observeProductRecommendation()
         resetData()
-        refreshData()
+        loadData()
         setListener()
     }
 
@@ -144,9 +144,15 @@ class OfficialHomeFragment :
         endlessScrollListener?.resetState()
     }
 
-    private fun refreshData() {
+    private fun loadData(isRefresh: Boolean = false) {
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
-            viewModel.loadFirstData(category)
+            if (!isLoadedOnce) {
+                viewModel.loadFirstData(category)
+                isLoadedOnce = true
+            }
+            if (!isRefresh) {
+                tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+            }
         }
     }
 
@@ -271,7 +277,7 @@ class OfficialHomeFragment :
             counterTitleShouldBeRendered = 0
             adapter?.notifyDataSetChanged()
             recyclerView?.removeOnScrollListener(endlessScrollListener)
-            refreshData()
+            loadData(true)
         }
 
         if (parentFragment is RecyclerViewScrollListener) {
@@ -413,7 +419,7 @@ class OfficialHomeFragment :
             it is DynamicChannelViewModel || it is ProductRecommendationViewModel
         }
         adapter?.notifyDataSetChanged()
-        refreshData()
+        loadData(true)
     }
 
     override fun onClickLegoHeaderActionText(applink: String): View.OnClickListener {
