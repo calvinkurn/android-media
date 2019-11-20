@@ -74,7 +74,7 @@ public interface ProductListSectionContract {
 
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
 
-        void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
+        void sendTrackingEventSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
 
         void setFirstTimeLoad(boolean isFirstTimeLoad);
 

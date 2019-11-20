@@ -56,7 +56,7 @@ class ProfileListPresenterTest {
         followKolUseCase: UseCase<FollowResponseModel>
     ) {
         profileListPresenter.attachView(profileListView)
-        profileListPresenter.followKolPostGqlUseCase = followKolUseCase
+//        profileListPresenter.followKolPostGqlUseCase = followKolUseCase
         profileListPresenter.searchProfileListUseCase = searchProfileUseCase
         profileListPresenter.profileListViewModelMapper = profileListViewModelMapper
     }

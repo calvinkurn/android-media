@@ -851,7 +851,7 @@ final class ProductListPresenter
         }
 
         getView().sendTrackingEventAppsFlyerViewListingSearch(afProdIds, productViewModel.getQuery(), prodIdArray);
-        getView().sendTrackingEventMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
+        getView().sendTrackingEventSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
         getView().setFirstTimeLoad(false);
     }
 
