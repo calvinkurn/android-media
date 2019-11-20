@@ -517,15 +517,16 @@ open class WishlistViewModel @Inject constructor(
                             bulkSelectCountActionData.value = Event(0)
 
                             //update bulk mode first, so view can have empty state listener properly
-                            updateBulkMode(false)
 
                             //check is list is empty
                             if (updatedList.isEmpty()) {
+                                updateBulkMode(false)
                                 wishlistData.value = listOf(EmptyWishlistDataModel())
                                 getRecommendationOnEmptyWishlist(0)
                                 isWishlistEmpty.value = true
                             } else {
                                 wishlistData.value = updatedList
+                                updateBulkMode(false)
                             }
 
                         }
