@@ -14,11 +14,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -58,6 +60,7 @@ class OfficialHomeFragment :
         private const val REQUEST_FROM_PDP = 898
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+        private const val SLUG_CONST = "{slug}"
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
@@ -76,12 +79,19 @@ class OfficialHomeFragment :
     private var counterTitleShouldBeRendered = 0
     private var totalScroll = 0
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
+    private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
+    private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
+    private lateinit var dynamicChannelPerformanceMonitoring: PerformanceMonitoring
+    private lateinit var productRecommendationPerformanceMonitoring: PerformanceMonitoring
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
                     counterTitleShouldBeRendered += 1
+                    val CATEGORY_CONST: String = category?.title?:""
+                    val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
+                    productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
                     viewModel.loadMore(category, page)
 
                     if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
@@ -143,8 +153,23 @@ class OfficialHomeFragment :
     }
 
     private fun refreshData() {
+        initFirebasePerformanceMonitoring()
         viewModel.loadFirstData(category)
     }
+
+    private fun initFirebasePerformanceMonitoring() {
+        val CATEGORY_CONST: String = category?.title?:""
+
+        val bannerConstant = (FirebasePerformanceMonitoringConstant.BANNER).replace(SLUG_CONST, CATEGORY_CONST)
+        bannerPerformanceMonitoring = PerformanceMonitoring.start(bannerConstant)
+
+        val brandConstant = (FirebasePerformanceMonitoringConstant.BRAND).replace(SLUG_CONST, CATEGORY_CONST)
+        shopPerformanceMonitoring = PerformanceMonitoring.start(brandConstant)
+
+        val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
+        dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
+    }
+
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(this, Observer {
@@ -159,6 +184,7 @@ class OfficialHomeFragment :
                     showErrorNetwork(it.throwable)
                 }
             }
+            bannerPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -193,6 +219,7 @@ class OfficialHomeFragment :
                 }
 
             }
+            shopPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -211,6 +238,7 @@ class OfficialHomeFragment :
                     showErrorNetwork(result.throwable)
                 }
             }
+            dynamicChannelPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -232,6 +260,7 @@ class OfficialHomeFragment :
                     showErrorNetwork(it.throwable)
                 }
             }
+            productRecommendationPerformanceMonitoring.stopTrace()
         })
     }
 
