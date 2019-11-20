@@ -155,7 +155,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.profileResult.observe(this, Observer {
-            hideShimmering()
             when (it) {
                 is Success -> {
                     renderProfileData(it.data)
