@@ -88,6 +88,7 @@ import javax.inject.Inject
 class FlightBookingFragment : BaseDaggerFragment() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
+    private val uiScope2 = CoroutineScope(Dispatchers.Main)
     var isCouponChanged = false
     var totalCartPrice: Int = 0
 
@@ -632,7 +633,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         layout_shimmering.visibility = View.VISIBLE
     }
 
-    private var launchLoadingLayoutJob = uiScope.launch {
+    private var launchLoadingLayoutJob = uiScope2.launch {
         val list = randomLoadingSubtitle()
         val view = View.inflate(context, R.layout.layout_flight_booking_loading, null)
         val loadingText = view.findViewById(R.id.tv_loading_subtitle) as Typography
