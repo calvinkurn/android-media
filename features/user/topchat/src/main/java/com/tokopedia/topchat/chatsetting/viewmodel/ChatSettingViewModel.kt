@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.chatsetting.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.data.GetChatSettingResponse
 import com.tokopedia.topchat.chatsetting.usecase.GetChatSettingUseCase
@@ -29,6 +31,13 @@ class ChatSettingViewModel @Inject constructor(
         return { response ->
             val chatSettings = response.chatGetGearList.list
             _chatSettings.postValue(Success(chatSettings))
+        }
+    }
+
+    fun filterSettings(context: Context?, chatSettings: List<ChatSetting>): List<ChatSetting> {
+        if (context == null) return chatSettings
+        return chatSettings.filter { setting ->
+            RouteManager.isSupportApplink(context, setting.link)
         }
     }
 

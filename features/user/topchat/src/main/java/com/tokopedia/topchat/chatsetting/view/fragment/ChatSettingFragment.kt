@@ -43,7 +43,8 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
     }
 
     private fun successLoadChatSetting(data: List<ChatSetting>) {
-        renderList(data)
+        val filteredSettings = viewModel.filterSettings(context, data)
+        renderList(filteredSettings)
     }
 
     override fun getAdapterTypeFactory(): ChatSettingTypeFactory {
