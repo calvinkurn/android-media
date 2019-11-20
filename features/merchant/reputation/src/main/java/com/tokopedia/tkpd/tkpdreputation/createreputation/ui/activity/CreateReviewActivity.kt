@@ -12,18 +12,23 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.core.base.di.component.AppComponent
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.fragment.CreateReviewFragment
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity
-
+import javax.inject.Inject
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
+
+    @Inject lateinit var reviewTracker: ReputationTracking
+
+    private var productId: String = ""
+
     companion object {
         fun newInstance(context: Context) = Intent(context, CreateReviewActivity::class.java)
     }
 
     override fun getNewFragment(): Fragment {
-        val productId: String
         val reputationId: String
         val bundle = intent.extras
         val uri = intent.data
@@ -64,6 +69,8 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
     }
 
     override fun onBackPressed() {
+        reviewTracker.reviewOnCloseTracker("", productId)
+
         if (isTaskRoot) {
             val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
 

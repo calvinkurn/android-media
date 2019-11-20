@@ -296,7 +296,7 @@ class ContentExploreFragment :
                 categoryAdapter.list[position].isActive = true
                 categoryAdapter.notifyItemChanged(position)
             }
-            if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE && affiliatePreference.isCoachmarkExploreAsAffiliateShown(userSession.getUserId())) {
+            if (categoryId == ExploreCategoryAdapter.CAT_ID_AFFILIATE && !affiliatePreference.isCoachmarkExploreAsAffiliateShown(userSession.getUserId())) {
                 view.getViewTreeObserver().addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         view.getViewTreeObserver().removeOnGlobalLayoutListener(this)
