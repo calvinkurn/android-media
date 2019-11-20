@@ -154,25 +154,19 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                val categoryReselected = tabAdapter.categoryList[tab?.position.toZeroIfNull()]
-                tracking.eventClickCategory(
-                        categoryReselected.title,
-                        categoryReselected.categoryId,
-                        tab?.position.toZeroIfNull(),
-                        categoryReselected.icon
-                )
+                val categoryReselected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
+                categoryReselected?.let {
+                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val categorySelected = tabAdapter.categoryList[tab?.position.toZeroIfNull()]
-                tracking.eventClickCategory(
-                        categorySelected.title,
-                        categorySelected.categoryId,
-                        tab?.position.toZeroIfNull(),
-                        categorySelected.icon
-                )
+                val categorySelected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
+                categorySelected?.let {
+                    tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
+                }
             }
 
         })
