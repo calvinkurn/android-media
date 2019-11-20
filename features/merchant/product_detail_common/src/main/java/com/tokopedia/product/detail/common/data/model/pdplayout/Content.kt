@@ -4,14 +4,14 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import com.google.gson.annotations.SerializedName
 
 data class Content(
-        @SerializedName("Icon")
+        @SerializedName("icon")
         val icon: String = "",
-        @SerializedName("Text")
+        @SerializedName("text")
         val text: String = "",
-        @SerializedName("Subtitle")
+        @SerializedName("subtitle")
         val subtitle: String = "",
-        @SerializedName("Type")
+        @SerializedName("type")
         val componentType: String = "",
-        @SerializedName("Rating")
+        @SerializedName("rating")
         val componentRating: String = ""
 )

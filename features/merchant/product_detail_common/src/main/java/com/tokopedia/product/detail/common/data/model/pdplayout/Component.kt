@@ -4,10 +4,10 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import com.google.gson.annotations.SerializedName
 
 data class Component(
-        @SerializedName("Data")
+        @SerializedName("data")
         val componentData: List<ComponentData> = listOf(),
-        @SerializedName("Name")
+        @SerializedName("name")
         val componentName: String = "",
-        @SerializedName("Type")
+        @SerializedName("type")
         val type: String = ""
 )

@@ -20,7 +20,7 @@ class DynamicProductDetailHashMap(private val mapOfData: Map<String, DynamicPDPD
     }
 
     val socialProofMap: ProductSocialProofDataModel
-        get() = mapOfData[SOCIAL_PROOF] as ProductSocialProofDataModel
+        get() = if (mapOfData[SOCIAL_PROOF] != null) mapOfData[SOCIAL_PROOF] as ProductSocialProofDataModel else ProductSocialProofDataModel()
 
     val snapShotMap: ProductSnapshotDataModel
         get() = mapOfData[PRODUCT_SNAPSHOT] as ProductSnapshotDataModel

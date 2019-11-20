@@ -4,10 +4,10 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import com.google.gson.annotations.SerializedName
 
 data class PdpGetLayout(
-        @SerializedName("BasicInfo")
+        @SerializedName("basicInfo")
         val basicInfo: BasicInfo = BasicInfo(),
-        @SerializedName("Components")
+        @SerializedName("components")
         val components: List<Component> = listOf(),
-        @SerializedName("Name")
+        @SerializedName("name")
         val generalName: String = ""
 )

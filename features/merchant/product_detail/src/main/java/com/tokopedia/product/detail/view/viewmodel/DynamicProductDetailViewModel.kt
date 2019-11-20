@@ -50,7 +50,6 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
 
-
     private var productInfoTemp = ProductInfo()
 
     fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
@@ -90,7 +89,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         launchCatchError(block = {
             var needRequestCod = false
 
-            val pdpLayout = getPdpLayout("77777")
+            val pdpLayout = getPdpLayout(productParams.productId ?: "")
             val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(pdpLayout.data.components)
 
             val productInfo = getPdpData(productParams.productId?.toInt() ?: 0)

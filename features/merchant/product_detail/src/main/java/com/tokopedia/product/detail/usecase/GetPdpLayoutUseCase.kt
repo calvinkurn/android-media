@@ -17,7 +17,7 @@ class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<String
     companion object {
         fun createParams(productId: String): RequestParams =
                 RequestParams.create().apply {
-                    putString("productId", productId)
+                    putString("productID", productId)
                 }
     }
 

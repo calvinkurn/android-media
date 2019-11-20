@@ -1,41 +1,113 @@
-query pdpGetLayout($productId:String!){
-  pdpGetLayout(productID:$productId) {
-    Name
-    BasicInfo {
-      ProductID
-      CategoryID
+query pdpGetLayout($productID: String) {
+  pdpGetLayout(productID:$productID) {
+    name
+    basicInfo {
+      productID
+      categoryID
     }
-    Components {
-      Name
-      Type
-      Data {
-        ... on pdpDataSocialProof {
-          Row
-          Content {
-            Icon
-            Title
-            Subtitle
-            Applink
-            Type
-            Rating
+    components {
+      name
+      type
+      data {
+        ...on pdpDataProductSnapshot {
+          name
+          media {
+            type
+            URLOriginal
+            URLThumbnail
+            URL300
+            description
+            videoURLAndroid
+            videoURLIOS
+            isAutoplay
+          }
+          pictures {
+            picID
+            description
+            filePath
+            fileName
+            width
+            height
+            isFromIG
+            urlOriginal
+            urlThumbnail
+            url300
+            Status
+          }
+          videos {
+            source
+            url
+          }
+          price {
+            value
+            currency
+            lastUpdateUnix
+            idr
+          }
+          campaign {
+            campaignID
+            campaignType
+            campaignTypeName
+            percentageAmount
+            originalPrice
+            discountedPrice
+            originalStock
+            stock
+            startDate
+            endDate
+            endDateUnix
+            appLinks
+            isAppsOnly
+            isActive
+            hideGimmick
+          }
+          stock {
+            useStock
+            value
+            stockWording
+          }
+          isFreeOngkir {
+            isActive
+            imageURL
+          }
+          isCashback {
+            percentage
+          }
+          isTradeIn
+          isTradeIn
+          isOS
+          isPowerMerchant
+          isWishlist
+          isCOD
+        }
+        ...on pdpDataProductInfo {
+          row
+          content {
+            title
+            subtitle
+            applink
           }
         }
-        ... on pdpDataProductInfo {
-          Row
-          Content {
-            Title
-            Subtitle
-            Applink
+        ...on pdpDataSocialProof {
+          row
+          content {
+            icon
+            title
+            subtitle
+            applink
+            type
+            rating
           }
         }
-        ... on pdpDataInfo {
-          Applink
-          Content {
-            Icon
-            Text
+        ...on pdpDataInfo {
+          title
+          applink
+          content {
+            icon
+            text
           }
         }
-        }
+      }
     }
   }
 }

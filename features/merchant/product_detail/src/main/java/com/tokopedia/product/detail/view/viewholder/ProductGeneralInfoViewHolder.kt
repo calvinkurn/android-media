@@ -13,6 +13,8 @@ class ProductGeneralInfoViewHolder(val view: View) : AbstractViewHolder<ProductG
     }
 
     override fun bind(element: ProductGeneralInfoDataModel) {
-        view.pdp_info_title.text = element.title
+        if (element.dataLayout.isNotEmpty()) {
+            view.pdp_info_title.text = element.dataLayout.first().title
+        }
     }
 }

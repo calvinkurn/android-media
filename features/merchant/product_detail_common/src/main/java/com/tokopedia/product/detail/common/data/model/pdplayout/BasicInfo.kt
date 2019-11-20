@@ -4,8 +4,8 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import com.google.gson.annotations.SerializedName
 
 data class BasicInfo(
-    @SerializedName("CategoryID")
+    @SerializedName("categoryID")
     val categoryID: String = "",
-    @SerializedName("ProductID")
+    @SerializedName("productID")
     val productID: String = ""
 )
