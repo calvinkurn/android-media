@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -66,15 +67,19 @@ class PartialImageReviewView private constructor(private val view: View,
 
         view.background.getPadding(drawablePadding)
 
-        val top = view.paddingTop + drawablePadding.top
+        val top: Int
         val left = view.paddingLeft + drawablePadding.left
         val right = view.paddingRight + drawablePadding.right
-        val bottom = view.paddingBottom + drawablePadding.bottom
+        var bottom = view.paddingBottom
 
-        view.background = if (reviews.isEmpty())
-            MethodChecker.getDrawable(view.context, R.drawable.bg_bottom_shadow_top_line)
-        else
-            MethodChecker.getDrawable(view.context, R.drawable.bg_top_line)
+        if (reviews.isEmpty()) {
+            top = view.paddingTop
+            bottom = 24.dpToPx(view.resources.displayMetrics)
+            view.background = MethodChecker.getDrawable(view.context, R.drawable.bg_bottom_shadow_top_line)
+        } else {
+            top = view.paddingTop + drawablePadding.top
+            view.background = MethodChecker.getDrawable(view.context, R.drawable.bg_top_line)
+        }
 
         view.setPadding(left, top, right, bottom)
     }
