@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.official.presentation
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,12 +78,13 @@ class OfficialHomeFragment :
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
-    private var totalScroll = 0
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
+
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
     private lateinit var dynamicChannelPerformanceMonitoring: PerformanceMonitoring
     private lateinit var productRecommendationPerformanceMonitoring: PerformanceMonitoring
+    private var isScrolling = false
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -305,9 +307,16 @@ class OfficialHomeFragment :
                 recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
-                        totalScroll += dy
 
-                        scrollListener.onContentScrolled(dy, totalScroll)
+                        if (!isScrolling) {
+                            isScrolling = true
+                            scrollListener.onContentScrolled(dy)
+
+                            Handler().postDelayed({
+                                isScrolling = false
+                            }, 200)
+                        }
+
                     }
 
                 })

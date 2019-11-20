@@ -1,6 +1,7 @@
 package com.tokopedia.flight.cancellation.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationGetCancelablePassengerUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
@@ -9,6 +10,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewMo
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,6 +177,20 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
 
                     passengerRelations.putAll(buildPassengerRelationsMap(flightCancellationViewModel.getPassengerViewModelList()));
                 }
+            }
+        }
+
+        // sort by departure date
+        if (cancellationModelList.size() > 1) {
+            Date firstJourney = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    cancellationModelList.get(0).getFlightCancellationJourney().getDepartureTime());
+            Date secondJourney = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    cancellationModelList.get(1).getFlightCancellationJourney().getDepartureTime());
+
+            if (firstJourney.after(secondJourney)) {
+                FlightCancellationViewModel temp = cancellationModelList.get(0);
+                cancellationModelList.set(0, cancellationModelList.get(1));
+                cancellationModelList.set(1, temp);
             }
         }
 
