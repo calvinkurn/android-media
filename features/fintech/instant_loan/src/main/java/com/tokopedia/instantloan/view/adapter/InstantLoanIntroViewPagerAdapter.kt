@@ -1,7 +1,5 @@
 package com.tokopedia.instantloan.view.adapter
 
-import android.content.Context
-import androidx.viewpager.widget.PagerAdapter
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -11,8 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
-import com.tokopedia.instantloan.R
+import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_LEARN_MORE
@@ -21,18 +18,14 @@ import com.tokopedia.instantloan.view.activity.InstantLoanActivity
 import com.tokopedia.instantloan.view.presenter.DanaInstanLoanPresenter
 
 
-class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivity, private val mLayouts: IntArray, private val mPresenter: DanaInstanLoanPresenter) : PagerAdapter() {
-    private val mLayoutInflater: LayoutInflater
-    private val link = mActivity.resources.getString(com.tokopedia.instantloan.R.string.instant_loan_clickable_link)
+class InstantLoanIntroViewPagerAdapter(private val mLayouts: IntArray,
+                                       private val mPresenter: DanaInstanLoanPresenter) : PagerAdapter() {
+
     internal var instantLoanAnalytics: InstantLoanAnalytics? = null
 
-    init {
-        this.mLayoutInflater = mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
-    }
-
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view = mLayoutInflater.inflate(mLayouts[position], container, false)
+        val link = container.context.resources.getString(com.tokopedia.instantloan.R.string.instant_loan_clickable_link)
+        val view = LayoutInflater.from(container.context).inflate(mLayouts[position], container, false)
 
         instantLoanAnalytics = InstantLoanAnalytics()
 
@@ -44,20 +37,21 @@ class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivit
 
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
-                    ds.color = mActivity.resources.getColor(com.tokopedia.design.R.color.tkpd_green_header)
+                    ds.color = container.context.resources.getColor(com.tokopedia.design.R.color.tkpd_green_header)
                     ds.isUnderlineText = false
                 }
 
                 override fun onClick(view: View) {
                     sendLoanPopupClickEvent(InstantLoanEventConstants.EventLabel.PL_POPUP_LEARN_MORE)
-                    mActivity.openWebView(WEB_LINK_LEARN_MORE)
+                    if (container.context is InstantLoanActivity)
+                        (container.context as InstantLoanActivity).openWebView(WEB_LINK_LEARN_MORE)
                 }
             }
 
             val spannableString = SpannableString(textView.text.toString())
 
             spannableString.setSpan(clickableSpan,
-                    mActivity.resources.getString(com.tokopedia.instantloan.R.string.text_intro_slide_2).length + 1,
+                    container.context.resources.getString(com.tokopedia.instantloan.R.string.text_intro_slide_2).length + 1,
                     textView.text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             textView.text = spannableString
@@ -75,13 +69,14 @@ class InstantLoanIntroViewPagerAdapter(private val mActivity: InstantLoanActivit
 
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
-                    ds.color = mActivity.resources.getColor(com.tokopedia.design.R.color.tkpd_green_header)
+                    ds.color = container.context.resources.getColor(com.tokopedia.design.R.color.tkpd_green_header)
                     ds.isUnderlineText = false
                 }
 
                 override fun onClick(view: View) {
                     sendLoanPopupClickEvent(InstantLoanEventConstants.EventLabel.PL_POPUP_TNC)
-                    mActivity.openWebView(WEB_LINK_TNC)
+                    if (container.context is InstantLoanActivity)
+                        (container.context as InstantLoanActivity).openWebView(WEB_LINK_TNC)
                 }
             }
 

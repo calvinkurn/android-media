@@ -58,7 +58,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, InstantLoanLendingDataContractor.View, /*OnGoingLoanContractor.View*/
+class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, InstantLoanLendingDataContractor.View,
         DanaInstantFragment.ActivityInteractor, BannerPagerAdapter.BannerClick {
 
     @Inject
@@ -158,7 +158,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
         mBannerPager.apply {
             offscreenPageLimit = 2
-            adapter = BannerPagerAdapter(context, banners, context as BannerPagerAdapter.BannerClick)
+            adapter = BannerPagerAdapter(banners, context as BannerPagerAdapter.BannerClick)
             setPadding(resources.getDimensionPixelOffset(com.tokopedia.instantloan.R.dimen.il_margin_banner), 0,
                     resources.getDimensionPixelOffset(com.tokopedia.instantloan.R.dimen.il_margin_banner), 0)
             clipToPadding = false
@@ -255,7 +255,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         testimonialList.add(testimonialItem3)
 
         il_view_pager_testimonials.pageMargin = resources.getDimensionPixelOffset(com.tokopedia.instantloan.R.dimen.il_margin_medium)
-        il_view_pager_testimonials.adapter = DanaInstanTestimonialsPagerAdapter(this, testimonialList)
+        il_view_pager_testimonials.adapter = DanaInstanTestimonialsPagerAdapter(testimonialList)
         (il_view_pager_testimonials.adapter as DanaInstanTestimonialsPagerAdapter).notifyDataSetChanged()
 
         var currentItem = 0

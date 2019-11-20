@@ -1,6 +1,5 @@
 package com.tokopedia.instantloan.view.adapter
 
-import android.content.Context
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.cardview.widget.CardView
@@ -8,16 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.data.model.response.TestimonialEntity
 import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
 import kotlinx.android.synthetic.main.item_pager_testimonial.view.*
 
-class DanaInstanTestimonialsPagerAdapter(private val context: Context, private val list: ArrayList<TestimonialEntity>) : PagerAdapter() {
-
-    private val testimonialList: ArrayList<TestimonialEntity> = list
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
-
+class DanaInstanTestimonialsPagerAdapter(
+        private val testimonialList: ArrayList<TestimonialEntity>) : PagerAdapter() {
 
     override fun destroyItem(container: View, position: Int, any: Any) {
         (container as ViewPager).removeView(any as View)
@@ -32,8 +27,8 @@ class DanaInstanTestimonialsPagerAdapter(private val context: Context, private v
     }
 
     override fun instantiateItem(view: ViewGroup, position: Int): Any {
-        val banner = inflater.inflate(com.tokopedia.instantloan.R.layout.item_pager_testimonial, view, false) as CardView
-        ImageHandler.loadImageCircle2(context, banner.il_person_image, testimonialList[position].imageURL)
+        val banner = LayoutInflater.from(view.context).inflate(com.tokopedia.instantloan.R.layout.item_pager_testimonial, view, false) as CardView
+        ImageHandler.loadImageCircle2(view.context, banner.il_person_image, testimonialList[position].imageURL)
         banner.il_testimonial_text.text = testimonialList[position].review
         banner.il_testimonial_person_name.text = testimonialList[position].name
         view.addView(banner)

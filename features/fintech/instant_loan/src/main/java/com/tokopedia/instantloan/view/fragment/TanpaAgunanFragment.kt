@@ -21,7 +21,6 @@ import com.tokopedia.instantloan.data.model.response.GqlLoanAmountResponse
 import com.tokopedia.instantloan.data.model.response.LoanPeriodType
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.LOAN_AMOUNT_QUERY_PARAM
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_NO_COLLATERAL
-import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.activity.SelectLoanCategoryActivity
 import com.tokopedia.instantloan.view.activity.SelectLoanParamActivity
 import com.tokopedia.instantloan.view.contractor.OnlineLoanContractor
@@ -320,11 +319,11 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     }
 
     override fun getAppContext(): Context? {
-        return getContext()?.applicationContext
+        return context?.applicationContext
     }
 
     override fun getActivityContext(): Context? {
-        return getContext()
+        return context
     }
 
     override fun navigateToLoginPage() {
@@ -333,7 +332,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     }
 
     override fun showToastMessage(message: String, duration: Int) {
-        Toast.makeText(getContext(), message, duration).show()
+        Toast.makeText(context, message, duration).show()
     }
 
     override fun openWebView(url: String) {
@@ -356,14 +355,6 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
                             selectedLoanPeriodType.value?.toLowerCase(),
                             loanPeriodValueTV.tag as String,
                             (loanCategoryValueTV.tag as Int).toString()), "UTF-8")))
-
-            /*startActivity((activity!!
-                    .application as InstantLoanRouter).getWebviewActivityWithIntent(context,
-                    URLEncoder.encode(WEB_LINK_NO_COLLATERAL + String.format(LOAN_AMOUNT_QUERY_PARAM,
-                            widgetAddRemove.getLoanValue().toString(),
-                            selectedLoanPeriodType.value?.toLowerCase(),
-                            loanPeriodValueTV.tag as String,
-                            (loanCategoryValueTV.tag as Int).toString()), "UTF-8")))*/
 
         }
     }

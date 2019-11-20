@@ -122,7 +122,6 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
     private fun getPhoneDataPayload(map: Map<String, Any?>?): JsonObject {
 
         val data = JsonObject()
-
         data.addProperty(DeviceDataKeys.Common.BRAND, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.BRAND])
         data.addProperty(DeviceDataKeys.Common.DEVICE_ID, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_ID])
         data.addProperty(DeviceDataKeys.Common.DEVICE_SDK_VERSION, (map!![BasicDeviceData.DD_BASIC_DEVICE_DATA] as ArrayList<Map<String, String>>)[0][BasicDeviceData.DEVICE_SDK_VERSION])

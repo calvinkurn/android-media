@@ -9,21 +9,20 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.data.model.response.GqlLendingPartnerData
 import com.tokopedia.instantloan.network.InstantLoanUrl
 
 
-class LendingPartnerAdapter(lendingPartnerList: ArrayList<GqlLendingPartnerData>?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class LendingPartnerAdapter(private val partnerList: ArrayList<GqlLendingPartnerData>?) :
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val partnerList = lendingPartnerList
     lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         context = parent.context
         val inflater = LayoutInflater.from(parent.context)
         val view: View = inflater.inflate(com.tokopedia.instantloan.R.layout.il_lending_partner_item, null)
-        return LendingPartnerAdapter.LePartnerViewHolder(view)
+        return LePartnerViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -31,7 +30,7 @@ class LendingPartnerAdapter(lendingPartnerList: ArrayList<GqlLendingPartnerData>
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as LendingPartnerAdapter.LePartnerViewHolder).bindData(partnerList!!.get(position), position)
+        (holder as LePartnerViewHolder).bindData(partnerList!!.get(position), position)
     }
 
     class LePartnerViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {

@@ -10,21 +10,20 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.data.model.response.GqlLendingCategoryData
 import com.tokopedia.instantloan.network.InstantLoanUrl
 
 
-class LendingCategoryAdapter(lendingCategoryList: ArrayList<GqlLendingCategoryData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class LendingCategoryAdapter(private val categoryList: ArrayList<GqlLendingCategoryData>) :
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val categoryList = lendingCategoryList
     lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         context = parent.context
         val inflater = LayoutInflater.from(parent.context)
         val view: View = inflater.inflate(com.tokopedia.instantloan.R.layout.il_lending_category_item, null)
-        return LendingCategoryAdapter.LeCategoryViewHolder(view)
+        return LeCategoryViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -32,7 +31,7 @@ class LendingCategoryAdapter(lendingCategoryList: ArrayList<GqlLendingCategoryDa
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as LendingCategoryAdapter.LeCategoryViewHolder).bindData(categoryList.get(position), position)
+        (holder as LeCategoryViewHolder).bindData(categoryList.get(position), position)
     }
 
     class LeCategoryViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {

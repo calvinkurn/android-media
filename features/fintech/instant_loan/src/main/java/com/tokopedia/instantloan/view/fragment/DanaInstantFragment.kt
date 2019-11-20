@@ -160,8 +160,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
 
         val layouts = intArrayOf(com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_1, com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_2, com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_3)
 
-        pager.adapter = InstantLoanIntroViewPagerAdapter(activity as InstantLoanActivity,
-                layouts, presenter)
+        pager.adapter = InstantLoanIntroViewPagerAdapter(layouts, presenter)
         pageIndicator.fillColor = ContextCompat.getColor(getContext()!!, com.tokopedia.design.R.color.tkpd_main_green)
         pageIndicator.pageColor = ContextCompat.getColor(getContext()!!, com.tokopedia.design.R.color.black_54)
         pageIndicator.setViewPager(pager, 0)

@@ -11,10 +11,6 @@ import com.tokopedia.instantloan.view.ui.InstantLoanItem
 
 import java.util.ArrayList
 
-/**
- * Created by sachinbansal on 6/12/18.
- */
-
 class InstantLoanPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
     private var searchSectionItemList: List<InstantLoanItem> = ArrayList()
