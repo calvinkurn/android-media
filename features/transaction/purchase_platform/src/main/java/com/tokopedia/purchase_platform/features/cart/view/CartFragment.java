@@ -50,8 +50,10 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.merchantvoucher.common.gql.data.request.CartItemDataVoucher;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
@@ -2161,8 +2163,24 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 e.printStackTrace();
             }
 
+            ArrayList<CartItemDataVoucher> cartItemDataVoucherArrayList = new ArrayList<>();
+            for (CartItemHolderData cartItemHolderData : shopGroupAvailableData.getCartItemDataList()) {
+                if (cartItemHolderData.isSelected()) {
+                    try {
+                        CartItemDataVoucher cartItemDataVoucher = new CartItemDataVoucher();
+                        cartItemDataVoucher.setProductId(Integer.parseInt(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
+                        cartItemDataVoucher.setProductName(cartItemHolderData.getCartItemData().getOriginData().getProductName());
+                        cartItemDataVoucherArrayList.add(cartItemDataVoucher);
+                    } catch (NumberFormatException e) {
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
             MerchantVoucherListBottomSheetFragment merchantVoucherListBottomSheetFragment =
-                    MerchantVoucherListBottomSheetFragment.newInstance(shopId, shopGroupAvailableData.getCartString(), promo, "cart");
+                    MerchantVoucherListBottomSheetFragment.newInstance(shopId, shopGroupAvailableData.getCartString(), promo, "cart", cartItemDataVoucherArrayList);
             merchantVoucherListBottomSheetFragment.setActionListener(this);
             merchantVoucherListBottomSheetFragment.show(getFragmentManager(), "");
         }

@@ -3,7 +3,7 @@ package com.tokopedia.kol.feature.comment.view.subscriber;
 import android.text.TextUtils;
 
 import com.tokopedia.kol.R;
-import com.tokopedia.kol.common.network.GraphqlErrorHandler;
+import com.tokopedia.kolcommon.util.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 
@@ -40,7 +40,7 @@ public class SendKolCommentSubscriber extends Subscriber<SendKolCommentDomain> {
             viewListener.onSuccessSendComment(sendKolCommentDomain);
         else {
             viewListener.onErrorSendComment(
-                    viewListener.getContext().getString(R.string.default_request_error_unknown)
+                    viewListener.getContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
             );
         }
     }

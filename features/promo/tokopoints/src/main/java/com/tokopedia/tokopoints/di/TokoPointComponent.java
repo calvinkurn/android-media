@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.fragment.AddPointsFragment;
 import com.tokopedia.tokopoints.view.fragment.CatalogListItemFragment;
 import com.tokopedia.tokopoints.view.fragment.CatalogListingFragment;
 import com.tokopedia.tokopoints.view.fragment.CouponCatalogFragment;
@@ -46,4 +47,6 @@ public interface TokoPointComponent {
     void inject(CouponDetailFragment fragment);
 
     void inject(PointHistoryFragment fragment);
+
+    void inject(AddPointsFragment fragment);
 }
