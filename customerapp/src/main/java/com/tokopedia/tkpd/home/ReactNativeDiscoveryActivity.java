@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.RequiresApi;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -18,6 +20,7 @@ import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.app.GeneralReactNativeFragment;
 import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -36,6 +39,9 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Log.v("DiscoveryActivity", "" + new Date().getTime());
+        System.out.println();
         super.onCreate(savedInstanceState);
         setCrashLog();
         if (getSupportActionBar() != null) {

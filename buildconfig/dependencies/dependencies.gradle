@@ -26,7 +26,7 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '2.7.0'
     cardioVersion = '5.5.1'
-    reactNativeVersion = '0.59.5'
+    reactNativeVersion = '0.60.4'
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
     roomVersion = '2.0.0-rc01'

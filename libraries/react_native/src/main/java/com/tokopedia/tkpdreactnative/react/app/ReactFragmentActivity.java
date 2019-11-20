@@ -6,10 +6,12 @@ import android.os.Bundle;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -19,6 +21,8 @@ import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactNavigationModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
+
+import java.util.Date;
 
 /**
  *
@@ -34,9 +38,11 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
 
     private ProgressBar loaderBootingReact;
     private Toolbar toolbar;
+    long loadStartTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loadStartTime = new Date().getTime();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_react_native);
         initView();
@@ -116,6 +122,8 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
 
     @Override
     public void hideLoaderReactPage() {
+        long loadTime = new Date().getTime() - loadStartTime;
+        Toast.makeText(this, "" + loadTime, Toast.LENGTH_LONG).show();
         loaderBootingReact.setVisibility(View.GONE);
     }
 
