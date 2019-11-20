@@ -6,7 +6,6 @@ import com.tokopedia.applink.DeepLinkChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.profile.following_list.di.DaggerFollowingListComponent
 import com.tokopedia.profile.following_list.view.listener.FollowingList
-import com.tokopedia.profile.following_list.view.listener.FollowingListEmptyListener
 import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewModel
 import javax.inject.Inject
@@ -51,14 +50,6 @@ class UserFollowListFragment : BaseFollowListFragment<UserFollowingViewModel, Us
         if (viewModel.followingViewModelList.isEmpty()) {
             emptyButton.text = viewModel.buttonText
             emptyApplink = viewModel.buttonApplink
-
-            if (activity is FollowingListEmptyListener) {
-                (activity as FollowingListEmptyListener).onFollowingEmpty()
-            }
-        } else {
-            if (activity is FollowingListEmptyListener) {
-                (activity as FollowingListEmptyListener).onFollowingNotEmpty()
-            }
         }
     }
 
