@@ -12,7 +12,7 @@ dependencies {
 project.ext {
     artifactId = 'gm-resource'
     groupId = 'com.tokopedia.merchant'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "gold_merchant_resource-release"
 }
 

@@ -116,8 +116,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     fun loadMore(category: Category?, page: Int) {
+        val categories = category?.categories.toString()
+        val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
+        val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
         launchCatchError(block = {
-            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(category?.categories.toString(), page).await())
+            _officialStoreProductRecommendation.value = Success(getOfficialStoreProductRecommendation(categoriesWithoutClosingSquare, page).await())
         }) {
 
         }
@@ -142,7 +145,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             var benefits = OfficialStoreBenefits()
             try {
                 benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
-            }catch (t: Throwable) {
+            } catch (t: Throwable) {
                 _officialStoreBenefitResult.value = Fail(t)
             }
             benefits

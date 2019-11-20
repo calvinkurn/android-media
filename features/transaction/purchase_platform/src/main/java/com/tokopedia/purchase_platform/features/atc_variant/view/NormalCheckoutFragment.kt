@@ -273,6 +273,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             tradeInParams!!.productName = selectedProductInfo!!.basic.name
         }
 
+        intent.putExtra(TradeInParams.PARAM_PERMISSION_GIVEN, true)
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeInParams)
         startActivityForResult(intent, TradeInHomeActivity.TRADEIN_HOME_REQUEST)
     }

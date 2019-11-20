@@ -47,7 +47,7 @@ public class VoteImageViewHolder extends AbstractViewHolder<VoteViewModel> {
         shadowLayer = itemView.findViewById(R.id.shadow_layer);
         progressBar = itemView.findViewById(R.id.progress_bar);
         option = itemView.findViewById(R.id.text_view);
-        imageView = itemView.findViewById(R.id.imageView);
+        imageView = itemView.findViewById(com.tokopedia.design.R.id.imageView);
         percent = itemView.findViewById(R.id.percent);
         percentLayout = itemView.findViewById(R.id.percent_layout);
         icon = itemView.findViewById(R.id.icon);
