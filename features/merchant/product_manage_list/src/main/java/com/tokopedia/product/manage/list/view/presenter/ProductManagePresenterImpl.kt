@@ -68,7 +68,7 @@ class ProductManagePresenterImpl @Inject constructor(
             override fun onCompleted() {
             }
 
-            override fun onError(e: Throwable?) {
+            override fun onError(e: Throwable) {
                 view.onErrorBulkUpdateProduct(e)
             }
 
