@@ -46,7 +46,9 @@ class ProductManagePresenterImpl @Inject constructor(
     override fun getGoldMerchantStatus() {
         getShopInfoUseCase.execute(RequestParams.EMPTY, object : Subscriber<ShopModel>() {
             override fun onNext(shopModel: ShopModel) {
-                view.onSuccessGetShopInfo(shopModel.info.isGoldMerchant, shopModel.info.isOfficialStore, shopModel.getInfo().shopDomain)
+                if (isViewAttached) {
+                    view.onSuccessGetShopInfo(shopModel.info.isGoldMerchant, shopModel.info.isOfficialStore, shopModel.getInfo().shopDomain)
+                }
             }
 
             override fun onCompleted() {
