@@ -36,7 +36,6 @@ import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDat
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
-import com.tokopedia.home_wishlist.util.Status
 import com.tokopedia.home_wishlist.view.adapter.WishlistAdapter
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactoryImpl
 import com.tokopedia.home_wishlist.view.custom.CustomAppBarLayoutBehavior
@@ -276,7 +275,14 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     }
 
     private fun observeWishlistState() {
-        viewModel.isWishlistEmptyState.observe(viewLifecycleOwner, Observer { isEmpty->
+        viewModel.isWishlistEmptyState.observe(viewLifecycleOwner, Observer { isEmpty ->
+
+            if(isEmpty) hideSearchView()
+            else showSearchView()
+
+            val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
+            (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(!isEmpty)
+
             endlessRecyclerViewScrollListener?.let {
                 recyclerView?.removeOnScrollListener(it)
             }

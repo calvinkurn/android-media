@@ -1,5 +1,6 @@
 package com.tokopedia.home_wishlist.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -12,9 +13,14 @@ import com.tokopedia.home_wishlist.domain.GetWishlistParameter
 import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
-import com.tokopedia.home_wishlist.util.*
+import com.tokopedia.home_wishlist.util.SingleObserverLiveEvent
+import com.tokopedia.home_wishlist.util.WishlistLiveData
 import com.tokopedia.home_wishlist.view.ext.copy
+import com.tokopedia.home_wishlist.view.ext.default
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,23 +32,21 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CancellationException
 import rx.Subscriber
 import javax.inject.Inject
-import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
-import com.tokopedia.home_wishlist.model.datamodel.WishlistDataModel
-import com.tokopedia.home_wishlist.view.ext.default
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 /**
  * A Class ViewModel For Recommendation Page.
  *
- * @param wishlistRepository gql repository for getResponse from network with GQL request
  * @param userSessionInterface the handler of user session
+ * @param getWishlistUseCase use case helper for get data wishlist
  * @param wishlistCoroutineDispatcherProvider the dispatcher for coroutine
+ * @param addWishListUseCase use case helper for add wishlist
+ * @param removeWishListUseCase use case helper for remove wishlist
+ * @param bulkRemoveWishlistUseCase use case helper for bulk remove wishlist
+ * @param getRecommendationUseCase use case helper for get recommendation
+ * @param getSingleRecommendationUseCase use case helper for get single recommendation
  */
+@SuppressLint("SyntheticAccessor")
 open class WishlistViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getWishlistUseCase: GetWishlistDataUseCase,
@@ -59,23 +63,15 @@ open class WishlistViewModel @Inject constructor(
     private var tempSelectedPositionInPdp: Int? = null
     private var tempSelectedParentPositionInPDP: Int? = null
 
-    //hashmap<position, wishlistDataModel>
     private val listVisitableMarked : HashMap<Int, WishlistDataModel> = hashMapOf()
     private val listRecommendationCarouselOnMarked : HashMap<Int, RecommendationCarouselDataModel> = hashMapOf()
 
     private val wishlistData = WishlistLiveData<List<WishlistDataModel>>(listOf())
 
-    /**
-     * @param recommendationPositionInPage
-     * @param maxItemInPage = 20 wishlist item + 1 recommendation carousel
-     *
-     * Used in getWishlistData and getNextPageData
-     */
     private val recommendationPositionInPage = 4
     private val maxItemInPage = 21
 
-    var keywordSearch: String = ""
-        private set
+    private var keywordSearch: String = ""
 
     var currentPage = 1
         private set
@@ -431,7 +427,7 @@ open class WishlistViewModel @Inject constructor(
 
     /**
      * Void [setEmptyWishlistRecommendationItemWishlist]
-     * @param childPosition recommendation item data position in wishlist recyclerview
+     * @param recommendationPosition recommendation item data position in wishlist recyclerView
      * @param currentWishlistState current wishlist state of selected product
      *
      * This function will take action based on wishlist current statue
@@ -484,7 +480,7 @@ open class WishlistViewModel @Inject constructor(
         val listForBulkRemoveCandidate = hashMapOf<String, WishlistItemDataModel>()
 
         if (listOfPosition.size <= wishlistData.value.size) {
-            listOfPosition.forEachIndexed { index, it ->
+            listOfPosition.forEachIndexed { _, it ->
                 wishlistData.value[it].run {
                     if (this is WishlistItemDataModel) {
                         listForBulkRemoveCandidate.put(this.productItem.id, this)
@@ -561,7 +557,7 @@ open class WishlistViewModel @Inject constructor(
     }
 
     private fun removeWishlistItemsInBulkRemove(
-            responselist: WishlistActionData,
+            responseList: WishlistActionData,
             listForBulkRemoveCandidate: HashMap<String, WishlistItemDataModel>
             ): Triple<List<WishlistDataModel>, List<String>, Boolean> {
         val updatedList = mutableListOf<WishlistDataModel>()
@@ -577,7 +573,7 @@ open class WishlistViewModel @Inject constructor(
             }
         }
 
-        val ids = responselist.productId.split(",")
+        val ids = responseList.productId.split(",")
         ids.forEach {
             val wishlistDataModel = listForBulkRemoveCandidate[it]
             listForBulkRemoveCandidate.remove(it)
