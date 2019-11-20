@@ -135,7 +135,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
 
         bookingViewModel.flightCartResult.observe(this, Observer {
-            hideShimmering()
             when (it) {
                 is Success -> {
                     if (layout_loading.isVisible) launchLoadingPageJob.cancel()
@@ -148,6 +147,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
+            hideShimmering()
         })
 
         bookingViewModel.flightPromoResult.observe(this, Observer {
@@ -183,7 +183,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.flightCheckoutResult.observe(this, Observer {
-            hideShimmering()
             when (it) {
                 is Success -> {
                     if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
@@ -194,10 +193,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
+            hideShimmering()
         })
 
         bookingViewModel.flightVerifyResult.observe(this, Observer {
-            hideShimmering()
             when (it) {
                 is Success -> {
                     if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
@@ -215,6 +214,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
+            hideShimmering()
         })
 
     }
