@@ -1519,9 +1519,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             }
 
-            llInsurance.setVisibility(View.VISIBLE);
-        } else {
-            llInsurance.setVisibility(View.GONE);
         }
     }
 
