@@ -217,7 +217,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         } else {
             if (tradeInParams != null && tradeInParams!!.isEligible == 1) {
                 tv_trade_in.visible()
-                tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+                tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false, activity?.application)
                 if (tradeInParams!!.usedPrice > 0) {
                     tv_trade_in.setOnClickListener {
                         goToHargaFinal()

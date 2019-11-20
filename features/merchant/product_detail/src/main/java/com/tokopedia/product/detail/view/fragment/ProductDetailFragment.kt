@@ -1699,7 +1699,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         else
             tradeInParams.isPreorder = false
         tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
-        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false, activity?.application)
         tv_trade_in.setOnClickListener {
             goToNormalCheckout(TRADEIN_BUY)
             tradeInParams?.let {

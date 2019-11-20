@@ -26,15 +26,13 @@ import java.util.Map;
 
 import rx.Subscriber;
 
-public class TradeInTextViewModel extends AndroidViewModel implements ITradeInParamReceiver {
+public class TradeInTextViewModel extends ViewModel implements ITradeInParamReceiver {
     private MutableLiveData<ValidateTradeInResponse> responseData;
     private WeakReference<FragmentActivity> activityWeakReference;
-    private Application application;
 
-    public TradeInTextViewModel(Application application) {
-        super(application);
+    public TradeInTextViewModel(){
+        super();
         responseData = new MutableLiveData<>();
-        this.application = application;
     }
 
     public void setActivity(FragmentActivity activity) {
@@ -62,7 +60,7 @@ public class TradeInTextViewModel extends AndroidViewModel implements ITradeInPa
         this.responseData.setValue(responseData);
     }
 
-    public void checkTradeIn(TradeInParams tradeInParams, boolean hide) {
+    public void checkTradeIn(TradeInParams tradeInParams, boolean hide, Application application) {
         if (tradeInParams.getIsEligible() == 0) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("params", tradeInParams);
