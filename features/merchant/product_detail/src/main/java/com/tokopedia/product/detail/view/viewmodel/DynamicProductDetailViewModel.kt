@@ -54,6 +54,15 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     private var productInfoTemp = ProductInfo()
 
     fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
+    fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
+    val userId: String
+        get() = userSessionInterface.userId
+
+    val isUserHasShop: Boolean
+        get() = userSessionInterface.hasShop()
+
+    val deviceId: String
+        get() = userSessionInterface.deviceId
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
         stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)

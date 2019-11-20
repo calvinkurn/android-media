@@ -13,6 +13,14 @@ class DynamicProductDetailAdapterFactoryImpl(private val onImagePdpClick: OnImag
                                              private val childFragmentManager: FragmentManager,
                                              private val listener: DynamicProductDetailListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
 
+    override fun type(data: ProductTradeinDataModel): Int {
+        return ProductTradeinViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductMerchantVoucherDataModel): Int {
+        return ProductMerchantVoucherViewHolder.LAYOUT
+    }
+
     override fun type(data: ProductGeneralInfoDataModel): Int {
         return ProductGeneralInfoViewHolder.LAYOUT
     }
@@ -47,6 +55,8 @@ class DynamicProductDetailAdapterFactoryImpl(private val onImagePdpClick: OnImag
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            ProductTradeinViewHolder.LAYOUT -> ProductTradeinViewHolder(view, listener)
+            ProductMerchantVoucherViewHolder.LAYOUT -> ProductMerchantVoucherViewHolder(view, listener)
             ProductImageReviewViewHolder.LAYOUT -> ProductImageReviewViewHolder(view, listener)
             ProductSnapshotViewHolder.LAYOUT -> ProductSnapshotViewHolder(view, onImagePdpClick, childFragmentManager)
             ProductShopInfoDataModel.LAYOUT -> ProductShopInfoViewHolder(view, listener)
@@ -54,6 +64,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val onImagePdpClick: OnImag
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view)
+            ProductMostHelpfulReviewViewHolder.LAYOUT -> ProductMostHelpfulReviewViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -12,11 +12,12 @@ data class ProductSnapshotDataModel(
         var dataLayout: List<ComponentData> = listOf(),
         var media: List<Media> = listOf(),
         val name: String = "",
-        var productInfoP1: ProductInfo = ProductInfo(),
-        var shopInfo: ShopInfo = ShopInfo(),
+        var productInfoP1: ProductInfo? = null,
+        var shopInfo: ShopInfo? = null,
         var nearestWarehouse: MultiOriginWarehouse? = null,
         var type: String = "",
-        var shouldShowCod: Boolean = false
+        var shouldShowCod: Boolean = false,
+        var shouldShowTradein:Boolean = false
 ) : DynamicPDPDataModel {
     override fun name(): String = name
     override fun type(): String = type

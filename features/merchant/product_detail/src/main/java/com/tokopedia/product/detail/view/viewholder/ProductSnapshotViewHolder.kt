@@ -24,14 +24,20 @@ class ProductSnapshotViewHolder(itemView: View, private val onImageClick: OnImag
         itemView.view_picture_search_bar.layoutParams.height = screenWidth
 
         val header = PartialHeaderView.build(itemView.base_header, null)
-        header.renderData(element.productInfoP1)
-        header.showOfficialStore(element.shopInfo.goldOS)
-        header.renderCod(element.shouldShowCod)
-        element.nearestWarehouse?.let {
-            if (it.warehouseInfo.id.isNotBlank())
-                header.updateStockAndPriceWarehouse(it, element.productInfoP1.campaign)
+        element.productInfoP1?.let {
+            header.renderData(it)
+
+            element.nearestWarehouse?.let { nearestWarehouse ->
+                if (nearestWarehouse.warehouseInfo.id.isNotBlank())
+                    header.updateStockAndPriceWarehouse(nearestWarehouse, it.campaign)
+            }
         }
 
+        element.shopInfo?.let {
+            header.showOfficialStore(it.goldOS)
+        }
+        header.renderCod(element.shouldShowCod)
+        header.renderTradein(element.shouldShowTradein)
         itemView.view_picture_search_bar.isVisibleOnTheScreen(object : ViewVisibilityListener {
             override fun onViewNotVisible() {
                 itemView.fab_detail.hide()

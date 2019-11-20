@@ -1,7 +1,10 @@
 package com.tokopedia.product.detail.view.fragment
 
 import android.animation.Animator
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -18,7 +21,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -34,11 +39,17 @@ import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
+import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
+import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Category
+import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Video
-import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.Specification
@@ -53,17 +64,27 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
+import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
+import com.tokopedia.tradein.model.TradeInParams
+import com.tokopedia.tradein.view.customview.TradeInTextView
+import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
+import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.et_search
+import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.search_pdp_toolbar
+import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
+import kotlinx.android.synthetic.main.partial_product_detail_header.*
 import javax.inject.Inject
 
 class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
@@ -77,6 +98,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     lateinit var productDetailTracking: ProductDetailTracking
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var tradeInParams: TradeInParams
+    private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
+
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(DynamicProductDetailViewModel::class.java)
@@ -94,6 +118,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private var shouldShowCodP1 = false
     private var shouldShowCodP2Shop = false
     private var shouldShowCodP3 = false
+    private var isAffiliate = false
+
+    private var userInputNotes = ""
+    private var userInputQuantity = 0
+    private var userInputVariant: String? = null
+    private var delegateTradeInTracking = false
+    private var trackerAttribution: String? = ""
+    private var trackerListName: String? = ""
 
 
     //View
@@ -114,6 +146,29 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         initView()
         initializeSearchToolbar()
         initializeStickyLogin(view)
+
+        if (isAffiliate) {
+            actionButtonView.gone()
+            base_btn_affiliate.visible()
+            loadingAffiliate.visible()
+        }
+
+        tradeInBroadcastReceiver = TradeInBroadcastReceiver()
+        tradeInBroadcastReceiver.setBroadcastListener {
+            if (it) {
+                if (tv_trade_in_promo != null) {
+                    pdpHashMapUtil.snapShotMap.shouldShowTradein = true
+                }
+            } else {
+                removeTradeinSection()
+            }
+            trackProductView(it)
+        }
+        context?.let {
+            LocalBroadcastManager.getInstance(it).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
+        }
+
+        initActionButton()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,6 +178,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        context?.let {
+            LocalBroadcastManager.getInstance(it).unregisterReceiver(tradeInBroadcastReceiver)
         }
     }
 
@@ -177,6 +239,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         viewModel.productInfoP1.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    renderTradein(it.data)
                     shouldShowCodP1 = it.data.productInfo.shouldShowCod
                     pdpHashMapUtil.updateDataP1(it.data)
                     adapter.notifyDataSetChanged()
@@ -189,7 +252,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
         viewModel.p2Login.observe(this, Observer {
             Toast.makeText(context, "${it.cartType}", Toast.LENGTH_LONG).show()
-
         })
 
         viewModel.p2ShopDataResp.observe(this, Observer {
@@ -252,7 +314,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         }
     }
 
-
     override val onViewClickListener = View.OnClickListener {
         when (it.id) {
             R.id.btn_favorite -> onShopFavoriteClick()
@@ -279,6 +340,152 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         }
     }
 
+    private fun trackProductView(isElligible: Boolean) {
+        pdpHashMapUtil.snapShotMap.productInfoP1?.let { productInfo ->
+            pdpHashMapUtil.snapShotMap.shopInfo?.let { shopInfo ->
+                productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
+                        isElligible, tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment)
+                return
+            }
+        }
+        delegateTradeInTracking = true
+    }
+
+
+    private fun renderTradein(productInfoP1: ProductInfoP1) {
+        tradeInParams = TradeInParams()
+        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toIntOrZero()
+        tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
+        tradeInParams.userId = if (viewModel.userId.isNotEmpty())
+            viewModel.userId.toIntOrZero()
+        else
+            0
+        tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
+        tradeInParams.productId = productInfoP1.productInfo.basic.id
+        tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
+        tradeInParams.productName = productInfoP1.productInfo.basic.name
+        val preorderstatus = productInfoP1.productInfo.isPreorderActive
+        if (preorderstatus)
+            tradeInParams.isPreorder = preorderstatus
+        else
+            tradeInParams.isPreorder = false
+        tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
+
+        pdpHashMapUtil.productTradeinMap.tradeInParams = tradeInParams
+    }
+
+    private fun initActionButton() {
+        actionButtonView.promoTopAdsClick = {
+            pdpHashMapUtil.snapShotMap.shopInfo.let { shopInfo ->
+                val applink = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, shopInfo?.shopCore?.shopID)
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, pdpHashMapUtil.snapShotMap.productInfoP1?.basic?.id?.toString())
+                        .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                                if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
+
+                context?.let { RouteManager.route(it, applink) }
+            }
+        }
+
+
+        actionButtonView.addToCartClick = {
+            pdpHashMapUtil.snapShotMap.productInfoP1?.let {
+                productDetailTracking.eventClickAddToCart(it.basic.id.toString(),
+                        it.variant.isVariant)
+                goToNormalCheckout(ATC_ONLY)
+            }
+        }
+        actionButtonView.buyNowClick = {
+            // buy now / buy / preorder
+            pdpHashMapUtil.snapShotMap.productInfoP1?.let {
+                productDetailTracking.eventClickBuy(it.basic.id.toString(),
+                        it.variant.isVariant)
+                doBuy()
+            }
+        }
+    }
+
+    private fun goToNormalCheckout(@ProductAction action: Int = ATC_AND_BUY) {
+        context?.let {
+            val shopInfo = pdpHashMapUtil.snapShotMap.shopInfo
+            pdpHashMapUtil.snapShotMap.productInfoP1?.run {
+                val isOcsCheckoutType = (viewModel.p2Login.value)?.isOcsCheckoutType
+                        ?: false
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, basic.name)
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, basic.price)
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, basic.condition)
+                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, category.id)
+                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, category.name)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, basic.shopID.toString())
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, parentProductId)
+                    putExtra(ApplinkConst.Transaction.EXTRA_NOTES, userInputNotes)
+                    putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, userInputQuantity)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, userInputVariant)
+                    putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
+                    putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution)
+                    putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopInfo?.goldOS?.shopTypeString)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopInfo?.shopCore?.name)
+                    putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
+                    putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, basic.isLeasing)
+                }
+                if (::tradeInParams.isInitialized) {
+                    intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                }
+                startActivityForResult(intent,
+                        ProductDetailFragment.REQUEST_CODE_NORMAL_CHECKOUT)
+            }
+        }
+    }
+
+
+    private fun goToAtcExpress() {
+        activity?.let {
+            try {
+                val productInfo = (viewModel.productInfoP1.value as Success).data
+                val warehouseId: Int = viewModel.multiOrigin.id.toIntOrZero()
+                val atcRequestParam = AtcRequestParam()
+                atcRequestParam.setShopId(productInfo.productInfo.basic.shopID)
+                atcRequestParam.setProductId(productInfo.productInfo.basic.id)
+                atcRequestParam.setNotes(userInputNotes)
+                val qty = if (userInputQuantity == 0) productInfo.productInfo.basic.minOrder else userInputQuantity
+                atcRequestParam.setQuantity(qty)
+                atcRequestParam.setWarehouseId(warehouseId)
+
+                val expressCheckoutUriString = ApplinkConstInternalMarketplace.EXPRESS_CHECKOUT
+                val intent = RouteManager.getIntent(it, expressCheckoutUriString)
+                intent?.run {
+                    putExtra(Constant.EXTRA_ATC_REQUEST, atcRequestParam)
+                    putExtra(Constant.TRACKER_ATTRIBUTION, trackerAttribution)
+                    putExtra(Constant.TRACKER_LIST_NAME, trackerListName)
+                    startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_ATC_EXPRESS)
+                    it.overridePendingTransition(R.anim.pull_up, 0)
+                }
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+    private fun doBuy() {
+        val isExpressCheckout = (viewModel.p2Login.value)?.isExpressCheckoutType
+                ?: false
+        if (isExpressCheckout) {
+            if (viewModel.isUserSessionActive()) {
+                goToAtcExpress()
+            } else {
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                            ProductDetailFragment.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS)
+                }
+            }
+        } else {
+            goToNormalCheckout()
+        }
+    }
+
+
     private fun removeDiscussionSection() {
         adapter.clearElement(pdpHashMapUtil.productDiscussionMap)
     }
@@ -289,6 +496,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun removeMostHelpfulReviewSection() {
         adapter.clearElement(pdpHashMapUtil.productMostHelpfulMap)
+    }
+
+    private fun removeTradeinSection() {
+        adapter.clearElement(pdpHashMapUtil.productTradeinMap)
     }
 
     override fun gotoDescriptionTab(data: DescriptionData, listOfCatalog: ArrayList<Specification>) {
@@ -305,7 +516,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
      */
     override fun onSeeAllReviewClick() {
         context?.let {
-            val productId = pdpHashMapUtil.snapShotMap.productInfoP1.basic.id
+            val productId = pdpHashMapUtil.snapShotMap.productInfoP1?.basic?.id ?: 0
             productDetailTracking.eventClickReviewOnSeeAllImage(productId)
             RouteManager.route(it, ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, productId.toString())
         }
@@ -313,7 +524,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     override fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int) {
         context?.let {
-            val productId = pdpHashMapUtil.snapShotMap.productInfoP1.basic.id
+            val productId = pdpHashMapUtil.snapShotMap.productInfoP1?.basic?.id ?: 0
             productDetailTracking.eventClickReviewOnBuyersImage(productId, listOfImage[position].reviewId)
             val listOfImageReview: List<String> = listOfImage.map {
                 it.imageUrlLarge ?: ""
@@ -324,28 +535,92 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     }
 
     override fun onReviewClick() {
-        pdpHashMapUtil.snapShotMap.productInfoP1.run {
+        pdpHashMapUtil.snapShotMap.productInfoP1?.run {
             productDetailTracking.eventReviewClicked()
-            productDetailTracking.sendMoEngageClickReview(this, pdpHashMapUtil.snapShotMap.shopInfo.goldOS.isOfficial == 1, pdpHashMapUtil.snapShotMap.shopInfo.shopCore.name)
+            productDetailTracking.sendMoEngageClickReview(this, pdpHashMapUtil.snapShotMap.shopInfo?.goldOS?.isOfficial == 1, pdpHashMapUtil.snapShotMap.shopInfo?.shopCore?.name
+                    ?: "")
             context?.let {
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, pdpHashMapUtil.snapShotMap.productInfoP1.basic.id.toString())
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, basic.id.toString())
                 intent?.run {
-                    intent.putExtra("x_prd_nm", pdpHashMapUtil.snapShotMap.productInfoP1.basic.name)
+                    intent.putExtra("x_prd_nm", basic.name)
                     startActivity(intent)
                 }
             }
         }
     }
 
+    /**
+     * ProductMostHelpfulReviewViewHolder
+     */
     override fun onImageHelpfulReviewClick(listOfImages: List<String>, position: Int, reviewId: String?) {
-        productDetailTracking.eventClickReviewOnMostHelpfulReview(pdpHashMapUtil.snapShotMap.productInfoP1.basic.id, reviewId)
+        productDetailTracking.eventClickReviewOnMostHelpfulReview(pdpHashMapUtil.snapShotMap.productInfoP1?.basic?.id, reviewId)
         context?.let { ImageReviewGalleryActivity.moveTo(it, ArrayList(listOfImages), position) }
     }
 
-    private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
-//        userCod = productInfoP3.userCod
-//        if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
-//        headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
+    /**
+     * ProductMerchantVoucherViewHolder
+     */
+    override fun isOwner(): Boolean {
+        return pdpHashMapUtil.snapShotMap.productInfoP1?.basic?.shopID?.let {
+            viewModel.isShopOwner(it)
+        } ?: false
+    }
+
+    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
+        activity?.let {
+            //TOGGLE_MVC_OFF
+            productDetailTracking.eventClickMerchantVoucherUse(merchantVoucherViewModel, position)
+            showSnackbarClose(getString(R.string.title_voucher_code_copied))
+        }
+    }
+
+    override fun onItemMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+        activity?.let {
+            pdpHashMapUtil.snapShotMap.productInfoP1?.run {
+                productDetailTracking.eventClickMerchantVoucherSeeDetail(basic.id)
+                val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
+                        merchantVoucherViewModel, basic.shopID.toString())
+                startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_MERCHANT_VOUCHER_DETAIL)
+            }
+        }
+    }
+
+    override fun onSeeAllMerchantVoucherClick() {
+        activity?.let {
+            pdpHashMapUtil.snapShotMap.productInfoP1?.run {
+                productDetailTracking.eventClickMerchantVoucherSeeAll(basic.id)
+
+                val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID.toString(),
+                        pdpHashMapUtil.snapShotMap.shopInfo?.shopCore?.name)
+                startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_MERCHANT_VOUCHER)
+            }
+        }
+    }
+
+    /**
+     * ProductTradeinViewHolder
+     */
+    private fun showSnackbarClose(string: String) {
+        Snackbar.make(coordinator, string, Snackbar.LENGTH_LONG).apply {
+            setAction(getString(R.string.close)) { dismiss() }
+            setActionTextColor(Color.WHITE)
+        }.show()
+    }
+
+    override fun onTradeinClicked(tradeInParams: TradeInParams) {
+        goToNormalCheckout(TRADEIN_BUY)
+        tradeInParams?.let {
+            if (tradeInParams.usedPrice > 0)
+                productDetailTracking.sendGeneralEvent(" clickPDP",
+                        "product detail page",
+                        "click trade in widget",
+                        "after diagnostic")
+            else
+                productDetailTracking.sendGeneralEvent(" clickPDP",
+                        "product detail page",
+                        "click trade in widget",
+                        "before diagnostic")
+        }
     }
 
     private fun showToasterError(message: String) {

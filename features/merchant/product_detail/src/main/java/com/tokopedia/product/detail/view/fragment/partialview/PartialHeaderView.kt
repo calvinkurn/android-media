@@ -155,6 +155,16 @@ class PartialHeaderView private constructor(private val view: View,
         if (showCod) view.layout_cod_content.visible() else view.layout_cod_content.gone()
     }
 
+    fun renderTradein(showTradein: Boolean) {
+        if (showTradein) {
+            view.tv_trade_in_promo.visible()
+            view.tv_available_at?.visible()
+        } else {
+            view.tv_trade_in_promo.gone()
+            view.tv_available_at?.gone()
+        }
+    }
+
     private fun showCountDownTimer(campaign: Campaign) {
         try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())

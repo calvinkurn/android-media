@@ -30,6 +30,9 @@ object DynamicProductDetailMapper {
                 "most_helpful_review" -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
                 }
+                "trade_in" -> {
+                    listOfComponent.add(ProductTradeinDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                }
                 "info" -> {
                     listOfComponent.add(ProductGeneralInfoDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
                 }

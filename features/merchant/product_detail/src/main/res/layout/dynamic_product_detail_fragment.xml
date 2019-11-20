@@ -83,7 +83,6 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/btn_pdp_container"
         android:layout_width="0dp"
@@ -107,10 +106,94 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:sticky_left_icon="@drawable/ic_toped_widget_login" />
 
+        <RelativeLayout
+            android:id="@+id/base_btn_affiliate_dynamic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/card_shadow_top"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sticky_login_pdp"
+            android:visibility="gone">
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/getCommission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/affiliate_get_commission"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:fontSize="small"
+                app:textViewTheme="lightSecondary"/>
+
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/commission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/getCommission"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toStartOf="@+id/btn_affiliate"
+                android:layout_toLeftOf="@+id/btn_affiliate"
+                android:textColor="@color/af_commission_blue"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:fontSize="small"
+                tools:text="Rp500.000.000.000" />
+
+            <RelativeLayout
+                android:id="@+id/btn_affiliate"
+                android:layout_width="@dimen/dp_145"
+                android:layout_height="@dimen/dp_40"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/bg_button_green"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                tools:ignore="UnusedAttribute">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_horizontal"
+                    android:text="@string/button_affiliate"
+                    app:fontSize="small"
+                    app:textViewTheme="darkPrimary" />
+
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/loadingAffiliateDynamic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                tools:visibility="gone"
+                android:background="@color/white">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+        </RelativeLayout>
+
         <include
             layout="@layout/partial_layout_button_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

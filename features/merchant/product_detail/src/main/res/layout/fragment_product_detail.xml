@@ -107,6 +107,7 @@
                 <include layout="@layout/partial_product_rating_talk_courier"/>
                 <include layout="@layout/partial_product_detail_visibility"/>
                 <include layout="@layout/partial_value_proposition_os"/>
+                <include layout="@layout/partial_variant_rate_estimation" />
 
                 <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
                     android:id="@+id/merchantVoucherListWidget"
@@ -328,12 +329,6 @@
             android:layout_gravity="center"
             android:visibility="gone"
             tools:visibility="visible"/>
-
-        <include
-            layout="@layout/partial_variant_rate_estimation"
-            app:layout_anchor="@+id/linearLayout"
-            app:layout_anchorGravity="bottom|center" />
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
