@@ -1,17 +1,16 @@
 package com.tokopedia.discovery.catalogrevamp.ui.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -538,17 +537,18 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         viewModel.onDetach()
     }
 
-    override fun onListItemImpressionEvent(element: Visitable<Any>, position: Int) {
-        val item = element as ProductsItem
+    override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
+        if (viewedProductList.isNotEmpty()) {
+            CatalogDetailPageAnalytics.eventProductListImpression(
+                    "catalog/$catalogName - $catalogId",
+                    viewedProductList, false)
+        }
 
-        CatalogDetailPageAnalytics.eventProductListImpression(
-                item.name,
-                item.id.toString(),
-                CurrencyFormatHelper.convertRupiahToInt(item.price),
-                position,
-                "catalog/$catalogName - $catalogId",
-                item.categoryBreadcrumb ?: "",
-                item.isTopAds)
+        if (viewedTopAdsList.isNotEmpty()) {
+            CatalogDetailPageAnalytics.eventProductListImpression(
+                    "catalog/$catalogName - $catalogId",
+                    viewedTopAdsList, true)
+        }
     }
 
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {

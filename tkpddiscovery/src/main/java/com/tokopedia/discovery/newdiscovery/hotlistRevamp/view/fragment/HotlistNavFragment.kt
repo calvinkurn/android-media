@@ -551,17 +551,12 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         product_recyclerview.requestLayout()
     }
 
-    override fun onListItemImpressionEvent(element: Visitable<Any>, position: Int) {
-        val item = element as ProductsItem
+    override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
         hotlistNavAnalytics.eventProductImpression(hotListAlias,
                 isUserLoggedIn(),
                 hotlistType,
-                position,
-                item.isTopAds,
-                item.name,
-                item.id.toString(),
-                item.price,
-                item.categoryBreadcrumb + " / " + item.category)
+                viewedProductList,
+                viewedTopAdsList)
     }
 
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {

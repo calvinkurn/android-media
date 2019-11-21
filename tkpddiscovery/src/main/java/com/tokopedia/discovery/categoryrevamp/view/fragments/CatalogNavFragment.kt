@@ -316,7 +316,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         catalogNavViewModel.onDetach()
     }
 
-    override fun onListItemImpressionEvent(item: Visitable<Any>, position: Int) {
+    override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
 
     }
 

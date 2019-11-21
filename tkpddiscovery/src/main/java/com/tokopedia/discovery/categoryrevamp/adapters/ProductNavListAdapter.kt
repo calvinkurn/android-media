@@ -28,7 +28,8 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
     private val bigListShimmerModel: BigListShimmerModel by lazy { BigListShimmerModel() }
 
     val viewMap = HashMap<Int, Boolean>()
-
+    var viewedProductList = ArrayList<Visitable<ProductTypeFactory>>()
+    var viewedTopAdsList = ArrayList<Visitable<ProductTypeFactory>>()
     var isShimmer: Boolean = false
 
 
@@ -166,5 +167,13 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             return "category$path-$id"
         }
         return ""
+    }
+
+    fun onPause() {
+        if (viewedProductList.isNotEmpty() || viewedTopAdsList.isNotEmpty()) {
+            onItemChangeView.onListItemImpressionEvent(viewedProductList as List<Visitable<Any>>, viewedTopAdsList as List<Visitable<Any>>)
+        }
+        viewedProductList.clear()
+        viewedTopAdsList.clear()
     }
 }
