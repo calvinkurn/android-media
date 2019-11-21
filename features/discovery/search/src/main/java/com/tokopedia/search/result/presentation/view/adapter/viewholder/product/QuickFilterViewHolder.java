@@ -1,12 +1,10 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product;
 
 import android.content.Context;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
@@ -17,65 +15,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.presentation.model.HeaderViewModel;
+import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.LinearHorizontalSpacingDecoration;
-import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
-import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
-import com.tokopedia.search.result.presentation.view.listener.TickerListener;
-import com.tokopedia.topads.sdk.domain.model.CpmData;
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
-import com.tokopedia.unifycomponents.ticker.Ticker;
-import com.tokopedia.unifycomponents.ticker.TickerCallback;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
+public class QuickFilterViewHolder extends AbstractViewHolder<QuickFilterViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.search_result_product_header_layout;
-    private Ticker tickerView;
-    private LinearLayout suggestionContainer;
-    private RecyclerView quickFilterListView;
-    private TopAdsBannerView adsBannerView;
-    private Context context;
-    private TickerListener tickerListener;
-    private SuggestionListener suggestionListener;
+    public static final int LAYOUT = R.layout.search_result_product_quick_filter_layout;
     private QuickFilterListener quickFilterListener;
     private QuickFilterAdapter quickFilterAdapter;
+    private RecyclerView quickFilterListView;
+    private Context context;
 
-    public HeaderViewHolder(View itemView,
-                            TickerListener tickerListener,
-                            SuggestionListener suggestionListener,
-                            QuickFilterListener quickFilterListener,
-                            BannerAdsListener bannerAdsListener) {
+    public QuickFilterViewHolder(View itemView,
+                                 QuickFilterListener quickFilterListener) {
         super(itemView);
         context = itemView.getContext();
-        this.tickerListener = tickerListener;
-        this.suggestionListener = suggestionListener;
         this.quickFilterListener = quickFilterListener;
-        tickerView = itemView.findViewById(R.id.tickerView);
-        suggestionContainer = itemView.findViewById(R.id.suggestion_container);
-        adsBannerView = itemView.findViewById(R.id.ads_banner);
         quickFilterListView = itemView.findViewById(R.id.quickFilterListView);
         initQuickFilterRecyclerView();
-        adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
-            if (bannerAdsListener != null) {
-                bannerAdsListener.onBannerAdsClicked(position, applink, data);
-            }
-        });
-        adsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
-            @Override
-            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
-                if(bannerAdsListener != null) {
-                    bannerAdsListener.onBannerAdsImpressionListener(position, data);
-                }
-            }
-        });
     }
 
     private void initQuickFilterRecyclerView() {
@@ -89,74 +51,18 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     }
 
     @Override
-    public void bind(final HeaderViewModel element) {
-        bindAdsBannerView(element);
-
-        bindTickerView(element);
-
-        bindSuggestionView(element);
-
+    public void bind(final QuickFilterViewModel element) {
         bindQuickFilterView(element);
     }
 
-    private void bindAdsBannerView(final HeaderViewModel element) {
-        adsBannerView.displayAds(element.getCpmModel());
-    }
-
-    private void bindTickerView(final HeaderViewModel element) {
-        if (tickerListener == null || tickerListener.isTickerHasDismissed() ||
-                element.getTickerViewModel() == null || TextUtils.isEmpty(element.getTickerViewModel().getText())) {
-            tickerView.setVisibility(View.GONE);
-            return;
-        }
-
-        tickerView.setHtmlDescription(element.getTickerViewModel().getText());
-        tickerView.setDescriptionClickEvent(new TickerCallback() {
-            @Override
-            public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
-                if (tickerListener != null && !TextUtils.isEmpty(element.getTickerViewModel().getQuery())) {
-                    tickerListener.onTickerClicked(element.getTickerViewModel().getQuery());
-                }
-            }
-
-            @Override
-            public void onDismiss() {
-                if (tickerListener != null) {
-                    tickerListener.onTickerDismissed();
-                }
-            }
-        });
-        tickerView.setVisibility(View.VISIBLE);
-    }
-
-    private void bindSuggestionView(final HeaderViewModel element) {
-        if (element.getSuggestionViewModel() != null) {
-            suggestionContainer.removeAllViews();
-            View suggestionView = LayoutInflater.from(context).inflate(R.layout.suggestion_layout, null);
-            TextView suggestionText = suggestionView.findViewById(R.id.suggestion_text_view);
-            if (!TextUtils.isEmpty(element.getSuggestionViewModel().getSuggestionText())) {
-                suggestionText.setText(Html.fromHtml(element.getSuggestionViewModel().getSuggestionText()));
-                suggestionText.setOnClickListener(v -> {
-                    if (suggestionListener != null && !TextUtils.isEmpty(element.getSuggestionViewModel().getSuggestedQuery())) {
-                        suggestionListener.onSuggestionClicked(element.getSuggestionViewModel().getSuggestedQuery());
-                    }
-                });
-                suggestionText.setVisibility(View.VISIBLE);
-            } else {
-                suggestionText.setVisibility(View.GONE);
-            }
-            suggestionContainer.addView(suggestionView);
-        }
-    }
-
-    private void bindQuickFilterView(final HeaderViewModel element) {
-        if (!TextUtils.isEmpty(element.getSuggestionViewModel().getFormattedResultCount())) {
-            quickFilterAdapter.setFormattedResultCount(String.format(context.getString(R.string.result_count_template_text), element.getSuggestionViewModel().getFormattedResultCount()));
+    private void bindQuickFilterView(final QuickFilterViewModel element) {
+        if (!TextUtils.isEmpty(element.getFormattedResultCount())) {
+            quickFilterAdapter.setFormattedResultCount(String.format(context.getString(R.string.result_count_template_text), element.getFormattedResultCount()));
         } else {
             quickFilterAdapter.setFormattedResultCount("");
         }
 
-        quickFilterAdapter.setOptionList(element.getQuickFilterList());
+        quickFilterAdapter.setOptionList(element.getQuickFilterOptions());
     }
 
     private static class QuickFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
