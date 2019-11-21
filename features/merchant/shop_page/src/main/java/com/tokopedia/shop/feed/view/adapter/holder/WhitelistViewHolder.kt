@@ -17,11 +17,11 @@ class WhitelistViewHolder(v: View,
                           private val mainView: FeedShopContract.View)
     : AbstractViewHolder<WhitelistViewModel>(v) {
 
-    private val FORMAT_NAME = "{{name}}"
-
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_post_entry
+
+        private const val FORMAT_NAME = "{{name}}"
     }
 
     override fun bind(element: WhitelistViewModel) {
@@ -43,10 +43,10 @@ class WhitelistViewHolder(v: View,
     private fun formatWhiteListTitle(title: String): String {
         return title
                 .replace(FORMAT_NAME, bold(FORMAT_NAME))
-                .replace(FORMAT_NAME, if (mainView.getUserSession().hasShop())
-                    mainView.getUserSession().getShopName()
+                .replace(FORMAT_NAME, if (mainView.userSession.hasShop())
+                    mainView.userSession.shopName
                 else
-                    mainView.getUserSession().getName())
+                    mainView.userSession.name)
     }
 
     private fun bold(text: String): String {
@@ -54,6 +54,6 @@ class WhitelistViewHolder(v: View,
     }
 
     private fun initViewListener(element: WhitelistViewModel) {
-        itemView.btnCreatePost.setOnClickListener { view -> mainView.onWhitelistClicked(element) }
+        itemView.btnCreatePost.setOnClickListener { mainView.onWhitelistClicked(element) }
     }
 }

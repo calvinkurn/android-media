@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.postdetail.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -58,15 +59,14 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.kol.common.util.PostMenuListener;
+import com.tokopedia.kolcommon.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
@@ -90,14 +90,14 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 
-import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
+import static com.tokopedia.kolcommon.util.PostMenuUtilKt.createBottomMenu;
 
 /**
  * @author by yfsx on 23/07/18.
  */
 
 public class KolPostDetailFragment extends BaseDaggerFragment
-        implements KolPostDetailContract.View, KolPostListener.View.Like,
+        implements KolPostDetailContract.View, KolPostLikeListener,
         KolComment.View.ViewHolder, KolComment.View.SeeAll,
         SwipeRefreshLayout.OnRefreshListener,
         DynamicPostViewHolder.DynamicPostListener,
@@ -110,6 +110,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         FeedMultipleImageView.FeedMultipleImageViewListener,
         RelatedPostAdapter.RelatedPostListener,
         HighlightAdapter.HighlightListener {
+
+    @NotNull
+    @Override
+    public Context getAndroidContext() {
+        return requireContext();
+    }
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -344,18 +350,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeKolSuccess(int rowNumber, int action) {
-        if (adapter.getList().size() > rowNumber && adapter.getList().get(rowNumber) instanceof BaseKolViewModel) {
-            BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getList().get(rowNumber);
-            kolViewModel.setLiked(!kolViewModel.isLiked());
-            if (kolViewModel.isLiked()) {
-                kolViewModel.setTotalLike(kolViewModel.getTotalLike() + 1);
-            } else {
-                kolViewModel.setTotalLike(kolViewModel.getTotalLike() - 1);
-            }
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
-        }
-
+    public void onLikeKolSuccess(int rowNumber, LikeKolPostUseCase.LikeKolPostAction action) {
         if (adapter.getList().size() > rowNumber && adapter.getList().get(rowNumber) instanceof DynamicPostViewModel) {
             DynamicPostViewModel dynamicPostViewModel = (DynamicPostViewModel) adapter.getList().get(rowNumber);
             Like like = dynamicPostViewModel.getFooter().getLike();
@@ -465,7 +460,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (adapter.getList().get(rowNumber) instanceof DynamicPostViewModel) {
             DynamicPostViewModel dynamicPostViewModel = (DynamicPostViewModel) adapter.getList().get(rowNumber);
             dynamicPostViewModel.getHeader().getFollowCta().setFollow(!dynamicPostViewModel.getHeader().getFollowCta().isFollow());
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW);
 
             if (dynamicPostViewModel.getHeader().getFollowCta().isFollow()) {
                 ToasterNormal
@@ -490,7 +485,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onErrorToggleFavoriteShop(String errorMessage, String shopId) {
         ToasterError.make(getView(), errorMessage, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.title_try_again,
+                .setAction(com.tokopedia.abstraction.R.string.title_try_again,
                         v -> presenter.toggleFavoriteShop(shopId)
                 )
                 .show();
@@ -614,9 +609,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void onSuccessReportContent() {
         ToasterNormal
                 .make(getView(),
-                        getString(R.string.feed_content_reported),
+                        getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
                         BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close, v -> {
+                .setAction(com.tokopedia.design.R.string.label_close, v -> {
                 })
                 .show();
     }
@@ -624,7 +619,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void onErrorReportContent(String errorMsg) {
         ToasterError
                 .make(getView(), errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close, v -> {
+                .setAction(com.tokopedia.design.R.string.label_close, v -> {
                 })
                 .show();
     }
@@ -714,10 +709,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private Dialog createDeleteDialog(int positionInFeed, int postId) {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.card_dialog_delete_post));
-        dialog.setDesc(getString(R.string.card_dialog_after_delete_cant));
-        dialog.setBtnOk(getString(R.string.card_dialog_title_delete));
-        dialog.setBtnCancel(getString(R.string.card_dialog_title_cancel));
+        dialog.setTitle(getString(com.tokopedia.feedcomponent.R.string.card_dialog_delete_post));
+        dialog.setDesc(getString(com.tokopedia.feedcomponent.R.string.card_dialog_after_delete_cant));
+        dialog.setBtnOk(getString(com.tokopedia.feedcomponent.R.string.card_dialog_title_delete));
+        dialog.setBtnCancel(getString(com.tokopedia.feedcomponent.R.string.card_dialog_title_cancel));
         dialog.setOnOkClickListener(v -> {
             presenter.deletePost(postId, positionInFeed);
             dialog.dismiss();
@@ -912,7 +907,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
-        startActivityForResult(VideoDetailActivity.Companion.getInstance(getActivity(), postId), OPEN_VIDEO_DETAIL);
+        startActivityForResult(VideoDetailActivity.getInstance(requireContext(), postId), OPEN_VIDEO_DETAIL);
     }
 
     @Override

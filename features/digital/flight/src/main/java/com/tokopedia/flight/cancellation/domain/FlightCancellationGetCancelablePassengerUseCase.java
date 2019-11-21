@@ -8,6 +8,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -36,10 +37,10 @@ public class FlightCancellationGetCancelablePassengerUseCase extends UseCase<Lis
     public Observable<List<FlightCancellationViewModel>> createObservable(RequestParams requestParams) {
         return flightRepository.getCancelablePassenger(
                 requestParams.getString(PARAM_INVOICE_ID, ""))
-                .flatMap(new Func1<List<Passenger>, Observable<List<FlightCancellationViewModel>>>() {
+                .flatMap(new Func1<Map<String, List<Passenger>>, Observable<List<FlightCancellationViewModel>>>() {
                     @Override
-                    public Observable<List<FlightCancellationViewModel>> call(List<Passenger> passengers) {
-                        return Observable.just(flightCancellationViewModelMapper.transform(passengers));
+                    public Observable<List<FlightCancellationViewModel>> call(Map<String, List<Passenger>> passengersMap) {
+                        return Observable.just(flightCancellationViewModelMapper.transform(passengersMap));
                     }
                 });
     }
