@@ -3,44 +3,62 @@ package com.tokopedia.navigation.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
+import com.tokopedia.abstraction.common.network.exception.HttpErrorException
+import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.navigation.data.entity.NotificationEntity
-import com.tokopedia.navigation.data.consts.NotificationQueriesConstant.DRAWER_PUSH_NOTIFICATION
+import com.tokopedia.navigation.domain.NotificationTransactionUseCase
 import com.tokopedia.navigation.util.coroutines.DispatcherProvider
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
-import com.tokopedia.usecase.coroutines.Result
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 interface NotificationTransactionContract {
     fun getNotification()
+    fun onErrorMessage(throwable: Throwable)
 }
 
 class NotificationTransactionViewModel @Inject constructor(
-        private val repository: GraphqlRepository,
-        private val queries: Map<String, String>,
-        private val dispatcher: DispatcherProvider
+        private val useCase: NotificationTransactionUseCase,
+        dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
 
-    private val _notification = MutableLiveData<Result<NotificationEntity>>()
-    val notification: LiveData<Result<NotificationEntity>>
-        get() = _notification
+    private val _notification = MutableLiveData<NotificationEntity>()
+    val notification: LiveData<NotificationEntity> get() = _notification
+
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
+
+    init {
+        getNotification()
+    }
 
     override fun getNotification() {
-        queries[DRAWER_PUSH_NOTIFICATION]?.let { query ->
-            launchCatchError(block = {
-                val data = withContext(dispatcher.io()) {
-                    val request = GraphqlRequest(query, NotificationEntity::class.java)
-                    repository.getReseponse(listOf(request))
-                }.getSuccessData<NotificationEntity>()
+        useCase.get({ data ->
+            _notification.postValue(data)
+        }, {
+            onErrorMessage(it)
+        })
+    }
 
-                _notification.value = Success(data)
-            }) {
-                _notification.value = Fail(it)
+    override fun onErrorMessage(throwable: Throwable) {
+        when(throwable) {
+            is UnknownHostException ->
+                _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
+            is SocketTimeoutException ->
+                _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
+            is ConnectException ->
+                _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
+            is ResponseErrorException ->
+                _errorMessage.postValue(throwable.message)
+            is ResponseDataNullException ->
+                _errorMessage.postValue(throwable.message)
+            is HttpErrorException ->
+                _errorMessage.postValue(throwable.message)
+            else -> {
+                _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }
         }
     }
