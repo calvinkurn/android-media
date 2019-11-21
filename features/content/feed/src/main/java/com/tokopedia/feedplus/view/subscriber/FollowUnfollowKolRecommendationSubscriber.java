@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery;
-import com.tokopedia.kol.feature.post.domain.model.FollowKolDomain;
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kolcommon.data.pojo.FollowKolDomain;
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery;
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
 
 /**
  * @author by nisie on 11/6/17.

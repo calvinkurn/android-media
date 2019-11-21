@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.official.presentation
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -58,14 +61,17 @@ class OfficialHomeFragment :
         private const val REQUEST_FROM_PDP = 898
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+        private const val SLUG_CONST = "{slug}"
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
+    private val sentDynamicChannelTrackers = mutableSetOf<String>()
+
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-    private var tracking: OfficialStoreTracking? = null
 
+    private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
     private var layoutManager: StaggeredGridLayoutManager? = null
@@ -74,14 +80,21 @@ class OfficialHomeFragment :
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
-    private var totalScroll = 0
-    private val sentDynamicChannelTrackers = mutableSetOf<String>()
+    private var isScrolling = false
+
+    private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
+    private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
+    private lateinit var dynamicChannelPerformanceMonitoring: PerformanceMonitoring
+    private lateinit var productRecommendationPerformanceMonitoring: PerformanceMonitoring
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
+                    val CATEGORY_CONST: String = category?.title?:""
+                    val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
                     counterTitleShouldBeRendered += 1
+                    productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
                     viewModel.loadMore(category, page)
 
                     if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
@@ -143,6 +156,7 @@ class OfficialHomeFragment :
     }
 
     private fun refreshData() {
+        initFirebasePerformanceMonitoring()
         viewModel.loadFirstData(category)
     }
 
@@ -159,6 +173,7 @@ class OfficialHomeFragment :
                     showErrorNetwork(it.throwable)
                 }
             }
+            bannerPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -193,6 +208,7 @@ class OfficialHomeFragment :
                 }
 
             }
+            shopPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -211,6 +227,7 @@ class OfficialHomeFragment :
                     showErrorNetwork(result.throwable)
                 }
             }
+            dynamicChannelPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -232,6 +249,7 @@ class OfficialHomeFragment :
                     showErrorNetwork(it.throwable)
                 }
             }
+            productRecommendationPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -276,9 +294,16 @@ class OfficialHomeFragment :
                 recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
-                        totalScroll += dy
 
-                        scrollListener.onContentScrolled(dy, totalScroll)
+                        if (!isScrolling) {
+                            isScrolling = true
+                            scrollListener.onContentScrolled(dy)
+
+                            Handler().postDelayed({
+                                isScrolling = false
+                            }, 200)
+                        }
+
                     }
 
                 })
@@ -525,5 +550,18 @@ class OfficialHomeFragment :
             tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
             sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
+    }
+
+    private fun initFirebasePerformanceMonitoring() {
+        val CATEGORY_CONST: String = category?.title?:""
+
+        val bannerConstant = (FirebasePerformanceMonitoringConstant.BANNER).replace(SLUG_CONST, CATEGORY_CONST)
+        bannerPerformanceMonitoring = PerformanceMonitoring.start(bannerConstant)
+
+        val brandConstant = (FirebasePerformanceMonitoringConstant.BRAND).replace(SLUG_CONST, CATEGORY_CONST)
+        shopPerformanceMonitoring = PerformanceMonitoring.start(brandConstant)
+
+        val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
+        dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
     }
 }

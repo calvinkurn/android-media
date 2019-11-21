@@ -26,13 +26,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.viewmodel.*
+import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.profile.view.adapter.viewholder.*
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.viewmodel.*
@@ -42,7 +36,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * @author by milhamj on 9/20/18.
  */
 class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.View,
-                             private val kolPostViewListener : KolPostListener.View.ViewHolder,
+                             private val kolPostViewListener : KolPostViewHolderListener,
                              private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
                              private val bannerListener: BannerAdapter.BannerItemListener,
                              private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener,
@@ -59,7 +53,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val highlightListener: HighlightAdapter.HighlightListener,
                              private val userSession : UserSessionInterface)
 
-    : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
+    : BaseAdapterTypeFactory(), ProfileTypeFactory, DynamicFeedTypeFactory {
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {
         return ProfileHeaderViewHolder.LAYOUT
@@ -67,26 +61,6 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
 
     override fun type(viewModel: ProfileEmptyViewModel): Int {
         return ProfileEmptyViewHolder.LAYOUT
-    }
-
-    override fun type(kolPostViewModel: KolPostViewModel): Int {
-        return KolPostViewHolder.LAYOUT
-    }
-
-    override fun type(emptyKolPostViewModel: EmptyKolPostViewModel): Int {
-        return EmptyKolPostViewHolder.LAYOUT
-    }
-
-    override fun type(kolPostYoutubeViewModel: KolPostYoutubeViewModel): Int {
-        return KolPostYoutubeViewHolder.LAYOUT
-    }
-
-    override fun type(exploreViewModel: ExploreViewModel): Int {
-        return ExploreViewHolder.LAYOUT
-    }
-
-    override fun type(entryPointViewModel: EntryPointViewModel?): Int {
-        return 0
     }
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
@@ -107,9 +81,6 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
 
     override fun type(emptyAffiliateViewModel: EmptyAffiliateViewModel): Int {
         return EmptyAffiliateViewHolder.LAYOUT
-    }
-
-    override fun setType(type: KolPostViewHolder.Type?) {
     }
 
     override fun type(noPostCardViewModel: NoPostCardViewModel): Int {
@@ -135,20 +106,6 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 ProfileHeaderViewHolder(parent, viewListener) as AbstractViewHolder<Visitable<*>>
             ProfileEmptyViewHolder.LAYOUT ->
                 ProfileEmptyViewHolder(parent) as AbstractViewHolder<Visitable<*>>
-            KolPostViewHolder.LAYOUT ->
-                    KolPostViewHolder(parent,
-                            kolPostViewListener,
-                            KolPostViewHolder.Type.PROFILE
-                    ) as AbstractViewHolder<Visitable<*>>
-            KolPostYoutubeViewHolder.LAYOUT ->
-                KolPostYoutubeViewHolder(parent,
-                        kolPostViewListener,
-                        KolPostYoutubeViewHolder.Type.PROFILE
-                ) as AbstractViewHolder<Visitable<*>>
-            EmptyKolPostViewHolder.LAYOUT ->
-                EmptyKolPostViewHolder(parent) as AbstractViewHolder<Visitable<*>>
-            ExploreViewHolder.LAYOUT ->
-                ExploreViewHolder(parent, kolPostViewListener) as AbstractViewHolder<Visitable<*>>
             DynamicPostViewHolder.LAYOUT ->
                 DynamicPostViewHolder(parent,
                         dynamicPostListener,
