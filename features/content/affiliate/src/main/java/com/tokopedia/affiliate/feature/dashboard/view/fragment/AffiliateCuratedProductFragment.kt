@@ -122,7 +122,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     private fun setupView(view: View) {
-        tvSort.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_system_action_sort_grayscale_24), null, null, null)
+        tvSort.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_sort_grayscale_24), null, null, null)
         if (type == null) {
             cvSort.visible()
             getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {

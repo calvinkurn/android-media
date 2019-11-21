@@ -239,7 +239,7 @@ public class ExploreFragment
 
     private void initEmptyResultModel() {
         emptyResultModel = new EmptyModel();
-        emptyResultModel.setIconRes(R.drawable.ic_empty_search);
+        emptyResultModel.setIconRes(com.tokopedia.design.R.drawable.ic_empty_search);
         emptyResultModel.setTitle(
                 getString(R.string.text_product_not_found)
         );
@@ -249,7 +249,7 @@ public class ExploreFragment
         //init image
         if (userSession.isLoggedIn()) {
             ImageHandler.loadImageCircle2(getActivity(), ivProfile,
-                    userSession.getProfilePicture(), R.drawable.loading_page);
+                    userSession.getProfilePicture(), com.tokopedia.topads.sdk.R.drawable.loading_page);
         }
 
         if (getActivity() == null) {
@@ -386,7 +386,7 @@ public class ExploreFragment
                 }
 
                 if (position == 0) {
-                    outRect.top = (int) getResources().getDimension(R.dimen.dp_16);
+                    outRect.top = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_16);
                 }
 
                 Visitable visitable = adapter.getData().get(position);
@@ -395,9 +395,9 @@ public class ExploreFragment
                     int spanIndex =
                             ((GridLayoutManager.LayoutParams) view.getLayoutParams()).getSpanIndex();
                     if (spanIndex == 0) {
-                        outRect.left = (int) getResources().getDimension(R.dimen.dp_12);
+                        outRect.left = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_12);
                     } else {
-                        outRect.right = (int) getResources().getDimension(R.dimen.dp_12);
+                        outRect.right = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_12);
                     }
                 }
             }
@@ -1043,7 +1043,7 @@ public class ExploreFragment
 
     private void showError(String message, View.OnClickListener listener) {
         ToasterError.make(getView(), message, ToasterError.LENGTH_LONG)
-                .setAction(R.string.title_try_again, listener)
+                .setAction(com.tokopedia.abstraction.R.string.title_try_again, listener)
                 .show();
     }
 
@@ -1074,12 +1074,12 @@ public class ExploreFragment
 
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
+                .backgroundContentColorRes(com.tokopedia.kol.R.color.black)
                 .shadowColorRes(R.color.shadow)
-                .titleTextColorRes(R.color.white)
-                .textColorRes(R.color.grey_400)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
+                .titleTextColorRes(com.tokopedia.topads.sdk.R.color.white)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
+                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
                 .nextStringRes(R.string.next)
                 .prevStringRes(R.string.previous)
                 .useCircleIndicator(true)
