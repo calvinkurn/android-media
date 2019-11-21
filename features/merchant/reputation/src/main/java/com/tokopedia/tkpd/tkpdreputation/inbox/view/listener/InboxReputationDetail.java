@@ -30,7 +30,7 @@ public interface InboxReputationDetail {
 
         void onEditReview(InboxReputationDetailItemViewModel element);
 
-        void onGoToGiveReview(String productId, int shopId);
+        void onGoToGiveReview(String productId, int shopId, String orderId);
 
         void onErrorSendSmiley(String errorMessage);
 

@@ -395,7 +395,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Override
     public void onClick(View source) {
         if (source.getId() == R.id.text_membership_label || source.getId() == R.id.img_egg || source.getId() == R.id.text_membership_value) {
-            RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW_TITLE,CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
 
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -404,7 +404,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     AnalyticsTrackerUtil.ActionKeys.CLICK_STATUS_MEMBERSHIP,
                     mValueMembershipDescription);
         } else if (source.getId() == R.id.view_loyalty_bottom) {
-            RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW_TITLE,CommonConstant.WebLink.MEMBERSHIP,getString(R.string.tp_label_membership));
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -438,7 +438,8 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         } else if (source.getId() == R.id.container_fab_egg_token) {
             if (mSumToken <= 0) {
                 if (mStartPurchaseBottomSheet != null) {
-                    mStartPurchaseBottomSheet.show(getChildFragmentManager(), StartPurchaseBottomSheet.class.getName());
+                    AddPointsFragment addPointsFragment = new AddPointsFragment();
+                    addPointsFragment.show(getChildFragmentManager(), "");
                 }
             } else {
                 if (getActivity() != null) {
@@ -460,7 +461,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
         if (userLoggedInStatus) {
             mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
-                    (getActivity(),com.tokopedia.design.R.drawable.ic_arrow_right_grey), null);
+                    (getActivity(), com.tokopedia.design.R.drawable.ic_arrow_right_grey), null);
         }
         mTextMembershipLabel = view.findViewById(R.id.text_membership_label);
         mTextPoints = view.findViewById(R.id.text_my_points_value);
@@ -492,7 +493,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         ivLoyaltyStack = view.findViewById(R.id.img_loyalty_stack);
         pointLayout = view.findViewById(R.id.layout_homepoint);
         tvLoyaltyLabel = view.findViewById(R.id.text_loyalty_label);
-        tvNonLoginCta=view.findViewById(R.id.tvNonLoginCta);
+        tvNonLoginCta = view.findViewById(R.id.tvNonLoginCta);
 
         emptyTitle = view.findViewById(R.id.emptyTitle);
         emptySubtitle = view.findViewById(R.id.emptySubtitle);
@@ -522,7 +523,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public void openWebView(String url) {
-        RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW,url);
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
     @Override
@@ -1090,12 +1091,12 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     @Override
     public void onToolbarLeaderboardClick() {
-            RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW_TITLE,CommonConstant.WebLink.LEADERBOARD,getString(R.string.tp_leader));
-            AnalyticsTrackerUtil.sendEvent(getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_LEADERBOARD,
-                    "");
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, CommonConstant.WebLink.LEADERBOARD, getString(R.string.tp_leader));
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_LEADERBOARD,
+                "");
     }
 
     @Override

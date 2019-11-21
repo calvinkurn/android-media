@@ -127,8 +127,6 @@ public interface TkpdCoreRouter {
 
     Intent getResolutionCenterIntentSeller(Context context);
 
-    Intent getKolFollowingPageIntent(Context context, int userId);
-
     Intent getPhoneVerificationProfileIntent(Context context);
 
     Intent getPhoneVerificationActivationIntent(Context context);

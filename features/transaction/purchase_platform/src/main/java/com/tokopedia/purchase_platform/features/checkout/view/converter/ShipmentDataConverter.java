@@ -1,11 +1,18 @@
 package com.tokopedia.purchase_platform.features.checkout.view.converter;
 
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.tokopedia.purchase_platform.common.utils.Utils;
+import androidx.annotation.NonNull;
+
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupShop;
@@ -14,12 +21,6 @@ import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipme
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.UserAddress;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
-import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
-import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -165,6 +166,8 @@ public class ShipmentDataConverter {
             UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
             for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
                 shipmentCartItemModel = new ShipmentCartItemModel();
+                shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
+                shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
                 shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
                 shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                 shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
