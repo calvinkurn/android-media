@@ -106,6 +106,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = "/flight/booking"
 
     lateinit var loadingDialog: DialogUnify
+    lateinit var loadingText: Typography
     var needRefreshCart = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -479,6 +480,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         context?.let {
             loadingDialog = DialogUnify(it, 0, 0)
+            val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
+            loadingDialog.setChild(loadingView)
+            loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
             loadingDialog.setUnlockVersion()
             loadingDialog.setCancelable(false)
             loadingDialog.setOverlayClose(false)
@@ -521,7 +525,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                             TravelContactData(widget_traveller_info.getContactName(),
                                     widget_traveller_info.getContactEmail(),
                                     widget_traveller_info.getContactPhoneNum(),
-                                    widget_traveller_info.getContactPhoneCode()),
+                                    widget_traveller_info.getContactPhoneCode(),
+                                    widget_traveller_info.getContactPhoneCountry()),
                             TravelContactDataActivity.FLIGHT),
                             REQUEST_CODE_CONTACT_FORM)
                 }
@@ -847,9 +852,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun showLoadingDialog() {
         val list = randomLoadingSubtitle()
-        val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
-        loadingDialog.setChild(loadingView)
-        val loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
         loadingText.text = list[0]
         if (!loadingDialog.isShowing) { loadingDialog.show() }
     }
