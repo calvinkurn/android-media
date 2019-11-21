@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.di
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
 import dagger.Module
 import dagger.Provides
@@ -22,4 +23,8 @@ class LoginUseCaseModule {
     @Provides
     fun provideStatusPinGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<StatusPinPojo> = GraphqlUseCase(graphqlRepository)
+
+    @Provides
+    fun provideRegisterCheckGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<RegisterCheckPojo> = GraphqlUseCase(graphqlRepository)
 }

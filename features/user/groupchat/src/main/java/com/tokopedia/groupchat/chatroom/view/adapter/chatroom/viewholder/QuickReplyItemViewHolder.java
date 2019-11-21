@@ -18,14 +18,14 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickRe
 public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickReplyItemViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_quick_reply;
+    public static final int LAYOUT = R.layout.item_quick_play_reply;
     private final ChatroomContract.QuickReply viewListener;
     private TextView textHolder;
 
 
     public QuickReplyItemViewHolder(View parent, ChatroomContract.QuickReply listener) {
         super(parent);
-        textHolder = itemView.findViewById(R.id.text);
+        textHolder = itemView.findViewById(com.tokopedia.design.R.id.text);
         this.viewListener = listener;
     }
 

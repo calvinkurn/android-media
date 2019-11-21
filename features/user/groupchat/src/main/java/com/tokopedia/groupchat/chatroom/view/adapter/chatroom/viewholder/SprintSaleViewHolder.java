@@ -106,7 +106,7 @@ public class SprintSaleViewHolder extends BaseChatViewHolder<SprintSaleAnnouncem
         }
 
         sprintSaleTitle.setText(R.string.title_sprintsale_finished);
-        sprintSaleTitle.setTextColor(MethodChecker.getColor(sprintSaleTitle.getContext(), R.color.black_54));
+        sprintSaleTitle.setTextColor(MethodChecker.getColor(sprintSaleTitle.getContext(), com.tokopedia.design.R.color.black_54));
     }
 
 }
