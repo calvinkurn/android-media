@@ -29,22 +29,22 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.multiDex
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.miscDependencies.multiDex
-
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 project.ext {
     artifactId = 'wallet'
     groupId = 'com.tokopedia.fintech'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="wallet-release"
 }
 

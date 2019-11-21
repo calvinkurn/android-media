@@ -36,14 +36,17 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
+import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
@@ -70,6 +73,8 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
@@ -93,6 +98,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
     val SELECTED_ITEMS = "selected_items"
     val EMOJI_STATE = "emoji_state"
+    val CSAT_ATTRIBUTES = "csat_attribute"
+    private val TICKER_TYPE_ANNOUNCEMENT = "announcement"
+    private val TICKER_TYPE_WARNING = "warning"
 
     @Inject
     lateinit var presenter: ChatbotPresenter
@@ -103,12 +111,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var replyEditText: EditText
 
     lateinit var mCsatResponse: WebSocketCsatResponse
+    lateinit var attribute: Attributes
     private var isBackAllowed = true
+    private lateinit var ticker:Ticker
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
             val chatbotComponent = DaggerChatbotComponent.builder().baseAppComponent(
                     ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .chatbotModule(context?.let { ChatbotModule(it) })
                     .build()
 
             chatbotComponent.inject(this)
@@ -137,8 +148,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun openCsat(csatResponse: WebSocketCsatResponse) {
         mCsatResponse = csatResponse
-        list_quick_reply.hide()
-        showCsatRatingView()
+        if(::mCsatResponse.isInitialized){
+            list_quick_reply.hide()
+            showCsatRatingView()
+        }
     }
 
     private fun showCsatRatingView() {
@@ -155,8 +168,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun onClickEmoji(number: Int) {
-        startActivityForResult(ChatBotProvideRatingActivity
-                .getInstance(context!!, number,mCsatResponse), REQUEST_SUBMIT_FEEDBACK)
+        startActivityForResult(context?.let {
+            ChatBotProvideRatingActivity
+                .getInstance(it, number,mCsatResponse)
+        }, REQUEST_SUBMIT_FEEDBACK)
     }
 
     override fun getUserSession(): UserSessionInterface {
@@ -170,6 +185,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         replyEditText = view.findViewById(R.id.new_comment)
+        ticker = view.findViewById(R.id.chatbot_ticker)
         return view
     }
 
@@ -212,11 +228,66 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         )
         viewState.initView()
         loadInitialData()
+        showTicker()
+
+        if (savedInstanceState != null)
+            this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
+
+    }
+
+    private fun showTicker() {
+        presenter.showTickerData(onError(),onSuccesGetTickerData())
+    }
+
+    private fun onSuccesGetTickerData(): (TickerData) -> Unit {
+        return {
+            if (!it.items.isNullOrEmpty()) {
+                ticker.show()
+                if (it.items.size > 1) {
+                    showMultiTicker(it)
+                } else {
+                    showSingleTicker(it)
+                }
+            }
+        }
+    }
+
+    private fun showSingleTicker(tickerData: TickerData) {
+        ticker.tickerTitle = tickerData.items?.get(0)?.title
+        ticker.setTextDescription(tickerData.items?.get(0)?.text?:"")
+        ticker.tickerType = getTickerType(tickerData.type ?: "")
+    }
+
+    private fun showMultiTicker(tickerData: TickerData) {
+        val mockData = arrayListOf<com.tokopedia.unifycomponents.ticker.TickerData>()
+
+        tickerData.items?.forEach {
+            mockData.add(com.tokopedia.unifycomponents.ticker.TickerData(it?.title,
+                    it?.text?:"",
+                    getTickerType(tickerData.type ?: "")))
+        }
+
+        val adapter = TickerPagerAdapter(activity, mockData)
+        ticker.addPagerView(adapter, mockData)
+    }
+
+    private fun getTickerType(tickerType: String): Int {
+        return when (tickerType) {
+            TICKER_TYPE_ANNOUNCEMENT -> Ticker.TYPE_ANNOUNCEMENT
+            TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_ANNOUNCEMENT
+        }
+    }
+
+    override fun getSwipeRefreshLayoutResourceId() = 0
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
     }
 
     private fun onAttachImageClicked() {
         activity?.let {
-            val builder = ImagePickerBuilder(it.getString(R.string.choose_image),
+            val builder = ImagePickerBuilder(it.getString(com.tokopedia.imagepicker.R.string.choose_image),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
                             ImagePickerTabTypeDef.TYPE_CAMERA),
                     GalleryType.IMAGE_ONLY,
@@ -348,27 +419,39 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun submitRating(data: Intent?) {
-        val attributes = mCsatResponse.attachment?.attributes
-        val reasonList = attributes?.reasons
+
+        var csatAttributes: Attributes?
+
+        if (!(::mCsatResponse.isInitialized)) {
+            csatAttributes = attribute
+        } else {
+            csatAttributes = mCsatResponse.attachment?.attributes
+        }
+
+        val reasonList = csatAttributes?.reasons
         val input = InputItem()
-        input.chatbotSessionId = attributes?.chatbotSessionId
-        input.livechatSessionId = attributes?.livechatSessionId
+        input.chatbotSessionId = csatAttributes?.chatbotSessionId
+        input.livechatSessionId = csatAttributes?.livechatSessionId
+        input.reason = getFilters(data, reasonList)
+        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
+        input.score = data?.extras?.getInt(EMOJI_STATE) ?: 0
+        input.timestamp = data?.getStringExtra("time_stamp")
+        input.triggerRuleType = csatAttributes?.triggerRuleType
+
+        presenter.submitCsatRating(input, onError(),
+                onSuccessSubmitCsatRating())
+    }
+
+    private fun getFilters(data: Intent?, reasonList: List<String?>?): String? {
         val selectedOption = data?.getStringExtra(SELECTED_ITEMS)?.split(";")
         var filters = ""
         if (!selectedOption.isNullOrEmpty()) {
             for (filter in selectedOption) {
                 filters += reasonList?.get(filter.toInt()) + ","
             }
-            filters = filters.substring(0, filters.length - 1)
+            return filters.substring(0, filters.length - 1)
         }
-        input.reason = filters
-        input.otherReason = data?.getStringExtra(BOT_OTHER_REASON_TEXT) ?: ""
-        input.score = data?.extras?.getInt(EMOJI_STATE) ?: 0
-        input.timestamp = mCsatResponse.message?.timestampUnix.toString()
-        input.triggerRuleType = attributes?.triggerRuleType
-
-        presenter.submitCsatRating(input, onError(),
-                onSuccessSubmitCsatRating())
+        return ""
     }
 
     private fun onSuccessSubmitCsatRating(): (String) -> Unit {
@@ -423,6 +506,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         ChatbotInternalRouter.Companion.TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY)
                 attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice))
             }
+        }
+    }
+
+    override fun prepareListener() {
+        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
+            onSendButtonClicked()
         }
     }
 
@@ -537,6 +626,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 loadData(page)
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (::mCsatResponse.isInitialized)
+            outState.putParcelable(CSAT_ATTRIBUTES, mCsatResponse.attachment?.attributes)
     }
 
     override fun onDestroy() {

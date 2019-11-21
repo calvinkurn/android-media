@@ -46,6 +46,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.playServicesDependencies.auth
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
@@ -71,7 +72,7 @@ dependencies {
 project.ext {
     artifactId = 'session'
     groupId = 'com.tokopedia.session'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="tkpdsession-release"
 }
 

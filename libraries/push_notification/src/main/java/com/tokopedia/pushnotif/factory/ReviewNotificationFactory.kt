@@ -24,7 +24,6 @@ import com.tokopedia.pushnotif.model.ApplinkNotificationModel
 import com.tokopedia.pushnotif.util.ReviewNotificationBroadcastReceiver
 import java.util.concurrent.TimeUnit
 
-
 class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(context) {
 
     companion object {
@@ -35,7 +34,7 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
     private val packageName = context.applicationContext.packageName
     private val cacheManager = PersistentCacheManager(context)
     private var resultReviewModel: ReviewNotificationModel = ReviewNotificationModel()
-    lateinit var notificationLayout: RemoteViews
+    private lateinit var notificationLayout: RemoteViews
 
 
     val notificationManager: NotificationManagerCompat by lazy {
@@ -72,10 +71,13 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         else resultReviewModel.applinkNotificationModel.title
 
         notificationBuilder
-                .setContentIntent(generatePendingIntent(resultReviewModel))
+                .setContentIntent(PendingIntent.getActivity(
+                        context,
+                        0,
+                        generateRoutingIntent(),
+                        PendingIntent.FLAG_UPDATE_CURRENT))
                 .setCustomBigContentView(
                         setupRemoteLayout(
-                                applinkNotificationModel.applinks,
                                 title,
                                 resultReviewModel.applinkNotificationModel.desc,
                                 resultReviewModel.applinkNotificationModel.thumbnail))
@@ -83,13 +85,10 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
                         setupSimpleRemoteLayout(
                                 title,
                                 resultReviewModel.applinkNotificationModel.desc,
-                                resultReviewModel.applinkNotificationModel.thumbnail
-                        )
-                )
+                                resultReviewModel.applinkNotificationModel.thumbnail))
 
         notificationManager.notify(resultReviewModel.notificationId, notificationBuilder.build())
 
-        //NO OP RETURN FUNCTION
         return Notification()
     }
 
@@ -99,18 +98,13 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         loadImageBitmap(resultReviewModel.applinkNotificationModel.thumbnail, reviewPosition)
     }
 
-    private fun generatePendingIntent(resultViewModel: ReviewNotificationModel): PendingIntent {
-        val createReviewRoute = RouteManager.getIntent(context, resultViewModel.applinkNotificationModel.applinks)
-        createReviewRoute.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        createReviewRoute.putExtra(ReviewNotificationBroadcastReceiver.REVIEW_CLICK_AT, 5)
-        createReviewRoute.putExtra(ReviewNotificationBroadcastReceiver.REVIEW_NOTIFICATION_ID, resultReviewModel.notificationId)
+    private fun generateRoutingIntent(): Intent {
+        val routeIntent = RouteManager.getIntent(context, resultReviewModel.applinkNotificationModel.applinks)
+        routeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        routeIntent.putExtra(ReviewNotificationBroadcastReceiver.REVIEW_CLICK_AT, 5)
+        routeIntent.putExtra(ReviewNotificationBroadcastReceiver.REVIEW_NOTIFICATION_ID, resultReviewModel.notificationId)
 
-        return PendingIntent.getActivity(
-                context,
-                0,
-                createReviewRoute,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        return routeIntent
     }
 
     // This function is use for load review for the first time, (getBitmap should run on another thread)
@@ -148,23 +142,30 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
     }
 
     // This function is use for load review for the first time, (getBitmap should run on another thread)
-    private fun setupRemoteLayout(
-            applink: String,
-            title: String,
-            desc: String,
-            imageUrl: String
-    ): RemoteViews {
+    private fun setupRemoteLayout(title: String, desc: String, imageUrl: String): RemoteViews {
+        val intent = Intent(context, ReviewNotificationBroadcastReceiver::class.java)
+
         notificationLayout = RemoteViews(packageName, R.layout.notification_review_layout)
         notificationLayout.setTextViewText(R.id.rate_title, title)
         notificationLayout.setTextViewText(R.id.rate_message, desc)
         notificationLayout.setImageViewBitmap(R.id.img_notif, getBitmap(imageUrl))
+        notificationLayout.setOnClickPendingIntent(R.id.notif_review_container,
+                PendingIntent.getActivity(context, 0, generateRoutingIntent(), 0)
+        )
 
         val listOfStars = listOf(R.id.rate_1, R.id.rate_2, R.id.rate_3, R.id.rate_4, R.id.rate_5)
         listOfStars.forEachIndexed { index, starId ->
             val truePosition = index + 1
-            val intent = Intent(context, ReviewNotificationBroadcastReceiver::class.java)
+
             intent.action = "$truePosition"
-            intent.putExtra(ReviewNotificationBroadcastReceiver.REVIEW_APPLINK_EXTRA, applink)
+            intent.putExtra(
+                    ReviewNotificationBroadcastReceiver.REVIEW_APPLINK_EXTRA,
+                    resultReviewModel.applinkNotificationModel.applinks
+            )
+            intent.putExtra(
+                    ReviewNotificationBroadcastReceiver.REVIEW_NOTIFICATION_ID,
+                    resultReviewModel.notificationId
+            )
 
             notificationLayout.setOnClickPendingIntent(starId,
                     PendingIntent.getBroadcast(
@@ -201,7 +202,6 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
 
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             notificationBuilder
-                                    .setContentIntent(generatePendingIntent(resultReviewModel))
                                     .setCustomContentView(setupSimpleRemoteWithHandler(resultReviewModel.applinkNotificationModel.title, resultReviewModel.applinkNotificationModel.desc, resource))
                                     .setCustomBigContentView(setupBigRemoteWithHandler(resource))
                             updateStars(context, reviewPosition)
