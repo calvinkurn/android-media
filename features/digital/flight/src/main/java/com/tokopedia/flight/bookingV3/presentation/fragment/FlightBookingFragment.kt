@@ -478,13 +478,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let {
-            loadingDialog = DialogUnify(it, 0, 0)
-            loadingDialog.setUnlockVersion()
-            loadingDialog.setCancelable(false)
-            loadingDialog.setOverlayClose(false)
-        }
-
         launchLoadingPageJob.start()
         setUpView()
         val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
@@ -848,12 +841,21 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun showLoadingDialog() {
-        val list = randomLoadingSubtitle()
-        val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
-        loadingDialog.setChild(loadingView)
-        loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
-        loadingText.text = list[0]
-        if (!loadingDialog.isShowing) { loadingDialog.show() }
+        context?.let {
+            val loadingDialog = DialogUnify(it, 0, 0)
+            loadingDialog.setUnlockVersion()
+            loadingDialog.setCancelable(false)
+            loadingDialog.setOverlayClose(false)
+            val list = randomLoadingSubtitle()
+            if (!loadingDialog.isShowing) {
+                val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
+                loadingDialog.setChild(loadingView)
+                loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
+            }
+            loadingText.text = list[0]
+            if (!loadingDialog.isShowing) { loadingDialog.show() }
+        }
+
     }
 
     companion object {
