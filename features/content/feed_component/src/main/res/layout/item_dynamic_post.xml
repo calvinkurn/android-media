@@ -242,7 +242,7 @@
                         app:constraint_referenced_ids="likeIcon,likeText"
                         />
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/likeIcon"
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
@@ -279,7 +279,7 @@
                         app:constraint_referenced_ids="commentIcon,commentText"
                         />
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/commentIcon"
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
@@ -319,7 +319,7 @@
                         app:constraint_referenced_ids="shareIcon,shareText"
                         />
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/shareIcon"
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
@@ -348,6 +348,15 @@
                         app:layout_constraintStart_toEndOf="@id/shareIcon"
                         app:layout_constraintTop_toTopOf="@id/shareIcon"
                         tools:ignore="RtlSymmetry"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        app:srcCompat="@drawable/ic_graph_grey"
+                        app:layout_constraintTop_toTopOf="@id/shareText"
+                        app:layout_constraintBottom_toBottomOf="@id/shareText"
+                        app:layout_constraintEnd_toEndOf="parent"
                         />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
