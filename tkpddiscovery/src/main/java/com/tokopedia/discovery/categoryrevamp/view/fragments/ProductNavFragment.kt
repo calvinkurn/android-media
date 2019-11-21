@@ -54,6 +54,7 @@ import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -145,6 +146,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     @Inject
     lateinit var topAdsWishlishedUseCase: TopAdsWishlishedUseCase
+
+    @Inject
+    lateinit var seamlessLoginUsecase: SeamlessLoginUsecase
 
     lateinit var userSession: UserSession
 
@@ -429,7 +433,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             category_btn_banned_navigation.show()
             category_btn_banned_navigation.setOnClickListener() {
                 catAnalyticsInstance.eventBukaClick(bannedData?.appRedirection.toString(), mDepartmentId)
-                productNavViewModel.seamlessLoginUsecase.generateSeamlessUrl(Uri.parse(bannedData?.appRedirection).toString(),
+                seamlessLoginUsecase.generateSeamlessUrl(Uri.parse(bannedData?.appRedirection).toString(),
                         object : SeamlessLoginSubscriber {
                             override fun onUrlGenerated(url: String) {
                                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(bannedData?.appRedirection))
