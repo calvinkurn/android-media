@@ -1,7 +1,6 @@
 package com.tokopedia.navigation.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.data.consts.buyerMenu
 import com.tokopedia.navigation.data.consts.sellerMenu
@@ -22,21 +22,16 @@ import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationTra
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationTransactionFactoryImpl
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationTransactionComponent
 import com.tokopedia.navigation.presentation.viewmodel.NotificationTransactionViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
 class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelProvider.get(NotificationTransactionViewModel::class.java) }
 
-    private val viewModelFragmentProvider by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-    }
-
-    private val viewModel by lazy {
-        viewModelFragmentProvider.get(NotificationTransactionViewModel::class.java)
-    }
+    private val _adapter by lazy { adapter as NotificationTransactionAdapter }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notification_transaction, container, false)
@@ -44,19 +39,24 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getNotification()
-        viewModel.notification.observe(this, Observer {
-            when(it) {
-                is Success -> {
-                    if (NotificationMapper.isHasShop(it.data)) {
-                        adapter.addElement(sellerMenu())
-                    }
-                }
-                is Fail -> {
+        viewModel.errorMessage.observe(this, onViewError())
 
-                }
+        viewModel.notification.observe(this, Observer {
+            if (NotificationMapper.isHasShop(it)) {
+                _adapter.addElement(sellerMenu())
             }
+            _adapter.updateValue()
         })
+
+    }
+
+    private fun onViewError() = Observer<String> {
+        notificationEmpty.show()
+    }
+
+    override fun loadData(page: Int) {
+        //first data and mandatory menu is buyer on first item
+        renderList(buyerMenu(), false)
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh
@@ -82,12 +82,11 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
                 .inject(this)
     }
 
-    override fun loadData(page: Int) {
-        renderList(buyerMenu(), false)
-        (adapter as NotificationTransactionAdapter).updateValue()
-    }
-
     override fun onItemClicked(t: Visitable<*>?) {}
-    override fun getScreenName() = ""
+    override fun getScreenName() = SCREEN_NAME
+
+    companion object {
+        const val SCREEN_NAME = "Notification Transaction"
+    }
 
 }
