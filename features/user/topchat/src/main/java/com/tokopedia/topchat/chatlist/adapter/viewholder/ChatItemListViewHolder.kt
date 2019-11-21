@@ -68,7 +68,8 @@ class ChatItemListViewHolder(
     }
 
     private fun bindPin(tag: String) {
-        pin.showWithCondition(tag == OFFICIAL_TAG)
+        val shouldShowPin = tag == OFFICIAL_TAG && listener.isTabSeller()
+        pin.showWithCondition(shouldShowPin)
     }
 
     private fun onChatItemClicked(chat: ItemChatListPojo) {

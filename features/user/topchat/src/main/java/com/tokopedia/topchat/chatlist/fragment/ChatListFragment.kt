@@ -560,7 +560,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatListAnalytics.trackDeleteChat(element)
     }
 
-    private fun isTabSeller(): Boolean {
+    override fun isTabSeller(): Boolean {
         return sightTag == PARAM_TAB_SELLER
     }
 
