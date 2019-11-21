@@ -797,11 +797,8 @@ final class ProductListPresenter
             list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
-        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable) {
+        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable && shouldShowCpmShop(productViewModel)) {
             cpmViewModel.setCpmModel(productViewModel.getCpmModel());
-        }
-
-        if (shouldShowCpmShop(productViewModel)) {
             list.add(cpmViewModel);
         }
 
