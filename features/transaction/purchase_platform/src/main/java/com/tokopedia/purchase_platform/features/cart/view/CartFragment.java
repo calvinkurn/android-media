@@ -34,7 +34,6 @@ import com.readystatesoftware.chuck.Chuck;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -161,10 +160,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
     private boolean FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
     private boolean FLAG_IS_CART_EMPTY = false;
-
-    private static final String ADVERTISINGID = "ADVERTISINGID";
-    private static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
-    private static final String QUERY_APP_CLIENT_ID = "{app_client_id}";
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -2688,20 +2683,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onTobaccoLiteUrlClicked(@NotNull String url) {
-        if (getContext() != null) {
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), ADVERTISINGID);
-            String adsId = localCacheHandler.getString(KEY_ADVERTISINGID);
-            if (adsId != null && !adsId.trim().isEmpty()) {
-                url = url.replace(QUERY_APP_CLIENT_ID, adsId);
-            }
-
-            cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco();
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-        }
+        cartPageAnalytics.eventClickBrowseButtonOnTickerProductContainTobacco();
+        dPresenter.redirectToLite(url);
     }
 
     @Override
     public void onShowTickerTobacco() {
         cartPageAnalytics.eventViewTickerProductContainTobacco();
+    }
+
+    @Override
+    public void goToLite(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 }
