@@ -29,6 +29,9 @@ class NotificationTransactionUseCase @Inject constructor(
     companion object {
         private const val PARAM_PAGE = "page"
         private const val PARAM_LAST_ID = "lastNotifId"
+        private const val PARAM_NOTIF_TYPE = "typeOfNotif"
+
+        private const val TYPE_NOTIF_UPDATE = 2
 
         fun params(
                 page: Int,
@@ -37,6 +40,7 @@ class NotificationTransactionUseCase @Inject constructor(
         ): HashMap<String, Any> {
             variables[PARAM_PAGE] = page
             variables[PARAM_LAST_ID] = lastNotifId
+            variables[PARAM_NOTIF_TYPE] = TYPE_NOTIF_UPDATE
             return variables
         }
     }
