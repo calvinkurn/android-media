@@ -110,26 +110,4 @@ public class GroupShop {
     }
 
     public VehicleLeasing getVehicleLeasing() { return vehicleLeasing; }
-
-    public class Dropshiper {
-
-        @SerializedName("name")
-        @Expose
-        private String name;
-        @SerializedName("telp_no")
-        @Expose
-        private String telpNo;
-
-        public Dropshiper() {
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getTelpNo() {
-            return telpNo;
-        }
-    }
-
 }
