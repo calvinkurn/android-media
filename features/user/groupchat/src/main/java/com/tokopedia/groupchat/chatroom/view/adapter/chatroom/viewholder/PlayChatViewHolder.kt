@@ -25,7 +25,7 @@ class PlayChatViewHolder(itemView: View) : AbstractViewHolder<ChatViewModel>(ite
         const val extension= ".."
     }
 
-    private val message: TextView = itemView.findViewById(com.tokopedia.design.R.id.text)
+    private val message: TextView = itemView.findViewById(R.id.text)
 
     override fun bind(element: ChatViewModel) {
         message.text = ""
