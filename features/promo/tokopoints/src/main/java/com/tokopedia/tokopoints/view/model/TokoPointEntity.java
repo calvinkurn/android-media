@@ -13,10 +13,6 @@ public class TokoPointEntity {
     private TokoPointStatusEntity status;
 
     @Expose
-    @SerializedName("ticker")
-    private TickerBase ticker;
-
-    @Expose
     @SerializedName("sheetHowToGet")
     LobDetails lobs;
 
@@ -28,13 +24,6 @@ public class TokoPointEntity {
         this.lobs = lobs;
     }
 
-    public TickerBase getTicker() {
-        return ticker;
-    }
-
-    public void setTicker(TickerBase ticker) {
-        this.ticker = ticker;
-    }
 
     public ResultStatusEntity getResultStatus() {
         return resultStatus;
@@ -57,7 +46,6 @@ public class TokoPointEntity {
         return "TokoPointEntity{" +
                 "resultStatus=" + resultStatus +
                 ", status=" + status +
-                ", ticker=" + ticker +
                 ", lobs=" + lobs +
                 '}';
     }
