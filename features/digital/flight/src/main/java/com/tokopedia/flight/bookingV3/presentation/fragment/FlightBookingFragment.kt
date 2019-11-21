@@ -178,7 +178,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.errorToastMessageData.observe(this, Observer {
-            renderErrorToast(it)
+            if (it == 0) showLoadingDialog()
+            else renderErrorToast(it)
         })
 
         bookingViewModel.flightCheckoutResult.observe(this, Observer {
@@ -527,7 +528,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun verifyCart() {
-        showLoadingDialog()
         bookingViewModel.verifyCartData(
                 GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart),
                 totalPrice = totalCartPrice,

@@ -4,7 +4,6 @@ package com.tokopedia.flight.bookingV3.viewmodel
 import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
@@ -15,7 +14,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.common.constant.FlightErrorConstant
-import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
@@ -177,7 +175,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
-    private fun validateFields(contactName: String, contactEmail: String, contactPhone: String): Boolean {
+    fun validateFields(contactName: String, contactEmail: String, contactPhone: String): Boolean {
         var isValid = true
 
         if (contactName.isEmpty()) {
@@ -214,6 +212,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 errorToastMessageData.value = R.string.flight_booking_passenger_not_fullfilled_error
             }
         }
+        if (isValid) errorToastMessageData.value = 0
         return isValid
     }
 

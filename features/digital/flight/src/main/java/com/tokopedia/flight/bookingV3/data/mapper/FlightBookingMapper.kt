@@ -84,7 +84,7 @@ class FlightBookingMapper {
             for (amenity in flightCart.cartData.flight.amenityOptions) {
                 val amenityMetaViewModel = FlightBookingAmenityMetaViewModel()
                 amenityMetaViewModel.arrivalId = amenity.arrivalAirportId
-                amenityMetaViewModel.departureId = amenity.arrivalAirportId
+                amenityMetaViewModel.departureId = amenity.departureAirportId
                 amenityMetaViewModel.key = amenity.key
                 amenityMetaViewModel.journeyId = amenity.journeyId
                 amenityMetaViewModel.description = amenity.detail
