@@ -3,6 +3,7 @@ package com.tokopedia.navigation.presentation.di.notification
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.navigation.presentation.di.notification.module.CommonModule
 import com.tokopedia.navigation.presentation.di.notification.module.NotificationQueryModule
+import com.tokopedia.navigation.presentation.di.notification.module.NotificationTransactionModule
 import com.tokopedia.navigation.presentation.fragment.NotificationTransactionFragment
 import com.tokopedia.navigation.presentation.di.notification.module.NotificationTransactionViewModelModule
 import com.tokopedia.navigation.presentation.di.notification.scope.NotificationTransactionScope
@@ -13,6 +14,7 @@ import dagger.Component
         modules = [
             CommonModule::class,
             NotificationQueryModule::class,
+            NotificationTransactionModule::class,
             NotificationTransactionViewModelModule::class
         ],
         dependencies = [(BaseAppComponent::class)]
