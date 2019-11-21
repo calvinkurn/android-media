@@ -82,12 +82,12 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
                             selectedFlightTerm),
                     REQUEST_CODE_BOOKING)
         } else {
-            startActivityForResult(com.tokopedia.flight.booking.view.activity.FlightBookingActivity
+            startActivityForResult(com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
                     .getCallingIntent(this,
                             passDataViewModel,
                             selectedDepartureID,
-                            selectedFlightID,
-                            flightPriceViewModel),
+                            flightPriceViewModel,
+                            selectedFlightID),
                     REQUEST_CODE_BOOKING)
         }
     }

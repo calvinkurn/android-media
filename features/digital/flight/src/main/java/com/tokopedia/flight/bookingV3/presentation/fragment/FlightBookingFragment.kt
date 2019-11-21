@@ -631,6 +631,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun hideShimmering() {
         if (layout_loading.isVisible) layout_loading.hide()
         if (layout_shimmering.isVisible) layout_shimmering.hide()
+        hideLoadingDialog()
+    }
+
+    private fun hideLoadingDialog() {
+        if (loadingDialog.isShowing) loadingDialog.dismiss()
     }
 
     private fun hidePriceDetail() {
@@ -838,6 +843,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         if (context != null) {
             loadingDialog.setUnlockVersion()
             loadingDialog.setChild(loadingView)
+            loadingDialog.setCancelable(false)
             loadingDialog.setOverlayClose(false)
             loadingText.text = list[0]
             loadingDialog.show()

@@ -127,7 +127,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                                 flightPriceViewModel),
                         REQUEST_CODE_BOOKING)
             } else {
-                startActivityForResult(com.tokopedia.flight.booking.view.activity.FlightBookingActivity
+                startActivityForResult(com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
                         .getCallingIntent(this, passDataViewModel, selectedFlightID,
                                 flightPriceViewModel),
                         REQUEST_CODE_BOOKING)
