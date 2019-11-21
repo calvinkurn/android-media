@@ -846,8 +846,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun showLoadingDialog() {
         context?.let {
             val list = randomLoadingSubtitle()
-            if (!loadingDialog.isShowing) {
-                val loadingDialog = DialogUnify(it, 0, 0)
+            if (!::loadingDialog.isInitialized || !loadingDialog.isShowing) {
+                loadingDialog = DialogUnify(it, 0, 0)
                 loadingDialog.setUnlockVersion()
                 loadingDialog.setCancelable(false)
                 loadingDialog.setOverlayClose(false)
