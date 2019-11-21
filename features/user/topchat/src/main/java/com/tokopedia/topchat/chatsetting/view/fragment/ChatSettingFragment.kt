@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
@@ -46,8 +47,12 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
     }
 
     private fun successLoadChatSetting(data: List<ChatSetting>) {
-        val filteredSettings = viewModel.filterSettings(context, data)
+        val filteredSettings = viewModel.filterSettings(::isSupportAppLink, data)
         renderList(filteredSettings)
+    }
+
+    private fun isSupportAppLink(chatSetting: ChatSetting): Boolean {
+        return RouteManager.isSupportApplink(context, chatSetting.link)
     }
 
     override fun getAdapterTypeFactory(): ChatSettingTypeFactory {
@@ -56,10 +61,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     override fun onItemClicked(t: Visitable<*>?) {}
 
-    override fun loadData(page: Int) {
-        if (page != defaultInitialPage) return
-        viewModel.loadChatSettings()
-    }
+    override fun loadData(page: Int) { }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false

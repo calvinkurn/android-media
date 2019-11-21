@@ -1,11 +1,9 @@
 package com.tokopedia.topchat.chatsetting.viewmodel
 
-import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.data.GetChatSettingResponse
 import com.tokopedia.topchat.chatsetting.usecase.GetChatSettingUseCase
@@ -27,8 +25,10 @@ class ChatSettingViewModel @Inject constructor(
     val chatSettings: LiveData<Result<List<ChatSetting>>>
         get() = _chatSettings
 
-    fun loadChatSettings() {
-        getChatSettingUseCase.get(onSuccessGetChatSetting(), onErrorGetChatSetting())
+    init {
+        getChatSettingUseCase.get(
+                onSuccessGetChatSetting(),
+                onErrorGetChatSetting())
     }
 
     private fun onSuccessGetChatSetting(): (GetChatSettingResponse) -> Unit {
@@ -38,10 +38,9 @@ class ChatSettingViewModel @Inject constructor(
         }
     }
 
-    fun filterSettings(context: Context?, chatSettings: List<ChatSetting>): List<ChatSetting> {
-        if (context == null) return chatSettings
+    fun filterSettings(invoke: (setting: ChatSetting) -> Boolean, chatSettings: List<ChatSetting>): List<ChatSetting> {
         return chatSettings.filter { setting ->
-            RouteManager.isSupportApplink(context, setting.link)
+            invoke(setting)
         }
     }
 
@@ -53,7 +52,7 @@ class ChatSettingViewModel @Inject constructor(
 
     fun initArguments(arguments: Bundle?) {
         if (arguments == null) return
-         isSeller = arguments.getBoolean(TemplateChatActivity.PARAM_IS_SELLER, false)
+        isSeller = arguments.getBoolean(TemplateChatActivity.PARAM_IS_SELLER, false)
     }
 
 }
