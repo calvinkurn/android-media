@@ -303,10 +303,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
-                showLoadingDialog()
                 bookingViewModel.checkOutCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart),
                         totalCartPrice,
                         GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_checkout_data))
+                showLoadingDialog()
             }
 
             dialog.setSecondaryCTAClickListener {
@@ -502,10 +502,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun setUpView() {
         hidePriceDetail()
 
-        context?.let {
-            loadingDialog = DialogUnify(it, 0, 0)
-        }
-
         widget_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
             override fun onClickEdit() {
                 context?.let {
@@ -635,7 +631,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun hideLoadingDialog() {
-        if (loadingDialog.isShowing) loadingDialog.dismiss()
+        if (::loadingDialog.isInitialized && loadingDialog.isShowing) loadingDialog.dismiss()
     }
 
     private fun hidePriceDetail() {
@@ -837,18 +833,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun showLoadingDialog() {
-        val list = randomLoadingSubtitle()
-        val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
-        val loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
-        if (context != null) {
-            loadingDialog.setUnlockVersion()
+        context?.let {
+            loadingDialog = DialogUnify(it, 0, 0)
+            val list = randomLoadingSubtitle()
+            val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
             loadingDialog.setChild(loadingView)
+            val loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
+            loadingText.text = list[0]
+            loadingDialog.setUnlockVersion()
             loadingDialog.setCancelable(false)
             loadingDialog.setOverlayClose(false)
-            loadingText.text = list[0]
             loadingDialog.show()
         }
-
     }
 
     companion object {
