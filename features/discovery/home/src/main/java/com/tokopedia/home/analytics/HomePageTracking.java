@@ -248,12 +248,12 @@ public class HomePageTracking {
         }
     }
 
-    public static void sendScreen(Activity activity, String screenName, Boolean isUserLoggedIn) {
+    public static void sendScreen(Activity activity, String screenName, boolean isUserLoggedIn) {
         if (activity != null) {
             ContextAnalytics tracker = getTracker();
             if (tracker != null) {
                 HashMap<String, String> customDimensions = new HashMap<>();
-                customDimensions.put(SCREEN_DIMENSION_IS_LOGGED_IN_STATUS, isUserLoggedIn.toString());
+                customDimensions.put(SCREEN_DIMENSION_IS_LOGGED_IN_STATUS, String.valueOf(isUserLoggedIn));
 
                 tracker.sendScreenAuthenticated(
                         screenName, customDimensions);
