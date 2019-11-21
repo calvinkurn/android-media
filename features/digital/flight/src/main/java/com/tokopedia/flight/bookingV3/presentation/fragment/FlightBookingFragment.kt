@@ -480,9 +480,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         context?.let {
             loadingDialog = DialogUnify(it, 0, 0)
-            val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
-            loadingDialog.setChild(loadingView)
-            loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
             loadingDialog.setUnlockVersion()
             loadingDialog.setCancelable(false)
             loadingDialog.setOverlayClose(false)
@@ -852,6 +849,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun showLoadingDialog() {
         val list = randomLoadingSubtitle()
+        val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
+        loadingDialog.setChild(loadingView)
+        loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
         loadingText.text = list[0]
         if (!loadingDialog.isShowing) { loadingDialog.show() }
     }
