@@ -12,6 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.data.consts.buyerMenu
@@ -50,8 +52,16 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
 
     }
 
-    private fun onViewError() = Observer<String> {
+    private fun onViewError() = Observer<String> { message ->
+        swipeRefresh.hide()
         notificationEmpty.show()
+        activity?.let {
+            NetworkErrorHelper.showEmptyState(it,
+                    notificationEmpty,
+                    message) {
+                viewModel.getNotification()
+            }
+        }
     }
 
     override fun loadData(page: Int) {
@@ -59,9 +69,9 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         renderList(buyerMenu(), false)
     }
 
-    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
 
-    override fun getRecyclerViewResourceId() = R.id.recycler_view
+    override fun getRecyclerViewResourceId() = R.id.lstNotification
 
     override fun hasInitialSwipeRefresh(): Boolean = true
 
