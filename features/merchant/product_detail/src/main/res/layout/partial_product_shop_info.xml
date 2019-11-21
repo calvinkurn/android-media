@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:visibility="gone"
     tools:visibility="visible"
     android:paddingLeft="@dimen/dp_16"
@@ -13,8 +14,7 @@
     android:paddingTop="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_22"
-    android:background="@drawable/bg_bottom_shadow_top_line">
+    android:paddingBottom="@dimen/dp_22">
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/label_shop_title"

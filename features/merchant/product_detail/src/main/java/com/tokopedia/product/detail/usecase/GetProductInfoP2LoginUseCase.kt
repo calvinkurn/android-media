@@ -59,7 +59,6 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                 p2Login.pdpAffiliate = gqlResponse
                         .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
                         .topAdsPDPAffiliate.data.affiliate.firstOrNull()
-                        ?: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate()
             }
 
             if (gqlResponse.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {

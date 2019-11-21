@@ -1,22 +1,32 @@
 package com.tokopedia.product.detail.view.viewmodel
 
+import android.content.Intent
 import android.text.TextUtils
+import androidx.collection.ArrayMap
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.usecase.*
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -24,9 +34,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -39,6 +50,10 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                                         private val getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase,
                                                         private val getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase,
                                                         private val getProductInfoP3UseCase: GetProductInfoP3UseCase,
+                                                        private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+                                                        private val removeWishlistUseCase: RemoveWishListUseCase,
+                                                        private val addWishListUseCase: AddWishListUseCase,
+                                                        private val getRecommendationUseCase: GetRecommendationUseCase,
                                                         private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
 
     val productInfoP1 = MutableLiveData<Result<ProductInfoP1>>()
@@ -47,10 +62,13 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     val p2Login = MutableLiveData<ProductInfoP2Login>()
     val p2General = MutableLiveData<ProductInfoP2General>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
-
     var multiOrigin: WarehouseInfo = WarehouseInfo()
+    val loadTopAdsProduct = MutableLiveData<List<RecommendationWidget>>()
+
 
     private var productInfoTemp = ProductInfo()
+    var getProductInfoP1: ProductInfo? = null
+    var listOfRecomData: List<ProductRecommendationDataModel>? = null
 
     fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
@@ -94,9 +112,10 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
             val productInfo = getPdpData(productParams.productId?.toInt() ?: 0)
             productLayout.value = Success(initialLayoutData)
+            getProductInfoP1 = productInfo.productInfo
             productInfoP1.value = Success(productInfo)
             productInfoTemp = productInfo.productInfo
-
+            listOfRecomData = initialLayoutData.filterIsInstance(ProductRecommendationDataModel::class.java)
 
             val p2ShopDeferred = getProductInfoP2ShopAsync(productInfo.productInfo.basic.shopID,
                     productInfo.productInfo.basic.id.toString(),
@@ -145,6 +164,133 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         }
     }
 
+    fun toggleFavorite(shopID: String, onSuccess: (Boolean) -> Unit, onError: (Throwable) -> Unit) {
+        launchCatchError(block = {
+            toggleFavoriteUseCase.createRequestParam(shopID)
+            val result = toggleFavoriteUseCase.executeOnBackground()
+
+            onSuccess(result.followShop.isSuccess)
+        }) { onError(it) }
+    }
+
+    fun removeWishList(productId: String,
+                       onSuccessRemoveWishlist: ((productId: String?) -> Unit)?,
+                       onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
+        removeWishlistUseCase.createObservable(productId,
+                userSessionInterface.userId, object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                // no op
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                // no op
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                onErrorRemoveWishList?.invoke(errorMessage)
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                onSuccessRemoveWishlist?.invoke(productId)
+            }
+        })
+    }
+
+    fun addWishList(productId: String,
+                    onErrorAddWishList: ((errorMessage: String?) -> Unit)?,
+                    onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
+        addWishListUseCase.createObservable(productId,
+                userSessionInterface.userId, object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                onErrorAddWishList?.invoke(errorMessage)
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                onSuccessAddWishlist?.invoke(productId)
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                // no op
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                // no op
+            }
+        })
+    }
+
+    fun putChatProductInfoTo(
+            intent: Intent?,
+            productId: String?,
+            productInfo: ProductInfo?,
+            userInputVariant: String?
+    ) {
+        if (intent == null) return
+        val variants = mapSelectedProductVariants(userInputVariant)
+        val productImageUrl = productInfo?.getProductImageUrl()
+        val productName = productInfo?.getProductName()
+        val productPrice = productInfo?.getProductPrice()?.getCurrencyFormatted()
+        val productUrl = productInfo?.getProductUrl()
+        val productFsIsActive = productInfo?.getFsProductIsActive()
+        val productFsImageUrl = productInfo?.getFsProductImageUrl()
+        val productColorVariant = variants?.get("colour")?.get("value")
+        val productColorHexVariant = variants?.get("colour")?.get("hex")
+        val productSizeVariant = variants?.get("size")?.get("value")
+        with(intent) {
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_ID, productId)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_IMAGE_URL, productImageUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_NAME, productName)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_PRICE, productPrice)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_URL, productUrl)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_COLOR_VARIANT, productColorVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_HEX_COLOR_VARIANT, productColorHexVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_SIZE_VARIANT, productSizeVariant)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IS_ACTIVE, productFsIsActive)
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEW_FS_IMAGE_URL, productFsImageUrl)
+        }
+    }
+
+    fun getImageUriPaths(): ArrayList<String> {
+        return ArrayList(productInfoTemp.run {
+            media.map {
+                if (it.type == "image") {
+                    it.urlOriginal
+                } else {
+                    it.urlThumbnail
+                }
+            }
+        })
+    }
+
+    fun loadRecommendation() {
+        val product = (productInfoP1.value ?: return) as? Success ?: return
+        launch {
+            if (GlobalConfig.isCustomerApp() &&
+                    loadTopAdsProduct.value == null) {
+                try {
+                    withContext(Dispatchers.IO) {
+                        val a = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                                pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
+                                pageName = ProductDetailConstant.DEFAULT_PAGE_NAME,
+                                productIds = arrayListOf(product.data.productInfo.basic.id.toString())
+                        )).toBlocking()
+                        loadTopAdsProduct.value = a.first()
+                    }
+                } catch (e: Throwable) {
+
+                }
+            }
+        }
+    }
+
+    private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {
+        return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
+    }
+
+    private fun getProductVariant(): ProductVariant? {
+        return p2General.value?.variantResp
+    }
+
     private fun getProductInfoP2ShopAsync(shopId: Int, productId: String,
                                           warehouseId: String,
                                           forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
@@ -190,17 +336,5 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
         getPdpLayoutUseCase.requestParams = GetPdpLayoutUseCase.createParams(productId)
         getPdpLayoutUseCase.isFromCacheFirst = false
         return getPdpLayoutUseCase.executeOnBackground()
-    }
-
-    fun getImageUriPaths(): ArrayList<String> {
-        return ArrayList(productInfoTemp.run {
-            media.map {
-                if (it.type == "image") {
-                    it.urlOriginal
-                } else {
-                    it.urlThumbnail
-                }
-            }
-        })
     }
 }

@@ -9,7 +9,6 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_20"
-    android:background="@drawable/bg_bottom_shadow"
     android:id="@+id/base_attribute"
     android:visibility="gone"
     tools:visibility="visible">

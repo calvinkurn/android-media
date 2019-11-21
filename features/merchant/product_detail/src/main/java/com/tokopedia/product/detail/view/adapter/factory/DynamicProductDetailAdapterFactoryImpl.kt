@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.OnImageClick
 import com.tokopedia.product.detail.view.viewholder.*
 
-class DynamicProductDetailAdapterFactoryImpl(private val onImagePdpClick: OnImageClick,
-                                             private val childFragmentManager: FragmentManager,
+class DynamicProductDetailAdapterFactoryImpl(private val childFragmentManager: FragmentManager,
                                              private val listener: DynamicProductDetailListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
+    override fun type(data: ProductRecommendationDataModel): Int {
+        return ProductRecommendationViewHolder.LAYOUT
+    }
 
     override fun type(data: ProductTradeinDataModel): Int {
         return ProductTradeinViewHolder.LAYOUT
@@ -42,11 +43,11 @@ class DynamicProductDetailAdapterFactoryImpl(private val onImagePdpClick: OnImag
     }
 
     override fun type(data: ProductSocialProofDataModel): Int {
-        return ProductSocialProofDataModel.LAYOUT
+        return ProductSocialProofViewHolder.LAYOUT
     }
 
     override fun type(data: ProductShopInfoDataModel): Int {
-        return ProductShopInfoDataModel.LAYOUT
+        return ProductShopInfoViewHolder.LAYOUT
     }
 
     override fun type(data: ProductSnapshotDataModel): Int {
@@ -55,12 +56,13 @@ class DynamicProductDetailAdapterFactoryImpl(private val onImagePdpClick: OnImag
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
             ProductTradeinViewHolder.LAYOUT -> ProductTradeinViewHolder(view, listener)
             ProductMerchantVoucherViewHolder.LAYOUT -> ProductMerchantVoucherViewHolder(view, listener)
             ProductImageReviewViewHolder.LAYOUT -> ProductImageReviewViewHolder(view, listener)
-            ProductSnapshotViewHolder.LAYOUT -> ProductSnapshotViewHolder(view, onImagePdpClick, childFragmentManager)
-            ProductShopInfoDataModel.LAYOUT -> ProductShopInfoViewHolder(view, listener)
-            ProductSocialProofDataModel.LAYOUT -> ProductSocialProofViewHolder(view)
+            ProductSnapshotViewHolder.LAYOUT -> ProductSnapshotViewHolder(view, childFragmentManager, listener)
+            ProductShopInfoViewHolder.LAYOUT -> ProductShopInfoViewHolder(view, listener)
+            ProductSocialProofViewHolder.LAYOUT -> ProductSocialProofViewHolder(view)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view)

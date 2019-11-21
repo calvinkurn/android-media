@@ -4,9 +4,6 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -18,13 +15,6 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.*
@@ -33,7 +23,17 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -87,12 +87,10 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PR
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_READY
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.activity.CourierActivity
-import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import com.tokopedia.product.detail.view.fragment.partialview.*
@@ -837,8 +835,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-    private fun onImageReviewClick(imageReview: List<ImageReviewItem>, position:Int) {
-        context?.let{
+    private fun onImageReviewClick(imageReview: List<ImageReviewItem>, position: Int) {
+        context?.let {
             val productId = productInfo?.basic?.id ?: return
             productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview[position].reviewId)
             val listOfImage: List<String> = imageReview.map {
@@ -849,7 +847,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onSeeAllReviewClick(){
+    private fun onSeeAllReviewClick() {
         context?.let {
             val productId = productInfo?.basic?.id ?: return
             productDetailTracking.eventClickReviewOnSeeAllImage(productId)
@@ -1492,8 +1490,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 label_installment.visible()
                 label_installment.text = String.format(getString(R.string.new_installment_template),
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        (if (shopInfo?.goldOS?.isOfficial == 1) it.response.data.osMonthlyPrice
-                        else it.response.data.monthlyPrice).roundToLong(), false))
+                                (if (shopInfo?.goldOS?.isOfficial == 1) it.response.data.osMonthlyPrice
+                                else it.response.data.monthlyPrice).roundToLong(), false))
 
                 label_desc_installment.text = getString(R.string.pdp_installment_desc)
                 label_desc_installment.visible()

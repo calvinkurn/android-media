@@ -124,7 +124,7 @@
             android:visibility="gone">
 
             <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/getCommission"
+                android:id="@+id/getCommissionPdp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/affiliate_get_commission"
@@ -134,10 +134,10 @@
                 app:textViewTheme="lightSecondary"/>
 
             <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/commission"
+                android:id="@+id/commissionPdp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/getCommission"
+                android:layout_below="@+id/getCommissionPdp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_toStartOf="@+id/btn_affiliate"
@@ -150,7 +150,7 @@
                 tools:text="Rp500.000.000.000" />
 
             <RelativeLayout
-                android:id="@+id/btn_affiliate"
+                android:id="@+id/btn_affiliate_pdp"
                 android:layout_width="@dimen/dp_145"
                 android:layout_height="@dimen/dp_40"
                 android:layout_alignParentEnd="true"

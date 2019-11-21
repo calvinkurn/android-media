@@ -9,8 +9,8 @@
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_24"
-    android:background="@drawable/bg_bottom_shadow_top_line"
     android:visibility="gone"
+    android:background="@color/white"
     tools:visibility="visible"
     android:id="@+id/base_info_and_description">
 

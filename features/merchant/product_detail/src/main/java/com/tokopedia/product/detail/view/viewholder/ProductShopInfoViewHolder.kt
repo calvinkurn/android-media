@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopInfoDataModel
 import com.tokopedia.product.detail.view.fragment.partialview.PartialShopView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -10,10 +11,39 @@ import kotlinx.android.synthetic.main.partial_product_shop_info.view.*
 
 class ProductShopInfoViewHolder(itemView: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductShopInfoDataModel>(itemView) {
 
+    companion object {
+        val LAYOUT = R.layout.item_dynamic_pdp_shop_info
+    }
+
+
+    private val shopInfoView = PartialShopView.build(itemView.base_shop_view, listener.onViewClickListener)
+
     override fun bind(element: ProductShopInfoDataModel) {
-        val shopInfoView = PartialShopView.build(itemView.base_shop_view, listener.onViewClickListener)
         if (element.shopInfo != null) {
             shopInfoView.renderShop(element.shopInfo ?: ShopInfo())
+        }
+
+        element.shopBadge?.let {
+            shopInfoView.renderShopBadge(it)
+        }
+
+        element.shopFeature?.let {
+            shopInfoView.renderShopFeature(it)
+        }
+
+    }
+
+    override fun bind(element: ProductShopInfoDataModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        if (element == null || payloads.isEmpty()) {
+            return
+        }
+        when (payloads[0] as Int) {
+            2 -> shopInfoView.toggleClickableFavoriteBtn(element.toogleFavorite)
+            else -> {
+                shopInfoView.updateFavorite(element.isFavorite)
+                shopInfoView.toggleClickableFavoriteBtn(element.toogleFavorite)
+            }
         }
     }
 }

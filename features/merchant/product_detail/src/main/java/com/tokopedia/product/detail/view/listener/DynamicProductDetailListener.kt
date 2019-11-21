@@ -13,6 +13,12 @@ interface DynamicProductDetailListener {
     val onViewClickListener: View.OnClickListener
 
     /**
+     * ProductSnapshotViewHolder
+     */
+    fun onImageClicked(position: Int)
+    fun onFabWishlistClicked(isActive: Boolean)
+
+    /**
      * ProductInfoViewHolder
      */
     fun openCategory(category: Category.Detail)

@@ -36,6 +36,12 @@ object DynamicProductDetailMapper {
                 "info" -> {
                     listOfComponent.add(ProductGeneralInfoDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
                 }
+                "product_list" -> {
+                    listOfComponent.add(ProductRecommendationDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                }
+                "shop_voucher" -> {
+                    listOfComponent.add(ProductMerchantVoucherDataModel(dataLayout = component.componentData, type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent

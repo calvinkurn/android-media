@@ -38,7 +38,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
         val estimationParams = mapOf(ProductDetailCommonConstant.PARAM_RATE_EST_WEIGHT to productInfo.basic.weightInKg,
                 ProductDetailCommonConstant.PARAM_RATE_EST_SHOP_DOMAIN to shopDomain, "origin" to origin)
         val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
-                RatesEstimationModel.Response::class.java, estimationParams, false)
+                RatesEstimationModel.Response::class.java, estimationParams)
 
         val requests = mutableListOf(estimationRequest)
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()

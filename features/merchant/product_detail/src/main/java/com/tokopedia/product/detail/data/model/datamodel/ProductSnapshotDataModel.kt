@@ -16,8 +16,9 @@ data class ProductSnapshotDataModel(
         var shopInfo: ShopInfo? = null,
         var nearestWarehouse: MultiOriginWarehouse? = null,
         var type: String = "",
+        var isWishlisted: Boolean = false,
         var shouldShowCod: Boolean = false,
-        var shouldShowTradein:Boolean = false
+        var shouldShowTradein: Boolean = false
 ) : DynamicPDPDataModel {
     override fun name(): String = name
     override fun type(): String = type

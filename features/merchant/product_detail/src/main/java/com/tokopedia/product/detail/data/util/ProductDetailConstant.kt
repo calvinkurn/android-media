@@ -38,4 +38,19 @@ object ProductDetailConstant {
     const val URL_VALUE_PROPOSITION_GUARANTEE = "https://www.tokopedia.com/help/article/a-1940"
 
 
+    const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
+    const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+
+    const val KEY_USER_ID = "userID"
+    const val KEY_PAGE_NAME = "pageName"
+    const val KEY_XDEVICE = "xDevice"
+    const val DEFAULT_DEVICE = "android"
+    const val DEFAULT_SRC_PAGE = "recommen_pdp"
+    const val KEY_PRODUCT_ID = "productIDs"
+    const val KEY_XSOURCE = "xSource"
+    const val KEY_PAGE_NUMBER = "pageNumber"
+    const val DEFAULT_PAGE_NUMBER = 1
+    const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
+
+
 }

@@ -1,25 +1,42 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductSocialProofDataModel
-import com.tokopedia.product.detail.view.adapter.dynamicadapter.SocialProofAdapter
-import kotlinx.android.synthetic.main.item_dynamic_pdp_social_proof.view.*
+import com.tokopedia.product.detail.view.fragment.partialview.PartialAttributeInfoView
+import com.tokopedia.product.detail.view.fragment.partialview.PartialProductStatisticView
+import kotlinx.android.synthetic.main.partial_product_detail_visibility.view.*
+import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
 
-class ProductSocialProofViewHolder(itemView: View) : AbstractViewHolder<ProductSocialProofDataModel>(itemView) {
+class ProductSocialProofViewHolder(val view: View) : AbstractViewHolder<ProductSocialProofDataModel>(view) {
 
-    private val socialProofAdapter by lazy {
-        SocialProofAdapter()
+    companion object {
+        val LAYOUT = R.layout.item_dynamic_pdp_social_proof
     }
 
+    private lateinit var productStatsView: PartialProductStatisticView
+    private lateinit var attributeInfoView: PartialAttributeInfoView
+
     override fun bind(element: ProductSocialProofDataModel) {
-        itemView.rv_social_proof.apply {
-            layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
-            adapter = socialProofAdapter
+        if (!::productStatsView.isInitialized) {
+            productStatsView = PartialProductStatisticView.build(view.base_rating_talk_courier)
         }
 
-        socialProofAdapter.updateSocialProofData(element)
+        if (!::attributeInfoView.isInitialized) {
+            attributeInfoView = PartialAttributeInfoView.build(view.base_attribute)
+        }
+
+        element.productInfoP2?.run {
+            productStatsView.renderRating(rating)
+            attributeInfoView.renderWishlistCount(wishlistCount.count)
+        }
+
+        element.productInfo?.run {
+            productStatsView.renderData(this)
+            attributeInfoView.renderData(this)
+        }
+
     }
 
 }

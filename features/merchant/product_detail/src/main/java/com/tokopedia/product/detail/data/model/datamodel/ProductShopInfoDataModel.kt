@@ -2,21 +2,23 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
+import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 class ProductShopInfoDataModel(
         val dataLayout: List<ComponentData> = listOf(),
         val type: String = "",
         val name: String = "",
-        var shopInfo: ShopInfo? = null
+        var isFavorite: Boolean = false,
+        var toogleFavorite: Boolean = false,
+        var shopInfo: ShopInfo? = null,
+        var shopBadge: ShopBadge? = null,
+        var shopFeature: ShopFeatureData? = null
 
 ) : DynamicPDPDataModel {
     override fun name(): String = name
-
-    companion object {
-        val LAYOUT = R.layout.item_dynamic_pdp_shop_info
-    }
 
     override fun type(): String = type
 

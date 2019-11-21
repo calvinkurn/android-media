@@ -1,24 +1,20 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
-import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
-data class ProductSocialProofDataModel(
+data class ProductRecommendationDataModel(
         val type: String = "",
         val name: String = "",
         val dataLayout: List<ComponentData> = listOf(),
-        //P1
-        var productInfo: ProductInfo? = null,
-        //P2
-        var productInfoP2: ProductInfoP2General? = null
+        var recomWidgetData: RecommendationWidget? = null
 ) : DynamicPDPDataModel {
-    override fun name(): String = name
-
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun name(): String = name
 }
