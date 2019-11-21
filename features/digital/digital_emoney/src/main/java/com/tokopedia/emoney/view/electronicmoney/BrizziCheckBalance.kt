@@ -38,7 +38,7 @@ class BrizziCheckBalance(val brizziInstance: Brizzi, val listener: BrizziActionL
     private fun mapperBrizzi(brizziCardObject: BrizziCardObject, error: EmoneyInquiryError): EmoneyInquiry {
         return EmoneyInquiry(
                 attributesEmoneyInquiry = AttributesEmoneyInquiry(
-                        "Top Up",
+                        "Topup Sekarang",
                         brizziCardObject.cardNumber,
                         "https://ecs7.tokopedia.net/img/recharge/operator/brizzi.png",
                         brizziCardObject.balance.toInt(),
