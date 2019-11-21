@@ -392,7 +392,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         luggages[flightBookingLuggageMetaViewModel.description] = total
 
                         var count = luggageCount[flightBookingLuggageMetaViewModel.description] ?: 1
-                        mealsCount[flightBookingLuggageMetaViewModel.description] = count + 1
+                        luggageCount[flightBookingLuggageMetaViewModel.description] = count + 1
                     } else {
                         luggages[flightBookingLuggageMetaViewModel.description] = flightBookingLuggageViewModel.priceNumeric
                         luggageCount[flightBookingLuggageMetaViewModel.description] = 1
