@@ -1,10 +1,14 @@
 package com.tokopedia.topchat.chatsetting.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatsetting.data.GetChatSettingResponse
 import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
+import javax.inject.Named
 
-class GetChatSettingUseCase(
+class GetChatSettingUseCase @Inject constructor(
+        @Named(ChatListQueriesConstant.QUERY_GET_CHAT_SETTING)
         private val gqlQuery: String,
         private val gqlUseCase: GraphqlUseCase<GetChatSettingResponse>
 ) {
@@ -23,24 +27,5 @@ class GetChatSettingUseCase(
             })
         }
     }
-
-//    override suspend fun executeOnBackground(): GetChatSettingResponse {
-//        val gqlRequest = GraphqlRequest(gqlQuery, GetChatSettingResponse::class.java, params.parameters)
-//        gqlUseCase.clearRequest()
-//        gqlUseCase.addRequest(gqlRequest)
-//        gqlUseCase.setCacheStrategy(
-//                GraphqlCacheStrategy
-//                        .Builder(CacheType.ALWAYS_CLOUD)
-//                        .build()
-//        )
-//
-//        val gqlResponse = gqlUseCase.executeOnBackground()
-//        val error = gqlResponse.getError(GetChatSettingResponse::class.java)
-//        if (error == null || error.isEmpty()) {
-//            return gqlResponse.getData(GetChatSettingResponse::class.java)
-//        } else {
-//            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-//        }
-//    }
 
 }
