@@ -772,6 +772,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvChooseDurationTradeIn.setVisibility(View.GONE);
                 llShippingOptionsContainer.setVisibility(View.VISIBLE);
             } else {
+                llShippingOptionsContainer.setVisibility(View.GONE);
                 if (shipmentCartItemModel.isHasSetDropOffLocation()) {
                     loadCourierState(shipmentCartItemModel, shipmentDetailData, recipientAddressModel, ratesDataConverter, true);
                 } else {
