@@ -7,33 +7,46 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation.R
+import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.data.consts.buyerMenu
 import com.tokopedia.navigation.data.consts.sellerMenu
 import com.tokopedia.navigation.data.mapper.NotificationMapper
+import com.tokopedia.navigation.domain.model.TransactionItemNotification
+import com.tokopedia.navigation.domain.model.TransactionNotification
+import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.NotificationTransactionAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationTransactionFactory
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationTransactionFactoryImpl
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationTransactionComponent
+import com.tokopedia.navigation.presentation.view.listener.NotificationTransactionItemListener
+import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
+import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.viewmodel.NotificationTransactionViewModel
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
-class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>() {
+class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), NotificationTransactionItemListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(NotificationTransactionViewModel::class.java) }
 
     private val _adapter by lazy { adapter as NotificationTransactionAdapter }
+
+    //last notification id
+    private var cursor = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notification_transaction, container, false)
@@ -42,14 +55,16 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.errorMessage.observe(this, onViewError())
-
-        viewModel.notification.observe(this, Observer {
+        viewModel.infoNotification.observe(this, Observer {
             if (NotificationMapper.isHasShop(it)) {
                 _adapter.addElement(sellerMenu())
             }
+            viewModel.getTransactionNotification(cursor,
+                    onSuccessNotificationData(),
+                    onErrorNotificationData()
+            )
             _adapter.updateValue()
         })
-
     }
 
     private fun onViewError() = Observer<String> { message ->
@@ -59,7 +74,7 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
             NetworkErrorHelper.showEmptyState(it,
                     notificationEmpty,
                     message) {
-                viewModel.getNotification()
+                viewModel.getInfoStatusNotification()
             }
         }
     }
@@ -67,6 +82,44 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     override fun loadData(page: Int) {
         //first data and mandatory menu is buyer on first item
         renderList(buyerMenu(), false)
+        viewModel.getInfoStatusNotification()
+    }
+
+    private fun onErrorNotificationData(): (Throwable) -> Unit {
+        return {
+            if (activity != null) {
+                val errorMessage = ErrorHandler.getErrorMessage(activity, it)
+                SnackbarManager.make(activity, errorMessage, Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun onSuccessNotificationData(): (TransactionNotification) -> Unit {
+        return {
+            val pagination = it.paging.hasNext
+            if (pagination && !it.list.isEmpty()) {
+                cursor = (it.list.last().notificationId)
+            }
+            _adapter.addElement(it.list)
+        }
+    }
+
+    override fun itemClicked(viewModel: TransactionItemNotification, adapterPosition: Int) {
+
+    }
+
+    override fun getAnalytic(): NotificationUpdateAnalytics = NotificationUpdateAnalytics()
+
+    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
+
+    }
+
+    override fun showTextLonger(element: TransactionItemNotification) {
+
+    }
+
+    override fun trackNotificationImpression(element: TransactionItemNotification) {
+
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
@@ -76,7 +129,7 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return NotificationTransactionFactoryImpl()
+        return NotificationTransactionFactoryImpl(this)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
