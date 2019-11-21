@@ -1,5 +1,7 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +21,8 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
+import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
@@ -46,7 +50,7 @@ import kotlin.math.round
 /**
  * @author by furqan on 22/04/19
  */
-class HotelDetailFragment : HotelBaseFragment() {
+class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalSearchListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -173,6 +177,31 @@ class HotelDetailFragment : HotelBaseFragment() {
         super.onSaveInstanceState(outState)
         outState.putParcelable(SAVED_SEARCH_PARAMETER, hotelHomepageModel)
         outState.putBoolean(SAVED_ENABLE_BUTTON, isButtonEnabled)
+    }
+
+    override fun onClick(intent: Intent) {
+        startActivityForResult(intent, REQUEST_CODE_GLOBAL_SEARCH)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_CODE_GLOBAL_SEARCH -> if (resultCode == Activity.RESULT_OK) {
+                data?.let {
+                    hotelHomepageModel.apply {
+                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_IN_DATE)) checkInDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_IN_DATE)
+                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE)) checkOutDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE)
+                        if (it.hasExtra(HotelGlobalSearchActivity.NUM_OF_ROOMS)) roomCount = it.getIntExtra(HotelGlobalSearchActivity.NUM_OF_ROOMS, 1)
+                        if (it.hasExtra(HotelGlobalSearchActivity.NUM_OF_GUESTS)) adultCount = it.getIntExtra(HotelGlobalSearchActivity.NUM_OF_GUESTS, 1)
+                    }
+                    showLoadingContainerBottom()
+                    detailViewModel.getRoomWithoutHotelData(
+                            GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                            hotelHomepageModel)
+                }
+            }
+        }
     }
 
     private fun setupLayout(data: PropertyDetailData) {
@@ -420,8 +449,7 @@ class HotelDetailFragment : HotelBaseFragment() {
     }
 
     private fun setupPriceButton(data: List<HotelRoom>) {
-        container_shimmering_bottom.visibility = View.GONE
-        container_bottom.visibility = View.VISIBLE
+        hideLoadingContainerBottom()
 
         if (data.isNotEmpty()) {
             roomPrice = data.first().roomPrice.roomPrice
@@ -461,7 +489,13 @@ class HotelDetailFragment : HotelBaseFragment() {
             btn_see_room.buttonCompatType = ButtonCompat.DISABLE
         }
 
+        setupGlobalSearchWidget()
+    }
+
+    private fun setupGlobalSearchWidget() {
         // setup hotel global search widget
+        widget_hotel_global_search.title = hotelName
+        widget_hotel_global_search.globalSearchListener = this
         widget_hotel_global_search.setPreferencesData(hotelHomepageModel.checkInDate,
                 hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, hotelHomepageModel.roomCount)
         widget_hotel_global_search.buildView()
@@ -489,7 +523,19 @@ class HotelDetailFragment : HotelBaseFragment() {
         }
     }
 
+    private fun showLoadingContainerBottom() {
+        container_shimmering_bottom.visibility = View.VISIBLE
+        container_bottom.visibility = View.GONE
+    }
+
+    private fun hideLoadingContainerBottom() {
+        container_shimmering_bottom.visibility = View.GONE
+        container_bottom.visibility = View.VISIBLE
+    }
+
     companion object {
+
+        const val REQUEST_CODE_GLOBAL_SEARCH = 103
 
         const val SAVED_SEARCH_PARAMETER = "SAVED_SEARCH_PARAMETER"
         const val SAVED_ENABLE_BUTTON = "SAVED_ENABLE_BUTTON"
