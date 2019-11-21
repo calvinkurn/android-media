@@ -215,7 +215,7 @@ class CategoryPageAnalytics {
                 KEY_EVENT_LABEL, product_id,
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
-                KEY_CLICK, DataLayer.mapOf( 
+                KEY_CLICK, DataLayer.mapOf(
                 KEY_ACTIONFIELD, DataLayer.mapOf(
                 KEY_LIST, pathList),
                 KEY_PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
@@ -273,7 +273,6 @@ class CategoryPageAnalytics {
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
-
 
     // 13
 
@@ -384,6 +383,14 @@ class CategoryPageAnalytics {
                 KEY_CATEGORY_ID, category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
+    }
+
+
+    private fun getProductItemPath(path: String, id: String): String {
+        if (path.isNotEmpty()) {
+            return "category/$path - $id"
+        }
+        return ""
     }
 
 }

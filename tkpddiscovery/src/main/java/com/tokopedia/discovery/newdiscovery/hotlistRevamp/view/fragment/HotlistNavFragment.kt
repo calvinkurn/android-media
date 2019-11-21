@@ -89,10 +89,11 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     private lateinit var component: HotlistNavComponent
     private lateinit var userSession: UserSession
     private lateinit var gcmHandler: GCMHandler
-    private lateinit var quickFilterAdapter: QuickFilterAdapter
-    private lateinit var cpmAdsAdapter: CpmAdsAdapter
 
+    private var quickFilterAdapter: QuickFilterAdapter? = null
+    private var cpmAdsAdapter: CpmAdsAdapter? = null
     private var productNavListAdapter: ProductNavListAdapter? = null
+
     private var productList: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
     private var CpmList: ArrayList<CpmItem> = ArrayList()
     private lateinit var productTypeFactory: ProductTypeFactory
@@ -559,6 +560,11 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                 viewedTopAdsList)
     }
 
+    override fun onPause() {
+        super.onPause()
+        productNavListAdapter?.onPause()
+    }
+
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {
     }
 
@@ -693,6 +699,26 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
         shareData.type = LinkerData.HOTLIST_TYPE
         DefaultShare(activity, shareData).show()
+    }
 
+    override fun topAdsTrackerUrlTrigger(url: String) {
+    }
+
+    override fun onDestroyView() {
+
+        cpm_recyclerview.adapter = null
+        cpm_recyclerview.layoutManager = null
+
+        quickfilter_recyclerview.adapter = null
+        quickfilter_recyclerview.layoutManager = null
+
+        product_recyclerview.adapter = null
+        product_recyclerview.layoutManager = null
+
+        productNavListAdapter = null
+        cpmAdsAdapter = null
+        quickFilterAdapter = null
+
+        super.onDestroyView()
     }
 }

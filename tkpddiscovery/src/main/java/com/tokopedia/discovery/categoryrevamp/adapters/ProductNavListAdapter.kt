@@ -19,7 +19,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
                             val visitables: ArrayList<Visitable<ProductTypeFactory>>,
                             val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
 
-    private val loadingMoreModel: LoadingMoreModel  by lazy { LoadingMoreModel() }
+    private val loadingMoreModel: LoadingMoreModel by lazy { LoadingMoreModel() }
 
     private val listShimmerModel: ListShimmerModel by lazy { ListShimmerModel() }
 
@@ -156,9 +156,16 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             val position = holder.adapterPosition
             if (!viewMap.containsKey(position)) {
                 viewMap[position] = true
-                onItemChangeView.onListItemImpressionEvent(visitables[position] as Visitable<Any>,position)
-            }
+                val item = visitables[position] as ProductsItem
+                item.adapter_position = position
 
+                if (item.isTopAds) {
+                    onItemChangeView.topAdsTrackerUrlTrigger(item.productImpTrackingUrl)
+                    viewedTopAdsList.add(item)
+                } else {
+                    viewedProductList.add(item)
+                }
+            }
         }
     }
 
