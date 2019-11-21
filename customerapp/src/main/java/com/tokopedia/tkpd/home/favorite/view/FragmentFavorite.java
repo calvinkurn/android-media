@@ -59,6 +59,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     private static final String FAVORITE_SHOP_SCREEN_NAME = "/favorite";
     public static final String SCREEN_PARAM_IS_LOGGED_IN_STATUS = "isLoggedInStatus";
     public static final String SCREEN_PARAM_IS_FAVOURITE_EMPTY = "isFavouriteEmpty";
+    private Boolean isUserEventTrackerDoneTrack = false;
 
     //value is logged in is always true, because favorite shop can only be open from
     //account fragment, which is only logged in user that can access that tab
@@ -405,13 +406,16 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     private void sendFavoriteShopScreenTracker(boolean isFavouriteEmpty) {
-        HashMap<String, String> customDimensions = new HashMap<>();
-        customDimensions.put(SCREEN_PARAM_IS_LOGGED_IN_STATUS, VALUE_IS_LOGGED_IN_FAVORITE_SHOP);
-        customDimensions.put(SCREEN_PARAM_IS_FAVOURITE_EMPTY, String.valueOf(isFavouriteEmpty));
+        if (!isUserEventTrackerDoneTrack) {
+            HashMap<String, String> customDimensions = new HashMap<>();
+            customDimensions.put(SCREEN_PARAM_IS_LOGGED_IN_STATUS, VALUE_IS_LOGGED_IN_FAVORITE_SHOP);
+            customDimensions.put(SCREEN_PARAM_IS_FAVOURITE_EMPTY, String.valueOf(isFavouriteEmpty));
 
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(
-                FAVORITE_SHOP_SCREEN_NAME,
-                customDimensions
-        );
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(
+                    FAVORITE_SHOP_SCREEN_NAME,
+                    customDimensions
+            );
+            isUserEventTrackerDoneTrack = true;
+        }
     }
 }
