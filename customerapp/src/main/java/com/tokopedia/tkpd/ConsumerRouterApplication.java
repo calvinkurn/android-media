@@ -177,8 +177,6 @@ import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
-import com.tokopedia.ovo.view.PaymentQRSummaryActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.setting.PaymentSettingInternalRouter;
 import com.tokopedia.payment.setting.util.PaymentSettingRouter;
@@ -338,7 +336,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ResolutionRouter,
         TradeInRouter,
         ProductDetailRouter,
-        OvoPayWithQrRouter,
         KYCRouter {
 
     private static final String EXTRA = "extra";
@@ -810,18 +807,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public long getMinAmountFromRemoteConfig() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
-        return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MIN_AMOUNT, 1000);
-    }
-
-    @Override
-    public long getMaxAmountFromRemoteConfig() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
-        return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MAX_AMOUNT, 10000000);
-    }
-
-    @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
         Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
         intent.putExtra(EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(Uri.encode(url), activity));
@@ -1145,11 +1130,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
-    }
-
-    @Override
-    public Intent getOvoActivityIntent(Context context) {
-        return new Intent(context, PaymentQRSummaryActivity.class);
     }
 
     @Override
