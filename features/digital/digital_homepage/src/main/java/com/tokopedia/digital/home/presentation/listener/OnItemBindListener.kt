@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.listener
 
+import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
@@ -12,6 +13,7 @@ interface OnItemBindListener {
     fun onNewUserZoneItemDigitalBind(loadFromCloud: Boolean?)
     fun onSpotlightItemDigitalBind(loadFromCloud: Boolean?)
     fun onSubscriptionItemDigitalBind(loadFromCloud: Boolean?)
+    fun onRecommendationItemDigitalBind(loadFromCloud: Boolean?)
     fun onPromoItemDigitalBind()
 
     fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, i: Int)
@@ -22,4 +24,5 @@ interface OnItemBindListener {
 
     fun onBannerImpressionTrack(banner: DigitalHomePageBannerModel.Banner?, i: Int)
     fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int)
+    fun onRecommendationImpression(element: RecommendationItemEntity, position: Int)
 }

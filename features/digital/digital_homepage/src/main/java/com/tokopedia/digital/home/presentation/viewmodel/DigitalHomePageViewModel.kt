@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common_digital.common.presentation.model.RecommendationEntity
 import com.tokopedia.digital.home.domain.GetSortListHomePageUseCase
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -10,6 +11,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -74,6 +76,34 @@ class DigitalHomePageViewModel  @Inject constructor(
                 val updatedList = it.toMutableList()
                 updatedList[CATEGORY_ORDER].isLoaded = true
                 updatedList[CATEGORY_ORDER].isSuccess = false
+                digitalHomePageList.value = updatedList
+                checkIfAllError()
+            }
+        }
+    }
+
+    fun getRecommendationList(rawQuery: String, isLoadFromCloud: Boolean) {
+        val param = mapOf(DEVICE_ID_PARAM to DEFAULT_DEVICE_ID)
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default){
+                val graphqlRequest = GraphqlRequest(rawQuery, DigitalHomePageRecommendationModel::class.java, param)
+                val graphqlCacheStrategy = getCacheStrategy(isLoadFromCloud)
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+            }.getSuccessData<DigitalHomePageRecommendationModel>()
+            digitalHomePageList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[RECOMMENDATION_ORDER] = data
+                updatedList[RECOMMENDATION_ORDER].isLoaded = true
+                updatedList[RECOMMENDATION_ORDER].isSuccess = true
+                digitalHomePageList.value = updatedList
+            }
+        }){
+            val error = it
+            digitalHomePageList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[RECOMMENDATION_ORDER].isLoaded = true
+                updatedList[RECOMMENDATION_ORDER].isSuccess = false
+                updatedList[RECOMMENDATION_ORDER].isEmpty = false
                 digitalHomePageList.value = updatedList
                 checkIfAllError()
             }
@@ -261,11 +291,12 @@ class DigitalHomePageViewModel  @Inject constructor(
         const val BANNER_ORDER = 0
         const val FAVORITES_ORDER = 1
         const val TRUST_MARK_ORDER = 2
-        const val NEW_USER_ZONE_ORDER = 3
-        const val SPOTLIGHT_ORDER = 4
-        const val SUBSCRIPTION_ORDER = 5
-        const val CATEGORY_ORDER = 6
-        const val PROMO_ORDER = 6
+        const val RECOMMENDATION_ORDER = 3
+        const val NEW_USER_ZONE_ORDER = 4
+        const val SPOTLIGHT_ORDER = 5
+        const val SUBSCRIPTION_ORDER = 6
+        const val CATEGORY_ORDER = 7
+        const val PROMO_ORDER = 8
 
         const val SECTION_TYPE = "sectionType"
         const val FAVORITES_PARAM = "BEHAVIOURAL_ICON"
@@ -273,5 +304,7 @@ class DigitalHomePageViewModel  @Inject constructor(
         const val NEW_USER_ZONE_PARAM = "NEW_USER_ZONE"
         const val SPOTLIGHT_PARAM = "SPOTLIGHT"
         const val SUBSCRIPTION_PARAM = "SUBSCRIPTION_SUGGESTION"
+        const val DEVICE_ID_PARAM = "device_id"
+        const val DEFAULT_DEVICE_ID = 5
     }
 }

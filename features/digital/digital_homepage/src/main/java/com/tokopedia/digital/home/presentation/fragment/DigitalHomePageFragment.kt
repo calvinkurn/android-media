@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
@@ -246,6 +247,11 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
                 ?: true)
     }
 
+    override fun onRecommendationItemDigitalBind(loadFromCloud: Boolean?) {
+        viewModel.getRecommendationList(GraphqlHelper.loadRawString(resources, R.raw.digital_recommendation_list), loadFromCloud
+                ?: true)
+    }
+
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
         trackingUtil.eventCategoryClick(element, position)
         RouteManager.route(activity, element?.applink)
@@ -293,6 +299,10 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
+        // do nothing
+    }
+
+    override fun onRecommendationImpression(element: RecommendationItemEntity, position: Int) {
         // do nothing
     }
 

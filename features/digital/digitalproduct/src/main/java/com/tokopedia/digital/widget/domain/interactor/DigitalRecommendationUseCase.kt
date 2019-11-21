@@ -3,8 +3,8 @@ package com.tokopedia.digital.widget.domain.interactor
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.digital.R
-import com.tokopedia.digital.widget.data.entity.RecommendationEntity
+import com.tokopedia.common_digital.R
+import com.tokopedia.common_digital.common.presentation.model.RecommendationEntity
 import com.tokopedia.digital.widget.view.model.Recommendation
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -28,8 +28,7 @@ class DigitalRecommendationUseCase(private val graphqlUseCase: GraphqlUseCase, @
         return graphqlUseCase.createObservable(requestParams)
                 .map { graphqlResponse ->
                     val entity = graphqlResponse.getData<RecommendationEntity>(RecommendationEntity::class.java)
-                    entity.rechargeFavoriteRecommentaionList.recommendationItemEntityList
-                            .map {
+                    entity.rechargeFavoriteRecommendationList?.recommendationItemEntityList?.map {
                                 with(it) {
                                     Recommendation(
                                             iconUrl,

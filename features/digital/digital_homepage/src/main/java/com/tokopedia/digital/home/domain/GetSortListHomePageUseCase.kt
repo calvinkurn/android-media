@@ -15,6 +15,9 @@ class GetSortListHomePageUseCase {
         val trustMark = DigitalHomePageTrustMarkModel()
         trustMark.isLoadFromCloud = loadFromCloud
 
+        val recommendation = DigitalHomePageRecommendationModel()
+        recommendation.isLoadFromCloud = loadFromCloud
+
         val newUserZone = DigitalHomePageNewUserZoneModel()
         newUserZone.isLoadFromCloud = loadFromCloud
 
@@ -30,6 +33,7 @@ class GetSortListHomePageUseCase {
         return listOf(homeBanner,
                 favorites,
                 trustMark,
+                recommendation,
                 newUserZone,
                 spotLight,
                 subscription,
