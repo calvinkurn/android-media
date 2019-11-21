@@ -348,9 +348,6 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private fun drawStoreLocations(data: List<DropoffNearbyModel>) {
         mMarkerList.clear()
         mMap?.clear()
-        mMap?.addMarker(MarkerOptions()
-                .position(mLastLocation)
-                .icon(bitmapDescriptorFromVector(this, R.drawable.ic_pin_map)))
         for (datum in data) {
             val marker = mMap?.addMarker(MarkerOptions()
                     .position(getLatLng(datum.latitude, datum.longitude))
