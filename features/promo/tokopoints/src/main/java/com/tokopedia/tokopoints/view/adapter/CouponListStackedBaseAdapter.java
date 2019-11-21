@@ -6,11 +6,15 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,12 +46,28 @@ import java.util.Map;
 
 import rx.Subscriber;
 
+import static com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment.REQUEST_CODE_STACKED_ADAPTER;
+import static com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment.REQUEST_CODE_STACKED_IN_ADAPTER;
+
 public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
     private Context mContext;
     private int mCategoryId = 0;
     private CouponListingStackedPresenter mPresenter;
     private RecyclerView mRecyclerView;
+
+    public void couponCodeVisible(String code, boolean isStacked) {
+        for (int i = 0; i < getItems().size(); i++) {
+            CouponValueEntity data = getItem(i);
+            if ((!isStacked && code.equals(data.getCode())) || ( isStacked && data.isStacked() && data.getStackId().equals(code))) {
+                if (data.isNewCoupon()) {
+                    data.setNewCoupon(false);
+                    notifyItemChanged(i);
+                }
+                break;
+            }
+        }
+    }
 
 
     public class ViewHolder extends BaseVH {
@@ -57,8 +77,8 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
         /*This section is exclusively for handling timer*/
         public CountDownTimer timer;
         public ProgressBar progressTimer;
-        public View viewCouponNew;
-        public CardView cvShadow1, cvShadow2, cvData;
+        //        public View viewCouponNew;
+        public CardView cvShadow1, cvShadow2, cvData, cv1, cv2;
 
         public ViewHolder(View view) {
             super(view);
@@ -71,10 +91,12 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
             tvMinTxnLabel = view.findViewById(R.id.tv_min_txn_label);
             tvStackCount = view.findViewById(R.id.text_stack_count);
             progressTimer = view.findViewById(R.id.progress_timer);
-            viewCouponNew = view.findViewById(R.id.view_coupon_new);
+//            viewCouponNew = view.findViewById(R.id.view_coupon_new);
             cvShadow1 = view.findViewById(R.id.cv_shadow_1);
             cvShadow2 = view.findViewById(R.id.cv_shadow_2);
             cvData = view.findViewById(R.id.cv_data);
+            cv1 = view.findViewById(R.id.cv_1);
+            cv2 = view.findViewById(R.id.cv_2);
         }
 
         @Override
@@ -84,7 +106,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
         }
 
         public void onDetach() {
-            if (timer != null){
+            if (timer != null) {
                 timer.cancel();
                 timer = null;
             }
@@ -214,9 +236,13 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
 
         if (item.isNewCoupon()) {
-            holder.viewCouponNew.setVisibility(View.VISIBLE);
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.new_coupon_background_color));
+            holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.new_coupon_background_color));
+            holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.new_coupon_background_color));
         } else {
-            holder.viewCouponNew.setVisibility(View.GONE);
+            holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
+            holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
         }
 
         if (item.getUsage() != null) {
@@ -293,7 +319,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                 try {
                     holder.tvStackCount.setTextColor(Color.parseColor(item.getUpperLeftSection().getTextAttributes().get(0).getColor()));
                 } catch (IllegalArgumentException iae) {
-                    holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.getContext(),com.tokopedia.design.R.color.medium_green));
+                    holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.getContext(), com.tokopedia.design.R.color.medium_green));
                 }
             }
 
@@ -318,7 +344,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                     holder.progressTimer.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
                     holder.progressTimer.setVisibility(View.VISIBLE);
 
-                    if(holder.timer!= null)
+                    if (holder.timer != null)
                         holder.timer.cancel();
                     holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                         @Override
@@ -357,7 +383,11 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                     } else {
                         Bundle bundle = new Bundle();
                         bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
-                        holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+                        if (item.isNewCoupon()) {
+                            ((FragmentActivity) holder.imgBanner.getContext()).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), REQUEST_CODE_STACKED_ADAPTER);
+                        } else {
+                            holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle));
+                        }
                         sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
                     }
                 });
@@ -366,14 +396,14 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
     }
 
     private void enableOrDisableImages(ViewHolder holder, CouponValueEntity item) {
-        if(item.getUsage()!=null) {
+        if (item.getUsage() != null) {
             if (item.getUsage().getActiveCountDown() > 0
                     || item.getUsage().getExpiredCountDown() <= 0) {
                 disableImages(holder);
             } else {
                 enableImages(holder);
             }
-        }else{
+        } else {
             disableImages(holder);
         }
     }
@@ -413,7 +443,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
     @Override
     public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        if (holder instanceof CouponListStackedBaseAdapter.ViewHolder){
+        if (holder instanceof CouponListStackedBaseAdapter.ViewHolder) {
             ((ViewHolder) holder).onDetach();
         }
 
@@ -426,12 +456,11 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
     }
 
     public void onDestroyView() {
-        for(int i = 0;i < mRecyclerView.getChildCount();i++){
+        for (int i = 0; i < mRecyclerView.getChildCount(); i++) {
             ViewHolder viewHolder = (ViewHolder) mRecyclerView.getChildViewHolder(mRecyclerView.getChildAt(i));
             viewHolder.onDetach();
         }
     }
-
 
 
 }

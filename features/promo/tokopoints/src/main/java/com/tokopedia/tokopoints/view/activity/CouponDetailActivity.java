@@ -80,6 +80,7 @@ public class CouponDetailActivity extends BaseSimpleActivity implements HasCompo
 
     @Override
     public void onBackPressed() {
+        setResult(RESULT_OK,getIntent());
         super.onBackPressed();
 
         AnalyticsTrackerUtil.sendEvent(getApplicationContext(),
