@@ -17,6 +17,7 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
     private var listener: TravellerInfoWidgetListener? = null
     var phoneNum: String = ""
     var phoneCode: Int = 0
+    var phoneCountry: String = ""
 
     init {
         View.inflate(context, R.layout.layout_widget_traveller_info, this)
@@ -36,6 +37,12 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
         this.phoneCode = phoneCode
         tv_contact_phone_number.text = "+${phoneCode} ${phoneNum}"
     }
+
+    fun setContactPhoneCountry(phoneCountry: String) {
+        this.phoneCountry = phoneCountry
+    }
+
+    fun getContactPhoneCountry(): String = phoneCountry
 
     fun getContactName(): String = tv_contact_name.text.toString().trim()
 

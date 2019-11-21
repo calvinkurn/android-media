@@ -420,6 +420,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
         }
         flightPassengerAdapter.updateList(passengers)
+        if (passengers.first().passengerLastName.isNullOrEmpty() && switch_traveller_as_passenger.isChecked) {
+            val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
+            navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), requestId)
+        }
     }
 
     private fun getDepartureId(): String = bookingViewModel.getDepartureId()
@@ -460,6 +464,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         widget_traveller_info.setContactName(profileInfo.fullName)
         widget_traveller_info.setContactPhoneNum(62, profileInfo.phone)
         widget_traveller_info.setContactEmail(profileInfo.email)
+        widget_traveller_info.setContactPhoneCountry("ID")
     }
 
     override fun initInjector() {
@@ -530,7 +535,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 contactName = widget_traveller_info.getContactName(),
                 contactEmail = widget_traveller_info.getContactEmail(),
                 contactPhone = widget_traveller_info.getContactPhoneNum(),
-                contactCountry = "ID",
+                contactCountry = widget_traveller_info.getContactPhoneCountry(),
                 dummy = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_verify_cart),
                 checkVoucherQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher),
                 dummyCheckVoucher = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_check_voucher))
@@ -656,6 +661,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     widget_traveller_info.setContactName(contactData.name)
                     widget_traveller_info.setContactEmail(contactData.email)
                     widget_traveller_info.setContactPhoneNum(contactData.phoneCode, contactData.phone)
+                    widget_traveller_info.setContactPhoneCountry(contactData.phoneCountry)
                 }
             }
 

@@ -86,6 +86,7 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
                 if (resultCode == Activity.RESULT_OK) {
                     val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE) ?: CountryPhoneCode()
                     contactData.phoneCode = countryPhoneCode.countryPhoneCode.toInt()
+                    contactData.phoneCountry = countryPhoneCode.countryId
 
                     spinnerData.clear()
                     spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)

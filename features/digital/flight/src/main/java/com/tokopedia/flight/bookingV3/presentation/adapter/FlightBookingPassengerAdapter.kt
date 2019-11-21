@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -59,7 +60,8 @@ class FlightBookingPassengerAdapter: RecyclerView.Adapter<FlightBookingPassenger
 
                 //initiate passenger detail like passport num, birthdate, luggage and amenities
                 var simpleViewModels = listOf<SimpleViewModel>().toMutableList()
-                if (!passenger.passengerBirthdate.isNullOrEmpty()) simpleViewModels.add(SimpleViewModel("Tanggal Lahir" + " | ", passenger.passengerBirthdate))
+                if (!passenger.passengerBirthdate.isNullOrEmpty()) simpleViewModels.add(SimpleViewModel("Tanggal Lahir" + " | ",
+                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, passenger.passengerBirthdate))))
                 if (!passenger.passportNumber.isNullOrEmpty()) simpleViewModels.add(SimpleViewModel("Nomor Paspor" + " | ", passenger.passportNumber))
                 if (passenger.flightBookingLuggageMetaViewModels != null) {
                     for (flightBookingLuggageRouteViewModel in passenger.flightBookingLuggageMetaViewModels) {
