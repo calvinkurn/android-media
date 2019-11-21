@@ -88,9 +88,9 @@ import javax.inject.Inject
 class FlightBookingFragment : BaseDaggerFragment() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
-    private val uiScope2 = CoroutineScope(Dispatchers.Main)
     var isCouponChanged = false
     var totalCartPrice: Int = 0
+    var isLoading = false
 
     lateinit var flightRouteAdapter: FlightJourneyAdapter
     lateinit var flightInsuranceAdapter: FlightInsuranceAdapter
@@ -139,7 +139,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (layout_loading.isVisible) launchLoadingPageJob.cancel()
-                    if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
+                    if (loadingDialog.isShowing) isLoading = false
                     renderData(it.data)
                     setUpTimer(it.data.orderDueTimeStamp)
                     sendAddToCartTracking()
@@ -186,7 +186,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightCheckoutResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
+                    if (loadingDialog.isShowing) isLoading = false
                     navigateToTopPay(it.data)
                     sendCheckOutTracking(it.data.parameter.pid)
                 }
@@ -200,7 +200,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightVerifyResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
+                    if (loadingDialog.isShowing) isLoading = false
                     it.data.data.cartItems[0]?.let { cart ->
                         if (cart.newPrice.isNotEmpty()) {
                             showRepriceTag(cart)
@@ -211,7 +211,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    if (loadingDialog.isShowing) launchLoadingLayoutJob.cancel()
+                    if (loadingDialog.isShowing) isLoading = false
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
@@ -307,7 +307,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
-                launchLoadingLayoutJob.start()
+                showLoadingDialog()
                 bookingViewModel.checkOutCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart),
                         totalCartPrice,
                         GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_checkout_data))
@@ -333,7 +333,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun refreshCart() {
-        launchLoadingLayoutJob.start()
+        showLoadingDialog()
         bookingViewModel.getCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
                 bookingViewModel.getCartId(), "")
     }
@@ -532,7 +532,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun verifyCart() {
-        launchLoadingLayoutJob.start()
+        showLoadingDialog()
         bookingViewModel.verifyCartData(
                 GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart),
                 totalPrice = totalCartPrice,
@@ -631,21 +631,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
         delay(2000L)
         layout_loading.visibility = View.GONE
         layout_shimmering.visibility = View.VISIBLE
-    }
-
-    private var launchLoadingLayoutJob = uiScope2.launch {
-        val list = randomLoadingSubtitle()
-        val view = View.inflate(context, R.layout.layout_flight_booking_loading, null)
-        val loadingText = view.findViewById(R.id.tv_loading_subtitle) as Typography
-        showLoadingDialog(view)
-        loadingText.text = list[0]
-        delay(2000L)
-        loadingText.text = list[1]
-        delay(2000L)
-        loadingText.text = list[2]
-        delay(2000L)
-        loadingText.text = list[3]
-        delay(2000L)
     }
 
     private fun hideShimmering() {
@@ -832,7 +817,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun proceedCheckoutWithoutLuggage() {
         Log.d("HEHE", "proceedCheckoutWoLuggage()")
-        launchLoadingLayoutJob.start()
+        showLoadingDialog()
         bookingViewModel.proceedCheckoutWithoutLuggage(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_checkout_cart),
                 totalCartPrice)
     }
@@ -851,13 +836,26 @@ class FlightBookingFragment : BaseDaggerFragment() {
         activity?.finish()
     }
 
-    private fun showLoadingDialog(view: View) {
-        if (context != null && ::loadingDialog.isInitialized) {
+    private fun showLoadingDialog() {
+        val list = randomLoadingSubtitle()
+        val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
+        val loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
+        if (context != null) {
             loadingDialog.setUnlockVersion()
-            loadingDialog.setChild(view)
+            loadingDialog.setChild(loadingView)
             loadingDialog.setOverlayClose(false)
-            if (launchLoadingPageJob.isCancelled) loadingDialog.show()
+            isLoading = true
+            loadingDialog.show()
+            var index = 0
+            while (isLoading) {
+                loadingText.text = list[index%4]
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(2000L)
+                }
+                index++
+            }
         }
+
     }
 
     companion object {
