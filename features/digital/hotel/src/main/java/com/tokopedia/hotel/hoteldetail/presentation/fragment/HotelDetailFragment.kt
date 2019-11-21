@@ -1,16 +1,16 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.graphics.PorterDuff
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.component.ButtonCompat
@@ -100,7 +100,8 @@ class HotelDetailFragment : HotelBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_SEARCH_PARAMETER)) {
-            hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER) ?: HotelHomepageModel()
+            hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER)
+                    ?: HotelHomepageModel()
             isButtonEnabled = savedInstanceState.getBoolean(SAVED_ENABLE_BUTTON)
         }
 
@@ -119,7 +120,6 @@ class HotelDetailFragment : HotelBaseFragment() {
                     GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
                     hotelHomepageModel.locId)
         }
-
 
 
     }
@@ -460,6 +460,11 @@ class HotelDetailFragment : HotelBaseFragment() {
             btn_see_room.isEnabled = false
             btn_see_room.buttonCompatType = ButtonCompat.DISABLE
         }
+
+        // setup hotel global search widget
+        widget_hotel_global_search.setPreferencesData(hotelHomepageModel.checkInDate,
+                hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, hotelHomepageModel.roomCount)
+        widget_hotel_global_search.buildView()
     }
 
     private fun openImagePreview(index: Int) {

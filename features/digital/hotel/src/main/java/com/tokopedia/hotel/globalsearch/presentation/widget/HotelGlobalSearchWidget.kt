@@ -3,6 +3,7 @@ package com.tokopedia.hotel.globalsearch.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_hotel_global_search.view.*
@@ -12,6 +13,11 @@ import kotlinx.android.synthetic.main.widget_hotel_global_search.view.*
  */
 class HotelGlobalSearchWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         BaseCustomView(context, attrs, defStyleAttr) {
+
+    lateinit var checkInDate: String
+    lateinit var checkOutDate: String
+    var numOfGuests: Int = 0
+    var numOfRooms: Int = 0
 
     var globalSearchListener: GlobalSearchListener? = null
         set(value) {
@@ -30,8 +36,20 @@ class HotelGlobalSearchWidget @JvmOverloads constructor(context: Context, attrs:
         tg_hotel_widget_global_search_change.setOnClickListener { navigateToChangePreferencePage() }
     }
 
-    fun setPreferencesText(preferencesText: String) {
-        tg_hotel_widget_global_search_pref.text = preferencesText
+    fun setPreferencesData(checkInDate: String, checkOutDate: String, numOfGuests: Int, numOfRooms: Int) {
+        this.checkInDate = checkInDate
+        this.checkOutDate = checkOutDate
+        this.numOfGuests = numOfGuests
+        this.numOfRooms = numOfRooms
+    }
+
+    fun buildView() {
+        val checkInString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR,
+                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkInDate))
+        val checkOutString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR,
+                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOutDate))
+        tg_hotel_widget_global_search_pref.text = context.getString(R.string.template_search_subtitle,
+                checkInString, checkOutString, numOfRooms, numOfGuests)
     }
 
     private fun navigateToChangePreferencePage() {
