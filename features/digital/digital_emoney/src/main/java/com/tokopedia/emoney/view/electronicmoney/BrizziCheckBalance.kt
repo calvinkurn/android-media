@@ -11,7 +11,7 @@ import id.co.bri.sdk.BrizziCardObject
 import id.co.bri.sdk.Callback
 import id.co.bri.sdk.exception.BrizziException
 
-class BrizziCheckBalance(val brizziInstance: Brizzi, val listener: BrizziActionListener) : BriElectronicMoney {
+class BrizziCheckBalance(private val brizziInstance: Brizzi, val listener: BrizziActionListener) : BriElectronicMoney {
 
     override fun processTagIntent(intent: Intent) {
         listener.setIssuerId(ISSUER_ID_BRIZZI)

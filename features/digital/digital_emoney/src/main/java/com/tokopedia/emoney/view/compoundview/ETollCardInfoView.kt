@@ -80,13 +80,13 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         paramsTextLabelBalance.width = textLabelBalance.measuredWidth
         textLabelBalance.layoutParams = paramsTextLabelBalance
 
-        textRemainingBalance.text = ""
+        textRemainingBalance.text = "Rp. 1.000.000"
         textRemainingBalance.measure(0, 0)
         val paramsTextRemainingBalance = textRemainingBalance.layoutParams
         paramsTextRemainingBalance.width = textRemainingBalance.measuredWidth
         textRemainingBalance.layoutParams = paramsTextRemainingBalance
 
-        textDate.text = ""
+        textDate.text = " 26 Jun 2018, 13:47 "
         textDate.measure(0, 0)
         val paramsTextDate = textDate.layoutParams
         paramsTextDate.width = textDate.measuredWidth

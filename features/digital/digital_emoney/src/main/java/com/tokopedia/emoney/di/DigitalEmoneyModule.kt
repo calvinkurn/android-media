@@ -11,6 +11,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import id.co.bri.sdk.Brizzi
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -41,5 +42,11 @@ class DigitalEmoneyModule {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @DigitalEmoneyScope
+    @Provides
+    fun provideBrizziInstance(): Brizzi {
+        return Brizzi.getInstance()
     }
 }

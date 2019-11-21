@@ -49,11 +49,11 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     fun showCardInfoFromApi(inquiryBalanceModel: EmoneyInquiry) {
         textLabelProgressTitle.visibility = View.GONE
         textLabelProgressMessage.visibility = View.GONE
-        buttonTopup.visibility = View.VISIBLE
-        eTollCardInfoView.visibility = View.VISIBLE
         inquiryBalanceModel.attributesEmoneyInquiry?.let {
             buttonTopup.text = it.buttonText
+            eTollCardInfoView.visibility = View.VISIBLE
             eTollCardInfoView.showCardInfo(it)
+            buttonTopup.visibility = View.VISIBLE
 
             if (::listener.isInitialized) {
                 buttonTopup.setOnClickListener {
