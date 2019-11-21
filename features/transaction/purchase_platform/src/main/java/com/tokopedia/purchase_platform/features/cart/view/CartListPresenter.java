@@ -1575,6 +1575,12 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setCategoryId("");
         enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
 
+        if (cartRecommendationItemHolderData.getRecommendationItem().isFreeOngkirActive()) {
+            enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR);
+        } else {
+            enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        }
+
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
         enhancedECommerceAdd.addProduct(enhancedECommerceProductCartMapData.getProduct());
