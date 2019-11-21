@@ -620,15 +620,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private var launchLoadingPageJob = uiScope.launch {
         val list = randomLoadingSubtitle()
-        layout_loading.visibility = View.VISIBLE
-        tv_loading_subtitle.text = list[0]
-        delay(2000L)
-        tv_loading_subtitle.text = list[1]
-        delay(2000L)
-        tv_loading_subtitle.text = list[2]
-        delay(2000L)
-        layout_loading.visibility = View.GONE
-        layout_shimmering.visibility = View.VISIBLE
+        try {
+            layout_loading.visibility = View.VISIBLE
+            tv_loading_subtitle.text = list[0]
+            delay(2000L)
+            tv_loading_subtitle.text = list[1]
+            delay(2000L)
+            tv_loading_subtitle.text = list[2]
+            delay(2000L)
+            layout_loading.visibility = View.GONE
+            layout_shimmering.visibility = View.VISIBLE
+        } catch (e: Throwable) { }
+
     }
 
     private fun hideShimmering() {
@@ -842,18 +845,23 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun showLoadingDialog() {
         context?.let {
-            val loadingDialog = DialogUnify(it, 0, 0)
-            loadingDialog.setUnlockVersion()
-            loadingDialog.setCancelable(false)
-            loadingDialog.setOverlayClose(false)
             val list = randomLoadingSubtitle()
             if (!loadingDialog.isShowing) {
+                val loadingDialog = DialogUnify(it, 0, 0)
+                loadingDialog.setUnlockVersion()
+                loadingDialog.setCancelable(false)
+                loadingDialog.setOverlayClose(false)
+
                 val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
                 loadingDialog.setChild(loadingView)
                 loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
+                loadingText.text = list[0]
+
+                loadingDialog.show()
+            } else {
+                loadingText.text = list[0]
             }
-            loadingText.text = list[0]
-            if (!loadingDialog.isShowing) { loadingDialog.show() }
+
         }
 
     }
