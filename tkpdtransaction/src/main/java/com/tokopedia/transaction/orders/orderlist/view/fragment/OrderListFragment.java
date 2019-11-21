@@ -53,7 +53,8 @@ import com.tokopedia.transaction.orders.orderlist.data.ActionButton;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
-import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.GetBomOrderFilter;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.CustomDate;
+import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.DefaultDate;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListUseCaseModule;
@@ -73,9 +74,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -135,9 +140,24 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private Bundle savedState;
     private String startDate = "";
     private String endDate = "";
+    private String defStartDate = "";
+    private String defEndDate = "";
+    private String customStartDate = "";
+    private String customEndDate = "";
+
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
+    private static final String DATE_FORMAT_1 = "yyyy/MM/dd";
+    private static final String DATE_FORMAT_2 = "d MMM yyyy";
+    private static final String DATE_FORMAT_3= "d M yyyy";
+
     private int orderId = 1;
     private String selectedOrderId = "0";
     private String actionButtonUri = "";
+    private HashMap<String,String>selectedDateMap= new HashMap<>();
+    private SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
+    private SimpleDateFormat format1 = new SimpleDateFormat(DATE_FORMAT_1, Locale.getDefault());
+    private SimpleDateFormat format2 = new SimpleDateFormat(DATE_FORMAT_2,Locale.getDefault());
+
     @Inject
     OrderListAnalytics orderListAnalytics;
 
@@ -587,10 +607,15 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void setFilterRange(GetBomOrderFilter getBomOrderFilter) {
-        startDate = getBomOrderFilter.getDefaultDate().getStartRangeDate();
-        endDate = getBomOrderFilter.getDefaultDate().getEndRangeDate();
-
+    public void setFilterRange(DefaultDate defaultDate, CustomDate customDate) throws ParseException {
+        try {
+            defStartDate = format.format(format1.parse(defaultDate.getStartRangeDate()));
+            defEndDate = format.format(format1.parse(defaultDate.getEndRangeDate()));
+            customEndDate = format.format(format1.parse(customDate.getEndRangeDate()));
+            customStartDate = format.format(format1.parse(customDate.getStartRangeDate()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -663,6 +688,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         if (v.getId() == R.id.survey_bom) {
             startActivityForResult(SaveDateBottomSheetActivity.getSurveyInstance(getContext(), OPEN_SURVEY_PAGE), SUBMIT_SURVEY_REQUEST);
         } else if (v.getId() == R.id.terapkan) {
+            startDate = selectedDateMap.get(MULAI_DARI);
+            endDate = selectedDateMap.get(SAMPAI);
             refreshHandler.startRefresh();
             orderListAnalytics.sendDateFilterSubmitEvent();
             changeDateBottomSheetDialog.dismiss();
@@ -677,102 +704,91 @@ public class OrderListFragment extends BaseDaggerFragment implements
             datePickerlayout = categoryView.findViewById(R.id.date_picker);
             radioGroup = categoryView.findViewById(R.id.radio_grp);
             terapkan.setOnClickListener(this);
-            sampaiButton.setText(changeDateFormat(endDate));
-            mulaiButton.setText(changeDateFormat(startDate));
+            try {
+                sampaiButton.setText(format2.format(format.parse(customEndDate)));
+                mulaiButton.setText(format2.format(format.parse(customStartDate)));
 
-            crossIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            selectedDateMap.put(SAMPAI,defEndDate);
+            selectedDateMap.put(MULAI_DARI,defStartDate);
+
+            crossIcon.setOnClickListener((View view)->{
                     changeDateBottomSheetDialog.dismiss();
-                }
             });
             changeDateBottomSheetDialog.setCustomContentView(categoryView, "", false);
             changeDateBottomSheetDialog.show();
-            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+            radioGroup.setOnCheckedChangeListener((RadioGroup group, int checkedId)->{
                     if (checkedId == R.id.radio2) {
                         datePickerlayout.setVisibility(View.VISIBLE);
+                        selectedDateMap.clear();
+                        selectedDateMap.put(SAMPAI,customEndDate);
+                        selectedDateMap.put(MULAI_DARI,customStartDate);
+
                     } else {
                         datePickerlayout.setVisibility(View.INVISIBLE);
+                        selectedDateMap.clear();
+                        selectedDateMap.put(SAMPAI,defEndDate);
+                        selectedDateMap.put(MULAI_DARI,defStartDate);
                     }
-
-                }
             });
-
-            mulaiButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            mulaiButton.setOnClickListener((View view)-> {
                     showDatePicker(MULAI_DARI);
-                }
             });
-
-            sampaiButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            sampaiButton.setOnClickListener((View view)->{
                     showDatePicker(SAMPAI);
-                }
             });
-
-
         }
-
     }
 
-    private String changeDateFormat(String date) {
-        String result = "";
+    private String[] split(String date) {
+        String[] dateFormat = new String[0];
         if (date != null) {
-            date = date.substring(0, 10);
-            String[] arrOfStr = date.split("/", 5);
-            arrOfStr[1] = convertMonth(Integer.parseInt(arrOfStr[1]));
-            for (int i = arrOfStr.length - 1; i >= 0; i--) {
-                result = result + " " + arrOfStr[i];
-
-            }
-
+            dateFormat = date.split("/", 5);
         }
-
-        return result;
+        return dateFormat;
     }
 
     private String convertMonth(int num) {
 
         String monthString = "";
         switch (num) {
-            case (0):
+            case (1):
                 monthString = "Jan";
                 break;
-            case (1):
+            case (2):
                 monthString = "Feb";
                 break;
-            case (2):
+            case (3):
                 monthString = "Mar";
                 break;
-            case (3):
+            case (4):
                 monthString = "Apr";
                 break;
-            case (4):
+            case (5):
                 monthString = "Mei";
                 break;
-            case (5):
+            case (6):
                 monthString = "Jun";
                 break;
-            case (6):
+            case (7):
                 monthString = "Jul";
                 break;
-            case (7):
+            case (8):
                 monthString = "Ags";
                 break;
-            case (8):
+            case (9):
                 monthString = "Sep";
                 break;
-            case (9):
+            case (10):
                 monthString = "Okt";
                 break;
-            case (10):
+            case (11):
                 monthString = "Nov";
                 break;
-            case (11):
+            case (12):
                 monthString = "Des";
                 break;
         }
@@ -781,8 +797,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
 
     private void showDatePicker(String title) {
-
-        Calendar minDate = new GregorianCalendar(1900, 1, 1);
+        String[] result = split(customStartDate);
+        Calendar minDate = new GregorianCalendar(Integer.parseInt(result[2]), Integer.parseInt(result[1]), Integer.parseInt(result[0]));
         Calendar maxDate = new GregorianCalendar(getCurrentLocale(getActivity()));
         Calendar defaultDate = new GregorianCalendar(getCurrentLocale(getActivity()));
         datePickerUnify = new DatePickerUnify(getActivity(), minDate, defaultDate, maxDate, new OnDateChangedListener() {
@@ -799,18 +815,21 @@ public class OrderListFragment extends BaseDaggerFragment implements
             datePickerUnify.setTitle(SAMPAI);
         }
 
-        datePickerUnify.getDatePickerButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        datePickerUnify.getDatePickerButton().setOnClickListener((View v)->{
+            Integer[] date = datePickerUnify.getDate();
+            date[1] = date[1] + 1;
+            String day = (date[0] < 10 ? "0" : "") + date[0];
+            String month = (date[1] < 10 ? "0" : "") + date[1];
+            String res = day + "/" + month + "/" + date[2];
+                selectedDateMap.put(title,res);
                 if (title.equalsIgnoreCase(SAMPAI)) {
-                    sampaiButton.setText(datePickerUnify.getDate()[0] + " " + convertMonth(datePickerUnify.getDate()[1]) + " " + datePickerUnify.getDate()[2]);
+                    sampaiButton.setText(date[0] + " " + convertMonth(date[1]) + " " + date[2]);
                 } else {
-                    mulaiButton.setText(datePickerUnify.getDate()[0] + " " + convertMonth(datePickerUnify.getDate()[1]) + " " + datePickerUnify.getDate()[2]);
+                    mulaiButton.setText(date[0] + " " + convertMonth(date[1]) + " " + date[2]);
                 }
                 datePickerUnify.dismiss();
+            });
 
-            }
-        });
         datePickerUnify.setCloseClickListener(view -> {
             datePickerUnify.dismiss();
             return Unit.INSTANCE;

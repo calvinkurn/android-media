@@ -65,6 +65,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -276,7 +277,11 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
                     OrderFilter orderFilter = response.getData(OrderFilter.class);
                     if (orderFilter != null && orderFilter != null) {
-                        getView().setFilterRange(orderFilter.getGetBomOrderFilter());
+                        try {
+                            getView().setFilterRange(orderFilter.getGetBomOrderFilter().getDefaultDate(), orderFilter.getGetBomOrderFilter().getCustomDate());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
                 } else {
                     getView().unregisterScrollListener();
