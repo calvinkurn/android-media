@@ -121,7 +121,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val departureId = args.getString(EXTRA_FLIGHT_DEPARTURE_ID, "")
             val returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID, "")
             val departureTerm = args.getString(EXTRA_FLIGHT_DEPARTURE_TERM, "")
-            val returnTerm = args.getString(EXTRA_FLIGHT_DEPARTURE_TERM, "")
+            val returnTerm = args.getString(EXTRA_FLIGHT_ARRIVAL_TERM, "")
             val searchParam: FlightSearchPassDataViewModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
                     ?: FlightSearchPassDataViewModel()
             val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE)
@@ -476,6 +476,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        context?.let {
+            loadingDialog = DialogUnify(it, 0, 0)
+            loadingDialog.setUnlockVersion()
+            loadingDialog.setCancelable(false)
+            loadingDialog.setOverlayClose(false)
+        }
 
         launchLoadingPageJob.start()
         setUpView()
@@ -839,19 +846,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun showLoadingDialog() {
-        context?.let {
-            hideLoadingDialog()
-            loadingDialog = DialogUnify(it, 0, 0)
-            val list = randomLoadingSubtitle()
-            val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
-            loadingDialog.setChild(loadingView)
-            val loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
-            loadingText.text = list[0]
-            loadingDialog.setUnlockVersion()
-            loadingDialog.setCancelable(false)
-            loadingDialog.setOverlayClose(false)
-            loadingDialog.show()
-        }
+        val list = randomLoadingSubtitle()
+        val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
+        loadingDialog.setChild(loadingView)
+        val loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
+        loadingText.text = list[0]
+        if (!loadingDialog.isShowing) { loadingDialog.show() }
     }
 
     companion object {

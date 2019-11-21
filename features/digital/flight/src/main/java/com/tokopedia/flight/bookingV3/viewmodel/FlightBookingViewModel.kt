@@ -299,7 +299,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         amenity.journeyId = luggageMeta.journeyId
                         amenity.departureAirportId = luggageMeta.departureId
                         amenity.arrivalAirportId = luggageMeta.arrivalId
-                        amenity.type = Amenity.MEAL
+                        amenity.type = Amenity.LUGGAGE
                         amenity.key = luggageMeta.key
                         amenity.itemId = luggage.id
                         flightVerifyPassenger.amenities.add(amenity)
@@ -364,7 +364,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val flightBookingPassengers = flightPassengersData.value ?: listOf()
         // amenities
         val meals = hashMapOf<String, Int>()
+        val mealsCount = hashMapOf<String, Int>()
         val luggages = hashMapOf<String, Int>()
+        val luggageCount = hashMapOf<String, Int>()
 
         for (flightPassengerViewModel in flightBookingPassengers) {
             for (flightBookingAmenityMetaViewModel in flightPassengerViewModel.flightBookingMealMetaViewModels) {
@@ -373,8 +375,12 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         var total = meals[flightBookingAmenityMetaViewModel.description]!!
                         total += flightBookingAmenityViewModel.priceNumeric
                         meals[flightBookingAmenityMetaViewModel.description] = total
+
+                        var count = mealsCount[flightBookingAmenityMetaViewModel.description] ?: 1
+                        mealsCount[flightBookingAmenityMetaViewModel.description] = count + 1
                     } else {
                         meals[flightBookingAmenityMetaViewModel.description] = flightBookingAmenityViewModel.priceNumeric
+                        mealsCount[flightBookingAmenityMetaViewModel.description] = 1
                     }
                 }
             }
@@ -384,8 +390,12 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         var total = luggages[flightBookingLuggageMetaViewModel.description]!!
                         total += flightBookingLuggageViewModel.priceNumeric
                         luggages[flightBookingLuggageMetaViewModel.description] = total
+
+                        var count = luggageCount[flightBookingLuggageMetaViewModel.description] ?: 1
+                        mealsCount[flightBookingLuggageMetaViewModel.description] = count + 1
                     } else {
                         luggages[flightBookingLuggageMetaViewModel.description] = flightBookingLuggageViewModel.priceNumeric
+                        luggageCount[flightBookingLuggageMetaViewModel.description] = 1
                     }
                 }
             }
@@ -393,13 +403,16 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
         val prices = listOf<FlightCart.PriceDetail>().toMutableList()
         for ((key, value) in meals) {
-            prices.add(FlightCart.PriceDetail(String.format("%s %s", "Makanan",
+            val count = mealsCount[key] ?: 1
+            if (count > 1) prices.add(FlightCart.PriceDetail(String.format("%s %s (x%s)", "Makanan", key, count), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
+            else prices.add(FlightCart.PriceDetail(String.format("%s %s", "Makanan",
                     key), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
         }
         for ((key, value) in luggages) {
-            prices.add(FlightCart.PriceDetail(String.format("%s %s", "Bagasi",
-                    key), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
-
+            val count = luggageCount[key] ?: 1
+            if (count > 1) prices.add(FlightCart.PriceDetail(String.format("%s %s (x%s)", "Bagasi", key, count), FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
+            else prices.add(FlightCart.PriceDetail(String.format("%s %s", "Bagasi", key),
+                    FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
         }
         flightAmenityPriceData.value = prices
     }
@@ -446,6 +459,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         return if (flightVerifyResult.value is Success) (flightVerifyResult.value as Success<FlightVerify.FlightVerifyMetaAndData>).data.data.cartItems[0].metaData.invoiceId
         else ""
     }
+
     fun getUserId(): String {
         return if (profileResult.value is Success<ProfileInfo>) (profileResult.value as Success<ProfileInfo>).data.userId
         else ""
