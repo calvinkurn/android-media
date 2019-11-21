@@ -16,29 +16,6 @@ public class CouponExtraInfoEntity {
     @SerializedName("link_url")
     private String linkUrl;
 
-    public String getInfoHtml() {
-        return infoHtml;
-    }
-
-    public void setInfoHtml(String infoHtml) {
-        this.infoHtml = infoHtml;
-    }
-
-    public String getLinkText() {
-        return linkText;
-    }
-
-    public void setLinkText(String linkText) {
-        this.linkText = linkText;
-    }
-
-    public String getLinkUrl() {
-        return linkUrl;
-    }
-
-    public void setLinkUrl(String linkUrl) {
-        this.linkUrl = linkUrl;
-    }
 
     @Override
     public String toString() {

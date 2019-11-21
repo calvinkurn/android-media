@@ -292,6 +292,7 @@ public interface ApplinkConst {
         String COUPON_DETAIL3 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}";
         String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
     }
+    String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
 
     String MONEYIN = "tokopedia://money_in/device_validation";
 
