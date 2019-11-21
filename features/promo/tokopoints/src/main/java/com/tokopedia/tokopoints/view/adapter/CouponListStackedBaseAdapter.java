@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,7 +46,6 @@ import java.util.Map;
 import rx.Subscriber;
 
 import static com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment.REQUEST_CODE_STACKED_ADAPTER;
-import static com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment.REQUEST_CODE_STACKED_IN_ADAPTER;
 
 public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
@@ -236,9 +234,9 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
 
         if (item.isNewCoupon()) {
-            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.new_coupon_background_color));
-            holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.new_coupon_background_color));
-            holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.new_coupon_background_color));
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
+            holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
+            holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
         } else {
             holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
             holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));

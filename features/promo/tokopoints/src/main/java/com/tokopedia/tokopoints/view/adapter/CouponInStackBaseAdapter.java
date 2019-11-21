@@ -1,8 +1,6 @@
 package com.tokopedia.tokopoints.view.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 
@@ -20,12 +18,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -33,8 +28,6 @@ import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
-import com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment;
-import com.tokopedia.tokopoints.view.model.CouponDetailEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
@@ -48,7 +41,6 @@ import java.util.Map;
 
 import rx.Subscriber;
 
-import static com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment.REQUEST_CODE_STACKED_ADAPTER;
 import static com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment.REQUEST_CODE_STACKED_IN_ADAPTER;
 
 public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
@@ -208,9 +200,9 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
 
         if (item.isNewCoupon()) {
-            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.new_coupon_background_color));
-            holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.new_coupon_background_color));
-            holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.new_coupon_background_color));
+            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
+            holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
+            holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
         } else {
             holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
             holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
