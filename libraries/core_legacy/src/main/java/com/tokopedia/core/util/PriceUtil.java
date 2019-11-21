@@ -15,12 +15,8 @@ public class PriceUtil {
     public static String from(String price){
         price = CurrencyFormatHelper.removeCurrencyPrefix(price);
         if (!TextUtils.isEmpty(price)) {
-            try {
-                long result = new DecimalFormat("#,#", new DecimalFormatSymbols(new Locale("in", "ID"))).parse(price).longValue();
-                return Long.valueOf(result).toString();
-            }catch (ParseException pe){
-                return "0";
-            }
+            long result = Double.valueOf(price).longValue();
+            return Long.valueOf(result).toString();
         } else {
             return "0";
         }
