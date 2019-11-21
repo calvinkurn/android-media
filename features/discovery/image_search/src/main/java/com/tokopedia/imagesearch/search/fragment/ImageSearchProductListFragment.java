@@ -103,7 +103,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     UserSessionInterface userSession;
 
     private ImageProductListAdapter adapter;
-    private ProductViewModel productViewModel;
     private ImageProductListTypeFactory imageProductListTypeFactory;
     private SearchParameter searchParameter = new SearchParameter();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
@@ -120,6 +119,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private HashMap<String, String> selectedSort;
     private String imagePath;
     private boolean isFromCamera;
+    private String queryKey = "";
 
 
     public static ImageSearchProductListFragment newInstance(String imagePath, boolean isFromCamera) {
@@ -404,12 +404,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         return adapter.isLoading();
     }
 
-    private List<Visitable> initMappingProduct() {
-        List<Visitable> list = new ArrayList<>();
-        list.addAll(productViewModel.getProductList());
-        return list;
-    }
-
     protected StaggeredGridLayoutManager getStaggeredGridLayoutManager() {
         return staggeredGridLayoutManager;
     }
@@ -576,8 +570,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public String getQueryKey() {
-        return productViewModel.getQuery();
+    public void setQueryKey(String query) {
+        this.queryKey = query;
+    }
+
+    private String getQueryKey() {
+        return queryKey;
     }
 
     @Override
