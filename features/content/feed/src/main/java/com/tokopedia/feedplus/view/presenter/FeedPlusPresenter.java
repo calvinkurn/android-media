@@ -348,6 +348,7 @@ public class FeedPlusPresenter
                         }
 
                         getView().sendMoEngageOpenFeedEvent();
+                        getView().sendFeedPlusScreenTracking();
                         getView().stopTracePerformanceMon();
                     }
                 }

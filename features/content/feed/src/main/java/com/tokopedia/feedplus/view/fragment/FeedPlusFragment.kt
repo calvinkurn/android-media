@@ -1130,6 +1130,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
         TrackApp.getInstance().moEngage.sendTrackEvent(value, EventMoEngage.OPEN_FEED)
     }
 
+    override fun sendFeedPlusScreenTracking() {
+        val isEmptyFeed = !hasFeed()
+
+        feedAnalytics.eventOpenFeedPlusFragment(
+                userSession.isLoggedIn,
+                isEmptyFeed
+        )
+    }
+
     override fun onStop() {
         super.onStop()
         if (activity != null && activity!!.isFinishing) {
