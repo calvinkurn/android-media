@@ -25,8 +25,7 @@ import javax.inject.Named
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_notif_center_send_notif)
 
     @Provides
-    @IntoMap
-    @StringKey(NotificationQueriesConstant.DRAWER_PUSH_NOTIFICATION)
+    @Named(NotificationQueriesConstant.DRAWER_PUSH_NOTIFICATION)
     fun provideRawQueryDrawerNotification(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_drawer_notification)
 
