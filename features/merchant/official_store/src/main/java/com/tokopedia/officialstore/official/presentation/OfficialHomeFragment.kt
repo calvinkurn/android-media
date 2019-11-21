@@ -146,12 +146,13 @@ class OfficialHomeFragment :
 
     private fun loadData(isRefresh: Boolean = false) {
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
-            if (!isLoadedOnce) {
+            if (!isLoadedOnce || isRefresh) {
                 viewModel.loadFirstData(category)
                 isLoadedOnce = true
-            }
-            if (!isRefresh) {
-                tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+
+                if (!isRefresh) {
+                    tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+                }
             }
         }
     }
