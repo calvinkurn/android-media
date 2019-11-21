@@ -90,7 +90,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private val uiScope = CoroutineScope(Dispatchers.Main)
     var isCouponChanged = false
     var totalCartPrice: Int = 0
-    var isLoading = false
 
     lateinit var flightRouteAdapter: FlightJourneyAdapter
     lateinit var flightInsuranceAdapter: FlightInsuranceAdapter
@@ -139,7 +138,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (layout_loading.isVisible) launchLoadingPageJob.cancel()
-                    if (loadingDialog.isShowing) isLoading = false
                     renderData(it.data)
                     setUpTimer(it.data.orderDueTimeStamp)
                     sendAddToCartTracking()
@@ -186,7 +184,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightCheckoutResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (loadingDialog.isShowing) isLoading = false
                     navigateToTopPay(it.data)
                     sendCheckOutTracking(it.data.parameter.pid)
                 }
@@ -200,7 +197,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightVerifyResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (loadingDialog.isShowing) isLoading = false
                     it.data.data.cartItems[0]?.let { cart ->
                         if (cart.newPrice.isNotEmpty()) {
                             showRepriceTag(cart)
@@ -211,7 +207,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    if (loadingDialog.isShowing) isLoading = false
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
@@ -239,7 +234,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 bookingViewModel.getRouteForFlightDetail(bookingViewModel.getDepartureId()),
                 bookingViewModel.getRouteForFlightDetail(bookingViewModel.getReturnId()),
                 bookingViewModel.getSearchParam(),
-                bookingViewModel.getFlightPriceModel().comboKey)
+                bookingViewModel.getFlightPriceModel().comboKey ?: "")
 
         flightAnalytics.eventBranchCheckoutFlight(
                 "${bookingViewModel.getDepartureJourney()?.departureAirportCity}-${bookingViewModel.getDepartureJourney()?.arrivalAirportCity}",
@@ -251,7 +246,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     fun getTrackingJourneyId(): String {
-        if (bookingViewModel.getFlightPriceModel().comboKey.isNotEmpty()) return "${bookingViewModel.getFlightPriceModel().comboKey} ${bookingViewModel.getFlightPriceModel().comboKey}"
+        if (!bookingViewModel.getFlightPriceModel().comboKey.isNullOrEmpty()) return "${bookingViewModel.getFlightPriceModel().comboKey} ${bookingViewModel.getFlightPriceModel().comboKey}"
         else if (bookingViewModel.getReturnId().isNotEmpty()) return "${bookingViewModel.getDepartureId()} ${bookingViewModel.getReturnId()}"
         else return bookingViewModel.getDepartureId()
     }
@@ -844,16 +839,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
             loadingDialog.setUnlockVersion()
             loadingDialog.setChild(loadingView)
             loadingDialog.setOverlayClose(false)
-            isLoading = true
+            loadingText.text = list[0]
             loadingDialog.show()
-            var index = 0
-            while (isLoading) {
-                loadingText.text = list[index%4]
-                CoroutineScope(Dispatchers.Main).launch {
-                    delay(2000L)
-                }
-                index++
-            }
         }
 
     }
