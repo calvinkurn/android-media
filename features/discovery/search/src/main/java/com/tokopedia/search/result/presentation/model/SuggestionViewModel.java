@@ -6,10 +6,6 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 
-/**
- * Created by henrypriyono on 10/30/17.
- */
-
 public class SuggestionViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
     private String suggestionText;
     private String suggestionCurrentKeyword;

@@ -8,10 +8,6 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author by errysuprayogi on 11/7/17.
- */
-
 public class CpmViewModel implements Visitable<ProductListTypeFactory> {
 
     private CpmModel cpmModel;
