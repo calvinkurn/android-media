@@ -415,10 +415,12 @@ class OfficialHomeFragment :
     }
 
     override fun onCountDownFinished() {
-        adapter?.getVisitables()?.removeAll {
-            it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+        recyclerView?.post {
+            adapter?.getVisitables()?.removeAll {
+                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+            }
+            adapter?.notifyDataSetChanged()
         }
-        adapter?.notifyDataSetChanged()
         loadData(true)
     }
 
