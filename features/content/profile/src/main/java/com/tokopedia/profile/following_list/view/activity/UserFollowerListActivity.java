@@ -7,26 +7,19 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.profile.R;
-import com.tokopedia.profile.following_list.view.fragment.UserFollowingListFragment;
+import com.tokopedia.profile.following_list.view.fragment.BaseFollowListFragment;
+import com.tokopedia.profile.following_list.view.fragment.UserFollowListFragment;
 
 /**
  * Created by yfsx on 28/12/17.
  */
 
-public class FollowingListActivity extends BaseSimpleActivity {
+public class UserFollowerListActivity extends BaseSimpleActivity {
     public static final String ARGS_USER_ID = "user_id";
     public static final String ARGS_OPEN_FOLLOWER = "OPEN_FOLLOWER";
 
-    public static Intent getFollowingInstance(Context context, int userId) {
-        Intent intent = new Intent(context, FollowingListActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_USER_ID, userId);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static Intent getFollowerInstance(Context context, int userId) {
-        Intent intent = new Intent(context, FollowingListActivity.class);
+    public static Intent getFollowingIntent(Context context, int userId) {
+        Intent intent = new Intent(context, UserFollowerListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(ARGS_USER_ID, userId);
         bundle.putBoolean(ARGS_OPEN_FOLLOWER, true);
@@ -44,6 +37,9 @@ public class FollowingListActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return UserFollowingListFragment.createInstance(getIntent().getExtras());
+        return UserFollowListFragment.createInstance(
+                getIntent().getIntExtra(ARGS_USER_ID, 0),
+                BaseFollowListFragment.FollowListType.Follower
+        );
     }
 }
