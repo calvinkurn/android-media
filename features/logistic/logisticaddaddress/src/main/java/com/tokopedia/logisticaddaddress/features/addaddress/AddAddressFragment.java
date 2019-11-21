@@ -134,7 +134,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     PerformanceMonitoring performanceMonitoring;
 
     private int instanceType;
-    private CompositeSubscription compositeSubscription;
 
     public static AddAddressFragment newInstance(Bundle extras) {
         Bundle bundle = new Bundle(extras);
@@ -194,7 +193,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        compositeSubscription.unsubscribe();
         mPresenter.detachView();
     }
 
@@ -258,7 +256,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        compositeSubscription = new CompositeSubscription();
         BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
         DaggerAddressComponent.builder()
                 .baseAppComponent(appComponent)
@@ -274,11 +271,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void stopPerformaceMonitoring() {
         performanceMonitoring.stopTrace();
-    }
-
-    @Override
-    public CompositeSubscription getCompositeSubscription() {
-        return compositeSubscription;
     }
 
     @Override

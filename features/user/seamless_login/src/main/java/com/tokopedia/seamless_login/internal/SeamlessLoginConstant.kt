@@ -2,24 +2,28 @@ package com.tokopedia.seamless_login.internal
 
 object SeamlessLoginConstant {
 
-    enum class Page {
-        HOME {
-            override fun toString() = "header"
-        },
-        PDP {
-            override fun toString() = "pdp"
-        },
-        SHOP {
-            override fun toString() = "shop"
-        }
+    enum class PARAM(val value: String) {
+        TOKEN("token"),
+        OS_TYPE("os_type"),
+        UID("uid"),
+        URL("url"),
+        VERSION("version"),
+        TIMESTAMP("timestamp"),
+        BROWSER("browser"),
+        DATA("data")
     }
 
     const val RSA_ALGORITHM = "RSA"
+    const val SEAMLESS_PATH = "seamless"
 
-    const val PARAMS_PAGE = "page"
-    const val LAYOUT_FLOATING = "floating"
+    const val SEAMLESS_KEY = "/seamless"
 
-    const val REMOTE_CONFIG_FOR_HOME = "android_customer_sticky_login_home"
-    const val REMOTE_CONFIG_FOR_PDP = "android_customer_sticky_login_pdp"
-    const val REMOTE_CONFIG_FOR_SHOP = "android_customer_sticky_login_shop"
+    const val METHOD_GET = "GET"
+    const val HMAC_SIGNATURE = "TKPD Tokopedia:"
+    const val BEARER = "Bearer "
+
+    const val BROWSER_VALUE = "1"
+    const val OS_TYPE_VALUE = "1"
+
+    const val DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ"
 }
