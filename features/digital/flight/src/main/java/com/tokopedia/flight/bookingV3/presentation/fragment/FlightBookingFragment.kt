@@ -834,6 +834,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun showLoadingDialog() {
         context?.let {
+            hideLoadingDialog()
             loadingDialog = DialogUnify(it, 0, 0)
             val list = randomLoadingSubtitle()
             val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
