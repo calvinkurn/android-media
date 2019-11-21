@@ -419,8 +419,11 @@ public class Animation {
 	 * @return value from 0 to 1 telling the next step.
 	 */
 	private float normalizeTime(int index) {
-
-		return (float) mCurrentDuration[index] / mDuration;
+		try{
+			return (float) mCurrentDuration[index] / mDuration;
+		}catch (Exception e){
+			return 1;
+		}
 	}
 
 
