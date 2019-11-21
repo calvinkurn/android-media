@@ -12,7 +12,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden">
+
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/host_affiliate"
                     android:path="@string/path_af_dashboard"
@@ -37,6 +42,10 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
             <intent-filter>
+
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="@string/host_affiliate"
                     android:path="@string/path_af_explore"
@@ -56,6 +65,10 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" >
             <intent-filter>
+
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="@string/host_affiliate"
                     android:path="@string/path_af_education"
