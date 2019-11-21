@@ -41,6 +41,7 @@ public class CouponDetailActivity extends BaseSimpleActivity implements HasCompo
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(0f);
         }
+        setResult(RESULT_OK,getIntent());
     }
 
     private void forDeeplink() {
@@ -80,7 +81,6 @@ public class CouponDetailActivity extends BaseSimpleActivity implements HasCompo
 
     @Override
     public void onBackPressed() {
-        setResult(RESULT_OK,getIntent());
         super.onBackPressed();
 
         AnalyticsTrackerUtil.sendEvent(getApplicationContext(),

@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,18 +56,6 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
     private Context mContext;
     private String mStackId;
 
-    public void couponCodeVisible(String code) {
-        for ( int i = 0 ;i < getItems().size(); i++){
-            CouponValueEntity data = getItem(i);
-            if (code.equals(data.getCode())){
-                if (data.isNewCoupon()){
-                    data.setNewCoupon(false);
-                    notifyItemChanged(i);
-                }
-                break;
-            }
-        }
-    }
 
     public class ViewHolder extends BaseVH {
         TextView label, value, tvMinTxnValue, tvMinTxnLabel;
@@ -74,7 +64,7 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
         /*This section is exclusively for handling timer*/
         public CountDownTimer timer;
         public ProgressBar progressTimer;
-        public CardView cvShadow1, cvShadow2, cvData,cv1,cv2;
+        public CardView cvShadow1, cvShadow2, cvData, cv1, cv2;
 
         public ViewHolder(View view) {
             super(view);
@@ -331,17 +321,14 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
             holder.itemView.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
-                if (item.isNewCoupon()) {
-                    ((FragmentActivity) holder.imgBanner.getContext()).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), REQUEST_CODE_STACKED_IN_ADAPTER);
-                } else {
-                    holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle));
-                }
+                ((FragmentActivity) holder.imgBanner.getContext()).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), REQUEST_CODE_STACKED_IN_ADAPTER);
+
                 sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
             });
         }
     }
 
-    public String getStackId(){
+    public String getStackId() {
         return mStackId;
     }
 }

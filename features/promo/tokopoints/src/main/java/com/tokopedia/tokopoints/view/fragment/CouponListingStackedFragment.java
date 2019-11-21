@@ -351,9 +351,9 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
         if (requestCode == REQUEST_CODE_STACKED_ADAPTER){
            mAdapter.couponCodeVisible(code,false);
         } else if (requestCode == REQUEST_CODE_STACKED_IN_ADAPTER){
-            if (mStackedInadapter != null)
-            mStackedInadapter.couponCodeVisible(code);
-            mAdapter.couponCodeVisible(mStackedInadapter.getStackId(),true);
+            if (mStackedInadapter != null) {
+                mAdapter.couponCodeVisible(mStackedInadapter.getStackId(), true);
+            }
         }
     }
 }
