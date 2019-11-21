@@ -495,6 +495,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun onStatsClick(title: String, productIds: List<String>) {
+        //Not Used
+    }
+
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
     }

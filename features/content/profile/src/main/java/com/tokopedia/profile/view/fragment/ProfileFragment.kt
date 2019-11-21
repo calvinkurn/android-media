@@ -872,6 +872,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    override fun onStatsClick(title: String, productIds: List<String>) {
+        //Not used
+    }
+
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {

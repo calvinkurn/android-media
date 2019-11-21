@@ -351,6 +351,7 @@
                         />
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/statsIcon"
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
                         app:srcCompat="@drawable/ic_graph_grey"

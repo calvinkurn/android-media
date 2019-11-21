@@ -1337,6 +1337,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
     }
 
+    override fun onStatsClick(title: String, productIds: List<String>) {
+        showPostStatistic(title, productIds)
+    }
+
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.TAG)
@@ -1819,5 +1823,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             Toast.makeText(context, R.string.feed_after_post, Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun showPostStatistic(title: String, productIds: List<String>) {
+        TODO()
     }
 }

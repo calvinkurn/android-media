@@ -329,30 +329,35 @@ open class DynamicPostViewHolder(v: View,
             }
 
             if (template.like) {
-                itemView.likeIcon.show()
-                itemView.likeText.show()
+                itemView.likeGroup.show()
+//                itemView.likeIcon.show()
+//                itemView.likeText.show()
                 itemView.likeIcon.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
                 itemView.likeText.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
                 bindLike(footer.like)
             } else {
-                itemView.likeIcon.hide()
-                itemView.likeText.hide()
+                itemView.likeGroup.hide()
+//                itemView.likeIcon.hide()
+//                itemView.likeText.hide()
             }
 
             if (template.comment) {
-                itemView.commentIcon.show()
-                itemView.commentText.show()
+                itemView.commentGroup.show()
+//                itemView.commentIcon.show()
+//                itemView.commentText.show()
                 itemView.commentIcon.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
                 itemView.commentText.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
                 bindComment(footer.comment)
             } else {
-                itemView.commentIcon.hide()
-                itemView.commentText.hide()
+                itemView.commentGroup.hide()
+//                itemView.commentIcon.hide()
+//                itemView.commentText.hide()
             }
 
             if (template.share) {
-                itemView.shareIcon.show()
-                itemView.shareText.show()
+                itemView.shareGroup.show()
+//                itemView.shareIcon.show()
+//                itemView.shareText.show()
                 itemView.shareText.text = footer.share.text
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
@@ -376,14 +381,21 @@ open class DynamicPostViewHolder(v: View,
                 }
 
             } else {
-                itemView.shareIcon.hide()
-                itemView.shareText.hide()
+                itemView.shareGroup.hide()
+//                itemView.shareIcon.hide()
+//                itemView.shareText.hide()
             }
+
+            if (template.stats) {
+                itemView.statsIcon.shouldShowWithAction(true) {
+                    itemView.statsIcon.setOnClickListener { listener.onStatsClick(footer.stats.text, footer.stats.productIDs) }
+                }
+            } else itemView.statsIcon.hide()
         }
     }
 
     private fun shouldShowFooter(template: TemplateFooter): Boolean {
-        return template.comment || template.ctaLink || template.like || template.share
+        return template.comment || template.ctaLink || template.like || template.share || template.stats
     }
 
     private fun bindLike(like: Like) {
@@ -518,6 +530,8 @@ open class DynamicPostViewHolder(v: View,
         fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean)
 
         fun onCommentClick(positionInFeed: Int, id: Int)
+
+        fun onStatsClick(title: String, productIds: List<String>)
 
         fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String)
 

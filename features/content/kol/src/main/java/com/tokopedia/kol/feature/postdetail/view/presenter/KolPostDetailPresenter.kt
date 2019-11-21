@@ -81,7 +81,7 @@ class KolPostDetailPresenter @Inject constructor(
                 GetPostDetailUseCase.createRequestParams(
                         userSession.userId,
                         "",
-                        GetDynamicFeedUseCase.SOURCE_DETAIL,
+                        GetDynamicFeedUseCase.FeedV2Source.Detail,
                         id.toString()
                 ),
                 GetKolPostDetailSubscriber(view)

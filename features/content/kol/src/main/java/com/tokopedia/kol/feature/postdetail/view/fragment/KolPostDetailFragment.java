@@ -88,6 +88,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import kotlin.NotImplementedError;
+import kotlin.StandardKt;
 import kotlin.Unit;
 
 import static com.tokopedia.kolcommon.util.PostMenuUtilKt.createBottomMenu;
@@ -773,6 +775,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void onStatsClick(@NotNull String title, @NotNull List<String> productIds) {
+        showPostStatistic(title, productIds);
+    }
+
     private void doShare(String body, String title) {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
@@ -990,6 +997,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             intent.putExtras(new Bundle());
             startActivity(intent);
         }
+    }
+
+    private void showPostStatistic(String title, List<String> productIds) {
+        throw new NotImplementedError();
     }
 
 }
