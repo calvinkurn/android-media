@@ -88,6 +88,7 @@ class SettingsPresenter(var context: Context?,
                 { (userProfileSettingUpdate) ->
                     if (userProfileSettingUpdate.isSuccess) {
                         saveSettingValue(context?.getString(R.string.pref_safe_mode)!!, savedValue)
+                        saveSettingValue(context?.getString(R.string.clear_cache)!!, false)
                         refreshSafeModeSwitch()
                     }
                 },

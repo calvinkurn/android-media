@@ -245,5 +245,6 @@
 
     <string name="account_home_add_phone_title">Tambah Nomor Ponsel</string>
     <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
+    <string name="clear_cache">clear cache</string>
 
 </resources>
