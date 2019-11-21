@@ -9,11 +9,13 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
 import com.tokopedia.topchat.chatsetting.di.DaggerChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.fragment.ChatSettingFragment
+import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 
 class ChatSettingActivity : BaseSimpleActivity(), HasComponent<ChatSettingComponent> {
 
     override fun getNewFragment(): Fragment? {
-        return ChatSettingFragment()
+        val arg = intent.extras
+        return ChatSettingFragment.create(arg)
     }
 
     override fun getComponent(): ChatSettingComponent {
@@ -24,8 +26,10 @@ class ChatSettingActivity : BaseSimpleActivity(), HasComponent<ChatSettingCompon
     }
 
     companion object {
-        fun getIntent(context: Context?): Intent {
-            return Intent(context, ChatSettingActivity::class.java)
+        fun getIntent(context: Context?, isTabSeller: Boolean): Intent {
+            return Intent(context, ChatSettingActivity::class.java).apply {
+                putExtra(TemplateChatActivity.PARAM_IS_SELLER, isTabSeller)
+            }
         }
     }
 }

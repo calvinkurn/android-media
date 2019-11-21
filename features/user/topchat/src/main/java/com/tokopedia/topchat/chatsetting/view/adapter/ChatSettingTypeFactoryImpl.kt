@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.view.adapter.viewholder.ChatSettingViewHolder
 
-class ChatSettingTypeFactoryImpl: BaseAdapterTypeFactory(), ChatSettingTypeFactory {
+class ChatSettingTypeFactoryImpl(val listener: ChatSettingViewHolder.ChatSettingListener): BaseAdapterTypeFactory(), ChatSettingTypeFactory {
 
     override fun type(chatSetting: ChatSetting): Int {
         return ChatSettingViewHolder.LAYOUT
@@ -15,7 +15,7 @@ class ChatSettingTypeFactoryImpl: BaseAdapterTypeFactory(), ChatSettingTypeFacto
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ChatSettingViewHolder.LAYOUT -> ChatSettingViewHolder(parent)
+            ChatSettingViewHolder.LAYOUT -> ChatSettingViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

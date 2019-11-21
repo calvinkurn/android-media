@@ -34,7 +34,6 @@ import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.TemplateChatSettingPresenter;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.util.SimpleItemTouchHelperCallback;
-import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,9 +70,6 @@ public class TemplateChatFragment extends BaseDaggerFragment
     @Inject
     ChatTemplateAnalytics analytic;
 
-    @Inject
-    UserSession userSession;
-
     private ItemTouchHelper mItemTouchHelper;
     private Snackbar snackbarError;
 
@@ -84,6 +80,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
     public static TemplateChatFragment createInstance(Bundle extras) {
         TemplateChatFragment fragment = new TemplateChatFragment();
         fragment.setArguments(extras);
+        fragment.isSeller = extras.getBoolean(PARAM_IS_SELLER);
         return fragment;
     }
 
@@ -104,16 +101,11 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
         recyclerView.setHasFixedSize(true);
 
-        initConfig();
         presenter.attachView(this);
         presenter.setMode(isSeller);
         presenter.getTemplate();
         setBottomSheetDialog();
         return rootView;
-    }
-
-    private void initConfig() {
-        isSeller = userSession.hasShop();
     }
 
     private void setBottomSheetDialog() {

@@ -120,7 +120,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 true
             }
             R.id.menu_chat_setting -> {
-                val intent = ChatSettingActivity.getIntent(context)
+                val intent = ChatSettingActivity.getIntent(context, isTabSeller())
                 startActivity(intent)
                 true
             }

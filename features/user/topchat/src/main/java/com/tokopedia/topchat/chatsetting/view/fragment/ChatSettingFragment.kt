@@ -12,11 +12,13 @@ import com.tokopedia.topchat.chatsetting.data.ChatSetting
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactoryImpl
+import com.tokopedia.topchat.chatsetting.view.adapter.viewholder.ChatSettingViewHolder
 import com.tokopedia.topchat.chatsetting.viewmodel.ChatSettingViewModel
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactory>(), LifecycleOwner {
+class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactory>(),
+        LifecycleOwner, ChatSettingViewHolder.ChatSettingListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -31,6 +33,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.initArguments(arguments)
         setupObserver()
     }
 
@@ -48,7 +51,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
     }
 
     override fun getAdapterTypeFactory(): ChatSettingTypeFactory {
-        return ChatSettingTypeFactoryImpl()
+        return ChatSettingTypeFactoryImpl(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {}
@@ -62,7 +65,17 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         return false
     }
 
+    override fun isTabSeller(): Boolean {
+        return viewModel.isSeller
+    }
+
     companion object {
         const val SCREEN_NAME = "chat-setting"
+
+        fun create(bundle: Bundle?): ChatSettingFragment {
+            return ChatSettingFragment().apply {
+                arguments = bundle
+            }
+        }
     }
 }

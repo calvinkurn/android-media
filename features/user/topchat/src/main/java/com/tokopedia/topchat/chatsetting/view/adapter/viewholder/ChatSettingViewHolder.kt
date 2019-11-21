@@ -5,9 +5,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsetting.data.ChatSetting
+import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import kotlinx.android.synthetic.main.item_chat_setting.view.*
 
-class ChatSettingViewHolder(itemView: View?) : AbstractViewHolder<ChatSetting>(itemView) {
+class ChatSettingViewHolder(itemView: View?, val listener: ChatSettingListener)
+    : AbstractViewHolder<ChatSetting>(itemView) {
+
+    interface ChatSettingListener {
+        fun isTabSeller(): Boolean
+    }
 
     override fun bind(element: ChatSetting?) {
         if (element == null) return
@@ -15,7 +21,10 @@ class ChatSettingViewHolder(itemView: View?) : AbstractViewHolder<ChatSetting>(i
             tvTitle?.text = element.alias
 
             setOnClickListener {
-                RouteManager.route(itemView.context, element.link)
+                val intent = RouteManager.getIntent(itemView.context, element.link).apply {
+                    putExtra(TemplateChatActivity.PARAM_IS_SELLER, listener.isTabSeller())
+                }
+                it.context.startActivity(intent)
             }
         }
     }
