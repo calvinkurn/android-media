@@ -3,6 +3,9 @@ package com.tokopedia.search.result.presentation.presenter.product;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
@@ -14,7 +17,7 @@ import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
-import com.tokopedia.search.result.presentation.model.HeaderViewModel;
+import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
@@ -777,16 +780,12 @@ final class ProductListPresenter
     private void getViewToShowProductList(ProductViewModel productViewModel) {
         List<Visitable> list = new ArrayList<>();
 
-        HeaderViewModel headerViewModel = new HeaderViewModel();
-        headerViewModel.setTickerViewModel(productViewModel.getTickerModel());
-        headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
+        CpmViewModel cpmViewModel = new CpmViewModel();
+
         if (!productViewModel.isQuerySafe()) {
             getView().showAdultRestriction();
         }
-        if (productViewModel.getQuickFilterModel() != null
-                && productViewModel.getQuickFilterModel().getFilter() != null) {
-            headerViewModel.setQuickFilterList(getView().getQuickFilterOptions(productViewModel.getQuickFilterModel()));
-        }
+
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
         if (isGlobalNavWidgetAvailable) {
@@ -794,9 +793,17 @@ final class ProductListPresenter
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
         }
         if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable) {
-            headerViewModel.setCpmModel(productViewModel.getCpmModel());
+            cpmViewModel.setCpmModel(productViewModel.getCpmModel());
         }
-        list.add(headerViewModel);
+
+        list.add(cpmViewModel);
+        list.add(productViewModel.getTickerModel());
+        list.add(productViewModel.getSuggestionModel());
+
+        if (productViewModel.getQuickFilterModel() != null) {
+            list.add(productViewModel.getQuickFilterModel());
+        }
+
         list.addAll(convertToListOfVisitable(productViewModel));
         if (productViewModel.getRelatedSearchModel() != null) {
             list.add(productViewModel.getRelatedSearchModel());
@@ -807,7 +814,7 @@ final class ProductListPresenter
         getView().setProductList(list);
         getView().showFreeOngkirShowCase(isExistsFreeOngkirBadge(list));
 
-        getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
+        getView().initQuickFilter(productViewModel.getQuickFilterModel().getQuickFilterList());
 
         if (productViewModel.getTotalData() > Integer.parseInt(getSearchRows())) {
             getView().addLoading();

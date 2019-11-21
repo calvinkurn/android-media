@@ -48,8 +48,6 @@ public interface ProductListSectionContract {
 
         void backToTop();
 
-        List<Option> getQuickFilterOptions(DataValue dynamicFilterModel);
-
         void addLoading();
 
         void removeLoading();
