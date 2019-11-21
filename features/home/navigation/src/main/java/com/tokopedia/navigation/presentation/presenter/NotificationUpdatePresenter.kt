@@ -53,7 +53,7 @@ class NotificationUpdatePresenter @Inject constructor(
     override fun loadData(lastNotifId: String, onSuccessInitiateData: (NotificationUpdateViewModel) -> Unit, onErrorInitiateData: (Throwable) -> Unit) {
         getNotificationUpdateUseCase.execute(
                 GetNotificationUpdateUseCase.getRequestParams(1, variables, lastNotifId),
-                GetNotificationUpdateSubscriber(view, getNotificationUpdateMapper, onSuccessInitiateData, onErrorInitiateData)
+                GetNotificationUpdateSubscriber(getNotificationUpdateMapper, onSuccessInitiateData, onErrorInitiateData)
         )
     }
 
