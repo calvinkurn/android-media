@@ -5,8 +5,11 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.profile.following_list.view.fragment.BaseFollowListFragment;
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingResultViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by yfsx on 28/12/17.
@@ -34,8 +37,6 @@ public interface FollowingList<R extends FollowingViewModel, T extends Following
 
         void onListItemClicked(@NonNull R item);
 
-        boolean isOpenFollowerPage();
-
         void onUnfollowShopButtonClicked(@NonNull FollowingViewModel model);
 
         void onSuccessUnfollowShop(@NonNull FollowingViewModel model);
@@ -44,13 +45,9 @@ public interface FollowingList<R extends FollowingViewModel, T extends Following
     }
 
     interface Presenter<R, T> extends CustomerPresenter<View<R, T>> {
-        void getFollowingList(int userId);
+        void getFollowList(int userId, @NotNull BaseFollowListFragment.FollowListType type);
 
-        void getFollowingListLoadMore(int userId, String cursor);
-
-        void getFollowersList(int userId);
-
-        void getFollowersLoadMore(int userId, String cursor);
+        void getFollowListLoadMore(int userId, String cursor, @NotNull BaseFollowListFragment.FollowListType type);
 
         void unfollowShop(@NonNull FollowingViewModel model);
     }

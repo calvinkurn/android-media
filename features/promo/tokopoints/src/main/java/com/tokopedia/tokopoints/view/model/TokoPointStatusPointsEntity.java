@@ -21,45 +21,8 @@ public class TokoPointStatusPointsEntity {
     private String rewardExpiryInfo;
 
     @Expose
-    @SerializedName("loyaltyStr")
-    private String loyaltyStr;
-
-    @Expose
     @SerializedName("rewardStr")
     private String rewardStr;
-
-    @SerializedName("eggImageHomepageURL")
-    private String eggImageHomepageURL;
-
-    @SerializedName("backgroundImgURL")
-    private String backgroundImgURL;
-
-    @SerializedName("backgroundImgURLMobile")
-    private String backgroundImgURLMobile;
-
-    public String getEggImageHomepageURL() {
-        return eggImageHomepageURL;
-    }
-
-    public void setEggImageHomepageURL(String eggImageHomepageURL) {
-        this.eggImageHomepageURL = eggImageHomepageURL;
-    }
-
-    public String getBackgroundImgURL() {
-        return backgroundImgURL;
-    }
-
-    public void setBackgroundImgURL(String backgroundImgURL) {
-        this.backgroundImgURL = backgroundImgURL;
-    }
-
-    public String getBackgroundImgURLMobile() {
-        return backgroundImgURLMobile;
-    }
-
-    public void setBackgroundImgURLMobile(String backgroundImgURLMobile) {
-        this.backgroundImgURLMobile = backgroundImgURLMobile;
-    }
 
     public int getLoyalty() {
         return loyalty;
@@ -93,14 +56,6 @@ public class TokoPointStatusPointsEntity {
         this.rewardExpiryInfo = rewardExpiryInfo;
     }
 
-    public String getLoyaltyStr() {
-        return loyaltyStr;
-    }
-
-    public void setLoyaltyStr(String loyaltyStr) {
-        this.loyaltyStr = loyaltyStr;
-    }
-
     public String getRewardStr() {
         return rewardStr;
     }
@@ -116,7 +71,6 @@ public class TokoPointStatusPointsEntity {
                 ", reward=" + reward +
                 ", loyaltyExpiryInfo='" + loyaltyExpiryInfo + '\'' +
                 ", rewardExpiryInfo='" + rewardExpiryInfo + '\'' +
-                ", loyaltyStr='" + loyaltyStr + '\'' +
                 ", rewardStr='" + rewardStr + '\'' +
                 '}';
     }
