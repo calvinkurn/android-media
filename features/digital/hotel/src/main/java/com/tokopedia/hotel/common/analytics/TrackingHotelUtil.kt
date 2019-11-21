@@ -3,6 +3,7 @@ package com.tokopedia.hotel.common.analytics
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
+import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
@@ -114,7 +115,7 @@ class TrackingHotelUtil {
             map[ID_LABEL] = product.id
             map[POSITION_LABEL] = index
             map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
-            map[VARIANT_LABEL] = "${product.isDirectPayment} - ${product.isDirectPayment}" // TODO product.isAvailable
+            map[VARIANT_LABEL] = "${product.isDirectPayment} - ${product.roomAvailability > 0}"
             map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
 
             map[PRICE_LABEL] = if (product.roomPrice.isNotEmpty())
@@ -142,7 +143,7 @@ class TrackingHotelUtil {
         map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CLICK_LABEL, DataLayer.mapOf(
-                ACTION_FIELD_LABEL, DataLayer.mapOf(LIST_LABEL, SLASH_HOTEL_SLASH_LABEL), // TODO create constant for /hotel/
+                ACTION_FIELD_LABEL, DataLayer.mapOf(LIST_LABEL, SLASH_HOTEL_SLASH_LABEL),
                 PRODUCTS_LABEL, getChooseHotelProducts(property, position))
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
@@ -157,7 +158,7 @@ class TrackingHotelUtil {
             property.roomPrice.first().priceAmount.roundToLong().toString() else "0"
         map[POSITION_LABEL] = position
         map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
-        map[VARIANT_LABEL] = "${property.isDirectPayment} - ${property.isDirectPayment}" // TODO product.isAvailable
+        map[VARIANT_LABEL] = "${property.isDirectPayment} - ${property.roomAvailability > 0}"
         map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
         list.add(map)
         return DataLayer.listOf(*list.toTypedArray<Any>())
@@ -181,13 +182,22 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $sortValue")
     }
 
-    fun hotelViewDetails(hotelName: String, hotelId: Int, available: Boolean, price: String, directPayment: Boolean) {
+    fun hotelViewDetails(hotelHomepageModel: HotelHomepageModel,
+                         hotelName: String, hotelId: Int, available: Boolean,
+                         price: String, directPayment: Boolean) {
+
+        val roomCount = hotelHomepageModel.roomCount
+        val guestCount = hotelHomepageModel.adultCount
+        val dayDiff = HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate)
+        val duration = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
+        val destinationType = hotelHomepageModel.locType
+        val destination = if (hotelHomepageModel.locName.isEmpty()) hotelName else hotelHomepageModel.locName
+
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = VIEW_PRODUCT
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = VIEW_HOTEL_PDP
-        // TODO change to HOTEL_LABEL, destType, destination, total room, total guest, checkin day, total stay
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $available - $price - $directPayment"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 DETAIL_LABEL, DataLayer.mapOf(
@@ -198,7 +208,7 @@ class TrackingHotelUtil {
                         ID_LABEL, hotelId,
                         PRICE_LABEL, price,
                         LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
-                        VARIANT_LABEL, "$DIRECT_PAYMENT_LABEL - $AVAILABLE_LABEL",
+                        VARIANT_LABEL, "$directPayment - $available",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL
                 )
         )
@@ -217,13 +227,19 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $hotelId - $price")
     }
 
-    fun hotelChooseViewRoom(hotelId: Int, price: String) {
+    fun hotelChooseViewRoom(hotelHomepageModel: HotelHomepageModel, hotelId: Int, hotelName: String) {
+        val roomCount = hotelHomepageModel.roomCount
+        val guestCount = hotelHomepageModel.adultCount
+        val dayDiff = HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate)
+        val duration = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
+        val destinationType = hotelHomepageModel.locType
+        val destination = if (hotelHomepageModel.locName.isEmpty()) hotelName else hotelHomepageModel.locName
+
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CHOOSE_VIEW_ROOM,
-                "$HOTEL_LABEL - $hotelId - $price")
-        // TODO change label to HOTEL_LABEL, destType, destination, totalRoom, totalGuest, checkin day, totalstay, hotel id
+                "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId")
     }
 
-    fun hotelViewRoomList(hotelId: Int) {
+    fun hotelViewRoomList(hotelId: Int, hotelName: String, hotelPrice: String, isDirectPayment: Boolean, isAvailable: Boolean, position: Int) {
 //        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, VIEW_ROOM_LIST,
 //                "$HOTEL_LABEL - $hotelId")
         // TODO change to impression
@@ -239,13 +255,13 @@ class TrackingHotelUtil {
                 CURRENCY_LABEL, IDR_LABEL,
                 IMPRESSIONS_LABEL, DataLayer.listOf(
                 DataLayer.mapOf(
-                        NAME_LABEL, "{hotel name{",
-                        ID_LABEL, "{hotel id}",
-                        PRICE_LABEL, "{hotel price}",
+                        NAME_LABEL, hotelName,
+                        ID_LABEL, hotelId,
+                        PRICE_LABEL, hotelPrice,
                         LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
-                        VARIANT_LABEL, "{flag is direct payment} - {is available}",
+                        VARIANT_LABEL, "{$isDirectPayment} - {$isAvailable}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
-                        POSITION_LABEL, "{position}"
+                        POSITION_LABEL, "$position"
                 )
             )
         )
@@ -273,7 +289,7 @@ class TrackingHotelUtil {
                         ID_LABEL, roomId,
                         PRICE_LABEL, price,
                         QUANTITY_LABEL, ONE_LABEL,
-                        VARIANT_LABEL, "{isDirectPayment} - {isAvailable}",
+                        VARIANT_LABEL, "{isDirectPayment} - ${room.available}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL
                 )
         )

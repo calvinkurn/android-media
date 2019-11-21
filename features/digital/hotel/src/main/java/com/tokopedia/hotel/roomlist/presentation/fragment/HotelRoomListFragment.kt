@@ -26,6 +26,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
@@ -109,7 +110,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         roomListViewModel.roomListResult.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    if (firstTime) trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId)
+                    if (firstTime) {
+//                        trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId)
+                    }
                     firstTime = false
                     if (!roomListViewModel.isFilter) {
                         roomListViewModel.roomList = it.data
@@ -398,11 +401,15 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         const val ARG_TOTAL_ROOM = "arg_total_room"
         const val ARG_TOTAL_ADULT = "arg_total_adult"
         const val ARG_TOTAL_CHILDREN = "arg_total_children"
+        const val ARG_DESTINATION_TYPE = "arg_destination_type"
+        const val ARG_DESTINATION_NAME = "arg_destination_name"
         const val TAG_GUEST_INFO = "guestHotelInfo"
         const val EXTRA_HOTEL_ROOM_LIST_MODEL = "extra_room_list_model"
 
         fun createInstance(propertyId: Int = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
-                           totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0): HotelRoomListFragment {
+                           totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0
+//                           , destinationType: String, destinationName: String
+        ): HotelRoomListFragment {
 
             return HotelRoomListFragment().also {
                 it.arguments = Bundle().apply {
@@ -413,6 +420,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     putInt(ARG_TOTAL_ROOM, totalRoom)
                     putInt(ARG_TOTAL_ADULT, totalAdult)
                     putInt(ARG_TOTAL_CHILDREN, totalChildren)
+//                    putString(ARG_DESTINATION_TYPE, destinationType)
+//                    putString(ARG_DESTINATION_NAME, destinationName)
                 }
             }
         }

@@ -241,7 +241,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
             context?.run {
                 startActivityForResult(HotelDetailActivity.getCallingIntent(this,
-                        checkIn, checkOut, property.id, room, guest.adult),
+                        checkIn, checkOut, property.id, room, guest.adult,
+                        searchDestinationType, searchDestinationName),
                         REQUEST_CODE_DETAIL_HOTEL)
             }
         }

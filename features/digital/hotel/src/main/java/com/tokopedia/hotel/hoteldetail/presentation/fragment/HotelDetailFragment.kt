@@ -19,6 +19,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
@@ -88,6 +89,9 @@ class HotelDetailFragment : HotelBaseFragment() {
                                 TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2)))
                 hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
                 hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
+                hotelHomepageModel.locName = it.getString(HotelDetailActivity.EXTRA_DESTINATION_NAME, "")
+                hotelHomepageModel.locType = it.getString(HotelDetailActivity.EXTRA_DESTINATION_TYPE,
+                        HotelHomepageActivity.TYPE_PROPERTY)
             }
             isButtonEnabled = hotelHomepageModel.checkInDate.isNotEmpty()
         }
@@ -426,13 +430,13 @@ class HotelDetailFragment : HotelBaseFragment() {
         if (data.isNotEmpty()) {
             roomPrice = data.first().roomPrice.roomPrice
             roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
-            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
+            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
 
             tv_hotel_price.text = roomPrice
 
             if (data[0].additionalPropertyInfo.isEnabled) {
                 btn_see_room.setOnClickListener {
-                    trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPriceAmount)
+                    trackingHotelUtil.hotelChooseViewRoom(hotelHomepageModel, hotelId, hotelName)
                     context?.run {
                         startActivityForResult(HotelRoomListActivity.createInstance(this, hotelHomepageModel.locId, hotelName,
                                 hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
@@ -445,7 +449,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                 btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             }
         } else {
-            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, false, "0", false)
+            trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, false, "0", false)
             tv_hotel_price_subtitle.visibility = View.GONE
             tv_hotel_price.text = getString(R.string.hotel_detail_room_full_text)
             context?.run { tv_hotel_price.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.light_disabled)) }
@@ -493,7 +497,7 @@ class HotelDetailFragment : HotelBaseFragment() {
         const val RESULT_REVIEW = 102
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
-                        adultCount: Int): HotelDetailFragment =
+                        adultCount: Int, destinationType: String, destinationName: String): HotelDetailFragment =
                 HotelDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelDetailActivity.EXTRA_CHECK_IN_DATE, checkInDate)
@@ -501,6 +505,8 @@ class HotelDetailFragment : HotelBaseFragment() {
                         putInt(HotelDetailActivity.EXTRA_PROPERTY_ID, propertyId)
                         putInt(HotelDetailActivity.EXTRA_ROOM_COUNT, roomCount)
                         putInt(HotelDetailActivity.EXTRA_ADULT_COUNT, adultCount)
+                        putString(HotelDetailActivity.EXTRA_DESTINATION_TYPE, destinationType)
+                        putString(HotelDetailActivity.EXTRA_DESTINATION_NAME, destinationName)
                     }
                 }
 
