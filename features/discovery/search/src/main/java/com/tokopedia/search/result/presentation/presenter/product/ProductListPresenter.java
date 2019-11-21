@@ -29,6 +29,8 @@ import com.tokopedia.search.result.presentation.model.RecommendationTitleViewMod
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
+import com.tokopedia.topads.sdk.domain.model.Cpm;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.LabelGroup;
@@ -799,7 +801,9 @@ final class ProductListPresenter
             cpmViewModel.setCpmModel(productViewModel.getCpmModel());
         }
 
-        list.add(cpmViewModel);
+        if (shouldShowCpmShop(productViewModel)) {
+            list.add(cpmViewModel);
+        }
 
         if (!getView().isTickerHasDismissed()
                 && !TextUtils.isEmpty(productViewModel.getTickerModel().getText())) {
@@ -832,6 +836,40 @@ final class ProductListPresenter
 
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private boolean shouldShowCpmShop(ProductViewModel productViewModel) {
+        if (productViewModel.getCpmModel().getData().isEmpty()) {
+            return false;
+        }
+
+        CpmData cpmData = productViewModel.getCpmModel().getData().get(0);
+
+        if (cpmData == null) {
+            return false;
+        }
+
+        Cpm cpm = cpmData.getCpm();
+
+        if (cpm == null) {
+            return false;
+        }
+
+        if (isViewWillRenderCpmShop(cpm)) {
+            return true;
+        } else {
+            return isViewWillRenderCpmDigital(cpm);
+        }
+    }
+
+    private boolean isViewWillRenderCpmShop(Cpm cpm) {
+        return cpm.getCpmShop() != null
+                && !TextUtils.isEmpty(cpm.getCta())
+                && !TextUtils.isEmpty(cpm.getPromotedText());
+    }
+
+    private boolean isViewWillRenderCpmDigital(Cpm cpm) {
+        return cpm.getTemplateId() == 4;
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
