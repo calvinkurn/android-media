@@ -30,6 +30,11 @@ import javax.inject.Named
             GraphqlHelper.loadRawString(context.resources, R.raw.query_drawer_notification)
 
     @Provides
+    @Named(NotificationQueriesConstant.TRANSACTION_NOTIFICATION)
+    fun provideTransactionNotification(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_notification_update)
+
+    @Provides
     @Named(NotificationQueriesConstant.QUERY_IS_TAB_UPDATE)
     fun provideRawProductInfo(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_is_tab_update)

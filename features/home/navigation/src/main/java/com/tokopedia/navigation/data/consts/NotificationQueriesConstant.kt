@@ -3,6 +3,7 @@ package com.tokopedia.navigation.data.consts
 object NotificationQueriesConstant {
     //query
     const val MUTATION_NOTIF_CENTER_PUSH_NOTIF = "notif_center_push_notif"
+    const val TRANSACTION_NOTIFICATION = "transaction_notification"
     const val DRAWER_PUSH_NOTIFICATION = "drawer_push_notification"
     const val QUERY_IS_TAB_UPDATE = "query_is_tab_update"
 
