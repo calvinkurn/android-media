@@ -41,6 +41,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -96,6 +98,7 @@ object DeeplinkDFMapper {
     private val DFM_SALDO_DEPOSIT = "saldo_deposit"
     private val DFM_OVOP2P = "ovop2p"
     private val DFM_SALDO_INTRO = "saldo_deposit"
+    private val DFM_OVO_PAY_WITH_QR = "df_ovo_pay_with_qr"
     private val DFM_REFERRAL = "im_referral"
     private val DFM_WALLET = "fintech_wallet"
     private val DFM_PROFILE = "profile"
@@ -150,7 +153,8 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
             add(DFP({it.startsWith(CHAT_BOT)}, DFM_CHAT_BOT, R.string.title_applink_chatbot))
             add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DFM_POWER_MERCHANT_SUBSCRIBE, R.string.title_applink_pm_subscribe))
-
+            add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
+            add(DFP({it.startsWith(OQR_PIN_URL_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
         }
     }
 

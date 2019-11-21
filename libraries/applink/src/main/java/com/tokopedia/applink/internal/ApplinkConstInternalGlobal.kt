@@ -263,6 +263,21 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHAT_BOT = "$INTERNAL_GLOBAL/chatbot"
 
+    // PaymentQRSummaryActivity
+    // tokopedia-android-internal://global/ovo-pay-with-qr
+    @JvmField
+    val OVO_PAY_WITH_QR_ENTRY = "$INTERNAL_GLOBAL/ovo-pay-with-qr"
+
+    // QrOvoPayTxDetailActivity
+    // tokopedia-android-internal://global/ovoqrthanks/
+    @JvmField
+    val OQR_PIN_URL_ENTRY = "$INTERNAL_GLOBAL/ovoqrthanks/"
+
+    // QrOvoPayTxDetailActivity
+    // tokopedia-android-internal://global/ovoqrthanks/{transfer_id}
+    @JvmField
+    val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
+
 
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"

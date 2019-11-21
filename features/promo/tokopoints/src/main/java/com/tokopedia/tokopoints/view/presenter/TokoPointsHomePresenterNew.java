@@ -8,17 +8,13 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
-import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
-import com.tokopedia.tokopoints.view.model.DynamicLinkResponse;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
-import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointSumCouponOuter;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
-import com.tokopedia.tokopoints.view.model.section.TokopointsSection;
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.NetworkDetector;
@@ -247,11 +243,6 @@ public class TokoPointsHomePresenterNew extends BaseDaggerPresenter<TokoPointsHo
                 }
             }
         });
-    }
-
-    @Override
-    public void navigateToWebView(String url) {
-        getView().openWebView(url);
     }
 
     @Override
