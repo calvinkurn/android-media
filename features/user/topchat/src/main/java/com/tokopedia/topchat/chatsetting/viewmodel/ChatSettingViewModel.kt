@@ -38,9 +38,9 @@ class ChatSettingViewModel @Inject constructor(
         }
     }
 
-    fun filterSettings(invoke: (setting: ChatSetting) -> Boolean, chatSettings: List<ChatSetting>): List<ChatSetting> {
+    fun filterSettings(filter: (setting: ChatSetting) -> Boolean, chatSettings: List<ChatSetting>): List<ChatSetting> {
         return chatSettings.filter { setting ->
-            invoke(setting)
+            filter(setting)
         }
     }
 
