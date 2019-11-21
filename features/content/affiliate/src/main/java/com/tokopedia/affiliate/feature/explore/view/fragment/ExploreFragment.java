@@ -1074,14 +1074,14 @@ public class ExploreFragment
 
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.kol.R.color.black)
-                .shadowColorRes(R.color.shadow)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .shadowColorRes(com.tokopedia.design.R.color.shadow)
                 .titleTextColorRes(com.tokopedia.topads.sdk.R.color.white)
                 .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
                 .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
-                .nextStringRes(R.string.next)
-                .prevStringRes(R.string.previous)
+                .nextStringRes(">")
+                .prevStringRes("<")
                 .useCircleIndicator(true)
                 .clickable(true)
                 .useArrow(true)
