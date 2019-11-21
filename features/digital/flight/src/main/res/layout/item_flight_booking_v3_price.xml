@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_3"
         tools:text="CGK - SUB (x2 Dewasa)"
-        app:layout_constraintEnd_toStartOf="@id/tv_price_amount"
+        app:layout_constraintEnd_toStartOf="@+id/tv_price_amount"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintTop_toTopOf="parent"

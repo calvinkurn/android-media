@@ -26,11 +26,11 @@
         android:lines="1"
         android:maxLines="1"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toStartOf="@id/layout_edit_passenger"
+        app:layout_constraintEnd_toStartOf="@+id/layout_edit_passenger"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/layout_edit_passenger"
+        app:layout_constraintRight_toLeftOf="@+id/layout_edit_passenger"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ps_seperator"
+        app:layout_constraintTop_toBottomOf="@+id/ps_seperator"
         app:typographyType="heading_5"
         tools:text="Penumpang dewasa" />
 
@@ -41,7 +41,7 @@
         android:padding="@dimen/dp_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_passenger_name">
+        app:layout_constraintTop_toTopOf="@+id/tv_passenger_name">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_edit_passenger_info"
@@ -72,8 +72,8 @@
         android:layout_marginTop="@dimen/dp_2"
         android:layout_marginRight="@dimen/dp_8"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_edit_passenger_info"
-        app:layout_constraintTop_toBottomOf="@id/tv_passenger_name" />
+        app:layout_constraintRight_toLeftOf="@+id/tv_edit_passenger_info"
+        app:layout_constraintTop_toBottomOf="@+id/tv_passenger_name" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

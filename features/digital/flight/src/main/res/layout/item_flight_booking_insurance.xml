@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
         android:background="#f3f4f5"
-        app:layout_constraintTop_toBottomOf="@id/rv_insurance_list" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_insurance_list" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,9 +22,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/Neutral_N700_96"
-            app:layout_constraintEnd_toStartOf="@id/cb_insurance"
+            app:layout_constraintEnd_toStartOf="@+id/cb_insurance"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/cb_insurance"
+            app:layout_constraintRight_toLeftOf="@+id/cb_insurance"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_4"
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
-            app:layout_constraintTop_toBottomOf="@id/tv_insurance_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_insurance_title"
             app:typographyType="body_3"
             tools:text="Rp30.000/orang" />
 
@@ -52,7 +52,7 @@
             android:id="@+id/insurance_highlight_benefit_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tv_insurance_subtitle">
+            app:layout_constraintTop_toBottomOf="@+id/tv_insurance_subtitle">
 
             <View
                 android:id="@+id/seperator_1"
@@ -68,7 +68,7 @@
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_12"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/seperator_1" />
+                app:layout_constraintTop_toBottomOf="@+id/seperator_1" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_insurance_highlight"
@@ -78,10 +78,10 @@
                 android:layout_marginLeft="@dimen/dp_8"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/iv_insurance"
+                app:layout_constraintLeft_toRightOf="@+id/iv_insurance"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintStart_toEndOf="@id/iv_insurance"
-                app:layout_constraintTop_toTopOf="@id/iv_insurance"
+                app:layout_constraintStart_toEndOf="@+id/iv_insurance"
+                app:layout_constraintTop_toTopOf="@+id/iv_insurance"
                 app:typographyType="heading_5"
                 tools:text="Penundaan Perjalanan (delay)" />
 
@@ -95,10 +95,10 @@
                 android:lineSpacingExtra="@dimen/dp_1"
                 android:minLines="1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/iv_insurance"
+                app:layout_constraintLeft_toRightOf="@+id/iv_insurance"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintStart_toEndOf="@id/iv_insurance"
-                app:layout_constraintTop_toBottomOf="@id/tv_insurance_highlight"
+                app:layout_constraintStart_toEndOf="@+id/iv_insurance"
+                app:layout_constraintTop_toBottomOf="@+id/tv_insurance_highlight"
                 app:typographyType="body_3"
                 tools:text="Tersedia juga perlindungan untuk hal tak terduga lainnya yang mungkin mengganggu perjalananmu. Pelajari" />
 
@@ -108,7 +108,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_12"
                 android:background="#f3f4f5"
-                app:layout_constraintTop_toBottomOf="@id/tv_insurance_highlight_detail" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_insurance_highlight_detail" />
 
             <LinearLayout
                 android:id="@+id/layout_insurance_highlight"
@@ -117,7 +117,7 @@
                 android:layout_marginTop="@dimen/dp_12"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/seperator_2"
+                app:layout_constraintTop_toBottomOf="@+id/seperator_2"
                 >
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_insurance_highlight_see_more"
@@ -148,7 +148,7 @@
                 android:layout_marginTop="@dimen/dp_12"
                 android:background="#f3f4f5"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/layout_insurance_highlight" />
+                app:layout_constraintTop_toBottomOf="@+id/layout_insurance_highlight" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_more_benefits"
@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/seperator_3" />
+                app:layout_constraintTop_toBottomOf="@+id/seperator_3" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

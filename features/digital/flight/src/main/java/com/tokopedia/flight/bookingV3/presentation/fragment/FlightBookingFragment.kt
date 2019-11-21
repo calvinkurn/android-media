@@ -420,7 +420,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
         }
         flightPassengerAdapter.updateList(passengers)
-        if (passengers.first().passengerLastName.isNullOrEmpty() && switch_traveller_as_passenger.isChecked) {
+        if (passengers.isNotEmpty() && passengers.first().passengerLastName.isNullOrEmpty() && switch_traveller_as_passenger.isChecked) {
             val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
             navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), requestId)
         }
