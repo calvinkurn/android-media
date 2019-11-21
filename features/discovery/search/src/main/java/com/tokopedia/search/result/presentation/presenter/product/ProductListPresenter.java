@@ -1,5 +1,8 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
+import android.text.TextUtils;
+import android.view.View;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
@@ -797,8 +800,15 @@ final class ProductListPresenter
         }
 
         list.add(cpmViewModel);
-        list.add(productViewModel.getTickerModel());
-        list.add(productViewModel.getSuggestionModel());
+
+        if (!getView().isTickerHasDismissed()
+                && !TextUtils.isEmpty(productViewModel.getTickerModel().getText())) {
+            list.add(productViewModel.getTickerModel());
+        }
+
+        if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
+            list.add(productViewModel.getSuggestionModel());
+        }
 
         if (productViewModel.getQuickFilterModel() != null) {
             list.add(productViewModel.getQuickFilterModel());

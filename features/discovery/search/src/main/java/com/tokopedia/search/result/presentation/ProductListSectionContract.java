@@ -113,6 +113,8 @@ public interface ProductListSectionContract {
         void errorRecommendationWishlist(String errorMessage, String productId);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
+
+        boolean isTickerHasDismissed();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
