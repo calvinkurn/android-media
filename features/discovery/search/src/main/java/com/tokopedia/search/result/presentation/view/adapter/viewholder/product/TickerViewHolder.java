@@ -36,7 +36,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
     private void bindTickerView(TickerViewModel element) {
         if (tickerListener == null || tickerListener.isTickerHasDismissed()
                 || TextUtils.isEmpty(element.getText())) {
-            tickerView.setVisibility(View.GONE);
+            itemView.setVisibility(View.GONE);
             return;
         }
 
@@ -51,11 +51,12 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
 
             @Override
             public void onDismiss() {
+                itemView.setVisibility(View.GONE);
                 if (tickerListener != null) {
                     tickerListener.onTickerDismissed();
                 }
             }
         });
-        tickerView.setVisibility(View.VISIBLE);
+        itemView.setVisibility(View.VISIBLE);
     }
 }

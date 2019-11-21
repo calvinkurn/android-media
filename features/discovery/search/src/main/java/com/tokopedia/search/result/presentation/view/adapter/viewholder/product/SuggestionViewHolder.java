@@ -17,14 +17,12 @@ public class SuggestionViewHolder extends AbstractViewHolder<SuggestionViewModel
 
     @LayoutRes
     public static final int LAYOUT = R.layout.suggestion_layout;
-    private Context context;
     private SuggestionListener suggestionListener;
     private TextView suggestionText;
 
     public SuggestionViewHolder(View itemView,
                                 SuggestionListener suggestionListener) {
         super(itemView);
-        context = itemView.getContext();
         this.suggestionListener = suggestionListener;
         suggestionText = itemView.findViewById(R.id.suggestion_text_view);
     }
@@ -42,9 +40,9 @@ public class SuggestionViewHolder extends AbstractViewHolder<SuggestionViewModel
                     suggestionListener.onSuggestionClicked(element.getSuggestedQuery());
                 }
             });
-            suggestionText.setVisibility(View.VISIBLE);
+            itemView.setVisibility(View.VISIBLE);
         } else {
-            suggestionText.setVisibility(View.GONE);
+            itemView.setVisibility(View.GONE);
         }
     }
 }

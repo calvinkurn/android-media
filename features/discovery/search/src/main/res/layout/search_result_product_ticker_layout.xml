@@ -10,5 +10,4 @@
     android:layout_marginRight="@dimen/dp_16"
     app:closeButtonVisibility="visible"
     app:tickerShapeType="loose"
-    app:tickerType="announcement"
-    android:visibility="gone"/>
+    app:tickerType="announcement"/>
