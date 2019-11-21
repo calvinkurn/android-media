@@ -85,6 +85,9 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
         dropdownBottomSheet.setTitle(resources.getString(R.string.vg_input_field_dropdown_title))
         dropdownBottomSheet.setFullPage(true)
         dropdownBottomSheet.clearAction()
+        dropdownBottomSheet.setCloseClickListener {
+            dropdownBottomSheet.dismiss()
+        }
 
         ac_input.setOnFocusChangeListener { _, b ->
             onFocusChangeDropdown(b)

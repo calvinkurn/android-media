@@ -54,11 +54,10 @@
 
     <ImageView
         android:id="@+id/iv_input_dropdown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/ac_input"
         app:layout_constraintEnd_toEndOf="@+id/ac_input"
         app:layout_constraintTop_toTopOf="@+id/ac_input"
