@@ -29,6 +29,7 @@ import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.NotificationTransactionAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationTransactionFactory
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationTransactionFactoryImpl
+import com.tokopedia.navigation.presentation.adapter.viewholder.transaction.NotificationTransactionItemViewHolder
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationTransactionComponent
 import com.tokopedia.navigation.presentation.view.listener.NotificationTransactionItemListener
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
@@ -104,8 +105,10 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         }
     }
 
-    override fun itemClicked(viewModel: TransactionItemNotification, adapterPosition: Int) {
-
+    override fun itemClicked(notification: TransactionItemNotification, adapterPosition: Int) {
+        adapter.notifyItemChanged(adapterPosition, NotificationTransactionItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
+        //analytics.trackClickNotifList(viewModel)
+        viewModel.markReadNotification(notification.notificationId)
     }
 
     override fun getAnalytic(): NotificationUpdateAnalytics = NotificationUpdateAnalytics()

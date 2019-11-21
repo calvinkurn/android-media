@@ -9,9 +9,11 @@ import com.tokopedia.abstraction.common.network.exception.ResponseDataNullExcept
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.navigation.data.entity.NotificationEntity
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateMapper
+import com.tokopedia.navigation.domain.MarkReadNotificationUpdateItemUseCase
 import com.tokopedia.navigation.domain.NotificationInfoTransactionUseCase
 import com.tokopedia.navigation.domain.NotificationTransactionUseCase
 import com.tokopedia.navigation.domain.model.TransactionNotification
+import com.tokopedia.navigation.presentation.view.subscriber.NotificationUpdateActionSubscriber
 import com.tokopedia.navigation.util.coroutines.DispatcherProvider
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -26,12 +28,14 @@ interface NotificationTransactionContract {
             onError: (Throwable) -> Unit)
     fun onErrorMessage(throwable: Throwable)
     fun updateFilter(filter: HashMap<String, Int>)
+    fun markReadNotification(notificationId: String)
     fun resetFilter()
 }
 
 class NotificationTransactionViewModel @Inject constructor(
         private val notificationInfoTransactionUseCase: NotificationInfoTransactionUseCase,
         private var notificationTransactionUseCase: NotificationTransactionUseCase,
+        private var markReadNotificationUpdateItemUseCase: MarkReadNotificationUpdateItemUseCase,
         private var notificationMapper: GetNotificationUpdateMapper,
         dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
@@ -75,6 +79,12 @@ class NotificationTransactionViewModel @Inject constructor(
                     onSuccess(notificationMapper.mapToNotifTransaction(it))
                 },
                 onError)
+    }
+
+    override fun markReadNotification(notificationId: String) {
+        markReadNotificationUpdateItemUseCase.execute(
+                MarkReadNotificationUpdateItemUseCase.getRequestParams(notificationId),
+                NotificationUpdateActionSubscriber())
     }
 
     override fun updateFilter(filter: HashMap<String, Int>) {
