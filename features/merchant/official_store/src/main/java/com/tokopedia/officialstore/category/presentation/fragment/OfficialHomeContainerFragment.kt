@@ -49,12 +49,11 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
     private var viewPager: ViewPager? = null
-    private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
-
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
 
     private lateinit var tracking: OfficialStoreTracking
+    private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
 
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
         OfficialHomeContainerAdapter(context, childFragmentManager)

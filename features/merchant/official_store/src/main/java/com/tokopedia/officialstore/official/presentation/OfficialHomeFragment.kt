@@ -66,10 +66,12 @@ class OfficialHomeFragment :
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
+    private val sentDynamicChannelTrackers = mutableSetOf<String>()
+
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-    private var tracking: OfficialStoreTracking? = null
 
+    private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
     private var layoutManager: StaggeredGridLayoutManager? = null
@@ -78,21 +80,20 @@ class OfficialHomeFragment :
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
-    private val sentDynamicChannelTrackers = mutableSetOf<String>()
+    private var isScrolling = false
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
     private lateinit var dynamicChannelPerformanceMonitoring: PerformanceMonitoring
     private lateinit var productRecommendationPerformanceMonitoring: PerformanceMonitoring
-    private var isScrolling = false
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
-                    counterTitleShouldBeRendered += 1
                     val CATEGORY_CONST: String = category?.title?:""
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
+                    counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
                     viewModel.loadMore(category, page)
 
@@ -158,20 +159,6 @@ class OfficialHomeFragment :
         initFirebasePerformanceMonitoring()
         viewModel.loadFirstData(category)
     }
-
-    private fun initFirebasePerformanceMonitoring() {
-        val CATEGORY_CONST: String = category?.title?:""
-
-        val bannerConstant = (FirebasePerformanceMonitoringConstant.BANNER).replace(SLUG_CONST, CATEGORY_CONST)
-        bannerPerformanceMonitoring = PerformanceMonitoring.start(bannerConstant)
-
-        val brandConstant = (FirebasePerformanceMonitoringConstant.BRAND).replace(SLUG_CONST, CATEGORY_CONST)
-        shopPerformanceMonitoring = PerformanceMonitoring.start(brandConstant)
-
-        val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
-        dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
-    }
-
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(this, Observer {
@@ -563,5 +550,18 @@ class OfficialHomeFragment :
             tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
             sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
+    }
+
+    private fun initFirebasePerformanceMonitoring() {
+        val CATEGORY_CONST: String = category?.title?:""
+
+        val bannerConstant = (FirebasePerformanceMonitoringConstant.BANNER).replace(SLUG_CONST, CATEGORY_CONST)
+        bannerPerformanceMonitoring = PerformanceMonitoring.start(bannerConstant)
+
+        val brandConstant = (FirebasePerformanceMonitoringConstant.BRAND).replace(SLUG_CONST, CATEGORY_CONST)
+        shopPerformanceMonitoring = PerformanceMonitoring.start(brandConstant)
+
+        val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
+        dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
     }
 }
