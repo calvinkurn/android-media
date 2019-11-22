@@ -23,28 +23,17 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:lineSpacingExtra="4sp"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:ignore="SmallSp"
             tools:text="Alamat Maximum Chars 350 karakter Jika Bisa" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.Label
             android:id="@+id/tv_address_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:background="@drawable/bg_outline_address_identifier"
-            android:paddingBottom="@dimen/dp_4"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_4"
+            app:labelType="general_light_red"
             android:text="@string/label_main_address"
-            android:textColor="@color/bottom_label_color"
-            android:visibility="gone"
-            app:typographyType="small"
-            app:typographyWeight="reguler"
-            tools:ignore="SmallSp"
-            tools:visibility="visible" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
@@ -55,7 +44,7 @@
         android:layout_below="@id/ll_address_name"
         android:layout_marginBottom="@dimen/dp_3"
         android:lineSpacingExtra="@dimen/dp_3"
-        app:typographyType="body_3"
+        app:typographyType="small"
         app:typographyWeight="bold"
         tools:ignore="SmallSp"
         tools:text="Agus Maulana" />
@@ -65,9 +54,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_recipient_name"
-        android:layout_marginTop="@dimen/dp_3"
         android:lineSpacingExtra="@dimen/dp_3"
-        app:typographyType="body_3"
+        app:typographyType="small"
         app:typographyWeight="reguler"
         tools:text="080989999" />
 
@@ -75,6 +63,8 @@
         android:id="@+id/tv_recipient_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:layout_below="@id/tv_recipient_phone"
         android:lineSpacingExtra="6sp"
         app:typographyType="small"

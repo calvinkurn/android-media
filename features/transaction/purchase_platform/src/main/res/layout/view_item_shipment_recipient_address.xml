@@ -65,12 +65,12 @@
             <include
                 android:id="@+id/layout_address_normal"
                 layout="@layout/layout_address_normal"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/layout_address_drop_off"
                 layout="@layout/layout_address_drop_off"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
         </LinearLayout>
 
@@ -111,11 +111,27 @@
         android:layout_marginRight="@dimen/dp_16"
         android:background="@color/separator_color" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_disabled_multiple_address_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator_bottom"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/dp_3"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_4"
+        android:text="@string/label_disabled_multiple_address_info"
+        app:typographyType="small"
+        app:typographyWeight="reguler" />
+
     <LinearLayout
         android:id="@+id/ll_add_or_change_address_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator_bottom"
+        android:layout_below="@+id/tv_disabled_multiple_address_info"
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@color/white"
         android:orientation="horizontal">
