@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
@@ -310,7 +311,7 @@ class ChatListActivity : BaseTabActivity()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tabLayout.elevation = 0f
         }
-        tabLayout.setBackgroundResource(R.color.white)
+        tabLayout.background = ContextCompat.getDrawable(this, R.drawable.bg_chat_list_tab_layout)
         tabLayout.tabMode = TabLayout.MODE_FIXED
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
