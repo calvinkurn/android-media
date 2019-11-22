@@ -1752,9 +1752,10 @@ public class CartListPresenter implements ICartListPresenter {
                         view.showToastMessageRed(msg);
                     }
                 });
+            } else {
+                view.hideProgressLoading();
+                view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), null));
             }
-            view.hideProgressLoading();
-            view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), null));
         }
     }
 }
