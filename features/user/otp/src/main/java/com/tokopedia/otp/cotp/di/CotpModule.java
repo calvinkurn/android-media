@@ -1,7 +1,6 @@
 package com.tokopedia.otp.cotp.di;
 
 import com.tokopedia.otp.common.di.MethodListQualifier;
-import com.tokopedia.otp.common.util.PhoneCallReceiver;
 import com.tokopedia.otp.cotp.data.CotpApi;
 import com.tokopedia.otp.cotp.data.CotpMethodListApi;
 import com.tokopedia.otp.cotp.data.CotpUrl;
@@ -54,11 +53,5 @@ public class CotpModule {
     @Provides
     public PermissionCheckerHelper providePermissionCheckerHelper() {
         return new PermissionCheckerHelper();
-    }
-
-    @CotpScope
-    @Provides
-    public PhoneCallReceiver providePhoneCallReceiver() {
-        return new PhoneCallReceiver();
     }
 }

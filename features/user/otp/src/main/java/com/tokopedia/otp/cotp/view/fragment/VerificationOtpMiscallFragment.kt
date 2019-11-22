@@ -476,15 +476,8 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
     private fun autoFillPhoneNumber(number: String) {
         val regex = Regex(pattern = """[+()\-\s]""")
-        val hint = textPhoneHint?.text?.toString() as String
-
-        val phoneHint = hint.let {
-            regex.replace(it, "")
-        }
-
-        val phoneNumber = number.let {
-            regex.replace(it, "")
-        }
+        val phoneHint = textPhoneHint?.text?.toString()?.replace(regex, "") as String
+        val phoneNumber = number.replace(regex, "")
 
         if ((phoneHint.isNotEmpty() || phoneHint != "") && phoneNumber.contains(phoneHint)) {
             textInputOtp?.setText(phoneNumber.substring(phoneHint.length))

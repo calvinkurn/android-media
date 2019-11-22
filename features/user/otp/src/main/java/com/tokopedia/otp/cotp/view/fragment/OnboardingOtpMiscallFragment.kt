@@ -27,11 +27,8 @@ class OnboardingOtpMiscallFragment : BaseDaggerFragment(), OnboardingOtpMiscall.
     private lateinit var textStep2: TextView
     private lateinit var imgAnimationPreview: LottieAnimationView
     private lateinit var btnCallMe: UnifyButton
-
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var passModel: VerificationViewModel
-
-    @Inject
-    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     override fun getScreenName(): String = OTPAnalytics.Screen.SCREEN_COTP_MISCALL
 
