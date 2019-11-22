@@ -146,12 +146,13 @@ class OfficialHomeFragment :
 
     private fun loadData(isRefresh: Boolean = false) {
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
-            if (!isLoadedOnce) {
+            if (!isLoadedOnce || isRefresh) {
                 viewModel.loadFirstData(category)
                 isLoadedOnce = true
-            }
-            if (!isRefresh) {
-                tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+
+                if (!isRefresh) {
+                    tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+                }
             }
         }
     }
@@ -415,10 +416,12 @@ class OfficialHomeFragment :
     }
 
     override fun onCountDownFinished() {
-        adapter?.getVisitables()?.removeAll {
-            it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+        recyclerView?.post {
+            adapter?.getVisitables()?.removeAll {
+                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
+            }
+            adapter?.notifyDataSetChanged()
         }
-        adapter?.notifyDataSetChanged()
         loadData(true)
     }
 
