@@ -313,7 +313,6 @@ dependencies {
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
-    implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productCard)

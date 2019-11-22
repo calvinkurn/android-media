@@ -86,8 +86,6 @@ import com.tokopedia.notifcenter.applink.NotifCenterApplinkModule;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModuleLoader;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
 import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
-import com.tokopedia.ovo.OvoPayWithQrApplinkModule;
-import com.tokopedia.ovo.OvoPayWithQrApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
@@ -179,7 +177,6 @@ import static com.tokopedia.home.constant.BerandaUrl.FLAG_APP;
         UserIdentificationApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
-        OvoPayWithQrApplinkModule.class,
         WebViewApplinkModule.class,
         RecommendationDeeplinkModule.class
 })
@@ -233,7 +230,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new UserIdentificationApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
-                    new OvoPayWithQrApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader(),
                     new RecommendationDeeplinkModuleLoader()
             );
