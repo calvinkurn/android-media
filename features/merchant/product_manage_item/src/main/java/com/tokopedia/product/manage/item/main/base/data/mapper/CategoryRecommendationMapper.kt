@@ -8,9 +8,13 @@ import javax.inject.Inject
 
 class CategoryRecommendationMapper @Inject constructor() : Func1<GraphqlResponse, List<Category>?>{
 
-    override fun call(t: GraphqlResponse?): List<Category>? {
-        val dataModel = t?.getData<CategoryRecommendationData?>(CategoryRecommendationData::class.java)
-        return mapModel(dataModel!!)
+    override fun call(graphqlResponse: GraphqlResponse?): List<Category>? {
+        var categoryList: List<Category>? = mutableListOf()
+        val dataModel = graphqlResponse?.getData<CategoryRecommendationData?>(CategoryRecommendationData::class.java)
+        if (dataModel != null) {
+            categoryList = mapModel(dataModel)
+        }
+        return categoryList
     }
 
     /**

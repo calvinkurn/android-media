@@ -34,8 +34,8 @@ class ProductEditCategoryPresenter
         getCategoryRecommendationUseCase.execute(GetCategoryRecommendationUseCase.createRequestParams(productName),
                 object : Subscriber<List<Category>>() {
 
-                    override fun onNext(t: List<Category>?) {
-                        if (t != null) view?.onSuccessLoadRecommendationCategory(t)
+                    override fun onNext(productCategoryList: List<Category>?) {
+                        if (productCategoryList != null) view?.onSuccessLoadRecommendationCategory(productCategoryList)
                     }
 
                     override fun onCompleted() {}
