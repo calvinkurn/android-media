@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
@@ -14,6 +15,7 @@ import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactoryImpl
 import com.tokopedia.topchat.chatsetting.view.adapter.viewholder.ChatSettingViewHolder
+import com.tokopedia.topchat.chatsetting.view.widget.ChatSettingItemDecoration
 import com.tokopedia.topchat.chatsetting.viewmodel.ChatSettingViewModel
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -36,6 +38,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         super.onViewCreated(view, savedInstanceState)
         viewModel.initArguments(arguments)
         setupObserver()
+        setupRecyclerView(view)
     }
 
     private fun setupObserver() {
@@ -44,6 +47,20 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
                 is Success -> successLoadChatSetting(response.data)
             }
         })
+    }
+
+    private fun setupRecyclerView(view: View) {
+        val list = getRecyclerView(view)
+        val decoration = ChatSettingItemDecoration(context)
+        removeAllItemDecoration(list)
+        list.addItemDecoration(decoration)
+    }
+
+    private fun removeAllItemDecoration(list: RecyclerView?) {
+        if (list == null) return
+        for (i in 0 until list.itemDecorationCount) {
+            list.removeItemDecorationAt(i)
+        }
     }
 
     private fun successLoadChatSetting(data: List<ChatSetting>) {
