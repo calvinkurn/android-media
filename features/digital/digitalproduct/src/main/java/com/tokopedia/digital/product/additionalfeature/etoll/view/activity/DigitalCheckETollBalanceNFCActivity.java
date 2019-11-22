@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
@@ -81,9 +82,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
     private static final int TRANSCEIVE_TIMEOUT_IN_SEC = 5000;
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
-    public static final String DIGITAL_NFC_CALLING_TYPE = "calling_page_check_saldo";
-    public static final String DIGITAL_NFC_FROM_PDP = "calling_from_pdp";
-    private static final String DIGITAL_NFC = "calling_from_nfc";
 
     private static final String TAG = DigitalCheckETollBalanceNFCActivity.class.getSimpleName();
 
@@ -107,7 +105,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
 
     public static Intent newInstance(Context context, String typeCallingPage) {
         Intent intent = new Intent(context, DigitalCheckETollBalanceNFCActivity.class);
-        intent.putExtra(DIGITAL_NFC_CALLING_TYPE, typeCallingPage);
+        intent.putExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD, typeCallingPage);
         return intent;
     }
 
@@ -166,8 +164,8 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                     .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.getCardLastUpdatedDate())
                     .build();
 
-            if (getIntent() != null && getIntent().getStringExtra(DIGITAL_NFC_CALLING_TYPE) != null) {
-                if (getIntent().getStringExtra(DIGITAL_NFC_CALLING_TYPE) == DIGITAL_NFC) {
+            if (getIntent() != null && getIntent().getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) != null) {
+                if (getIntent().getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) == DigitalExtraParam.EXTRA_NFC) {
                     navigatePageToDigitalProduct(passData);
                 } else {
                     Intent intentReturn = new Intent();

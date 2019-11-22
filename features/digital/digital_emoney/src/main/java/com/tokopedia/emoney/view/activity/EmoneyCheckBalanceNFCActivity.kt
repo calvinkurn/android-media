@@ -100,8 +100,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                         .additionalETollOperatorName(getOperatorName(issuerId))
                         .build()
 
-                if (intent != null && intent.getStringExtra(DIGITAL_NFC_CALLING_TYPE) != null) {
-                    if (intent.getStringExtra(DIGITAL_NFC_CALLING_TYPE) === DIGITAL_NFC) {
+                if (intent != null && intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) != null) {
+                    if (intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) === DigitalExtraParam.EXTRA_NFC) {
                         navigatePageToDigitalProduct(passData)
                     } else {
                         val intentReturn = Intent()
@@ -441,9 +441,6 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     companion object {
-        const val DIGITAL_NFC_CALLING_TYPE = "calling_page_check_saldo"
-        const val DIGITAL_NFC_FROM_PDP = "calling_from_pdp"
-        const val DIGITAL_NFC = "calling_from_nfc"
         private const val DIGITAL_SMARTCARD = "mainapp_digital_smartcard"
 
         const val REQUEST_CODE_LOGIN = 1980

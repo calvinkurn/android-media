@@ -147,7 +147,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
     private static final String DIGITAL_DETAIL_TRACE = "dg_detail";
-    private static final String DIGITAL_NFC_FROM_PDP = "calling_from_pdp";
     private static final String CLICK_PDP = "clickPDP";
     private static final String DIGITAL_HOMEPAGE = "digital - homepage";
     private static final String CLICK_UPDATE_SALDO = "click update saldo ";
@@ -403,7 +402,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                     additionalETollOperatorName
             ));
             Intent intent = RouteManager.getIntent(getActivity(),
-                    ApplinkConsInternalDigital.SMARTCARD, DIGITAL_NFC_FROM_PDP);
+                    ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP);
             startActivityForResult(intent, REQUEST_CODE_CHECK_SALDO_EMONEY);
         });
     }
@@ -969,6 +968,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
                         bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, passData.getAdditionalETollLastUpdatedDate());
                         setupArguments(bundle);
                         setHasOptionsMenu(true);
+                        //clear cache
                         presenter.processGetCategoryAndBannerData(
                                 categoryId, operatorId, productId, clientNumber);
                     }
