@@ -60,7 +60,6 @@ import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.iris.Iris
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -176,6 +175,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var isFromDeeplink: Boolean = false
     private var isAffiliate: Boolean = false
     private var isLeasing: Boolean = false
+    private var deeplinkUrl: String = ""
 
     lateinit var headerView: PartialHeaderView
     lateinit var productStatsView: PartialProductStatisticView
@@ -201,8 +201,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     @Inject
     lateinit var productDetailTracking: ProductDetailTracking
-    @Inject
-    lateinit var irisAnalytics: Iris
 
     lateinit var performanceMonitoringP1: PerformanceMonitoring
     lateinit var performanceMonitoringP2: PerformanceMonitoring
@@ -297,6 +295,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         private const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
         private const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
         private const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
+        private const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
 
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
@@ -309,7 +308,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         isAffiliate: Boolean = false,
                         trackerAttribution: String? = null,
                         trackerListName: String? = null,
-                        affiliateString: String? = null) =
+                        affiliateString: String? = null,
+                        deeplinkUrl: String? = null) =
                 ProductDetailFragment().also {
                     it.arguments = Bundle().apply {
                         productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
@@ -319,6 +319,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         trackerAttribution?.let { attribution -> putString(ARG_TRACKER_ATTRIBUTION, attribution) }
                         trackerListName?.let { listName -> putString(ARG_TRACKER_LIST_NAME, listName) }
                         affiliateString?.let { affiliateString -> putString(ARG_AFFILIATE_STRING, affiliateString) }
+                        deeplinkUrl?.let { deeplinkUrl -> putString(ARG_DEEPLINK_URL, deeplinkUrl) }
                         putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
                         putBoolean(ARG_FROM_AFFILIATE, isAffiliate)
                     }
@@ -349,6 +350,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             affiliateString = it.getString(ARG_AFFILIATE_STRING)
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
+            deeplinkUrl = it.getString(ARG_DEEPLINK_URL, "")
         }
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -497,8 +499,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     tv_available_at?.visible()
                 }
             }
-            sendIrisTracker(productDetailTracking.eventEnhanceEcommerceProductDetailIris(trackerListName, productInfo, shopInfo, trackerAttribution,
-                    it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment))
             trackProductView(it)
         }
         context?.let {
@@ -1883,6 +1883,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onReviewClicked() {
         productInfo?.run {
+            productDetailTracking.eventReviewClickedIris(this)
             productDetailTracking.eventReviewClicked()
             productDetailTracking.sendMoEngageClickReview(this, shopInfo?.goldOS?.isOfficial == 1, shopInfo?.shopCore?.name
                     ?: "")
@@ -2248,8 +2249,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun trackProductView(isElligible: Boolean) {
         if (productInfo != null && shopInfo != null) {
+
             productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                    isElligible, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
+                    isElligible, tradeInParams.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment, deeplinkUrl)
         } else if (shopInfo == null) {
             delegateTradeInTracking = true
         }
@@ -2351,12 +2353,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             nested_scroll.setPadding(0, 0, 0, paddingBottom)
             val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, R.drawable.bg_shadow_top) }
             drawable?.let { actionButtonView.setBackground(it) }
-        }
-    }
-
-    private fun sendIrisTracker(data: HashMap<String, Any>) {
-        if (::irisAnalytics.isInitialized) {
-            irisAnalytics.sendEvent(data)
         }
     }
 

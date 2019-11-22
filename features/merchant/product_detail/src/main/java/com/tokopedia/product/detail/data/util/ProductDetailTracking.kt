@@ -1,10 +1,8 @@
 package com.tokopedia.product.detail.data.util
 
 import android.net.Uri
-import android.os.Bundle
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -22,7 +20,6 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -92,6 +89,38 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
         mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun eventReviewClickedIris(productInfo: ProductInfo?, deeplinkUrl: String) {
+
+        var categoryNameLvl2 = ""
+        var categoryIdLvl2 = ""
+        if (productInfo.category.detail.size >= 2) {
+            productInfo.category.detail.get(1).let {
+                categoryIdLvl2 = it.id
+                categoryNameLvl2 = it.name
+            }
+        }
+
+        val imageUrl = productInfo?.media?.filter {
+            it.type == "image"
+        }?.first()
+
+        val mapOfData: Map<String, Any?> = mapOf(KEY_EVENT to "clickPDP",
+                KEY_CATEGORY to "product detail page",
+                KEY_ACTION to "click",
+                KEY_LABEL to "review",
+                "subcategory" to categoryNameLvl2,
+                "subcategoryId" to categoryIdLvl2,
+                "category" to productInfo?.category?.name,
+                "categoryId" to productInfo?.category?.id,
+                "productName" to productInfo?.basic?.name,
+                "productId" to productInfo?.basic?.id,
+                "productUrl" to productInfo?.basic?.url,
+                "productDepplinkUrl" to deeplinkUrl,
+                "productImageUrl" to imageUrl)
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
     }
 
     fun eventReviewClicked() {
@@ -555,7 +584,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
     fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?,
                                            shopInfo: ShopInfo?, trackerAttribution: String?,
                                            isTradeIn: Boolean, isDiagnosed: Boolean,
-                                           multiOrigin: Boolean) {
+                                           multiOrigin: Boolean, deeplinkUrl: String) {
         val dimension55 = if (isTradeIn && isDiagnosed)
             "true diagnostic"
         else if (isTradeIn && !isDiagnosed)
@@ -568,6 +597,15 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 VALUE_BEBAS_ONGKIR
             else
                 VALUE_NONE_OTHER
+        }
+
+        val subCategoryId = productInfo?.category?.detail?.map {
+            it.id
+        }
+        val productImageUrl = productInfo?.media?.filter {
+            it.type == "image"
+        }?.map {
+            it.urlOriginal
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
@@ -584,7 +622,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         "name", productInfo?.basic?.name,
                         "id", productInfo?.basic?.id,
                         "price", productInfo?.basic?.price?.toInt(),
-                        "brand", "none / other",
+                        "brand", productInfo?.basic?.name,
                         "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
                         "variant", "none / other",
                         "dimension38", trackerAttribution ?: "none / other",
@@ -606,71 +644,19 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "shopIsGold", shopInfo?.goldOS?.isGoldBadge.toString(),
                 "categoryId", productInfo?.category?.id,
                 "url", productInfo?.basic?.url,
-                "shopType", getEnhanceShopType(shopInfo?.goldOS)
+                "shopType", getEnhanceShopType(shopInfo?.goldOS),
+                "picture", "",
+                "pageType", "",
+                "subcategory", "",
+                "subcategoryId", subCategoryId,
+                "productUrl", productInfo?.getProductUrl(),
+                "productDeeplinkUrl", listOf(deeplinkUrl),
+                "productImageUrl", productImageUrl,
+                "isOfficialStore", listOf(shopInfo?.goldOS?.isOfficial),
+                "productPriceFormatted", listOf(getFormattedPrice(productInfo?.basic?.price?.toInt()
+                ?: 0))
         ))
-
-
     }
-
-    fun eventEnhanceEcommerceProductDetailIris(trackerListName: String?, productInfo: ProductInfo?,
-                                               shopInfo: ShopInfo?, trackerAttribution: String?,
-                                               isTradeIn: Boolean, isDiagnosed: Boolean,
-                                               multiOrigin: Boolean): HashMap<String, Any> {
-        val dimension55 = if (isTradeIn && isDiagnosed)
-            "true diagnostic"
-        else if (isTradeIn && !isDiagnosed)
-            "true non diagnostic"
-        else
-            "false"
-
-        val dimension83 = productInfo?.freeOngkir?.let {
-            if (it.isFreeOngkirActive)
-                VALUE_BEBAS_ONGKIR
-            else
-                VALUE_NONE_OTHER
-        }
-
-        return DataLayer.mapOf(
-                "event", "viewProduct",
-                "eventCategory", "product page",
-                "eventAction", "view product page",
-                "eventLabel", getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.basic?.name,
-                KEY_PRODUCT_ID, productInfo?.basic?.id,
-                "ecommerce", DataLayer.mapOf(
-                "currencyCode", "IDR",
-                "detail", DataLayer.mapOf(
-                "products", DataLayer.listOf(
-                DataLayer.mapOf(
-                        "name", productInfo?.basic?.name,
-                        "id", productInfo?.basic?.id,
-                        "price", productInfo?.basic?.price?.toInt(),
-                        "brand", "none / other",
-                        "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
-                        "variant", "none / other",
-                        "dimension38", trackerAttribution ?: "none / other",
-                        "dimension55", dimension55,
-                        "dimension54", getMultiOriginAttribution(multiOrigin),
-                        "dimension83", dimension83,
-                        KEY_DIMENSION_81, shopInfo?.goldOS?.shopTypeString
-
-                ))).apply {
-            if (trackerListName?.isNotEmpty() == true) {
-                put("actionField", DataLayer.mapOf("list", trackerListName))
-            }
-        }),
-                "key", getEnhanceUrl(productInfo?.basic?.url),
-                "shopName", shopInfo?.shopCore?.name,
-                "shopId", productInfo?.basic?.shopID,
-                "shopDomain", shopInfo?.shopCore?.domain,
-                "shopLocation", shopInfo?.location,
-                "shopIsGold", shopInfo?.goldOS?.isGoldBadge.toString(),
-                "categoryId", productInfo?.category?.id,
-                "url", productInfo?.basic?.url,
-                "shopType", getEnhanceShopType(shopInfo?.goldOS)
-        ) as HashMap<String, Any>
-
-    }
-
 
     ///////////////////////////////////////////////////////////////
     //BRANCH START
