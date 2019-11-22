@@ -25,7 +25,7 @@ class BannedProductsEmptySearchViewHolder(
         itemView.searchResultBannedProductsEmptySearchMessage?.text = MethodChecker.fromHtml(element.errorMessage)
         itemView.searchResultBannedProductsEmptySearchGoToBrowserButton?.showWithCondition(element.encriptedLiteUrl.isNotEmpty())
         itemView.searchResultBannedProductsEmptySearchGoToBrowserButton?.setOnClickListener {
-            bannedProductsRedirectToBrowserListener.onGoToBrowserClicked(element.encriptedLiteUrl)
+            bannedProductsRedirectToBrowserListener.onGoToBrowserClicked(true, element.encriptedLiteUrl)
         }
     }
 }

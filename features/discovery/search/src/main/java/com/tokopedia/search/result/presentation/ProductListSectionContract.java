@@ -48,7 +48,7 @@ public interface ProductListSectionContract {
 
         void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
 
-        void trackEventImpressionBannedProductsErrorMessage();
+        void trackEventImpressionBannedProducts(boolean isEmptySearch);
 
         void backToTop();
 

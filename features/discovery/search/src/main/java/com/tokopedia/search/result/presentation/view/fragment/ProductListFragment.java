@@ -884,8 +884,13 @@ public class ProductListFragment
     }
 
     @Override
-    public void trackEventImpressionBannedProductsErrorMessage() {
-        SearchTracking.trackEventImpressionBannedProducts(getQueryKey());
+    public void trackEventImpressionBannedProducts(boolean isEmptySearch) {
+        if (isEmptySearch) {
+            SearchTracking.trackEventImpressionBannedProductsEmptySearch(getQueryKey());
+        }
+        else {
+            SearchTracking.trackEventImpressionBannedProductsWithResult(getQueryKey());
+        }
     }
 
     @Override
@@ -1223,10 +1228,19 @@ public class ProductListFragment
     }
 
     @Override
-    public void onGoToBrowserClicked(@NotNull String encriptedLiteUrl) {
-        SearchTracking.trackEventClickGoToBrowserBannedProducts(getQueryKey());
+    public void onGoToBrowserClicked(boolean isEmptySearch, @NotNull String encriptedLiteUrl) {
+        trackEventClickGoToBrowserBannedProducts(isEmptySearch);
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(encriptedLiteUrl));
         startActivity(intent);
+    }
+
+    private void trackEventClickGoToBrowserBannedProducts(boolean isEmptySearch) {
+        if (isEmptySearch) {
+            SearchTracking.trackEventClickGoToBrowserBannedProductsEmptySearch(getQueryKey());
+        }
+        else {
+            SearchTracking.trackEventClickGoToBrowserBannedProductsWithResult(getQueryKey());
+        }
     }
 }

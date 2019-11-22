@@ -743,7 +743,7 @@ final class ProductListPresenter
     private void getViewToHandleEmptySearchWithErrorMessage(SearchProductModel.SearchProduct searchProduct) {
         getView().removeLoading();
         getView().setBannedProductsErrorMessage(createTobaccoErrorMessageAsList(searchProduct));
-        getView().trackEventImpressionBannedProductsErrorMessage();
+        getView().trackEventImpressionBannedProducts(true);
         getView().setTotalSearchResultCount("0");
     }
 
@@ -825,7 +825,7 @@ final class ProductListPresenter
 
         if (searchProduct.getErrorMessage() != null && !searchProduct.getErrorMessage().isEmpty()) {
             list.add(createTobaccoTickerViewModel(searchProduct.getErrorMessage(), searchProduct.getSeamlessLiteUrl()));
-            getView().trackEventImpressionBannedProductsErrorMessage();
+            getView().trackEventImpressionBannedProducts(false);
         }
 
         if (productViewModel.getQuickFilterModel() != null) {

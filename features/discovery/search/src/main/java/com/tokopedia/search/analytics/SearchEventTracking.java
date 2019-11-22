@@ -40,6 +40,8 @@ public interface SearchEventTracking {
         String MODULE = "module";
         String LOGIN = "login";
         String NON_LOGIN = "nonlogin";
+        String IMPRESSION_BANNED_PRODUCT_TICKER_EMPTY = "impression - banned product ticker - empty";
+        String CLICK_BANNED_PRODUCT_TICKER_EMPTY = "click - banned product ticker - empty";
         String IMPRESSION_BANNED_PRODUCT_TICKER_RELATED = "impression - banned product ticker - related";
         String CLICK_BANNED_PRODUCT_TICKER_RELATED = "click - banned product ticker - related";
     }

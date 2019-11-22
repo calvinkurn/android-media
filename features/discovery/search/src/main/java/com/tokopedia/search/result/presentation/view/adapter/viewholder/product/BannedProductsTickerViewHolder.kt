@@ -27,7 +27,7 @@ class BannedProductsTickerViewHolder(
         itemView.searchResultBannedProductsTicker?.setHtmlDescription(element.htmlErrorMessage)
         itemView.searchResultBannedProductsTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                bannedProductsRedirectToBrowserListener.onGoToBrowserClicked(linkUrl.toString())
+                bannedProductsRedirectToBrowserListener.onGoToBrowserClicked(false, linkUrl.toString())
             }
 
             override fun onDismiss() {}
