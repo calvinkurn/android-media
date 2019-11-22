@@ -12,25 +12,25 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -72,14 +72,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
@@ -360,6 +359,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         presenter.onFirstLaunch();
         initAdapter();
         initRefreshLayout();
+        subscribeHome();
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
@@ -380,12 +380,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         });
 
-        stickyLoginView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                updateStickyState();
-            }
-        });
+        stickyLoginView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> updateStickyState());
         stickyLoginView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -460,6 +455,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         });
         refreshLayout.setOnRefreshListener(this);
+    }
+
+    private void subscribeHome(){
+        presenter.getHomeLiveData().observe(this, homeViewModel -> {
+            configureHomeFlag(homeViewModel.getHomeFlag());
+        });
     }
 
     private void loadEggData() {
@@ -795,14 +796,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setItems(List<Visitable> items, int repositoryFlag) {
-        if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
-            adapter.setItems( needToShowGeolocationComponent() ? items : removeGeolocationComponent(items));
+    public void setItems(List<HomeVisitable> items, int repositoryFlag) {
+        List<Visitable> list = new ArrayList<>(items);
+        if (repositoryFlag == HomePresenter.FLAG_FROM_NETWORK) {
+            adapter.setItems( needToShowGeolocationComponent() ? list : removeGeolocationComponent(items));
             presenter.getHeaderData(false);
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
-            adapter.setItems(needToShowGeolocationComponent() ? items : removeGeolocationComponent(items));
+            adapter.setItems(needToShowGeolocationComponent() ? list : removeGeolocationComponent(items));
         }
     }
 
@@ -832,7 +834,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return needToShowGeolocationComponent;
     }
 
-    private List<Visitable> removeGeolocationComponent(List<Visitable> items){
+    private List<Visitable> removeGeolocationComponent(List<HomeVisitable> items){
         List<Visitable> local = new ArrayList<>(items);
         for (Visitable visitable : local){
             if(visitable instanceof GeolocationPromptViewModel){
@@ -942,16 +944,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void updateListOnResume(List<Visitable> visitables) {
+    public void updateListOnResume(List<HomeVisitable> visitables) {
         if (feedTabVisitable != null) {
-            visitables.add(feedTabVisitable);
+            visitables.add((HomeVisitable) feedTabVisitable);
         }
         presenter.getHeaderData(false);
 
         if (!visitables.isEmpty()) {
             presenter.getFeedTabData();
         }
-        adapter.updateHomeQueryItems(needToShowGeolocationComponent() ? visitables : removeGeolocationComponent(visitables));
+        adapter.updateHomeQueryItems(needToShowGeolocationComponent() ? new ArrayList<>(visitables) : removeGeolocationComponent(visitables));
     }
 
     @Override
@@ -1012,12 +1014,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 messageSnackbar.showRetrySnackbar();
             } else {
                 NetworkErrorHelper.showEmptyState(getActivity(), root, getString(R.string.msg_network_error),
-                        new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                onRefresh();
-                            }
-                        });
+                        () -> onRefresh());
             }
         }
     }

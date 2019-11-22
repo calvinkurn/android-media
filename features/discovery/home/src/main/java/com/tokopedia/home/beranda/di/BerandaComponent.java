@@ -17,24 +17,24 @@ import dagger.Component;
  * @author by errysuprayogi on 11/27/17.
  */
 
-@HomeScope
-@Component(modules = {
-        ApiModule.class,
-        HomeModule.class,
-        ShopModule.class,
-        ViewModelModule.class
-}, dependencies = BaseAppComponent.class)
-public interface BerandaComponent {
-
-    void inject(HomeFragment homeFragment);
-
-    void inject(HomeFeedFragment homeFeedFragment);
-
-    void inject(HomePresenter homePresenter);
-
-    void inject(HomeFeedPresenter homeFeedPresenter);
-
-    void inject(TabBusinessFragment fragment);
-
-    void inject(BusinessUnitItemFragment fragment);
-}
+//@HomeScope
+//@Component(modules = {
+//        ApiModule.class,
+//        HomeModule.class,
+//        ShopModule.class,
+//        ViewModelModule.class
+//}, dependencies = BaseAppComponent.class)
+//public interface BerandaComponent {
+//
+//    void inject(HomeFragment homeFragment);
+//
+//    void inject(HomeFeedFragment homeFeedFragment);
+//
+//    void inject(HomePresenter homePresenter);
+//
+//    void inject(HomeFeedPresenter homeFeedPresenter);
+//
+//    void inject(TabBusinessFragment fragment);
+//
+//    void inject(BusinessUnitItemFragment fragment);
+//}

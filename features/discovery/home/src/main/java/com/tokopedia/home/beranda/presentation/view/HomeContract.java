@@ -38,7 +38,7 @@ public interface HomeContract {
 
         void hideLoading();
 
-        void setItems(List<Visitable> items, int repositoryFlag);
+        void setItems(List<HomeVisitable> items, int repositoryFlag);
 
         void setHint(SearchPlaceholder searchPlaceholder);
 
@@ -60,7 +60,7 @@ public interface HomeContract {
 
         Activity getActivity();
 
-        void updateListOnResume(List<Visitable> visitables);
+        void updateListOnResume(List<HomeVisitable> visitables);
 
         void addImpressionToTrackingQueue(List<HomeVisitable> visitables);
 

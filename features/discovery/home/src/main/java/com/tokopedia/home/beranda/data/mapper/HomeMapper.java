@@ -59,7 +59,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
         List list = new ArrayList<>();
 
 
-        list.add(mappingBanner(homeData.getSlides(), homeData.isCache()));
+        list.add(mappingBanner(homeData.getBanner(), homeData.isCache()));
 
         if (homeData.getTicker() != null
                 && homeData.getTicker().getTickers() != null
