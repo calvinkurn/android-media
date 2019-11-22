@@ -65,6 +65,7 @@ import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOptionUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel;
@@ -126,7 +127,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -171,6 +171,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private RelativeLayout layoutUsedPromoEmptyCart;
     private RelativeLayout rlContent;
     private CheckBox cbSelectAll;
+    private Typography tvSelectAll;
     private Typography btnRemove;
     private CardView cardHeader;
     private CardView cardFooter;
@@ -386,6 +387,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cardHeader = view.findViewById(R.id.card_header);
         cardFooter = view.findViewById(R.id.card_footer);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
+        tvSelectAll = view.findViewById(R.id.tv_select_all);
         btnRemove = view.findViewById(R.id.btn_delete_all_cart);
         llCartContainer = view.findViewById(R.id.ll_cart_container);
 
@@ -542,6 +544,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     protected void setViewListener() {
         btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
         cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
+        tvSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
         btnRemove.setOnClickListener(v -> {
             if (btnRemove.getVisibility() == View.VISIBLE) {
                 onToolbarRemoveAllCart();
@@ -1763,6 +1766,34 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
         showMainContainer();
         onContentAvailabilityChanged(true);
+        ClashBottomSheetFragment clashBottomSheetFragment = ClashBottomSheetFragment.newInstance();
+        ClashingInfoDetailUiModel clashingInfoDetailUiModel1 = new ClashingInfoDetailUiModel();
+        clashingInfoDetailUiModel1.setClashMessage("Promo berikut nggak bisa digunakan bersamaan. Silakan pilih salah satu, ya");
+        clashingInfoDetailUiModel1.setClashReason("reason");
+        clashingInfoDetailUiModel1.setClashedPromos(true);
+        ArrayList<ClashingVoucherOptionUiModel> arrayList = new ArrayList<>();
+
+        ClashingVoucherOptionUiModel clashingVoucherOptionUiModel = new ClashingVoucherOptionUiModel();
+        ArrayList<ClashingVoucherOrderUiModel> arrayList1 = new ArrayList<>();
+        arrayList1.add(new ClashingVoucherOrderUiModel("code", "1", 1, "name 1234", 15000, ""));
+        clashingVoucherOptionUiModel.setVoucherOrders(arrayList1);
+        clashingVoucherOptionUiModel.setSelected(true);
+        arrayList.add(clashingVoucherOptionUiModel);
+
+        ClashingVoucherOptionUiModel clashingVoucherOptionUiModel1 = new ClashingVoucherOptionUiModel();
+        ArrayList<ClashingVoucherOrderUiModel> arrayList12 = new ArrayList<>();
+        arrayList12.add(new ClashingVoucherOrderUiModel("asdf", "2", 1, "name panjang sekali", 75000, "shop abc"));
+        arrayList12.add(new ClashingVoucherOrderUiModel("qwer", "3", 1, "Cashback Toko Hingga Rp 75.000", 15000, "Jaya Makmur Cell"));
+        clashingVoucherOptionUiModel1.setVoucherOrders(arrayList12);
+        arrayList.add(clashingVoucherOptionUiModel1);
+
+        clashingInfoDetailUiModel1.setOptions(arrayList);
+        clashBottomSheetFragment.setData(clashingInfoDetailUiModel1);
+        clashBottomSheetFragment.setActionListener(this);
+        clashBottomSheetFragment.setAnalyticsCart(cartPageAnalytics);
+        clashBottomSheetFragment.setSource("cart");
+        clashBottomSheetFragment.setType("type");
+        clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 
     @Override
@@ -2190,6 +2221,23 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void onClashCheckPromo(@NonNull ClashingInfoDetailUiModel clashingInfoDetailUiModel,
                                   @NotNull String type) {
         ClashBottomSheetFragment clashBottomSheetFragment = ClashBottomSheetFragment.newInstance();
+        ClashingInfoDetailUiModel clashingInfoDetailUiModel1 = new ClashingInfoDetailUiModel();
+        clashingInfoDetailUiModel1.setClashMessage("message");
+        clashingInfoDetailUiModel1.setClashReason("reason");
+        clashingInfoDetailUiModel1.setClashedPromos(true);
+        ArrayList<ClashingVoucherOptionUiModel> arrayList = new ArrayList<>();
+        ClashingVoucherOptionUiModel clashingVoucherOptionUiModel = new ClashingVoucherOptionUiModel();
+        ArrayList<ClashingVoucherOrderUiModel> arrayList1 = new ArrayList<>();
+        arrayList1.add(new ClashingVoucherOrderUiModel("code", "1", 1, "name", 0, "shop"));
+        clashingVoucherOptionUiModel.setVoucherOrders(arrayList1);
+        arrayList.add(clashingVoucherOptionUiModel);
+        ArrayList<ClashingVoucherOptionUiModel> arrayList2 = new ArrayList<>();
+        ClashingVoucherOptionUiModel clashingVoucherOptionUiModel1 = new ClashingVoucherOptionUiModel();
+        ArrayList<ClashingVoucherOrderUiModel> arrayList12 = new ArrayList<>();
+        arrayList12.add(new ClashingVoucherOrderUiModel("code", "1", 1, "name", 0, "shop"));
+        clashingVoucherOptionUiModel1.setVoucherOrders(arrayList12);
+        arrayList2.add(clashingVoucherOptionUiModel1);
+        clashingInfoDetailUiModel1.setOptions(arrayList2);
         clashBottomSheetFragment.setData(clashingInfoDetailUiModel);
         clashBottomSheetFragment.setActionListener(this);
         clashBottomSheetFragment.setAnalyticsCart(cartPageAnalytics);

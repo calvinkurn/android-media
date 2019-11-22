@@ -1,14 +1,14 @@
 package com.tokopedia.purchase_platform.common.feature.promo_clashing.viewholder
 
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter.ClashingAdapter
-import com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter.ClashingInnerAdapter
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOptionUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
+import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter.ClashingAdapter
+import com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter.ClashingInnerAdapter
 import kotlinx.android.synthetic.main.item_clashing_voucher.view.*
 
 /**
@@ -23,18 +23,18 @@ class ClashingViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(element: ClashingVoucherOptionUiModel?, listener: ClashingAdapter.ActionListener) {
         if (element != null) {
-            if (adapterPosition == 0) {
-                itemView.tv_title_voucher.text = itemView.context.getString(R.string.checkout_module_title_promo_clashing_newly_selected)
-            } else {
-                itemView.tv_title_voucher.text = itemView.context.getString(R.string.checkout_module_title_promo_clashing_previously_selected)
-            }
+//            if (adapterPosition == 0) {
+//                itemView.tv_title_voucher.text = itemView.context.getString(R.string.checkout_module_title_promo_clashing_newly_selected)
+//            } else {
+//                itemView.tv_title_voucher.text = itemView.context.getString(R.string.checkout_module_title_promo_clashing_previously_selected)
+//            }
 
             var totalBenefit = 0
             for (voucherModel: ClashingVoucherOrderUiModel in element.voucherOrders) {
                 totalBenefit += voucherModel.potentialBenefit
             }
 
-            itemView.tv_voucher_amout_total.text = String.format(itemView.context.getString(R.string.checkout_module_promo_clashing_promo_potential), CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBenefit, false))
+            itemView.tv_voucher_amount_total.text = String.format(itemView.context.getString(R.string.checkout_module_promo_clashing_promo_potential), CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBenefit, false))
             val adapter = ClashingInnerAdapter()
             adapter.data = element.voucherOrders
             itemView.rv_voucher_list.adapter = adapter

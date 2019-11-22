@@ -112,9 +112,11 @@ android {
             zipAlignEnabled false
             testCoverageEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            ext.enableHansel = false
         }
         release {
             signingConfig signingConfigs.debug
+            ext.enableHansel = true
         }
     }
     splits {
@@ -212,6 +214,8 @@ dependencies {
     implementation rootProject.ext.firebase.core
 
     // TO BE ADDED AS FEATURE REQUIREMENT
+    implementation project(rootProject.ext.features.purchase_platform)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation project(rootProject.ext.libraries.logger)
     implementation (rootProject.ext.debugToolsDependencies.timber){

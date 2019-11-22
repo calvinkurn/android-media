@@ -1,34 +1,36 @@
 package com.tokopedia.purchase_platform.common.feature.promo_clashing
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import android.widget.TextView
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter.ClashingAdapter
-import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ButtonCompat
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOptionUiModel
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
+import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.promo_clashing.adapter.ClashingAdapter
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 /**
  * Created by fwidjaja on 10/03/19.
  */
 
-open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionListener {
+open class ClashBottomSheetFragment : BottomSheetUnify(), ClashingAdapter.ActionListener {
 
     private var mTitle: String? = null
     private lateinit var actionListener: ActionListener
-    private lateinit var tvClashingInfoTicker: TextView
+    private lateinit var tvClashingInfoTicker: Ticker
     private lateinit var uiModel: ClashingInfoDetailUiModel
     private lateinit var source: String
     private lateinit var type: String
     private lateinit var rvClashingOption: RecyclerView
-    private lateinit var btSubmit: ButtonCompat
+    private lateinit var btSubmit: UnifyButton
     private lateinit var adapter: ClashingAdapter
     private var checkoutAnalyticsCart: CheckoutAnalyticsCart? = null
     private var checkoutAnalyticsCourierSelection: CheckoutAnalyticsCourierSelection? = null
@@ -44,8 +46,22 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
         }
     }
 
-    override fun state(): BottomSheetsState {
-        return BottomSheetsState.FLEXIBLE
+//    override fun state(): BottomSheets.BottomSheetsState {
+//        return BottomSheets.BottomSheetsState.FLEXIBLE
+//    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setTitle(title())
+        setChild(LayoutInflater.from(context).inflate(getLayoutResourceId(), null, false))
+//        setCloseClickListener(() -> {
+//            dismiss()
+//        })
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView(view)
     }
 
     fun setData(uiModel: ClashingInfoDetailUiModel) {
@@ -72,11 +88,11 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
         this.checkoutAnalyticsCourierSelection = checkoutAnalyticsCourierSelection
     }
 
-    override fun initView(view: View) {
+    fun initView(view: View) {
         btSubmit = view.findViewById(R.id.bt_submit)
         rvClashingOption = view.findViewById(R.id.rv_clashing_option)
         tvClashingInfoTicker = view.findViewById(R.id.tv_clashing_info_ticker)
-        tvClashingInfoTicker.text = uiModel.clashMessage
+        tvClashingInfoTicker.setTextDescription(uiModel.clashMessage)
 
         adapter = ClashingAdapter()
         adapter.setListener(this)
@@ -89,11 +105,10 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
         setButtonSubmitVisibility()
     }
 
-    override fun configView(parentView: View?) {
-        super.configView(parentView)
-        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
-    }
+//    fun configView(parentView: View?) {
+//        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
+//        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
+//    }
 
     private fun setButtonSubmitVisibility() {
         var isDataSelected = false
@@ -151,11 +166,11 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
         }
     }
 
-    override fun getLayoutResourceId(): Int {
+    fun getLayoutResourceId(): Int {
         return R.layout.bottom_sheet_clash_voucher
     }
 
-    override fun title(): String {
+    fun title(): String {
         return getString(R.string.clash_bottomsheet_title)
     }
 
