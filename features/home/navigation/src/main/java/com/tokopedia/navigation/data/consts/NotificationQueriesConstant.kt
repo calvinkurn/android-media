@@ -5,6 +5,7 @@ object NotificationQueriesConstant {
     const val MUTATION_NOTIF_CENTER_PUSH_NOTIF = "notif_center_push_notif"
     const val TRANSACTION_NOTIFICATION = "transaction_notification"
     const val DRAWER_PUSH_NOTIFICATION = "drawer_push_notification"
+    const val FILTER_NOTIFICATION = "filter_notification"
     const val QUERY_IS_TAB_UPDATE = "query_is_tab_update"
 
     const val PARAM_SECTION_TYPE = "section_type"

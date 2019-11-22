@@ -39,4 +39,9 @@ import javax.inject.Named
     fun provideRawProductInfo(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_is_tab_update)
 
+    @Provides
+    @Named(NotificationQueriesConstant.FILTER_NOTIFICATION)
+    fun provideFilterNotification(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_notification_update_filter)
+
 }
