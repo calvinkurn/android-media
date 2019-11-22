@@ -459,15 +459,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation rootProject.ext.analyticsDependencies.moengageSdk
-    implementation rootProject.ext.analyticsDependencies.moengagePushbase
-    implementation rootProject.ext.analyticsDependencies.moengageInapp
-    implementation(rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-firebase'
-    }
-    implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
-        exclude group: 'com.android.support'
-    }
+    implementation(rootProject.ext.analyticsDependencies.moengage)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
