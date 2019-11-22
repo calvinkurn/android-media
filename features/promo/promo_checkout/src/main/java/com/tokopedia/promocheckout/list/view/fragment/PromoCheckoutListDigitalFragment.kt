@@ -81,6 +81,9 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         super.onDestroyView()
     }
 
+    override fun onClickRedeemCoupon(catalog_id: Int?, slug: String?, title: String, creativeName: String, position: Int) {
+    }
+
     companion object {
         val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
 

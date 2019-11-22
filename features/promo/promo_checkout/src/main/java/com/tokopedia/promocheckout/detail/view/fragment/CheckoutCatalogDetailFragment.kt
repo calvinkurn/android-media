@@ -302,8 +302,8 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
         val REQUEST_CODE_DETAIL_PROMO = 231
-        fun newInstance(slug: String, catalog_id: Int?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
-                        promo: Promo): CheckoutCatalogDetailFragment {
+        fun newInstance(slug: String?, catalog_id: Int?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
+                        promo: Promo?): CheckoutCatalogDetailFragment {
             val checkoutcatalogfragment = CheckoutCatalogDetailFragment()
             val bundle = Bundle()
             bundle.putString(SLUG, slug)
