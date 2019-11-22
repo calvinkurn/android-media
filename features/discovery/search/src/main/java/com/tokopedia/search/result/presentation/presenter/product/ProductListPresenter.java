@@ -1,14 +1,10 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
 import android.text.TextUtils;
-import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.filter.common.data.DataValue;
-import com.tokopedia.filter.common.data.Filter;
-import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
@@ -752,7 +748,7 @@ final class ProductListPresenter
 
     private List<Visitable> createTobaccoErrorMessageAsList(SearchProductModel.SearchProduct searchProduct) {
         List<Visitable> tobaccoErrorMessageAsList = new ArrayList<>();
-        tobaccoErrorMessageAsList.add(new TobaccoEmptySearchViewModel(searchProduct.getErrorMessage(), searchProduct.getEncriptedLiteUrl()));
+        tobaccoErrorMessageAsList.add(new TobaccoEmptySearchViewModel(searchProduct.getErrorMessage(), searchProduct.getSeamlessLiteUrl()));
         return tobaccoErrorMessageAsList;
     }
 
@@ -827,7 +823,7 @@ final class ProductListPresenter
         }
 
         if (searchProduct.getErrorMessage() != null && !searchProduct.getErrorMessage().isEmpty()) {
-            list.add(createTobaccoTickerViewModel(searchProduct.getErrorMessage(), searchProduct.getEncriptedLiteUrl()));
+            list.add(createTobaccoTickerViewModel(searchProduct.getErrorMessage(), searchProduct.getSeamlessLiteUrl()));
         }
 
         if (productViewModel.getQuickFilterModel() != null) {

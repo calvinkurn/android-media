@@ -133,7 +133,7 @@ public class SearchProductModel {
         @Expose
         private List<Product> products = new ArrayList<>();
 
-        private String encriptedLiteUrl = "";
+        private String seamlessLiteUrl = "";
 
         public String getQuery() {
             return query;
@@ -153,6 +153,10 @@ public class SearchProductModel {
 
         public String getErrorMessage() {
             return this.errorMessage;
+        }
+
+        public String getLiteUrl() {
+            return this.liteUrl;
         }
 
         public boolean isQuerySafe() {
@@ -203,12 +207,12 @@ public class SearchProductModel {
             return related;
         }
 
-        public void setEncriptedLiteUrl(String encriptedLiteUrl) {
-            this.encriptedLiteUrl = encriptedLiteUrl;
+        public void setSeamlessLiteUrl(String seamlessLiteUrl) {
+            this.seamlessLiteUrl = seamlessLiteUrl;
         }
 
-        public String getEncriptedLiteUrl() {
-            return this.encriptedLiteUrl;
+        public String getSeamlessLiteUrl() {
+            return this.seamlessLiteUrl;
         }
     }
 

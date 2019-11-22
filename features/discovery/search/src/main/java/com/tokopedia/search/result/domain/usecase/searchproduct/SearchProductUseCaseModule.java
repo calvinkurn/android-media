@@ -5,6 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
+import com.tokopedia.search.di.module.GraphqlRepositoryModule;
+import com.tokopedia.search.di.module.ResourcesModule;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -21,7 +24,11 @@ import dagger.Provides;
 import rx.functions.Func1;
 
 @SearchScope
-@Module(includes = SearchProductMapperModule.class)
+@Module(includes = {
+        SearchProductMapperModule.class,
+        ResourcesModule.class,
+        GraphqlRepositoryModule.class
+})
 public class SearchProductUseCaseModule {
 
     @SearchScope
@@ -29,14 +36,15 @@ public class SearchProductUseCaseModule {
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
     UseCase<SearchProductModel> provideSearchProductFirstPageUseCase(
             @ApplicationContext Context context,
-            Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper
+            Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper,
+            SeamlessLoginUsecase seamlessLoginUsecase
     ) {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_search_product_first_page),
                 SearchProductModel.class
         );
 
-        return new SearchProductFirstPageGqlUseCase(graphqlRequest, new GraphqlUseCase(), searchProductModelMapper);
+        return new SearchProductFirstPageGqlUseCase(graphqlRequest, new GraphqlUseCase(), searchProductModelMapper, seamlessLoginUsecase);
     }
 
     @SearchScope

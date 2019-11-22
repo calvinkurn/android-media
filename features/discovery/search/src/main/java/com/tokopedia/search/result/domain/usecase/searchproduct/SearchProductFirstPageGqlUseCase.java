@@ -4,15 +4,20 @@ import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
+import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import rx.Emitter;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -28,13 +33,16 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
     private GraphqlRequest graphqlRequest;
     private GraphqlUseCase graphqlUseCase;
     private Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper;
+    private SeamlessLoginUsecase seamlessLoginUsecase;
 
     SearchProductFirstPageGqlUseCase(GraphqlRequest graphqlRequest,
                                      GraphqlUseCase graphqlUseCase,
-                                     Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper) {
+                                     Func1<GraphqlResponse, SearchProductModel> searchProductModelMapper,
+                                     SeamlessLoginUsecase seamlessLoginUsecase) {
         this.graphqlRequest = graphqlRequest;
         this.graphqlUseCase = graphqlUseCase;
         this.searchProductModelMapper = searchProductModelMapper;
+        this.seamlessLoginUsecase = seamlessLoginUsecase;
     }
 
     @Override
@@ -48,7 +56,15 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
 
         return graphqlUseCase
                 .createObservable(RequestParams.EMPTY)
-                .map(searchProductModelMapper);
+                .map(searchProductModelMapper)
+                // TODO:: Remove these hack
+                .map(searchProductModel -> {
+                    searchProductModel.getSearchProduct().getProducts().clear();
+                    searchProductModel.getSearchProduct().setErrorMessage("Android app membatasi pencarian barang bernikotin/tembakau.");
+                    searchProductModel.getSearchProduct().setLiteUrl("https://m2.tokopedia.com/search?q=" + searchProductModel.getSearchProduct().getQuery());
+                    return searchProductModel;
+                })
+                .flatMap(generateSeamlessLiteUrl());
     }
 
     private Map<String, Object> createParametersForQuery(Map<String, Object> parameters) {
@@ -74,5 +90,43 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
         headlineParams.put(TopAdsParams.KEY_ITEM, HEADLINE_ITEM_VALUE);
 
         return UrlParamUtils.generateUrlParamString(headlineParams);
+    }
+
+    private Func1<SearchProductModel, Observable<SearchProductModel>> generateSeamlessLiteUrl() {
+        return searchProductModel ->
+                Observable.create(
+                        searchProductModelEmitter ->
+                                createSearchProductModelWithSeamlessLiteUrl(searchProductModelEmitter, searchProductModel)
+                        , Emitter.BackpressureMode.BUFFER);
+    }
+
+    private void createSearchProductModelWithSeamlessLiteUrl(
+            Emitter<SearchProductModel> searchProductModelEmitter,
+            SearchProductModel searchProductModel
+    ) {
+        String liteUrl = searchProductModel.getSearchProduct().getLiteUrl();
+        SeamlessLoginSubscriber seamlessLoginSubscriber = createSeamlessLoginSubscriber(searchProductModelEmitter, searchProductModel);
+
+        seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber);
+    }
+
+    private SeamlessLoginSubscriber createSeamlessLoginSubscriber(
+            Emitter<SearchProductModel> searchProductModelEmitter, SearchProductModel searchProductModel
+    ) {
+        return new SeamlessLoginSubscriber() {
+            @Override
+            public void onUrlGenerated(@NotNull String url) {
+                searchProductModel.getSearchProduct().setSeamlessLiteUrl(url);
+
+                searchProductModelEmitter.onNext(searchProductModel);
+                searchProductModelEmitter.onCompleted();
+            }
+
+            @Override
+            public void onError(@NotNull String msg) {
+                String liteUrl = searchProductModel.getSearchProduct().getLiteUrl();
+                searchProductModel.getSearchProduct().setSeamlessLiteUrl(liteUrl);
+            }
+        };
     }
 }
