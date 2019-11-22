@@ -147,7 +147,7 @@ class FlightBookingMapper {
             }
 
             if (infant > 0) {
-                for (i in 1..child) {
+                for (i in 1..infant) {
                     val viewModel = FlightBookingPassengerViewModel()
                     viewModel.passengerLocalId = passengerNumber
                     viewModel.type = FlightBookingPassenger.INFANT

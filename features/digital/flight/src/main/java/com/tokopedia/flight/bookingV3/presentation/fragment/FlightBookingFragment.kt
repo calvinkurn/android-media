@@ -71,7 +71,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.fragment_flight_booking.*
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.*
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.button_submit
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_error.view.*
@@ -108,6 +107,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     lateinit var loadingDialog: DialogUnify
     lateinit var loadingText: Typography
     var needRefreshCart = false
+    var needToFillFirstPassengerDetail = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -421,7 +421,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
         }
         flightPassengerAdapter.updateList(passengers)
-        if (passengers.isNotEmpty() && passengers.first().passengerLastName.isNullOrEmpty() && switch_traveller_as_passenger.isChecked) {
+        if (passengers.isNotEmpty() && passengers.first().passengerLastName.isNullOrEmpty() && switch_traveller_as_passenger.isChecked && needToFillFirstPassengerDetail) {
             val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
             navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), requestId)
         }
@@ -446,6 +446,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 ),
                 REQUEST_CODE_PASSENGER
         )
+        needToFillFirstPassengerDetail = false
     }
 
 
@@ -526,6 +527,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         layout_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
         switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
             bookingViewModel.onTravellerAsPassenger(on)
+            needToFillFirstPassengerDetail = true
         }
         button_submit.setOnClickListener { verifyCart() }
     }
