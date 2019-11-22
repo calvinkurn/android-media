@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.PRO
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.RECOMMENDATION_CLICK
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -91,12 +92,13 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventReviewClickedIris(productInfo: ProductInfo?, deeplinkUrl: String) {
+    fun eventReviewClickedIris(productInfo: ProductInfo?, deeplinkUrl: String,
+                               isOfficial: Boolean, shopName: String) {
 
         var categoryNameLvl2 = ""
         var categoryIdLvl2 = ""
-        if (productInfo.category.detail.size >= 2) {
-            productInfo.category.detail.get(1).let {
+        if (productInfo?.category?.detail?.size ?: 0 >= 2) {
+            productInfo?.category?.detail?.get(1)?.let {
                 categoryIdLvl2 = it.id
                 categoryNameLvl2 = it.name
             }
@@ -104,7 +106,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
         val imageUrl = productInfo?.media?.filter {
             it.type == "image"
-        }?.first()
+        }?.firstOrNull()?.urlOriginal ?: ""
 
         val mapOfData: Map<String, Any?> = mapOf(KEY_EVENT to "clickPDP",
                 KEY_CATEGORY to "product detail page",
@@ -118,7 +120,53 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "productId" to productInfo?.basic?.id,
                 "productUrl" to productInfo?.basic?.url,
                 "productDepplinkUrl" to deeplinkUrl,
-                "productImageUrl" to imageUrl)
+                "productImageUrl" to imageUrl,
+                "productPrice" to productInfo?.basic?.price?.toInt(),
+                "isOfficialStore" to isOfficial,
+                "shopId" to productInfo?.basic?.shopID,
+                "shopName" to shopName,
+                "productPriceFormatted" to getFormattedPrice(productInfo?.basic?.price?.toInt() ?: 0)
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
+    }
+
+    fun eventDiscussionClickedIris(productInfo: ProductInfo?, deeplinkUrl: String,
+                               isOfficial: Boolean, shopName: String) {
+
+        var categoryNameLvl2 = ""
+        var categoryIdLvl2 = ""
+        if (productInfo?.category?.detail?.size ?: 0 >= 2) {
+            productInfo?.category?.detail?.get(1)?.let {
+                categoryIdLvl2 = it.id
+                categoryNameLvl2 = it.name
+            }
+        }
+
+        val imageUrl = productInfo?.media?.filter {
+            it.type == "image"
+        }?.firstOrNull()?.urlOriginal ?: ""
+
+        val mapOfData: Map<String, Any?> =
+                mapOf(KEY_EVENT to "clickPDP",
+                KEY_CATEGORY to "product detail page",
+                KEY_ACTION to "Click",
+                KEY_LABEL to "Talk",
+                "subcategory" to categoryNameLvl2,
+                "subcategoryId" to categoryIdLvl2,
+                "category" to productInfo?.category?.name,
+                "categoryId" to productInfo?.category?.id,
+                "productName" to productInfo?.basic?.name,
+                "productId" to productInfo?.basic?.id,
+                "productUrl" to productInfo?.basic?.url,
+                "productDepplinkUrl" to deeplinkUrl,
+                "productImageUrl" to imageUrl,
+                "productPrice" to productInfo?.basic?.price?.toInt(),
+                "isOfficialStore" to isOfficial,
+                "shopId" to productInfo?.basic?.shopID,
+                "shopName" to shopName,
+                "productPriceFormatted" to getFormattedPrice(productInfo?.basic?.price?.toInt() ?: 0)
+        )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
     }
@@ -599,14 +647,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 VALUE_NONE_OTHER
         }
 
-        val subCategoryId = productInfo?.category?.detail?.map {
-            it.id
-        }
+        val subCategoryId = productInfo?.category?.detail?.firstOrNull()?.id ?: ""
+        val subCategoryName = productInfo?.category?.detail?.firstOrNull()?.name ?: ""
+
         val productImageUrl = productInfo?.media?.filter {
             it.type == "image"
-        }?.map {
-            it.urlOriginal
-        }
+        }?.firstOrNull()?.urlOriginal ?: ""
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 "event", "viewProduct",
@@ -645,17 +691,16 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "categoryId", productInfo?.category?.id,
                 "url", productInfo?.basic?.url,
                 "shopType", getEnhanceShopType(shopInfo?.goldOS),
-                "picture", "",
-                "pageType", "",
-                "subcategory", "",
+                "picture", productImageUrl,
+                "pageType", "/productpage",
+                "subcategory", subCategoryName,
                 "subcategoryId", subCategoryId,
                 "productUrl", productInfo?.getProductUrl(),
-                "productDeeplinkUrl", listOf(deeplinkUrl),
+                "productDeeplinkUrl", deeplinkUrl,
                 "productImageUrl", productImageUrl,
-                "isOfficialStore", listOf(shopInfo?.goldOS?.isOfficial),
-                "productPriceFormatted", listOf(getFormattedPrice(productInfo?.basic?.price?.toInt()
-                ?: 0))
-        ))
+                "isOfficialStore", shopInfo?.goldOS?.isOfficial,
+                "productPriceFormatted", getFormattedPrice(productInfo?.basic?.price?.toInt() ?: 0))
+        )
     }
 
     ///////////////////////////////////////////////////////////////
