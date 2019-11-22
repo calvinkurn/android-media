@@ -68,7 +68,7 @@ class DigitalHomepageToolbar @JvmOverloads constructor(context: Context, attrs: 
     }
 
     companion object {
-        val TOOLBAR_PADDING = R.dimen.dp_8
+        val TOOLBAR_PADDING = com.tokopedia.design.R.dimen.dp_8
     }
 
 }

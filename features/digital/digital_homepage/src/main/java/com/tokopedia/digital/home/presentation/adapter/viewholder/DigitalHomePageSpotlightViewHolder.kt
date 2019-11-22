@@ -57,6 +57,6 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
     companion object {
         val LAYOUT = R.layout.layout_digital_home_spotlight
 
-        val ITEM_DECORATOR_SIZE = R.dimen.dp_8
+        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
     }
 }
