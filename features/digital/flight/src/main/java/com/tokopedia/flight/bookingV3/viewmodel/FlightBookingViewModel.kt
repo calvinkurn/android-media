@@ -351,7 +351,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             if (isEnable) {
                 passenger.headerTitle = userProfile.fullName
                 passenger.passengerFirstName = userProfile.fullName
-                if (getMandatoryDOB()) passenger.passengerBirthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
+                if (getMandatoryDOB()) passenger.passengerBirthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
             } else {
                 passenger.headerTitle = String.format("Penumpang dewasa")
             }
