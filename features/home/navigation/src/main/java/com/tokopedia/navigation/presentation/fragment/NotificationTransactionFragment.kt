@@ -30,6 +30,7 @@ import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.NotificationTransactionAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationTransactionFactory
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationTransactionFactoryImpl
+import com.tokopedia.navigation.presentation.adapter.viewholder.transaction.NotificationFilterViewHolder
 import com.tokopedia.navigation.presentation.adapter.viewholder.transaction.NotificationTransactionItemViewHolder
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationTransactionComponent
 import com.tokopedia.navigation.presentation.view.listener.NotificationTransactionItemListener
@@ -37,7 +38,8 @@ import com.tokopedia.navigation.presentation.viewmodel.NotificationTransactionVi
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
-class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), NotificationTransactionItemListener {
+class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+        NotificationTransactionItemListener, NotificationFilterViewHolder.NotifFilterListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -115,6 +117,11 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
             if (pagination && !it.list.isEmpty()) {
                 cursor = (it.list.last().notificationId)
             }
+            _adapter.list.forEach { visitable ->
+                if (visitable is TransactionItemNotification) {
+                    _adapter.removeElement(visitable)
+                }
+            }
             _adapter.addElement(it.list)
         }
     }
@@ -123,6 +130,14 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         adapter.notifyItemChanged(adapterPosition, NotificationTransactionItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
         //analytics.trackClickNotifList(viewModel)
         viewModel.markReadNotification(notification.notificationId)
+    }
+
+    override fun updateFilter(filter: HashMap<String, Int>) {
+        viewModel.updateNotificationFilter(filter)
+        cursor = ""
+        viewModel.getTransactionNotification(cursor,
+                onSuccessNotificationData(),
+                onErrorNotificationData())
     }
 
     override fun getAnalytic(): NotificationUpdateAnalytics = NotificationUpdateAnalytics()
@@ -140,7 +155,7 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return NotificationTransactionFactoryImpl(this)
+        return NotificationTransactionFactoryImpl(this, this)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
