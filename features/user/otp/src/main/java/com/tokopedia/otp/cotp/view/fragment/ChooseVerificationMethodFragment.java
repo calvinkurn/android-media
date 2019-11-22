@@ -191,7 +191,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                 && !TextUtils.isEmpty(methodItem.getPopUpBody())) {
             showInterruptDialog(methodItem);
         } else if (getActivity()!= null && getActivity() instanceof VerificationActivity) {
-            if (methodItem.getModeName().equals(RequestOtpUseCase.MODE_MISCALL)) { // && otpType == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER
+            if (methodItem.getModeName().equals(RequestOtpUseCase.MODE_MISCALL) && otpType == RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER) {
                 ((VerificationActivity) getActivity()).goToOnboardingMiscallPage(methodItem);
             } else  {
                 ((VerificationActivity) getActivity()).goToVerificationPage(methodItem);

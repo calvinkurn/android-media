@@ -1,9 +1,7 @@
 package com.tokopedia.otp.cotp.view.fragment
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Parcelable
@@ -38,8 +36,6 @@ import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter
 import com.tokopedia.otp.cotp.view.viewlistener.VerificationOtpMiscall
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.permissionchecker.request
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_cotp_miscall_verification.*
 import java.util.concurrent.TimeUnit
@@ -58,11 +54,8 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     @Inject
     lateinit var analytics: OTPAnalytics
 
-//    @Inject
-    lateinit var callReceiver: PhoneCallReceiver
-
     @Inject
-    lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    lateinit var callReceiver: PhoneCallReceiver
 
     override fun initInjector() {
         val otpComponent = DaggerOtpComponent.builder()
@@ -78,7 +71,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkPermissionGetPhoneNumber()
 
         if (arguments != null && arguments?.getParcelable<Parcelable>(ARGS_PASS_DATA) != null) {
             viewModel = parseViewModel(arguments as Bundle)
@@ -471,7 +463,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     override fun onIncomingCallEnded(phoneNumber: String) {
-//        autoFillPhoneNumber(phoneNumber)
+
     }
 
     override fun onIncomingCallStart(phoneNumber: String) {
@@ -479,7 +471,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     }
 
     override fun onMissedCall(phoneNumber: String) {
-//        autoFillPhoneNumber(phoneNumber)
+
     }
 
     private fun autoFillPhoneNumber(number: String) {
@@ -496,25 +488,8 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
         if ((phoneHint.isNotEmpty() || phoneHint != "") && phoneNumber.contains(phoneHint)) {
             textInputOtp?.setText(phoneNumber.substring(phoneHint.length))
+            disableVerifyButton()
         }
-    }
-
-    private fun checkPermissionGetPhoneNumber(){
-        if (!::permissionCheckerHelper.isInitialized) {
-            permissionCheckerHelper = PermissionCheckerHelper()
-        }
-
-        activity?.let {
-            permissionCheckerHelper.request(it, getPermissions()) { }
-        }
-    }
-
-    private fun getPermissions(): Array<String> {
-        return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_READ_CALL_LOG,
-                PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
-                PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
-        )
     }
 
     companion object {

@@ -56,9 +56,9 @@ public class CotpModule {
         return new PermissionCheckerHelper();
     }
 
-//    @CotpScope
-//    @Provides
-//    public PhoneCallReceiver providePhoneCallReceiver() {
-//        return new PhoneCallReceiver();
-//    }
+    @CotpScope
+    @Provides
+    public PhoneCallReceiver providePhoneCallReceiver() {
+        return new PhoneCallReceiver();
+    }
 }
