@@ -4,10 +4,11 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.navigation.data.consts.NotificationQueriesConstant
 import com.tokopedia.navigation.data.entity.NotificationEntity
+import com.tokopedia.navigation.domain.NotificationFilterUseCase
 import com.tokopedia.navigation.domain.NotificationInfoTransactionUseCase
 import com.tokopedia.navigation.domain.NotificationTransactionUseCase
-import com.tokopedia.navigation.domain.model.TransactionItemNotification
 import com.tokopedia.navigation.domain.pojo.NotificationCenterDetail
+import com.tokopedia.navigation.domain.pojo.NotificationUpdateFilter
 import com.tokopedia.navigation.presentation.di.notification.scope.NotificationTransactionScope
 import dagger.Module
 import dagger.Provides
@@ -32,6 +33,13 @@ class NotificationTransactionModule {
 
     @Provides
     @NotificationTransactionScope
+    fun provideGraphqlNotifFilterTransactionUseCase(
+            repository: GraphqlRepository): GraphqlUseCase<NotificationUpdateFilter> {
+        return GraphqlUseCase(repository)
+    }
+
+    @Provides
+    @NotificationTransactionScope
     fun provideInfoNotificationTransactionUseCase(
             @Named(NotificationQueriesConstant.DRAWER_PUSH_NOTIFICATION)
             query: String,
@@ -46,6 +54,15 @@ class NotificationTransactionModule {
             query: String,
             useCase: GraphqlUseCase<NotificationCenterDetail>): NotificationTransactionUseCase {
         return NotificationTransactionUseCase(query, useCase)
+    }
+
+    @Provides
+    @NotificationTransactionScope
+    fun provideNotificationFilterTransactionUseCase(
+            @Named(NotificationQueriesConstant.FILTER_NOTIFICATION)
+            query: String,
+            useCase: GraphqlUseCase<NotificationUpdateFilter>): NotificationFilterUseCase {
+        return NotificationFilterUseCase(query, useCase)
     }
 
 }
