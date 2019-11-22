@@ -10,15 +10,11 @@ class NotificationFilterSection(
         var filterType: String = "",
         var title: String = "",
         var list: List<NotificationUpdateFilterSectionItemViewModel> = arrayListOf()
-) : Visitable<NotificationTransactionFactory>, Parcelable {
+): Parcelable {
 
     enum class FilterType(val type: String) {
         TYPE_ID("typeId"),
         TAG_ID("tagId")
-    }
-
-    override fun type(typeFactory: NotificationTransactionFactory): Int {
-        return typeFactory.type(this)
     }
 
     constructor(parcel: Parcel) : this(
