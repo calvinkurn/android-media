@@ -347,7 +347,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     companion object {
-        val TOOLBAR_TRANSITION_RANGE = R.dimen.dp_8
+        val TOOLBAR_TRANSITION_RANGE = com.tokopedia.design.R.dimen.dp_8
 
         fun getInstance() = DigitalHomePageFragment()
     }
