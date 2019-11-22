@@ -16,6 +16,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 @Component(modules = [UmrahModule::class], dependencies = [BaseAppComponent::class])
 interface UmrahComponent {
 
+    /**
+     *DONT PUT USECASE HERE, INSTANCE IN ACTIVITY INSTEAD, USECASE MUST HAVE DIFFERENT REFERENCE
+     */
+
     @ApplicationContext
     fun context(): Context
 
@@ -26,5 +30,7 @@ interface UmrahComponent {
     fun graphQlRepository(): GraphqlRepository
 
     fun trackingUmrah(): TrackingUmrahUtil
+
+
 
 }
