@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
@@ -38,7 +39,6 @@ import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.ShareCallback;
@@ -142,12 +142,12 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        if (getActivity() != null && getActivity().getApplicationContext() != null) {
-            DaggerFeedPlusComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                    .build()
-                    .inject(this);
-        }
+        DaggerFeedPlusComponent.builder()
+                .baseAppComponent(
+                        ((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent()
+                )
+                .build()
+                .inject(this);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.view.presenter;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -24,8 +23,8 @@ import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSub
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.usecase.RequestParams;
@@ -33,7 +32,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -182,13 +180,13 @@ public class FeedPlusPresenter
     @Override
     public void unfollowKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
         followKolPostGqlUseCase.clearRequest();
-        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW));
+        followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW));
         followKolPostGqlUseCase.execute(new FollowUnfollowKolSubscriber(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW, rowNumber, getView(), kolListener));
     }
 
     @Override
     public void likeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
-        likeKolPostUseCase.execute(LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+        likeKolPostUseCase.execute(LikeKolPostUseCase.Companion.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
                 new LikeKolPostSubscriber
                         (rowNumber, getView(), kolListener));
 
@@ -197,7 +195,7 @@ public class FeedPlusPresenter
     @Override
     public void unlikeKol(int id, int rowNumber, FeedPlus.View.Kol kolListener) {
         likeKolPostUseCase.execute(
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
+                LikeKolPostUseCase.Companion.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
                 new LikeKolPostSubscriber(rowNumber, getView(), kolListener));
     }
 

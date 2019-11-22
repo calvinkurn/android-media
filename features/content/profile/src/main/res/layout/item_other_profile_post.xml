@@ -41,7 +41,7 @@
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_4"
                 android:visibility="gone"
-                tools:srcCompat="@drawable/ic_kol_badge"
+                tools:srcCompat="@drawable/ic_profile_badge"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
