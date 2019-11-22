@@ -54,9 +54,7 @@ open class ClashBottomSheetFragment : BottomSheetUnify(), ClashingAdapter.Action
         super.onCreate(savedInstanceState)
         setTitle(title())
         setChild(LayoutInflater.from(context).inflate(getLayoutResourceId(), null, false))
-//        setCloseClickListener(() -> {
-//            dismiss()
-//        })
+        setCloseClickListener { dismiss() }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -185,10 +183,10 @@ open class ClashBottomSheetFragment : BottomSheetUnify(), ClashingAdapter.Action
 
         if (rvClashingOption.isComputingLayout) {
             rvClashingOption.post {
-                adapter.notifyItemChanged(reverseIndex)
+                adapter.notifyDataSetChanged()
             }
         } else {
-            adapter.notifyItemChanged(reverseIndex)
+            adapter.notifyDataSetChanged()
         }
 
         for (model: ClashingVoucherOptionUiModel in adapter.data) {

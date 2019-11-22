@@ -14,68 +14,26 @@
             android:id="@+id/header_product_review"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@color/Red_R100">
+            android:background="@color/white"
+            android:orientation="vertical">
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/tv_clashing_info_ticker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_3"
                 android:layout_marginBottom="@dimen/dp_12"
-                app:tickerType="warning"
                 app:closeButtonVisibility="gone"
                 app:tickerShapeType="loose"
-                tools:descriptionText="@string/clash_bottomsheet_info_warning_new"/>
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:id="@+id/cardTicker"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="@dimen/dp_20"-->
-<!--                android:layout_marginLeft="@dimen/dp_20"-->
-<!--                android:layout_marginTop="@dimen/dp_16"-->
-<!--                android:layout_marginEnd="@dimen/dp_20"-->
-<!--                android:layout_marginRight="@dimen/dp_20"-->
-<!--                app:cardCornerRadius="@dimen/dp_8"-->
-<!--                app:cardElevation="@dimen/dp_3"-->
-<!--                android:visibility="gone">-->
-
-<!--                <FrameLayout-->
-<!--                    android:id="@+id/layoutTickerFrameGlobal"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:background="@drawable/background_warning_yellow_card">-->
-
-<!--                    <RelativeLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:background="@drawable/background_warning">-->
-
-<!--                        <TextView-->
-<!--                            -->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_margin="@dimen/dp_20"-->
-<!--                            android:lineSpacingMultiplier="1.2"-->
-<!--                            tools:text="@string/clash_bottomsheet_info_warning_new" />-->
-
-<!--                    </RelativeLayout>-->
-
-<!--                </FrameLayout>-->
-
-<!--            </androidx.cardview.widget.CardView>-->
+                app:tickerType="warning"
+                tools:descriptionText="@string/clash_bottomsheet_info_warning_new" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_20"
                 android:text="@string/clash_bottomsheet_subtitle_new"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_clashing_option"
@@ -88,21 +46,19 @@
                 android:layout_height="@dimen/dp_8"
                 android:layout_gravity="bottom"
                 android:background="@drawable/bottom_sheet_shadow"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/bt_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_12"
                 android:foreground="?selectableItemBackground"
                 android:text="@string/clash_bottomsheet_submit"
                 android:textAllCaps="false"
-                app:unifyButtonType="main"
-                app:unifyButtonSize="large"/>
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main" />
 
         </LinearLayout>
 

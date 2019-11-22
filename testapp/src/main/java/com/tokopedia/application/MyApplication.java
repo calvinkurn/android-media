@@ -32,8 +32,8 @@ import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-//import com.tokopedia.url.Env;
-//import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.url.Env;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -43,6 +43,9 @@ import java.util.Map;
 
 import okhttp3.Response;
 import timber.log.Timber;
+
+//import com.tokopedia.url.Env;
+//import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by hendry on 25/06/18.
@@ -71,9 +74,9 @@ public class MyApplication extends BaseMainApplication
         GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
-//        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
-//        TokopediaUrl.Companion.deleteInstance();
-//        TokopediaUrl.Companion.init(this);
+        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
+        TokopediaUrl.Companion.deleteInstance();
+        TokopediaUrl.Companion.init(this);
 
         upgradeSecurityProvider();
 

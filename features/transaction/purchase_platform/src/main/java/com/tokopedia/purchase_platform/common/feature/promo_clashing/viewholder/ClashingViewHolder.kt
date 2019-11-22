@@ -23,11 +23,6 @@ class ClashingViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(element: ClashingVoucherOptionUiModel?, listener: ClashingAdapter.ActionListener) {
         if (element != null) {
-//            if (adapterPosition == 0) {
-//                itemView.tv_title_voucher.text = itemView.context.getString(R.string.checkout_module_title_promo_clashing_newly_selected)
-//            } else {
-//                itemView.tv_title_voucher.text = itemView.context.getString(R.string.checkout_module_title_promo_clashing_previously_selected)
-//            }
 
             var totalBenefit = 0
             for (voucherModel: ClashingVoucherOrderUiModel in element.voucherOrders) {

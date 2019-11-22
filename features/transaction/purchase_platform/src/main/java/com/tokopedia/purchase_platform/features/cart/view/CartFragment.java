@@ -1777,7 +1777,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         ArrayList<ClashingVoucherOrderUiModel> arrayList1 = new ArrayList<>();
         arrayList1.add(new ClashingVoucherOrderUiModel("code", "1", 1, "name 1234", 15000, ""));
         clashingVoucherOptionUiModel.setVoucherOrders(arrayList1);
-        clashingVoucherOptionUiModel.setSelected(true);
         arrayList.add(clashingVoucherOptionUiModel);
 
         ClashingVoucherOptionUiModel clashingVoucherOptionUiModel1 = new ClashingVoucherOptionUiModel();
@@ -1785,6 +1784,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         arrayList12.add(new ClashingVoucherOrderUiModel("asdf", "2", 1, "name panjang sekali", 75000, "shop abc"));
         arrayList12.add(new ClashingVoucherOrderUiModel("qwer", "3", 1, "Cashback Toko Hingga Rp 75.000", 15000, "Jaya Makmur Cell"));
         clashingVoucherOptionUiModel1.setVoucherOrders(arrayList12);
+//        clashingVoucherOptionUiModel1.setSelected(true);
         arrayList.add(clashingVoucherOptionUiModel1);
 
         clashingInfoDetailUiModel1.setOptions(arrayList);

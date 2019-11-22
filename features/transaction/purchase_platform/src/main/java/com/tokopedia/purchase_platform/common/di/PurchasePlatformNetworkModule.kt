@@ -1,12 +1,12 @@
 package com.tokopedia.purchase_platform.common.di
 
 import android.content.Context
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.google.gson.Gson
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.authentication.AuthHelper.Companion.getUserAgent
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
@@ -15,6 +15,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.purchase_platform.common.data.api.CartApiInterceptor
 import com.tokopedia.purchase_platform.common.data.api.CartResponseConverter
 import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseApiUrl
+import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -89,7 +90,7 @@ class PurchasePlatformNetworkModule {
     @PurchasePlatformQualifier
     fun provideCartApiRetrofit(@PurchasePlatformQualifier okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-                .baseUrl(TokopediaUrl.getInstance().API)
+                .baseUrl(TokopediaUrl.selectInstance(Env.STAGING.value).API)
                 .addConverterFactory(CartResponseConverter.create())
                 .addConverterFactory(StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(Gson()))
