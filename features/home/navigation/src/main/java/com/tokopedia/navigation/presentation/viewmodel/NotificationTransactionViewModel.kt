@@ -14,7 +14,7 @@ import com.tokopedia.navigation.domain.MarkReadNotificationUpdateItemUseCase
 import com.tokopedia.navigation.domain.NotificationFilterUseCase
 import com.tokopedia.navigation.domain.NotificationInfoTransactionUseCase
 import com.tokopedia.navigation.domain.NotificationTransactionUseCase
-import com.tokopedia.navigation.domain.model.NotificationFilterSection
+import com.tokopedia.navigation.domain.model.NotificationFilterSectionWrapper
 import com.tokopedia.navigation.domain.model.TransactionNotification
 import com.tokopedia.navigation.presentation.view.subscriber.NotificationUpdateActionSubscriber
 import com.tokopedia.navigation.util.coroutines.DispatcherProvider
@@ -46,14 +46,11 @@ class NotificationTransactionViewModel @Inject constructor(
         dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
 
-    private val _notification = MutableLiveData<TransactionNotification>()
-    val notification: LiveData<TransactionNotification> get() = _notification
-
     private val _infoNotification = MutableLiveData<NotificationEntity>()
     val infoNotification: LiveData<NotificationEntity> get() = _infoNotification
 
-    private val _filterNotification = MutableLiveData<List<NotificationFilterSection>>()
-    val filterNotification: LiveData<List<NotificationFilterSection>> get() = _filterNotification
+    private val _filterNotification = MutableLiveData<NotificationFilterSectionWrapper>()
+    val filterNotification: LiveData<NotificationFilterSectionWrapper> get() = _filterNotification
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
@@ -84,9 +81,7 @@ class NotificationTransactionViewModel @Inject constructor(
         )
         notificationTransactionUseCase.get(
                 requestParams,
-                {
-                    onSuccess(notificationMapper.mapToNotifTransaction(it))
-                },
+                { onSuccess(notificationMapper.mapToNotifTransaction(it)) },
                 onError)
     }
 
@@ -98,7 +93,8 @@ class NotificationTransactionViewModel @Inject constructor(
 
     override fun getNotificationFilter() {
         notificationFilterUseCase.get({
-            _filterNotification.postValue(notificationFilterMapper.mapToFilter(it))
+            val notificationFilter = NotificationFilterSectionWrapper(notificationFilterMapper.mapToFilter(it))
+            _filterNotification.postValue(notificationFilter)
         }, {
             onErrorMessage(it)
         })
