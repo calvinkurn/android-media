@@ -40,13 +40,11 @@ abstract class NetworkBoundResource<APIType, DbType, ViewType> {
                     fetchFromNetwork(dbResult)
                 } else {
                     Timber.tag(NetworkBoundResource::class.java.name).d("Return data from local database")
-                    setValue(Resource.cache(mapper(dbResult)))
+                    setValue(Resource.success(mapper(dbResult)))
                 }
             }catch (e: Exception){
                 Timber.tag("NetworkBoundResource").e("An error happened: $e")
-                val dbResultError = loadFromDb()
-                if(dbResultError != null) setValue(Resource.error(e, mapper(dbResultError)))
-                else setValue(Resource.error(e, null))
+                setValue(Resource.error(e, mapper(loadFromDb())))
             }
         }
         return this
@@ -56,7 +54,7 @@ abstract class NetworkBoundResource<APIType, DbType, ViewType> {
 
     private suspend fun fetchFromNetwork(dbResult: DbType?) {
         Timber.tag(NetworkBoundResource::class.java.name).d("Fetch data from network")
-        if(dbResult != null) setValue(Resource.cache(mapper(dbResult))) // Dispatch latest value quickly (UX purpose)
+        setValue(Resource.success(mapper(dbResult))) // Dispatch latest value quickly (UX purpose)
         val apiResponse = createCallAsync()
         Timber.tag(NetworkBoundResource::class.java.name).d("Data fetched from network")
         val networkData = processResponse(apiResponse)

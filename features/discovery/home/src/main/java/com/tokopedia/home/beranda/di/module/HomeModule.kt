@@ -122,11 +122,6 @@ class HomeModule {
     }
 
     @Provides
-    fun provideGetHomeDataUseCase(homeRepository: HomeRepository?): GetHomeDataUseCase {
-        return GetHomeDataUseCase(homeRepository)
-    }
-
-    @Provides
     fun provideSendGeolocationInfoUseCase(homeRepository: HomeRepository?): SendGeolocationInfoUseCase {
         return SendGeolocationInfoUseCase(homeRepository)
     }
@@ -174,12 +169,6 @@ class HomeModule {
     fun provideUserSession(
             @ApplicationContext context: Context?): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @HomeScope
-    @Provides
-    fun getLocalHomeDataUseCase(repository: HomeRepository?): GetLocalHomeDataUseCase {
-        return GetLocalHomeDataUseCase(repository)
     }
 
     @HomeScope

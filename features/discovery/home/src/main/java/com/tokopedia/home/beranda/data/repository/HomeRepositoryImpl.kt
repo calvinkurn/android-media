@@ -57,7 +57,7 @@ class HomeRepositoryImpl @Inject constructor(
 
             override fun mapper(response: HomeData?): HomeViewModel? {
                 if(response == null) return null
-                return homeMapper.call(response)
+                return homeMapper.call(response).copy(isCache = response.isCache)
             }
 
         }.build().asLiveData()
