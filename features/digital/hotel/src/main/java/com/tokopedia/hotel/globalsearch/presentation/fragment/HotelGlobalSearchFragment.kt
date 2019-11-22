@@ -124,7 +124,7 @@ class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBottomS
         globalSearchModel.checkInDateFmt = TravelDateUtil.dateToString(
                 TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckInDate)
 
-        if (newCheckInDate >= TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, globalSearchModel.checkOutDate)) {
+        if (newCheckInDate.after(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, globalSearchModel.checkOutDate))) {
             val tomorrow = TravelDateUtil.addTimeToSpesificDate(newCheckInDate,
                     Calendar.DATE, 1)
             globalSearchModel.checkOutDate = TravelDateUtil.dateToString(
