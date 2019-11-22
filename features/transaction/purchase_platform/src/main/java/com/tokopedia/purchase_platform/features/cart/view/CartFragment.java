@@ -171,6 +171,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private RelativeLayout layoutUsedPromoEmptyCart;
     private RelativeLayout rlContent;
     private CheckBox cbSelectAll;
+    private Typography tvSelectAll;
     private Typography btnRemove;
     private CardView cardHeader;
     private CardView cardFooter;
@@ -386,6 +387,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cardHeader = view.findViewById(R.id.card_header);
         cardFooter = view.findViewById(R.id.card_footer);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
+        tvSelectAll = view.findViewById(R.id.tv_select_all);
         btnRemove = view.findViewById(R.id.btn_delete_all_cart);
         llCartContainer = view.findViewById(R.id.ll_cart_container);
 
@@ -542,6 +544,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     protected void setViewListener() {
         btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
         cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
+        tvSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
         btnRemove.setOnClickListener(v -> {
             if (btnRemove.getVisibility() == View.VISIBLE) {
                 onToolbarRemoveAllCart();
