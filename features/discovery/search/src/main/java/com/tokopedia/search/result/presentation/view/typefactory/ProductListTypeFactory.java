@@ -27,5 +27,9 @@ public interface ProductListTypeFactory extends SearchSectionTypeFactory {
 
     int type(RecommendationItemViewModel recommendationItemViewModel);
 
+    int type(TobaccoEmptySearchViewModel tobaccoEmptySearchViewModel);
+
+    int type(TobaccoTickerViewModel tobaccoTickerViewModel);
+
     AbstractViewHolder createViewHolder(View view, int type);
 }

@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -61,6 +62,7 @@ import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListe
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
+import com.tokopedia.search.result.presentation.view.listener.TobaccoRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -111,7 +113,8 @@ public class ProductListFragment
         GlobalNavListener,
         BannerAdsListener,
         EmptyStateListener,
-        RecommendationListener {
+        RecommendationListener,
+        TobaccoRedirectToBrowserListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final String SHOP = "shop";
@@ -266,6 +269,7 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 this, this, this,
+                this,
                 topAdsConfig);
         adapter = new ProductListAdapter(this, productListTypeFactory);
         recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
@@ -870,6 +874,11 @@ public class ProductListFragment
     }
 
     @Override
+    public void setEmptyProductWithTobaccoErrorMessage(List<Visitable> tobaccoErrorMessageAsList) {
+        adapter.appendItems(tobaccoErrorMessageAsList);
+    }
+
+    @Override
     protected void refreshAdapterForEmptySearch() {
         if (adapter != null) {
             adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
@@ -1199,55 +1208,6 @@ public class ProductListFragment
     }
 
     @Override
-    public void showErrorMessage(boolean isFullScreenMessage, String errorMessage) {
-        if (getView() == null) return;
-
-        if (isFullScreenMessage) {
-            showFullScreenErrorMessage(getView(), errorMessage);
-        }
-        else {
-            showSnackbarErroMessage(errorMessage);
-        }
-    }
-
-    private void showFullScreenErrorMessage(@NotNull View rootView, String errorMessage) {
-        View relativeLayoutErrorMessageContainer  = rootView.findViewById(R.id.relativeLayoutErrorMessageContainer);
-
-        if (relativeLayoutErrorMessageContainer != null) {
-            relativeLayoutErrorMessageContainer.setVisibility(View.VISIBLE);
-
-            TextView textViewErrorMessage = relativeLayoutErrorMessageContainer.findViewById(R.id.custom_text_view_empty_content_text);
-
-            if (textViewErrorMessage != null) {
-                textViewErrorMessage.setText(errorMessage);
-            }
-
-            View actionButton  = rootView.findViewById(R.id.custom_button_add_promo);
-            actionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showSearchInputView();
-                }
-            });
-        }
-    }
-
-    private void showSnackbarErroMessage(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-    }
-
-    @Override
-    public void hideErrorMessage() {
-        if (getView() == null) return;
-
-        View relativeLayoutErrorMessageContainer  = getView().findViewById(R.id.relativeLayoutErrorMessageContainer);
-
-        if (relativeLayoutErrorMessageContainer != null) {
-            relativeLayoutErrorMessageContainer.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
     public void showFreeOngkirShowCase(boolean hasFreeOngkirBadge) {
         if (getActivity() != null) {
             FreeOngkirShowCaseDialog.show(getActivity(), hasFreeOngkirBadge);
@@ -1257,5 +1217,11 @@ public class ProductListFragment
     @Override
     protected String getFilterTrackingCategory() {
         return FilterEventTracking.Category.FILTER_PRODUCT;
+    }
+
+    @Override
+    public void onGoToBrowserClicked(@NotNull String encriptedLiteUrl) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(encriptedLiteUrl));
+        startActivity(intent);
     }
 }

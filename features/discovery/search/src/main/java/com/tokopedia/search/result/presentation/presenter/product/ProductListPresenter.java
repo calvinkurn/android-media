@@ -26,6 +26,8 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
+import com.tokopedia.search.result.presentation.model.TobaccoEmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.TobaccoTickerViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -693,12 +695,10 @@ final class ProductListPresenter
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
-            getViewToHandleErrorMessage(true, productViewModel.getErrorMessage());
-            getViewToShowEmptySearch(productViewModel);
+            getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
             getViewToShowRecommendationItem();
         } else {
-            getViewToHandleErrorMessage(false, productViewModel.getErrorMessage());
-            getViewToShowProductList(productViewModel);
+            getViewToShowProductList(searchProductModel, productViewModel);
         }
 
         getView().storeTotalData(productViewModel.getTotalData());
@@ -735,13 +735,25 @@ final class ProductListPresenter
         return productViewModel;
     }
 
-    private void getViewToHandleErrorMessage(boolean isFullScreenMessage, String errorMessage) {
-        if (errorMessage != null && errorMessage.length() > 0) {
-            getView().showErrorMessage(isFullScreenMessage, errorMessage);
+    private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
+        if (productViewModel.getErrorMessage() != null && !productViewModel.getErrorMessage().isEmpty()) {
+            getViewToHandleEmptySearchWithErrorMessage(searchProduct);
         }
         else {
-            getView().hideErrorMessage();
+            getViewToShowEmptySearch(productViewModel);
         }
+    }
+
+    private void getViewToHandleEmptySearchWithErrorMessage(SearchProductModel.SearchProduct searchProduct) {
+        getView().removeLoading();
+        getView().setEmptyProductWithTobaccoErrorMessage(createTobaccoErrorMessageAsList(searchProduct));
+        getView().setTotalSearchResultCount("0");
+    }
+
+    private List<Visitable> createTobaccoErrorMessageAsList(SearchProductModel.SearchProduct searchProduct) {
+        List<Visitable> tobaccoErrorMessageAsList = new ArrayList<>();
+        tobaccoErrorMessageAsList.add(new TobaccoEmptySearchViewModel(searchProduct.getErrorMessage(), searchProduct.getEncriptedLiteUrl()));
+        return tobaccoErrorMessageAsList;
     }
 
     private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
@@ -782,10 +794,10 @@ final class ProductListPresenter
         );
     }
 
-    private void getViewToShowProductList(ProductViewModel productViewModel) {
-        List<Visitable> list = new ArrayList<>();
+    private void getViewToShowProductList(SearchProductModel searchProductModel, ProductViewModel productViewModel) {
+        SearchProductModel.SearchProduct searchProduct = searchProductModel.getSearchProduct();
 
-        CpmViewModel cpmViewModel = new CpmViewModel();
+        List<Visitable> list = new ArrayList<>();
 
         if (!productViewModel.isQuerySafe()) {
             getView().showAdultRestriction();
@@ -793,13 +805,16 @@ final class ProductListPresenter
 
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
+
+        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable && shouldShowCpmShop(productViewModel)) {
+            CpmViewModel cpmViewModel = new CpmViewModel();
+            cpmViewModel.setCpmModel(productViewModel.getCpmModel());
+            list.add(cpmViewModel);
+        }
+
         if (isGlobalNavWidgetAvailable) {
             list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
-        }
-        if (productViewModel.getCpmModel() != null && !isGlobalNavWidgetAvailable && shouldShowCpmShop(productViewModel)) {
-            cpmViewModel.setCpmModel(productViewModel.getCpmModel());
-            list.add(cpmViewModel);
         }
 
         if (!getView().isTickerHasDismissed()
@@ -809,6 +824,10 @@ final class ProductListPresenter
 
         if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
             list.add(productViewModel.getSuggestionModel());
+        }
+
+        if (searchProduct.getErrorMessage() != null && !searchProduct.getErrorMessage().isEmpty()) {
+            list.add(createTobaccoTickerViewModel(searchProduct.getErrorMessage(), searchProduct.getEncriptedLiteUrl()));
         }
 
         if (productViewModel.getQuickFilterModel() != null) {
@@ -869,6 +888,14 @@ final class ProductListPresenter
         return cpm.getTemplateId() == 4;
     }
 
+    private TobaccoTickerViewModel createTobaccoTickerViewModel(String errorMessage, String encriptedLiteUrl) {
+        String htmlErrorMessage = errorMessage
+                + " "
+                + "Gunakan <a href=\"" + encriptedLiteUrl + "\">browser</a>";
+
+        return new TobaccoTickerViewModel(htmlErrorMessage);
+    }
+
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
         for(Visitable product: productList) {
             if (product instanceof ProductItemViewModel) {
@@ -919,5 +946,6 @@ final class ProductListPresenter
         if(productWishlistUrlUseCase != null) productWishlistUrlUseCase.unsubscribe();
         if(addWishlistActionUseCase != null) addWishlistActionUseCase.unsubscribe();
         if(removeWishlistActionUseCase != null) removeWishlistActionUseCase.unsubscribe();
+        if(recommendationUseCase != null) recommendationUseCase.unsubscribe();
     }
 }

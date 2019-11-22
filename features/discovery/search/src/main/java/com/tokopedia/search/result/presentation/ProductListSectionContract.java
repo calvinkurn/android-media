@@ -46,6 +46,8 @@ public interface ProductListSectionContract {
 
         void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
 
+        void setEmptyProductWithTobaccoErrorMessage(List<Visitable> tobaccoErrorMessageAsList);
+
         void backToTop();
 
         void addLoading();
@@ -101,10 +103,6 @@ public interface ProductListSectionContract {
         void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
 
         void setDefaultLayoutType(int defaultView);
-
-        void showErrorMessage(boolean isFullScreenMessage, String errorMessage);
-
-        void hideErrorMessage();
 
         void successRemoveRecommendationWishlist(String productId);
 

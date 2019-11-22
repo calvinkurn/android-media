@@ -68,4 +68,8 @@
 
     <string name="free_ongkir_promo_show_case_title">Bebas Ongkir</string>
     <string name="free_ongkir_promo_show_case_description">Semua barang berlogo Bebas Ongkir, biaya kirimnya berpotensi GRATIS!</string>
+
+    <string name="tobacco_empty_search_title">Pencarian terbatas</string>
+    <string name="tobacco_empty_search_go_to_browser_button">Cari di Browser</string>
+
 </resources>
