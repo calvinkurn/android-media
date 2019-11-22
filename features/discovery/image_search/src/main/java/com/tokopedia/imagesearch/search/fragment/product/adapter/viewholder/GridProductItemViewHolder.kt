@@ -52,11 +52,6 @@ class GridProductItemViewHolder(itemView: View,
         )
         itemView.productCardView?.setProductModel(productCardModel)
 
-        itemView.productCardView?.setOnLongClickListener {
-            productListener.onLongClick(productItem, adapterPosition)
-            true
-        }
-
         itemView.productCardView?.setOnClickListener {
             productListener.onItemClicked(productItem, adapterPosition)
         }

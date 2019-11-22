@@ -662,18 +662,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     }
 
-    public void onLongClick(ProductItem item, int adapterPosition) {
-        ImageSearchTracking.trackEventProductLongPress(getQueryKey(), item.getProductID(), getToken());
-        startSimilarSearch(item.getProductID());
-    }
-
-    private void startSimilarSearch(String productId) {
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
-        intent.putExtra(SearchConstant.SimilarSearch.QUERY, getQueryKey());
-
-        startActivity(intent);
-    }
-
     public void onWishlistButtonClicked(ProductItem productItem) {
         presenter.handleWishlistButtonClicked(productItem);
     }
