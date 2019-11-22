@@ -1,6 +1,7 @@
 package com.tokopedia.vouchergame.detail.widget
 
 import android.content.Context
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -30,6 +31,7 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
 
     private var isDropdown = false
     private var dropdownBottomSheet = BottomSheetUnify()
+    private var dropdownView: VoucherGameInputDropdownBottomSheet? = null
     private var fragmentManager: FragmentManager? = null
 
     init {
@@ -137,16 +139,21 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
         isDropdown = true
         iv_input_dropdown.visible()
 
-        val dropdownBottomSheetView = VoucherGameInputDropdownBottomSheet(context, listener = this)
-        dropdownBottomSheetView.setData(data)
+        dropdownView = VoucherGameInputDropdownBottomSheet(context, listener = this)
+        dropdownView?.setData(data)
 
         this.fragmentManager = fragmentManager
-        dropdownBottomSheet.setChild(dropdownBottomSheetView)
+        dropdownBottomSheet.setChild(dropdownView)
     }
 
     private fun showDropdownBottomSheet() {
         if (isDropdown && fragmentManager != null) {
             dropdownBottomSheet.show(fragmentManager,"Enquiry input field dropdown bottom sheet")
+            // Open keyboard with delay so it opens when bottom sheet is fully visible
+            Handler().postDelayed({
+                val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+            }, SHOW_KEYBOARD_DELAY)
         }
     }
 
@@ -159,5 +166,9 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
 
     interface ActionListener {
         fun onFinishInput()
+    }
+
+    companion object {
+        const val SHOW_KEYBOARD_DELAY: Long = 200
     }
 }

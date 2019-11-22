@@ -42,6 +42,7 @@ open class VoucherGameInputDropdownBottomSheet @JvmOverloads constructor(@NotNul
         vg_input_dropdown_search_view.setResetListener {
             displayData = initialData
         }
+        vg_input_dropdown_search_view.searchTextView.requestFocus()
     }
 
     open fun getLayout(): Int {
