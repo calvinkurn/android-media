@@ -4,9 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
@@ -32,8 +31,6 @@ import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-import com.tokopedia.url.Env;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -44,8 +41,6 @@ import java.util.Map;
 import okhttp3.Response;
 import timber.log.Timber;
 
-//import com.tokopedia.url.Env;
-//import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by hendry on 25/06/18.
@@ -69,14 +64,6 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
-
-        com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
-        GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
-        com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
-        GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
-        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
-        TokopediaUrl.Companion.deleteInstance();
-        TokopediaUrl.Companion.init(this);
 
         upgradeSecurityProvider();
 
