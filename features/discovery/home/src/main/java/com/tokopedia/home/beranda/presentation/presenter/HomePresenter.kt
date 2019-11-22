@@ -32,6 +32,7 @@ import com.tokopedia.topads.sdk.listener.ImpressionListener
 import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -59,7 +60,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
     protected var subscription: Subscription?
     private val masterJob = SupervisorJob()
 
-
     @Inject
     lateinit var getFeedTabUseCase: GetFeedTabUseCase
 
@@ -76,13 +76,13 @@ class HomePresenter(private val userSession: UserSessionInterface,
     lateinit var homeRepository: HomeRepository
 
     @Inject
-    lateinit var  getHomeTokopointsDataUseCaseLazy: Lazy<GetHomeTokopointsDataUseCase>
+    lateinit var getHomeTokopointsDataUseCaseLazy: Lazy<GetHomeTokopointsDataUseCase>
 
     @Inject
-    lateinit var  getKeywordSearchUseCaseLazy: Lazy<GetKeywordSearchUseCase>
+    lateinit var getKeywordSearchUseCaseLazy: Lazy<GetKeywordSearchUseCase>
 
     @Inject
-    lateinit var  stickyLoginUseCase: StickyLoginUseCase
+    lateinit var stickyLoginUseCase: StickyLoginUseCase
 
     @Inject
     lateinit var getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase
@@ -165,38 +165,30 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun dismissReview() {
-//        getView().onSuccessDismissReview();
-//
-//        dismissHomeReviewUseCase.execute(RequestParams.EMPTY, new Subscriber<String>() {
-//            @Override
-//            public void onCompleted() { }
-//
-//            @Override
-//            public void onError(Throwable e) { }
-//
-//            @Override
-//            public void onNext(String s) { }
-//        });
+        view?.onSuccessDismissReview()
+
+        dismissHomeReviewUseCase.execute(RequestParams.EMPTY, object: Subscriber<String>(){
+            override fun onNext(t: String?) {}
+
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable?) {}
+
+        })
     }
 
     override fun getSuggestedReview() {
+        getHomeReviewSuggestedUseCase.execute(RequestParams.EMPTY, object: Subscriber<SuggestedProductReview>() {
+            override fun onCompleted() {}
 
-//        getHomeReviewSuggestedUseCase.execute(RequestParams.EMPTY, new Subscriber<SuggestedProductReview>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                getView().onErrorGetReviewData();
-//            }
-//
-//            @Override
-//            public void onNext(SuggestedProductReview suggestedProductReview) {
-//                getView().onSuccessGetReviewData(suggestedProductReview);
-//            }
-//        });
+            override fun onError(e: Throwable?) {
+                view?.onErrorGetReviewData()
+            }
+
+            override fun onNext(suggestedProductReview: SuggestedProductReview?) {
+                view?.onSuccessGetReviewData(suggestedProductReview)
+            }
+        })
     }
 
     override fun getHomeData() {
@@ -589,13 +581,13 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun getPlayBanner(adapterPosition: Int){
-//        playCardHomeUseCase.execute(
-//                playCardHome -> {
-//                    getView().setPlayContentBanner(playCardHome, adapterPosition);
-//                    return Unit.INSTANCE;
-//                },
-//                throwable -> Unit.INSTANCE
-//        )
+        playCardHomeUseCase.execute(
+                onSuccess = {
+                    view?.setPlayContentBanner(it, adapterPosition)
+                },
+                onError = {}
+        )
+
     }
 
     companion object {

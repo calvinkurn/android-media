@@ -23,10 +23,6 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeMapper: HomeMapper
 ): HomeRepository {
 
-//    override val allHomeData: Observable<HomeViewModel?> = homeDataSource.homeData
-//
-//    override val homeDataCache: Observable<HomeViewModel?> = homeDataSource.cache
-
     override suspend fun getHomeData(): LiveData<Resource<HomeViewModel>> {
         return object : NetworkBoundResource<GraphqlResponse, HomeData, HomeViewModel>(){
 

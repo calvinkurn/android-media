@@ -8,8 +8,6 @@ import retrofit2.Response
 import rx.Observable
 
 interface HomeRepository {
-//    val allHomeData: Observable<HomeViewModel?>
-//    val homeDataCache: Observable<HomeViewModel?>
     suspend fun getHomeData(): LiveData<Resource<HomeViewModel>>
     fun sendGeolocationInfo(): Observable<Response<String>>
 }
