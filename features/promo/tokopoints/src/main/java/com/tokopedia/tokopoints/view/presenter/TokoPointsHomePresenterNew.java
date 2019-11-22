@@ -51,6 +51,10 @@ public class TokoPointsHomePresenterNew extends BaseDaggerPresenter<TokoPointsHo
         if (mRedeemCouponUseCase != null) {
             mRedeemCouponUseCase.unsubscribe();
         }
+
+        if (mGetCouponCountUseCase != null){
+            mGetCouponCountUseCase.unsubscribe();
+        }
     }
 
     @Override

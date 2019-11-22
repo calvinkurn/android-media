@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -200,13 +201,13 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
 
         if (item.isNewCoupon()) {
-            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
-            holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
-            holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),R.color.tp_new_coupon_background_color));
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),R.color.tp_new_coupon_background_color));
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),R.color.tp_new_coupon_background_color));
         } else {
-            holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
-            holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
-            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),com.tokopedia.design.R.color.white));
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),com.tokopedia.design.R.color.white));
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),com.tokopedia.design.R.color.white));
         }
 
         if (item.getUsage() != null) {

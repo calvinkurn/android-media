@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -75,7 +76,6 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
         /*This section is exclusively for handling timer*/
         public CountDownTimer timer;
         public ProgressBar progressTimer;
-        //        public View viewCouponNew;
         public CardView cvShadow1, cvShadow2, cvData, cv1, cv2;
 
         public ViewHolder(View view) {
@@ -89,7 +89,6 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
             tvMinTxnLabel = view.findViewById(R.id.tv_min_txn_label);
             tvStackCount = view.findViewById(R.id.text_stack_count);
             progressTimer = view.findViewById(R.id.progress_timer);
-//            viewCouponNew = view.findViewById(R.id.view_coupon_new);
             cvShadow1 = view.findViewById(R.id.cv_shadow_1);
             cvShadow2 = view.findViewById(R.id.cv_shadow_2);
             cvData = view.findViewById(R.id.cv_data);
@@ -234,13 +233,13 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
 
         if (item.isNewCoupon()) {
-            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
-            holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),R.color.tp_new_coupon_background_color));
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),R.color.tp_new_coupon_background_color));
             holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.tp_new_coupon_background_color));
         } else {
-            holder.cv1.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
-            holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
-            holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.design.R.color.white));
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),com.tokopedia.design.R.color.white));
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),com.tokopedia.design.R.color.white));
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),com.tokopedia.design.R.color.white));
         }
 
         if (item.getUsage() != null) {
