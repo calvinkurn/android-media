@@ -62,16 +62,28 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
 
     override fun state(): BottomSheetsState = BottomSheetsState.FULL
 
-    override fun getLayoutResourceId(): Int = com.tokopedia.product.manage.list.R.layout.confirmation_product_bottom_sheet
+    override fun getLayoutResourceId(): Int = R.layout.confirmation_product_bottom_sheet
 
-    override fun getBaseLayoutResourceId(): Int = com.tokopedia.product.manage.list.R.layout.base_confirmation_bottom_sheet
+    override fun getBaseLayoutResourceId(): Int = R.layout.base_confirmation_bottom_sheet
 
     override fun getTheme(): Int = R.style.BaseBottomSheetDialog
+
+    override fun getBottomsheet_container(): Int {
+        return R.id.bottomsheet_container
+    }
+
+    override fun getTv_title(): Int {
+        return R.id.tv_title
+    }
+
+    override fun getLayout_title(): Int {
+        return R.id.layout_title
+    }
 
     override fun configView(parentView: View) {
         getArgument()
         super.configView(parentView)
-        btnClose = parentView.findViewById(com.tokopedia.product.manage.list.R.id.btn_close_confirmation)
+        btnClose = parentView.findViewById(R.id.btn_close_confirmation)
         btnClose.setOnClickListener {
             dismiss()
         }
@@ -79,9 +91,9 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
 
     override fun initView(view: View) {
         view.apply {
-            rvConfirmation = findViewById(com.tokopedia.product.manage.list.R.id.rv_confirmation_product)
-            btnCancel = findViewById(com.tokopedia.product.manage.list.R.id.btn_cancel_confirmation)
-            btnConfirmation = findViewById(com.tokopedia.product.manage.list.R.id.btn_confirmation)
+            rvConfirmation = findViewById(R.id.rv_confirmation_product)
+            btnCancel = findViewById(R.id.btn_cancel_confirmation)
+            btnConfirmation = findViewById(R.id.btn_confirmation)
         }
 
         btnCancel.setOnClickListener {

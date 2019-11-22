@@ -30,7 +30,17 @@ public class ProductManageFilterActivity extends BaseSimpleActivity {
 
     @Override
     protected int getLayoutRes() {
-        return com.tokopedia.product.manage.list.R.layout.activity_filter_product_manage;
+        return R.layout.activity_filter_product_manage;
+    }
+
+    @Override
+    protected int getToolbar() {
+        return R.id.toolbar;
+    }
+
+    @Override
+    protected int getParent_view() {
+        return R.id.parent_view;
     }
 
     @Override
