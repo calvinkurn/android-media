@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_8"
         android:text="@string/label_showcase_address_title"
         app:typographyType="heading_6" />
 
@@ -24,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_8"
         android:textColor="@color/g_500"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -54,9 +54,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tab_unify_trade_in_address"
         android:background="@color/white"
-        android:padding="@dimen/dp_16">
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_4">
 
-        <LinearLayout
+    <LinearLayout
             android:id="@+id/rl_detail_shipment_recipient"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
