@@ -825,6 +825,7 @@ final class ProductListPresenter
 
         if (searchProduct.getErrorMessage() != null && !searchProduct.getErrorMessage().isEmpty()) {
             list.add(createTobaccoTickerViewModel(searchProduct.getErrorMessage(), searchProduct.getSeamlessLiteUrl()));
+            getView().trackEventImpressionBannedProductsErrorMessage();
         }
 
         if (productViewModel.getQuickFilterModel() != null) {
