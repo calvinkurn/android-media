@@ -140,7 +140,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingBottom="@dimen/dp_64">
+                android:paddingBottom="@dimen/dp_100">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -535,8 +535,7 @@
         android:background="@color/white"
         android:elevation="@dimen/dp_4"
         android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:visibility="visible">
 
         <View
             android:layout_width="match_parent"
@@ -554,13 +553,16 @@
             android:background="@color/grey_200" />
 
         <LinearLayout
+            android:id="@+id/container_room_available"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/dp_16"
             android:paddingTop="@dimen/dp_8"
             android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_8">
+            android:paddingBottom="@dimen/dp_8"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -596,48 +598,77 @@
                 app:buttonCompatType="transaction" />
 
         </LinearLayout>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/container_shimmering_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:elevation="@dimen/dp_4"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_8"
-        android:visibility="visible"
-        tools:visibility="gone">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/container_room_not_available"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="match_parent"
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8" />
+                android:text="@string/hotel_detail_room_full_text"
+                android:textColor="@color/Neutral_N700"
+                app:fontSize="micro"
+                app:typographyType="heading_4" />
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hotel_detail_room_full_desc"
+                app:typographyType="body_3" />
 
         </LinearLayout>
 
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_48"
-            android:layout_weight="1" />
+        <LinearLayout
+            android:id="@+id/container_shimmering_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:elevation="@dimen/dp_4"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_8"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_8" />
+
+                <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_48"
+                android:layout_weight="1" />
+
+        </LinearLayout>
 
     </LinearLayout>
+
 </RelativeLayout>

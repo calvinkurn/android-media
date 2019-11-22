@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -125,6 +124,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     hotelHomepageModel.locId)
         }
 
+        setupGlobalSearchWidget()
 
     }
 
@@ -196,6 +196,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                         if (it.hasExtra(HotelGlobalSearchActivity.NUM_OF_GUESTS)) adultCount = it.getIntExtra(HotelGlobalSearchActivity.NUM_OF_GUESTS, 1)
                     }
                     showLoadingContainerBottom()
+                    hideRoomAvailableContainerBottom()
+                    hideRoomNotAvailableContainerBottom()
                     detailViewModel.getRoomWithoutHotelData(
                             GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
                             hotelHomepageModel)
@@ -260,8 +262,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
 
         if (!isButtonEnabled) {
-            container_shimmering_bottom.visibility = View.GONE
-            container_bottom.visibility = View.GONE
+            hideLoadingContainerBottom()
+            hideRoomNotAvailableContainerBottom()
+            hideRoomAvailableContainerBottom()
         }
     }
 
@@ -452,6 +455,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         hideLoadingContainerBottom()
 
         if (data.isNotEmpty()) {
+            showRoomAvailableContainerBottom()
             roomPrice = data.first().roomPrice.roomPrice
             roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
             trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, roomPriceAmount, data.first().additionalPropertyInfo.isDirectPayment)
@@ -463,6 +467,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 btn_see_room.isEnabled = false
                 btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             } else {
+                btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
+                btn_see_room.buttonCompatType = ButtonCompat.TRANSACTION
                 btn_see_room.setOnClickListener {
                     trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPriceAmount)
                     context?.run {
@@ -474,14 +480,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
         } else {
             trackingHotelUtil.hotelViewDetails(hotelName, hotelId, false, "0", false)
-            tv_hotel_price_subtitle.visibility = View.GONE
-            tv_hotel_price.text = getString(R.string.hotel_detail_room_full_text)
-            context?.run { tv_hotel_price.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.light_disabled)) }
-            btn_see_room.buttonCompatType = ButtonCompat.PRIMARY
-            btn_see_room.text = getString(R.string.hotel_detail_change_search_text)
-            btn_see_room.setOnClickListener {
-                activity?.run { this.finish() }
-            }
+            showRoomNotAvailableContainerBottom()
         }
 
         if (!isButtonEnabled) {
@@ -525,12 +524,26 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun showLoadingContainerBottom() {
         container_shimmering_bottom.visibility = View.VISIBLE
-        container_bottom.visibility = View.GONE
     }
 
     private fun hideLoadingContainerBottom() {
         container_shimmering_bottom.visibility = View.GONE
-        container_bottom.visibility = View.VISIBLE
+    }
+
+    private fun showRoomAvailableContainerBottom() {
+        container_room_available.visibility = View.VISIBLE
+    }
+
+    private fun hideRoomAvailableContainerBottom() {
+        container_room_available.visibility = View.GONE
+    }
+
+    private fun showRoomNotAvailableContainerBottom() {
+        container_room_not_available.visibility = View.VISIBLE
+    }
+
+    private fun hideRoomNotAvailableContainerBottom() {
+        container_room_not_available.visibility = View.GONE
     }
 
     companion object {

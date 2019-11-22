@@ -233,4 +233,5 @@
     <string name="hotel_min_date_label">Check-in</string>
     <string name="hotel_max_date_label">Check-out</string>
     <string name="hotel_global_search_check_availability">Cek Ketersediaan</string>
+    <string name="hotel_detail_room_full_desc">Coba ubah tanggal atau jumlah kamar, yuk!</string>
 </resources>
