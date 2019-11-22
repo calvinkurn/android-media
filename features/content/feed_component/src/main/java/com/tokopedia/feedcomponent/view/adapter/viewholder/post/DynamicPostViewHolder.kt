@@ -388,7 +388,7 @@ open class DynamicPostViewHolder(v: View,
 
             if (template.stats) {
                 itemView.statsIcon.shouldShowWithAction(true) {
-                    itemView.statsIcon.setOnClickListener { listener.onStatsClick(footer.stats.text, footer.stats.productIDs, footer.like.value, footer.comment.value) }
+                    itemView.statsIcon.setOnClickListener { listener.onStatsClick(footer.stats.text, id.toString(), footer.stats.productIDs, footer.like.value, footer.comment.value) }
                 }
             } else itemView.statsIcon.hide()
         }
@@ -531,7 +531,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onCommentClick(positionInFeed: Int, id: Int)
 
-        fun onStatsClick(title: String, productIds: List<String>, likeCount: Int, commentCount: Int)
+        fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
 
         fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String)
 

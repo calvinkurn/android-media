@@ -1337,7 +1337,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
     }
 
-    override fun onStatsClick(title: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+    override fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
         //Not used
     }
 

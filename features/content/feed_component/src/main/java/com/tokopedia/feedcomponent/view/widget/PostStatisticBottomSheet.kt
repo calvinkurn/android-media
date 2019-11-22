@@ -5,12 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.statistic.PostStatisticAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
+import com.tokopedia.kotlin.extensions.view.warn
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 2019-11-21
@@ -19,23 +23,9 @@ class PostStatisticBottomSheet : BottomSheetUnify() {
 
     companion object {
 
-        private const val ARGS_PRODUCT_ID_LIST = "product_ids"
-        private const val ARGS_LIKE_COUNT = "like_count"
-        private const val ARGS_COMMENT_COUNT = "comment_count"
-
-        fun newInstance(context: Context,
-                        title: String,
-                        productIds: List<String>,
-                        likeCount: Int,
-                        commentCount: Int): PostStatisticBottomSheet {
+        fun newInstance(context: Context): PostStatisticBottomSheet {
             return PostStatisticBottomSheet().apply {
-                arguments = Bundle().apply {
-                    putStringArrayList(ARGS_PRODUCT_ID_LIST, ArrayList(productIds))
-                    putInt(ARGS_LIKE_COUNT, likeCount)
-                    putInt(ARGS_COMMENT_COUNT, commentCount)
-                }
-
-                setTitle(title)
+                arguments = Bundle.EMPTY
                 val view = LayoutInflater.from(context).inflate(R.layout.bottomsheet_post_statistic, null)
                 setChild(view)
                 initView(view)
@@ -50,6 +40,17 @@ class PostStatisticBottomSheet : BottomSheetUnify() {
         statisticAdapter.setItemsAndAnimateChanges(modelList)
     }
 
+    fun show(fragmentManager: FragmentManager,
+             activityId: String,
+             title: String,
+             productIds: List<String>,
+             listener: Listener) {
+        if (tag != activityId) resetData()
+        listener.onGetPostStatisticModelList(activityId, productIds)
+        setTitle(title)
+        show(fragmentManager, activityId)
+    }
+
     private fun initView(view: View) {
         rvStatistic = view.findViewById(R.id.rv_statistic)
 
@@ -61,5 +62,13 @@ class PostStatisticBottomSheet : BottomSheetUnify() {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = statisticAdapter
         }
+    }
+
+    private fun resetData() {
+
+    }
+
+    interface Listener {
+        fun onGetPostStatisticModelList(activityId: String, productIds: List<String>)
     }
 }

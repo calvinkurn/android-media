@@ -126,65 +126,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         HighlightAdapter.HighlightListener,
         ShareBottomSheets.OnShareItemClickListener {
 
-    override val androidContext: Context
-        get() = requireContext()
-
-    private var userId: Int = 0
-    private var afterPost: Boolean = false
-    private var afterEdit: Boolean = false
-    private var successPost: Boolean = false
-    private var onlyOnePost: Boolean = false
-    private var isAffiliate: Boolean = false
-    private var isOwner: Boolean = false
-    private var openShare: Boolean = false
-    private var resultIntent: Intent? = null
-    private var affiliatePostQuota: AffiliatePostQuota? = null
-    private var profileHeader: ProfileHeaderViewModel? = null
-    private val submitPostReceiver: BroadcastReceiver by lazy {
-        object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (context == null || intent == null) {
-                    return
-                }
-
-                if (intent.action == BROADCAST_SUBMIT_POST
-                        && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS) == true) {
-                    onSwipeRefresh()
-                }
-            }
-        }
-    }
-    private var isAppBarCollapse = false
-    private var linkerData: LinkerData? = null
-    private var isShareProfile = false
-
-    lateinit var layoutManager: GridLayoutManager
-
-    lateinit var remoteConfig: RemoteConfig
-
-    @Inject
-    lateinit var presenter: ProfileContract.Presenter
-
-    @Inject
-    lateinit var profileAnalytics: ProfileAnalytics
-
-    @Inject
-    lateinit var feedAnalytics: FeedAnalyticTracker
-
-    @Inject
-    lateinit var postTagAnalytics: PostTagAnalytics
-
-    @Inject
-    lateinit var profilePreference: ProfilePreference
-
-    @Inject
-    lateinit var affiliatePreference: AffiliatePreference
-    
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    private lateinit var byMeInstastoryView: ByMeInstastoryView
-
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
         private const val PARAM_CATEGORY_ID = "{category_id}"
@@ -229,6 +170,67 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             return fragment
         }
     }
+
+    override val androidContext: Context
+        get() = requireContext()
+
+    @Inject
+    lateinit var presenter: ProfileContract.Presenter
+
+    @Inject
+    lateinit var profileAnalytics: ProfileAnalytics
+
+    @Inject
+    lateinit var feedAnalytics: FeedAnalyticTracker
+
+    @Inject
+    lateinit var postTagAnalytics: PostTagAnalytics
+
+    @Inject
+    lateinit var profilePreference: ProfilePreference
+
+    @Inject
+    lateinit var affiliatePreference: AffiliatePreference
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    lateinit var layoutManager: GridLayoutManager
+
+    lateinit var remoteConfig: RemoteConfig
+
+    private lateinit var byMeInstastoryView: ByMeInstastoryView
+
+    private val submitPostReceiver: BroadcastReceiver by lazy {
+        object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (context == null || intent == null) {
+                    return
+                }
+
+                if (intent.action == BROADCAST_SUBMIT_POST
+                        && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS) == true) {
+                    onSwipeRefresh()
+                }
+            }
+        }
+    }
+    private var userId: Int = 0
+    private var afterPost: Boolean = false
+    private var afterEdit: Boolean = false
+    private var successPost: Boolean = false
+    private var onlyOnePost: Boolean = false
+    private var isAffiliate: Boolean = false
+    private var isOwner: Boolean = false
+    private var openShare: Boolean = false
+    private var resultIntent: Intent? = null
+    private var affiliatePostQuota: AffiliatePostQuota? = null
+    private var profileHeader: ProfileHeaderViewModel? = null
+    private var isAppBarCollapse = false
+    private var linkerData: LinkerData? = null
+    private var isShareProfile = false
+
+    private lateinit var postStatisticBottomSheet: PostStatisticBottomSheet
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -874,8 +876,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onStatsClick(title: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
-        showPostStatistic(title, productIds, likeCount, commentCount)
+    override fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        showPostStatistic(title, activityId, productIds, likeCount, commentCount)
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
@@ -1110,6 +1112,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 trackingPostModel.activityName,
                 trackingPostModel.mediaType
         )
+    }
+
+    override fun onSuccessGetPostStatistic(statisticModelList: List<PostStatisticUiModel>) {
+        getPostStatisticBottomSheet()
+                .setStatisticModelList(statisticModelList)
+    }
+
+    override fun onErrorGetPostStatistic(error: Throwable) {
+
     }
 
     private fun initVar(savedInstanceState: Bundle?) {
@@ -1829,19 +1840,36 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             profileAnalytics.eventClickSharePostOpsiIni(isOwner, userId.toString(), packageName)
     }
 
-    private fun showPostStatistic(title: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
-        PostStatisticBottomSheet.newInstance(requireContext(), title, productIds, likeCount, commentCount)
-                .also {
-                    it.setStatisticModelList(
-                            listOf(
-                                    PostStatisticUiModel(
-                                            R.drawable.ic_feed_see_darker_grey,
-                                            "15rb",
-                                            R.string.feed_post_statistic_seen_count
-                                    )
-                            )
-                    )
-                }
-                .show(fragmentManager, "Post Statistic")
+    private fun getPostStatisticBottomSheet(): PostStatisticBottomSheet {
+        if (!::postStatisticBottomSheet.isInitialized) {
+            postStatisticBottomSheet = PostStatisticBottomSheet.newInstance(requireContext())
+                    .also {
+                        it.setStatisticModelList(
+                                listOf(
+                                        PostStatisticUiModel(
+                                                R.drawable.ic_feed_see_darker_grey,
+                                                "15rb",
+                                                R.string.feed_post_statistic_seen_count
+                                        )
+                                )
+                        )
+                    }
+        }
+        return postStatisticBottomSheet
+    }
+
+    private fun showPostStatistic(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        getPostStatisticBottomSheet()
+                .show(
+                        fragmentManager = requireFragmentManager(),
+                        activityId = activityId,
+                        title = title,
+                        productIds = productIds,
+                        listener = object : PostStatisticBottomSheet.Listener {
+                            override fun onGetPostStatisticModelList(activityId: String, productIds: List<String>) {
+                                presenter.getPostStatistic(activityId, productIds, likeCount, commentCount)
+                            }
+                        }
+                )
     }
 }

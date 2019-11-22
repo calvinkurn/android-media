@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.feedcomponent.di.FeedComponentModule
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.presenter.ProfileEmptyPresenter
@@ -41,5 +43,9 @@ class ProfileModule {
     @ProfileScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+
+    @ProfileScope
+    @Provides
+    fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
 }

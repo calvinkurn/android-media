@@ -776,7 +776,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onStatsClick(@NotNull String title, @NotNull List<String> productIds, int likeCount, int commentCount) {
+    public void onStatsClick(@NotNull String title, @NotNull String activityId, @NotNull List<String> productIds, int likeCount, int commentCount) {
         showPostStatistic(title, productIds, likeCount, commentCount);
     }
 
