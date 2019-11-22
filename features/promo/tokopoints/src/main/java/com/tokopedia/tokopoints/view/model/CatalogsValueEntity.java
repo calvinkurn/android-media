@@ -13,16 +13,8 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
     private String baseCode;
 
     @Expose
-    @SerializedName("expired")
-    private String expired;
-
-    @Expose
     @SerializedName("id")
     private int id;
-
-    @Expose
-    @SerializedName(value = "imageURL", alternate = {"image_url"})
-    private String imageUrl;
 
     @Expose
     @SerializedName(value = "imageUrlMobile", alternate = {"image_url_mobile"})
@@ -41,24 +33,12 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
     private String pointsStr;
 
     @Expose
-    @SerializedName("promoID")
-    private int promoId;
-
-    @Expose
     @SerializedName("quota")
     private int quota;
 
     @Expose
     @SerializedName("slug")
     private String slug;
-
-    @Expose
-    @SerializedName(value = "subtitle", alternate = {"sub_title"})
-    private String subTitle;
-
-    @Expose
-    @SerializedName(value = "thumbnailURL", alternate = {"thumbnail_url"})
-    private String thumbnailUrl;
 
     @Expose
     @SerializedName(value = "thumbnailURLMobile", alternate = {"thumbnail_url_mobile"})
@@ -120,10 +100,6 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
     private String howToUse;
 
     @Expose
-    @SerializedName("overview")
-    private String overview;
-
-    @Expose
     @SerializedName("tnc")
     private String tnc;
 
@@ -138,13 +114,6 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
     @SerializedName("quotaPercentage")
     private Integer quotaPercentage;
 
-    public Integer getQuotaPercentage() {
-        return quotaPercentage;
-    }
-
-    public void setQuotaPercentage(Integer quotaPercentage) {
-        this.quotaPercentage = quotaPercentage;
-    }
 
     public boolean isShowTukarButton() {
         return isShowTukarButton;
@@ -162,14 +131,6 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
         this.baseCode = baseCode;
     }
 
-    public String getExpired() {
-        return expired;
-    }
-
-    public void setExpired(String expired) {
-        this.expired = expired;
-    }
-
     public int getId() {
         return id;
     }
@@ -178,13 +139,6 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
         this.id = id;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     public String getImageUrlMobile() {
         return imageUrlMobile;
@@ -218,13 +172,6 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
         this.pointsStr = pointsStr;
     }
 
-    public int getPromoId() {
-        return promoId;
-    }
-
-    public void setPromoId(int promoId) {
-        this.promoId = promoId;
-    }
 
     public int getQuota() {
         return quota;
@@ -240,22 +187,6 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
 
     public void setSlug(String slug) {
         this.slug = slug;
-    }
-
-    public String getSubTitle() {
-        return subTitle;
-    }
-
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
-    }
-
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
     }
 
     public String getThumbnailUrlMobile() {
@@ -378,14 +309,6 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
         this.howToUse = howToUse;
     }
 
-    public String getOverview() {
-        return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
     public String getTnc() {
         return tnc;
     }
@@ -406,18 +329,13 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
     public String toString() {
         return "CatalogsValueEntity{" +
                 "baseCode='" + baseCode + '\'' +
-                ", expired='" + expired + '\'' +
                 ", id=" + id +
-                ", imageUrl='" + imageUrl + '\'' +
                 ", imageUrlMobile='" + imageUrlMobile + '\'' +
                 ", isGift=" + isGift +
                 ", points='" + points + '\'' +
                 ", pointsStr='" + pointsStr + '\'' +
-                ", promoId=" + promoId +
                 ", quota=" + quota +
                 ", slug='" + slug + '\'' +
-                ", subTitle='" + subTitle + '\'' +
-                ", thumbnailUrl='" + thumbnailUrl + '\'' +
                 ", thumbnailUrlMobile='" + thumbnailUrlMobile + '\'' +
                 ", title='" + title + '\'' +
                 ", isDisabled=" + isDisabled +
@@ -433,7 +351,6 @@ public class CatalogsValueEntity extends BaseItem implements Serializable {
                 ", discountPercentageStr='" + discountPercentageStr + '\'' +
                 ", buttonStr='" + buttonStr + '\'' +
                 ", howToUse='" + howToUse + '\'' +
-                ", overview='" + overview + '\'' +
                 ", tnc='" + tnc + '\'' +
                 ", cta='" + cta + '\'' +
                 ", isShowTukarButton=" + isShowTukarButton +

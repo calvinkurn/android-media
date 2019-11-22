@@ -617,7 +617,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_CLICK,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_RECOMMENDATION,
-                Key.EVENT_LABEL, position,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -799,6 +799,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_VIEW,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.IMPRESSION_ON_PRODUCT_RECOMMENDATION,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -839,21 +840,35 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAddWishlistOnPrimaryProduct() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_RECOMMENDATION,
-                EventCategory.RECOMMENDATION_PAGE,
-                EventAction.CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE_CART
+    public void eventClickAddWishlistOnProductRecommendation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION
         );
     }
 
-    public void eventClickRemoveWishlistOnPrimaryProduct() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_RECOMMENDATION,
-                EventCategory.RECOMMENDATION_PAGE,
-                EventAction.CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE_CART
+    public void eventClickAddWishlistOnProductRecommendationEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
+        );
+    }
+
+    public void eventClickRemoveWishlistOnProductRecommendation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION
+        );
+    }
+
+    public void eventClickRemoveWishlistOnProductRecommendationEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
         );
     }
 
