@@ -271,7 +271,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 flightVerifyPassenger.title = passenger.passengerTitleId
                 flightVerifyPassenger.firstName = passenger.passengerFirstName
                 flightVerifyPassenger.lastName = passenger.passengerLastName
-                if (!passenger.passengerBirthdate.isNullOrEmpty()) flightVerifyPassenger.dob = passenger.passengerBirthdate
+                if (!passenger.passengerBirthdate.isNullOrEmpty()) flightVerifyPassenger.dob = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, passenger.passengerBirthdate))
                 if (!flightIsDomestic()) {
                     flightVerifyPassenger.nationality = passenger.passportNationality?.countryId
                             ?: ""
@@ -351,7 +351,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             if (isEnable) {
                 passenger.headerTitle = userProfile.fullName
                 passenger.passengerFirstName = userProfile.fullName
-                if (getMandatoryDOB()) passenger.passengerBirthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
+                if (getMandatoryDOB()) passenger.passengerBirthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
             } else {
                 passenger.headerTitle = String.format("Penumpang dewasa")
             }
