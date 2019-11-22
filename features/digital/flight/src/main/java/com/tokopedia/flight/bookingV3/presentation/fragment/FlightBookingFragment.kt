@@ -431,6 +431,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun getReturnId(): String = bookingViewModel.getReturnId()
 
     private fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, departureDate: String, requestId: String) {
+        needToFillFirstPassengerDetail = false
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         activity as Activity,
@@ -446,7 +447,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 ),
                 REQUEST_CODE_PASSENGER
         )
-        needToFillFirstPassengerDetail = false
     }
 
 
@@ -526,8 +526,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         layout_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
         switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
-            bookingViewModel.onTravellerAsPassenger(on)
             needToFillFirstPassengerDetail = true
+            bookingViewModel.onTravellerAsPassenger(on)
         }
         button_submit.setOnClickListener { verifyCart() }
     }
