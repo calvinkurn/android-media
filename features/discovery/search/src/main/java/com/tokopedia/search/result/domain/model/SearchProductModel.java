@@ -133,7 +133,7 @@ public class SearchProductModel {
         @Expose
         private List<Product> products = new ArrayList<>();
 
-        private String encriptedLiteUrl;
+        private String encriptedLiteUrl = "";
 
         public String getQuery() {
             return query;
