@@ -57,13 +57,13 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
         return graphqlUseCase
                 .createObservable(RequestParams.EMPTY)
                 .map(searchProductModelMapper)
-                // TODO:: Remove these hack
-                .map(searchProductModel -> {
-                    searchProductModel.getSearchProduct().getProducts().clear();
-                    searchProductModel.getSearchProduct().setErrorMessage("Android app membatasi pencarian barang bernikotin/tembakau.");
-                    searchProductModel.getSearchProduct().setLiteUrl("https://m2.tokopedia.com/search?q=" + searchProductModel.getSearchProduct().getQuery());
-                    return searchProductModel;
-                })
+//                // TODO:: Remove these hack
+//                .map(searchProductModel -> {
+//                    searchProductModel.getSearchProduct().getProducts().clear();
+//                    searchProductModel.getSearchProduct().setErrorMessage("Android app membatasi pencarian barang bernikotin/tembakau.");
+//                    searchProductModel.getSearchProduct().setLiteUrl("https://m2.tokopedia.com/search?q=" + searchProductModel.getSearchProduct().getQuery());
+//                    return searchProductModel;
+//                })
                 .flatMap(generateSeamlessLiteUrl());
     }
 
