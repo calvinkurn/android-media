@@ -135,7 +135,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             offsetAlpha = 0f
         }
 
-        val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(R.id.search_input_view_container)
+        val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(com.tokopedia.common_digital.R.id.search_input_view_container)
         if (offsetAlpha >= 255) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
@@ -248,7 +248,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onRecommendationItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getRecommendationList(GraphqlHelper.loadRawString(resources, R.raw.digital_recommendation_list), loadFromCloud
+        viewModel.getRecommendationList(GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list), loadFromCloud
                 ?: true)
     }
 

@@ -45,7 +45,7 @@ class DigitalHomepageToolbar @JvmOverloads constructor(context: Context, attrs: 
                 pT = ViewHelper.getStatusBarHeight(context)
             }
             val pR = this.paddingRight
-            val pB = resources.getDimensionPixelSize(R.dimen.dp_32)
+            val pB = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_32)
             this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.design.R.color.white))
             this.setPadding(pL, pT, pR, pB)
         }
