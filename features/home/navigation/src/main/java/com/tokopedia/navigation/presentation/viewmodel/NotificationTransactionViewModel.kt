@@ -8,10 +8,13 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.navigation.data.entity.NotificationEntity
+import com.tokopedia.navigation.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateMapper
 import com.tokopedia.navigation.domain.MarkReadNotificationUpdateItemUseCase
+import com.tokopedia.navigation.domain.NotificationFilterUseCase
 import com.tokopedia.navigation.domain.NotificationInfoTransactionUseCase
 import com.tokopedia.navigation.domain.NotificationTransactionUseCase
+import com.tokopedia.navigation.domain.model.NotificationFilterSection
 import com.tokopedia.navigation.domain.model.TransactionNotification
 import com.tokopedia.navigation.presentation.view.subscriber.NotificationUpdateActionSubscriber
 import com.tokopedia.navigation.util.coroutines.DispatcherProvider
@@ -27,15 +30,18 @@ interface NotificationTransactionContract {
             onSuccess: (TransactionNotification) -> Unit,
             onError: (Throwable) -> Unit)
     fun onErrorMessage(throwable: Throwable)
-    fun updateFilter(filter: HashMap<String, Int>)
     fun markReadNotification(notificationId: String)
-    fun resetFilter()
+    fun getNotificationFilter()
+    fun updateNotificationFilter(filter: HashMap<String, Int>)
+    fun resetNotificationFilter()
 }
 
 class NotificationTransactionViewModel @Inject constructor(
         private val notificationInfoTransactionUseCase: NotificationInfoTransactionUseCase,
         private var notificationTransactionUseCase: NotificationTransactionUseCase,
         private var markReadNotificationUpdateItemUseCase: MarkReadNotificationUpdateItemUseCase,
+        private var notificationFilterUseCase: NotificationFilterUseCase,
+        private var notificationFilterMapper : GetNotificationUpdateFilterMapper,
         private var notificationMapper: GetNotificationUpdateMapper,
         dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
@@ -45,6 +51,9 @@ class NotificationTransactionViewModel @Inject constructor(
 
     private val _infoNotification = MutableLiveData<NotificationEntity>()
     val infoNotification: LiveData<NotificationEntity> get() = _infoNotification
+
+    private val _filterNotification = MutableLiveData<List<NotificationFilterSection>>()
+    val filterNotification: LiveData<List<NotificationFilterSection>> get() = _filterNotification
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
@@ -87,12 +96,20 @@ class NotificationTransactionViewModel @Inject constructor(
                 NotificationUpdateActionSubscriber())
     }
 
-    override fun updateFilter(filter: HashMap<String, Int>) {
-        resetFilter()
+    override fun getNotificationFilter() {
+        notificationFilterUseCase.get({
+            _filterNotification.postValue(notificationFilterMapper.mapToFilter(it))
+        }, {
+            onErrorMessage(it)
+        })
+    }
+
+    override fun updateNotificationFilter(filter: HashMap<String, Int>) {
+        resetNotificationFilter()
         variables.putAll(filter)
     }
 
-    override fun resetFilter() {
+    override fun resetNotificationFilter() {
         variables.clear()
     }
 
