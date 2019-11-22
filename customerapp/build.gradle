@@ -84,6 +84,19 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
+project.ext {
+    defaultVersionCode = 341001101;
+    defaultVersionName = "3.41";
+    react = [
+            nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
+            enableHermes: true,
+    ]
+}
+
+//def hermesPath = "../hermes/";
+def jscFlavor = 'org.webkit:android-jsc:+'
+def enableHermes = project.ext.react.get("enableHermes", false);
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -104,17 +117,15 @@ buildscript {
 
 android {
 
-    project.ext {
-        defaultVersionCode = 341001101;
-        defaultVersionName = "3.41";
-        react = [
-                nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
-        ]
-    }
-
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/rxjava.properties'
+        pickFirst '**/armeabi-v7a/libc++_shared.so'
+        pickFirst '**/x86/libc++_shared.so'
+        pickFirst '**/arm64-v8a/libc++_shared.so'
+        pickFirst '**/x86_64/libc++_shared.so'
+        pickFirst '**/x86/libjsc.so'
+        pickFirst '**/armeabi-v7a/libjsc.so'
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -246,6 +257,8 @@ android {
     dynamicFeatures = getDynamicFeatureIfEnabled(project)
     generateAssetFile(project, dynamicFeatures)
 }
+
+
 
 dependencies {
 
@@ -461,6 +474,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.expandableTextview
+    implementation project(rootProject.ext.libraries.cameraview)
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
@@ -567,6 +581,14 @@ dependencies {
     }
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
+
+
+    if (enableHermes) {
+        debugImplementation 'com.facebook.hermes:hermes-debug:0.0.1@aar'
+        releaseImplementation 'com.facebook.hermes:hermes-release:0.0.1@aar'
+    } else {
+        implementation jscFlavor
+    }
 }
 
 
