@@ -1,6 +1,6 @@
 package com.tokopedia.navigation.presentation.adapter.typefactory
 
-import com.tokopedia.navigation.domain.model.NotificationFilterSection
+import com.tokopedia.navigation.domain.model.NotificationFilterSectionWrapper
 import com.tokopedia.navigation.domain.model.PurchaseNotification
 import com.tokopedia.navigation.domain.model.SaleNotification
 import com.tokopedia.navigation.domain.model.TransactionItemNotification
@@ -9,5 +9,5 @@ interface NotificationTransactionFactory {
     fun type(purchaseNotification: PurchaseNotification): Int
     fun type(saleNotification: SaleNotification): Int
     fun type(notification: TransactionItemNotification): Int
-    fun type(filter: NotificationFilterSection): Int
+    fun type(filter: NotificationFilterSectionWrapper): Int
 }
