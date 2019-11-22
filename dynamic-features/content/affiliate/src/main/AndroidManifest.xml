@@ -4,7 +4,7 @@
 
     <dist:module
         dist:instant="false"
-        dist:onDemand="false"
+        dist:onDemand="true"
         dist:title="@string/title_affiliate">
         <dist:fusing dist:include="true" />
     </dist:module>
