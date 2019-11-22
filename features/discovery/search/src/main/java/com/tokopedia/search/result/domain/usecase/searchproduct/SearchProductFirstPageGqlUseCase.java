@@ -64,7 +64,7 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
 //                    searchProductModel.getSearchProduct().setLiteUrl("https://m2.tokopedia.com/search?q=" + searchProductModel.getSearchProduct().getQuery());
 //                    return searchProductModel;
 //                })
-                .flatMap(generateSeamlessLiteUrl());
+                .flatMap(this::generateSeamlessLiteUrl);
     }
 
     private Map<String, Object> createParametersForQuery(Map<String, Object> parameters) {
@@ -92,17 +92,37 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
         return UrlParamUtils.generateUrlParamString(headlineParams);
     }
 
-    private Func1<SearchProductModel, Observable<SearchProductModel>> generateSeamlessLiteUrl() {
-        return searchProductModel ->
-                Observable.create(
-                        searchProductModelEmitter ->
-                                createSearchProductModelWithSeamlessLiteUrl(searchProductModelEmitter, searchProductModel)
-                        , Emitter.BackpressureMode.BUFFER);
+    private Observable<SearchProductModel> generateSeamlessLiteUrl(SearchProductModel searchProductModel) {
+        return Observable.create(
+                searchProductModelEmitter ->
+                        createSearchProductModelWithSeamlessLiteUrl(searchProductModelEmitter, searchProductModel)
+                , Emitter.BackpressureMode.BUFFER);
     }
 
     private void createSearchProductModelWithSeamlessLiteUrl(
             Emitter<SearchProductModel> searchProductModelEmitter,
             SearchProductModel searchProductModel
+    ) {
+        if (searchProductModel == null || searchProductModel.getSearchProduct() == null) {
+            searchProductModelEmitter.onError(new Exception("Search Product Model is null"));
+            return;
+        }
+
+        if (hasTobaccoLiteUrl(searchProductModel)) {
+            continueWithSeamlessLogin(searchProductModelEmitter, searchProductModel);
+        }
+        else {
+            continueWithoutSeamlessLogin(searchProductModelEmitter, searchProductModel);
+        }
+    }
+
+    private boolean hasTobaccoLiteUrl(SearchProductModel searchProductModel) {
+        return searchProductModel.getSearchProduct().getLiteUrl() != null
+                && !searchProductModel.getSearchProduct().getLiteUrl().isEmpty();
+    }
+
+    private void continueWithSeamlessLogin(
+            Emitter<SearchProductModel> searchProductModelEmitter, SearchProductModel searchProductModel
     ) {
         String liteUrl = searchProductModel.getSearchProduct().getLiteUrl();
         SeamlessLoginSubscriber seamlessLoginSubscriber = createSeamlessLoginSubscriber(searchProductModelEmitter, searchProductModel);
@@ -126,7 +146,17 @@ class SearchProductFirstPageGqlUseCase extends UseCase<SearchProductModel> {
             public void onError(@NotNull String msg) {
                 String liteUrl = searchProductModel.getSearchProduct().getLiteUrl();
                 searchProductModel.getSearchProduct().setSeamlessLiteUrl(liteUrl);
+
+                searchProductModelEmitter.onNext(searchProductModel);
+                searchProductModelEmitter.onCompleted();
             }
         };
+    }
+
+    private void continueWithoutSeamlessLogin(
+            Emitter<SearchProductModel> searchProductModelEmitter, SearchProductModel searchProductModel
+    ) {
+        searchProductModelEmitter.onNext(searchProductModel);
+        searchProductModelEmitter.onCompleted();
     }
 }
