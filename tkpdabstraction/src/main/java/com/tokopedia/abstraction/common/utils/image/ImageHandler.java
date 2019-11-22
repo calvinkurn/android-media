@@ -41,6 +41,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -420,6 +421,16 @@ public class ImageHandler {
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
         loadImageRounded2(context, imageview, url, 5.0f);
+    }
+
+    public static void loadImageRoundedWithCrossFade(Context context, final ImageView imageView, final String url){
+        Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .transition(BitmapTransitionOptions.withCrossFade())
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .into(getRoundedImageViewTarget(imageView, 5.0f));
     }
 
     public static void loadImageRoundedWithBorder(ImageView imageView,
