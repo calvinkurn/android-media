@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -666,8 +667,11 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         startSimilarSearch(item.getProductID());
     }
 
-    public void startSimilarSearch(String productId) {
-        RouteManager.route(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
+    private void startSimilarSearch(String productId) {
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
+        intent.putExtra(SearchConstant.SimilarSearch.QUERY, getQueryKey());
+
+        startActivity(intent);
     }
 
     public void onWishlistButtonClicked(ProductItem productItem) {
