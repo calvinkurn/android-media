@@ -4,17 +4,17 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.navigation.domain.model.NotificationFilterSection
+import com.tokopedia.navigation.domain.model.NotificationFilterSectionWrapper
 import com.tokopedia.navigation.domain.model.PurchaseNotification
 import com.tokopedia.navigation.domain.model.SaleNotification
 import com.tokopedia.navigation.domain.model.TransactionItemNotification
 import com.tokopedia.navigation.presentation.adapter.viewholder.transaction.*
 import com.tokopedia.navigation.presentation.view.listener.NotificationTransactionItemListener
-import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 
 class NotificationTransactionFactoryImpl(
-        var notificationUpdateListener: NotificationTransactionItemListener
+        private var notificationUpdateListener: NotificationTransactionItemListener,
+        private val notificationFilterListener: NotificationFilterViewHolder.NotifFilterListener
 ): BaseAdapterTypeFactory(), NotificationTransactionFactory {
 
     override fun type(purchaseNotification: PurchaseNotification): Int = PurchaseViewHolder.LAYOUT
@@ -38,7 +38,7 @@ class NotificationTransactionFactoryImpl(
         }
     }
 
-    override fun type(filter: NotificationFilterSection): Int {
+    override fun type(filter: NotificationFilterSectionWrapper): Int {
         return NotificationFilterViewHolder.LAYOUT
     }
 
@@ -51,7 +51,7 @@ class NotificationTransactionFactoryImpl(
             BigBannerNotificationViewHolder.LAYOUT -> BigBannerNotificationViewHolder(parent, notificationUpdateListener)
             ProductRecomNotificationViewHolder.LAYOUT -> ProductRecomNotificationViewHolder(parent, notificationUpdateListener)
             WishListNotificationViewHolder.LAYOUT -> WishListNotificationViewHolder(parent, notificationUpdateListener)
-            NotificationFilterViewHolder.LAYOUT -> NotificationFilterViewHolder(parent)
+            NotificationFilterViewHolder.LAYOUT -> NotificationFilterViewHolder(parent, notificationFilterListener)
             else -> super.createViewHolder(parent, type)
         }
     }
