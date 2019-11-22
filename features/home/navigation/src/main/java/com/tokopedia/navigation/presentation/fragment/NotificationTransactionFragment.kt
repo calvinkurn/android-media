@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
@@ -32,8 +33,6 @@ import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationTra
 import com.tokopedia.navigation.presentation.adapter.viewholder.transaction.NotificationTransactionItemViewHolder
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationTransactionComponent
 import com.tokopedia.navigation.presentation.view.listener.NotificationTransactionItemListener
-import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
-import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.viewmodel.NotificationTransactionViewModel
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
@@ -60,11 +59,17 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
             if (NotificationMapper.isHasShop(it)) {
                 _adapter.addElement(sellerMenu())
             }
+            viewModel.getNotificationFilter()
+            _adapter.updateValue()
+        })
+        viewModel.filterNotification.observe(this, Observer {
+            _adapter.addElement(it)
+
+            //get notification
             viewModel.getTransactionNotification(cursor,
                     onSuccessNotificationData(),
                     onErrorNotificationData()
             )
-            _adapter.updateValue()
         })
     }
 
@@ -84,6 +89,15 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         //first data and mandatory menu is buyer on first item
         renderList(buyerMenu(), false)
         viewModel.getInfoStatusNotification()
+    }
+
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                showLoading()
+                loadData(page)
+            }
+        }
     }
 
     private fun onErrorNotificationData(): (Throwable) -> Unit {
@@ -113,17 +127,11 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun getAnalytic(): NotificationUpdateAnalytics = NotificationUpdateAnalytics()
 
-    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
+    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
 
-    }
+    override fun showTextLonger(element: TransactionItemNotification) {}
 
-    override fun showTextLonger(element: TransactionItemNotification) {
-
-    }
-
-    override fun trackNotificationImpression(element: TransactionItemNotification) {
-
-    }
+    override fun trackNotificationImpression(element: TransactionItemNotification) {}
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
 
