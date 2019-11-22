@@ -8,6 +8,7 @@ query OfficialStoreCategories{
         url
         fullUrl
         categories
+        imageInactiveURL
     }
     total
   }

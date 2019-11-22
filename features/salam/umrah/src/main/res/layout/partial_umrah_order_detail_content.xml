@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingBottom="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_detail_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:text="@string/umrah_order_detail_detail_title"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.salam.umrah.common.presentation.widget.MyUmrahWidget
+        android:id="@+id/my_umrah_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_detail_title"
+        app:showLoadingState="true" />
+
+    <RelativeLayout
+        android:id="@+id/tv_umrah"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/umrah_bg_order_detail_ticket"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_umrah_widget"
+        >
+
+        <com.tokopedia.salam.umrah.common.presentation.widget.CustomTicketView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignBottom="@+id/divider1"
+            android:layout_alignParentTop="true"
+            app:borderColor="@color/grey_200"
+            app:borderWidth="1dp"
+            app:cornerRadius="4dp"
+            app:cornerType="roundedscallop"
+            app:scallopRadius="8dp"
+            app:showBorder="true"
+            app:showTopShadow="true"
+            app:ticketElevation="4dp" />
+
+        <com.tokopedia.salam.umrah.common.presentation.widget.CustomTicketView
+            android:id="@+id/customView2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignTop="@+id/divider1"
+            android:layout_alignBottom="@+id/ticket_bottom"
+            app:borderColor="@color/grey_200"
+            app:borderWidth="1dp"
+            app:cornerRadius="4dp"
+            app:cornerType="scalloprounded"
+            app:scallopRadius="8dp"
+            app:showBorder="false"
+            app:showBottomShadow="true"
+
+            app:ticketElevation="4dp" />
+
+
+        <!--v.setLayerType(View.LAYER_TYPE_SOFTWARE, null);-->
+        <ImageView
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_below="@+id/ticket_head"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_8"
+            android:background="@drawable/umrah_dash_line" />
+
+        <LinearLayout
+            android:id="@+id/ticket_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_umrah_order_package"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="heading_6"
+                tools:text="Umroh VIP Direct Madinah 9 Hari" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_umrah_order_travel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_3"
+                tools:text="Travel Berkah" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_umrah_order_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ticket_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider1"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/umrah_order_detail_jamaah_info_label"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_2" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_jamaah"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:background="@color/grey_250" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tg_booking_code_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/umrah_common_booking_code_label"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="small" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tg_booking_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Green_G500"
+                    app:layout_constraintLeft_toLeftOf="@+id/tg_booking_code_label"
+                    app:layout_constraintTop_toBottomOf="@+id/tg_booking_code_label"
+                    app:typographyType="heading_6"
+                    tools:text="9AUEVO" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btn_show_detail_booking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/umrah_order_detail_show_detail"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:unifyButtonSize="small"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="ghost" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/container_umrah_e_voucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/umrah_bg_order_detail_ticket"
+        android:elevation="@dimen/dp_4"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_16"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_umrah">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_gravity="center_vertical"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/ic_umrah_e_voucher" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_show_e_voucher"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_weight="1"
+            android:text="@string/umrah_order_detail_show_e_voucher_label"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_5" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_12"
+            android:layout_gravity="center_vertical"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/ic_arrow_right_grey" />
+
+    </LinearLayout>
+
+
+
+    <View
+        android:id="@+id/divider_payment_method"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/container_umrah_e_voucher" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

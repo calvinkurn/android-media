@@ -46,7 +46,7 @@ public interface ApplinkConst {
     String SELLER_HISTORY = "tokopedia://seller/history";
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
     String REPUTATION = "tokopedia://review";
-    String PRODUCT_CREATE_REVIEW = "tokopedia://review/create/";
+    String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String WEBVIEW = "tokopedia://webview";
@@ -91,6 +91,7 @@ public interface ApplinkConst {
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
+    String CHAT_BOT = "tokopedia://chatbot";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
     String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
@@ -292,6 +293,7 @@ public interface ApplinkConst {
         String COUPON_DETAIL3 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}";
         String COUPON_DETAIL4 = "tokopedia://tokopoints/kupon-saya/detail/{coupon_code}/";
     }
+    String OQR_PIN_URL_ENTRY_LINK = "tokopedia://ovoqrthanks/";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
