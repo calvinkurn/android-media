@@ -43,7 +43,6 @@ include 'libraries:cpm'
 include "libraries:linker"
 include "libraries:webview"
 include "libraries:collapsing_tab_layout"
-include "libraries:brizzisdk"
 include "libraries:promotions_target"
 
 include "libraries:videouploader"

@@ -62,7 +62,6 @@ ext {
             videoplayer             : ":libraries:videoplayer",
             youtubeApi              : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil             : ":libraries:youtubeutil",
-            brizzisdk               : ":libraries:brizzisdk",
             promotionsTarget        : ":libraries:promotions_target",
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
