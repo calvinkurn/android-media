@@ -2,6 +2,8 @@ package com.tokopedia.topchat.chatsetting.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -12,6 +14,17 @@ import com.tokopedia.topchat.chatsetting.view.fragment.ChatSettingFragment
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 
 class ChatSettingActivity : BaseSimpleActivity(), HasComponent<ChatSettingComponent> {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initToolbar()
+    }
+
+    private fun initToolbar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.elevation = 0f
+        }
+    }
 
     override fun getNewFragment(): Fragment? {
         val arg = intent.extras
