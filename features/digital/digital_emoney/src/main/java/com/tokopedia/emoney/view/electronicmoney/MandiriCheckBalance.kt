@@ -86,6 +86,7 @@ class MandiriCheckBalance(val listener: MandiriActionListener) : ElectronicMoney
     }
 
     companion object {
+        const val EMONEY_OPERATOR_ID = "578"
         private const val ISSUER_ID_EMONEY = 1
         private const val TRANSCEIVE_TIMEOUT_IN_SEC = 5000
 

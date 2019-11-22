@@ -448,9 +448,10 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
         const val ISSUER_ID_EMONEY = 1
         const val ISSUER_ID_BRIZZI = 2
 
-        private val ETOLL_CATEGORY_ID = "34"
         const val OPERATOR_NAME_EMONEY = "emoney"
         const val OPERATOR_NAME_BRIZZI = "brizzi"
+
+        private val ETOLL_CATEGORY_ID = "34"
 
     }
 }
