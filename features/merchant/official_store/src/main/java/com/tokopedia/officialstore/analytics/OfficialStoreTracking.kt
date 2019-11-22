@@ -60,13 +60,16 @@ class OfficialStoreTracking(context: Context) {
     private val ATTRIBUTION = "attribution"
 
 
-    private val PRODUCT_EVENT_ACTION = "impression - product recommendation"
+    private val PRODUCT_EVENT_ACTION = "product recommendation"
 
     private val EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID = "recommendation page with product id"
 
     fun sendScreen(categoryName: String) {
         val screenName = "/official-store/$categoryName"
         val customDimension = HashMap<String, String>()
+        // ask requested Dini Praptiwi at 6/11/2019 3:25 PM
+        // @mzennis jadi seharusnya pake event
+        customDimension["event"] = "openScreen"
         customDimension["cd35"] = "/official-store"
         tracker.sendScreenAuthenticated(screenName, customDimension)
     }
@@ -183,7 +186,7 @@ class OfficialStoreTracking(context: Context) {
     fun eventClickAllFeaturedBrand(categoryName: String) {
         tracker.sendGeneralEvent(
                 TrackAppUtils
-                        .gtmData( CLICK_OS_MICROSITE,
+                        .gtmData(CLICK_OS_MICROSITE,
                                 "$OS_MICROSITE$categoryName",
                                 "all brands - $CLICK",
                                 "$CLICK view all"))
@@ -202,7 +205,7 @@ class OfficialStoreTracking(context: Context) {
                         "id", shopId,
                         "name", "/official-store/$categoryName - popular brands",
                         "position", "$shopPosition",
-                        "creative", shopName,
+                        "creative", "$shopName - $additionalInformation",
                         "creative_url", imageUrl,
                         "promo_id", null,
                         "promo_code", null
@@ -224,13 +227,13 @@ class OfficialStoreTracking(context: Context) {
                 PROMO_VIEW, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
                 DataLayer.mapOf(
-                        "id", shopId,
+                        "id", shopId.toString(),
                         "name", "/official-store/$categoryName - popular brands",
                         "position", "$shopPosition",
-                        "creative", shopName,
+                        "creative", "$shopName - $additionalInformation",
                         "creative_url", imageUrl,
-                        "promo_id", null,
-                        "promo_code", null
+                        "promo_id", VALUE_NONE_OTHER,
+                        "promo_code", VALUE_NONE_OTHER
                         )
                     )
                 )
@@ -489,7 +492,7 @@ class OfficialStoreTracking(context: Context) {
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_CLICK,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName", // Here
-                EVENT_ACTION, PRODUCT_EVENT_ACTION,
+                EVENT_ACTION, "click - $PRODUCT_EVENT_ACTION",
                 EVENT_LABEL, recommendationTitle,
                 ECOMMERCE, DataLayer.mapOf(
                 CLICK, DataLayer.mapOf(
@@ -511,7 +514,7 @@ class OfficialStoreTracking(context: Context) {
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_VIEW,
                 EVENT_CATEGORY, String.format(OS_MICROSITE, categoryName),
-                EVENT_ACTION, PRODUCT_EVENT_ACTION,
+                EVENT_ACTION, "impression - $PRODUCT_EVENT_ACTION",
                 EVENT_LABEL, recommendationTitle,
                 ECOMMERCE, DataLayer.mapOf(
                 ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
@@ -543,6 +546,20 @@ class OfficialStoreTracking(context: Context) {
         val stringTopAds = if (isTopAds) " - product topads" else ""
         val stringIsLogin = if (isLogin) "" else " - non login"
         return "/official-store$stringIsLogin - rekomendasi untuk anda - $recommendationType$stringTopAds"
+    }
+
+    fun eventClickWishlist(categoryName: String, isAddWishlist: Boolean, isLogin: Boolean, recommendationTitle: String) {
+        val action = if (isAddWishlist) "remove" else  "add"
+        var eventAction = "$CLICK $action - wishlist on product recommendation"
+        if (!isLogin)
+            eventAction += " - non login"
+
+        tracker.sendGeneralEvent(
+                TrackAppUtils
+                        .gtmData(CLICK_OS_MICROSITE,
+                                "$OS_MICROSITE$categoryName",
+                                eventAction,
+                                recommendationTitle))
     }
 
     fun sendAll() {

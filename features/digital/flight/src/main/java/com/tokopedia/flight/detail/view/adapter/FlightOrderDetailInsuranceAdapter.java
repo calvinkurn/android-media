@@ -41,7 +41,7 @@ public class FlightOrderDetailInsuranceAdapter extends RecyclerView.Adapter<Flig
 
         public ViewHolder(View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(com.tokopedia.design.R.id.tv_title);
+            titleTextView = itemView.findViewById(com.tokopedia.flight.R.id.tv_title);
             taglineTextView = itemView.findViewById(com.tokopedia.flight.R.id.tv_tagline);
             InsuranceProtTv = itemView.findViewById(com.tokopedia.flight.R.id.ic_flight_insurance_protection_tv);
 

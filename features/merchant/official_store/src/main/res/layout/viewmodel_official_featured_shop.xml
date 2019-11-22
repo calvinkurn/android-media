@@ -1,39 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/layout_lvl2">
+    android:paddingTop="20dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_featured_shop"
         android:textColor="@color/Neutral_N700_96"
-        app:typographyType="heading_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"/>
+        android:maxLines="1"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/recycler_view_featured_shop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3" />
 
-    <TextView
-        android:layout_above="@+id/recycler_view_featured_shop"
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/link_featured_shop"
-        android:textStyle="bold"
-        android:textColor="@color/Purple_P600"
+        android:textColor="#7A08C9"
+        android:textSize="13sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textSize="@dimen/fontSize_lvl2"/>
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@id/title_featured_shop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title_featured_shop"
+        app:layout_constraintBottom_toBottomOf="@id/title_featured_shop" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@+id/title_featured_shop"
         android:id="@+id/recycler_view_featured_shop"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="12dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_featured_shop" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

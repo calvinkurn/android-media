@@ -16,8 +16,8 @@ public class GqlGetBankDataUseCase {
     private String query;
 
     @Inject
-    public GqlGetBankDataUseCase() {
-        graphqlUseCase = new GraphqlUseCase();
+    public GqlGetBankDataUseCase(GraphqlUseCase graphqlUseCase) {
+        this.graphqlUseCase = graphqlUseCase;
     }
 
     public void unsubscribe() {

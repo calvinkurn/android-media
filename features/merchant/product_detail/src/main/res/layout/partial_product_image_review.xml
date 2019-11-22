@@ -1,28 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_image_review"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16"
+    android:background="@drawable/bg_top_line"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
     android:visibility="gone"
-    tools:visibility="visible"
-    android:background="@drawable/bg_bottom_shadow_top_line">
-
-    <com.tokopedia.design.component.TextViewCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/title_image_review"
-        app:fontSize="title"
-        app:textViewTheme="lightPrimary"
-        app:weight="medium"/>
+    tools:visibility="visible">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/image_review_list"
-        android:layout_marginBottom="@dimen/dp_8"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:layout_constraintTop_toBottomOf="@+id/review_rating" />
 
-</LinearLayout>
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/txt_review_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_buyer_review"
+        app:fontSize="title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:textViewTheme="lightPrimary"
+        app:weight="medium" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:drawableEnd="@drawable/ic_rating_gold"
+        android:drawableRight="@drawable/ic_rating_gold"
+        android:drawablePadding="@dimen/dp_4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_review_title"
+        tools:text="@string/counter_pattern" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        app:layout_constraintBottom_toBottomOf="@+id/review_rating"
+        app:layout_constraintLeft_toRightOf="@+id/review_rating"
+        app:layout_constraintTop_toTopOf="@+id/review_rating"
+        app:typographyType="body_3"
+        tools:text="1205 ulasan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_see_all_partial"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
+        android:text="@string/label_see_all"
+        android:textColor="@color/tkpd_main_green"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_review_title"
+        app:layout_constraintBottom_toTopOf="@id/image_review_list"
+        app:typographyType="body_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
