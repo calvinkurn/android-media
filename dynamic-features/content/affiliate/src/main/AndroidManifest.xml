@@ -5,7 +5,7 @@
     <dist:module
         dist:instant="false"
         dist:onDemand="true"
-        dist:title="@string/title_affiliate">
+        dist:title="@string/title_af_affiliate">
         <dist:fusing dist:include="true" />
     </dist:module>
     <application android:hasCode="false"/>

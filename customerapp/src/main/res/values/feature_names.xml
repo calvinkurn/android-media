@@ -140,7 +140,7 @@
     <string name="onboarding_app_name">OnBoarding</string>
 
     <!--Dynamic feature for affiliate-->
-
+    <string name="title_af_affiliate">Affiliate</string>
     <string name="title_af_dashboard">Pencapaian Saya</string>
     <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
 </resources>
