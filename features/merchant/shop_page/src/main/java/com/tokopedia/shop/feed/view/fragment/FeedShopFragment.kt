@@ -495,7 +495,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onStatsClick(title: String, productIds: List<String>) {
+    override fun onStatsClick(title: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
         //Not Used
     }
 

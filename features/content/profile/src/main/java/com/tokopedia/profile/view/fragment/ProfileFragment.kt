@@ -85,6 +85,7 @@ import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
+import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
@@ -872,8 +873,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onStatsClick(title: String, productIds: List<String>) {
-        //Not used
+    override fun onStatsClick(title: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        showPostStatistic(title, productIds, likeCount, commentCount)
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {
@@ -1825,5 +1826,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             profileAnalytics.eventClickShareProfileOpsiIni(isOwner, userId.toString(), packageName)
         else
             profileAnalytics.eventClickSharePostOpsiIni(isOwner, userId.toString(), packageName)
+    }
+
+    private fun showPostStatistic(title: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
+        PostStatisticBottomSheet.newInstance(requireContext(), title, productIds, likeCount, commentCount)
+                .show(fragmentManager, "Post Statistic")
     }
 }

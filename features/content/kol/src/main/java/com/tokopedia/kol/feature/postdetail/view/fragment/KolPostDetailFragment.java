@@ -776,8 +776,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onStatsClick(@NotNull String title, @NotNull List<String> productIds) {
-        showPostStatistic(title, productIds);
+    public void onStatsClick(@NotNull String title, @NotNull List<String> productIds, int likeCount, int commentCount) {
+        showPostStatistic(title, productIds, likeCount, commentCount);
     }
 
     private void doShare(String body, String title) {
@@ -999,7 +999,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
     }
 
-    private void showPostStatistic(String title, List<String> productIds) {
+    private void showPostStatistic(String title, List<String> productIds, int likeCount, int commentCount) {
         throw new NotImplementedError();
     }
 

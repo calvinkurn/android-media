@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <LinearLayout
+        android:id="@+id/ll_commision_detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_35"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_commission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@drawable/ic_eye_password_closed"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_1"
+            tools:text="Rp165.000"
+            />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_commission_for_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textColor="@color/Neutral_N700_44"
+        android:text="@string/feed_post_statistic_commission_info"
+        app:layout_constraintEnd_toEndOf="@id/ll_commision_detail"
+        app:layout_constraintStart_toStartOf="@id/ll_commision_detail"
+        app:layout_constraintTop_toBottomOf="@id/ll_commision_detail"
+        app:typographyType="body_3"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_check_dashboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:textColor="@color/Green_G500"
+        android:text="@string/feed_post_statistic_check_dashboard"
+        app:layout_constraintEnd_toEndOf="@id/tv_commission_for_post"
+        app:layout_constraintStart_toStartOf="@id/tv_commission_for_post"
+        app:layout_constraintTop_toBottomOf="@id/tv_commission_for_post"
+        app:typographyType="heading_6"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_statistic_detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        app:layout_constraintTop_toBottomOf="@id/tv_check_dashboard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_post_statistic"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/feed_post_statistic_info"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/rv_statistic_detail"
+        app:layout_constraintStart_toStartOf="@id/rv_statistic_detail"
+        app:layout_constraintTop_toBottomOf="@id/rv_statistic_detail"
+        app:typographyType="body_3"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
