@@ -47,10 +47,12 @@ public interface ConstantTransactionAnalytics {
         String VIEW_COURIER_IRIS = "viewCourierIris";
         String VIEW_TRADEIN = "viewTradeIn";
         String CLICK_TRADEIN = "clickTradeIn";
+        String CART = "Cart";
     }
 
     interface EventCategory {
         String CART = "cart";
+        String EMPTY_CART = "empty cart";
         String COURIER_SELECTION = "courier selection";
         String ADD_TO_CART = "add to cart";
         String CART_CHANGE_ADDRESS = "cart change address";
@@ -315,6 +317,16 @@ public interface ConstantTransactionAnalytics {
         String VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT = "view help pop up after error in checkout";
         String CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT = "click report on help pop up in checkout";
         String CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT = "click close on help pop up in checkout";
+
+        //Wishlist
+        String ADD_WISHLIST_AVAILABLE_SECTION = "add wishlist - available section - login";
+        String REMOVE_WISHLIST_AVAILABLE_SECTION = "remove wishlist - available section - login";
+        String ADD_WISHLIST_UNAVAILABLE_SECTION = "add wishlist - unavailable section - login";
+        String REMOVE_WISHLIST_UNAVAILABLE_SECTION = "remove wishlist - unavailable section - login";
+        String ADD_WISHLIST_LAST_SEEN = "add wishlist - last seen - login";
+        String REMOVE_WISHLIST_LAST_SEEN = "remove wishlist - last seen - login";
+        String ADD_WISHLIST_WISHLIST = "add wishlist - wishlist - login";
+        String REMOVE_WISHLIST_WISHLIST = "remove wishlist - wishlist - login";
     }
 
     interface EventLabel {

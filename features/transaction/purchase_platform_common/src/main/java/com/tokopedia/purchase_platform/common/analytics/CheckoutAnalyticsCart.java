@@ -886,4 +886,76 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    public void eventAddWishlistAvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_AVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistAvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_AVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventAddWishlistUnavailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_UNAVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistUnvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_UNAVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventAddWishlistLastSeenSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_LAST_SEEN,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistLastSeenSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_LAST_SEEN,
+                productId
+        );
+    }
+
+    public void eventAddWishlistWishlistsSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_WISHLIST,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistWishlistsSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_WISHLIST,
+                productId
+        );
+    }
+
 }
