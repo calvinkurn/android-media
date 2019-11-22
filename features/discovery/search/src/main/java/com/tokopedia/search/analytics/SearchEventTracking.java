@@ -8,6 +8,7 @@ public interface SearchEventTracking {
         String SEARCH_RESULT = "clickSearchResult";
         String CLICK_WISHLIST = "clickWishlist";
         String CLICK_TOP_NAV = "clickTopNav";
+        String VIEW_SEARCH_RESULT_IRIS = "viewSearchResultIris";
     }
 
     interface Category {
@@ -39,6 +40,8 @@ public interface SearchEventTracking {
         String MODULE = "module";
         String LOGIN = "login";
         String NON_LOGIN = "nonlogin";
+        String IMPRESSION_BANNED_PRODUCT_TICKER_RELATED = "impression - banned product ticker - related";
+        String CLICK_BANNED_PRODUCT_TICKER_RELATED = "click - banned product ticker - related";
     }
 
     interface Label {

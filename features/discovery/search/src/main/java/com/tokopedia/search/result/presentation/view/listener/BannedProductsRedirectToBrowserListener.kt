@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.view.listener
 
-interface TobaccoRedirectToBrowserListener {
+interface BannedProductsRedirectToBrowserListener {
 
     fun onGoToBrowserClicked(encriptedLiteUrl: String)
 }

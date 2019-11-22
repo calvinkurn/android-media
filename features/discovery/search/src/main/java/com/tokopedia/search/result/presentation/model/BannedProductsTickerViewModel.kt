@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
-data class TobaccoTickerViewModel(
+data class BannedProductsTickerViewModel(
         val htmlErrorMessage: String
 ): Parcelable, Visitable<ProductListTypeFactory> {
 
@@ -19,12 +19,12 @@ data class TobaccoTickerViewModel(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<TobaccoTickerViewModel> {
-        override fun createFromParcel(parcel: Parcel): TobaccoTickerViewModel {
-            return TobaccoTickerViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<BannedProductsTickerViewModel> {
+        override fun createFromParcel(parcel: Parcel): BannedProductsTickerViewModel {
+            return BannedProductsTickerViewModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<TobaccoTickerViewModel?> {
+        override fun newArray(size: Int): Array<BannedProductsTickerViewModel?> {
             return arrayOfNulls(size)
         }
     }

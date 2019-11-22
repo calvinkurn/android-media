@@ -556,4 +556,22 @@ public class SearchTracking {
                 SearchEventTracking.Action.CLICK_SEARCH_BOX,
                 "");
     }
+
+    public static void trackEventImpressionBannedProducts(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.IMPRESSION_BANNED_PRODUCT_TICKER_RELATED,
+                keyword
+        );
+    }
+
+    public static void trackEventClickGoToBrowserBannedProducts(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_BANNED_PRODUCT_TICKER_RELATED,
+                keyword
+        );
+    }
 }

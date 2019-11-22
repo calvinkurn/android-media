@@ -46,7 +46,9 @@ public interface ProductListSectionContract {
 
         void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
 
-        void setEmptyProductWithTobaccoErrorMessage(List<Visitable> tobaccoErrorMessageAsList);
+        void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
+
+        void trackEventImpressionBannedProductsErrorMessage();
 
         void backToTop();
 

@@ -4,7 +4,6 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.search.result.presentation.model.*;
-import com.tokopedia.topads.sdk.domain.model.CpmModel;
 
 public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(ProductItemViewModel productItem);
@@ -27,9 +26,9 @@ public interface ProductListTypeFactory extends SearchSectionTypeFactory {
 
     int type(RecommendationItemViewModel recommendationItemViewModel);
 
-    int type(TobaccoEmptySearchViewModel tobaccoEmptySearchViewModel);
+    int type(BannedProductsEmptySearchViewModel bannedProductsEmptySearchViewModel);
 
-    int type(TobaccoTickerViewModel tobaccoTickerViewModel);
+    int type(BannedProductsTickerViewModel bannedProductsTickerViewModel);
 
     AbstractViewHolder createViewHolder(View view, int type);
 }

@@ -22,8 +22,8 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
-import com.tokopedia.search.result.presentation.model.TobaccoEmptySearchViewModel;
-import com.tokopedia.search.result.presentation.model.TobaccoTickerViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -742,13 +742,14 @@ final class ProductListPresenter
 
     private void getViewToHandleEmptySearchWithErrorMessage(SearchProductModel.SearchProduct searchProduct) {
         getView().removeLoading();
-        getView().setEmptyProductWithTobaccoErrorMessage(createTobaccoErrorMessageAsList(searchProduct));
+        getView().setBannedProductsErrorMessage(createTobaccoErrorMessageAsList(searchProduct));
+        getView().trackEventImpressionBannedProductsErrorMessage();
         getView().setTotalSearchResultCount("0");
     }
 
     private List<Visitable> createTobaccoErrorMessageAsList(SearchProductModel.SearchProduct searchProduct) {
         List<Visitable> tobaccoErrorMessageAsList = new ArrayList<>();
-        tobaccoErrorMessageAsList.add(new TobaccoEmptySearchViewModel(searchProduct.getErrorMessage(), searchProduct.getSeamlessLiteUrl()));
+        tobaccoErrorMessageAsList.add(new BannedProductsEmptySearchViewModel(searchProduct.getErrorMessage(), searchProduct.getSeamlessLiteUrl()));
         return tobaccoErrorMessageAsList;
     }
 
@@ -884,12 +885,12 @@ final class ProductListPresenter
         return cpm.getTemplateId() == 4;
     }
 
-    private TobaccoTickerViewModel createTobaccoTickerViewModel(String errorMessage, String encriptedLiteUrl) {
+    private BannedProductsTickerViewModel createTobaccoTickerViewModel(String errorMessage, String encriptedLiteUrl) {
         String htmlErrorMessage = errorMessage
                 + " "
                 + "Gunakan <a href=\"" + encriptedLiteUrl + "\">browser</a>";
 
-        return new TobaccoTickerViewModel(htmlErrorMessage);
+        return new BannedProductsTickerViewModel(htmlErrorMessage);
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {

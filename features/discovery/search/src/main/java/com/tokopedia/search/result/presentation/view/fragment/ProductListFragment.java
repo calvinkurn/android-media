@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,7 +32,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
-import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
@@ -62,7 +60,7 @@ import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListe
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
-import com.tokopedia.search.result.presentation.view.listener.TobaccoRedirectToBrowserListener;
+import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
 import com.tokopedia.search.utils.UrlParamUtils;
@@ -114,7 +112,7 @@ public class ProductListFragment
         BannerAdsListener,
         EmptyStateListener,
         RecommendationListener,
-        TobaccoRedirectToBrowserListener {
+        BannedProductsRedirectToBrowserListener {
 
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final String SHOP = "shop";
@@ -874,15 +872,20 @@ public class ProductListFragment
     }
 
     @Override
-    public void setEmptyProductWithTobaccoErrorMessage(List<Visitable> tobaccoErrorMessageAsList) {
-        adapter.appendItems(tobaccoErrorMessageAsList);
-    }
-
-    @Override
     protected void refreshAdapterForEmptySearch() {
         if (adapter != null) {
             adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
         }
+    }
+
+    @Override
+    public void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList) {
+        adapter.appendItems(bannedProductsErrorMessageAsList);
+    }
+
+    @Override
+    public void trackEventImpressionBannedProductsErrorMessage() {
+        SearchTracking.trackEventImpressionBannedProducts(getQueryKey());
     }
 
     @Override
@@ -1221,6 +1224,8 @@ public class ProductListFragment
 
     @Override
     public void onGoToBrowserClicked(@NotNull String encriptedLiteUrl) {
+        SearchTracking.trackEventClickGoToBrowserBannedProducts(getQueryKey());
+
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(encriptedLiteUrl));
         startActivity(intent);
     }
