@@ -14,8 +14,8 @@
 
         <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
             android:id="@+id/rb_option_clash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_10"
@@ -25,33 +25,17 @@
             android:focusable="true"
             android:focusableInTouchMode="false" />
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_toRightOf="@id/rb_option_clash"-->
-<!--            android:orientation="vertical">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_title_voucher"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="@dimen/dp_3"-->
-<!--                android:text="@string/clash_bottomsheet_previous_voucher"-->
-<!--                android:textColor="@color/clash_title"-->
-<!--                android:textStyle="bold"-->
-<!--                android:visibility="gone"/>-->
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_voucher_amount_total"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_6"
-                android:text="@string/clash_bottomsheet_previous_potential_promo"
-                android:textColor="@color/Neutral_N700_96"
-                android:layout_marginTop="@dimen/dp_4"
-                app:typographyType="heading_6"
-                android:layout_toEndOf="@id/rb_option_clash"
-                android:layout_toRightOf="@id/rb_option_clash"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_voucher_amount_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_6"
+            android:layout_toEndOf="@id/rb_option_clash"
+            android:layout_toRightOf="@id/rb_option_clash"
+            android:text="@string/clash_bottomsheet_previous_potential_promo"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_6" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_voucher_list"
@@ -61,7 +45,6 @@
             android:layout_marginBottom="@dimen/dp_6"
             android:layout_toEndOf="@id/rb_option_clash"
             android:layout_toRightOf="@id/rb_option_clash" />
-<!--        </LinearLayout>-->
 
     </RelativeLayout>
 

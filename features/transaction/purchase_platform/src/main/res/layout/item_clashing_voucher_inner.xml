@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/dp_10"
-    android:layout_marginRight="@dimen/dp_10"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
     android:orientation="vertical">
 
     <View
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:textColor="#e131353b"
+        android:textColor="@color/title_black"
         android:textSize="@dimen/sp_10"
         android:textStyle="bold"
         tools:text="@string/clash_bottomsheet_previous_potential_promo_origin2" />

@@ -183,10 +183,10 @@ open class ClashBottomSheetFragment : BottomSheetUnify(), ClashingAdapter.Action
 
         if (rvClashingOption.isComputingLayout) {
             rvClashingOption.post {
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemChanged(reverseIndex)
             }
         } else {
-            adapter.notifyDataSetChanged()
+            adapter.notifyItemChanged(reverseIndex)
         }
 
         for (model: ClashingVoucherOptionUiModel in adapter.data) {
