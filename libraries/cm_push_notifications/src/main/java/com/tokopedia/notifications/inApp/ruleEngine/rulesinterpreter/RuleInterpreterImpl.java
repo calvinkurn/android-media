@@ -67,8 +67,8 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
                             Iterator<CMInApp> iter = inAppList.iterator();
                             while (iter.hasNext()) {
                                 CMInApp inAppData = iter.next();
-                                if(!(checkIfActiveInTimeFrame(inAppData, inAppData.currentTime) &&
-                                        checkIfFrequencyIsValid(inAppData, inAppData.currentTime) &&
+                                if(!(checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis()) &&
+                                        checkIfFrequencyIsValid(inAppData, System.currentTimeMillis()) &&
                                         checkIfBehaviourRulesAreValid(inAppData))){
                                     iter.remove();
                                     if(performdeletion(inAppData)) {
@@ -139,7 +139,7 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
     }
 
     private boolean performdeletion(CMInApp inAppData){
-        if(!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ)){
+        if((inAppData.startTime != 0L && inAppData.endTime != 0L) || (!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ))){
             return true;
         }
         else {

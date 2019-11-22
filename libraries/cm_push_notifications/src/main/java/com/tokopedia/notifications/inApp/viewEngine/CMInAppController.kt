@@ -23,7 +23,6 @@ class CMInAppController: CoroutineScope {
                         IrisAnalyticsEvents.sendPushEvent(context, IrisAnalyticsEvents.INAPP_CANCELLED, updatedCMInApp)
                         return@launchCatchError
                     }
-                    updatedCMInApp.currentTime = System.currentTimeMillis()
                     putDataToStore(updatedCMInApp)
                 }, onError = {
             Log.d("CMInAppController", it.message)
