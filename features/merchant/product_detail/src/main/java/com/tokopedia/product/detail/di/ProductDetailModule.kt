@@ -1,9 +1,8 @@
 package com.tokopedia.product.detail.di
 
-import com.tokopedia.affiliatecommon.di.AffiliateCommonModule
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.affiliatecommon.di.AffiliateCommonModule
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -45,6 +44,10 @@ class ProductDetailModule {
     @ProductDetailScope
     @Provides
     fun provideProductDetailTracking(trackingQueue: TrackingQueue) = ProductDetailTracking(trackingQueue)
+
+    @ProductDetailScope
+    @Provides
+    fun provideIrisTracking(@ApplicationContext context: Context)  = IrisAnalytics.Companion.getInstance(context)
 
     @ProductDetailScope
     @Provides

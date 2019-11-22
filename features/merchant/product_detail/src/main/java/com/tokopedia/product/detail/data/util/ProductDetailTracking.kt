@@ -25,6 +25,7 @@ import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class ProductDetailTracking @Inject constructor(private val trackingQueue: TrackingQueue) {
@@ -210,13 +211,13 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         if (productId.isNullOrEmpty()) {
             return
         }
-        val mapEvent =  TrackAppUtils.gtmData(
+        val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 "click - cek keranjang",
                 productId
         )
-        mapEvent[KEY_PRODUCT_ID] =  productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
@@ -269,7 +270,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                                         VARIANT, DEFAULT_VALUE,
                                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                         PROMO_POSITION, position + 1,
-                                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                                        DATA_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
                                         KEY_PRODUCT_ID, product.productId.toString()
                                 )
                         ))
@@ -277,7 +278,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
-    fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean,pageName: String, pageTitle: String) {
+    fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String) {
         val valueLoginOrNotLogin = if (!isSessionActive)
             " ${ProductTrackingConstant.USER_NON_LOGIN} - "
         else ""
@@ -304,7 +305,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                         VARIANT, DEFAULT_VALUE,
                         PROMO_POSITION, position,
-                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                        DATA_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         ))
         ))
@@ -335,7 +336,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                         PROMO_POSITION, position + 1,
                         LIST, listValue,
-                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                        DATA_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
                         KEY_PRODUCT_ID, product.productId.toString()
                 )
         ))
@@ -370,7 +371,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         VARIANT, DEFAULT_VALUE,
                         LIST, listValue,
                         PROMO_POSITION, position,
-                        DATA_DIMENSION_83, if(product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                        DATA_DIMENSION_83, if (product.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
                 )
         ))
         )
@@ -435,13 +436,13 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
     }
 
     fun eventSendChat(productId: String) {
-        val mapEvent =  TrackAppUtils.gtmData(
+        val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PRODUCT_PAGE.toLowerCase(),
                 ProductTrackingConstant.Action.CLICK,
                 ProductTrackingConstant.Message.LABEL.toLowerCase()
         )
-        mapEvent[KEY_PRODUCT_ID] =  productId
+        mapEvent[KEY_PRODUCT_ID] = productId
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
@@ -611,6 +612,64 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
     }
 
+    fun eventEnhanceEcommerceProductDetailIris(trackerListName: String?, productInfo: ProductInfo?,
+                                               shopInfo: ShopInfo?, trackerAttribution: String?,
+                                               isTradeIn: Boolean, isDiagnosed: Boolean,
+                                               multiOrigin: Boolean): HashMap<String, Any> {
+        val dimension55 = if (isTradeIn && isDiagnosed)
+            "true diagnostic"
+        else if (isTradeIn && !isDiagnosed)
+            "true non diagnostic"
+        else
+            "false"
+
+        val dimension83 = productInfo?.freeOngkir?.let {
+            if (it.isFreeOngkirActive)
+                VALUE_BEBAS_ONGKIR
+            else
+                VALUE_NONE_OTHER
+        }
+
+        return DataLayer.mapOf(
+                "event", "viewProduct",
+                "eventCategory", "product page",
+                "eventAction", "view product page",
+                "eventLabel", getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.basic?.name,
+                KEY_PRODUCT_ID, productInfo?.basic?.id,
+                "ecommerce", DataLayer.mapOf(
+                "currencyCode", "IDR",
+                "detail", DataLayer.mapOf(
+                "products", DataLayer.listOf(
+                DataLayer.mapOf(
+                        "name", productInfo?.basic?.name,
+                        "id", productInfo?.basic?.id,
+                        "price", productInfo?.basic?.price?.toInt(),
+                        "brand", "none / other",
+                        "category", getEnhanceCategoryFormatted(productInfo?.category?.detail),
+                        "variant", "none / other",
+                        "dimension38", trackerAttribution ?: "none / other",
+                        "dimension55", dimension55,
+                        "dimension54", getMultiOriginAttribution(multiOrigin),
+                        "dimension83", dimension83,
+                        KEY_DIMENSION_81, shopInfo?.goldOS?.shopTypeString
+
+                ))).apply {
+            if (trackerListName?.isNotEmpty() == true) {
+                put("actionField", DataLayer.mapOf("list", trackerListName))
+            }
+        }),
+                "key", getEnhanceUrl(productInfo?.basic?.url),
+                "shopName", shopInfo?.shopCore?.name,
+                "shopId", productInfo?.basic?.shopID,
+                "shopDomain", shopInfo?.shopCore?.domain,
+                "shopLocation", shopInfo?.location,
+                "shopIsGold", shopInfo?.goldOS?.isGoldBadge.toString(),
+                "categoryId", productInfo?.category?.id,
+                "url", productInfo?.basic?.url,
+                "shopType", getEnhanceShopType(shopInfo?.goldOS)
+        ) as HashMap<String, Any>
+
+    }
 
 
     ///////////////////////////////////////////////////////////////
@@ -656,7 +715,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         eventAppsFyler(productInfo, "af_content_view")
     }
 
-    private fun eventAppsFyler(productInfo: ProductInfo, eventName:String) {
+    private fun eventAppsFyler(productInfo: ProductInfo, eventName: String) {
         TrackApp.getInstance().appsFlyer.run {
             val mutableMap = mutableMapOf(
                     "af_description" to "productView",
@@ -829,7 +888,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
-    fun eventClickSeeMoreRecomWidget(widgetName: String){
+    fun eventClickSeeMoreRecomWidget(widgetName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
