@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.helper
 
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.DiffUtil
+
 
 /**
  * Created by jegul on 2019-10-02.

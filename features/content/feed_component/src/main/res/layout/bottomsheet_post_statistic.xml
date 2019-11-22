@@ -64,7 +64,7 @@
         />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_statistic_detail"
+        android:id="@+id/rv_statistic"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
@@ -84,9 +84,9 @@
         android:text="@string/feed_post_statistic_info"
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/rv_statistic_detail"
-        app:layout_constraintStart_toStartOf="@id/rv_statistic_detail"
-        app:layout_constraintTop_toBottomOf="@id/rv_statistic_detail"
+        app:layout_constraintEnd_toEndOf="@id/rv_statistic"
+        app:layout_constraintStart_toStartOf="@id/rv_statistic"
+        app:layout_constraintTop_toBottomOf="@id/rv_statistic"
         app:typographyType="body_3"
         />
 

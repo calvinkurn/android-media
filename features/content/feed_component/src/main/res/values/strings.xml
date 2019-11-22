@@ -67,5 +67,10 @@
     <string name="feed_post_statistic_info">Pakai hashtag yang trending bisa bikin post kamu banyak dilihat!</string>
     <string name="feed_post_statistic_commission_info">komisi dari post ini</string>
     <string name="feed_post_statistic_check_dashboard">Cek Dashboard</string>
+    <string name="feed_post_statistic_seen_count">total post dilihat</string>
+    <string name="feed_post_statistic_click_count">klik pada barang</string>
+    <string name="feed_post_statistic_like_count">like(s)</string>
+    <string name="feed_post_statistic_comment_count">comment(s)</string>
+    <string name="feed_post_statistic_see_detail">Lihat</string>
 
 </resources>

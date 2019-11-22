@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_feed_darker_grey"
+        app:srcCompat="@drawable/ic_feed_see_darker_grey"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -35,7 +35,7 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography"
+        android:id="@+id/tv_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
@@ -54,9 +54,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:textColor="@color/Green_G500"
-        app:layout_constraintBottom_toBottomOf="@+id/typography"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/typography"
+        app:layout_constraintTop_toTopOf="@+id/tv_subtitle"
         app:typographyType="heading_6"
         tools:text="Lihat"
         />

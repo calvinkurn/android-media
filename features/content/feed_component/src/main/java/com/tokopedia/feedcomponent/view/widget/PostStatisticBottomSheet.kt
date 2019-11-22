@@ -5,7 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.view.adapter.statistic.PostStatisticAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
@@ -32,10 +36,30 @@ class PostStatisticBottomSheet : BottomSheetUnify() {
                 }
 
                 setTitle(title)
-                setChild(
-                        LayoutInflater.from(context).inflate(R.layout.bottomsheet_post_statistic, null)
-                )
+                val view = LayoutInflater.from(context).inflate(R.layout.bottomsheet_post_statistic, null)
+                setChild(view)
+                initView(view)
             }
+        }
+    }
+
+    private lateinit var rvStatistic: RecyclerView
+    private val statisticAdapter = PostStatisticAdapter()
+
+    fun setStatisticModelList(modelList: List<PostStatisticUiModel>) {
+        statisticAdapter.setItemsAndAnimateChanges(modelList)
+    }
+
+    private fun initView(view: View) {
+        rvStatistic = view.findViewById(R.id.rv_statistic)
+
+        setupList()
+    }
+
+    private fun setupList() {
+        rvStatistic.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = statisticAdapter
         }
     }
 }
