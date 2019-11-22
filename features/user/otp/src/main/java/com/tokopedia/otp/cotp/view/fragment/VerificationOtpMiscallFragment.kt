@@ -1,7 +1,9 @@
 package com.tokopedia.otp.cotp.view.fragment
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Parcelable
@@ -28,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.OTPAnalytics
 import com.tokopedia.otp.common.di.DaggerOtpComponent
+import com.tokopedia.otp.common.util.PhoneCallReceiver
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
@@ -35,12 +38,14 @@ import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter
 import com.tokopedia.otp.cotp.view.viewlistener.VerificationOtpMiscall
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.request
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_cotp_miscall_verification.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMiscall.View {
+class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMiscall.View, PhoneCallReceiver.OnCallStateChange {
 
     private var countDownTimer: CountDownTimer? = null
     private var isRunningTimer = false
@@ -52,6 +57,12 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
     @Inject
     lateinit var analytics: OTPAnalytics
+
+//    @Inject
+    lateinit var callReceiver: PhoneCallReceiver
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     override fun initInjector() {
         val otpComponent = DaggerOtpComponent.builder()
@@ -67,6 +78,8 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkPermissionGetPhoneNumber()
+
         if (arguments != null && arguments?.getParcelable<Parcelable>(ARGS_PASS_DATA) != null) {
             viewModel = parseViewModel(arguments as Bundle)
         } else {
@@ -74,6 +87,11 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         }
 
         cacheHandler = LocalCacheHandler(activity, CACHE_OTP)
+
+        if (!::callReceiver.isInitialized) {
+            callReceiver = PhoneCallReceiver()
+        }
+        callReceiver.registerReceiver(activity, this)
     }
 
     private fun parseViewModel(bundle: Bundle): VerificationViewModel {
@@ -203,7 +221,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         startTimer()
     }
 
-    override fun updatePhoneHint(phoneHint: String?) {
+    override fun updatePhoneHint(phoneHint: String) {
         textPhoneHint?.text = phoneHint
     }
 
@@ -263,7 +281,6 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         textMessageVerify?.text = errorMessage
         textMessageVerify?.setTextColor(MethodChecker.getColor(activity, R.color.red_500))
         setLimitReachedCountdownText()
-
     }
 
     override fun logUnknownError(throwable: Throwable) {
@@ -399,6 +416,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
 
     private fun setLimitReachedCountdownText() {
         textInputOtp?.text?.clear()
+        textInputOtp?.isEnabled = false
 
         if (viewModel.canUseOtherMethod()) {
             textResend?.visibility = View.GONE
@@ -439,6 +457,7 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
             countDownTimer = null
         }
         presenter.detachView()
+        activity?.unregisterReceiver(callReceiver)
     }
 
     fun setData(bundle: Bundle) {
@@ -449,6 +468,53 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
         this.viewModel.imageUrl = methodItem.imageUrl
         this.viewModel.message = methodItem.verificationText
         setData()
+    }
+
+    override fun onIncomingCallEnded(phoneNumber: String) {
+//        autoFillPhoneNumber(phoneNumber)
+    }
+
+    override fun onIncomingCallStart(phoneNumber: String) {
+        autoFillPhoneNumber(phoneNumber)
+    }
+
+    override fun onMissedCall(phoneNumber: String) {
+//        autoFillPhoneNumber(phoneNumber)
+    }
+
+    private fun autoFillPhoneNumber(number: String) {
+        val regex = Regex(pattern = """[+()\-\s]""")
+        val hint = textPhoneHint?.text?.toString() as String
+
+        val phoneHint = hint.let {
+            regex.replace(it, "")
+        }
+
+        val phoneNumber = number.let {
+            regex.replace(it, "")
+        }
+
+        if ((phoneHint.isNotEmpty() || phoneHint != "") && phoneNumber.contains(phoneHint)) {
+            textInputOtp?.setText(phoneNumber.substring(phoneHint.length))
+        }
+    }
+
+    private fun checkPermissionGetPhoneNumber(){
+        if (!::permissionCheckerHelper.isInitialized) {
+            permissionCheckerHelper = PermissionCheckerHelper()
+        }
+
+        activity?.let {
+            permissionCheckerHelper.request(it, getPermissions()) { }
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CALL_LOG,
+                PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
+                PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
+        )
     }
 
     companion object {
