@@ -62,6 +62,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private ImageView imgPinpoint;
     private Typography tvDisabledMultipleAddressInfo;
     private Typography tvChangeAddressTop;
+    private View separatorBottom;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -92,6 +93,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         imgPinpoint = itemView.findViewById(R.id.img_pinpoint);
         tvDisabledMultipleAddressInfo = itemView.findViewById(R.id.tv_disabled_multiple_address_info);
         tvChangeAddressTop = itemView.findViewById(R.id.tv_change_address_top);
+        separatorBottom = itemView.findViewById(R.id.separator_bottom);
     }
 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
@@ -284,12 +286,14 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         llAddOrChangeAddressContainer.setVisibility(View.GONE);
         tvChangeAddressTop.setVisibility(View.VISIBLE);
         tvDisabledMultipleAddressInfo.setVisibility(View.VISIBLE);
+        separatorBottom.setVisibility(View.VISIBLE);
     }
 
     private void renderAddressOptionOnBottom() {
         llAddOrChangeAddressContainer.setVisibility(View.VISIBLE);
         tvChangeAddressTop.setVisibility(View.GONE);
         tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
+        separatorBottom.setVisibility(View.GONE);
     }
 
 }
