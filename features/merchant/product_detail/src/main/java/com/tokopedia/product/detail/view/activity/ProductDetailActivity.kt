@@ -111,7 +111,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             warehouseId = it.getString("warehouse_id")
         }
         if (uri != null) {
-            deeplinkUrl = uri.toString()
+            deeplinkUrl = generateApplink(uri.toString())
             if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL) {
                 val segmentUri = uri.pathSegments
                 if (segmentUri.size == 2) {
@@ -161,5 +161,13 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
 
         super.onCreate(savedInstanceState)
+    }
+
+    private fun generateApplink(applink:String) : String{
+        return if(applink.contains(getString(R.string.internal_scheme))){
+            applink.replace(getString(R.string.internal_scheme), "tokopedia")
+        }else {
+            ""
+        }
     }
 }
