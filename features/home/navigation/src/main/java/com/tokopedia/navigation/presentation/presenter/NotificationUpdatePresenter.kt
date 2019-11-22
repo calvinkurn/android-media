@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateMapper
@@ -58,7 +57,7 @@ class NotificationUpdatePresenter @Inject constructor(
     }
 
     override fun getFilter(onSuccessGetFilter: (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit) {
-        getNotificationUpdateFilterUseCase.execute(GetNotificationUpdateFilterSubscriber(view, getNotificationUpdateFilterMapper, onSuccessGetFilter))
+        getNotificationUpdateFilterUseCase.execute(GetNotificationUpdateFilterSubscriber(getNotificationUpdateFilterMapper, onSuccessGetFilter))
     }
 
     override fun clearNotifCounter() {
