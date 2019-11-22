@@ -23,7 +23,6 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 
 open class ClashBottomSheetFragment : BottomSheetUnify(), ClashingAdapter.ActionListener {
 
-    private var mTitle: String? = null
     private lateinit var actionListener: ActionListener
     private lateinit var tvClashingInfoTicker: Ticker
     private lateinit var uiModel: ClashingInfoDetailUiModel
@@ -46,14 +45,10 @@ open class ClashBottomSheetFragment : BottomSheetUnify(), ClashingAdapter.Action
         }
     }
 
-//    override fun state(): BottomSheets.BottomSheetsState {
-//        return BottomSheets.BottomSheetsState.FLEXIBLE
-//    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTitle(title())
-        setChild(LayoutInflater.from(context).inflate(getLayoutResourceId(), null, false))
+        setTitle(getString(R.string.clash_bottomsheet_title))
+        setChild(LayoutInflater.from(context).inflate(R.layout.bottom_sheet_clash_voucher, null, false))
         setCloseClickListener { dismiss() }
     }
 
@@ -102,11 +97,6 @@ open class ClashBottomSheetFragment : BottomSheetUnify(), ClashingAdapter.Action
 
         setButtonSubmitVisibility()
     }
-
-//    fun configView(parentView: View?) {
-//        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
-//        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
-//    }
 
     private fun setButtonSubmitVisibility() {
         var isDataSelected = false
@@ -162,14 +152,6 @@ open class ClashBottomSheetFragment : BottomSheetUnify(), ClashingAdapter.Action
                 }
             }
         }
-    }
-
-    fun getLayoutResourceId(): Int {
-        return R.layout.bottom_sheet_clash_voucher
-    }
-
-    fun title(): String {
-        return getString(R.string.clash_bottomsheet_title)
     }
 
     override fun onVoucherItemSelected(index: Int, isSelected: Boolean) {

@@ -20,7 +20,6 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
-            android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="false" />
