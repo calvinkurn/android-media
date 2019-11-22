@@ -40,6 +40,11 @@
     <string name="title_add_phone">Tambah Nomor Ponsel</string>
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
+    <string name="title_change_pin">Ubah PIN Tokopedia</string>
+
+    <!-- Dynamic feature for Groupchat-->
+    <string name="title_groupchat">Groupchat</string>
+    <string name="groupchat_app_name">Play</string>
 
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
@@ -130,4 +135,19 @@
 
     <!-- Digital-Deals-->
     <string name="digital_deals">digital_deals</string>
+
+    <!--ChatBot-->
+    <string name="title_chat_bot">Chat Sekarang</string>
+    <string name="title_module_chat_bot">Chat Sekarang</string>
+
+
+    <!-- Dynamic feature for Setting Bank-->
+    <string name="onboarding_app_name">OnBoarding</string>
+
+    <!-- Dynamic feature for Power Merchant-->
+    <string name="pm_title_activity">Power Merchant</string>
+    <string name="pm_title_tnc">Syarat dan Ketentuan</string>
+    <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
+
+
 </resources>

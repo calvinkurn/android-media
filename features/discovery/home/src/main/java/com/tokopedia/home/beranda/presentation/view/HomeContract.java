@@ -7,12 +7,14 @@ import androidx.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.dynamicbanner.entity.PlayCardHome;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
@@ -31,6 +33,12 @@ import rx.Observable;
 public interface HomeContract {
 
     interface View extends CustomerView {
+
+        void onSuccessDismissReview();
+
+        void onSuccessGetReviewData(SuggestedProductReview suggestedProductReview);
+
+        void onErrorGetReviewData();
 
         boolean isLoading();
 
@@ -87,9 +95,16 @@ public interface HomeContract {
         void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail);
 
         void hideStickyLogin();
+
+        void setPlayContentBanner(PlayCardHome playContentBanner, int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
+        void dismissReview();
+
+        void getSuggestedReview();
+
         void getHomeData();
 
         void updateHomeData();
@@ -131,5 +146,7 @@ public interface HomeContract {
         void getFeedTabData();
 
         void getStickyContent();
+
+        void getPlayBanner(int adapterPosition);
     }
 }

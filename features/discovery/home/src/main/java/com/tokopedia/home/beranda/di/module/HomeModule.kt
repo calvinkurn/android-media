@@ -39,6 +39,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.dynamicbanner.di.PlayCardModule
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -46,7 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 
-@Module(includes = [TopAdsWishlistModule::class])
+@Module(includes = [TopAdsWishlistModule::class, PlayCardModule::class])
 class HomeModule {
 
     @HomeScope

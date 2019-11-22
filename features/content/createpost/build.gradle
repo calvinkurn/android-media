@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -41,7 +39,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.twitterShare)
     implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.features.topAdsSdk)
-
+    implementation project(rootProject.ext.libraries.videoplayer)
+    
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.coach_mark
@@ -80,7 +79,7 @@ dependencies {
 project.ext {
     artifactId = 'createpost'
     groupId = 'com.tokopedia.content'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "createpost-release"
 }
 

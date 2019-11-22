@@ -160,7 +160,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) {
                 orderDetailViewModel.getOrderDetail(
                         GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                        GraphqlHelper.loadRawString(resources, R.raw.query_travel_cross_selling),
+                        GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_cross_selling),
                         orderId, orderCategory)
             } else {
                 orderDetailViewModel.getOrderDetail(

@@ -10,10 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
-import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase
-import com.tokopedia.home.beranda.domain.interactor.SendGeolocationInfoUseCase
+import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.helper.HomeLiveData
 import com.tokopedia.home.beranda.helper.Resource
@@ -32,6 +29,9 @@ import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.listener.ImpressionListener
+import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
+import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -83,6 +83,15 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     @Inject
     lateinit var  stickyLoginUseCase: StickyLoginUseCase
+
+    @Inject
+    lateinit var getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase
+
+    @Inject
+    lateinit var dismissHomeReviewUseCase: DismissHomeReviewUseCase
+
+    @Inject
+    lateinit var playCardHomeUseCase: PlayCardHomeUseCase
 
     private val _homeData = HomeLiveData(HomeViewModel())
     val homeLiveData: LiveData<HomeViewModel> get() = _homeData
@@ -153,32 +162,41 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
             }
         }
-//        homeUseCase.getExecuteObservable(RequestParams.EMPTY)
-//                .subscribeOn(Schedulers.io())
-//                .unsubscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<HomeViewModel>() {
-//                    @Override
-//                    public void onCompleted() {
+    }
+
+    override fun dismissReview() {
+//        getView().onSuccessDismissReview();
 //
-//                    }
+//        dismissHomeReviewUseCase.execute(RequestParams.EMPTY, new Subscriber<String>() {
+//            @Override
+//            public void onCompleted() { }
 //
-//                    @Override
-//                    public void onError(Throwable e) {
+//            @Override
+//            public void onError(Throwable e) { }
 //
-//                    }
+//            @Override
+//            public void onNext(String s) { }
+//        });
+    }
+
+    override fun getSuggestedReview() {
+
+//        getHomeReviewSuggestedUseCase.execute(RequestParams.EMPTY, new Subscriber<SuggestedProductReview>() {
+//            @Override
+//            public void onCompleted() {
 //
-//                    @Override
-//                    public void onNext(HomeViewModel homeViewModel) {
-//                        if (isViewAttached()) {
-//                            getView().configureHomeFlag(homeViewModel.getHomeFlag());
-//                            getView().updateListOnResume(new ArrayList<>(homeViewModel.getList()));
-//                            getView().addImpressionToTrackingQueue(new ArrayList(homeViewModel.getList()));
-//                        }
-//                        lastRequestTimeHomeData = System.currentTimeMillis();
-//                    }
-//                });
-//        compositeSubscription.add(subscription);
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                getView().onErrorGetReviewData();
+//            }
+//
+//            @Override
+//            public void onNext(SuggestedProductReview suggestedProductReview) {
+//                getView().onSuccessGetReviewData(suggestedProductReview);
+//            }
+//        });
     }
 
     override fun getHomeData() {
@@ -568,6 +586,16 @@ class HomePresenter(private val userSession: UserSessionInterface,
         ) { throwable: Throwable? ->
             view?.hideStickyLogin()
         }
+    }
+
+    override fun getPlayBanner(adapterPosition: Int){
+//        playCardHomeUseCase.execute(
+//                playCardHome -> {
+//                    getView().setPlayContentBanner(playCardHome, adapterPosition);
+//                    return Unit.INSTANCE;
+//                },
+//                throwable -> Unit.INSTANCE
+//        )
     }
 
     companion object {

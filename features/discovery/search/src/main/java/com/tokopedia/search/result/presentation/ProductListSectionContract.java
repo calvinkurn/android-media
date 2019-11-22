@@ -48,15 +48,17 @@ public interface ProductListSectionContract {
 
         void backToTop();
 
-        List<Option> getQuickFilterOptions(DataValue dynamicFilterModel);
-
         void addLoading();
 
         void removeLoading();
 
-        void onSuccessAddWishlist(String productId);
+        void successAddWishlist(ProductItemViewModel productItemViewModel);
 
-        void onErrorAddWishList(String errorMessage, String productId);
+        void errorAddWishList(String errorMessage, String productId);
+
+        void successRemoveWishlist(ProductItemViewModel productItemViewModel);
+
+        void errorRemoveWishlist(String errorMessage, String productId);
 
         void notifyAdapter();
 
@@ -92,7 +94,7 @@ public interface ProductListSectionContract {
 
         void showAdultRestriction();
 
-        void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction);
+        void sendTrackingWishlistNonLogin(ProductItemViewModel productItemViewModel);
 
         void redirectSearchToAnotherPage(String applink);
 
@@ -111,10 +113,11 @@ public interface ProductListSectionContract {
         void errorRecommendationWishlist(String errorMessage, String productId);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
+
+        boolean isTickerHasDismissed();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
-        void setWishlistActionListener(WishListActionListener wishlistActionListener);
 
         void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
 
