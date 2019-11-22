@@ -54,7 +54,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/card_footer"
+                    android:layout_above="@+id/bottom_layout_shadow"
                     android:layout_below="@+id/card_header"
                     android:orientation="vertical">
 
@@ -80,22 +80,27 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_footer"
+                <View
+                    android:id="@+id/bottom_layout_shadow"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_4"
+                    android:layout_above="@+id/bottom_layout"
+                    android:background="@drawable/bottom_sheet_shadow" />
+
+                <LinearLayout
+                    android:id="@+id/bottom_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="-2dp"
-                    android:layout_marginTop="-2dp"
-                    android:layout_marginRight="-2dp"
-                    android:layout_marginBottom="-4dp"
-                    android:visibility="gone"
-                    app:cardPreventCornerOverlap="false"
-                    app:cardUseCompatPadding="true"
+                    android:orientation="vertical"
                     tools:visibility="visible">
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/grey_shadow" />
+
                     <LinearLayout
-                        android:id="@+id/bottom_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -107,7 +112,6 @@
                             android:background="@color/grey_shadow" />
 
                         <LinearLayout
-                            android:id="@+id/layout_1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@color/white"
@@ -125,10 +129,10 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:lineSpacingExtra="4sp"
+                                    android:text="@string/label_price_total"
                                     android:textColor="@color/text_black"
                                     app:typographyType="body_2"
-                                    app:typographyWeight="bold"
-                                    android:text="@string/label_price_total" />
+                                    app:typographyWeight="bold" />
 
                                 <com.tokopedia.unifyprinciples.Typography
                                     android:id="@+id/tv_total_prices"
@@ -160,7 +164,7 @@
 
                     </LinearLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
             </RelativeLayout>
 
