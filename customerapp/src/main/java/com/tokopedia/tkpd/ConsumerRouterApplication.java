@@ -41,13 +41,11 @@ import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.challenges.ChallengesModuleRouter;
-import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
@@ -106,8 +104,6 @@ import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
-import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
-import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
@@ -132,8 +128,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -183,11 +177,7 @@ import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
-import com.tokopedia.ovo.view.PaymentQRSummaryActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
-import com.tokopedia.payment.setting.PaymentSettingInternalRouter;
-import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
@@ -325,9 +315,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsWebViewRouter,
         ChangePasswordRouter,
         EventModuleRouter,
-        ChallengesModuleRouter,
         MitraToppersRouter,
-        PaymentSettingRouter,
         DigitalBrowseRouter,
         PhoneVerificationRouter,
         TalkRouter,
@@ -341,11 +329,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsRouter,
         CMRouter,
         ILoyaltyRouter,
-        ChatbotRouter,
         ResolutionRouter,
         TradeInRouter,
         ProductDetailRouter,
-        OvoPayWithQrRouter,
         KYCRouter {
 
     private static final String EXTRA = "extra";
@@ -413,11 +399,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .appComponent(getApplicationComponent())
                 .reactNativeModule(new ReactNativeModule(this));
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
-
-        FeedPlusComponent feedPlusComponent =
-                DaggerFeedPlusComponent.builder()
-                        .kolComponent(KolComponentInstance.getKolComponent(this))
-                        .build();
 
         eventComponent = DaggerEventComponent.builder()
                 .baseAppComponent((this).getBaseAppComponent())
@@ -822,18 +803,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public long getMinAmountFromRemoteConfig() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
-        return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MIN_AMOUNT, 1000);
-    }
-
-    @Override
-    public long getMaxAmountFromRemoteConfig() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
-        return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MAX_AMOUNT, 10000000);
-    }
-
-    @Override
     public Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle) {
         Intent intent = RouteManager.getIntent(context, ApplinkConst.CONTACT_US_NATIVE);
         intent.putExtra(EXTRAS_PARAM_URL, URLGenerator.generateURLContactUs(Uri.encode(url), activity));
@@ -905,7 +874,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToUserPaymentList(Activity activity) {
-        activity.startActivity(PaymentSettingInternalRouter.getSettingListPaymentActivityIntent(activity));
+        RouteManager.route(activity, ApplinkConstInternalPayment.PAYMENT_SETTING);
     }
 
     @Override
@@ -1157,15 +1126,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
-    }
-
-    public Intent getKolFollowingPageIntent(Context context, int userId) {
-        return KolFollowingListActivity.getCallingIntent(context, userId);
-    }
-
-    @Override
-    public Intent getOvoActivityIntent(Context context) {
-        return new Intent(context, PaymentQRSummaryActivity.class);
     }
 
     @Override
@@ -1732,7 +1692,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
-        new IndiSession(activity).doLogout();
         refreshFCMTokenFromForegroundToCM();
 
         mIris.setUserId("");
@@ -1780,57 +1739,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_desc, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType(LinkerData.INDI_CHALLENGE_TYPE)
-                .setName(title)
-                .setUri(url)
-                .setSource(channel)
-                .setOgUrl(og_url)
-                .setOgTitle(og_title)
-                .setDescription(og_desc)
-                .setOgImageUrl(og_image)
-                .setDeepLink(deepLink)
-                .build();
-
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
-                    @Override
-                    public void urlCreated(LinkerShareResult linkerShareData) {
-                        listener.onGenerateLink(linkerShareData.getShareContents(), linkerShareData.getShareUri());
-                    }
-
-                    @Override
-                    public void onError(LinkerError linkerError) {
-
-                    }
-                }));
-    }
-
-    @Override
-    public void shareBranchUrlForChallenge(Activity context, String packageName, String url, String shareContents) {
-        ShareSocmedHandler.ShareBranchUrl(context, packageName, "text/plain", url, shareContents);
-    }
-
-    @Override
     public Intent getMitraToppersActivityIntent(Context context) {
         return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
-    }
-
-    @Override
-    public String getResourceUrlAssetPayment() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
-        String baseUrl = remoteConfig.getString(RemoteConfigKey.IMAGE_HOST,
-                TkpdBaseURL.Payment.DEFAULT_HOST);
-
-        final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
-        return resourceUrl;
-    }
-
-    @Override
-    public Intent getIntentOtpPageVerifCreditCard(Context context, String phoneNumber) {
-        return VerificationActivity.getCallingIntent(context, phoneNumber, RequestOtpUseCase.OTP_TYPE_VERIFY_AUTH_CREDIT_CARD,
-                false, RequestOtpUseCase.MODE_SMS);
     }
 
     @Override

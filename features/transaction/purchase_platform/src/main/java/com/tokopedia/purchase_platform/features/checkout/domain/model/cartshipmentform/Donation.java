@@ -11,14 +11,17 @@ public class Donation implements Parcelable {
     private String title;
     private int nominal;
     private String description;
+    private boolean isChecked;
 
     public Donation() {
     }
+
 
     protected Donation(Parcel in) {
         title = in.readString();
         nominal = in.readInt();
         description = in.readString();
+        isChecked = in.readByte() != 0;
     }
 
     @Override
@@ -26,6 +29,7 @@ public class Donation implements Parcelable {
         dest.writeString(title);
         dest.writeInt(nominal);
         dest.writeString(description);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
     }
 
     @Override
@@ -67,5 +71,13 @@ public class Donation implements Parcelable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }
