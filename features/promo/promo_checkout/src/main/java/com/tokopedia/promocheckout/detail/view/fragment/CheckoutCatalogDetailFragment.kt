@@ -36,7 +36,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     var mTimer: CountDownTimer? = null
     lateinit var progressBar: ProgressBar
     var slug: String? = null
-    var catalog_id: Int = 0
+    var catalogId: Int = 0
     var promo: Promo? = null
     val textColorIndex = 1
     private val couponRedemptionCode_LOW_POINT = 42020
@@ -52,7 +52,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     override fun onCreate(savedInstanceState: Bundle?) {
         arguments?.let {
             slug = it.getString(SLUG)
-            catalog_id = it.getInt(CATALOG_ID)
+            catalogId = it.getInt(CATALOG_ID)
             promo = it.getParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM)
         }
         super.onCreate(savedInstanceState)
@@ -77,7 +77,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             return
         }
 
-        slug?.let { mPresenter.getCatalogDetail(it, catalog_id) }
+        slug?.let { mPresenter.getCatalogDetail(it, catalogId) }
     }
 
     override fun onDestroy() {
@@ -302,12 +302,12 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
         val REQUEST_CODE_DETAIL_PROMO = 231
-        fun newInstance(slug: String?, catalog_id: Int?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
+        fun newInstance(slug: String?, catalogId: Int?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
                         promo: Promo?): CheckoutCatalogDetailFragment {
             val checkoutcatalogfragment = CheckoutCatalogDetailFragment()
             val bundle = Bundle()
             bundle.putString(SLUG, slug)
-            catalog_id?.let { bundle.putInt(CATALOG_ID, it) }
+            catalogId?.let { bundle.putInt(CATALOG_ID, it) }
             bundle.putString(PROMOCODE, promoCode)
             bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment ?: false)
             bundle.putInt(PAGE_TRACKING, pageTracking)
