@@ -101,7 +101,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter.attachView(this)
         return inflater.inflate(
-                if (hasInitialSwipeRefresh()) R.layout.fragment_af_curated_product_refresh else R.layout.fragment_af_curated_product,
+                if (hasInitialSwipeRefresh()) com.tokopedia.affiliate.R.layout.fragment_af_curated_product_refresh
+                else com.tokopedia.affiliate.R.layout.fragment_af_curated_product,
                 container,
                 false)
     }
