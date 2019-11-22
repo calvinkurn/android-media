@@ -39,6 +39,8 @@ include "features:digital:imagepreviewslider"
 include "features:digital:travel_homepage"
 include "features:digital:digital_homepage"
 
+include "features:salam:umrah"
+
 include "features:discovery:category_common"
 include "features:discovery:discovery_common"
 include 'features:discovery:productcard'

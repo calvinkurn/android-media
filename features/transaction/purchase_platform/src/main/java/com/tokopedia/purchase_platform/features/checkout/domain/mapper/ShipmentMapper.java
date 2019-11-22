@@ -254,6 +254,7 @@ public class ShipmentMapper implements IShipmentMapper {
                 donation.setTitle(shipmentAddressFormDataResponse.getDonation().getTitle());
                 donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
                 donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
+                donation.setChecked(shipmentAddressFormDataResponse.isDonationCheckboxStatus());
                 dataResult.setDonation(donation);
             }
         }

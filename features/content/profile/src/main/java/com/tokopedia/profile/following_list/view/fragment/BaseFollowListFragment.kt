@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.profile.R
-import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
 import com.tokopedia.profile.following_list.view.adapter.FollowingAdapter
 import com.tokopedia.profile.following_list.view.listener.FollowingList
 import com.tokopedia.profile.following_list.view.listener.FollowingListEmptyListener
@@ -25,52 +24,49 @@ import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel
  */
 abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResultViewModel<I>> : BaseDaggerFragment(), FollowingList.View<I, T> {
 
-    private lateinit var rvItem: RecyclerView
-    private lateinit var progressBar: ProgressBar
-
-    protected var isCanLoadMore: Boolean = false
-    protected var cursor: String? = null
-    protected var emptyApplink: String? = null
-    private var userId: Int = 0
-
-    protected lateinit var adapter: FollowingAdapter
-    private lateinit var emptyState: View
-    protected lateinit var emptyButton: Button
-    private var openFollowerPage: Boolean? = false
+    companion object {
+        internal const val EXTRA_USER_ID = "user_id"
+        internal const val EXTRA_FOLLOW_TYPE = "follow_type"
+    }
 
     abstract var presenter: FollowingList.Presenter<I, T>
 
     abstract fun updateParams(viewModel: T)
     abstract fun onViewUpdated(viewModel: T)
 
+    protected var isCanLoadMore: Boolean = false
+    protected var cursor: String? = null
+    protected var emptyApplink: String? = null
+    protected lateinit var adapter: FollowingAdapter
+    protected lateinit var emptyButton: Button
+
+    private val followType: FollowListType by lazy { (arguments?.getSerializable(EXTRA_FOLLOW_TYPE) as FollowListType?) ?: FollowListType.Following }
+    private val userId: Int by lazy { arguments?.getInt(EXTRA_USER_ID) ?: 0 }
     private val recyclerViewListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val visibleItemCount = layoutManager.childCount
-                val totalItemCount = layoutManager.itemCount
-                val firstVisiblesItems = layoutManager.findFirstVisibleItemPosition()
-                if (isCanLoadMore && visibleItemCount + firstVisiblesItems >= totalItemCount) {
-                    adapter.addBottomLoading()
-                    isCanLoadMore = false
-                    presenter.getFollowingListLoadMore(userId, cursor)
-                }
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val visibleItemCount = layoutManager.childCount
+            val totalItemCount = layoutManager.itemCount
+            val firstVisiblesItems = layoutManager.findFirstVisibleItemPosition()
+            if (isCanLoadMore && visibleItemCount + firstVisiblesItems >= totalItemCount) {
+                adapter.addBottomLoading()
+                isCanLoadMore = false
+                presenter.getFollowListLoadMore(userId, cursor, followType)
             }
         }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            userId = arguments!!.getInt(FollowingListActivity.ARGS_USER_ID)
-        }
     }
+
+    private lateinit var emptyState: View
+    private lateinit var rvItem: RecyclerView
+    private lateinit var progressBar: ProgressBar
 
     override fun getScreenName(): String? {
         return null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val parentView = inflater.inflate(R.layout.fragment_kol_following_list, container, false)
+        val parentView = inflater.inflate(R.layout.fragment_following_list, container, false)
         rvItem = parentView.findViewById(R.id.rv_item)
         progressBar = parentView.findViewById(R.id.progress_bar)
         emptyState = parentView.findViewById(R.id.view_empty_state)
@@ -82,7 +78,6 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        openFollowerPage = arguments!!.getBoolean(FollowingListActivity.ARGS_OPEN_FOLLOWER, false)
         initView()
         initViewListener()
     }
@@ -98,7 +93,7 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
         }
         emptyState.visibility = View.GONE
         showLoading()
-        presenter.getFollowingList(userId)
+        presenter.getFollowList(userId, followType)
     }
 
     private fun initViewListener() {
@@ -127,7 +122,7 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
     override fun onSuccessGetKolFollowingListEmptyState() {
         emptyState.visibility = View.VISIBLE
         if (activity is FollowingListEmptyListener) {
-            (activity as FollowingListEmptyListener).onFollowingEmpty()
+            (activity as FollowingListEmptyListener).onFollowingEmpty(this::class.java)
         }
     }
 
@@ -147,10 +142,6 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
         NetworkErrorHelper.showSnackbar(activity, error)
     }
 
-    override fun isOpenFollowerPage(): Boolean {
-        return openFollowerPage!!
-    }
-
     override fun onUnfollowShopButtonClicked(model: FollowingViewModel) {
     }
 
@@ -168,5 +159,10 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
     private fun updateView(viewModel: T) {
         adapter.itemList = viewModel.followingViewModelList
         onViewUpdated(viewModel)
+    }
+
+    enum class FollowListType {
+        Following,
+        Follower;
     }
 }

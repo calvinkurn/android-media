@@ -226,12 +226,19 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/chatbot_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:tickerShapeType="full"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
-        android:layout_below="@id/header"
+        android:layout_below="@id/chatbot_ticker"
         android:layout_gravity="center"
         android:scrollbars="vertical" />
 
