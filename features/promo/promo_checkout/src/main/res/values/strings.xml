@@ -6,7 +6,7 @@
     <string name="promo_label_input_promo_code">Ketik kode promo</string>
     <string name="promo_label_button_use">Gunakan</string>
     <string name="promo_title_last_seen">Promo Terakhir Dilihat</string>
-    <string name="promo_title_category">Promo untuk kategori ini</string>
+    <string name="promo_title_category">Promo Terakhir Dilihat</string>
     <string name="promo_label_promo_code">Kode Promo:</string>
     <string name="promo_label_my_coupon">Kupon Saya:</string>
     <string name="promo_title_period">Berlaku Hingga</string>
@@ -29,4 +29,5 @@
     <string name="promo_checkout_catalogsubtitle">Cari tahu sekarang juga</string>
     <string name="promo_checkout_tnc"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="promo_checkout_mypoint">Points Saya</string>
+    <string name="promo_checkout_error_desc_redeem">Points Anda tidak terpotong.Permintaan gagal diverifikasi</string>
 </resources>

@@ -8,11 +8,14 @@ import com.tokopedia.logisticdata.data.analytics.ConstantLogisticAnalytics.Key;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * Created by fajarnuha on 08/01/19.
  */
 public class CodAnalytics extends LogisticAnalytics {
 
+    @Inject
     public CodAnalytics() {
     }
 

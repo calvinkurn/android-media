@@ -24,7 +24,6 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightInsuranceBenefitAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceBenefitViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
@@ -84,24 +83,24 @@ public class FlightInsuranceView extends LinearLayout {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_flight_insurance_view, this);
+        View view = inflate(getContext(), com.tokopedia.flight.R.layout.widget_flight_insurance_view, this);
         findView(view);
     }
 
     private void findView(View view) {
-        tvName = (AppCompatTextView) view.findViewById(R.id.tv_name);
-        tvDescription = (AppCompatTextView) view.findViewById(R.id.tv_description);
-        cbInsurance = (AppCompatCheckBox) view.findViewById(R.id.cb_insurance);
-        ivHighlight = (AppCompatImageView) view.findViewById(R.id.iv_highlight);
-        ivProtectionImageView = (AppCompatImageView) view.findViewById(R.id.iv_protection_expand);
-        tvHighlight = (AppCompatTextView) view.findViewById(R.id.tv_highlight);
-        tvHighlightDetail = (AppCompatTextView) view.findViewById(R.id.tv_highlight_detail);
-        tvHighlightTnc = (AppCompatTextView) view.findViewById(R.id.tv_highlight_tnc);
-        protectionLabelTextView = (AppCompatTextView) view.findViewById(R.id.tv_protection_label);
-        benefitsRecyclerView = (RecyclerView) view.findViewById(R.id.rv_benefits);
-        highlightContainer = (LinearLayout) view.findViewById(R.id.highlight_container);
-        otherProtection = (LinearLayout) view.findViewById(R.id.other_protection);
-        dividerBenefit = (View) view.findViewById(R.id.divider_benefit);
+        tvName = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_name);
+        tvDescription = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_description);
+        cbInsurance = (AppCompatCheckBox) view.findViewById(com.tokopedia.flight.R.id.cb_insurance);
+        ivHighlight = (AppCompatImageView) view.findViewById(com.tokopedia.flight.R.id.iv_highlight);
+        ivProtectionImageView = (AppCompatImageView) view.findViewById(com.tokopedia.flight.R.id.iv_protection_expand);
+        tvHighlight = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_highlight);
+        tvHighlightDetail = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_highlight_detail);
+        tvHighlightTnc = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_highlight_tnc);
+        protectionLabelTextView = (AppCompatTextView) view.findViewById(com.tokopedia.flight.R.id.tv_protection_label);
+        benefitsRecyclerView = (RecyclerView) view.findViewById(com.tokopedia.flight.R.id.rv_benefits);
+        highlightContainer = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.highlight_container);
+        otherProtection = (LinearLayout) view.findViewById(com.tokopedia.flight.R.id.other_protection);
+        dividerBenefit = (View) view.findViewById(com.tokopedia.flight.R.id.divider_benefit);
         protectionLabelTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,17 +156,21 @@ public class FlightInsuranceView extends LinearLayout {
         tvHighlight.setText(highlightBenefit.getTitle());
         tvHighlightDetail.setText(highlightBenefit.getDescription());
         ImageHandler.loadImageWithoutPlaceholder(ivHighlight, highlightBenefit.getIcon(),
-                ContextCompat.getDrawable(getContext(), R.drawable.ic_airline_default)
+                ContextCompat.getDrawable(getContext(), com.tokopedia.flight.R.drawable.flight_ic_airline_default)
         );
+
         if (insuranceViewModel.getBenefits().size() > 1) {
             renderMoreBenefit(insuranceViewModel.getBenefits().subList(1, insuranceViewModel.getBenefits().size()));
+        } else {
+            dividerBenefit.setVisibility(GONE);
+            otherProtection.setVisibility(GONE);
         }
     }
 
     private void renderMoreBenefit(List<FlightInsuranceBenefitViewModel> benefits) {
         if (benefits.size() > 0) {
             otherProtection.setVisibility(VISIBLE);
-            protectionLabelTextView.setText(String.format(getContext().getString(R.string.flight_insurance_additional_benefits_prefix), benefits.size()));
+            protectionLabelTextView.setText(String.format(getContext().getString(com.tokopedia.flight.R.string.flight_insurance_additional_benefits_prefix), benefits.size()));
             benefitsRecyclerView.setVisibility(GONE);
             FlightInsuranceBenefitAdapter benefitAdapter = new FlightInsuranceBenefitAdapter(benefits);
             benefitsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -187,10 +190,10 @@ public class FlightInsuranceView extends LinearLayout {
 
     @NonNull
     private SpannableStringBuilder setMoreInfoToBold(String tncAggreement, String tncUrl, String title) {
-        final int color = getResources().getColor(R.color.green_300);
+        final int color = getResources().getColor(com.tokopedia.design.R.color.green_300);
         String fullText = String.format("%s. ", tncAggreement);
         if (tncUrl != null && tncUrl.length() > 0) {
-            fullText += getContext().getString(R.string.flight_insurance_learn_more_label);
+            fullText += getContext().getString(com.tokopedia.flight.R.string.flight_insurance_learn_more_label);
         }
         int stopIndex = fullText.length();
         SpannableStringBuilder descriptionStr = new SpannableStringBuilder(fullText);
@@ -224,7 +227,7 @@ public class FlightInsuranceView extends LinearLayout {
                 @Override
                 public void updateDrawState(TextPaint ds) {
                     ds.setUnderlineText(false);
-                    ds.setColor(getResources().getColor(R.color.font_black_secondary_54));
+                    ds.setColor(getResources().getColor(com.tokopedia.design.R.color.font_black_secondary_54));
                     ds.setTypeface(Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD));
                 }
             };

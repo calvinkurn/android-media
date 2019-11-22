@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.view.fragment
 
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -23,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.tagmanager.DataLayer
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -33,6 +33,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -70,12 +72,12 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
-import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
+import com.tokopedia.feedplus.KEY_FEED
+import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_CURSOR
+import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
-import com.tokopedia.feedplus.view.activity.TransparentVideoActivity
 import com.tokopedia.feedplus.view.adapter.EntryPointAdapter
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
@@ -97,25 +99,14 @@ import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.kol.common.util.PostMenuListener
-import com.tokopedia.kol.common.util.createBottomMenu
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.*
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
-import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
-import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
-import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
+import com.tokopedia.kolcommon.util.PostMenuListener
+import com.tokopedia.kolcommon.util.createBottomMenu
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -142,7 +133,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         FeedPlus.View.Polling,
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
-        KolPostListener.View.ViewHolder,
+        KolPostViewHolderListener,
         BannerAdapter.BannerItemListener,
         RecommendationCardAdapter.RecommendationCardListener,
         TopadsShopViewHolder.TopadsShopListener,
@@ -172,6 +163,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var loginIdInt: Int = 0
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
+    private var afterRefresh: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -204,6 +196,58 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         }
 
+    companion object {
+
+        private const val OPEN_DETAIL = 54
+        private const val OPEN_KOL_COMMENT = 101
+        private const val OPEN_KOL_PROFILE = 13
+        private const val OPEN_CONTENT_REPORT = 1310
+        private const val CREATE_POST = 888
+        private const val OPEN_INTERESTPICK_DETAIL = 1234
+        private const val OPEN_INTERESTPICK_RECOM_PROFILE = 1235
+        private const val DEFAULT_VALUE = -1
+        const val REQUEST_LOGIN = 345
+
+        private val TAG = FeedPlusFragment::class.java.simpleName
+        private const val ARGS_ROW_NUMBER = "row_number"
+        private const val YOUTUBE_URL = "{youtube_url}"
+        private const val FEED_TRACE = "mp_feed"
+        private const val AFTER_POST = "after_post"
+        private const val TRUE = "true"
+        private const val FEED_DETAIL = "feedcommunicationdetail"
+        private const val BROADCAST_FEED = "BROADCAST_FEED"
+        private const val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
+        private const val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
+        private const val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
+
+        //Profile Param and Args
+        private const val PARAM_IS_FOLLOWING = "is_following"
+
+        private const val IS_FOLLOWING_TRUE = 1
+        private const val IS_FOLLOWING_FALSE = 0
+
+        //region Content Report Param
+        private const val CONTENT_REPORT_RESULT_SUCCESS = "result_success"
+        private const val CONTENT_REPORT_RESULT_ERROR_MSG = "error_msg"
+        //endregion
+
+        //region Media Preview Param
+        private const val MEDIA_PREVIEW_INDEX = "media_index"
+        //endregion
+
+        //region Kol Comment Param
+        private const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
+        private const val COMMENT_ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT"
+        private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
+        //endregion
+
+        fun newInstance(bundle: Bundle?): FeedPlusFragment {
+            val fragment = FeedPlusFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
     object MoEngage {
         const val LOGIN_STATUS = "logged_in_status"
         const val IS_FEED_EMPTY = "is_feed_empty"
@@ -220,8 +264,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun initInjector() {
         if (activity != null && activity!!.application != null) {
             DaggerFeedPlusComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(activity!!
-                            .application))
+                    .baseAppComponent(
+                            (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                    )
                     .build()
                     .inject(this)
         }
@@ -245,7 +290,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             hideAdapterLoading()
             when (it) {
                 is Success -> onSuccessGetOnboardingData(it.data)
-                is Fail -> presenter.fetchFirstPage()
+                is Fail -> fetchFirstPage()
             }
         })
 
@@ -317,7 +362,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
 
     private fun prepareView() {
-        adapter.itemTreshold = 2
+        adapter.itemTreshold = 1
         layoutManager = NpaLinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL,
                 false)
@@ -367,13 +412,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         return layoutManager?.findLastVisibleItemPosition()  == layoutManager?.findFirstVisibleItemPosition()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onRefresh() {
         newFeed.visibility = View.GONE
         feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
+        afterRefresh = true
     }
 
     override fun onDestroyView() {
@@ -386,19 +428,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun setLastCursorOnFirstPage(lastCursor: String) {
-        if (activity != null && activity!!.applicationContext != null) {
-            val cache = LocalCacheHandler(
-                    activity!!.applicationContext,
-                    KEY_FEED
-            )
+        activity?.applicationContext?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
             cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor)
             cache.applyEditor()
         }
     }
 
-    override fun onOpenVideo(videoUrl: String, subtitle: String) {
-        val intent = TransparentVideoActivity.getIntent(activity, videoUrl, subtitle)
-        startActivity(intent)
+    override fun setFirstPageCursor(firstPageCursor: String) {
+        activity?.applicationContext?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
+            cache.putString(KEY_FEED_FIRSTPAGE_CURSOR, firstPageCursor)
+            cache.applyEditor()
+        }
     }
 
     override fun onInfoClicked() {
@@ -425,7 +467,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         parentFragment?.let {
             (it as FeedPlusContainerFragment).showCreatePostOnBoarding()
         }
-        swipe_refresh_layout.setEnabled(true);
+        swipe_refresh_layout.isEnabled = true
         trackFeedImpression(listFeed)
 
         adapter.setList(listFeed)
@@ -470,7 +512,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun isEnableInterestPick(): Boolean{
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val remoteConfig = FirebaseRemoteConfigImpl(requireContext())
         return remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_INTEREST_PICK, true)
     }
 
@@ -478,7 +520,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         finishLoading()
         if (adapter.itemCount == 0) {
             NetworkErrorHelper.showEmptyState(activity, mainContent, errorMessage
-            ) { presenter.refreshPage() }
+            ) { fetchFirstPage() }
         } else {
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         }
@@ -489,7 +531,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             val INIT_STATE_FRAGMENT_FAVORITE = 2
             val EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT"
-            val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+            val intent = RouteManager.getIntent(requireContext(), ApplinkConst.HOME)
             intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FAVORITE)
             startActivity(intent)
         }
@@ -545,39 +587,26 @@ class FeedPlusFragment : BaseDaggerFragment(),
             OPEN_DETAIL -> if (resultCode == Activity.RESULT_OK)
                 showSnackbar(data.getStringExtra("message"))
             OPEN_KOL_COMMENT -> if (resultCode == Activity.RESULT_OK) {
-                val serverErrorMsg = data.getStringExtra(KolCommentFragment.ARGS_SERVER_ERROR_MSG)
+                val serverErrorMsg = data.getStringExtra(COMMENT_ARGS_SERVER_ERROR_MSG)
                 if (!TextUtils.isEmpty(serverErrorMsg)) {
                     ToasterError
                             .make(view, serverErrorMsg, BaseToaster.LENGTH_LONG)
                             .setAction(R.string.cta_refresh_feed) { v -> onRefresh() }.show()
                 } else {
                     onSuccessAddDeleteKolComment(
-                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, DEFAULT_VALUE),
-                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
+                            data.getIntExtra(COMMENT_ARGS_POSITION, DEFAULT_VALUE),
+                            data.getIntExtra(COMMENT_ARGS_TOTAL_COMMENT, 0)
                     )
                 }
-            }
-            OPEN_KOL_PROFILE -> if (resultCode == Activity.RESULT_OK) {
-                onSuccessFollowUnfollowFromProfile(
-                        data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
-                        data.getIntExtra(ProfileActivity.PARAM_IS_FOLLOWING, DEFAULT_VALUE)
-                )
-
-                updatePostState(
-                        data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
-                        data.getIntExtra(PARAM_IS_LIKED, DEFAULT_VALUE),
-                        data.getIntExtra(PARAM_TOTAL_LIKES, DEFAULT_VALUE),
-                        data.getIntExtra(PARAM_TOTAL_COMMENTS, DEFAULT_VALUE)
-                )
             }
             CREATE_POST -> {
             }
             OPEN_CONTENT_REPORT -> if (resultCode == Activity.RESULT_OK) {
-                if (data.getBooleanExtra(ContentReportActivity.RESULT_SUCCESS, false)) {
+                if (data.getBooleanExtra(CONTENT_REPORT_RESULT_SUCCESS, false)) {
                     onSuccessReportContent()
                 } else {
                     onErrorReportContent(
-                            data.getStringExtra(ContentReportActivity.RESULT_ERROR_MSG)
+                            data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG)
                     )
                 }
             }
@@ -654,23 +683,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     fun scrollToTop() {
-        if (recyclerView != null) {
+        if (::recyclerView.isInitialized) {
             recyclerView.scrollToPosition(0)
         }
     }
 
     private fun triggerClearNewFeedNotification() {
-        if (context != null && context!!.applicationContext != null) {
+        if (context?.applicationContext != null) {
             val intent = Intent(BROADCAST_FEED)
             intent.putExtra(PARAM_BROADCAST_NEW_FEED_CLICKED, true)
-            LocalBroadcastManager.getInstance(context!!.applicationContext).sendBroadcast(intent)
+            LocalBroadcastManager.getInstance(requireContext().applicationContext).sendBroadcast(intent)
         }
     }
 
     override fun onResume() {
         super.onResume()
         registerNewFeedReceiver()
-        if (userVisibleHint && presenter != null) {
+        if (userVisibleHint && ::presenter.isInitialized) {
             loadData(userVisibleHint)
         }
     }
@@ -701,7 +730,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun loadData(isVisibleToUser: Boolean) {
-        if (isVisibleToUser && isAdded && activity != null && presenter != null) {
+        if (isVisibleToUser && isAdded && activity != null && ::presenter.isInitialized) {
             if (!isLoadedOnce) {
                 feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
                 isLoadedOnce = !isLoadedOnce
@@ -733,12 +762,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onGoToKolProfile(rowNumber: Int, userId: String, postId: Int) {
-        if (context != null) {
-            val profileIntent = ProfileActivity
-                    .createIntentFromFeed(context, userId, postId)
-                    .putExtra(ARGS_ROW_NUMBER, rowNumber)
-            startActivityForResult(profileIntent, OPEN_KOL_PROFILE)
-        }
+        //Not Used - 04/11/2019
     }
 
     override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String) {
@@ -796,8 +820,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
                                   activityType: String) {
-        val intent = KolCommentActivity.getCallingIntentFromFeed(context, id, rowNumber)
-        startActivityForResult(intent, OPEN_KOL_COMMENT)
+        RouteManager.getIntent(
+                requireContext(),
+                UriUtil.buildUriAppendParam(
+                        ApplinkConstInternalContent.COMMENT,
+                        mapOf(
+                                COMMENT_ARGS_POSITION to rowNumber.toString()
+                        )
+                ),
+                id.toString()
+        ).run { startActivityForResult(this, OPEN_KOL_COMMENT) }
         trackCardPostElementClick(rowNumber, FeedAnalytics.Element.COMMENT)
     }
 
@@ -822,28 +854,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String,
                                activityType: String) {
 
-    }
-
-    override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
-        if (context != null) {
-            val menus = createBottomMenu(context!!, element,
-                    object : PostMenuListener {
-                        override fun onDeleteClicked() {
-
-                        }
-
-                        override fun onReportClick() {
-                            goToContentReport(element.contentId)
-                        }
-
-                        override fun onEditClick() {
-
-                        }
-                    }
-
-            )
-            menus.show()
-        }
     }
 
     private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
@@ -891,13 +901,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessFollowUnfollowKol(rowNumber: Int) {
-        if (adapter.getlist()[rowNumber] is KolPostViewModel) {
-            val kolPostViewModel = adapter.getlist()[rowNumber] as KolPostViewModel
-            kolPostViewModel.isFollowed = !kolPostViewModel.isFollowed
-            kolPostViewModel.isTemporarilyFollowed = !kolPostViewModel.isTemporarilyFollowed
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW)
-        }
-
         if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
             header.followCta.isFollow = !header.followCta.isFollow
@@ -911,17 +914,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is BaseKolViewModel) {
-            val kolViewModel = adapter.getlist()[rowNumber] as BaseKolViewModel
-            kolViewModel.isLiked = !kolViewModel.isLiked
-            if (kolViewModel.isLiked) {
-                kolViewModel.totalLike = (adapter.getlist()[rowNumber] as BaseKolViewModel).totalLike + 1
-            } else {
-                kolViewModel.totalLike = (adapter.getlist()[rowNumber] as BaseKolViewModel).totalLike - 1
-            }
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE)
-        }
-
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
             val like = footer.like
@@ -966,14 +958,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
         if (rowNumber != DEFAULT_VALUE
                 && adapter.getlist().size > rowNumber
-                && adapter.getlist()[rowNumber] is BaseKolViewModel) {
-            val kolViewModel = adapter.getlist()[rowNumber] as BaseKolViewModel
-            kolViewModel.totalComment = (adapter.getlist()[rowNumber] as BaseKolViewModel).totalComment + totalNewComment
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_COMMENT)
-        }
-
-        if (rowNumber != DEFAULT_VALUE
-                && adapter.getlist().size > rowNumber
                 && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
             val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
             val comment = footer.comment
@@ -985,41 +969,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             comment.value = comment.value + totalNewComment
             adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
-        }
-    }
-
-    private fun onSuccessFollowUnfollowFromProfile(rowNumber: Int, isFollowing: Int) {
-        if (rowNumber != DEFAULT_VALUE
-                && adapter.getlist().size > rowNumber
-                && adapter.getlist()[rowNumber] is KolPostViewModel) {
-            val kolViewModel = adapter.getlist()[rowNumber] as KolPostViewModel
-
-            if (isFollowing != DEFAULT_VALUE) {
-                kolViewModel.isFollowed = isFollowing == ProfileActivity.IS_FOLLOWING_TRUE
-                kolViewModel.isTemporarilyFollowed = isFollowing == ProfileActivity.IS_FOLLOWING_TRUE
-            }
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW)
-        }
-    }
-
-    private fun updatePostState(rowNumber: Int, isLiked: Int, totalLike: Int, totalComment: Int) {
-        if (rowNumber != DEFAULT_VALUE
-                && adapter.getlist().size > rowNumber
-                && adapter.getlist()[rowNumber] is BaseKolViewModel) {
-            val kolViewModel = adapter.getlist()[rowNumber] as BaseKolViewModel
-
-            if (isLiked != DEFAULT_VALUE) {
-                kolViewModel.isLiked = isLiked == IS_LIKE_TRUE
-            }
-
-            if (totalLike != DEFAULT_VALUE) {
-                kolViewModel.totalLike = totalLike
-            }
-
-            if (totalComment != DEFAULT_VALUE) {
-                kolViewModel.totalComment = totalComment
-            }
-            adapter.notifyItemChanged(rowNumber)
         }
     }
 
@@ -1102,7 +1051,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun showBottomSheetCreatePost(element: WhitelistViewModel) {
         if (activity != null) {
-            createPostBottomSheet = CloseableBottomSheetDialog.createInstance(context,
+            createPostBottomSheet = CloseableBottomSheetDialog.createInstance(requireContext(),
                     {
 
                     }, {
@@ -1126,14 +1075,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     analytics.trackClickCreatePostAs(applink, userSession.userId,
                             userSession.shopId)
                     startActivityForResult(
-                            RouteManager.getIntent(context, applink),
+                            RouteManager.getIntent(requireContext(), applink),
                             CREATE_POST
                     )
                     createPostBottomSheet.dismiss()
                 }
 
             })
-            entryPointRecyclerView.layoutManager = LinearLayoutManager(context,
+            entryPointRecyclerView.layoutManager = LinearLayoutManager(requireContext(),
                     LinearLayoutManager.VERTICAL, false)
             entryPointRecyclerView.adapter = adapter
         }
@@ -1335,7 +1284,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean,
                              editable: Boolean) {
         if (context != null) {
-            val menus = createBottomMenu(context!!, deletable, reportable, false, object : PostMenuListener {
+            val menus = createBottomMenu(requireContext(), deletable, reportable, false, object : PostMenuListener {
                 override fun onDeleteClicked() {
                     createDeleteDialog(positionInFeed, postId).show()
                 }
@@ -1423,12 +1372,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
             trackCardPostClick(positionInFeed, trackingPostModel)
 
             if (!isSingleItem && activity != null) {
-                startActivity(MediaPreviewActivity.createIntent(activity!!, id.toString(), contentPosition))
+                RouteManager.route(
+                        requireContext(),
+                        UriUtil.buildUriAppendParam(
+                                ApplinkConstInternalContent.MEDIA_PREVIEW,
+                                mapOf(
+                                        MEDIA_PREVIEW_INDEX to contentPosition.toString()
+                                )
+                        ),
+                        id.toString()
+                )
             }
         }
     }
 
-    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
+    override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (track in trackList) {
             if (isClick) {
                 presenter.trackAffiliate(track.clickURL)
@@ -1442,7 +1400,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem) {
+    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
+        val shop = postTagItem.shop.firstOrNull()
+        feedAnalytics.eventFeedAddToCart(
+                postTagItem.id,
+                postTagItem.text,
+                postTagItem.price,
+                1,
+                shop?.shopId?.toIntOrZero() ?: -1,
+                "",
+                authorType
+        )
         presenter.addPostTagItemToCart(postTagItem)
     }
 
@@ -1533,9 +1501,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                       contentPosition: Int,
                                       postId: String) {
         if (activity != null) {
-            startActivity(VideoDetailActivity.getInstance(
-                    activity!!,
-                    postId))
+            RouteManager.route(
+                    requireContext(),
+                    ApplinkConstInternalContent.VIDEO_DETAIL,
+                    postId
+            )
         }
 
         if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
@@ -1545,7 +1515,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddToCartSuccess() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
     override fun onAddToCartFailed(pdpAppLink: String) {
@@ -1575,10 +1545,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
-
+        feedAnalytics.eventClickFeedInterestPick(item.name)
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
+        feedAnalytics.eventClickFeedInterestPickSeeAll()
         activity?.let {
             val bundle = Bundle()
             bundle.putIntegerArrayList(FeedOnboardingFragment.EXTRA_SELECTED_IDS, ArrayList(selectedItemList.map { it.id }))
@@ -1588,12 +1559,27 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
         view?.showLoadingTransparent()
+        feedAnalytics.eventClickFeedCheckAccount(selectedItemList.size.toString())
         feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK, OPEN_INTERESTPICK_RECOM_PROFILE)
+    }
+
+    private fun fetchFirstPage() {
+        val firstPageCursor: String = if (afterRefresh) getFirstPageCursor() else ""
+        presenter.fetchFirstPage(firstPageCursor)
+        afterRefresh = false
+    }
+
+    private fun getFirstPageCursor(): String {
+        context?.let {
+            val cache = LocalCacheHandler(it, KEY_FEED)
+            return cache.getString(KEY_FEED_FIRSTPAGE_CURSOR, "")
+        }
+        return ""
     }
 
     private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {
         if (!data.isEnableOnboarding) {
-            presenter.fetchFirstPage()
+            fetchFirstPage()
         } else {
             finishLoading()
             clearData()
@@ -1604,11 +1590,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             parentFragment?.let {
                 (it as FeedPlusContainerFragment).hideAllFab(true)
             }
-            swipe_refresh_layout.setRefreshing(false);
-            swipe_refresh_layout.setEnabled(false);
+            swipe_refresh_layout.isRefreshing = false
+            swipe_refresh_layout.isEnabled = false
         }
     }
-
 
     private fun onSuccessSubmitInterestPickData(data : SubmitInterestResponseViewModel) {
         context?.let {
@@ -1645,9 +1630,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun goToContentReport(contentId: Int) {
         if (context != null) {
-            val intent = ContentReportActivity.createIntent(
-                    context!!,
-                    contentId
+            val intent = RouteManager.getIntent(
+                    requireContext(),
+                    ApplinkConstInternalContent.CONTENT_REPORT,
+                    contentId.toString()
             )
             startActivityForResult(intent, OPEN_CONTENT_REPORT)
         }
@@ -1699,14 +1685,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             visitable.header.followCta.authorType,
                             trackingPostModel)
                 }
-                onAffiliateTrackClicked(visitable.tracking, false)
 
             } else if (visitable is BannerViewModel) {
                 val (itemViewModels) = visitable
                 val trackingBannerModels = ArrayList<TrackingBannerModel>()
                 for ((_, _, _, trackingBannerModel, tracking) in itemViewModels) {
                     trackingBannerModels.add(trackingBannerModel)
-                    onAffiliateTrackClicked(tracking, false)
                 }
                 analytics.eventBannerImpression(trackingBannerModels, userId)
             } else if (visitable is FeedRecommendationViewModel) {
@@ -1714,7 +1698,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val trackingList = ArrayList<TrackingRecommendationModel>()
                 for ((_, _, _, _, _, _, _, _, _, _, trackingRecommendationModel, tracking) in cards) {
                     trackingList.add(trackingRecommendationModel)
-                    onAffiliateTrackClicked(tracking, false)
                 }
                 analytics.eventRecommendationImpression(
                         trackingList,
@@ -1726,7 +1709,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         trackingList,
                         userId
                 )
-                onAffiliateTrackClicked(tracking, false)
             }
         }
     }
@@ -1838,41 +1820,4 @@ class FeedPlusFragment : BaseDaggerFragment(),
             Toast.makeText(context, R.string.feed_after_post, Toast.LENGTH_LONG).show()
         }
     }
-
-    override fun getUserVisibleHint(): Boolean {
-        return super.getUserVisibleHint()
-    }
-
-    companion object {
-
-        private val OPEN_DETAIL = 54
-        private val OPEN_KOL_COMMENT = 101
-        private val OPEN_KOL_PROFILE = 13
-        private val OPEN_CONTENT_REPORT = 1310
-        private val CREATE_POST = 888
-        private val OPEN_INTERESTPICK_DETAIL = 1234
-        private val OPEN_INTERESTPICK_RECOM_PROFILE = 1235
-        private val DEFAULT_VALUE = -1
-        val REQUEST_LOGIN = 345
-
-        private val TAG = FeedPlusFragment::class.java.simpleName
-        private val ARGS_ROW_NUMBER = "row_number"
-        private val YOUTUBE_URL = "{youtube_url}"
-        private val FEED_TRACE = "mp_feed"
-        private val AFTER_POST = "after_post"
-        private val TRUE = "true"
-        private val FEED_DETAIL = "feedcommunicationdetail"
-        val BROADCAST_FEED = "BROADCAST_FEED"
-        val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
-        val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
-        val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
-
-
-        fun newInstance(bundle: Bundle?): FeedPlusFragment {
-            val fragment = FeedPlusFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
-
 }

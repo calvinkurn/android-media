@@ -12,6 +12,7 @@ import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingTypeAdapter
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 import com.tokopedia.showcase.*
+import java.util.*
 
 class SettingTypeFragment : BaseDaggerFragment() {
 

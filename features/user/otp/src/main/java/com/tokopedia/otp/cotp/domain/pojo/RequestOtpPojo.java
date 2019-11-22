@@ -10,6 +10,10 @@ public class RequestOtpPojo {
     @Expose
     private int isSuccess;
 
+    @SerializedName("client_view")
+    @Expose
+    private ClientView clientView;
+
     public int getIsSuccess() {
         return isSuccess;
     }
@@ -18,4 +22,18 @@ public class RequestOtpPojo {
         this.isSuccess = isSuccess;
     }
 
+    public ClientView getClientView() { return clientView; }
+
+    public void setClientView(ClientView clientView) { this.clientView = clientView; }
+
+    public class ClientView {
+
+        @SerializedName("miscall_phone_number")
+        @Expose
+        private String phoneHint;
+
+        public String getPhoneHint() { return phoneHint; }
+
+        public void setPhoneHint(String phoneHint) { this.phoneHint = phoneHint; }
+    }
 }

@@ -37,6 +37,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
@@ -45,7 +47,6 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse;
-import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -59,6 +60,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK;
+
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -106,7 +108,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     private long sellerSaldoBalance;
     private long buyerSaldoBalance;
-    private float totalSaldoBalance;
+    private long totalSaldoBalance;
     private LinearLayout saldoTypeLL;
     private LinearLayout merchantDetailLL;
 
@@ -118,7 +120,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private LinearLayout merchantStatusLL;
     private long CHECK_VISIBILITY_DELAY = 700;
 
-    private ConstraintLayout layoutTicker;
+    private View layoutTicker;
     private TextView tvTickerMessage;
     private ImageView ivDismissTicker;
     private int mclLateCount = 0;
@@ -567,7 +569,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         drawButton.setClickable(state);
     }
 
-        @SuppressLint("Range")
+    @SuppressLint("Range")
     @Override
     public void showErrorMessage(String error) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), error);
@@ -708,7 +710,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
     @Override
     public void showMerchantCreditLineFragment(GqlMerchantCreditResponse response) {
-
         if (response != null && response.isEligible()) {
             statusWithDrawLock = response.getStatus();
             switch (statusWithDrawLock) {

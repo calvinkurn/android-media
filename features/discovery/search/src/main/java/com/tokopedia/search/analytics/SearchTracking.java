@@ -1,9 +1,14 @@
 package com.tokopedia.search.analytics;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -79,7 +84,7 @@ public class SearchTracking {
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
     }
 
-    public void screenTrackSearchSectionFragment(String screen) {
+    public static void screenTrackSearchSectionFragment(String screen) {
         if (TextUtils.isEmpty(screen)) {
             return;
         }
@@ -111,7 +116,7 @@ public class SearchTracking {
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent("af_search", listViewEvent);
     }
 
-    public void trackImpressionSearchResultShop(List<Object> shopItemList, String keyword) {
+    public static void trackImpressionSearchResultShop(List<Object> shopItemList, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoView",
                         EVENT_CATEGORY, "search result",
@@ -126,7 +131,7 @@ public class SearchTracking {
         );
     }
 
-    public void trackSearchResultShopItemClick(Object shopItem, String keyword) {
+    public static void eventSearchResultShopItemClick(Object shopItem, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoClick",
                         EVENT_CATEGORY, "search result",
@@ -141,7 +146,7 @@ public class SearchTracking {
         );
     }
 
-    public void trackImpressionSearchResultShopProductPreview(List<Object> shopItemProductList, String keyword) {
+    public static void eventImpressionSearchResultShopProductPreview(List<Object> shopItemProductList, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "productView",
                         EVENT_CATEGORY, "search result",
@@ -156,7 +161,7 @@ public class SearchTracking {
         );
     }
 
-    public void trackSearchResultShopProductPreviewClick(Object shopItemProduct, String keyword) {
+    public static void eventSearchResultShopProductPreviewClick(Object shopItemProduct, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "productClick",
                         EVENT_CATEGORY, "search result",
@@ -172,7 +177,7 @@ public class SearchTracking {
         );
     }
 
-    public void trackSearchResultShopItemClosedClick(Object shopItemClosed, String keyword) {
+    public static void eventSearchResultShopItemClosedClick(Object shopItemClosed, String keyword) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, "promoClick",
                         EVENT_CATEGORY, "search result",
@@ -191,7 +196,7 @@ public class SearchTracking {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
     }
 
-    public static void trackEventClickSearchResultProduct(Context context,
+    public static void trackEventClickSearchResultProduct(ProductItemViewModel productItemViewModel,
                                                           Object item,
                                                           int pageNumber,
                                                           String eventLabel,
@@ -212,7 +217,10 @@ public class SearchTracking {
         );
     }
 
-    public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue, List<Object> list, String eventLabel) {
+    public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue,
+                                                          List<Object> list,
+                                                          List<ProductItemViewModel> productItemViewModels,
+                                                          String eventLabel) {
         trackingQueue.putEETracking(
                 (HashMap<String, Object>) DataLayer.mapOf("event", "productView",
                         "eventCategory", "search result",
@@ -225,6 +233,21 @@ public class SearchTracking {
                                 ))
                 )
         );
+    }
+
+    private static int getPageNumberFromFirstItem(List<ProductItemViewModel> itemList) {
+        if (itemList.get(0) != null) {
+            return itemList.get(0).getPageNumber();
+        }
+        return 0;
+    }
+
+    private static double safeParseDouble(String price) {
+        try {
+            return Double.parseDouble(price);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public static void eventClickGuidedSearch(String previousKey, int position, String nextKey) {
@@ -242,15 +265,6 @@ public class SearchTracking {
                 "search result",
                 "click - related keyword",
                 String.format("%s - %s", currentKeyword, relatedKeyword)
-        ));
-    }
-
-    public static void eventImpressionGuidedSearch(Context context, String currentKey, String page) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                "viewSearchResult",
-                "search result",
-                "impression - guided search",
-                String.format("%s - %s", currentKey, page)
         ));
     }
 
@@ -470,22 +484,43 @@ public class SearchTracking {
         );
     }
 
-    public void eventSuccessAddWishlistSearchResultProduct(String keyword, String productId) {
-        sendGeneralEventWithUserId(SearchEventTracking.Event.CLICK_WISHLIST,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.ADD_WISHLIST,
-                generateWishlistClickEventLabel(keyword, productId));
+    public static void eventSuccessWishlistSearchResultProduct(WishlistTrackingModel wishlistTrackingModel) {
+        Map<String, Object> eventTrackingMap = new HashMap<>();
+
+        eventTrackingMap.put(EVENT, SearchEventTracking.Event.CLICK_WISHLIST);
+        eventTrackingMap.put(EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT.toLowerCase());
+        eventTrackingMap.put(EVENT_ACTION, generateWishlistClickEventAction(wishlistTrackingModel.isAddWishlist(), wishlistTrackingModel.isUserLoggedIn()));
+        eventTrackingMap.put(EVENT_LABEL, generateWishlistClickEventLabel(wishlistTrackingModel.getProductId(), wishlistTrackingModel.isTopAds(), wishlistTrackingModel.getKeyword()));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
     }
 
-    public void eventSuccessRemoveWishlistSearchResultProduct(String keyword, String productId) {
-        sendGeneralEventWithUserId(SearchEventTracking.Event.CLICK_WISHLIST,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.REMOVE_WISHLIST,
-                generateWishlistClickEventLabel(keyword, productId));
+    private static String generateWishlistClickEventAction(boolean isAddWishlist, boolean isLoggedIn) {
+        return getAddOrRemoveWishlistAction(isAddWishlist)
+                + " - "
+                + SearchEventTracking.Action.MODULE
+                + " - "
+                + getIsLoggedInWishlistAction(isLoggedIn);
     }
 
-    private String generateWishlistClickEventLabel(String keyword, String productId) {
-        return keyword + " - " + productId;
+    private static String getAddOrRemoveWishlistAction(boolean isAddWishlist) {
+        return isAddWishlist ? SearchEventTracking.Action.ADD_WISHLIST : SearchEventTracking.Action.REMOVE_WISHLIST;
+    }
+
+    private static String getIsLoggedInWishlistAction(boolean isLoggedIn) {
+        return isLoggedIn ? SearchEventTracking.Action.LOGIN : SearchEventTracking.Action.NON_LOGIN;
+    }
+
+    private static String generateWishlistClickEventLabel(String productId, boolean isTopAds, String keyword) {
+        return productId
+                + " - "
+                + getTopAdsOrGeneralLabel(isTopAds)
+                + " - "
+                + keyword;
+    }
+
+    private static String getTopAdsOrGeneralLabel(boolean isTopAds) {
+        return isTopAds ? SearchEventTracking.Label.TOPADS : SearchEventTracking.Label.GENERAL;
     }
 
     public void eventActionClickCartButton(String keyword) {

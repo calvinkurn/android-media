@@ -102,7 +102,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
         @JvmStatic
-        fun newInstance(catalogId: String, catalogName: String, departmentid: String?, departmentName: String?): Fragment {
+        fun newInstance(catalogId: String, catalogName: String, departmentid: String?, departmentName: String?): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
@@ -556,5 +556,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {
+    }
+    override fun onShareButtonClicked() {
     }
 }

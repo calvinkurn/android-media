@@ -7,6 +7,8 @@ import com.google.gson.annotations.SerializedName;
  */
 public class BannerSlidesModel {
     public static String TYPE_BANNER_PERSO = "overlay";
+    public static String TYPE_BANNER_DEFAULT = "default";
+
     @SerializedName("id")
     private int id;
     @SerializedName("title")

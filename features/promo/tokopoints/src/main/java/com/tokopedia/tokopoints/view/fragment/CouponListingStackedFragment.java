@@ -18,24 +18,22 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CouponInStackBaseAdapter;
-import com.tokopedia.tokopoints.view.adapter.CouponListBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.CouponListStackedBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CouponListingStackedContract;
-import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponListingStackedPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -88,18 +86,12 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        return getContext();
     }
 
     @Override
     public void showLoader() {
         mContainerMain.setDisplayedChild(CONTAINER_LOADER);
-        mSwipeToRefresh.setRefreshing(false);
-    }
-
-    @Override
-    public void showError(String errorMeassage) {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
         mSwipeToRefresh.setRefreshing(false);
     }
 
@@ -142,8 +134,8 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
         mSwipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         mItemDecoration = new SpacesItemDecoration(0,
-                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
-                getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10));
+                getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
+                getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10));
     }
 
     private void initListener() {
@@ -158,7 +150,7 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
             startActivity(CatalogListingActivity.getCallingIntent(getActivityContext(), bundle));
         });
         getView().findViewById(R.id.text_empty_action).setOnClickListener(v ->
-                ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), CommonConstant.WebLink.INFO));
+                RouteManager.route(getActivityContext(), ApplinkConstInternalGlobal.WEBVIEW,CommonConstant.WebLink.INFO));
 
         mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -170,7 +162,7 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
 
     @Override
     public void openWebView(String url) {
-        ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), url);
+       RouteManager.route(getContext(),ApplinkConstInternalGlobal.WEBVIEW,url);
     }
 
     @Override
@@ -184,11 +176,6 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
         mRecyclerView.addItemDecoration(mItemDecoration);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.startDataLoading();
-    }
-
-    @Override
-    public void onErrorCoupons(String errorMessage) {
-
     }
 
     @Override
@@ -242,14 +229,14 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
     private void decorateDialog(AlertDialog dialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
         }
 
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.grey_warm));
+                    com.tokopedia.design.R.color.grey_warm));
         }
     }
 
@@ -343,5 +330,13 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
         recyclerView.setAdapter(adapter);
         adapter.startDataLoading();
         closeableBottomSheetDialog.setContentView(view);
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mAdapter != null) {
+            mAdapter.onDestroyView();
+        }
+        super.onDestroyView();
     }
 }

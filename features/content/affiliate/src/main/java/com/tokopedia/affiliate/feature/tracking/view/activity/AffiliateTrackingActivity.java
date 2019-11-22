@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.tracking.di.AffTrackingComponent;
 import com.tokopedia.affiliate.feature.tracking.di.AffTrackingModule;
 import com.tokopedia.affiliate.feature.tracking.di.DaggerAffTrackingComponent;

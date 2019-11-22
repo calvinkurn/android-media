@@ -20,7 +20,6 @@
             app:contentInsetRight="0dp"
             app:contentInsetEnd="0dp"
             android:background="@color/white"
-            app:layout_scrollFlags="scroll|enterAlways"
             app:titleTextColor="@color/black_70"
             >
 
@@ -111,16 +110,18 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.google.android.material.tabs.TabLayout
+            <com.tokopedia.design.component.Tabs
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabBackground="@color/white"
+                android:layout_height="@dimen/dp_40"
+                app:tabMode="fixed"
                 app:tabGravity="fill"
-                app:tabTextAppearance="@style/SearchTabWidgetText"
-                app:tabIndicatorColor="@color/tkpd_green_header"
-                app:tabMode="scrollable"
-                app:tabSelectedTextColor="@color/tkpd_green_header" />
+                app:tabSelectedTextColor="@color/tkpd_main_green"
+                app:tabTextColor="@color/font_black_disabled_38"
+                app:tabTextAppearance="@style/SearchTabLayoutTextStyle"
+                app:tabIndicatorColor="@color/tkpd_main_green"
+                app:tabPaddingBottom="@dimen/dp_12"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"/>
 
             <View
                 android:layout_width="match_parent"
@@ -143,7 +144,7 @@
         android:background="@drawable/search_background_search_navigation"
         android:layout_gravity="bottom|center_horizontal"
         android:gravity="center"
-        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_10"
         android:orientation="horizontal">
 
         <LinearLayout

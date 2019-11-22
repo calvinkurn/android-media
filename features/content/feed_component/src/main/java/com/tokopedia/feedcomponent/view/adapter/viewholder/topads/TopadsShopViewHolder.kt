@@ -5,7 +5,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -30,6 +32,10 @@ class TopadsShopViewHolder(v: View,
         if (element == null) {
             itemView.hide()
             return
+        }
+
+        itemView.addOnImpressionListener(element.impressHolder) {
+            topadsShopListener.onAffiliateTrackClicked(element.tracking, false)
         }
 
         if (element.dataList.isNotEmpty()) {
@@ -79,5 +85,7 @@ class TopadsShopViewHolder(v: View,
         fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: Shop)
 
         fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data)
+
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
 }

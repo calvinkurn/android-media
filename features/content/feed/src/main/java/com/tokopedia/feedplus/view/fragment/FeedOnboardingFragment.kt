@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
@@ -22,7 +23,6 @@ import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
-import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,14 +36,17 @@ import javax.inject.Inject
 class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestPickItemListener, FeedOnboardingActivity.FeedOnboardingActivityListener {
 
     companion object {
-        private val OPEN_RECOM_PROFILE = 1236
-        val EXTRA_SELECTED_IDS = "EXTRA_SELECTED_IDS"
+        private const val OPEN_RECOM_PROFILE = 1236
+        const val EXTRA_SELECTED_IDS = "EXTRA_SELECTED_IDS"
         fun getInstance(bundle: Bundle): FeedOnboardingFragment {
             val fragment = FeedOnboardingFragment()
             fragment.arguments = bundle
             return fragment
         }
     }
+
+    @Inject
+    lateinit var feedAnalyticTracker: FeedAnalyticTracker
 
     private var selectedIdList: List<Int> = arrayListOf()
 
@@ -91,6 +94,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        feedAnalyticTracker.eventOpenInterestPickDetail()
         initView()
         loadData()
     }
@@ -112,12 +116,11 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         }
     }
 
-    override fun getScreenName(): String =  ""
+    override fun getScreenName(): String =  FeedAnalyticTracker.Screen.INTEREST_PICK_DETAIL
 
     override fun initInjector() {
         activity?.application?.let {
             DaggerFeedPlusComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(it))
                     .build()
                     .inject(this)
         }
@@ -125,6 +128,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
         checkButtonSaveInterest()
+        feedAnalyticTracker.eventClickFeedInterestPick(item.name)
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
@@ -141,6 +145,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         interestList.adapter = adapter
         interestList.addItemDecoration(OnboardingAdapter.getItemDecoration())
         saveInterest.setOnClickListener {
+            feedAnalyticTracker.eventClickFeedCheckInspiration(adapter.getSelectedItemIdList().size.toString())
             view?.showLoadingTransparent()
             feedOnboardingPresenter.submitInterestPickData(adapter.getSelectedItems(), "", OPEN_RECOM_PROFILE)
         }

@@ -36,6 +36,11 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
         holder.bind(list[position], position, listener, type, categoryType)
     }
 
+    fun updateList(newList: List<TravelHomepageSectionViewModel.Item>) {
+        this.list = newList
+        notifyDataSetChanged()
+    }
+
     override fun getItemViewType(position: Int): Int {
         val item = list[position]
         return if (type == TYPE_ORDER_LIST) {

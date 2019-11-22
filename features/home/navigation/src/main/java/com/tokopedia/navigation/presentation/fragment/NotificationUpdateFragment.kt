@@ -55,7 +55,7 @@ import javax.inject.Inject
 class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         , NotificationUpdateContract.View, NotificationUpdateItemListener,
         NotificationUpdateFilterAdapter.FilterAdapterListener,
-        NotificationActivityListener {
+        NotificationActivityListener, NotificationUpdateLongerTextFragment.LongerContentListener {
 
     private var cursor = ""
     private var lastItem = 0
@@ -149,6 +149,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun showOnBoarding(coachMarkItems: ArrayList<CoachMarkItem>, tag: String) {
+        if (!::filterRecyclerView.isInitialized) return
         coachMarkItems.add(
                 1 ,
                 CoachMarkItem(
@@ -259,7 +260,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun itemClicked(viewModel: NotificationUpdateItemViewModel, adapterPosition: Int) {
         adapter.notifyItemChanged(adapterPosition, NotificationUpdateItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
-        analytics.trackClickNotifList(viewModel.templateKey)
+        analytics.trackClickNotifList(viewModel)
         presenter.markReadNotif(viewModel.notificationId)
         val needToResetCounter = !viewModel.isRead
         if (needToResetCounter) {
@@ -349,6 +350,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         bundle.putString(PARAM_CONTENT_TEXT, model.body)
         bundle.putString(PARAM_CONTENT_TITLE, model.title)
         bundle.putString(PARAM_BUTTON_TEXT, model.btnText)
+        bundle.putString(PARAM_TEMPLATE_KEY, model.templateKey)
 
         if (!::longerTextDialog.isInitialized) {
             longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
@@ -357,7 +359,15 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
 
         if (!longerTextDialog.isAdded)
-            longerTextDialog.show(activity?.supportFragmentManager, "Longer Text Bottom Sheet")
+            longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
+    }
+
+    override fun trackNotificationImpression(element: NotificationUpdateItemViewModel) {
+        analytics.saveNotificationImpression(element)
+    }
+
+    override fun trackOnClickCtaButton(templateKey: String) {
+        analytics.trackOnClickLongerContentBtn(templateKey)
     }
 
     companion object {
@@ -367,5 +377,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         val PARAM_CONTENT_IMAGE_TYPE = "content image type"
         val PARAM_CTA_APPLINK = "cta applink"
         val PARAM_BUTTON_TEXT = "button text"
+        val PARAM_TEMPLATE_KEY = "template key"
     }
 }

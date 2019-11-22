@@ -31,12 +31,9 @@ import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewMode
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostDetailViewHolder;
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.EmptyDetailViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.EmptyPostDetailViewHolder;
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.SeeAllCommentsViewHolder;
@@ -144,17 +141,6 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(KolPostViewModel kolPostViewModel) {
-        return KolPostViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(KolPostYoutubeViewModel kolPostYoutubeViewModel) {
-        throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
-                + KolPostYoutubeViewModel.class.getSimpleName());
-    }
-
-    @Override
     public int type(EntryPointViewModel entryPointViewModel) {
         throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
                 + EntryPointViewModel.class.getSimpleName());
@@ -195,7 +181,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                     feedMultipleImageViewListener, userSession
             );
         } else if (viewType == KolCommentViewHolder.LAYOUT) {
-            abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
+            abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener, false);
         } else if (viewType == SeeAllCommentsViewHolder.LAYOUT) {
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
         } else if (viewType == EmptyDetailViewHolder.Companion.getLAYOUT()) {
@@ -206,10 +192,5 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
             abstractViewHolder = super.createViewHolder(view, viewType);
         }
         return abstractViewHolder;
-    }
-
-    @Override
-    public void setType(KolPostViewHolder.Type type) {
-
     }
 }

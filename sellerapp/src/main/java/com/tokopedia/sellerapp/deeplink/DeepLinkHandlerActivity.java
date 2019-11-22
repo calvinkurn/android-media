@@ -18,8 +18,12 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
+import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.sellerapp.SellerRouterApplication;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -180,10 +184,10 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
 
         //map applink to internal if any
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
-        if (!TextUtils.isEmpty(mappedDeeplink)) {
-            routeToApplink(deepLinkDelegate, mappedDeeplink);
-        } else {
+        if (TextUtils.isEmpty(mappedDeeplink)) {
             routeToApplink(deepLinkDelegate, applinkString);
+        } else {
+            routeToApplink(deepLinkDelegate, mappedDeeplink);
         }
     }
 

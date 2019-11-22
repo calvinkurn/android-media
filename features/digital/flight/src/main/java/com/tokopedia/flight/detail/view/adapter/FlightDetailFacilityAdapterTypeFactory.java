@@ -14,6 +14,7 @@ public class FlightDetailFacilityAdapterTypeFactory extends BaseAdapterTypeFacto
     public FlightDetailFacilityAdapterTypeFactory() {
     }
 
+    @Override
     public int type(FlightDetailRouteViewModel viewModel) {
         return FlightDetailFacilityViewHolder.LAYOUT;
     }

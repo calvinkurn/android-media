@@ -2,8 +2,36 @@
     package="com.tokopedia.referral">
     <application>
         <activity android:name=".view.activity.ReferralActivity"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_referral"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+
+        </activity>
+
         <activity android:name=".view.activity.FriendsWelcomeActivity"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White" >
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_referral"
+                    android:pathPattern="@string/path_referral_welcome"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+
+        </activity>
     </application>
 </manifest>

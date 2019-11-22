@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
+import android.graphics.Color
+import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
@@ -61,7 +63,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         try {
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
             val seeAllButton: TextView = itemView.findViewById(R.id.see_all_button)
-            val channelTitleContainer: View = itemView.findViewById(R.id.channel_title_container)
+            val channelTitleContainer: View? = itemView.findViewById(R.id.channel_title_container)
             countDownView = itemView.findViewById(R.id.count_down)
 
             val channel = element.channel
@@ -78,27 +80,29 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         adapterPosition,
                         getLayoutType(channel)))
             }
-            /**
-             * setup recyclerview content
-             */
-            setupContent(channel)
 
             /**
              * Requirement:
              * Only show channel header name when it is exist
              */
             if (!TextUtils.isEmpty(channelHeaderName)) {
-                channelTitleContainer.visibility = View.VISIBLE
+                channelTitleContainer?.visibility = View.VISIBLE
                 channelTitle.text = channelHeaderName
+                channelTitle.setTextColor(
+                        if(channel.header.textColor != null && channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
+                        else ContextCompat.getColor(channelTitle.context, R.color.Neutral_N700)
+                )
             } else {
-                channelTitleContainer.visibility = View.GONE
+                channelTitleContainer?.visibility = View.GONE
             }
 
             /**
              * Requirement:
              * Only show `see all` button when it is exist
+             * Don't show `see all` button on dynamic channel mix carousel
              */
-            if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.header))) {
+            if (isHasSeeMoreApplink(channel) &&
+                    getLayoutType(element.channel) != TYPE_BANNER_CAROUSEL) {
                 seeAllButton.visibility = View.VISIBLE
                 seeAllButton.setOnClickListener {
                     listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
@@ -125,9 +129,18 @@ abstract class DynamicChannelViewHolder(itemView: View,
             } else {
                 countDownView.visibility = View.GONE
             }
+
+            /**
+             * setup recyclerview content
+             */
+            setupContent(channel)
         } catch (e: Exception) {
             Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
         }
+    }
+
+    fun isHasSeeMoreApplink(channel: DynamicHomeChannel.Channels): Boolean {
+        return !TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.header))
     }
 
     /**

@@ -21,7 +21,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
 
     public static final String REFERRAL_SUBHEADER = "referral_subheader";
-    public static final String APP_ENABLE_INDI_CHALLENGES = "app_enable_indi_challenges";
     public static final String APP_REFERRAL_TITLE = "app_referral_title";
     public static final String APP_REFERRAL_SUBTITLE = "app_referral_subtitle";
     public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
@@ -46,6 +45,7 @@ public class RemoteConfigKey {
     public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
     public static final String MAINAPP_FLIGHT_NEW_SEARCH_FLOW = "mainapp_flight_new_search_flow";
     public static final String CUSTOMER_HOTEL_SHOW_PROMO = "android_customer_hotel_show_promo";
+    public static final String CUSTOMER_HOTEL_BOOK_FOR_TODAY = "android_customer_hotel_enable_booking_for_today";
     public static final String ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW = "android_customer_flight_booking_new_flow";
     public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
     public static final String IMAGE_SEARCH_ONBOARD_DESC = "app_image_search_showcase_message";
@@ -83,8 +83,6 @@ public class RemoteConfigKey {
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
-
-    public static final String APP_ENTRY_CHALLENGE_BARU = "app_entry_challenges_baru";
 
     public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
 
@@ -138,6 +136,8 @@ public class RemoteConfigKey {
     public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
     public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
 
+    public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
+
     public static final String ANDROID_PM_F1_ENABLED = "android_power_merchant_f1_enabled";
 
     //feed section
@@ -151,9 +151,10 @@ public class RemoteConfigKey {
     public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
 
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
-    public static final String ENABLE_CASHSHIELD = "android_customer_enable_cashshield";
 
     public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
+
+    public static final String APP_HOTLIST_NAV_ENABLE = "app_hotlist_nav_enable";
 
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 
@@ -169,4 +170,9 @@ public class RemoteConfigKey {
 
     public static final String LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE = "android_mainapp_merchant_label_free_ongkir_title";
     public static final String MAINAPP_FREE_ONGKIR_MSG = "android_mainapp_merchant_freeongkir_title";
+
+    public static final String GTM_REFRESH_IN_BACKGROUND = "android_gtm_refresh_in_background";
+    public static final String ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW = "enable_customer_user_agent_in_webview";
+
+    public static final String ENABLE_OFFICIAL_STORE_OS = "android_enable_officialstore_native";
 }

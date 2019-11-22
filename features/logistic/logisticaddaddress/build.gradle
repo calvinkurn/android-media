@@ -27,8 +27,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.permissionchecker)
+
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation project(rootProject.ext.features.purchase_platform_common)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -56,7 +57,7 @@ dependencies {
 project.ext {
     artifactId = "add-address"
     groupId = "com.tokopedia.logistic"
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "logisticaddaddress-release"
 }
 

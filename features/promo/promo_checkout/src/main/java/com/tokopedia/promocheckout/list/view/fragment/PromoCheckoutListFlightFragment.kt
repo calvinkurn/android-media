@@ -5,6 +5,7 @@ import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailFlightActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListFlightPresenter
 import javax.inject.Inject
@@ -21,6 +22,9 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
         categoryId = FLIGHT_CATEGORY_ID
         cartID = arguments?.getString(EXTRA_CART_ID) ?: ""
         promoCheckoutListFlightPresenter.attachView(this)
+    }
+
+    override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
     }
 
     override fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
@@ -49,7 +53,7 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, cartID: String?, pageTracking: Int?): PromoCheckoutListFlightFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListFlightFragment()
             val bundle = Bundle()
-            bundle.putBoolean(EXTRA_IS_COUPON_ACTIVE, isCouponActive ?: true)
+            bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive ?: true)
             bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
             bundle.putString(EXTRA_CART_ID, cartID ?: "")
             bundle.putInt(PAGE_TRACKING, pageTracking ?: 1)

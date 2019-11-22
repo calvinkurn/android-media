@@ -2,20 +2,20 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            authentication          : "com.tokopedia.authentication:authentication:1.0.1",
-            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.3",
-            graphql                 : "com.tokopedia.graphql:graphql:1.0.15-rc",
-            network                 : "com.tokopedia.network:network:1.0.9-rc",
-            url                     : "com.tokopedia.url:url:1.0.2",
-            usecase                 : "com.tokopedia.usecase:usecase:1.0.2",
-            usersession             : "com.tokopedia.user.session:user_session:1.0.7",
-            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.3-rc"
+            authentication          : "com.tokopedia.authentication:authentication:1.0.1@aar",
+            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24@aar",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.3@aar",
+            graphql                 : "com.tokopedia.graphql:graphql:1.0.18@aar",
+            network                 : "com.tokopedia.network:network:1.0.10-test@aar",
+            url                     : "com.tokopedia.url:url:1.0.2@aar",
+            usecase                 : "com.tokopedia.usecase:usecase:1.0.2@aar",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.7@aar",
+            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.5-test@aar",
+            analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2@aar"
     ]
 
     // Sort and categorize alphabetically by folder name
     libraries = [
-            akamai_bot_lib          : ":libraries:akamai_bot_lib",
             analytics               : ":libraries:analytics",
             applink                 : ":libraries:applink",
             baseAdapter             : ":libraries:base_adapter",
@@ -62,8 +62,9 @@ ext {
             videoplayer             : ":libraries:videoplayer",
             youtubeApi              : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil             : ":libraries:youtubeutil",
-
+            promotionsTarget        : ":libraries:promotions_target",
             tkpdabstraction         : ":tkpdabstraction",
-            tkpddesign              : ":tkpddesign"
+            tkpddesign              : ":tkpddesign",
+            translator              : ":libraries:translator"
     ]
 }

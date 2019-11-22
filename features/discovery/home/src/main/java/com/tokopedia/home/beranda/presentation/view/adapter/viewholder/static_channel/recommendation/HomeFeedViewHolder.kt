@@ -41,6 +41,23 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
     }
 
     private fun setLayout(element: HomeFeedViewModel){
+        var labelCredibility = ProductCardModel.Label()
+        var labelPromo = ProductCardModel.Label()
+        var labelOffers = ProductCardModel.Label()
+
+        for (label: LabelGroup in element.labelGroups){
+            when(label.position){
+                LABEL_POSITION_CREDIBILITY -> {
+                    labelCredibility = if (element.rating == 0 && element.countReview == 0) ProductCardModel.Label(label.title, label.type) else labelCredibility
+                }
+                LABEL_POSITION_PROMO -> {
+                    labelPromo = ProductCardModel.Label(label.title, label.type)
+                }
+                LABEL_POSITION_OFFERS -> {
+                    labelOffers = ProductCardModel.Label(label.title, label.type)
+                }
+            }
+        }
         productCardView.run{
             setProductModel(
                     ProductCardModel(
@@ -61,10 +78,12 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.isFreeOngkirActive,
                                     imageUrl = element.freeOngkirImageUrl
-                            )
+                            ),
+                            labelCredibility = labelCredibility,
+                            labelOffers = labelOffers,
+                            labelPromo = labelPromo
                     )
             )
-            setLabelGroup(element.labelGroups)
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
                     homeFeedView.onProductImpression(element, adapterPosition)
@@ -93,14 +112,6 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
         }
     }
 
-    private fun mapBadges(badges: List<Badge>){
-        for (badge in badges) {
-            val view = LayoutInflater.from(productCardView.context).inflate(R.layout.home_layout_badge, null)
-            ImageHandler.loadImageFitCenter(productCardView.context, view.findViewById(com.tokopedia.productcard.R.id.badge), badge.imageUrl)
-            productCardView.addShopBadge(view)
-        }
-    }
-
     private fun showSuccessAddWishlist(view: View, message: String){
         Snackbar.make(view, message, Snackbar.LENGTH_LONG)
                 .setAction(R.string.go_to_wishlist) { RouteManager.route(view.context, ApplinkConst.WISHLIST) }
@@ -110,31 +121,5 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
     private fun showSuccessRemoveWishlist(view: View, message: String){
         Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
     }
-
-    private fun ProductCardViewSmallGrid.setLabelGroup(labelGroup: List<LabelGroup>){
-        setLabelCredibilityVisible(false)
-        setLabelPromoVisible(false)
-        setLabelOffersVisible(false)
-        for (label: LabelGroup in labelGroup){
-            when(label.position){
-                LABEL_POSITION_CREDIBILITY -> {
-                    setLabelCredibilityText(label.title)
-                    setLabelCredibilityType(label.type)
-                    setLabelCredibilityVisible(true)
-                    setImageRatingVisible(false)
-                    setReviewCountVisible(false)
-                }
-                LABEL_POSITION_PROMO -> {
-                    setLabelPromoText(label.title)
-                    setLabelPromoType(label.type)
-                    setLabelPromoVisible(true)
-                }
-                LABEL_POSITION_OFFERS -> {
-                    setLabelOffersText(label.title)
-                    setLabelOffersType(label.type)
-                    setLabelOffersVisible(true)
-                }
-            }
-        }
-    }
 }
+

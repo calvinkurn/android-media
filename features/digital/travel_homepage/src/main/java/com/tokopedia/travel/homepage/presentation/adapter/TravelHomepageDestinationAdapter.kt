@@ -29,6 +29,10 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
         holder.bind(list[position], position, listener)
     }
 
+    fun updateList(newList: List<TravelHomepageDestinationModel.Destination>) {
+        this.list = newList
+        notifyDataSetChanged()
+    }
 
     class DestinationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

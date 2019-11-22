@@ -14,6 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.tradein_common.IAccessRequestListener
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.age_restriction_home_activity.*
 
 class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessRequestListener {
 
@@ -120,7 +121,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                     event,
                     "view - adult pop up - before login",
                     "before login - $event/$destinationUrlGtm")
-            showDialogFragment(R.layout.age_restriction_verifcation_dialog, "",
+            showDialogFragment(getString(R.string.ar_text_adult_content),
                     getString(R.string.ar_text_login_first),
                     getString(com.tokopedia.design.R.string.label_login_button),
                     getString(R.string.ar_label_back))
@@ -130,6 +131,22 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
 
     override fun getMenuRes(): Int {
         return 0
+    }
+
+    override fun getRootViewId(): Int {
+        return R.id.root_view
+    }
+
+    override fun getRootView(): View {
+        return root_view
+    }
+
+    override fun showProgressBar() {
+        progress_bar_layout.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressBar() {
+        progress_bar_layout.visibility = View.GONE
     }
 
     override fun getLayoutRes(): Int {
@@ -155,7 +172,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     override fun initView() {
         arHomeViewModel.notAdult.observe(this, Observer<Int> {
             selection = notAdult
-            showDialogFragment(R.layout.age_restriction_verifcation_dialog, "",
+            showDialogFragment(getString(R.string.ar_text_adult_content),
                     getString(R.string.ar_text_not_adult),
                     getString(R.string.ar_text_goto_home),
                     null)
@@ -175,7 +192,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         super.onStart()
         arHomeViewModel.notFilled.observe(this, Observer<Int> {
             selection = notFilledDob
-            showDialogFragment(R.layout.age_restriction_verifcation_dialog, "",
+            showAgeVerificationDialogFragment(getString(R.string.ar_text_adult_content),
                     getString(R.string.ar_text_dob_verify),
                     getString(R.string.ar_text_verify_dob),
                     getString(R.string.ar_label_back))
@@ -187,7 +204,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
 
         arHomeViewModel.notVerified.observe(this, Observer<String> {
             selection = notVerified
-            showDialogFragment(R.layout.age_restriction_verifcation_dialog, "",
+            showDialogFragment(getString(R.string.ar_text_adult_content),
                     String.format(getString(R.string.ar_text_filled_not_verfied), it),
                     getString(R.string.ar_text_yes_continue),
                     getString(R.string.ar_text_no_update))

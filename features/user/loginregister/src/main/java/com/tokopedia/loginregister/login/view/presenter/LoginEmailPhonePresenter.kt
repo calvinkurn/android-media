@@ -8,6 +8,10 @@ import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.login.domain.StatusPinUseCase
+import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
@@ -31,7 +35,8 @@ import javax.inject.Named
 /**
  * @author by nisie on 18/01/19.
  */
-class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: DiscoverUseCase,
+class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseCase: RegisterCheckUseCase,
+                                                   private val discoverUseCase: DiscoverUseCase,
                                                    private val getFacebookCredentialUseCase:
                                                    GetFacebookCredentialUseCase,
                                                    private val registerValidationUseCase:
@@ -40,14 +45,13 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    LoginTokenUseCase,
                                                    private val getProfileUseCase: GetProfileUseCase,
                                                    private val tickerInfoUseCase: TickerInfoUseCase,
+                                                   private val statusPinUseCase: StatusPinUseCase,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
         LoginEmailPhoneContract.Presenter {
 
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
-    private val PHONE_TYPE = "phone"
-    private val EMAIL_TYPE = "email"
 
     fun attachView(view: LoginEmailPhoneContract.View, viewEmailPhone: LoginEmailPhoneContract.View) {
         super.attachView(view)
@@ -86,48 +90,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                 }
             }
         })
-    }
-
-    override fun checkLoginEmailPhone(emailPhone: String) {
-        if (emailPhone.isBlank()) {
-            viewEmailPhone.onErrorEmptyEmailPhone()
-        } else {
-            registerValidationUseCase.execute(RegisterValidationUseCase.createValidateRegisterParam(emailPhone),
-                    object : Subscriber<RegisterValidationPojo>() {
-
-                        override fun onCompleted() {
-
-                        }
-
-                        override fun onError(throwable: Throwable) {
-                            viewEmailPhone.onErrorValidateRegister(throwable)
-                        }
-
-                        override fun onNext(registerValidationViewModel: RegisterValidationPojo) {
-                            viewEmailPhone.trackSuccessValidate()
-                            onSuccessValidate(registerValidationViewModel)
-                        }
-                    })
-        }
-    }
-
-    private fun onSuccessValidate(model: RegisterValidationPojo) {
-        if (TextUtils.equals(model.type, PHONE_TYPE)) {
-            if (model.exist) {
-                viewEmailPhone.goToLoginPhoneVerifyPage(model.view.replace("-", ""))
-            } else {
-                viewEmailPhone.goToRegisterPhoneVerifyPage(model.view.replace("-", ""))
-            }
-
-        }
-
-        if (TextUtils.equals(model.type, EMAIL_TYPE)) {
-            if (model.exist) {
-                viewEmailPhone.onEmailExist(model.view)
-            } else {
-                viewEmailPhone.showNotRegisteredEmailDialog(model.view)
-            }
-        }
     }
 
     override fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager) {
@@ -258,8 +220,23 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                 TickerInfoLoginSubscriber(viewEmailPhone))
     }
 
+    override fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit){
+        statusPinUseCase.executeCoroutines(onSuccess, onError)
+    }
+
+    override fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit){
+        registerCheckUseCase.apply {
+            setRequestParams(this.getRequestParams(id))
+            execute({
+                onSuccess(it.data)
+            }, onError)
+        }
+    }
+
     override fun detachView() {
         super.detachView()
+        registerCheckUseCase.cancelJobs()
+        statusPinUseCase.cancelJobs()
         discoverUseCase.unsubscribe()
         registerValidationUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()

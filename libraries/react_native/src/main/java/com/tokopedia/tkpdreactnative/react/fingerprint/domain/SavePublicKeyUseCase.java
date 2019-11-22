@@ -1,10 +1,12 @@
 package com.tokopedia.tkpdreactnative.react.fingerprint.domain;
 
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -29,7 +31,7 @@ public class SavePublicKeyUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        TKPDMapParam<String, String> params = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<String, String>());
+        Map<String, String> params = AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(),  new HashMap<>());
         requestParams.putAllString(params);
         return fingerprintRepository.savePublicKey(requestParams.getParamsAllValueInString());
     }

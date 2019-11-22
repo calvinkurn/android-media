@@ -9,7 +9,6 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.domain.interactor.BannerGetDataUseCase;
@@ -27,7 +26,7 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper.FlightClassViewModelMapper;
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
-import com.tokopedia.flight.search.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
+import com.tokopedia.flight.search.domain.FlightDeleteAllFlightSearchDataUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -109,7 +108,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onSingleTripChecked() {
-        flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_one_way).toString());
+        flightAnalytics.eventTripTypeClick(getView().getString(com.tokopedia.flight.R.string.flight_dashboard_analytic_one_way).toString());
         flightDashboardCache.putRoundTrip(false);
         getView().getCurrentDashboardViewModel().setOneWay(true);
         getView().renderSingleTripView();
@@ -117,7 +116,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onRoundTripChecked() {
-        flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_round_trip).toString());
+        flightAnalytics.eventTripTypeClick(getView().getString(com.tokopedia.flight.R.string.flight_dashboard_analytic_round_trip).toString());
         flightDashboardCache.putRoundTrip(true);
         if (!flightDashboardCache.getReturnDate().isEmpty()) {
             FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
@@ -198,12 +197,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private String buildPassengerTextFormatted(FlightPassengerViewModel passData) {
         String passengerFmt = "";
         if (passData.getAdult() > 0) {
-            passengerFmt = passData.getAdult() + " " + getView().getString(R.string.flight_dashboard_adult_passenger);
+            passengerFmt = passData.getAdult() + " " + getView().getString(com.tokopedia.flight.R.string.flight_dashboard_adult_passenger);
             if (passData.getChildren() > 0) {
-                passengerFmt += ", " + passData.getChildren() + " " + getView().getString(R.string.flight_dashboard_adult_children);
+                passengerFmt += ", " + passData.getChildren() + " " + getView().getString(com.tokopedia.flight.R.string.flight_dashboard_adult_children);
             }
             if (passData.getInfant() > 0) {
-                passengerFmt += ", " + passData.getInfant() + " " + getView().getString(R.string.flight_dashboard_adult_infant);
+                passengerFmt += ", " + passData.getInfant() + " " + getView().getString(com.tokopedia.flight.R.string.flight_dashboard_adult_infant);
             }
         }
         return passengerFmt;
@@ -261,11 +260,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         oneYears = FlightDateUtil.addTimeToSpesificDate(oneYears, Calendar.DATE, -1);
         if (newDepartureDate.after(oneYears)) {
             if (showError) {
-                getView().showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_one_years_from_today_error);
+                getView().showDepartureDateMaxTwoYears(com.tokopedia.flight.R.string.flight_dashboard_departure_max_one_years_from_today_error);
             }
         } else if (newDepartureDate.before(FlightDateUtil.getCurrentDate())) {
             if (showError) {
-                getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+                getView().showDepartureDateShouldAtLeastToday(com.tokopedia.flight.R.string.flight_dashboard_departure_should_atleast_today_error);
             }
         } else {
             String newDepartureDateStr = FlightDateUtil.dateToString(newDepartureDate, FlightDateUtil.DEFAULT_FORMAT);
@@ -304,7 +303,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onReturnDateButtonClicked() {
-        Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getReturnDate());
         Date minDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
         Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_DATE_ADDITION_YEAR);
         maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
@@ -314,7 +312,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY);
         maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY);
 
-        getView().showReturnCalendarDatePicker(selectedDate, minDate, maxDateCalendar.getTime());
+        getView().showReturnCalendarDatePicker(null, minDate, maxDateCalendar.getTime());
     }
 
     @Override
@@ -329,11 +327,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         twoYears = FlightDateUtil.addTimeToSpesificDate(twoYears, Calendar.DATE, -1);
         if (newReturnDate.after(twoYears)) {
             if (showError) {
-                getView().showReturnDateMaxTwoYears(R.string.flight_dashboard_return_max_one_years_from_today_error);
+                getView().showReturnDateMaxTwoYears(com.tokopedia.flight.R.string.flight_dashboard_return_max_one_years_from_today_error);
             }
         } else if (newReturnDate.before(FlightDateUtil.stringToDate(viewModel.getDepartureDate()))) {
             if (showError) {
-                getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
+                getView().showReturnDateShouldGreaterOrEqual(com.tokopedia.flight.R.string.flight_dashboard_return_should_greater_equal_error);
             }
         } else {
             String newReturnDateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_FORMAT);
@@ -494,7 +492,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                     Integer.parseInt(getView().getInfantPassengerArguments()))
             ) {
                 isPassengerValid = false;
-                getView().showApplinkErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
+                getView().showApplinkErrorMessage(com.tokopedia.flight.R.string.select_passenger_infant_greater_than_adult_error_message);
                 flightDashboardPassDataViewModel.setAdultPassengerCount(DEFAULT_ADULT_PASSENGER);
                 flightDashboardPassDataViewModel.setChildPassengerCount(DEFAULT_CHILD_PASSENGER);
                 flightDashboardPassDataViewModel.setInfantPassengerCount(DEFAULT_INFANT_PASSENGER);
@@ -503,7 +501,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                     Integer.parseInt(getView().getChildPassengerArguments()))
             ) {
                 isPassengerValid = false;
-                getView().showApplinkErrorMessage(R.string.select_passenger_total_passenger_error_message);
+                getView().showApplinkErrorMessage(com.tokopedia.flight.R.string.select_passenger_total_passenger_error_message);
                 flightDashboardPassDataViewModel.setAdultPassengerCount(DEFAULT_ADULT_PASSENGER);
                 flightDashboardPassDataViewModel.setChildPassengerCount(DEFAULT_CHILD_PASSENGER);
                 flightDashboardPassDataViewModel.setInfantPassengerCount(DEFAULT_INFANT_PASSENGER);
@@ -683,29 +681,29 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         boolean isValid = true;
         if (!validator.validateDepartureNotEmtpty(currentDashboardViewModel)) {
             isValid = false;
-            getView().showDepartureEmptyErrorMessage(R.string.flight_dashboard_departure_empty_error);
+            getView().showDepartureEmptyErrorMessage(com.tokopedia.flight.R.string.flight_dashboard_departure_empty_error);
         } else if (!validator.validateArrivalNotEmpty(currentDashboardViewModel)) {
             isValid = false;
-            getView().showArrivalEmptyErrorMessage(R.string.flight_dashboard_arrival_empty_error);
+            getView().showArrivalEmptyErrorMessage(com.tokopedia.flight.R.string.flight_dashboard_arrival_empty_error);
         } else if (!validator.validateArrivalAndDestinationNotSame(currentDashboardViewModel)) {
             isValid = false;
-            getView().showArrivalAndDestinationAreSameError(R.string.flight_dashboard_arrival_departure_same_error);
+            getView().showArrivalAndDestinationAreSameError(com.tokopedia.flight.R.string.flight_dashboard_arrival_departure_same_error);
         } else if (!validator.validateDepartureDateAtLeastToday(currentDashboardViewModel)) {
             isValid = false;
-            getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+            getView().showDepartureDateShouldAtLeastToday(com.tokopedia.flight.R.string.flight_dashboard_departure_should_atleast_today_error);
         } else if (!validator.validateAirportsShouldDifferentCity(currentDashboardViewModel)) {
             isValid = false;
             getView()
-                    .showAirportShouldDifferentCity(R.string.flight_dashboard_departure_should_different_city_error);
+                    .showAirportShouldDifferentCity(com.tokopedia.flight.R.string.flight_dashboard_departure_should_different_city_error);
         } else if (!validator.validateReturnDateShouldGreaterOrEqualDeparture(currentDashboardViewModel)) {
             isValid = false;
-            getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
+            getView().showReturnDateShouldGreaterOrEqual(com.tokopedia.flight.R.string.flight_dashboard_return_should_greater_equal_error);
         } else if (!validator.validatePassengerAtLeastOneAdult(currentDashboardViewModel)) {
             isValid = false;
-            getView().showPassengerAtLeastOneAdult(R.string.flight_dashboard_at_least_one_adult_error);
+            getView().showPassengerAtLeastOneAdult(com.tokopedia.flight.R.string.flight_dashboard_at_least_one_adult_error);
         } else if (!validator.validateFlightClassNotEmpty(currentDashboardViewModel)) {
             isValid = false;
-            getView().showFlightClassPassengerIsEmpty(R.string.flight_dashboard_fligh_class_is_empty);
+            getView().showFlightClassPassengerIsEmpty(com.tokopedia.flight.R.string.flight_dashboard_fligh_class_is_empty);
         }
         return isValid;
     }

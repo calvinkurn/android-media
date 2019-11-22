@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
@@ -35,6 +36,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<CouponValueEntity> mItems;
     private static final int VIEW_HEADER = 0;
     private static final int VIEW_DATA = 1;
+    private RecyclerView mRecyclerView;
 
     // Define a ViewHolder for Footer view
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -42,7 +44,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(itemView);
             itemView.setOnClickListener(v -> {
                 // Do whatever you want on clicking the item
-                RouteManager.route(v.getContext(), ApplinkConstant.COUPON_LISTING);
+                RouteManager.route(v.getContext(), ApplinkConstInternalPromo.TOKOPOINTS_COUPON);
             });
         }
     }
@@ -65,6 +67,13 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tvMinTxnValue = view.findViewById(R.id.tv_min_txn_value);
             tvMinTxnLabel = view.findViewById(R.id.tv_min_txn_label);
             progressTimer = view.findViewById(R.id.progress_timer);
+        }
+
+        public void onDetach() {
+            if (timer != null){
+                timer.cancel();
+                timer = null;
+            }
         }
     }
 
@@ -145,15 +154,18 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     holder.progressTimer.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
                     holder.progressTimer.setVisibility(View.VISIBLE);
                     holder.value.setVisibility(View.VISIBLE);
+                    if (holder.timer != null){
+                        holder.timer.cancel();
+                    }
                     holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                         @Override
                         public void onTick(long l) {
                             item.getUsage().setExpiredCountDown(l / 1000);
                             int seconds = (int) (l / 1000) % 60;
                             int minutes = (int) ((l / (1000 * 60)) % 60);
-                            int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                            int hours = (int)  ((l / (1000 * 60 * 60)) % 24);
                             holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
+                            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.medium_green));
                             holder.progressTimer.setProgress((int) l / 1000);
                             holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
                                     holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
@@ -169,12 +181,12 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 } else {
                     holder.progressTimer.setVisibility(View.GONE);
                     holder.value.setPadding(0, 0, 0, 0);
-                    holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+                    holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.black_70));
 
                 }
             } else {
                 holder.progressTimer.setVisibility(View.GONE);
-                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), com.tokopedia.design.R.color.black_70));
             }
 
             enableOrDisableImages(holder, item);
@@ -202,8 +214,8 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private void enableImages(ViewHolder holder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(),  com.tokopedia.design.R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), com.tokopedia.design.R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     @Override
@@ -223,5 +235,31 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         return VIEW_DATA;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onDetach();
+        }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
+    }
+
+    public void onDestroyView() {
+        if (mRecyclerView != null){
+            for (int i = 0 ;i < mRecyclerView.getChildCount();i++){
+                RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(mRecyclerView.getChildAt(i));
+                if (holder instanceof ViewHolder) {
+                    ((ViewHolder) holder).onDetach();
+                }
+            }
+        }
+
     }
 }

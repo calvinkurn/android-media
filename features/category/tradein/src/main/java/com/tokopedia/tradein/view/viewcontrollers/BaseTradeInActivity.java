@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import androidx.annotation.Nullable;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.tradein.R;
@@ -69,6 +70,8 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             toolbar.setTitle(R.string.money_in);
             TRADEIN_TEST_TYPE = TRADEIN_MONEY_IN;
+            clickEvent = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
+            viewEvent = TradeInGTMConstants.ACTION_VIEW_MONEYIN;
         }
         setSupportActionBar(toolbar);
     }
@@ -90,4 +93,15 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
     protected ViewModelProvider.AndroidViewModelFactory getVMFactory() {
         return TradeInVMFactory.getInstance(this.getApplication(), getIntent());
     }
+
+    @Override
+    protected void showProgressBar() {
+        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void hideProgressBar() {
+        getRootView().findViewById(R.id.progress_bar_layout).setVisibility(View.GONE);
+    }
+
 }

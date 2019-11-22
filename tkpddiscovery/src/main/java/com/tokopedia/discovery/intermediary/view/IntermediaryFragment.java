@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.intermediary.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -21,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -34,8 +36,10 @@ import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.CategoryPageTracking;
@@ -45,13 +49,11 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.widgets.DividerItemDecoration;
@@ -336,13 +338,10 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
             public void onBannerAdsClicked(int position, String appLink, CpmData data) {
-                TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
-                if (router.isSupportedDelegateDeepLink(appLink)) {
-                    router.actionApplink(getActivity(), appLink);
-                } else if (appLink != "") {
-                    Intent intent = new Intent(getContext(), BannerWebView.class);
-                    intent.putExtra("url", appLink);
-                    startActivity(intent);
+                if (URLUtil.isNetworkUrl(appLink)) {
+                    RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, appLink);
+                } else {
+                    RouteManager.route(getContext(), appLink);
                 }
                 if(appLink.contains(SHOP)) {
                     TopAdsGtmTracker.eventIntermediaryShopPromoClick(getContext(), data, position);
@@ -960,28 +959,31 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                         )
 
                 )));
-        if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
-                && !TextUtils.isEmpty(applink)
-                && ((TkpdCoreRouter) getActivity().getApplicationContext())
-                .isSupportedDelegateDeepLink(applink)) {
-            ((TkpdCoreRouter) getActivity().getApplicationContext())
-                    .actionApplink(getActivity(), applink);
-        } else {
-            switch ((DeepLinkChecker.getDeepLinkType(url))) {
+        boolean checkHttpUrl = true;
+        if (!URLUtil.isNetworkUrl(applink)) {
+            Intent intent = RouteManager.getIntentNoFallback(getContext(), applink);
+            if (intent != null) {
+                startActivity(intent);
+                checkHttpUrl = false;
+            }
+        }
+        Activity activity = getActivity();
+        if (checkHttpUrl && activity!= null) {
+            int deeplinkType = DeepLinkChecker.getDeepLinkType(activity, url);
+            boolean goToNative = false;
+            switch (deeplinkType) {
                 case DeepLinkChecker.BROWSE:
-                    DeepLinkChecker.openBrowse(url, getActivity());
+                    goToNative = DeepLinkChecker.openBrowse(url, activity);
                     break;
                 case DeepLinkChecker.HOT:
-                    DeepLinkChecker.openHot(url, getActivity());
+                    goToNative = DeepLinkChecker.openHot(url, activity);
                     break;
                 case DeepLinkChecker.CATALOG:
-                    DeepLinkChecker.openCatalog(url, getActivity());
+                    goToNative = DeepLinkChecker.openCatalog(url, activity);
                     break;
-                default:
-                    Intent intent = new Intent(getActivity(), BannerWebView.class);
-                    intent.putExtra("url", url);
-                    startActivity(intent);
+            }
+            if (!goToNative) {
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, url);
             }
         }
     }
@@ -1051,7 +1053,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             default:
                 CategoryActivity.moveTo(
                         getContext(),
-                        url
+                        url,
+                        new Bundle()
                 );
                 break;
         }

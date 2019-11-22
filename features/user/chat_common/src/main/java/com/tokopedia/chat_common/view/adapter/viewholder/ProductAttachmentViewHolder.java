@@ -38,6 +38,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private ButtonCompat tvBuy;
     private ImageView ivATC;
     private View footerLayout;
+    private ImageView freeShipping;
 
     private Context context;
     private ProductAttachmentListener viewListener;
@@ -55,6 +56,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         dot = itemView.findViewById(R.id.dot);
         progressBarSendImage = itemView.findViewById(R.id.progress_bar);
         chatBalloon = itemView.findViewById(R.id.attach_product_chat_container);
+        freeShipping = itemView.findViewById(R.id.iv_free_shipping);
         tvBuy = chatBalloon.findViewById(R.id.tv_buy);
         ivATC = chatBalloon.findViewById(R.id.ic_add_to_cart);
         footerLayout = chatBalloon.findViewById(R.id.footer_layout);
@@ -66,6 +68,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         super.bind(element);
         prerequisiteUISetup(element);
         setupProductUI(element, chatBalloon);
+        setupFreeShipping(element);
         setupChatBubbleAlignment(chatBalloon, element);
         viewListener.trackSeenProduct(element);
     }
@@ -153,6 +156,14 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         setUIDiscount(productContainer, element);
         setFooter(productContainer, element);
     }
+
+    private void setupFreeShipping(ProductAttachmentViewModel product) {
+        if (product.hasFreeShipping()) {
+            freeShipping.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageRounded2(itemView.getContext(), freeShipping, product.getFreeShippingImageUrl());
+        }
+    }
+
 
     private void setUIDiscount(View productContainer, ProductAttachmentViewModel element) {
         setUIVisibility(productContainer, R.id.discount, element.getPriceBefore());

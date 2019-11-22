@@ -16,7 +16,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -31,6 +33,7 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.bottom_sheet_webview.*
 
 /**
  * @author by nisie on 18/02/19.
@@ -38,137 +41,100 @@ import com.tokopedia.user.session.UserSessionInterface
 class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListener {
 
     private var url: String = ""
-    private var gcToken: String = ""
-    private val REQUEST_CODE_LOGIN = 123
-    private val PARAM_HEADER_GC_TOKEN: String = "X-User-Token"
     private var isBottomSheetCloseable: Boolean = true
 
-    //Chrome Client
-    val ATTACH_FILE_REQUEST = 1
     private var callbackBeforeL: ValueCallback<Uri>? = null
-    var callbackAfterL: ValueCallback<Array<Uri>>? = null
+    private var callbackAfterL: ValueCallback<Array<Uri>>? = null
+    private lateinit var behavior: BottomSheetBehavior<FrameLayout?>
 
     lateinit var webview: TkpdWebView
     lateinit var progressBar: ProgressBar
-    lateinit var userSession: UserSessionInterface
-    lateinit var errorView: View
-    lateinit var errorImage: ImageView
-    lateinit var retryButton: View
-    private var behavior: BottomSheetBehavior<FrameLayout?>? = null
-
-    lateinit var closeButton: View
-    companion object {
-
-        fun createInstance(bundle: Bundle): PlayWebviewDialogFragment {
-            val fragment = PlayWebviewDialogFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
-        fun createInstance(url: String): PlayWebviewDialogFragment {
-            val fragment = PlayWebviewDialogFragment()
-            val bundle = Bundle()
-            bundle.putBoolean(ApplinkConst.Play.PARAM_HAS_TITLEBAR, false)
-            bundle.putString(ApplinkConst.Play.PARAM_URL, url)
-            fragment.arguments = bundle
-            return fragment
-        }
-
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme)
-        //TODO use dagger?
-        userSession = UserSession(context)
         setupViewModel(savedInstanceState)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val temp = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        val webViewDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 
-        temp.setOnShowListener { dialog ->
-            var finalDialog = dialog as BottomSheetDialog
-            val bottomSheet = finalDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            var behavior = BottomSheetBehavior.from(bottomSheet)
+        webViewDialog.setOnShowListener { dialog ->
+            val bottomSheetDialog = dialog as BottomSheetDialog
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            val behavior = BottomSheetBehavior.from(bottomSheet)
             this.behavior = behavior
-            behavior.peekHeight = 600
+
+            behavior.peekHeight = FIRST_STATE_HEIGHT
+
             activity?.windowManager?.defaultDisplay?.let {
-                var displayMetrics = DisplayMetrics()
+                val displayMetrics = DisplayMetrics()
                 it.getMetrics(displayMetrics)
                 behavior.peekHeight = displayMetrics.heightPixels * 9 / 16
             }
 
             isBottomSheetCloseable = true
+
             behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
+                    val newHeight = (behavior.peekHeight + (bottomSheet.height - behavior.peekHeight) * slideOffset)
+                    setWebviewContentHeight(newHeight.toInt())
                 }
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (!isBottomSheetCloseable && newState == BottomSheetBehavior
-                                    .STATE_DRAGGING) {
-                        behavior.state = BottomSheetBehavior.STATE_EXPANDED;
+                    if (!isBottomSheetCloseable && newState == BottomSheetBehavior.STATE_DRAGGING) {
+                        behavior.state = BottomSheetBehavior.STATE_EXPANDED
                     }
 
                     if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        finalDialog.cancel()
+                        bottomSheetDialog.cancel()
                     }
                 }
             })
         }
 
-        return temp
+        return webViewDialog
     }
 
     private fun setupViewModel(savedInstanceState: Bundle?) {
         activity?.run {
-
-            if (url.isNullOrEmpty()) {
-                url = getParamString(ApplinkConst.Play.PARAM_URL, arguments,
-                        savedInstanceState, "")
-            }
-            if (url.isBlank())
+            if (url.isEmpty()) {
+                url = getParamString(ApplinkConst.Play.PARAM_URL, arguments, savedInstanceState, "")
+            } else if (url.isBlank()) {
                 finish()
-
-            gcToken = userSession.gcToken
+            }
         }
     }
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.bottom_sheet_webview, container, false)
-        errorView = view.findViewById(R.id.error_layout)
-        errorImage = view.findViewById(R.id.error_image)
-        retryButton = view.findViewById(R.id.retry_button)
-        closeButton = view.findViewById(R.id.header)
-        initWebview(view)
+        initWebView(view)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadWebview()
+        loadWebView()
+
         ImageHandler.LoadImage(errorImage, GroupChatUrl.ERROR_WEBVIEW_IMAGE_URL)
         retryButton.setOnClickListener {
             webview.show()
             errorView.hide()
-            loadWebview()
+            loadWebView()
         }
         closeButton.setOnClickListener {
             dismiss()
         }
     }
 
-    private fun loadWebview() {
+    private fun loadWebView() {
         if(shouldRedirectToSeamless(url)){
-            url = URLGenerator.generateURLSessionLogin(url, userSession.deviceId, userSession
-                    .userId)
-
+            url = URLGenerator.generateURLSessionLogin(url, userSession.deviceId, userSession.userId)
         }
-
         webview.loadAuthUrl(url, userSession.userId, userSession.accessToken, getHeaderPlay())
-
     }
 
     private fun shouldRedirectToSeamless(url: String): Boolean {
@@ -180,24 +146,27 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         this.url = url
     }
 
+    fun setWebviewContentHeight(height: Int) {
+        val resizableLayoutParams = webview.layoutParams
+        resizableLayoutParams.height = height
+        webview.layoutParams = resizableLayoutParams
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
-    private fun initWebview(view: View) {
+    private fun initWebView(view: View) {
         CookieManager.getInstance().setAcceptCookie(true)
-        if(GlobalConfig.isAllowDebuggingTools())
-            WebView.setWebContentsDebuggingEnabled(true)
 
         webview = view.findViewById(R.id.webview)
         progressBar = view.findViewById(R.id.progress_bar)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)
-//        webview.addJavascriptInterface(WebViewResizer(), "WebViewResizer")
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webview.settings.domStorageEnabled = true
         webview.settings.javaScriptEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webview.settings.mediaPlaybackRequiresUserGesture = false
         }
-        webview.webViewClient = getWebviewClient()
+        webview.webViewClient = getWebViewClient()
         webview.webChromeClient = getWebviewChromeClient()
         webview.setWebviewScrollListener(object : TkpdWebView.WebviewScrollListener {
             override fun onTopReached() {
@@ -214,11 +183,10 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 isBottomSheetCloseable = false
             }
         })
-
     }
 
     override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
-        if (::webview.isInitialized && event?.action == KeyEvent.ACTION_DOWN) {
+        if (event?.action == KeyEvent.ACTION_DOWN) {
             when (keyCode) {
                 KeyEvent.KEYCODE_BACK -> if (webview.canGoBack()) {
                     webview.goBack()
@@ -288,11 +256,10 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
                 }
                 super.onProgressChanged(view, newProgress)
             }
-
         }
     }
 
-    private fun getWebviewClient(): TkpdWebViewClient {
+    private fun getWebViewClient(): TkpdWebViewClient {
         return object : TkpdWebViewClient() {
 
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
@@ -318,7 +285,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-//                webview.loadUrl("javascript:window.WebViewResizer.processHeight(document.querySelector('body').offsetHeight);")
+                setWebviewContentHeight(behavior.peekHeight)
                 super.onPageFinished(view, url)
             }
         }
@@ -360,7 +327,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-            loadWebview()
+            loadWebView()
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
@@ -368,16 +335,33 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
     private fun getHeaderPlay(): HashMap<String, String> {
         val header = HashMap<String, String>()
-        header[PARAM_HEADER_GC_TOKEN] = gcToken
+        header[PARAM_HEADER_GC_TOKEN] = userSession.gcToken
         return header
     }
 
 
-    private inner class WebViewResizer {
-        @JavascriptInterface
-        fun processHeight(height: Float) {
-            var webViewHeight = (height * resources.displayMetrics.density)
-            var marginTop = (10 * resources.displayMetrics.density)
+    companion object {
+        private const val REQUEST_CODE_LOGIN = 123
+        private const val PARAM_HEADER_GC_TOKEN: String = "X-User-Token"
+        private const val FIRST_STATE_HEIGHT = 600
+
+        //Chrome Client
+        private const val ATTACH_FILE_REQUEST = 1
+
+        fun createInstance(bundle: Bundle): PlayWebviewDialogFragment {
+            val fragment = PlayWebviewDialogFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+
+        fun createInstance(url: String): PlayWebviewDialogFragment {
+            val fragment = PlayWebviewDialogFragment()
+            val bundle = Bundle()
+            bundle.putBoolean(ApplinkConst.Play.PARAM_HAS_TITLEBAR, false)
+            bundle.putString(ApplinkConst.Play.PARAM_URL, url)
+            fragment.arguments = bundle
+            return fragment
         }
     }
+
 }

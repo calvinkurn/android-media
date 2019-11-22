@@ -3,13 +3,14 @@ package com.tokopedia.useridentification.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -17,17 +18,17 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycCommonUrl;
-import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
-import com.tokopedia.user_identification_common.subscriber.GetUserProjectInfoSubcriber;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 import com.tokopedia.useridentification.di.DaggerUserIdentificationComponent;
 import com.tokopedia.useridentification.di.UserIdentificationComponent;
-import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
+import com.tokopedia.useridentification.subscriber.GetApprovalStatusSubscriber;
+import com.tokopedia.useridentification.subscriber.GetUserProjectInfoSubcriber;
 import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
@@ -55,13 +56,16 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     private UserIdentificationAnalytics analytics;
     private int statusCode;
 
+    private int projectId = -1;
+
     @Inject
     UserIdentificationInfo.Presenter presenter;
 
-    public static UserIdentificationInfoFragment createInstance(boolean isSourceSeller) {
+    public static UserIdentificationInfoFragment createInstance(boolean isSourceSeller, int projectid) {
         UserIdentificationInfoFragment fragment = new UserIdentificationInfoFragment();
         Bundle args = new Bundle();
         args.putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller);
+        args.putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,11 +83,12 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             isSourceSeller = getArguments().getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER);
+            projectId = getArguments().getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
         }
         if (isSourceSeller) {
             goToFormActivity();
         }
-        analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
+        analytics = UserIdentificationAnalytics.createInstance(projectId);
     }
 
     @Override
@@ -121,7 +126,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
 
     private void getStatusInfo() {
         showLoading();
-        presenter.getInfo();
+        presenter.getInfo(projectId);
     }
 
     @Override
@@ -130,7 +135,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             hideLoading();
             showStatusBlacklist();
         } else {
-            presenter.getStatus();
+            presenter.getStatus(projectId);
         }
     }
 
@@ -318,8 +323,10 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     }
 
     private void goToFormActivity() {
-        Intent intent = UserIdentificationFormActivity.getIntent(getContext());
-        startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
+        if(getActivity() != null){
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, String.valueOf(projectId));
+            startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM);
+        }
     }
 
     @Override

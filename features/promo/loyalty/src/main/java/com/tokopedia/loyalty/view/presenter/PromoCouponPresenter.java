@@ -7,10 +7,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
 import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
@@ -47,16 +45,14 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     private static final String PARAM_LANG = "lang";
     private final IPromoCouponInteractor promoCouponInteractor;
     private final IPromoCouponView view;
-    private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
     private TrainCheckVoucherUseCase trainCheckVoucherUseCase;
     private UserSession userSession;
 
     @Inject
-    public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase,
+    public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor,
                                 TrainCheckVoucherUseCase trainCheckVoucherUseCase, UserSession userSession) {
         this.view = view;
         this.promoCouponInteractor = promoCouponInteractor;
-        this.flightCheckVoucherUseCase = flightCheckVoucherUseCase;
         this.trainCheckVoucherUseCase = trainCheckVoucherUseCase;
         this.userSession = userSession;
     }
@@ -206,51 +202,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         trainCheckVoucherUseCase.execute(
                 trainCheckVoucherUseCase.createVoucherRequest(reservationId, reservationCode, couponData.getCode()),
                 checkTrainVoucherSubscriber(couponData));
-    }
-
-    @Override
-    public void submitFlightVoucher(final CouponData data, String cartId) {
-        view.showProgressLoading();
-        flightCheckVoucherUseCase.execute(flightCheckVoucherUseCase.createCouponRequest(cartId, data.getCode()),
-                checkFlightCouponSubscriber(data));
-    }
-
-    @NonNull
-    private Subscriber<VoucherViewModel> checkFlightCouponSubscriber(final CouponData data) {
-        return new Subscriber<VoucherViewModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                view.hideProgressLoading();
-                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
-                    data.setErrorMessage(e.getMessage());
-                    view.couponError();
-                } else if (e instanceof MessageErrorException) {
-                    data.setErrorMessage(e.getMessage());
-                    view.showSnackbarError(e.getMessage());
-                } else {
-                    view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
-            }
-
-            @Override
-            public void onNext(VoucherViewModel voucherViewModel) {
-                CouponViewModel viewModel = new CouponViewModel();
-                viewModel.setAmount(voucherViewModel.getAmount());
-                viewModel.setCode(voucherViewModel.getCode());
-                viewModel.setRawCashback(voucherViewModel.getRawCashback());
-                viewModel.setRawDiscount(voucherViewModel.getRawDiscount());
-                viewModel.setMessage(voucherViewModel.getMessage());
-                viewModel.setTitle(data.getTitle());
-                viewModel.setSuccess(true);
-                view.receiveDigitalResult(viewModel);
-                view.hideProgressLoading();
-            }
-        };
     }
 
     @Override
@@ -439,7 +390,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.sendTrackingOnCheckTrainVoucherError(e.getMessage());
                 e.printStackTrace();
                 view.hideProgressLoading();
                 if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {

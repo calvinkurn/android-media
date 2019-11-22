@@ -13,7 +13,9 @@
     <string name="name_confirmation">Apakah nama lengkap Anda sudah benar?</string>
     <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
     <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
-    <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 128 karakter</string>
+    <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 35 karakter</string>
+    <string name="error_name_too_long_35">Nama lengkap terlalu panjang, maksimal 35 karakter</string>
+    <string name="error_name_same_with_previous">Nama tidak boleh sama</string>
     <string name="name_confirmation_yes">Ya, benar</string>
     <string name="name_confirmation_no">Tidak</string>
     <string name="error_minimal_name">Minimum 3 karakter</string>
@@ -25,7 +27,12 @@
     <string name="term_pl">https://m.tokopedia.com/terms.pl?device=android&amp;flag_app=1</string>
     <string name="bottom_info_terms_and_privacy">Dengan mendaftar, saya menyetujui \n &lt;font
         color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt; serta &lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
-
+    <string name="change_name_note">Kamu hanya dapat mengubah nama satu kali. Pastikan nama sudah benar.</string>
+    <string name="change_name_fullname">Nama Lengkap</string>
+    <string name="change_name_visible_on_public_note">Nama akan terlihat oleh publik</string>
+    <string name="change_name_visible_on_another_user">Nama dapat dilihat oleh pengguna lainnya</string>
+    <string name="change_name_change_success">Nama lengkap berhasil diubah</string>
+  
     <!-- PROFILE COMPLETION -->
     <string name="title_profile_completion">Lengkapi Profil</string>
 
@@ -85,6 +92,9 @@
     <!-- CHANGE PHONE -->
     <string name="success_change_phone_number">Nomor telepon berhasil diubah</string>
 
+    <!-- CHANGE PIN -->
+    <string name="title_change_pin">Ubah PIN Tokopedia</string>
+
     <!-- CHANGE EMAIL -->
     <string name="cannot_change_email">Untuk saat ini, kamu hanya bisa mengubah email akun Tokopedia dari komputer</string>
     <string name="title_change_email_dialog">Pengubahan email</string>
@@ -107,8 +117,10 @@
 
     <!--ADD PIN-->
     <string name="title_onboard_pin">Tambahkan keamanan ekstra dengan PIN Tokopedia</string>
-    <string name="subtitle_onboard_pin">Gunakan PIN Tokopedia ketika transaksi dan penarikan dana menggunakan Saldo Tokopedia</string>
+    <string name="subtitle_onboard_pin">Supaya login selanjutnya lebih mudah, yuk gunakan PIN Tokopedia!</string>
+    <string name="subtitle_onboard_pin_2">PIN juga dapat digunakan ketika transaksi Saldo Tokopedia, lho.</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
+    <string name="ignore_pin">Nanti Saja</string>
     <string name="title_dialog_add_phone">Tambah Nomor HP</string>
     <string name="subtitle_dialog_add_phone">Tambah &amp; verifikasi nomor HP terlebih dahulu sebelum membuat PIN</string>
     <string name="cancel_dialog_add_phone">Batal</string>
@@ -117,4 +129,22 @@
     <string name="confirm_create_pin">Konfirmasi PIN Tokopedia</string>
     <string name="subtitle_confirm_create_pin">Masukkan kembali PIN Tokopedia kamu</string>
     <string name="error_wrong_pin">PIN yang Anda masukkan tidak sesuai</string>
+    <string name="complete_add_pin">Selesai</string>
+    <string name="title_complete_add_pin">PIN Tokopedia Kamu Berhasil Disimpan</string>
+    <string name="subtitle_complete_add_pin">PIN Tokopedia digunakan untuk meningkatkan keamanan transaksi kamu</string>
+    <string name="ticker_complete_add_pin">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun</string>
+
+    <!--ERROR MESSAGE-->
+    <string name="error_from_cotp">cotp failed</string>
+
+    <!--CHANGE PIN-->
+    <string name="change_pin_success">PIN Tokopedia Kamu Berhasil Diubah</string>
+    <string name="change_pin_input_old_pin">Masukkan PIN Lama Tokopedia kamu</string>
+    <string name="change_pin_title_old_pin">PIN Lama Tokopedia</string>
+    <string name="change_pin_forgot_btn">Lupa PIN Tokopedia?</string>
+    <string name="change_pin_avoid_info">Hindari menggunakan kombinasi angka yang mudah ditebak, seperti tanggal lahir atau nomor telepon.</string>
+    <string name="change_pin_title_new_pin">PIN Baru Tokopedia</string>
+    <string name="change_pin_subtitle_new_pin">Masukkan PIN Baru kamu</string>
+    <string name="change_pin_title_setting">Atur Ulang PIN Tokopedia</string>
+
 </resources>

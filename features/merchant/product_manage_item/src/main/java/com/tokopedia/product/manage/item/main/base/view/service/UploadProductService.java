@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
+import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.item.BuildConfig;
@@ -34,10 +35,13 @@ import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAd
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.product.manage.item.utils.ErrorHandlerAddProduct;
 import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance;
+import com.tokopedia.product.manage.item.utils.constant.AddProductTrackingConstant;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -127,6 +131,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         notificationManager.notify(TAG, productSubmitNotificationListener.getId(), notification);
         removeNotificationFromList(productSubmitNotificationListener.getId());
         eventAddProductErrorServer(errorMessage);
+        eventServerValidationAddProduct(userSession.getShopId(),errorMessage);
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         Bundle bundle = new Bundle();
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
@@ -148,17 +153,38 @@ public class UploadProductService extends BaseService implements AddProductServi
                 label);
     }
 
+    private void eventServerValidationAddProduct(String shopId, String errorText){
+        Map<String, Object> mapEvent = TrackAppUtils.gtmData(
+                AddProductTrackingConstant.Event.CLICK_ADD_PRODUCT,
+                AddProductTrackingConstant.Category.ADD_PRODUCT_PAGE,
+                AddProductTrackingConstant.Action.CLICK_ADD_ERROR_SERVER_VALIDATION,
+                errorText
+        );
+        mapEvent.put(AddProductTrackingConstant.Key.SHOP_ID, shopId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(mapEvent);
+    }
+
     private void logException(Throwable t) {
         try {
             if (!BuildConfig.DEBUG) {
-                String errorMessage = String.format("Error add product. userId: %s | userEmail: %s",
+                String errorMessage = String.format("Error add product. userId: %s | userEmail: %s | %s",
                         userSession.getUserId(),
-                        userSession.getEmail());
+                        userSession.getEmail(),
+                        getExceptionMessage(t));
                 AddProductException exception = new AddProductException(errorMessage, t);
                 Crashlytics.logException(exception);
             }
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private String getExceptionMessage(Throwable t) {
+        if (t instanceof ResponseV4ErrorException
+                && ((ResponseV4ErrorException) t).getErrorList().size() > 0) {
+            return ((ResponseV4ErrorException) t).getErrorList().get(0);
+        } else {
+            return t.getLocalizedMessage();
         }
     }
 

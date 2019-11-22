@@ -17,19 +17,20 @@
         android:paddingBottom="@dimen/dp_8"
         tools:layout_height="match_parent">
 
-        <com.tokopedia.design.image.SquareImageView
+        <ImageView
             android:id="@+id/imageProduct"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:gravity="center"
+            app:layout_constraintDimensionRatio="H,1:1"
             android:scaleType="centerCrop"
-            android:visibility="gone"
+            android:visibility="visible"
+            android:src="@drawable/error_drawable"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"
-            tools:src="@color/colorPink"/>
+            tools:visibility="visible"/>
 
         <ImageView
             android:id="@+id/buttonWishlist"
@@ -300,7 +301,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:gravity="center"
-            android:scaleType="fitXY"
+            android:scaleType="fitStart"
             android:adjustViewBounds="true"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageProduct"

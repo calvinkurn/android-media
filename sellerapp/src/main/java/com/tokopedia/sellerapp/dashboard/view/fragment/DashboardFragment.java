@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,7 +43,6 @@ import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.SellerRouter;
@@ -182,7 +183,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             @Override
             public void onClick(View v) {
                 powerMerchantTracking.eventUpgradeShopHome();
-                RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
+                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
             }
         });
 
@@ -610,9 +611,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
             @Override
             public void onClick(View view, String messageClick) {
-                Intent intent = new Intent(getActivity(), BannerWebView.class);
-                intent.putExtra("url", messageClick);
-                startActivity(intent);
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, messageClick);
             }
         });
         tickerView.setOnPageChangeListener(new TickerView.OnPageChangeListener() {
@@ -789,7 +788,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                     IMG_URL_RM_ILLUSTRATION,
                     getString(R.string.pm_popup_regular_btn), ""
             );
-            redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
+            redirectUrl = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE;
         }
 
         if (!shopStatusModel.isTransitionPeriod() && popUpManager.isEverPowerMerchant(shopId)) {
@@ -825,7 +824,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         IMG_URL_PM_IDLE,
                         getString(R.string.pm_popup_deactivated_btn),""
                 );
-                redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
+                redirectUrl = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE;
             }
         }
 

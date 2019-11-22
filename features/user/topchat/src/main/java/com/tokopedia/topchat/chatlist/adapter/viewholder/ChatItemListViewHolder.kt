@@ -49,9 +49,7 @@ class ChatItemListViewHolder(
 
         data?.let { contact ->
             itemView.setOnClickListener {
-                attributes.readStatus = STATE_CHAT_READ
-                bindReadState(attributes.readStatus, attributes.unreads)
-                listener.chatItemClicked(element)
+                onChatItemClicked(element)
             }
 
             itemView.setOnLongClickListener {
@@ -68,6 +66,18 @@ class ChatItemListViewHolder(
             bindLabel(contact.tag)
         }
 
+    }
+
+    private fun onChatItemClicked(chat: ItemChatListPojo) {
+        val attributes = chat.attributes
+
+        if (chat.isUnread() && attributes != null) {
+            chat.markAsRead()
+            listener.decreaseNotificationCounter()
+            bindReadState(attributes.readStatus, attributes.unreads)
+        }
+
+        listener.chatItemClicked(chat, adapterPosition)
     }
 
     private fun showLongClickMenu(element: ItemChatListPojo) {
@@ -92,6 +102,7 @@ class ChatItemListViewHolder(
     }
 
     private fun delete(element: ItemChatListPojo) {
+        listener.trackDeleteChat(element)
         listener.deleteChat(element, adapterPosition)
     }
 
@@ -120,7 +131,7 @@ class ChatItemListViewHolder(
 
     private fun responseSuccessChangeStateRead(list: List<ChatStateItem>, element: ItemChatListPojo) {
         for (state in list) {
-            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+            if (element.hasTheSameMsgId(state) && state.isSuccess()) {
                 changeStateMarkAsRead(element)
             }
         }
@@ -132,13 +143,14 @@ class ChatItemListViewHolder(
                 readStatus = STATE_CHAT_READ
                 bindReadState(readStatus, unreads)
                 listener.decreaseNotificationCounter()
+                listener.trackChangeReadStatus(element)
             }
         }
     }
 
     private fun responseSuccessChangeStateUnread(list: List<ChatStateItem>, element: ItemChatListPojo) {
         for (state in list) {
-            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+            if (element.hasTheSameMsgId(state) && state.isSuccess()) {
                 changeStateMarkAsUnread(element)
             }
         }
@@ -150,6 +162,7 @@ class ChatItemListViewHolder(
                 readStatus = STATE_CHAT_UNREAD
                 bindReadState(readStatus, unreads)
                 listener.increaseNotificationCounter()
+                listener.trackChangeReadStatus(element)
             }
         }
     }
@@ -237,7 +250,7 @@ class ChatItemListViewHolder(
 
         val now = Calendar.getInstance()
 
-        val timeFormatString = "hh:mm"
+        val timeFormatString = "HH:mm"
         val dateTimeFormatString = "dd MMM"
         val dateTimeYearFormatString = "dd MMM yy"
         val HOURS = (60 * 60 * 60).toLong()
@@ -267,6 +280,7 @@ class ChatItemListViewHolder(
         const val PAYLOAD_TYPING_STATE = 3207
         const val PAYLOAD_STOP_TYPING_STATE = 5431
 
+        const val BUYER_TAG = "Pengguna"
         const val SELLER_TAG = "Penjual"
         const val OFFICIAL_TAG = "Official"
     }

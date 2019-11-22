@@ -45,6 +45,10 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         return FallbackAttachmentViewHolder.LAYOUT
     }
 
+    override fun type(bannedAttachmentViewModel: BannedProductAttachmentViewModel): Int {
+        return BannedProductAttachmentViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             TypingChatViewHolder.LAYOUT -> TypingChatViewHolder(parent)
@@ -53,6 +57,7 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
             ImageUploadViewHolder.LAYOUT -> ImageUploadViewHolder(parent, imageUploadListener)
             FallbackAttachmentViewHolder.LAYOUT -> FallbackAttachmentViewHolder(parent, chatLinkHandlerListener)
             ProductAttachmentViewHolder.LAYOUT -> ProductAttachmentViewHolder(parent, productAttachmentListener)
+            BannedProductAttachmentViewHolder.LAYOUT -> BannedProductAttachmentViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

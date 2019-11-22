@@ -8,24 +8,41 @@ import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_DETAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalPlay.GROUPCHAT_LIST
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_AUTOADS
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OVO_PAY_WITH_QR_ENTRY
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.OQR_PIN_URL_ENTRY
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -50,6 +67,7 @@ import java.io.InputStreamReader
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
+    private val DFM_GROUPCHAT = "groupchat"
     private val DFM_SIMILAR_SEARCH = "similarsearch"
     private val DFM_IMAGE_SEARCH = "image_search"
     private val DFM_AUTOCOMPLETE = "autocomplete"
@@ -59,8 +77,12 @@ object DeeplinkDFMapper {
     val DFM_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val DFM_SHOP_OPEN_CUSTOMERAPP = "shop_open"
     private val DFM_HOTEL_TRAVEL = "hotel_travel"
+    private val DFM_FLIGHT_TRAVEL = "flight_travel"
     private val DFM_DIGITAL_TOPUP = "digital_topup"
+    private val DFM_VOUCHER_GAME = "voucher_game"
+    private val DFM_DIGITAL_DEALS = "digital_deals"
     private val DFM_USER_PROFILE_COMPLETION = "profilecompletion"
+    private val DFM_USER_CHANGE_PHONE_NUMBER = "changephonenumber"
     private val DFM_USER_SETTING_BANK = "settingbank"
     private val DFM_HOMEPAGE_TRAVEL = "homepage_travel"
     private val DFM_CUSTOMER_TOPADS_DASHBOARD = "customer_topads_dashboard"
@@ -70,9 +92,21 @@ object DeeplinkDFMapper {
     private val DFM_CUSTOMER_REPORT_PRODUCT = "customer_report_product"
     private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
     private val DFM_AGE_RESTRICTION = "age_restriction"
+    private val DFM_TOKOPOINTS = "tokopoints"
+    private var DFM_MODULE_FINTECH_INSTANT_LOAN = "instantloan"
+    private val DFM_CONTACT_US = "contact_us"
     private val DFM_SALDO_DEPOSIT = "saldo_deposit"
+    private val DFM_OVOP2P = "ovop2p"
     private val DFM_SALDO_INTRO = "saldo_deposit"
+    private val DFM_OVO_PAY_WITH_QR = "df_ovo_pay_with_qr"
+    private val DFM_REFERRAL = "im_referral"
+    private val DFM_WALLET = "fintech_wallet"
+    private val DFM_PROFILE = "profile"
+    private val DFM_CHAT_BOT = "chatbot"
+    private val DFM_POWER_MERCHANT_SUBSCRIBE = "power_merchant_subscribe"
 
+    @JvmField
+    val DFM_ONBOARDING = "onboarding"
 
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
@@ -81,10 +115,21 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(IMAGE_SEARCH_RESULT) }, DFM_IMAGE_SEARCH, R.string.title_image_search))
             add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, DFM_HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWith(HOTEL) }, DFM_HOTEL_TRAVEL, R.string.title_hotel))
+            add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DFM_GROUPCHAT, R.string.title_groupchat))
+            add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DFM_GROUPCHAT, R.string.title_groupchat))
+            add(DFP({ it.startsWith(FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
+            add(DFP({ it.startsWith(INTERNAL_FLIGHT) }, DFM_FLIGHT_TRAVEL, R.string.title_flight))
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL_TOPUP, R.string.digital_topup_title))
+            add(DFP({ it.startsWith(VOUCHER_GAME) }, DFM_VOUCHER_GAME, R.string.title_voucher_game))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
+            add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DFM_DIGITAL_DEALS, R.string.title_digital_deals))
             add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
             add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
+            add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DFM_USER_CHANGE_PHONE_NUMBER, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(SETTING_BANK) }, DFM_USER_SETTING_BANK, R.string.applink_setting_bank_title))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_CUSTOMER_REPORT_PRODUCT, R.string.applink_report_title))
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_CUSTOMER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
@@ -93,8 +138,23 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(AUTOCOMPLETE) }, DFM_AUTOCOMPLETE, R.string.title_autocomplete))
             add(DFP({ it.startsWith(SEARCH_RESULT) }, DFM_SEARCH_RESULT, R.string.title_search_result))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
+            add(DFP({it.startsWith(INTERNAL_TOKOPOINTS)},DFM_TOKOPOINTS,R.string.title_tokopoints))
             add(DFP({it.startsWith(SALDO_DEPOSIT)}, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
             add(DFP({it.startsWith(SALDO_INTRO)}, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
+            add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DFM_OVOP2P, R.string.title_ovop2p))
+            add(DFP({ it.startsWith(SALDO_DEPOSIT) }, DFM_SALDO_DEPOSIT, R.string.applink_saldo_deposit_title))
+            add(DFP({ it.startsWith(SALDO_INTRO) }, DFM_SALDO_INTRO, R.string.applink_saldo_intro_title))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN_TAB)
+                    || it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
+            add(DFP({ it.startsWith(REFERRAL) }, DFM_REFERRAL, R.string.applink_title_im_referral))
+            add(DFP({it.startsWith(OVO_WALLET)}, DFM_WALLET, R.string.applink_wallet_title))
+            add(DFP({ it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) }, DFM_CONTACT_US, R.string.applink_title_contact_us))
+            add(DFP({ it.startsWithPattern(PROFILE) }, DFM_PROFILE, R.string.applink_title_profile))
+            add(DFP({it.startsWith(CHAT_BOT)}, DFM_CHAT_BOT, R.string.title_applink_chatbot))
+            add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DFM_POWER_MERCHANT_SUBSCRIBE, R.string.title_applink_pm_subscribe))
+            add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
+            add(DFP({it.startsWith(OQR_PIN_URL_ENTRY)}, DFM_OVO_PAY_WITH_QR, R.string.ovo_pay_with_qr_title))
         }
     }
 
@@ -238,11 +298,11 @@ object DeeplinkDFMapper {
  * Class to hold dynamic feature pattern, used for mapping
  */
 class DFP(
-        val logic: ((deeplink: String) -> Boolean),
-        val moduleId: String,
-        val moduleNameResourceId: Int
+    val logic: ((deeplink: String) -> Boolean),
+    val moduleId: String,
+    val moduleNameResourceId: Int
 )
 
 fun String.startsWithPattern(prefix: String): Boolean {
-    return startsWith(prefix.substringBefore("{"))
+    return startsWith(prefix.substringBefore("{")) || startsWith(prefix.substringBefore("?"))
 }

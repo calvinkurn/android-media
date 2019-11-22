@@ -25,6 +25,7 @@ query Notification($cursor: String) {
       notification
     }
     buyerOrderStatus {
+      paymentStatus
       confirmed
       processed
       shipped

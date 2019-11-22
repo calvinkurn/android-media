@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,7 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DateHelper;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
-import com.tokopedia.home.beranda.helper.StartSnapHelper;
+import com.tokopedia.home.beranda.helper.GravitySnapHelper;
 import com.tokopedia.home.beranda.listener.GridItemClickListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
@@ -91,7 +92,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(itemAdapter);
         recyclerView.addItemDecoration(new SpacingItemDecoration(convertDpToPixel(16, context), SpacingItemDecoration.Companion.getHORIZONTAL()));
-        SnapHelper snapHelper = new StartSnapHelper();
+        GravitySnapHelper snapHelper = new GravitySnapHelper(Gravity.START);
         snapHelper.attachToRecyclerView(recyclerView);
     }
 

@@ -250,8 +250,8 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         UserSessionInterface userSession = new UserSession(context);
         if (userSession.hasPassword()) {
 
-            float sellerBalance = getView().getSellerSaldoBalance();
-            float buyerBalance = getView().getBuyerSaldoBalance();
+            long sellerBalance = getView().getSellerSaldoBalance();
+            long buyerBalance = getView().getBuyerSaldoBalance();
 
             long minSaldoLimit = 10000;
             if (sellerBalance < minSaldoLimit && buyerBalance < minSaldoLimit) {

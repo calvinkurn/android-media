@@ -1,0 +1,8 @@
+include "libraries:inappupdate"
+
+include "features:discovery:global_nav_widget"
+
+include "libraries:kotlin_extensions"
+
+include "tkpdabstraction"
+include "tkpddesign"

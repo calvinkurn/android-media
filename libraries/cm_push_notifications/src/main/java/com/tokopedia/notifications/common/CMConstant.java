@@ -88,6 +88,7 @@ public interface CMConstant {
         String PRODUCT_INFO_LIST = "product_info_list";
         String PARENT_ID = "parentId";
         String CAMPAIGN_USER_TOKEN = "campaignUserToken";
+        String ELEMENT_ID="id";
     }
 
     interface ReceiverExtraData {

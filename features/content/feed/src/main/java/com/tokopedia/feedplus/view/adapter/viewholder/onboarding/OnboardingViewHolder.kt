@@ -78,5 +78,6 @@ class OnboardingViewHolder(
 
     override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
         updateButtonCheckRecommendation()
+        listener.onInterestPickItemClicked(item)
     }
 }

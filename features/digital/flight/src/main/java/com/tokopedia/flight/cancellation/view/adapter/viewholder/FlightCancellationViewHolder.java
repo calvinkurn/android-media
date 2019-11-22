@@ -1,9 +1,6 @@
 package com.tokopedia.flight.cancellation.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +8,16 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
-import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ import static com.tokopedia.flight.booking.constant.FlightBookingPassenger.INFAN
 public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCancellationViewModel> {
 
     @LayoutRes
-    public static int LAYOUT = R.layout.item_flight_cancellation;
+    public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_cancellation;
 
     public interface FlightCancellationListener {
         void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
@@ -67,13 +68,13 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         context = itemView.getContext();
         listener = flightCancellationListener;
 
-        txtDepartureDetail = itemView.findViewById(R.id.tv_departure_time_label);
-        txtJourneyDetail = itemView.findViewById(R.id.tv_journey_detail_label);
-        txtAirlineName = itemView.findViewById(R.id.airline_name);
-        txtDuration = itemView.findViewById(R.id.duration);
-        checkBoxFlight = itemView.findViewById(R.id.checkbox);
+        txtDepartureDetail = itemView.findViewById(com.tokopedia.flight.R.id.tv_departure_time_label);
+        txtJourneyDetail = itemView.findViewById(com.tokopedia.flight.R.id.tv_journey_detail_label);
+        txtAirlineName = itemView.findViewById(com.tokopedia.flight.R.id.airline_name);
+        txtDuration = itemView.findViewById(com.tokopedia.flight.R.id.duration);
+        checkBoxFlight = itemView.findViewById(com.tokopedia.flight.R.id.checkbox);
 
-        verticalRecyclerView = itemView.findViewById(R.id.recycler_view_passenger);
+        verticalRecyclerView = itemView.findViewById(com.tokopedia.flight.R.id.recycler_view_passenger);
         verticalRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         passengerAdapter = new PassengerAdapter();
         verticalRecyclerView.setAdapter(passengerAdapter);
@@ -83,11 +84,11 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
     @Override
     public void bind(FlightCancellationViewModel element) {
 
-        String departureCityAirportCode = (element.getFlightCancellationJourney().getDepartureCityCode().isEmpty() ||
+        String departureCityAirportCode = (element.getFlightCancellationJourney().getDepartureCityCode() == null ||
                 element.getFlightCancellationJourney().getDepartureCityCode().length() == 0) ?
                 element.getFlightCancellationJourney().getDepartureAiportId() :
                 element.getFlightCancellationJourney().getDepartureCityCode();
-        String arrivalCityAirportCode = (element.getFlightCancellationJourney().getArrivalCityCode().isEmpty() ||
+        String arrivalCityAirportCode = (element.getFlightCancellationJourney().getArrivalCityCode() == null ||
                 element.getFlightCancellationJourney().getArrivalCityCode().length() == 0) ?
                 element.getFlightCancellationJourney().getArrivalAirportId() :
                 element.getFlightCancellationJourney().getArrivalCityCode();
@@ -106,7 +107,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
 
         txtDepartureDetail.setText(
-                String.format(context.getString(R.string.flight_cancellation_journey_title),
+                String.format(context.getString(com.tokopedia.flight.R.string.flight_cancellation_journey_title),
                         getAdapterPosition() + 1,
                         departureDate)
         );
@@ -119,7 +120,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         );
         txtAirlineName.setText(element.getFlightCancellationJourney().getAirlineName());
         txtDuration.setText(
-                String.format(getString(R.string.flight_booking_trip_info_airport_format),
+                String.format(getString(com.tokopedia.flight.R.string.flight_booking_trip_info_airport_format),
                         departureTime,
                         arrivalTime)
         );
@@ -173,7 +174,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         @Override
         public PassengerViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             View view = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.item_flight_cancellation_passenger, viewGroup, false);
+                    .inflate(com.tokopedia.flight.R.layout.item_flight_cancellation_passenger, viewGroup, false);
             return new PassengerViewHolder(view, this);
         }
 
@@ -233,6 +234,7 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         private TextView txtPassengerName;
         private TextView txtPassengerType;
         private CheckBox checkBoxPassenger;
+        private Typography tgPassengerStatus;
         private boolean isPassengerChecked = false;
         private FlightCancellationPassengerViewModel passengerViewModel;
         private int adapterPosition = -1;
@@ -243,9 +245,10 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
             this.passengerListener = passengerListener;
 
-            txtPassengerName = itemView.findViewById(R.id.tv_passenger_name);
-            txtPassengerType = itemView.findViewById(R.id.tv_passenger_type);
-            checkBoxPassenger = itemView.findViewById(R.id.checkbox);
+            txtPassengerName = itemView.findViewById(com.tokopedia.flight.R.id.tv_passenger_name);
+            txtPassengerType = itemView.findViewById(com.tokopedia.flight.R.id.tv_passenger_type);
+            checkBoxPassenger = itemView.findViewById(com.tokopedia.flight.R.id.checkbox);
+            tgPassengerStatus = itemView.findViewById(com.tokopedia.flight.R.id.tg_passenger_status);
 
             checkBoxPassenger.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -266,21 +269,26 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
             this.passengerViewModel = passengerViewModel;
             this.adapterPosition = adapterPosition;
 
+            if (passengerViewModel.getStatusString() != null && passengerViewModel.getStatusString().length() > 0) {
+                tgPassengerStatus.setText(passengerViewModel.getStatusString());
+                itemView.setEnabled(false);
+            }
+
             txtPassengerName.setText(String.format("%s %s %s", passengerViewModel.getTitleString(),
                     passengerViewModel.getFirstName(), passengerViewModel.getLastName()));
 
             switch (passengerViewModel.getType()) {
                 case ADULT:
-                    txtPassengerType.setText(R.string.flightbooking_price_adult_label);
+                    txtPassengerType.setText(com.tokopedia.flight.R.string.flightbooking_price_adult_label);
                     break;
                 case CHILDREN:
-                    txtPassengerType.setText(R.string.flightbooking_price_child_label);
+                    txtPassengerType.setText(com.tokopedia.flight.R.string.flightbooking_price_child_label);
                     break;
                 case INFANT:
-                    txtPassengerType.setText(R.string.flightbooking_price_infant_label);
+                    txtPassengerType.setText(com.tokopedia.flight.R.string.flightbooking_price_infant_label);
                     break;
                 default:
-                    txtPassengerType.setText(R.string.flightbooking_price_adult_label);
+                    txtPassengerType.setText(com.tokopedia.flight.R.string.flightbooking_price_adult_label);
             }
 
             updateCheckedButton(listener.isChecked(passengerViewModel));

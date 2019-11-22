@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/transparent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_16">
 
@@ -249,12 +249,13 @@
                             android:scaleType="fitCenter"
                             app:srcCompat="@drawable/ic_thumb"
                             android:visibility="visible"
+                            android:layout_gravity="center"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/likeText"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:visibility="visible" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/likeText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -264,10 +265,10 @@
                             android:paddingEnd="@dimen/dp_16"
                             android:paddingRight="@dimen/dp_16"
                             android:text="@string/kol_action_like"
+                            android:layout_gravity="center"
                             android:textColor="@color/color_like_comment_share"
-                            android:textSize="@dimen/sp_12"
-                            android:textStyle="normal"
                             android:visibility="visible"
+                            app:typographyType="body_3"
                             tools:ignore="RtlSymmetry"
                             tools:visibility="visible" />
 
@@ -277,12 +278,13 @@
                             android:layout_height="@dimen/dp_18"
                             android:contentDescription="@string/kol_action_comment"
                             android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/ic_comment"
+                            app:srcCompat="@drawable/ic_feed_comment"
                             android:visibility="visible"
+                            android:layout_gravity="center"
                             tools:ignore="RtlSymmetry"
                             tools:visibility="visible" />
 
-                        <TextView
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/commentText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -292,10 +294,10 @@
                             android:paddingEnd="@dimen/dp_16"
                             android:paddingRight="@dimen/dp_16"
                             android:text="@string/kol_action_comment"
+                            android:layout_gravity="center"
                             android:textColor="@color/color_like_comment_share"
-                            android:textSize="@dimen/sp_12"
-                            android:textStyle="normal"
                             android:visibility="visible"
+                            app:typographyType="body_3"
                             tools:ignore="RtlSymmetry"
                             tools:visibility="visible" />
                     </LinearLayout>

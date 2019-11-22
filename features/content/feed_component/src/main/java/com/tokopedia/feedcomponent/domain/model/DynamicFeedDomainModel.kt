@@ -8,5 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 data class DynamicFeedDomainModel (
         var postList: MutableList<Visitable<*>> = ArrayList(),
         var cursor: String = "",
+        var firstPageCursor: String = "",
         var hasNext: Boolean = false
 )

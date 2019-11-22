@@ -2,7 +2,6 @@ package com.tokopedia.promocheckout.detail.view.fragment
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -21,18 +20,15 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
-import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
-import com.tokopedia.promocheckout.detail.model.userpoints.UserPointsResponse
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailContract
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailPresenter
 import com.tokopedia.promocheckout.widget.ImageUtil
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
+
 
 class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetailContract.View {
 
@@ -113,10 +109,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         return activity
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-    }
-
     override fun initInjector() {
         DaggerPromoCheckoutDetailComponent.builder()
                 .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
@@ -129,8 +121,9 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     }
 
     override fun showCouponDetail(cta: String?, code: String?, title: String?) {
-        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
+        activity?.startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
                 activity, code, oneClickShipment = false, pageTracking = 0, promo = promo), REQUEST_CODE_DETAIL_PROMO)
+
     }
 
     override fun showValidationMessageDialog(item: HachikoCatalogDetail, title: String, message: String, resCode: Int) {
@@ -144,7 +137,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val buttonDismiss = viewRedeemCoupon.findViewById<TextView>(R.id.button1)
 
         when (resCode) {
-            couponRedemptionCode_LOW_POINT -> button.text = getString(R.string.promo_popup_ok)
+            couponRedemptionCode_LOW_POINT -> {
+                button.text = getString(R.string.promo_popup_ok)
+                buttonDismiss.visibility = View.GONE
+            }
             couponRedemptionCode_PROFILE_INCOMPLETE -> {
                 button.text = getString(R.string.promo_popup_button_positive_one)
                 buttonDismiss.text = getString(R.string.promo_popup_button_negative_one)
@@ -155,9 +151,11 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             }
             couponRedemptionCode_QUOTA_LIMIT_REACHED -> {
                 button.text = getString(R.string.promo_popup_ok)
+                buttonDismiss.visibility = View.GONE
             }
             else -> {
                 button.text = getString(R.string.promo_popup_ok)
+                buttonDismiss.visibility = View.GONE
             }
         }
 
@@ -197,7 +195,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val quota = view?.findViewById<Typography>(R.id.text_quota_count)
         val description = view?.findViewById<Typography>(R.id.text_description)
         val disabledError = view?.findViewById<Typography>(R.id.text_disabled_error)
-        val bottomSeparator = view?.findViewById<View>(R.id.bottom_separator)
         val btnAction2 = view?.findViewById<Typography>(R.id.button_action_2)
         val imgBanner = view?.findViewById<ImageView>(R.id.img_banner)
         val labelPoint = view?.findViewById<Typography>(R.id.text_point_label)
@@ -226,7 +223,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             pointValue.visibility = View.VISIBLE
             pointValue.text = data.pointsStr
         }
-
 
         //Quota text handling
         if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
@@ -316,25 +312,5 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             return checkoutcatalogfragment
 
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_DETAIL_PROMO) {
-            if (resultCode == Activity.RESULT_OK) {
-                activity?.setResult(Activity.RESULT_OK, data)
-                activity?.finish()
-            } else {
-                val intent = Intent()
-                val bundle = data?.getExtras()
-                val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
-                intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
-                activity?.setResult(RESULT_CLASHING, intent)
-
-                if (clashingInfoDetailUiModel != null) {
-                    activity?.finish()
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 }

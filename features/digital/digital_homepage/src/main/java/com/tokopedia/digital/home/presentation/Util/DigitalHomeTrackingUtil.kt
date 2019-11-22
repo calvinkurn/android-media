@@ -72,22 +72,23 @@ class DigitalHomeTrackingUtil {
 
     }
 
-    fun eventCategoryImpression(item: DigitalHomePageCategoryModel.Submenu?, position: Int) {
+    fun eventCategoryImpression(items: List<DigitalHomePageCategoryModel.Submenu?>) {
         val products = mutableListOf<Any>()
-        products.add(DataLayer.mapOf(
-                NAME, item?.name,
-                POSITION, position,
-                ID, item?.id,
-                CREATIVE, item?.name,
-                CREATIVE_URL, item?.icon
-        ))
-
+        for ((index, item) in items.withIndex()) {
+            products.add(DataLayer.mapOf(
+                    NAME, item?.name,
+                    POSITION, index,
+                    ID, item?.id,
+                    CREATIVE, item?.name,
+                    CREATIVE_URL, item?.icon
+            ))
+        }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, PROMO_VIEW,
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, DYNAMIC_ICON_IMPRESSION,
-                        TrackAppUtils.EVENT_LABEL, "$position - ${item?.name}",
+                        TrackAppUtils.EVENT_LABEL, "",
                         ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, products))
                 ))
     }
@@ -128,6 +129,5 @@ class DigitalHomeTrackingUtil {
     fun eventClickFavNumber(){
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, FAVOURITE_NUMBER)
     }
-
 
 }

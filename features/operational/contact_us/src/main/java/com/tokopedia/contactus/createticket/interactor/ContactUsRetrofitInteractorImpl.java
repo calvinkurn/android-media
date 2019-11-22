@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core2.R;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.model.GenerateHostPass;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.etc.ContactUsService;
@@ -102,30 +102,30 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                                                 new ErrorHandler(new ErrorListener() {
                                                     @Override
                                                     public void onUnknown() {
-                                                        throw new RuntimeException(context.getString(R.string.default_request_error_unknown));
+                                                        throw new RuntimeException(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
                                                     }
 
                                                     @Override
                                                     public void onTimeout() {
-                                                        throw new RuntimeException(context.getString(R.string.default_request_error_timeout));
+                                                        throw new RuntimeException(context.getString(com.tokopedia.abstraction.R.string.default_request_error_timeout));
 
                                                     }
 
                                                     @Override
                                                     public void onServerError() {
-                                                        throw new RuntimeException(context.getString(R.string.default_request_error_internal_server));
+                                                        throw new RuntimeException(context.getString(com.tokopedia.abstraction.R.string.default_request_error_internal_server));
 
                                                     }
 
                                                     @Override
                                                     public void onBadRequest() {
-                                                        throw new RuntimeException(context.getString(R.string.default_request_error_bad_request));
+                                                        throw new RuntimeException(context.getString(com.tokopedia.abstraction.R.string.default_request_error_bad_request));
 
                                                     }
 
                                                     @Override
                                                     public void onForbidden() {
-                                                        throw new RuntimeException(context.getString(R.string.default_request_error_forbidden_auth));
+                                                        throw new RuntimeException(context.getString(com.tokopedia.abstraction.R.string.default_request_error_forbidden_auth));
 
                                                     }
                                                 }, tkpdResponse.code());
@@ -184,7 +184,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout(context.getString(R.string.default_request_error_timeout));
+                    listener.onTimeout(context.getString(com.tokopedia.abstraction.R.string.default_request_error_timeout));
                 } else {
                     listener.onError(e.getMessage());
                 }
@@ -212,27 +212,27 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError(context.getString(R.string.default_request_error_unknown));
+                            listener.onError(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onTimeout(context.getString(R.string.default_request_error_timeout));
+                            listener.onTimeout(context.getString(com.tokopedia.abstraction.R.string.default_request_error_timeout));
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError(context.getString(R.string.default_request_error_internal_server));
+                            listener.onError(context.getString(com.tokopedia.abstraction.R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError(context.getString(R.string.default_request_error_bad_request));
+                            listener.onError(context.getString(com.tokopedia.abstraction.R.string.default_request_error_bad_request));
                         }
 
                         @Override
                         public void onForbidden() {
-                            listener.onError(context.getString(R.string.default_request_error_forbidden_auth));
+                            listener.onError(context.getString(com.tokopedia.abstraction.R.string.default_request_error_forbidden_auth));
                         }
                     }, response.code());
                 }
@@ -302,7 +302,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                         try {
                             file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
                         } catch (IOException e) {
-                            throw new RuntimeException(context.getString(R.string.error_upload_image));
+                            throw new RuntimeException(context.getString(R.string.contact_us_error_upload_image));
                         }
                         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                                 networkCalculator.getContent().get(NetworkCalculator.USER_ID));
@@ -475,9 +475,9 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout(context.getString(R.string.default_request_error_timeout));
+                    listener.onTimeout(context.getString(com.tokopedia.abstraction.R.string.default_request_error_timeout));
                 } else {
-                    listener.onError(context.getString(R.string.default_request_error_unknown));
+                    listener.onError(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
                 }
             }
 
@@ -496,27 +496,27 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError(context.getString(R.string.default_request_error_unknown));
+                            listener.onError(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onTimeout(context.getString(R.string.default_request_error_timeout));
+                            listener.onTimeout(context.getString(com.tokopedia.abstraction.R.string.default_request_error_timeout));
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError(context.getString(R.string.default_request_error_internal_server));
+                            listener.onError(context.getString(com.tokopedia.abstraction.R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError(context.getString(R.string.default_request_error_bad_request));
+                            listener.onError(context.getString(com.tokopedia.abstraction.R.string.default_request_error_bad_request));
                         }
 
                         @Override
                         public void onForbidden() {
-                            listener.onError(context.getString(R.string.default_request_error_forbidden_auth));
+                            listener.onError(context.getString(com.tokopedia.abstraction.R.string.default_request_error_forbidden_auth));
                         }
                     }, response.code());
                 }

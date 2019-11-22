@@ -25,12 +25,15 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.webview)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation project(rootProject.ext.libraries.remoteConfig)
+
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
@@ -54,12 +57,14 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.core_legacy)
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+
 }
 
 project.ext {
     artifactId = 'contact-us'
     groupId = 'com.tokopedia.operational'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "contact_us-release"
 }
 

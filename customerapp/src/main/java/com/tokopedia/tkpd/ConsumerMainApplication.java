@@ -36,6 +36,7 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
+import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -45,6 +46,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
+import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -55,7 +57,6 @@ import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.tkpd.utils.DeviceUtil;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
-import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 
@@ -66,7 +67,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -167,6 +167,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         initializeAbTestVariant();
 
+        GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
+        registerActivityLifecycleCallbacks(subscriber);
     }
 
     @Override
@@ -177,12 +179,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.deleteInstance();
         TokopediaUrl.Companion.deleteInstance();
         unregisterActivityLifecycleCallbacks(callback);
+        CoreLegacyDbFlowDatabase.reset();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         unregisterActivityLifecycleCallbacks(callback);
+        CoreLegacyDbFlowDatabase.reset();
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -239,8 +243,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void generateConsumerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
-        WalletUrl.KeyHmac.HMAC_PENDING_CASHBACK = ConsumerAppNetworkKeys.HMAC_PENDING_CASHBACK;
-
     }
 
     @Override

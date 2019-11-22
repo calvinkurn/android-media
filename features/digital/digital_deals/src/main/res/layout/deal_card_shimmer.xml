@@ -166,7 +166,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_sales_price"
             app:layout_constraintLeft_toRightOf="@id/tv_wish_list"
             app:layout_constraintTop_toTopOf="@+id/tv_mrp"
-            app:srcCompat="@drawable/ic_share_via_card" />
+            app:srcCompat="@drawable/deals_ic_share_via_card" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
 

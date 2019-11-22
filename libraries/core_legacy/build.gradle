@@ -31,6 +31,7 @@ android {
 }
 
 dependencies {
+    testImplementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -48,7 +49,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation project(rootProject.ext.features.transactionanalytics)
     implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
@@ -96,7 +96,7 @@ dependencies {
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "core_legacy-release"
 }
 

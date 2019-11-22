@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -21,7 +21,7 @@ dependencies {
 project.ext {
     artifactId = 'common'
     groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName ="discovery_common-release"
 }
 

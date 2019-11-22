@@ -244,6 +244,26 @@
             android:exported="true" />
 
         <activity
+            android:name="com.tokopedia.saldodetails.view.activity.SaldoDepositActivity"
+            android:label="@string/saldo_detail_title_activity_people_deposit"
+            android:theme="@style/Theme.White"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity"
+            android:label="@string/saldo_detail_title_activity_people_deposit"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent"/>
+
+        <activity
+            android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_header_saldo_intro"
+            android:theme="@style/Theme.White.PopupTransparent"
+            android:launchMode="singleTask"/>
+
+        <activity
             android:name="com.tokopedia.sellerapp.webview.SellerappWebViewActivity"
             android:label="@string/title_activity_deep_link"
             android:theme="@style/Theme.White"

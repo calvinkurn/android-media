@@ -6,7 +6,7 @@
     <color name="tp_ticker_background_color">#EBF6F6</color>
     <color name="tp_coupon_enable">#A1A7AB</color>
     <color name="tp_coupon_disable">#DBDEE2</color>
-    <color name="bg_label_grey">#f3f4f5</color>
+    <color name="bg_label_grey_tokopoints">#f3f4f5</color>
     <color name="tp_history_item_grey_color">#7031353b</color>
     <color name="clr_31353b">#31353b</color>
     <color name="tp_bg_button_orange_border">#fa591d</color>
@@ -26,4 +26,6 @@
     <color name="tp_toolbar_navigation_grey_color">#666666</color>
     <color name="tp_no_connection_title_color">#f531353b</color>
     <color name="tp_no_connection_subtitle_color">#ae31353b</color>
+    <color name="tp_nonlogin_container_color">#03ac0e</color>
+    <color name="tp_bg_progress_timer">#ffeaef</color>
 </resources>

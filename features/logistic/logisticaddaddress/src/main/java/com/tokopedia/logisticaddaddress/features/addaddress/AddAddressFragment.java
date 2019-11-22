@@ -39,16 +39,16 @@ import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
+import com.tokopedia.purchase_platform.common.analytics.ITransactionAnalyticsAddAddress;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
-import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -134,7 +134,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     PerformanceMonitoring performanceMonitoring;
 
     private int instanceType;
-    private CompositeSubscription compositeSubscription;
 
     public static AddAddressFragment newInstance(Bundle extras) {
         Bundle bundle = new Bundle(extras);
@@ -194,7 +193,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        compositeSubscription.unsubscribe();
         mPresenter.detachView();
     }
 
@@ -258,7 +256,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        compositeSubscription = new CompositeSubscription();
         BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
         DaggerAddressComponent.builder()
                 .baseAppComponent(appComponent)
@@ -277,18 +274,13 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public CompositeSubscription getCompositeSubscription() {
-        return compositeSubscription;
-    }
-
-    @Override
     public boolean isEdit() {
-        return getArguments().getBoolean(IS_EDIT, false);
+        return address != null;
     }
 
     @Override
     public boolean isDistrictRecommendation() {
-        return getArguments().getBoolean(IS_DISTRICT_RECOMMENDATION, false);
+        return true;
     }
 
     @Override

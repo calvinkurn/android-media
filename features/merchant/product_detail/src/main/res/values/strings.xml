@@ -14,6 +14,7 @@
     <string name="label_product_condition">Kondisi</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
     <string name="label_product_desc">Deskripsi Produk</string>
+    <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="transition_video_horizontal_scroll">transition_video_horizontal_scroll</string>
     <string name="transition_description">description_transition</string>
     <string name="title_activity_product_detail">Rincian Produk</string>
@@ -78,6 +79,7 @@
     <string name="template_last_update_price">Perubahan Harga Terakhir : %1$s</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
     <string name="title_image_review">Foto dari Pembeli</string>
+    <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_most_helpful_review">Ulasan Paling Membantu</string>
     <string name="label_see_all_review">Lihat Semua Ulasan (%1$s)</string>
     <string name="title_latest_talk">Diskusi Terakhir</string>
@@ -105,6 +107,7 @@
     <string name="title_cod">Bayar di Tempat</string>
     <string name="cod_content">Bayar ke kurir saat pesanan diterima. Tersedia di beberapa kota tertentu</string>
     <string name="installment_template">Bunga %1$s%% mulai dari %2$s</string>
+    <string name="new_installment_template">Cicilan mulai dari %s</string>
     <string name="pdp_label_cart_count_max">99+</string>
     <string name="label_atc_open_cart">Lihat</string>
     <string name="template_installment">Min. Pembelanjaan %1$s</string>
@@ -135,5 +138,34 @@
     <string name="atc_done_see_cart">Lihat Keranjang</string>
     <string name="pdp_etalase_empty_default_value">Semua  Etalase</string>
     <string name="atc_free_ongkir_title">Produk berhasil ditambah ke keranjang. Dapatkan <b>gratis ongkir</b> untuk pembelian produk ini.</string>
+    <string name="recom_see_more_title">Lihat semua</string>
 
+    <string name="review_like_pattern">%1$d orang</string>
+    <string name="date_review_pattern">%1$s oleh %2$s</string>
+    <string name="txt_most_helpfull">terbantu dengan ulasan ini</string>
+    <string name="txt_more_item_plus">%1$d +</string>
+    <string name="counter_pattern_string">%1$s / %2$d</string>
+    <string name="review_counter">• %1$d ulasan</string>
+    <string name="label_see_all_with_counter">Lainnya \n %2$d</string>
+
+    <string name="ft_label_without_credit_card">Tanpa Kartu Kredit</string>
+    <string name="ft_label_with_credit_card">Dengan Kartu Kredit</string>
+    <string name="ft_installment_heading">Cicilan dengan %s</string>
+    <string name="pdp_installment_price_heading">Cicilan %sx</string>
+    <string name="ft_installment_data_heading">Berminat menggunakan %s? Ini caranya</string>
+    <string name="ft_instruction_heading">Langkah %s</string>
+    <string name="pdp_installment_price_ext"> /bulan</string>
+    <string name="ft_min_installment_amount">Min Pembelanjaan %s</string>
+    <string name="ft_max_installment_amount">Maks Pembelanjaan %s</string>
+    <string name="pdp_installment_desc">Lihat Semua Metode</string>
+
+    <string-array name="ft_installment_type_title">
+        <item>@string/ft_label_without_credit_card</item>
+        <item>@string/ft_label_with_credit_card</item>
+    </string-array>
+
+    <string name="image_preview_add_wishlist">Tambahkan ke Wishlist</string>
+    <string name="image_preview_remove_wishlist">Hapus dari Wishlist</string>
+    <string name="image_preview_add_wishlist_success">Berhasil menambahkan ke Wishlist</string>
+    <string name="image_preview_remove_wishlist_success">Berhasil menghapus dari Wishlist</string>
 </resources>

@@ -29,6 +29,10 @@ public class HomeData {
     @SerializedName("spotlight")
     private Spotlight spotlight = new Spotlight();
 
+    @Expose
+    @SerializedName("homeFlag")
+    private HomeFlag homeFlag = new HomeFlag();
+
     private boolean isCache;
 
     public DynamicHomeChannel getDynamicHomeChannel() {
@@ -77,5 +81,13 @@ public class HomeData {
 
     public void setCache(boolean cache) {
         isCache = cache;
+    }
+
+    public HomeFlag getHomeFlag() {
+        return homeFlag;
+    }
+
+    public void setHomeFlag(HomeFlag homeFlag) {
+        this.homeFlag = homeFlag;
     }
 }

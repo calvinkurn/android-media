@@ -52,7 +52,7 @@
         app:layout_constraintEnd_toStartOf="@+id/continue_btn"
         android:background="@drawable/bg_green_border_rect"
         android:gravity="center"
-        android:text="@string/back"
+        android:text="@string/swd_back"
         android:textColor="@color/green_nob"
         android:textSize="@dimen/sp_14" />
 
@@ -66,7 +66,7 @@
         android:gravity="center"
         android:paddingLeft="@dimen/dp_20"
         android:paddingRight="@dimen/dp_20"
-        android:text="@string/continue_pull"
+        android:text="@string/swd_continue_pull"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"

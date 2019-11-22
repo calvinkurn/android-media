@@ -32,7 +32,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
@@ -91,7 +90,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_brand_detail, container, false);
+        View view = inflater.inflate(com.tokopedia.digital_deals.R.layout.fragment_brand_detail, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
         userSession = new UserSession(getActivity());
@@ -102,9 +101,9 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 verticalOffset = Math.abs(verticalOffset);
                 int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
                 if (verticalOffset >= difference) {
-                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.digital_deals.R.color.tkpd_dark_gray_toolbar));
                 } else {
-                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.white));
+                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white));
                 }
             }
         });
@@ -123,21 +122,21 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @SuppressLint("WrongConstant")
     private void setViewIds(View view) {
-        collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
-        ivHeader = view.findViewById(R.id.header_image);
-        ivBrandLogo = view.findViewById(R.id.iv_brand_logo);
-        recyclerViewDeals = view.findViewById(R.id.recycler_view);
-        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
-        mainContent = view.findViewById(R.id.main_content);
-        baseMainContent = view.findViewById(R.id.base_main_content);
-        progBar = view.findViewById(R.id.prog_bar);
-        flHeader = view.findViewById(R.id.fl_header);
-        noContent = view.findViewById(R.id.no_content);
-        toolbar = view.findViewById(R.id.toolbar);
+        collapsingToolbarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.collapsing_toolbar);
+        appBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.app_bar_layout);
+        ivHeader = view.findViewById(com.tokopedia.digital_deals.R.id.header_image);
+        ivBrandLogo = view.findViewById(com.tokopedia.digital_deals.R.id.iv_brand_logo);
+        recyclerViewDeals = view.findViewById(com.tokopedia.digital_deals.R.id.recycler_view);
+        progressBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.progress_bar_layout);
+        mainContent = view.findViewById(com.tokopedia.digital_deals.R.id.main_content);
+        baseMainContent = view.findViewById(com.tokopedia.digital_deals.R.id.base_main_content);
+        progBar = view.findViewById(com.tokopedia.digital_deals.R.id.prog_bar);
+        flHeader = view.findViewById(com.tokopedia.digital_deals.R.id.fl_header);
+        noContent = view.findViewById(com.tokopedia.digital_deals.R.id.no_content);
+        toolbar = view.findViewById(com.tokopedia.digital_deals.R.id.toolbar);
 
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
         collapsingToolbarLayout.setTitle(" ");
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
@@ -169,7 +168,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             locationName = location.getName();
         }
         loadBrandImage(ivHeader, brand.getFeaturedImage());
-        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
         if (productItems != null && productItems.size() > 0) {
             dealsAdapter.clearList();
             recyclerViewDeals.clearOnScrollListeners();
@@ -213,13 +212,13 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             @Override
             public void onLoadStarted(Drawable placeholder) {
                 super.onLoadStarted(placeholder);
-                imageView.setImageResource(R.color.grey_1100);
+                imageView.setImageResource(com.tokopedia.design.R.color.grey_1100);
             }
 
             @Override
             public void onLoadFailed(@Nullable Drawable errorDrawable) {
                 super.onLoadFailed(errorDrawable);
-                imageView.setImageResource(R.color.grey_1100);
+                imageView.setImageResource(com.tokopedia.design.R.color.grey_1100);
             }
         });
     }

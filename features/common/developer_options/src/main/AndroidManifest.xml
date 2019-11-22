@@ -17,6 +17,9 @@
             android:label="@string/remote_config_title"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
+
+        <receiver android:name=".notification.ReviewNotificationUpdateExample" />
+
     </application>
 
 </manifest>

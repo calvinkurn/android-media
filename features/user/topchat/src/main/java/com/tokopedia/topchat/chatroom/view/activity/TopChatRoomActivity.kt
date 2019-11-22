@@ -11,8 +11,15 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
+import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 
 class TopChatRoomActivity : BaseChatToolbarActivity() {
+
+
+    override fun getScreenName(): String {
+        return "/${TopChatAnalytics.Category.CHAT_DETAIL}"
+    }
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -39,7 +46,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         @JvmStatic
         fun getCallingIntent(context: Context?, messageId: String?, name: String?,
                              label: String?, senderId: String?, role: String?, mode: Int,
-                             keyword: String?, image: String?): Intent {
+                             keyword: String?, image: String?, position: Int): Intent {
             val intent = Intent(context, TopChatRoomActivity::class.java)
             intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
             intent.putExtra(ApplinkConst.Chat.OPPONENT_ID, senderId)
@@ -52,6 +59,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
             model.keyword = keyword ?: ""
             model.image = image ?: ""
             intent.putExtra(ApplinkConst.Chat.PARAM_HEADER, model)
+            intent.putExtra(RESULT_INBOX_CHAT_PARAM_INDEX, position)
             return intent
         }
 
@@ -59,7 +67,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         fun getAskSellerIntent(context: Context, toShopId: String,
                                shopName: String, source: String, avatar: String): Intent {
             val intent = getCallingIntent(context, "", shopName, LABEL_SELLER, toShopId, ROLE_SELLER,
-                    MODE_DEFAULT_GET_CHAT, "", avatar)
+                    MODE_DEFAULT_GET_CHAT, "", avatar, -1)
             intent.putExtra(ApplinkConst.Chat.SOURCE, source)
             intent.putExtra(ApplinkConst.Chat.TO_SHOP_ID, toShopId)
             return intent
@@ -81,7 +89,7 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
                              userName: String, source: String,
                              avatar: String): Intent {
             val intent = getCallingIntent(context, "", userName, LABEL_USER, userId, ROLE_USER,
-                    MODE_DEFAULT_GET_CHAT, "", avatar)
+                    MODE_DEFAULT_GET_CHAT, "", avatar, -1)
             intent.putExtra(ApplinkConst.Chat.SOURCE, source)
             intent.putExtra(ApplinkConst.Chat.TO_USER_ID, userId)
             return intent

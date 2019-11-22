@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.postdetail.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -11,16 +12,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -34,8 +31,9 @@ import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
-import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemShop;
 import com.tokopedia.feedcomponent.util.FeedScrollListener;
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
@@ -47,6 +45,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
@@ -60,16 +59,14 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.kol.common.util.PostMenuListener;
+import com.tokopedia.kolcommon.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
-import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
-import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
-import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel;
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
@@ -92,16 +89,15 @@ import java.util.List;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 
-import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
+import static com.tokopedia.kolcommon.util.PostMenuUtilKt.createBottomMenu;
 
 /**
  * @author by yfsx on 23/07/18.
  */
 
 public class KolPostDetailFragment extends BaseDaggerFragment
-        implements KolPostDetailContract.View, KolPostListener.View.Like,
+        implements KolPostDetailContract.View, KolPostLikeListener,
         KolComment.View.ViewHolder, KolComment.View.SeeAll,
         SwipeRefreshLayout.OnRefreshListener,
         DynamicPostViewHolder.DynamicPostListener,
@@ -115,6 +111,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         RelatedPostAdapter.RelatedPostListener,
         HighlightAdapter.HighlightListener {
 
+    @NotNull
+    @Override
+    public Context getAndroidContext() {
+        return requireContext();
+    }
+
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
@@ -125,13 +127,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private SwipeToRefresh swipeToRefresh;
     private RecyclerView recyclerView;
     private CreatePostFabView createPostFab;
-    private ImageView likeButton, commentButton, shareButton;
-    private TextView likeCount, commentCount, shareText;
     private View footer;
     private PerformanceMonitoring performanceMonitoring;
 
     private DynamicPostViewModel dynamicPostViewModel;
-    private PostDetailFooterModel postDetailFooterModel;
     private boolean isTraceStopped;
 
     @Inject
@@ -188,12 +187,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
         createPostFab = view.findViewById(R.id.create_post_fab);
-        likeButton = view.findViewById(R.id.like_button);
-        commentButton = view.findViewById(R.id.comment_button);
-        shareButton = view.findViewById(R.id.share_button);
-        likeCount = view.findViewById(R.id.like_count);
-        commentCount = view.findViewById(R.id.comment_count);
-        shareText = view.findViewById(R.id.share_text);
         footer = view.findViewById(R.id.footer);
         return view;
     }
@@ -290,7 +283,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 presenter.getWhitelist();
             }
         }
-        setFooter(postDetailViewModel);
         recyclerView.clearOnScrollListeners();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -318,86 +310,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                         dynamicPostViewModel.getTrackingPostModel());
             }
         }
-        onAffiliateTrackClicked(dynamicPostViewModel.getTracking(), false);
     }
 
     private boolean isOwner() {
         return dynamicPostViewModel != null
                 && userSession.getUserId().equals(
                         dynamicPostViewModel.getHeader().getFollowCta().getAuthorID());
-    }
-
-    private void setFooter(PostDetailViewModel postDetailViewModel) {
-        this.postDetailFooterModel = postDetailViewModel.getFooterModel();
-        footer.setVisibility(View.VISIBLE);
-        TemplateFooter template = null;
-        if (postDetailViewModel.getDynamicPostViewModel().getPostList().size() != 0) {
-            template = dynamicPostViewModel.getTemplate().getCardpost().getFooter();
-        }
-        if (template != null) {
-            bindLike(postDetailFooterModel, template);
-            bindComment(postDetailFooterModel, template);
-            bindShare(postDetailFooterModel, template);
-
-        } else {
-            footer.setVisibility(View.GONE);
-        }
-    }
-
-    private void bindLike(PostDetailFooterModel model, TemplateFooter template) {
-        if (template.getLike()) {
-            setTotalLike(model.getTotalLike());
-            if (model.isLiked()) {
-                ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
-                likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
-            } else {
-                ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
-                likeCount.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_54));
-            }
-            setLikeListener(model.isLiked());
-        } else {
-            likeButton.setVisibility(View.GONE);
-            likeCount.setVisibility(View.GONE);
-        }
-    }
-
-    private void bindComment(PostDetailFooterModel model, TemplateFooter template) {
-        if (template.getComment()) {
-            setTotalComment(model.getTotalComment());
-            commentCount.setOnClickListener(v -> onGoToKolComment(0, model.getContentId()));
-            commentButton.setOnClickListener(v -> onGoToKolComment(0, model.getContentId()));
-        } else {
-            commentButton.setVisibility(View.GONE);
-            commentCount.setVisibility(View.GONE);
-        }
-    }
-
-    private void bindShare(PostDetailFooterModel model, TemplateFooter template) {
-        if (template.getShare()) {
-            View.OnClickListener onClickListener = v -> onShareClick(0, model.getContentId(),
-                    model.getShareData().getTitle(),
-                    model.getShareData().getDescription(),
-                    model.getShareData().getUrl(),
-                    model.getShareData().getImageUrl());
-
-            shareButton.setOnClickListener(onClickListener);
-            shareText.setOnClickListener(onClickListener);
-        } else {
-            shareButton.setVisibility(View.GONE);
-            shareText.setVisibility(View.GONE);
-        }
-    }
-
-    private void setTotalComment(int totalComment) {
-        String commentCountText = totalComment == 0 ? getString(R.string.kol_action_comment) :
-                String.valueOf(totalComment);
-        commentCount.setText(commentCountText);
-    }
-
-    private void setTotalLike(int totalLike) {
-        String likeCountText = totalLike == 0 ? getString(R.string.kol_action_like) :
-                String.valueOf(totalLike);
-        likeCount.setText(likeCountText);
     }
 
     @Override
@@ -432,37 +350,27 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeKolSuccess(int rowNumber, int action) {
-        if (action == LikeKolPostUseCase.ACTION_LIKE) {
-            int totalLike = 0;
-            if (!likeCount.getText().toString().equals(getString(R.string.kol_action_like))) {
-                totalLike = Integer.valueOf(likeCount.getText().toString());
-            }
-            setTotalLike(totalLike + 1);
-            ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_green);
-            likeCount.setTextColor(MethodChecker.getColor(getContext(), R.color.tkpd_main_green));
-        } else {
-            int totalLike = 1;
-            if (!likeCount.getText().toString().equals(getString(R.string.kol_action_like))) {
-                totalLike = Integer.valueOf(likeCount.getText().toString());
-            }
-            setTotalLike(totalLike - 1);
-            ImageHandler.loadImageWithId(likeButton, R.drawable.ic_thumb_gray);
-            likeCount.setTextColor(MethodChecker.getColor(getContext(), R.color.black_54));
-        }
+    public void onLikeKolSuccess(int rowNumber, LikeKolPostUseCase.LikeKolPostAction action) {
+        if (adapter.getList().size() > rowNumber && adapter.getList().get(rowNumber) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel dynamicPostViewModel = (DynamicPostViewModel) adapter.getList().get(rowNumber);
+            Like like = dynamicPostViewModel.getFooter().getLike();
+            like.setChecked(!like.isChecked());
+            if (like.isChecked()) {
+                try {
+                    int likeValue = Integer.valueOf(like.getFmt()) + 1;
+                    like.setFmt(String.valueOf(likeValue));
+                } catch (NumberFormatException ignored) {}
 
-        setLikeListener(action == LikeKolPostUseCase.ACTION_LIKE);
-    }
-
-    private void setLikeListener(boolean isLiked) {
-        if (postDetailFooterModel != null) {
-            if (isLiked) {
-                likeCount.setOnClickListener(v -> onUnlikeKolClicked(0, postDetailFooterModel.getContentId()));
-                likeButton.setOnClickListener(v -> onUnlikeKolClicked(0, postDetailFooterModel.getContentId()));
+                like.setValue(like.getValue() + 1);
             } else {
-                likeCount.setOnClickListener(v -> onLikeKolClicked(0, postDetailFooterModel.getContentId()));
-                likeButton.setOnClickListener(v -> onLikeKolClicked(0, postDetailFooterModel.getContentId()));
+                try {
+                    int likeValue = Integer.valueOf(like.getFmt()) - 1;
+                    like.setFmt(String.valueOf(likeValue));
+                } catch (NumberFormatException ignored) {}
+
+                like.setValue(like.getValue() - 1);
             }
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE);
         }
     }
 
@@ -527,6 +435,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void replyToUser(MentionableUserViewModel user) {
+        
+    }
+
+    @Override
     public boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition) {
         return false;
     }
@@ -547,7 +460,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (adapter.getList().get(rowNumber) instanceof DynamicPostViewModel) {
             DynamicPostViewModel dynamicPostViewModel = (DynamicPostViewModel) adapter.getList().get(rowNumber);
             dynamicPostViewModel.getHeader().getFollowCta().setFollow(!dynamicPostViewModel.getHeader().getFollowCta().isFollow());
-            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
+            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW);
 
             if (dynamicPostViewModel.getHeader().getFollowCta().isFollow()) {
                 ToasterNormal
@@ -572,7 +485,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onErrorToggleFavoriteShop(String errorMessage, String shopId) {
         ToasterError.make(getView(), errorMessage, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.title_try_again,
+                .setAction(com.tokopedia.abstraction.R.string.title_try_again,
                         v -> presenter.toggleFavoriteShop(shopId)
                 )
                 .show();
@@ -696,9 +609,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void onSuccessReportContent() {
         ToasterNormal
                 .make(getView(),
-                        getString(R.string.feed_content_reported),
+                        getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
                         BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close, v -> {
+                .setAction(com.tokopedia.design.R.string.label_close, v -> {
                 })
                 .show();
     }
@@ -706,7 +619,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void onErrorReportContent(String errorMsg) {
         ToasterError
                 .make(getView(), errorMsg, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.label_close, v -> {
+                .setAction(com.tokopedia.design.R.string.label_close, v -> {
                 })
                 .show();
     }
@@ -796,10 +709,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private Dialog createDeleteDialog(int positionInFeed, int postId) {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.card_dialog_delete_post));
-        dialog.setDesc(getString(R.string.card_dialog_after_delete_cant));
-        dialog.setBtnOk(getString(R.string.card_dialog_title_delete));
-        dialog.setBtnCancel(getString(R.string.card_dialog_title_cancel));
+        dialog.setTitle(getString(com.tokopedia.feedcomponent.R.string.card_dialog_delete_post));
+        dialog.setDesc(getString(com.tokopedia.feedcomponent.R.string.card_dialog_after_delete_cant));
+        dialog.setBtnOk(getString(com.tokopedia.feedcomponent.R.string.card_dialog_title_delete));
+        dialog.setBtnCancel(getString(com.tokopedia.feedcomponent.R.string.card_dialog_title_cancel));
         dialog.setOnOkClickListener(v -> {
             presenter.deletePost(postId, positionInFeed);
             dialog.dismiss();
@@ -825,12 +738,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onLikeClick(int positionInFeed, int id, boolean isLiked) {
-//NO NEED TO IMPLEMENT THIS IN DETAIL
+        if (isLiked) {
+            onUnlikeKolClicked(positionInFeed, id);
+        } else {
+            onLikeKolClicked(positionInFeed, id);
+        }
     }
 
     @Override
     public void onCommentClick(int positionInFeed, int id) {
-//NO NEED TO IMPLEMENT THIS IN DETAIL
+        onGoToKolComment(positionInFeed, id);
     }
 
     @Override
@@ -936,7 +853,19 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPostTagItemBuyClicked(int positionInFeed, @NotNull PostTagItem postTagItem) {
+    public void onPostTagItemBuyClicked(int positionInFeed, @NotNull PostTagItem postTagItem, @NotNull String authorType) {
+        try {
+            PostTagItemShop shop = postTagItem.getShop().get(0);
+            feedAnalytics.eventContentDetailAddToCart(
+                    postTagItem.getId(),
+                    postTagItem.getText(),
+                    postTagItem.getPrice(),
+                    1,
+                    Integer.parseInt(shop.getShopId()),
+                    "",
+                    authorType
+            );
+        } catch (Exception ignored) {}
         presenter.addPostTagItemToCart(positionInFeed, postTagItem);
     }
 
@@ -978,17 +907,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
-        startActivityForResult(VideoDetailActivity.Companion.getInstance(getActivity(), postId), OPEN_VIDEO_DETAIL);
+        startActivityForResult(VideoDetailActivity.getInstance(requireContext(), postId), OPEN_VIDEO_DETAIL);
     }
 
     @Override
     public void onAddToCartSuccess(int positionInFeed, PostTagItem postTagItem) {
         RouteManager.route(getContext(), ApplinkConstInternalMarketplace.CART);
-        postTagAnalytics.trackClickPostTagBuyKol(
-                postTagItem,
-                positionInFeed,
-                dynamicPostViewModel.getHeader().getFollowCta().getAuthorType()
-        );
     }
 
     @Override

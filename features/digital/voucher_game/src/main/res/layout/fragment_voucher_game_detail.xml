@@ -8,6 +8,7 @@
     android:background="@color/white">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/vg_detail_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/checkout_view"
@@ -73,17 +74,16 @@
                     app:typographyWeight="bold"
                     tools:text="Cara Input Nomor ID" />
 
-                <Button
+                <ImageView
                     android:id="@+id/btn_info_icon"
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_16"
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginLeft="@dimen/dp_8"
-                    android:background="@drawable/ic_info_black"
-                    android:paddingBottom="@dimen/dp_5"
                     app:layout_constraintBottom_toBottomOf="@+id/product_name"
                     app:layout_constraintStart_toEndOf="@+id/product_name"
-                    app:layout_constraintTop_toTopOf="@+id/product_name" />
+                    app:layout_constraintTop_toTopOf="@+id/product_name"
+                    app:srcCompat="@drawable/ic_info_black" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
