@@ -5,12 +5,5 @@ import android.content.Intent
 interface ElectronicMoney {
 
     fun processTagIntent(intent: Intent)
-}
-
-interface MandiriElectronicMoney: ElectronicMoney {
-    fun sendCommandToCard(payload: String, id: Int, mapAttributes: HashMap<String, Any>)
-}
-
-interface BriElectronicMoney: ElectronicMoney {
-    fun sendCommandToCard(intent: Intent)
+    fun writeBalanceToCard(intent: Intent, payload: String, id: Int, mapAttributes: HashMap<String, Any>)
 }

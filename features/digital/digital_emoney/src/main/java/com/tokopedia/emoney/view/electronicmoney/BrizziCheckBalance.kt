@@ -11,7 +11,7 @@ import id.co.bri.sdk.BrizziCardObject
 import id.co.bri.sdk.Callback
 import id.co.bri.sdk.exception.BrizziException
 
-class BrizziCheckBalance(private val brizziInstance: Brizzi, val listener: BrizziActionListener) : BriElectronicMoney {
+class BrizziCheckBalance(private val brizziInstance: Brizzi, val listener: BrizziActionListener) : ElectronicMoney {
 
     override fun processTagIntent(intent: Intent) {
         listener.setIssuerId(ISSUER_ID_BRIZZI)
@@ -24,12 +24,12 @@ class BrizziCheckBalance(private val brizziInstance: Brizzi, val listener: Brizz
 
             override fun OnSuccess(brizziCardObject: BrizziCardObject) {
                 val emoneyInquiry = mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance"))
-                listener.logBrizziStatus(true, emoneyInquiry)
+                listener.logStatusBrizzi(true, emoneyInquiry)
 
                 if (brizziCardObject.pendingBalance.toInt() == 0) {
-                    listener.onSuccess(emoneyInquiry)
+                    listener.showCardLastBalance(emoneyInquiry)
                 } else {
-                    sendCommandToCard(intent)
+                    writeBalanceToCard(intent, "", 0, hashMapOf())
                 }
             }
         })
@@ -53,13 +53,13 @@ class BrizziCheckBalance(private val brizziInstance: Brizzi, val listener: Brizz
 
     private fun handleError(brizziException: BrizziException, intent: Intent) {
         when {
-            brizziException.errorCode == BRIZZI_TOKEN_EXPIRED -> listener.processGetBalanceBrizzi(true, intent)
+            brizziException.errorCode == BRIZZI_TOKEN_EXPIRED -> listener.executeBrizzi(true, intent)
             brizziException.errorCode == BRIZZI_CARD_NOT_FOUND -> listener.onErrorCardNotFound(ISSUER_ID_BRIZZI, intent)
-            else -> listener.onError(R.string.emoney_update_balance_failed)
+            else -> listener.onErrorDefault(R.string.emoney_update_balance_failed)
         }
     }
 
-    override fun sendCommandToCard(intent: Intent) {
+    override fun writeBalanceToCard(intent: Intent, payload: String, id: Int, mapAttributes: HashMap<String, Any>) {
         brizziInstance.doUpdateBalance(intent, System.currentTimeMillis().toString(), object : Callback {
             override fun OnFailure(brizziException: BrizziException?) {
                 brizziException?.let {
@@ -69,8 +69,8 @@ class BrizziCheckBalance(private val brizziInstance: Brizzi, val listener: Brizz
 
             override fun OnSuccess(brizziCardObject: BrizziCardObject) {
                 val emoneyInquiry = mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Informasi saldo berhasil diperbarui"))
-                listener.logBrizziStatus(false, emoneyInquiry)
-                listener.onSuccess(emoneyInquiry)
+                listener.logStatusBrizzi(false, emoneyInquiry)
+                listener.showCardLastBalance(emoneyInquiry)
             }
         })
     }

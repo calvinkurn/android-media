@@ -10,7 +10,7 @@ import com.tokopedia.emoney.view.activity.EmoneyCheckBalanceNFCActivity
 import com.tokopedia.emoney.viewmodel.EmoneyInquiryBalanceViewModel
 import java.io.IOException
 
-class MandiriCheckBalance(val listener: MandiriActionListener) : MandiriElectronicMoney {
+class MandiriCheckBalance(val listener: MandiriActionListener) : ElectronicMoney {
 
     private lateinit var isoDep: IsoDep
 
@@ -50,7 +50,7 @@ class MandiriCheckBalance(val listener: MandiriActionListener) : MandiriElectron
                         mapAttributes[EmoneyInquiryBalanceViewModel.PARAM_CARD_UUID] = responseCardUID
                         mapAttributes[EmoneyInquiryBalanceViewModel.PARAM_LAST_BALANCE] = responseCardLastBalance
 
-                        listener.onSuccess(mapAttributes)
+                        listener.getInquiryBalanceMandiri(mapAttributes)
                     } else {
                         isoDep.close()
                         listener.onErrorCardNotFound(ISSUER_ID_EMONEY, intent)
@@ -58,12 +58,12 @@ class MandiriCheckBalance(val listener: MandiriActionListener) : MandiriElectron
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
-                listener.onError(R.string.emoney_failed_read_card)
+                listener.onErrorDefault(R.string.emoney_failed_read_card)
             }
         }
     }
 
-    override fun sendCommandToCard(payload: String, id: Int, mapAttributes: HashMap<String, Any>) {
+    override fun writeBalanceToCard(intent: Intent, payload: String, id: Int, mapAttributes: HashMap<String, Any>) {
         if (isoDep != null && isoDep.isConnected) {
             try {
                 val responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(payload))
@@ -73,15 +73,15 @@ class MandiriCheckBalance(val listener: MandiriActionListener) : MandiriElectron
                         // to get card payload
                         val response = NFCUtils.toHex(responseInByte)
                         mapAttributes[EmoneyInquiryBalanceViewModel.PARAM_PAYLOAD] = response
-                        listener.sendCommand(id, mapAttributes)
+                        listener.sendCommandMandiri(id, mapAttributes)
                     }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
-                listener.onError(R.string.emoney_update_balance_failed)
+                listener.onErrorDefault(R.string.emoney_update_balance_failed)
             }
         } else {
-            listener.onError(R.string.emoney_update_balance_failed)
+            listener.onErrorDefault(R.string.emoney_update_balance_failed)
         }
     }
 
