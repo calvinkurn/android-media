@@ -3,7 +3,6 @@
     <string name="error_default_non_affiliate">kamu belum terdaftar</string>
 
     <!--DASHBOARD-->
-    <string name="title_af_affiliate">Affiliate</string>
     <string name="title_affiliate">Affiliate</string>
     <string name="title_af_dashboard">Pencapaian Saya</string>
     <string name="title_af_dashboard_detail">Riwayat</string>
