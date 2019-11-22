@@ -25,6 +25,7 @@ import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
@@ -100,8 +101,6 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
-import com.tokopedia.payment.setting.PaymentSettingInternalRouter;
-import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
@@ -202,7 +201,7 @@ public abstract class SellerRouterApplication extends MainApplication
         ApplinkRouter, ImageUploaderRouter,
         NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         ChangePasswordRouter, WithdrawRouter,
-        PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
+        TalkRouter, PhoneVerificationRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
@@ -657,7 +656,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToUserPaymentList(Activity activity) {
-        activity.startActivity(PaymentSettingInternalRouter.getSettingListPaymentActivityIntent(activity));
+        RouteManager.route(context, ApplinkConstInternalPayment.PAYMENT_SETTING);
     }
 
     @Override
@@ -1093,22 +1092,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getWebviewActivityWithIntent(Context context, String url) {
         return SimpleWebViewWithFilePickerActivity.getIntent(context,
                 url);
-    }
-
-    @Override
-    public String getResourceUrlAssetPayment() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
-        String baseUrl = remoteConfig.getString(RemoteConfigKey.IMAGE_HOST,
-                TkpdBaseURL.Payment.DEFAULT_HOST);
-
-        final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
-        return resourceUrl;
-    }
-
-    @Override
-    public Intent getIntentOtpPageVerifCreditCard(Context context, String phoneNumber) {
-        return VerificationActivity.getCallingIntent(context, phoneNumber, RequestOtpUseCase.OTP_TYPE_VERIFY_AUTH_CREDIT_CARD,
-                false, RequestOtpUseCase.MODE_SMS);
     }
 
     @Override
