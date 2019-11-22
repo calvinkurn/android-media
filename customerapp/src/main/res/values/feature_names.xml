@@ -150,4 +150,15 @@
     <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
 
 
+
+    <!-- Setting-Notif-->
+    <string name="setting_notif_app_name">Setting Notif</string>
+
+    <!-- Payment-Setting-->
+    <string name="payment_setting_app_name">payment_setting</string>
+    <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
+    <string name="payment_label_credit_card">Kartu Kredit</string>
+    <string name="payment_label_button_add_card">Tambah Kartu</string>
+    <string name="payment_label_credit_card_verification">Verifikasi Kartu Kredit</string>
+
 </resources>
