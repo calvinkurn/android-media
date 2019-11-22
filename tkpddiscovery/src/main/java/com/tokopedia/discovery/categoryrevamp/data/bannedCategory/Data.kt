@@ -24,7 +24,7 @@ class Data {
     @SerializedName("appRedirectionURL")
     var appRedirectionURL: String? = null
 
-    @SerializedName("app_redirection")
+    @SerializedName("appRedirection")
     var appRedirection: String? = null
 
     @SerializedName("isBanned")
