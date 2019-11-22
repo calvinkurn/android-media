@@ -95,7 +95,7 @@
     <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
     <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
-    <string name="topads_menu_seller_centre">Seller Center</string>
+    <string name="topads_menu_seller_centre">Pusat Seller</string>
 
     <!--Auto Ads-->
     <string name="title_module_auto_ads">AutoAds Module</string>
