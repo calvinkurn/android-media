@@ -102,6 +102,10 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
         return R.id.webviewPm
     }
 
+    override fun setProgressBar(): Int {
+        return R.id.progressbarPm
+    }
+
     private fun initVar() {
         setAction(arguments?.getString(ACTION_KEY) ?: "")
     }

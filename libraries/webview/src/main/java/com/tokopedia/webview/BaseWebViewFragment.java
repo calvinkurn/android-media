@@ -467,6 +467,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return R.id.webview;
     }
 
+    public int setProgressBar() {
+        return R.id.progressbar;
+    }
+
     public void reloadPage(){
         webView.reload();
     }
