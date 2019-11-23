@@ -5,7 +5,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
@@ -26,7 +25,6 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     protected StepperModel stepperModel;
     private RoundCornerProgressBar progressStepper;
     protected int currentPosition = 1;
-    protected Toolbar toolbar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,7 +32,6 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
             currentPosition = savedInstanceState.getInt(CURRENT_POSITION_EXTRA);
         }
         super.onCreate(savedInstanceState);
-        setSupportActionBar(findViewById(getToolbar()));
         progressStepper = (RoundCornerProgressBar) findViewById(getProgressBar());
         progressStepper.setMax(getListFragment().size());
         progressStepper.setProgress(currentPosition);
@@ -127,9 +124,6 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     public void updateToolbarTitle() {
         getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, currentPosition, getListFragment().size()));
     }
-
-    public int getToolbar() { return R.id.toolbar;}
-
     public int getParentView() { return com.tokopedia.abstraction.R.id.parent_view; }
 
     public int getProgressBar(){
