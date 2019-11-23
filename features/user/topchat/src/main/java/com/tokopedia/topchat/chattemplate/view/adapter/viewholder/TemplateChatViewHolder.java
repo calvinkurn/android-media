@@ -31,11 +31,8 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
     @Override
     public void bind(final TemplateChatModel element) {
         textHolder.setText(element.getMessage());
-        textHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewListener.addTemplateString(element.getMessage());
-            }
-        });
+        textHolder.setOnClickListener(view ->
+                viewListener.addTemplateString(element.getMessage())
+        );
     }
 }

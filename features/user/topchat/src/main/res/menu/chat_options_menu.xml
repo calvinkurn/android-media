@@ -4,11 +4,11 @@
     <item
         android:id="@+id/menu_chat_filter"
         android:icon="@drawable/ic_chat_filter"
-        app:showAsAction="ifRoom"
-        android:title="@string/menu_chat_filter"/>
+        android:title="@string/menu_chat_filter"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_chat_setting"
-        android:icon="@drawable/ic_chat_gear"
-        app:showAsAction="ifRoom"
-        android:title="@string/menu_chat_setting"/>
+        android:icon="@drawable/ic_gear_grey"
+        android:title="@string/menu_chat_setting"
+        app:showAsAction="ifRoom" />
 </menu>

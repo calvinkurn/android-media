@@ -31,6 +31,17 @@ class ChatSettingViewModel @Inject constructor(
                 onErrorGetChatSetting())
     }
 
+    fun filterSettings(filter: (setting: ChatSetting) -> Boolean, chatSettings: List<ChatSetting>): List<ChatSetting> {
+        return chatSettings.filter { setting ->
+            filter(setting)
+        }
+    }
+
+    fun initArguments(arguments: Bundle?) {
+        if (arguments == null) return
+        isSeller = arguments.getBoolean(TemplateChatActivity.PARAM_IS_SELLER, false)
+    }
+
     private fun onSuccessGetChatSetting(): (GetChatSettingResponse) -> Unit {
         return { response ->
             val chatSettings = response.chatGetGearList.list
@@ -38,21 +49,10 @@ class ChatSettingViewModel @Inject constructor(
         }
     }
 
-    fun filterSettings(filter: (setting: ChatSetting) -> Boolean, chatSettings: List<ChatSetting>): List<ChatSetting> {
-        return chatSettings.filter { setting ->
-            filter(setting)
-        }
-    }
-
     private fun onErrorGetChatSetting(): (Throwable) -> Unit {
         return { error ->
             _chatSettings.postValue(Fail(error))
         }
-    }
-
-    fun initArguments(arguments: Bundle?) {
-        if (arguments == null) return
-        isSeller = arguments.getBoolean(TemplateChatActivity.PARAM_IS_SELLER, false)
     }
 
 }
