@@ -53,8 +53,6 @@ object DeeplinkMapper {
                         getRegisteredNavigationContent(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
                         getRegisteredHotlist(context, deeplink)
-                    deeplink.startsWithPattern(ApplinkConst.HOME_CATEGORY_P) ->
-                        getRegisteredCategoryNavigation(getSegments(deeplink))
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW,true) ->
@@ -67,7 +65,9 @@ object DeeplinkMapper {
                         getRegisteredNavigationForFintech(deeplink)
                     else -> {
                         val query = Uri.parse(deeplink).query
-                        if(query?.isNotEmpty() == true){
+                        if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
+                            getRegisteredCategoryNavigation(getSegments(deeplink))
+                        } else if(query?.isNotEmpty() == true){
                             val tempDL = deeplink.substring(0, deeplink.indexOf('?'))
                             var navFromTokopedia = getRegisteredNavigationFromTokopedia(tempDL)
                             if(navFromTokopedia.isNotEmpty()) {
