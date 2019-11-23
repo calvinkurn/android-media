@@ -53,7 +53,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, fragment.getClass().getSimpleName())
+                    .replace(getParentView(), fragment, fragment.getClass().getSimpleName())
                     .commit();
         }
     }
@@ -124,6 +124,8 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     public void updateToolbarTitle() {
         getSupportActionBar().setTitle(getString(R.string.top_ads_label_stepper, currentPosition, getListFragment().size()));
     }
+
+    public int getParentView() { return com.tokopedia.abstraction.R.id.parent_view; }
 
     public int getProgressBar(){
         return R.id.stepper_progress;
