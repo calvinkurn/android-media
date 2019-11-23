@@ -144,7 +144,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                                  Bundle savedInstanceState) {
         View view = inflater.inflate(getLayout(), container, false);
         webView = view.findViewById(setWebView());
-        progressBar = view.findViewById(R.id.progressbar);
+        progressBar = view.findViewById(setProgressBar());
 
         CookieManager.getInstance().setAcceptCookie(true);
 

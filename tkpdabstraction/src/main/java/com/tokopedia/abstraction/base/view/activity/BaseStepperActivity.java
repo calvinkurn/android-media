@@ -53,7 +53,7 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
             fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.parent_view, fragment, fragment.getClass().getSimpleName())
+                    .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, fragment.getClass().getSimpleName())
                     .commit();
         }
     }
