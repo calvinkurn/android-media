@@ -19,7 +19,7 @@
             app:elevation="@dimen/dp_0" />
 
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-            android:id="@+id/stepper_progress"
+            android:id="@+id/stepper_progress_pm"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_2"
             app:rcBackgroundColor="@color/black_12"

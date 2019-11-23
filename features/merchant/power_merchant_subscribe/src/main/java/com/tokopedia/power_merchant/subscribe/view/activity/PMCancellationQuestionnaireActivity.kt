@@ -66,6 +66,10 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
         }
     }
 
+    override fun getProgressBar(): Int {
+        return R.id.stepper_progress_pm
+    }
+
     override fun getListFragment(): MutableList<Fragment> {
         return listFragment
     }
