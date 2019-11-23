@@ -12,9 +12,5 @@ class SettingListPaymentActivity : BaseSimpleActivity(){
         return SettingListPaymentFragment.createInstance()
     }
 
-    companion object {
-        fun createIntent(context: Context) : Intent{
-            return Intent(context, SettingListPaymentActivity::class.java)
-        }
-    }
+
 }
