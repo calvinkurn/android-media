@@ -98,7 +98,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
         view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable))
     }
 
-    override fun getWebView(): TkpdWebView {
+    override fun setWebView(): Int {
         return R.id.webviewPm
     }
 
