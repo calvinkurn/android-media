@@ -82,6 +82,10 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
         return R.id.parent_view_pm
     }
 
+    override fun getToolbar(): Int {
+        return R.id.toolbarPm
+    }
+
     private fun generateFragment() {
         val formattedExpiredDate = DateFormatUtils.formatDate(
                 DateFormatUtils.FORMAT_YYYY_MM_DD,
