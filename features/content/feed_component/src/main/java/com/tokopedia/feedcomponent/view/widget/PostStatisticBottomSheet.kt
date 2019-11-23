@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.statistic.PostStatisticAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
 import com.tokopedia.kotlin.extensions.view.warn
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -33,11 +35,13 @@ class PostStatisticBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private lateinit var tvProductsCommission: TextView
     private lateinit var rvStatistic: RecyclerView
     private val statisticAdapter = PostStatisticAdapter()
 
-    fun setStatisticModelList(modelList: List<PostStatisticUiModel>) {
-        statisticAdapter.setItemsAndAnimateChanges(modelList)
+    fun setPostStatisticCommissionModel(model: PostStatisticCommissionUiModel) {
+        tvProductsCommission.text = model.totalCommission
+        statisticAdapter.setItemsAndAnimateChanges(model.postStatisticList)
     }
 
     fun show(fragmentManager: FragmentManager,
@@ -52,6 +56,7 @@ class PostStatisticBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView(view: View) {
+        tvProductsCommission = view.findViewById(R.id.tv_products_commission)
         rvStatistic = view.findViewById(R.id.rv_statistic)
 
         setupList()

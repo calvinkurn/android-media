@@ -85,6 +85,7 @@ import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
 import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
@@ -1114,9 +1115,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         )
     }
 
-    override fun onSuccessGetPostStatistic(statisticModelList: List<PostStatisticUiModel>) {
+    override fun onSuccessGetPostStatistic(statisticCommissionModel: PostStatisticCommissionUiModel) {
         getPostStatisticBottomSheet()
-                .setStatisticModelList(statisticModelList)
+                .setPostStatisticCommissionModel(statisticCommissionModel)
     }
 
     override fun onErrorGetPostStatistic(error: Throwable) {
@@ -1843,17 +1844,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun getPostStatisticBottomSheet(): PostStatisticBottomSheet {
         if (!::postStatisticBottomSheet.isInitialized) {
             postStatisticBottomSheet = PostStatisticBottomSheet.newInstance(requireContext())
-                    .also {
-                        it.setStatisticModelList(
-                                listOf(
-                                        PostStatisticUiModel(
-                                                R.drawable.ic_feed_see_darker_grey,
-                                                "15rb",
-                                                R.string.feed_post_statistic_seen_count
-                                        )
-                                )
-                        )
-                    }
         }
         return postStatisticBottomSheet
     }

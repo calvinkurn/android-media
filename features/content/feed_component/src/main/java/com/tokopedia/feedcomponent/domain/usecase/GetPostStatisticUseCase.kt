@@ -1,7 +1,10 @@
 package com.tokopedia.feedcomponent.domain.usecase
 
-import com.tokopedia.feedcomponent.domain.model.FeedGetStatsPosts
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.feedcomponent.domain.model.statistic.FeedGetStatsPosts
+import com.tokopedia.feedcomponent.domain.model.statistic.GetPostStatisticResponse
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -11,7 +14,7 @@ import javax.inject.Inject
  * Created by jegul on 2019-11-22
  */
 class GetPostStatisticUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase
+        private val graphqlRepository: GraphqlRepository
 ) : UseCase<FeedGetStatsPosts>() {
 
     companion object {
@@ -26,6 +29,8 @@ class GetPostStatisticUseCase @Inject constructor(
     }
 
     private val params: MutableMap<String, Any> = mutableMapOf()
+
+    private val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
     //region query
     private val query by lazy {
@@ -61,14 +66,13 @@ class GetPostStatisticUseCase @Inject constructor(
     //endregion
 
     override suspend fun executeOnBackground(): FeedGetStatsPosts {
-        graphqlUseCase.run {
-            clearRequest()
-            addRequest(
-                    GraphqlRequest(query, FeedGetStatsPosts::class.java, params)
-            )
-        }
-        val response = graphqlUseCase.executeOnBackground()
-        return response.getData(FeedGetStatsPosts::class.java)
+        val response = graphqlRepository.getReseponse(
+                listOf(
+                        GraphqlRequest(query, GetPostStatisticResponse::class.java, params)
+                ),
+                cacheStrategy
+        )
+        return response.getData<GetPostStatisticResponse>(GetPostStatisticResponse::class.java).feedGetStatsPosts
     }
 
     fun setParams(params: RequestParams) {

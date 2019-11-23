@@ -2,6 +2,7 @@ package com.tokopedia.profile.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -9,16 +10,17 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.domain.model.FeedGetStatsPosts
+import com.tokopedia.feedcomponent.domain.model.commission.AffiliatedProductByProductIDs
+import com.tokopedia.feedcomponent.domain.model.statistic.FeedGetStatsPosts
+import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticCommissionUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.feedcomponent.view.subscriber.TrackPostClickSubscriber
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
-import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
-import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.kotlin.extensions.view.toCompactAmountString
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.profile.R
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileFirstUseCase
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileUseCase
@@ -41,7 +43,7 @@ class ProfilePresenter @Inject constructor(
         private val shouldChangeUsernameUseCase: ShouldChangeUsernameUseCase,
         private val getRelatedPostUseCase: GetRelatedPostUseCase,
         private val atcUseCase: AddToCartUseCase,
-        private val getPostStatisticUseCase: GetPostStatisticUseCase)
+        private val getPostStatisticCommissionUseCase: GetPostStatisticCommissionUseCase)
     : BaseDaggerPresenter<ProfileContract.View>(), ProfileContract.Presenter {
 
     override var cursor: String = ""
@@ -201,11 +203,22 @@ class ProfilePresenter @Inject constructor(
     }
 
     override fun getPostStatistic(activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int) {
-        getPostStatisticUseCase.run {
-            setParams(GetPostStatisticUseCase.getParam(productIds))
+        getPostStatisticCommissionUseCase.run {
+            setParams(
+                    GetPostStatisticCommissionUseCase.getParam(
+                            listOf(activityId),
+                            productIds
+                    )
+            )
             execute(
                     onSuccess = {
-                        view.onSuccessGetPostStatistic(it.convertToUiModel(likeCount, commentCount))
+                        view.onSuccessGetPostStatistic(
+                                PostStatisticCommissionUiModel(
+                                        KMNumbers.formatRupiahString(it.second.totalProductCommission.toLongOrZero()),
+                                        it.first.convertToUiModel(likeCount, commentCount)
+                                )
+
+                        )
                     },
                     onError = {
                         view.onErrorGetPostStatistic(it)
@@ -222,16 +235,16 @@ class ProfilePresenter @Inject constructor(
         return userId
     }
 
-    private fun FeedGetStatsPosts.convertToUiModel(likeCount: Int, commentCount: Int) = stats.firstOrNull().let {
+    private fun FeedGetStatsPosts.convertToUiModel(likeCount: Int, commentCount: Int): List<PostStatisticUiModel> = stats.firstOrNull().let {
         listOf(
                 PostStatisticUiModel(
                         R.drawable.ic_feed_see_darker_grey,
-                        it?.view?.fmt ?: "0",
+                        it?.view?.fmt.takeUnless(String?::isNullOrEmpty) ?: "0",
                         R.string.feed_post_statistic_seen_count
                 ),
                 PostStatisticUiModel(
                         R.drawable.ic_feed_click_darker_grey,
-                        it?.click?.fmt ?: "0",
+                        it?.click?.fmt.takeUnless(String?::isNullOrEmpty) ?: "0",
                         R.string.feed_post_statistic_click_count
                 ),
                 PostStatisticUiModel(

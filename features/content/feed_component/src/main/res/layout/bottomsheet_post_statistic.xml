@@ -22,10 +22,11 @@
             android:id="@+id/iv_commission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:srcCompat="@drawable/ic_eye_password_closed"
+            app:srcCompat="@drawable/ic_feed_grey_commission"
             />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_products_commission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
@@ -67,12 +68,11 @@
         android:id="@+id/rv_statistic"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
-        app:layout_constraintTop_toBottomOf="@id/tv_check_dashboard"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_post_statistic"
-        />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_check_dashboard"
+        tools:listitem="@layout/item_post_statistic" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="0dp"

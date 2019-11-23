@@ -4,8 +4,10 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.feedcomponent.di.FeedComponentModule
+import com.tokopedia.feedcomponent.util.coroutine.CommonCoroutineDispatcherProvider
+import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.presenter.ProfileEmptyPresenter
@@ -46,6 +48,10 @@ class ProfileModule {
 
     @ProfileScope
     @Provides
-    fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
+    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @ProfileScope
+    @Provides
+    fun provideCoroutineDispatcherProvider(): CoroutineDispatcherProvider = CommonCoroutineDispatcherProvider
 
 }
