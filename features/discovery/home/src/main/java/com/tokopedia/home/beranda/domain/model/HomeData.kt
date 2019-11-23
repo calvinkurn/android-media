@@ -12,16 +12,16 @@ data class HomeData(
     @NonNull
     val id: Int = 1,
     @SerializedName("dynamicHomeChannel")
-    val dynamicHomeChannel: DynamicHomeChannel,
+    val dynamicHomeChannel: DynamicHomeChannel = DynamicHomeChannel(),
     @SerializedName("slides")
-    val banner: BannerDataModel,
+    val banner: BannerDataModel = BannerDataModel(),
     @SerializedName("ticker")
-    val ticker: Ticker,
+    val ticker: Ticker = Ticker(),
     @SerializedName("dynamicHomeIcon")
-    val dynamicHomeIcon: DynamicHomeIcon,
+    val dynamicHomeIcon: DynamicHomeIcon = DynamicHomeIcon(),
     @SerializedName("spotlight")
-    val spotlight: Spotlight,
+    val spotlight: Spotlight = Spotlight(),
     @SerializedName("homeFlag")
-    val homeFlag: HomeFlag,
+    val homeFlag: HomeFlag = HomeFlag(),
     var isCache: Boolean = false
 )

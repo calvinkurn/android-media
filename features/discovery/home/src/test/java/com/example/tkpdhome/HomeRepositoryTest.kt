@@ -1,15 +1,18 @@
-package com.example.home
+package com.example.tkpdhome
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.example.home.rules.CoroutinesMainDispatcherRule
+import com.example.tkpdhome.rules.CoroutinesMainDispatcherRule
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.v2.home.base.HomeRepository
-import com.tokopedia.v2.home.data.datasource.local.dao.HomeDao
-import com.tokopedia.v2.home.data.datasource.remote.HomeRemoteDataSource
-import com.tokopedia.v2.home.data.repository.HomeRepositoryImpl
-import com.tokopedia.v2.home.model.pojo.home.HomeData
-import com.tokopedia.v2.home.model.vo.Resource
+import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
+import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
+import com.tokopedia.home.beranda.data.mapper.HomeMapper
+import com.tokopedia.home.beranda.data.repository.HomeRepository
+import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
+import com.tokopedia.home.beranda.data.source.HomeDataSource
+import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.helper.Resource
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
 import io.mockk.*
 import kotlinx.coroutines.*
 import org.junit.Before
@@ -24,7 +27,9 @@ class HomeRepositoryTest {
     private lateinit var repository: HomeRepository
     private val dao = mockk<HomeDao>(relaxed = true)
     private val service = mockk<HomeRemoteDataSource>()
-    private lateinit var observerHome: Observer<Resource<HomeData>>
+    private val homeDataSource = mockk<HomeDataSource>()
+    private val homeMapper = mockk<HomeMapper>()
+    private lateinit var observerHome: Observer<Resource<HomeViewModel>>
 
         @Rule
         @JvmField
@@ -36,47 +41,49 @@ class HomeRepositoryTest {
     @Before
     fun init(){
         observerHome = mockk(relaxed = true)
-        repository = HomeRepositoryImpl(dao, service)
+        repository = HomeRepositoryImpl(homeDataSource, dao, service, homeMapper)
     }
 
     @Test
     fun `Get home data from server when no internet is available`(){
         val exception = Exception("Internet")
         val mockHomeData = mockk<HomeData>()
+        val mockHomeViewModel = mockk<HomeViewModel>()
         runBlocking {
             coEvery { service.getHomeData() } throws exception
             coEvery { dao.getHomeData() } returns mockHomeData
-            repository.getHomeDataWithCache().observeForever(observerHome)
+            repository.getHomeData().observeForever(observerHome)
         }
 
         verifyOrder {
             observerHome.onChanged(Resource.loading(null)) // Init loading with no value
-            observerHome.onChanged(Resource.loading(mockHomeData)) // Then trying to load from db (fast temp loading) before load from remote source
-            observerHome.onChanged(Resource.error(exception, mockHomeData)) // Retrofit 403 error
+            observerHome.onChanged(Resource.loading(mockHomeViewModel)) // Then trying to load from db (fast temp loading) before load from remote source
+            observerHome.onChanged(Resource.error(exception, mockHomeViewModel)) // Retrofit 403 error
         }
         confirmVerified(observerHome)
     }
 
     @Test
     fun `Get home data from network`() {
-        val fakeHomeData = HomeData(1, null, null, null, null, null, null)
+        val fakeHomeData = HomeData()
         val graphqlResponse = GraphqlResponse(mapOf(
                 HomeData::class.java to fakeHomeData
         ), mapOf(), false)
         val mockHomeData = mockk<HomeData>()
+        val mockHomeViewModel = mockk<HomeViewModel>()
         runBlocking {
             coEvery { service.getHomeData() } returns graphqlResponse
             coEvery { dao.getHomeData() } returns mockHomeData andThen fakeHomeData
         }
 
         runBlocking {
-            repository.getHomeDataWithCache().observeForever(observerHome)
+            repository.getHomeData().observeForever(observerHome)
         }
 
         verifyOrder {
             observerHome.onChanged(Resource.loading(null)) // Loading from remote source
-            observerHome.onChanged(Resource.loading(mockHomeData)) // Then trying to load from db (fast temp loading) before load from remote source
-            observerHome.onChanged(Resource.success(fakeHomeData)) // Success
+            observerHome.onChanged(Resource.success(mockHomeViewModel)) // Then trying to load from db (fast temp loading) before load from remote source
+            observerHome.onChanged(Resource.success(mockHomeViewModel)) // Success
         }
 
         coVerify(exactly = 1) {
@@ -89,7 +96,8 @@ class HomeRepositoryTest {
 
     @Test
     fun `Get home data from db`() {
-        val fakeHomeData = HomeData(1, null, null, null, null, null, null)
+        val fakeHomeData = HomeData()
+        val mockHomeViewModel = mockk<HomeViewModel>()
         val graphqlResponse = GraphqlResponse(mapOf(
                 HomeData::class.java to fakeHomeData
         ), mapOf(), false)
@@ -97,13 +105,13 @@ class HomeRepositoryTest {
         coEvery { dao.getHomeData() } returns fakeHomeData
 
         runBlocking {
-            repository.getHomeDataWithCache().observeForever(observerHome)
+            repository.getHomeData().observeForever(observerHome)
         }
 
         verifyOrder {
             observerHome.onChanged(Resource.loading(null)) // Loading from remote source
-            observerHome.onChanged(Resource.loading(fakeHomeData)) // Loading from remote source
-            observerHome.onChanged(Resource.success(fakeHomeData)) // Success
+            observerHome.onChanged(Resource.success(mockHomeViewModel)) // Loading from remote source
+            observerHome.onChanged(Resource.success(mockHomeViewModel)) // Success
         }
 
         confirmVerified(observerHome)

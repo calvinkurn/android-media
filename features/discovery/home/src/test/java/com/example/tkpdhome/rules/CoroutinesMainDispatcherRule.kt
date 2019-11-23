@@ -1,4 +1,4 @@
-package com.example.home.rules
+package com.example.tkpdhome.rules
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
