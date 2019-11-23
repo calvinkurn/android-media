@@ -239,7 +239,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
             }
         }
 
-        return new HomeViewModel(homeData.getHomeFlag(), list);
+        return new HomeViewModel(homeData.getHomeFlag(), list, false);
     }
 
     private HomeVisitable mappingToReviewViewModel(DynamicHomeChannel.Channels channel) {

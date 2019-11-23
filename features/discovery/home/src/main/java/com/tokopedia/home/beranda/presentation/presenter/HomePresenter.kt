@@ -1,7 +1,9 @@
 package com.tokopedia.home.beranda.presentation.presenter
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
@@ -93,8 +95,8 @@ class HomePresenter(private val userSession: UserSessionInterface,
     @Inject
     lateinit var playCardHomeUseCase: PlayCardHomeUseCase
 
-    private val _homeData = HomeLiveData(HomeViewModel())
-    val homeLiveData: LiveData<HomeViewModel> get() = _homeData
+    private val _homeData = HomeLiveData(Resource.loading<HomeViewModel>(null))
+    val homeLiveData: LiveData<Resource<HomeViewModel>> = _homeData
     private var homeSource: LiveData<Resource<HomeViewModel>> = MutableLiveData()
 
     private var currentCursor = ""
@@ -123,7 +125,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         if (isViewAttached && !fetchFirstData && needRefresh) {
             updateHomeData()
         }
-        if (needSendGeolocationRequest && view?.hasGeolocationPermission()) {
+        if (needSendGeolocationRequest && view?.hasGeolocationPermission() == true) {
             view?.detectAndSendLocation()
         }
         tokocashBalance
@@ -147,19 +149,12 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     override fun updateHomeData() {
+        lastRequestTimeHomeData = System.currentTimeMillis()
         launch(coroutineContext){
             _homeData.removeSource(homeSource)
             homeSource = homeRepository.getHomeData()
             _homeData.addSource(homeSource){
-                it.data?.let {data ->
-                    if(it.status == Resource.Status.SUCCESS){
-                        view?.configureHomeFlag(data.homeFlag)
-                        view?.updateListOnResume(ArrayList(data.list))
-                        view?.addImpressionToTrackingQueue(ArrayList(data.list))
-                        lastRequestTimeHomeData = System.currentTimeMillis()
-                    }
-                }
-
+                _homeData.value = it
             }
         }
     }
@@ -193,48 +188,12 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     override fun getHomeData() {
         initHeaderViewModelData()
+        lastRequestTimeSendGeolocation = System.currentTimeMillis()
         launch(coroutineContext){
             _homeData.removeSource(homeSource)
             homeSource = homeRepository.getHomeData()
             _homeData.addSource(homeSource){
-                when(it.status){
-                    Resource.Status.LOADING -> view?.showLoading()
-                    Resource.Status.SUCCESS-> {
-                        view?.hideLoading()
-                        it.data?.let {data ->
-                            _homeData.value = data
-                            if (data.list.size > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
-                                val flag = if(!data.isCache) FLAG_FROM_NETWORK else FLAG_FROM_CACHE
-                                view?.configureHomeFlag(data.homeFlag)
-                                view?.setItems(ArrayList(data.list), flag)
-
-                                if(flag == FLAG_FROM_NETWORK) view?.addImpressionToTrackingQueue(ArrayList<HomeVisitable<*>>(data.list))
-
-                                if (isDataValid(ArrayList<HomeVisitable<*>>(data.list))) {
-                                    view?.removeNetworkError()
-                                } else {
-                                    showNetworkError()
-                                }
-
-                                if(it.status == Resource.Status.SUCCESS){
-                                    lastRequestTimeHomeData = System.currentTimeMillis()
-                                }
-                            } else {
-                                view?.showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(Throwable()))
-                            }
-                        }
-                    }
-                    Resource.Status.ERROR -> {
-                        it.data?.let {data ->
-                            view?.configureHomeFlag(data.homeFlag)
-                            view?.setItems(ArrayList(data.list), FLAG_FROM_CACHE)
-                        }
-                        view?.hideLoading()
-                        view?.showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(it.error))
-
-                    }
-                }
-
+                _homeData.value = it
             }
         }
     }
@@ -340,10 +299,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
         }
     }
 
-    fun setCursor(currentCursor: String) {
-        this.currentCursor = currentCursor
-    }
-
     fun hasNextPageFeed(): Boolean {
         return CURSOR_NO_NEXT_PAGE_FEED != currentCursor
     }
@@ -356,29 +311,18 @@ class HomePresenter(private val userSession: UserSessionInterface,
         return headerViewModel
     }
 
-    fun setFetchFirstData(fetchFirstData: Boolean) {
-        this.fetchFirstData = fetchFirstData
-    }
+//    private fun isDataValid(visitables: List<HomeVisitable<*>>): Boolean {
+//        return containsInstance(visitables, BannerViewModel::class.java)
+//    }
 
-    val isLogin: Boolean
-        get() = userSession.isLoggedIn
-
-    fun showNetworkError() {
-        view?.showNetworkError()
-    }
-
-    private fun isDataValid(visitables: List<HomeVisitable<*>>): Boolean {
-        return containsInstance(visitables, BannerViewModel::class.java)
-    }
-
-    fun <E> containsInstance(list: List<E>, clazz: Class<out E>): Boolean {
-        for (e in list) {
-            if (clazz.isInstance(e)) {
-                return true
-            }
-        }
-        return false
-    }
+//    fun <E> containsInstance(list: List<E>, clazz: Class<out E>): Boolean {
+//        for (e in list) {
+//            if (clazz.isInstance(e)) {
+//                return true
+//            }
+//        }
+//        return false
+//    }
 
     override fun onDestroy() {
         unsubscribeAllUseCase()
@@ -538,11 +482,9 @@ class HomePresenter(private val userSession: UserSessionInterface,
     }
 
     companion object {
-        private val TAG = HomePresenter::class.java.simpleName
         private const val CURSOR_NO_NEXT_PAGE_FEED = "CURSOR_NO_NEXT_PAGE_FEED"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
-        private const val VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1
         const val FLAG_FROM_NETWORK = 99
         const val FLAG_FROM_CACHE = 98
     }

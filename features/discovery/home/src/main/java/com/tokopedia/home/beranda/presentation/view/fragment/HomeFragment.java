@@ -60,6 +60,8 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
+import com.tokopedia.home.beranda.helper.Resource;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -74,6 +76,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
@@ -150,6 +153,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
     private static final int REQUEST_CODE_REVIEW = 999;
+    private static final int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
     private static final int DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10;
     public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
     public static final String KEY_NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
@@ -477,9 +481,55 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void subscribeHome(){
-        presenter.getHomeLiveData().observe(this, homeViewModel -> {
-            configureHomeFlag(homeViewModel.getHomeFlag());
+        presenter.getHomeLiveData().observe(this, resource -> {
+            if(resource.getStatus() == Resource.Status.LOADING) {
+                showLoading();
+            }else if(resource.getStatus() == Resource.Status.SUCCESS){
+                hideLoading();
+                if(resource.getData() != null){
+                    HomeViewModel data = resource.getData();
+                    if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
+                        int flag = !data.isCache() ? HomePresenter.FLAG_FROM_NETWORK : HomePresenter.FLAG_FROM_CACHE;
+                        configureHomeFlag(data.getHomeFlag());
+
+                        if(adapter.getItemCount() != 0){
+                            updateListOnResume(new ArrayList(data.getList()));
+                        }else {
+                            setItems(new ArrayList(data.getList()), flag);
+                        }
+
+                        if(flag == HomePresenter.FLAG_FROM_NETWORK) addImpressionToTrackingQueue(new ArrayList(data.getList()));
+                        if (isDataValid(new ArrayList(data.getList()))) {
+                            removeNetworkError();
+                        } else {
+                            showNetworkError();
+                        }
+                    } else {
+                        showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()));
+                    }
+                }
+            }else {
+                if(resource.getData() != null){
+                    configureHomeFlag(resource.getData().getHomeFlag());
+                    setItems(new ArrayList(resource.getData().getList()), HomePresenter.FLAG_FROM_CACHE);
+                }
+                hideLoading();
+                showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(resource.getError()));
+            }
         });
+    }
+
+    private boolean isDataValid(List<HomeVisitable> visitables) {
+        return containsInstance(visitables, BannerViewModel.class);
+    }
+
+    private <T> boolean containsInstance(List<T> list, Class type){
+        for (T a : list) {
+            if (a.getClass() == type) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void loadEggData() {
