@@ -70,6 +70,8 @@ class HotelBookingFragment : HotelBaseFragment() {
     lateinit var appliedVoucher: HotelCart.AppliedVoucher
     var hotelBookingPageModel = HotelBookingPageModel()
     var promoCode = ""
+    internal var destinationType: String = ""
+    internal var destinationName: String = ""
 
     lateinit var progressDialog: ProgressDialog
 
@@ -87,6 +89,8 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         arguments?.let {
             hotelBookingPageModel.cartId = it.getString(ARG_CART_ID, "")
+            destinationType = it.getString(ARG_DESTINATION_TYPE, "")
+            destinationName = it.getString(ARG_DESTINATION_NAME, "")
         }
     }
 
@@ -556,7 +560,8 @@ class HotelBookingFragment : HotelBaseFragment() {
                 hotelBookingPageModel.guestName = tv_guest_input.text.toString()
             else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
             hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
-            trackingHotelUtil.hotelClickNext(hotelBookingPageModel.isForOtherGuest == 0)
+            trackingHotelUtil.hotelClickNext(hotelCart, destinationType, destinationName,
+                    hotelBookingPageModel.isForOtherGuest == 0)
 
             hotelBookingPageModel.promoCode = promoCode
 
@@ -609,6 +614,8 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     companion object {
         const val ARG_CART_ID = "arg_cart_id"
+        const val ARG_DESTINATION_TYPE = "arg_destination_type"
+        const val ARG_DESTINATION_NAME = "arg_destination_name"
         const val EXTRA_HOTEL_BOOKING_MODEL = "extra_hotel_booking_model"
         const val EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA"
         const val REQUEST_CODE_CONTACT_DATA = 104
@@ -629,10 +636,12 @@ class HotelBookingFragment : HotelBaseFragment() {
         private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z\\s]*$"
 
 
-        fun getInstance(cartId: String): HotelBookingFragment =
+        fun getInstance(cartId: String, destinationType: String, destinationName: String): HotelBookingFragment =
                 HotelBookingFragment().also {
                     it.arguments = Bundle().apply {
                         putString(ARG_CART_ID, cartId)
+                        putString(ARG_DESTINATION_TYPE, destinationType)
+                        putString(ARG_DESTINATION_NAME, destinationName)
                     }
                 }
     }

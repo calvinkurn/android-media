@@ -98,7 +98,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 is Success -> {
                     val cartId = it.data.response.cartId
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId))
+                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId,
+                                addToCartParam.destinationType, addToCartParam.destinationName))
                     }
                 }
                 is Fail -> {
@@ -342,7 +343,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             progressDialog.show()
             room_detail_button.isEnabled = false
             if (userSessionInterface.isLoggedIn) {
-                trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
+                trackingHotelUtil.hotelChooseRoomDetails(hotelRoom, roomIndex, addToCartParam)
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {
                 goToLoginPage()

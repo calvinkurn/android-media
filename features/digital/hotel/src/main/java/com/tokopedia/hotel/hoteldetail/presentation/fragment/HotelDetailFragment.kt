@@ -440,7 +440,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                     context?.run {
                         startActivityForResult(HotelRoomListActivity.createInstance(this, hotelHomepageModel.locId, hotelName,
                                 hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
-                                hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
+                                hotelHomepageModel.roomCount, hotelHomepageModel.locType, hotelHomepageModel.locName), RESULT_ROOM_LIST)
                     }
                 }
             } else {

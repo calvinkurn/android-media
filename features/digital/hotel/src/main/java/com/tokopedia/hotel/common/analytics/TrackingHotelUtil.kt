@@ -1,10 +1,14 @@
 package com.tokopedia.hotel.common.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.hotel.booking.data.model.HotelCart
+import com.tokopedia.hotel.booking.data.model.HotelPropertyRoom
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
+import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
@@ -111,13 +115,11 @@ class TrackingHotelUtil {
         listProduct.forEachIndexed { index, product ->
             val map = HashMap<String, Any>()
             map[NAME_LABEL] = product.name
-            map[DIRECT_PAYMENT_LABEL] = product.isDirectPayment
             map[ID_LABEL] = product.id
             map[POSITION_LABEL] = index
             map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
             map[VARIANT_LABEL] = "${product.isDirectPayment} - ${product.roomAvailability > 0}"
             map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
-
             map[PRICE_LABEL] = if (product.roomPrice.isNotEmpty())
                 product.roomPrice.first().priceAmount.roundToLong().toString() else "0"
 
@@ -239,61 +241,72 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId")
     }
 
-    fun hotelViewRoomList(hotelId: Int, hotelName: String, hotelPrice: String, isDirectPayment: Boolean, isAvailable: Boolean, position: Int) {
-//        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, VIEW_ROOM_LIST,
-//                "$HOTEL_LABEL - $hotelId")
-        // TODO change to impression
+    fun hotelViewRoomList(hotelId: Int, hotelRoomListPageModel: HotelRoomListPageModel, roomList: List<HotelRoom>) {
+        val roomCount = hotelRoomListPageModel.room
+        val guestCount = hotelRoomListPageModel.adult
+        val dayDiff = HotelUtils.countCurrentDayDifference(hotelRoomListPageModel.checkIn)
+        val duration = HotelUtils.countDayDifference(hotelRoomListPageModel.checkIn, hotelRoomListPageModel.checkOut)
+        val destinationType = hotelRoomListPageModel.destinationType
+        val destination = hotelRoomListPageModel.destinationName
+
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PRODUCT_VIEW
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = VIEW_ROOM_LIST
 
-        // TODO change label to HOTEL_LABEL, destType, destination, totalRoom, totalGuest, checkin day, totalstay, hotel id
-//        map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $roomId - $price"
-        // TODO get all data from fragment / the view
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
-                IMPRESSIONS_LABEL, DataLayer.listOf(
-                DataLayer.mapOf(
-                        NAME_LABEL, hotelName,
-                        ID_LABEL, hotelId,
-                        PRICE_LABEL, hotelPrice,
-                        LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
-                        VARIANT_LABEL, "{$isDirectPayment} - {$isAvailable}",
-                        CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
-                        POSITION_LABEL, "$position"
-                )
-            )
+                IMPRESSIONS_LABEL, getViewHotelListRoom(roomList)
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelChooseRoom(room: HotelRoom, position: Int) {
+    private fun getViewHotelListRoom(roomList: List<HotelRoom>): List<Any> {
+        val list = ArrayList<Map<String, Any>>()
+        roomList.forEachIndexed { index, hotelRoom ->
+            val map = HashMap<String, Any>()
+            map[NAME_LABEL] = hotelRoom.roomInfo.name
+            map[ID_LABEL] = hotelRoom.roomId
+            map[POSITION_LABEL] = index
+            map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
+            map[VARIANT_LABEL] = "${hotelRoom.additionalPropertyInfo.isDirectPayment} - ${hotelRoom.available}"
+            map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
+            map[PRICE_LABEL] = hotelRoom.roomPrice.roomPrice
+
+            list.add(map)
+        }
+        return DataLayer.listOf(*list.toTypedArray<Any>())
+    }
+
+    fun hotelChooseRoom(room: HotelRoom, hotelAddCartParam: HotelAddCartParam) {
         val hotelId = room.additionalPropertyInfo.propertyId
-        val roomId = room.roomId
-        val price = room.roomPrice.priceAmount.roundToLong()
+        val roomCount = hotelAddCartParam.rooms.count()
+        val guestCount = hotelAddCartParam.adult
+        val dayDiff = HotelUtils.countCurrentDayDifference(hotelAddCartParam.checkIn)
+        val duration = HotelUtils.countDayDifference(hotelAddCartParam.checkIn, hotelAddCartParam.checkOut)
+        val destinationType = hotelAddCartParam.destinationType
+        val destination = hotelAddCartParam.destinationName
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = ADD_TO_CART
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CHOOSE_ROOM
-
-        // TODO change label to HOTEL_LABEL, destType, destination, totalRoom, totalGuest, checkin day, totalstay, hotel id
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $roomId - $price"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 ADD_LABEL, DataLayer.mapOf(
                 PRODUCTS_LABEL, DataLayer.listOf(
                 DataLayer.mapOf(
                         NAME_LABEL, room.roomInfo.name,
-                        ID_LABEL, roomId,
-                        PRICE_LABEL, price,
+                        ID_LABEL, room.roomId,
+                        PRICE_LABEL, room.roomPrice.priceAmount.roundToLong(),
                         QUANTITY_LABEL, ONE_LABEL,
-                        VARIANT_LABEL, "{isDirectPayment} - ${room.available}",
+                        VARIANT_LABEL, "{${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL
+                    )
                 )
-        )
-        )
+            )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
@@ -303,31 +316,32 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $hotelId - $roomId - $price")
     }
 
-    fun hotelClickRoomDetails(hotelId: Int, roomId: String, price: String) {
-//        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CLICK_ROOM_DETAILS,
-//                "$HOTEL_LABEL - $hotelId - $roomId - $price")
+    fun hotelClickRoomDetails(hotelRoom: HotelRoom, hotelRoomListPageModel: HotelRoomListPageModel, position: Int) {
+        val hotelId = hotelRoom.additionalPropertyInfo.propertyId
+        val roomCount = hotelRoomListPageModel.room
+        val guestCount = hotelRoomListPageModel.adult
+        val dayDiff = HotelUtils.countCurrentDayDifference(hotelRoomListPageModel.checkIn)
+        val duration = HotelUtils.countDayDifference(hotelRoomListPageModel.checkIn, hotelRoomListPageModel.checkOut)
+        val destinationType = hotelRoomListPageModel.destinationType
+        val destination = hotelRoomListPageModel.destinationName
 
-        // TODO change to impression
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PRODUCT_CLICK
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CLICK_ROOM_DETAILS
-
-        // TODO change label to HOTEL_LABEL, destType, destination, totalRoom, totalGuest, checkin day, totalstay, hotel id
-//        map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $roomId - $price"
-        // TODO get all data from fragment / the view
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CLICK_LABEL, DataLayer.mapOf(
                     ACTION_FIELD_LABEL, DataLayer.mapOf( LIST_LABEL, SLASH_HOTEL_SLASH_LABEL ),
                     PRODUCTS_LABEL, DataLayer.listOf(
                                     DataLayer.mapOf(
-                                            NAME_LABEL, "{hotel name}",
-                                            ID_LABEL, "{hotel id}",
-                                            PRICE_LABEL, "{hotel price}",
+                                            NAME_LABEL, hotelRoom.roomInfo.name,
+                                            ID_LABEL, hotelRoom.roomId,
+                                            PRICE_LABEL, hotelRoom.roomPrice.priceAmount.roundToLong(),
                                             LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
-                                            VARIANT_LABEL, "{flag is direct payment} - {is available}",
+                                            VARIANT_LABEL, "${hotelRoom.additionalPropertyInfo.isDirectPayment} - ${hotelRoom.available}",
                                             CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
-                                            POSITION_LABEL, ""
+                                            POSITION_LABEL, position
                                     )
                             )
                 )
@@ -341,18 +355,20 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $hotelId - $roomId - $price")
     }
 
-    fun hotelChooseRoomDetails(room: HotelRoom) {
+    fun hotelChooseRoomDetails(room: HotelRoom, position: Int, hotelAddCartParam: HotelAddCartParam) {
         val hotelId = room.additionalPropertyInfo.propertyId
-        val roomId = room.roomId
-        val price = room.roomPrice.priceAmount.roundToLong()
+        val roomCount = hotelAddCartParam.rooms.count()
+        val guestCount = hotelAddCartParam.adult
+        val dayDiff = HotelUtils.countCurrentDayDifference(hotelAddCartParam.checkIn)
+        val duration = HotelUtils.countDayDifference(hotelAddCartParam.checkIn, hotelAddCartParam.checkOut)
+        val destinationType = hotelAddCartParam.destinationType
+        val destination = hotelAddCartParam.destinationName
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = ADD_TO_CART
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CHOOSE_ROOM_DETAILS_PDP
-
-        // TODO change label to HOTEL_LABEL, destType, destination, totalRoom, totalGuest, checkin day, totalstay, hotel id
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $roomId - $price"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
                 ADD_LABEL, DataLayer.mapOf(
@@ -362,9 +378,9 @@ class TrackingHotelUtil {
                         ID_LABEL, room.roomId,
                         PRICE_LABEL, room.roomPrice.priceAmount.roundToLong(),
                         LIST_LABEL, SLASH_HOTEL_SLASH_LABEL,
-                        VARIANT_LABEL, "{flag is direct payment} - {is available}",
+                        VARIANT_LABEL, "${room.additionalPropertyInfo.isDirectPayment} - ${room.available}",
                         CATEGORY_LABEL, HOTEL_CONTENT_LABEL,
-                        POSITION_LABEL, "{position}"
+                        POSITION_LABEL, "$position"
                         )
                 )
             )
@@ -372,35 +388,47 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickNext(personal: Boolean) {
-//        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CLICK_NEXT,
-//                "$HOTEL_LABEL - $personal")
+    fun hotelClickNext(hotelCart: HotelCart, destType: String, destination: String, personal: Boolean) {
+        val hotelId = hotelCart.property.propertyID
+        val roomCount = hotelCart.property.rooms.count()
+        val guestCount = hotelCart.cart.adult
+        val dayDiff = HotelUtils.countCurrentDayDifference(hotelCart.cart.checkIn)
+        val duration = HotelUtils.countDayDifference(hotelCart.cart.checkIn, hotelCart.cart.checkOut)
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = CHECKOUT
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = CLICK_NEXT
-
-        // TODO change label to HOTEL_LABEL, destType, destination, totalRoom, totalGuest, checkin day, totalstay, hotel id, flag personal
-//        map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $roomId - $price"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - $dayDiff - $duration - $hotelId - $personal"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CHECKOUT, DataLayer.mapOf(
                 ACTION_FIELD_LABEL, DataLayer.mapOf(
                     STEP_LABEL, ONE_LABEL,
                     OPTION_LABEL, "click checkout"),
                 PRODUCTS_LABEL, DataLayer.listOf(
-                    DataLayer.mapOf(
-                            NAME_LABEL, "{room name}",
-                            ID_LABEL, "{room id}",
-                            PRICE_LABEL, "{total room price}",
-                            QUANTITY_LABEL,ONE_LABEL,
-                            VARIANT_LABEL, "{flag is direct payment} - {is available}",
-                            CATEGORY_LABEL, HOTEL_CONTENT_LABEL
-                    )
+                    getHotelListRoomCart(hotelCart.property.rooms, hotelCart.property.isDirectPayment,
+                            hotelCart.cart.totalPriceAmount)
                 )
             )
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getHotelListRoomCart(roomList: List<HotelPropertyRoom>, isDirectPayment: Boolean, totalPrice: Float): List<Any> {
+        val list = ArrayList<Map<String, Any>>()
+        roomList.forEachIndexed { index, hotelRoom ->
+            val map = HashMap<String, Any>()
+            map[NAME_LABEL] = hotelRoom.roomName
+            map[ID_LABEL] = hotelRoom.roomID
+            map[POSITION_LABEL] = index
+            map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
+            map[VARIANT_LABEL] = "$isDirectPayment - true"
+            map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
+            map[PRICE_LABEL] = totalPrice
+
+            list.add(map)
+        }
+        return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
     fun hotelClickPay(personal: Boolean) {
