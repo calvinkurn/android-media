@@ -19,6 +19,8 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPDPDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -63,8 +65,7 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     val p2General = MutableLiveData<ProductInfoP2General>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
     var multiOrigin: WarehouseInfo = WarehouseInfo()
-    val loadTopAdsProduct = MutableLiveData<List<RecommendationWidget>>()
-
+    val loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
 
     private var productInfoTemp = ProductInfo()
     var getProductInfoP1: ProductInfo? = null
@@ -109,6 +110,10 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
             val pdpLayout = getPdpLayout(productParams.productId ?: "")
             val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(pdpLayout.data.components)
+            if (isUserSessionActive() || isUserHasShop) {
+                initialLayoutData.add(ProductOpenShopDataModel())
+            }
+            initialLayoutData.add(ProductLastSeenDataModel())
 
             val productInfo = getPdpData(productParams.productId?.toInt() ?: 0)
             productLayout.value = Success(initialLayoutData)
@@ -269,15 +274,17 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                     loadTopAdsProduct.value == null) {
                 try {
                     withContext(Dispatchers.IO) {
-                        val a = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
+                        val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
-                                pageName = ProductDetailConstant.DEFAULT_PAGE_NAME,
-                                productIds = arrayListOf(product.data.productInfo.basic.id.toString())
+//                                pageName = ProductDetailConstant.DEFAULT_PAGE_NAME,
+                                pageName = "homepage",
+//                                productIds = arrayListOf(product.data.productInfo.basic.id.toString())
+                                productIds = arrayListOf()
                         )).toBlocking()
-                        loadTopAdsProduct.value = a.first()
+                        loadTopAdsProduct.value = Success(recomData.first())
                     }
                 } catch (e: Throwable) {
-
+                    loadTopAdsProduct.value = Fail(e)
                 }
             }
         }

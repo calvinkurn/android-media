@@ -55,4 +55,15 @@ interface DynamicProductDetailListener {
      * ProductTradeinViewHolder
      */
     fun onTradeinClicked(tradeInParams: TradeInParams)
+
+    /**
+     * ProductSocialProofViewHolder
+     */
+    fun onShipmentClicked()
+
+    /**
+     * ProductOpenShopViewHolder
+     */
+    fun openShopClicked()
+
 }

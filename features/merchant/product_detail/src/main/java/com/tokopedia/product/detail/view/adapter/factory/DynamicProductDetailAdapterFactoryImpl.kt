@@ -10,6 +10,14 @@ import com.tokopedia.product.detail.view.viewholder.*
 
 class DynamicProductDetailAdapterFactoryImpl(private val childFragmentManager: FragmentManager,
                                              private val listener: DynamicProductDetailListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
+    override fun type(data: ProductLastSeenDataModel): Int {
+        return ProductLastSeenViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductOpenShopDataModel): Int {
+        return ProductOpenShopViewHolder.LAYOUT
+    }
+
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
     }
@@ -56,13 +64,15 @@ class DynamicProductDetailAdapterFactoryImpl(private val childFragmentManager: F
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            ProductLastSeenViewHolder.LAYOUT -> ProductLastSeenViewHolder(view)
+            ProductOpenShopViewHolder.LAYOUT -> ProductOpenShopViewHolder(view)
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
             ProductTradeinViewHolder.LAYOUT -> ProductTradeinViewHolder(view, listener)
             ProductMerchantVoucherViewHolder.LAYOUT -> ProductMerchantVoucherViewHolder(view, listener)
             ProductImageReviewViewHolder.LAYOUT -> ProductImageReviewViewHolder(view, listener)
             ProductSnapshotViewHolder.LAYOUT -> ProductSnapshotViewHolder(view, childFragmentManager, listener)
             ProductShopInfoViewHolder.LAYOUT -> ProductShopInfoViewHolder(view, listener)
-            ProductSocialProofViewHolder.LAYOUT -> ProductSocialProofViewHolder(view)
+            ProductSocialProofViewHolder.LAYOUT -> ProductSocialProofViewHolder(view, listener)
             ProductInfoViewHolder.LAYOUT -> ProductInfoViewHolder(view, listener)
             ProductDiscussionViewHolder.LAYOUT -> ProductDiscussionViewHolder(view, listener)
             ProductGeneralInfoViewHolder.LAYOUT -> ProductGeneralInfoViewHolder(view)

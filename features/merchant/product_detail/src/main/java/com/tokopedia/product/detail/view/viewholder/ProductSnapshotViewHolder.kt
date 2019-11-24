@@ -18,6 +18,8 @@ import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
 class ProductSnapshotViewHolder(itemView: View,
                                 private val childFragmentManager: FragmentManager,
                                 private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductSnapshotDataModel>(itemView) {
+    private lateinit var header: PartialHeaderView
+
     companion object {
         val LAYOUT = R.layout.item_dynamic_pdp_snapshot
     }
@@ -26,7 +28,10 @@ class ProductSnapshotViewHolder(itemView: View,
         val screenWidth = itemView.resources.displayMetrics.widthPixels
         itemView.view_picture_search_bar.layoutParams.height = screenWidth
 
-        val header = PartialHeaderView.build(itemView.base_header, null)
+        if (!::header.isInitialized) {
+            header = PartialHeaderView.build(itemView.base_header, null)
+        }
+
         element.productInfoP1?.let {
             header.renderData(it)
 
@@ -65,6 +70,13 @@ class ProductSnapshotViewHolder(itemView: View,
         }
         when (payloads[0] as Int) {
             1 -> renderWishlist(element.shopInfo ?: ShopInfo(), element.isWishlisted)
+            2 -> renderCod(element.shouldShowCod)
+        }
+    }
+
+    private fun renderCod(shouldShowCod: Boolean) {
+        if (::header.isInitialized) {
+            header.renderCod(shouldShowCod)
         }
     }
 

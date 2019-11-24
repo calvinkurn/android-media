@@ -6,10 +6,11 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductSocialProofDataModel
 import com.tokopedia.product.detail.view.fragment.partialview.PartialAttributeInfoView
 import com.tokopedia.product.detail.view.fragment.partialview.PartialProductStatisticView
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.partial_product_detail_visibility.view.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
 
-class ProductSocialProofViewHolder(val view: View) : AbstractViewHolder<ProductSocialProofDataModel>(view) {
+class ProductSocialProofViewHolder(val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductSocialProofDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_pdp_social_proof
@@ -33,10 +34,13 @@ class ProductSocialProofViewHolder(val view: View) : AbstractViewHolder<ProductS
         }
 
         element.productInfo?.run {
-            productStatsView.renderData(this)
+            productStatsView.renderData(this, listener::onReviewClick, listener::onDiscussionClicked)
             attributeInfoView.renderData(this)
         }
 
+        productStatsView.renderClickShipping {
+            listener.onShipmentClicked()
+        }
     }
 
 }

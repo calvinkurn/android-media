@@ -1328,7 +1328,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         actionButtonView.renderData(p2Login.isExpressCheckoutType)
     }
 
-
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
         userCod = productInfoP3.userCod
         if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()

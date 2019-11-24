@@ -33,15 +33,15 @@ class PartialProductStatisticView private constructor(private val view: View) {
         }
     }
 
-    fun renderClickShipping(activity: Activity, onShipmentClicked: (() -> Unit)? = null){
+    fun renderClickShipping(activity: Activity? = null, onShipmentClicked: (() -> Unit)? = null){
         with(view){
             icon_courier.setOnClickListener {
                 onShipmentClicked?.invoke()
-                activity.overridePendingTransition(0, 0)
+                activity?.overridePendingTransition(0, 0)
             }
             txt_courier.setOnClickListener {
                 onShipmentClicked?.invoke()
-                activity.overridePendingTransition(0, 0)
+                activity?.overridePendingTransition(0, 0)
             }
         }
     }

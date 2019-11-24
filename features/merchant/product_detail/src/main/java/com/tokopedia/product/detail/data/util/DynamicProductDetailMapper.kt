@@ -5,7 +5,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 
 object DynamicProductDetailMapper {
 
-    fun mapIntoVisitable(data: List<Component>): List<DynamicPDPDataModel> {
+    fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPDPDataModel> {
         val listOfComponent: MutableList<DynamicPDPDataModel> = mutableListOf()
         data.forEachIndexed { _, component ->
             when (component.type) {

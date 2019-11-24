@@ -52,5 +52,15 @@ object ProductDetailConstant {
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
 
+    const val PDP_P1_TRACE = "mp_pdp_p1"
+    const val PDP_P2_TRACE = "mp_pdp_p2"
+    const val PDP_P2_GENERAL_TRACE = "mp_pdp_p2_general"
+    const val PDP_P2_LOGIN_TRACE = "mp_pdp_p2_login"
+    const val PDP_P3_TRACE = "mp_pdp_p3"
+
+    //PAYLOADS
+    const val PAYLOADS_WISHLIST = 1
+    const val PAYLOADS_COD = 2
+
 
 }

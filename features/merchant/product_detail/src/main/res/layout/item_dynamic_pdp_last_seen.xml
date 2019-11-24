@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.design.component.TextViewCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/txt_last_update"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_10"
+    android:background="@drawable/bg_border_top_bottom"
+    android:gravity="center"
+    android:padding="@dimen/dp_12"
+    android:visibility="gone"
+    app:fontSize="micro"
+    app:textViewTheme="lightDisabled"
+    tools:text="Last Update"
+    tools:visibility="visible" />
