@@ -404,7 +404,7 @@ class TrackingHotelUtil {
                 CHECKOUT, DataLayer.mapOf(
                 ACTION_FIELD_LABEL, DataLayer.mapOf(
                     STEP_LABEL, ONE_LABEL,
-                    OPTION_LABEL, "click checkout"),
+                    OPTION_LABEL, CLICK_CHECKOUT),
                 PRODUCTS_LABEL, DataLayer.listOf(
                     getHotelListRoomCart(hotelCart.property.rooms, hotelCart.property.isDirectPayment,
                             hotelCart.cart.totalPriceAmount)
@@ -429,34 +429,6 @@ class TrackingHotelUtil {
             list.add(map)
         }
         return DataLayer.listOf(*list.toTypedArray<Any>())
-    }
-
-    fun hotelClickPay(personal: Boolean) {
-        val map = mutableMapOf<String, Any?>()
-        map[EVENT] = CHECKOUT
-        map[EVENT_CATEGORY] = DIGITAL_NATIVE
-        map[EVENT_ACTION] = CLICK_BAYAR
-
-        // TODO change label to HOTEL_LABEL, destType, destination, totalRoom, totalGuest, checkin day, totalstay, hotel id, flag personal
-//        map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $roomId - $price"
-        map[ECOMMERCE_LABEL] = DataLayer.mapOf(
-                CHECKOUT, DataLayer.mapOf(
-                    ACTION_FIELD_LABEL, DataLayer.mapOf(
-                        STEP_LABEL, TWO_LABEL,
-                        OPTION_LABEL, CLICK_BAYAR),
-                    PRODUCTS_LABEL, DataLayer.listOf(
-                        DataLayer.mapOf(
-                                NAME_LABEL, "{room name}",
-                                ID_LABEL, "{room id}",
-                                PRICE_LABEL, "{total room price}",
-                                QUANTITY_LABEL,ONE_LABEL,
-                                VARIANT_LABEL, "{flag is direct payment} - {is available}",
-                                CATEGORY_LABEL, HOTEL_CONTENT_LABEL
-                        )
-                    )
-                )
-        )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
     fun hotelApplyPromo(promoCode: String) {

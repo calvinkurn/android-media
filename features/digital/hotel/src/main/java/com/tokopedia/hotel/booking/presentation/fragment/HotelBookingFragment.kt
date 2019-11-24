@@ -16,16 +16,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
-import android.widget.Toast
+import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
 import com.tokopedia.common.travel.presentation.model.TravelContactData
@@ -114,15 +116,27 @@ class HotelBookingFragment : HotelBaseFragment() {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
-                    val checkoutData = PaymentPassData()
-                    checkoutData.queryString = it.data.queryString
-                    checkoutData.redirectUrl = it.data.redirectUrl
-                    val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
-                    val intent = RouteManager.getIntent(context, paymentCheckoutString)
-                    intent?.run {
-                        putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutData)
-                        startActivityForResult(intent, REQUEST_CODE_CHECKOUT)
+                    context?.run {
+                        val taskStackBuilder = TaskStackBuilder.create(this)
+
+                        val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
+                        taskStackBuilder.addNextIntent(intentHome)
+
+                        val intentHotelHome = RouteManager.getIntent(this, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
+                        taskStackBuilder.addNextIntent(intentHotelHome)
+
+                        val checkoutData = PaymentPassData()
+                        checkoutData.queryString = it.data.queryString
+                        checkoutData.redirectUrl = it.data.redirectUrl
+                        val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+                        val intent = RouteManager.getIntent(context, paymentCheckoutString)
+                        intent?.run {
+                            putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutData)
+                            taskStackBuilder.addNextIntent(this)
+                            taskStackBuilder.startActivities()
+                        }
                     }
+
                 }
                 is Fail -> {
                     val message = when (it.throwable is MessageErrorException) {
@@ -191,6 +205,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
                                 }
                                 TickerCheckoutView.State.ACTIVE -> {
+                                    trackingHotelUtil.hotelApplyPromo(promoCode)
                                     setupPromoTicker(TickerCheckoutView.State.ACTIVE,
                                             itemPromoData?.title.toEmptyStringIfNull(),
                                             itemPromoData?.description.toEmptyStringIfNull())
@@ -437,6 +452,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 setupPromoTicker(TickerCheckoutView.State.ACTIVE,
                         appliedVoucher.titleDescription,
                         appliedVoucher.message)
+                trackingHotelUtil.hotelApplyPromo(promoCode)
             } else {
                 setupPromoTicker(TickerCheckoutView.State.EMPTY,
                         "",
@@ -464,9 +480,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     startActivityForResult(intent, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT)
                 }
 
-                override fun onDisablePromoDiscount() {
-                    Toast.makeText(context, "onDisablePromoDiscount", Toast.LENGTH_SHORT).show()
-                }
+                override fun onDisablePromoDiscount() { }
             }
         }
     }
