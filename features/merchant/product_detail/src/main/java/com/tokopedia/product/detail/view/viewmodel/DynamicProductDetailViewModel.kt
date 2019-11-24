@@ -6,8 +6,10 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductInfoP1
@@ -56,6 +58,9 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                                                         private val removeWishlistUseCase: RemoveWishListUseCase,
                                                         private val addWishListUseCase: AddWishListUseCase,
                                                         private val getRecommendationUseCase: GetRecommendationUseCase,
+                                                        private val moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase,
+                                                        private val moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase,
+                                                        private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                         private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
 
     val productInfoP1 = MutableLiveData<Result<ProductInfoP1>>()
@@ -64,9 +69,11 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
     val p2Login = MutableLiveData<ProductInfoP2Login>()
     val p2General = MutableLiveData<ProductInfoP2General>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
-    var multiOrigin: WarehouseInfo = WarehouseInfo()
     val loadTopAdsProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
+    val moveToWarehouseResult = MutableLiveData<Result<Boolean>>()
+    val moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
 
+    var multiOrigin: WarehouseInfo = WarehouseInfo()
     private var productInfoTemp = ProductInfo()
     var getProductInfoP1: ProductInfo? = null
     var listOfRecomData: List<ProductRecommendationDataModel>? = null
@@ -81,6 +88,24 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
 
     val deviceId: String
         get() = userSessionInterface.deviceId
+
+    override fun clear() {
+        super.clear()
+        stickyLoginUseCase.cancelJobs()
+        getProductInfoP1UseCase.cancelJobs()
+        getPdpLayoutUseCase.cancelJobs()
+        getProductInfoP2ShopUseCase.cancelJobs()
+        getProductInfoP2LoginUseCase.cancelJobs()
+        getProductInfoP2GeneralUseCase.cancelJobs()
+        getProductInfoP3UseCase.cancelJobs()
+        toggleFavoriteUseCase.cancelJobs()
+        removeWishlistUseCase.unsubscribe()
+        toggleFavoriteUseCase.cancelJobs()
+        getRecommendationUseCase.unsubscribe()
+        trackAffiliateUseCase.cancelJobs()
+        moveProductToWarehouseUseCase.cancelJobs()
+        moveProductToEtalaseUseCase.cancelJobs()
+    }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
         stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
@@ -288,6 +313,38 @@ class DynamicProductDetailViewModel @Inject constructor(@Named("Main")
                 }
             }
         }
+    }
+
+    fun moveProductToWareHouse(productId: String) {
+        launchCatchError(block = {
+            moveProductToWarehouseUseCase.createParams(productId, userId, deviceId)
+            moveToWarehouseResult.value = Success(moveProductToWarehouseUseCase.executeOnBackground().getIsSuccess())
+        }) {
+            moveToWarehouseResult.value = Fail(it)
+        }
+    }
+
+    fun moveProductToEtalase(productId: String, selectedEtalaseId: String, selectedEtalaseName: String) {
+        launchCatchError(block = {
+            moveProductToEtalaseUseCase.createParams(productId, selectedEtalaseId, selectedEtalaseName, userId, deviceId)
+            moveToEtalaseResult.value = Success(moveProductToEtalaseUseCase.executeOnBackground().getIsSuccess())
+        }) {
+            moveToEtalaseResult.value = Fail(it)
+        }
+    }
+
+    fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
+        trackAffiliateUseCase.params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
+        trackAffiliateUseCase.execute({
+            //no op
+        }) {
+            it.debugTrace()
+        }
+    }
+
+
+    fun cancelWarehouseUseCase() {
+        moveProductToWarehouseUseCase.cancelJobs()
     }
 
     private fun mapSelectedProductVariants(userInputVariant: String?): ArrayMap<String, ArrayMap<String, String>>? {

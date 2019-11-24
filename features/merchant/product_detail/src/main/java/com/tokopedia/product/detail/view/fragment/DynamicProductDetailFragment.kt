@@ -53,10 +53,7 @@ import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -145,6 +142,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
     private var shouldShowCodP2Shop = false
     private var shouldShowCodP3 = false
     private var isAffiliate = false
+    private var affiliateString: String? = null
 
     private var userInputNotes = ""
     private var userInputQuantity = 0
@@ -339,6 +337,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
                                 data.preorder)
                     }
                     actionButtonView.visibility = !isAffiliate
+
+                    if (affiliateString.hasValue()) {
+                        viewModel.hitAffiliateTracker(affiliateString
+                                ?: "", viewModel.deviceId)
+                    }
+
                     activity?.invalidateOptionsMenu()
 
                     adapter.notifyDataSetChanged()
@@ -439,6 +443,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil.snapShotMap, ProductDetailConstant.PAYLOADS_COD)
         })
+
+        viewModel.moveToWarehouseResult.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessWarehouseProduct()
+                is Fail -> onErrorWarehouseProduct(it.throwable)
+            }
+        })
+
+        viewModel.moveToEtalaseResult.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessMoveToEtalase()
+                is Fail -> onErrorMoveToEtalase(it.throwable)
+            }
+        })
     }
 
     override fun onDestroy() {
@@ -448,8 +466,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         viewModel.p2Login.removeObservers(this)
         viewModel.productInfoP3resp.removeObservers(this)
         viewModel.loadTopAdsProduct.removeObservers(this)
+        viewModel.moveToWarehouseResult.removeObservers(this)
+        viewModel.moveToEtalaseResult.removeObservers(this)
         viewModel.clear()
-//        productWarehouseViewModel.clear()
         super.onDestroy()
     }
 
@@ -800,6 +819,31 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
         })
     }
 
+    /**
+     * Event than happen after owner successfully move the warehoused product back to etalase
+     */
+    private fun onSuccessMoveToEtalase() {
+        hideProgressDialog()
+        showToastSuccess(getString(R.string.success_move_etalase))
+        loadProductData(true)
+    }
+
+    private fun onErrorMoveToEtalase(throwable: Throwable) {
+        hideProgressDialog()
+        showToastError(throwable)
+    }
+
+    private fun onErrorWarehouseProduct(throwable: Throwable) {
+        hideProgressDialog()
+        showToastError(throwable)
+    }
+
+    private fun onSuccessWarehouseProduct() {
+        hideProgressDialog()
+        showToastSuccess(getString(R.string.success_warehousing_product))
+        loadProductData(true)
+    }
+
     private fun reportProduct() {
         viewModel.getProductInfoP1?.run {
             if (viewModel.isUserSessionActive()) {
@@ -823,10 +867,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPDPDataModel, Dynam
 
     private fun warehouseProduct() {
         productId?.let {
-            //            showProgressDialog(onCancelClicked = { productWarehouseViewModel.clear() })
-//            productWarehouseViewModel.moveToWarehouse(it,
-//                    onSuccessMoveToWarehouse = this::onSuccessWarehouseProduct,
-//                    onErrorMoveToWarehouse = this::onErrorWarehouseProduct)
+            showProgressDialog(onCancelClicked = { viewModel.cancelWarehouseUseCase() })
+            viewModel.moveProductToWareHouse(it)
         }
     }
 
