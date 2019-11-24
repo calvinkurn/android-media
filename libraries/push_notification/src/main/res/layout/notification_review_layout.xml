@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notif_review_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
@@ -27,7 +28,6 @@
         android:layout_marginTop="@dimen/dp_5"
         android:ellipsize="end"
         android:maxLines="2"
-        android:text="Hi Karinaa!"
         android:visibility="visible" />
 
     <TextView
@@ -39,8 +39,7 @@
         android:layout_marginTop="10dp"
         android:layout_toStartOf="@+id/img_notif"
         android:layout_toLeftOf="@+id/img_notif"
-        android:maxLines="3"
-        android:text="Sudah [nn] hari, nih. Suka dengan [product] ini? Yuk, beri ulasan dan bagikan pengalamanmu ke pembeli lain!" />
+        android:maxLines="3" />
 
     <LinearLayout
         android:id="@+id/rating_layout"

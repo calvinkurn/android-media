@@ -210,7 +210,7 @@
     <string name="hotel_share_add_email">Tambah E-mail</string>
     <string name="hotel_share_empty_email_error">E-mail harus diisi</string>
     <string name="hotel_share_format_email_error">Format e-mail salah</string>
-    
+
     <string name="hotel_error_no_internet_connection_title">Nggak ada koneksi Internet</string>
     <string name="hotel_error_no_internet_connection_subtitle">"Kamu bisa pindah tempat atau cek paket data / jaringan Wi-Fi."</string>
     <string name="hotel_error_server_error_title">Ada gangguan di rumah Toped</string>
@@ -231,4 +231,6 @@
 
     <string name="hotel_min_date_label">Check-in</string>
     <string name="hotel_max_date_label">Check-out</string>
+    <string name="hotel_global_search_check_availability">Cek Ketersediaan</string>
+    <string name="hotel_detail_room_full_desc">Coba ubah tanggal atau jumlah kamar, yuk!</string>
 </resources>

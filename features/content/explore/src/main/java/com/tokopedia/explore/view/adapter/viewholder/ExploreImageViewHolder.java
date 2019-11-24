@@ -12,10 +12,6 @@ import com.tokopedia.explore.view.listener.ContentExploreContract;
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
 import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 
-import static com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel.TYPE_MULTI;
-import static com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel.TYPE_VIDEO;
-import static com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel.TYPE_YOUTUBE;
-
 /**
  * @author by milhamj on 24/07/18.
  */
@@ -48,12 +44,12 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
         }
 
         ViewExtKt.addOnImpressionListener(itemView, element.getImpressHolder(), () -> {
-            listener.onAffiliateTrack(element.getKolPostViewModel().getTrackingViewModel(), false);
+            listener.onAffiliateTrack(element.getTrackingViewModelList(), false);
         });
 
         image.setOnClickListener(v -> {
-            listener.goToKolPostDetail(element.getKolPostViewModel());
-            listener.onAffiliateTrack(element.getKolPostViewModel().getTrackingViewModel(), true);
+            listener.goToKolPostDetail(element.getPostId(), element.getUserName());
+            listener.onAffiliateTrack(element.getTrackingViewModelList(), true);
         });
 
         if (element.getItemPos() == 0 && listener.getExploreCategory() == ExploreCategoryAdapter.CAT_ID_AFFILIATE) {
@@ -62,10 +58,10 @@ public class ExploreImageViewHolder extends AbstractViewHolder<ExploreImageViewM
     }
 
     private int getBadgeId(ExploreImageViewModel element) {
-        switch (element.getKolPostViewModel().getCardType()) {
-            case TYPE_YOUTUBE:
-            case TYPE_VIDEO: return R.drawable.ic_affiliate_video;
-            case TYPE_MULTI: return R.drawable.ic_affiliate_multi;
+        switch (element.getCardType()) {
+            case Youtube:
+            case Video: return R.drawable.ic_affiliate_video;
+            case Multi: return R.drawable.ic_affiliate_multi;
             default : return 0;
         }
     }

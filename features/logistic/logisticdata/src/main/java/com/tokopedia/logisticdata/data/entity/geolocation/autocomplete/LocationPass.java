@@ -40,6 +40,15 @@ public class LocationPass implements Parcelable {
 
     }
 
+    public LocationPass(String latitude, String longitude, String manualAddress, String generatedAddress, String cityName, String districtName) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.manualAddress = manualAddress;
+        this.generatedAddress = generatedAddress;
+        this.cityName = cityName;
+        this.districtName = districtName;
+    }
+
     @Override
     public int describeContents() {
         return 0;

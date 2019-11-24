@@ -1,19 +1,19 @@
 package com.tokopedia.discovery.categoryrevamp.view.fragments
 
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.widget.NestedScrollView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -46,11 +46,11 @@ import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.utils.ImpresionTask
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -72,23 +72,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         WishListActionListener {
 
     var isSubCategoryAvailable = false
-
-
-    override fun onListItemImpressionEvent(element: Visitable<Any>, position: Int) {
-
-        val item = element as ProductsItem
-
-        if (item.isTopAds) {
-            ImpresionTask().execute(item.productImpTrackingUrl)
-        }
-        catAnalyticsInstance.eventProductListImpression(getDepartMentId(),
-                item.name,
-                item.id.toString(),
-                CurrencyFormatHelper.convertRupiahToInt(item.price),
-                position,
-                getProductItemPath(item.categoryBreadcrumb ?: "", getDepartMentId()),
-                item.categoryBreadcrumb ?: "")
-    }
 
     override fun getDepartMentId(): String {
         return mDepartmentId
@@ -147,9 +130,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private lateinit var productTypeFactory: ProductTypeFactory
 
-    private lateinit var subCategoryAdapter: SubCategoryAdapter
+    private var subCategoryAdapter: SubCategoryAdapter? = null
 
-    private lateinit var quickFilterAdapter: QuickFilterAdapter
+    private var quickFilterAdapter: QuickFilterAdapter? = null
 
     private lateinit var categoryNavComponent: CategoryNavComponent
 
@@ -547,16 +530,16 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
         }
-        if (!item.isTopAds) {
+        if (item.isTopAds) {
             ImpresionTask().execute(item.productClickTrackingUrl)
         }
-            catAnalyticsInstance.eventClickProductList(item.id.toString(),
-                    mDepartmentId,
-                    item.name,
-                    CurrencyFormatHelper.convertRupiahToInt(item.price),
-                    adapterPosition,
-                    item.categoryBreadcrumb ?: "",
-                    getProductItemPath(item.categoryBreadcrumb ?: "", mDepartmentId))
+        catAnalyticsInstance.eventClickProductList(item.id.toString(),
+                mDepartmentId,
+                item.name,
+                CurrencyFormatHelper.convertRupiahToInt(item.price),
+                adapterPosition,
+                item.categoryBreadcrumb ?: "",
+                getProductItemPath(item.categoryBreadcrumb ?: "", mDepartmentId))
 
     }
 
@@ -678,5 +661,38 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onShareButtonClicked() {
+    }
+
+    override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
+        catAnalyticsInstance.eventProductListImpression(getDepartMentId(),
+                getDepartMentId(),
+                viewedProductList,
+                viewedTopAdsList)
+    }
+
+    override fun topAdsTrackerUrlTrigger(url: String) {
+        ImpresionTask().execute(url)
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        productNavListAdapter?.onPause()
+    }
+
+    override fun onDestroyView() {
+        product_recyclerview.adapter = null
+        product_recyclerview.layoutManager = null
+
+        subcategory_recyclerview.adapter = null
+        subcategory_recyclerview.layoutManager = null
+
+        quickfilter_recyclerview.adapter = null
+        quickfilter_recyclerview.layoutManager = null
+
+        productNavListAdapter = null
+        subCategoryAdapter = null
+        quickFilterAdapter = null
+        super.onDestroyView()
     }
 }
