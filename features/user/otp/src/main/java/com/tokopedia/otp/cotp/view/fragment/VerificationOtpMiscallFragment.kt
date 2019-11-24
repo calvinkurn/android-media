@@ -47,15 +47,13 @@ class VerificationOtpMiscallFragment : BaseDaggerFragment(), VerificationOtpMisc
     private var isRunningTimer = false
     private lateinit var cacheHandler: LocalCacheHandler
     private lateinit var viewModel: VerificationViewModel
+    private lateinit var callReceiver: PhoneCallReceiver
 
     @Inject
     lateinit var presenter: VerificationPresenter
 
     @Inject
     lateinit var analytics: OTPAnalytics
-
-    @Inject
-    lateinit var callReceiver: PhoneCallReceiver
 
     override fun initInjector() {
         val otpComponent = DaggerOtpComponent.builder()
