@@ -36,6 +36,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -72,6 +73,8 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
@@ -96,6 +99,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     val SELECTED_ITEMS = "selected_items"
     val EMOJI_STATE = "emoji_state"
     val CSAT_ATTRIBUTES = "csat_attribute"
+    private val TICKER_TYPE_ANNOUNCEMENT = "announcement"
+    private val TICKER_TYPE_WARNING = "warning"
 
     @Inject
     lateinit var presenter: ChatbotPresenter
@@ -108,6 +113,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var mCsatResponse: WebSocketCsatResponse
     lateinit var attribute: Attributes
     private var isBackAllowed = true
+    private lateinit var ticker:Ticker
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -179,6 +185,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         replyEditText = view.findViewById(R.id.new_comment)
+        ticker = view.findViewById(R.id.chatbot_ticker)
         return view
     }
 
@@ -221,10 +228,55 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         )
         viewState.initView()
         loadInitialData()
+        showTicker()
 
         if (savedInstanceState != null)
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
 
+    }
+
+    private fun showTicker() {
+        presenter.showTickerData(onError(),onSuccesGetTickerData())
+    }
+
+    private fun onSuccesGetTickerData(): (TickerData) -> Unit {
+        return {
+            if (!it.items.isNullOrEmpty()) {
+                ticker.show()
+                if (it.items.size > 1) {
+                    showMultiTicker(it)
+                } else {
+                    showSingleTicker(it)
+                }
+            }
+        }
+    }
+
+    private fun showSingleTicker(tickerData: TickerData) {
+        ticker.tickerTitle = tickerData.items?.get(0)?.title
+        ticker.setTextDescription(tickerData.items?.get(0)?.text?:"")
+        ticker.tickerType = getTickerType(tickerData.type ?: "")
+    }
+
+    private fun showMultiTicker(tickerData: TickerData) {
+        val mockData = arrayListOf<com.tokopedia.unifycomponents.ticker.TickerData>()
+
+        tickerData.items?.forEach {
+            mockData.add(com.tokopedia.unifycomponents.ticker.TickerData(it?.title,
+                    it?.text?:"",
+                    getTickerType(tickerData.type ?: "")))
+        }
+
+        val adapter = TickerPagerAdapter(activity, mockData)
+        ticker.addPagerView(adapter, mockData)
+    }
+
+    private fun getTickerType(tickerType: String): Int {
+        return when (tickerType) {
+            TICKER_TYPE_ANNOUNCEMENT -> Ticker.TYPE_ANNOUNCEMENT
+            TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_ANNOUNCEMENT
+        }
     }
 
     override fun getSwipeRefreshLayoutResourceId() = 0

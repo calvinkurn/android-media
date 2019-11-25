@@ -91,11 +91,6 @@ public class CouponListingStackedPresenter extends BaseDaggerPresenter<CouponLis
     }
 
     @Override
-    public void navigateToWebView(String url) {
-        getView().openWebView(url);
-    }
-
-    @Override
     public void showRedeemCouponDialog(String cta, String code, String title) {
         getView().showRedeemCouponDialog(cta, code, title);
     }

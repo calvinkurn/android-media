@@ -60,5 +60,10 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         const val PARAM_CATEGORY_NAME = "category"
         const val PARAM_CATEGORY_ID = "digital_category_id"
         const val EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH = "Digital_Category_Screen_Launched"
+
+        const val CLICK_PDP = "clickPDP"
+        const val DIGITAL_HOMEPAGE = "digital - homepage"
+        const val CLICK_UPDATE_SALDO = "click update saldo "
+
     }
 }
