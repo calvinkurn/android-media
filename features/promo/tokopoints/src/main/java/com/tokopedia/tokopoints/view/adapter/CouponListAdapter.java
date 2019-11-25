@@ -36,6 +36,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<CouponValueEntity> mItems;
     private static final int VIEW_HEADER = 0;
     private static final int VIEW_DATA = 1;
+    private RecyclerView mRecyclerView;
 
     // Define a ViewHolder for Footer view
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -66,6 +67,13 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tvMinTxnValue = view.findViewById(R.id.tv_min_txn_value);
             tvMinTxnLabel = view.findViewById(R.id.tv_min_txn_label);
             progressTimer = view.findViewById(R.id.progress_timer);
+        }
+
+        public void onDetach() {
+            if (timer != null){
+                timer.cancel();
+                timer = null;
+            }
         }
     }
 
@@ -146,6 +154,9 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     holder.progressTimer.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
                     holder.progressTimer.setVisibility(View.VISIBLE);
                     holder.value.setVisibility(View.VISIBLE);
+                    if (holder.timer != null){
+                        holder.timer.cancel();
+                    }
                     holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                         @Override
                         public void onTick(long l) {
@@ -224,5 +235,31 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         return VIEW_DATA;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onDetach();
+        }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
+    }
+
+    public void onDestroyView() {
+        if (mRecyclerView != null){
+            for (int i = 0 ;i < mRecyclerView.getChildCount();i++){
+                RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(mRecyclerView.getChildAt(i));
+                if (holder instanceof ViewHolder) {
+                    ((ViewHolder) holder).onDetach();
+                }
+            }
+        }
+
     }
 }

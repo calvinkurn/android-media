@@ -7,4 +7,7 @@
         Otherwise, do not put "/"
     -->
     <string name="path_payment_checkout" translatable="false">/checkout</string>
+    <string name="path_setting" translatable="false">/setting</string>
+    <string name="path_add_credit_card" translatable="false">/add-credit-card</string>
+
 </resources>
