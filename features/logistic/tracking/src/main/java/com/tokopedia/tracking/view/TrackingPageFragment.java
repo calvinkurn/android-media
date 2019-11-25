@@ -404,8 +404,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private View.OnClickListener onLiveTrackingClickedListener() {
         return view -> {
             mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
-            startActivity(
-                    SimpleWebViewActivity.createIntent(getActivity(), mTrackingUrl));
+            String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, mTrackingUrl);
+            RouteManager.route(getActivity(), applink);
         };
     }
 

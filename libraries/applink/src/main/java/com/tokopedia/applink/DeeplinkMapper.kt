@@ -5,6 +5,7 @@ import android.net.Uri
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
+import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
@@ -42,7 +43,7 @@ object DeeplinkMapper {
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
                 when {
                     deeplink.startsWith(ApplinkConst.HOTEL, true) -> deeplink
-                    deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) ->
+                    deeplink.startsWith(ApplinkConst.DIGITAL, true) ->
                         getRegisteredNavigationDigital(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true) ->
                         getRegisteredNavigationSearch(deeplink)
@@ -53,13 +54,13 @@ object DeeplinkMapper {
                     deeplink.startsWithPattern(ApplinkConst.PROFILE) ->
                         getRegisteredNavigationContent(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
-                        getRegisteredHotlist(context,deeplink)
+                        getRegisteredHotlist(context, deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW,true) ->
                         getCreateReviewInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
-                    deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(context, deeplink)
+                    deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
                     deeplink.startsWith(ApplinkConst.CHAT_BOT,true) ->
                         getChatbotDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) ->
@@ -69,7 +70,9 @@ object DeeplinkMapper {
 
                     else -> {
                         val query = Uri.parse(deeplink).query
-                        if(query?.isNotEmpty() == true){
+                        if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
+                            getRegisteredCategoryNavigation(getSegments(deeplink))
+                        } else if(query?.isNotEmpty() == true){
                             val tempDL = deeplink.substring(0, deeplink.indexOf('?'))
                             var navFromTokopedia = getRegisteredNavigationFromTokopedia(tempDL)
                             if(navFromTokopedia.isNotEmpty()) {
@@ -115,8 +118,8 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             ApplinkConst.GROUPCHAT_LIST -> return ApplinkConstInternalPlay.GROUPCHAT_LIST
             ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
-            ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
-            ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
+            ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_BASE
+            ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM_BASE
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.ADD_PIN_ONBOARD -> return ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING
             ApplinkConst.FLIGHT -> return ApplinkConstInternalTravel.DASHBOARD_FLIGHT
@@ -127,6 +130,7 @@ object DeeplinkMapper {
             ApplinkConst.INSTANT_LOAN_TAB -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
             ApplinkConst.PINJAMAN_ONLINE_TAB -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
             ApplinkConst.CREATE_SHOP -> return ApplinkConstInternalMarketplace.OPEN_SHOP
+            ApplinkConst.CHAT_TEMPLATE -> return ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
             else -> ""
         }
         when {
