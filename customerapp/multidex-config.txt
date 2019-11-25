@@ -1,1 +1,1 @@
-com/tokopedia/core/router/digitalmodule/passdata/DigitalCategoryDetailPassData.class
+com/tokopedia/common_digital/common/presentation/model/DigitalCategoryDetailPassData.class
