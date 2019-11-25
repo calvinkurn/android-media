@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.NotificationFilterSection
 import com.tokopedia.navigation.domain.model.NotificationFilterSectionWrapper
@@ -23,6 +24,10 @@ class NotificationFilterViewHolder(
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
 
     override fun bind(element: NotificationFilterSectionWrapper) {
+        if (element.visibility) {
+            lstFilter.hide()
+            return
+        }
         if (filterAdapter == null) {
             filterAdapter = NotificationUpdateFilterAdapter(
                     NotificationUpdateFilterSectionTypeFactoryImpl(),

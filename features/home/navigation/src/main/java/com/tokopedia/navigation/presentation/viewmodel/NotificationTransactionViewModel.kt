@@ -24,16 +24,13 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 interface NotificationTransactionContract {
-    fun getInfoStatusNotification()
-    fun getTransactionNotification(
-            lastNotificationId: String,
-            onSuccess: (TransactionNotification) -> Unit,
-            onError: (Throwable) -> Unit)
-    fun onErrorMessage(throwable: Throwable)
-    fun markReadNotification(notificationId: String)
-    fun getNotificationFilter()
+    fun getTransactionNotification(lastNotificationId: String)
     fun updateNotificationFilter(filter: HashMap<String, Int>)
+    fun markReadNotification(notificationId: String)
+    fun onErrorMessage(throwable: Throwable)
+    fun getInfoStatusNotification()
     fun resetNotificationFilter()
+    fun getNotificationFilter()
 }
 
 class NotificationTransactionViewModel @Inject constructor(
@@ -45,6 +42,9 @@ class NotificationTransactionViewModel @Inject constructor(
         private var notificationMapper: GetNotificationUpdateMapper,
         dispatcher: DispatcherProvider
 ): BaseViewModel(dispatcher.io()), NotificationTransactionContract {
+
+    private val _notification = MutableLiveData<TransactionNotification>()
+    val notification: LiveData<TransactionNotification> get() = _notification
 
     private val _infoNotification = MutableLiveData<NotificationEntity>()
     val infoNotification: LiveData<NotificationEntity> get() = _infoNotification
@@ -70,19 +70,17 @@ class NotificationTransactionViewModel @Inject constructor(
         })
     }
 
-    override fun getTransactionNotification(
-            lastNotificationId: String,
-            onSuccess: (TransactionNotification) -> Unit,
-            onError: (Throwable) -> Unit) {
+    override fun getTransactionNotification(lastNotificationId: String) {
         val requestParams = NotificationTransactionUseCase.params(
                 FIRST_INITIAL_PAGE,
                 variables,
-                lastNotificationId
-        )
-        notificationTransactionUseCase.get(
-                requestParams,
-                { onSuccess(notificationMapper.mapToNotifTransaction(it)) },
-                onError)
+                lastNotificationId)
+        notificationTransactionUseCase.get(requestParams, {
+            val data = notificationMapper.mapToNotifTransaction(it)
+            _notification.postValue(data)
+        }, {
+            onErrorMessage(it)
+        })
     }
 
     override fun markReadNotification(notificationId: String) {

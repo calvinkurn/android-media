@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -47,6 +47,22 @@
             android:text="Menunggu Pembayaran"
             android:textColor="#31353b"/>
 
+        <TextView
+            android:id="@+id/txt_counter_waiting_payment"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:textSize="@dimen/sp_10"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            tools:text="99+"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            tools:visibility="visible"
+            android:visibility="gone"
+            android:background="@drawable/circle_red"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"/>
+
     </RelativeLayout>
 
     <LinearLayout
@@ -61,11 +77,31 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <ImageView
-                android:id="@+id/img_waiting_confirm"
+            <RelativeLayout
                 android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-                android:src="@mipmap/ic_launcher" />
+                android:layout_height="@dimen/dp_30">
+
+                <ImageView
+                    android:id="@+id/img_waiting_confirm"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/txt_counter_waiting_confirm"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:textSize="@dimen/sp_10"
+                    tools:text="99+"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    tools:visibility="visible"
+                    android:visibility="gone"
+                    android:background="@drawable/circle_red"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/txt_waiting_confirm"
@@ -85,11 +121,31 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <ImageView
-                android:id="@+id/img_order_process"
+            <RelativeLayout
                 android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-                android:src="@mipmap/ic_launcher" />
+                android:layout_height="@dimen/dp_30">
+
+                <ImageView
+                    android:id="@+id/img_order_process"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/txt_counter_order_process"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:textSize="@dimen/sp_10"
+                    tools:text="99+"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    tools:visibility="visible"
+                    android:visibility="gone"
+                    android:background="@drawable/circle_red"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/txt_order_process"
@@ -109,11 +165,31 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <ImageView
-                android:id="@+id/img_goods_sent"
+            <RelativeLayout
                 android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-                android:src="@mipmap/ic_launcher" />
+                android:layout_height="@dimen/dp_30">
+
+                <ImageView
+                    android:id="@+id/img_goods_sent"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/txt_counter_goods_sent"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:textSize="@dimen/sp_10"
+                    tools:text="99+"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    tools:visibility="visible"
+                    android:visibility="gone"
+                    android:background="@drawable/circle_red"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/txt_goods_sent"
@@ -133,11 +209,31 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <ImageView
-                android:id="@+id/img_goods_receive"
+            <RelativeLayout
                 android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-                android:src="@mipmap/ic_launcher" />
+                android:layout_height="@dimen/dp_30">
+
+                <ImageView
+                    android:id="@+id/img_goods_receive"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:src="@mipmap/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/txt_counter_goods_receive"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:textSize="@dimen/sp_10"
+                    tools:text="99+"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    tools:visibility="visible"
+                    android:visibility="gone"
+                    android:background="@drawable/circle_red"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/txt_goods_receive"

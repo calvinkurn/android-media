@@ -5,7 +5,8 @@ import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationTra
 import java.util.ArrayList
 
 class NotificationFilterSectionWrapper(
-        val filters: ArrayList<NotificationFilterSection>
+        val filters: ArrayList<NotificationFilterSection>,
+        var visibility: Boolean = false
 ): Visitable<NotificationTransactionFactory> {
 
     override fun type(typeFactory: NotificationTransactionFactory): Int {

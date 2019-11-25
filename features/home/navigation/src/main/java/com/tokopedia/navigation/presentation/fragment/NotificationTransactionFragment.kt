@@ -50,6 +50,9 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
     //last notification id
     private var cursor = ""
 
+    //flag filter
+    private var isNotificationFilter = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notification_transaction, container, false)
     }
@@ -62,17 +65,25 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
                 _adapter.addElement(sellerMenu())
             }
             viewModel.getNotificationFilter()
-            _adapter.updateValue()
+            _adapter.updateValue(it.notifications)
         })
         viewModel.filterNotification.observe(this, Observer {
             _adapter.addElement(it)
 
             //get notification
-            viewModel.getTransactionNotification(cursor,
-                    onSuccessNotificationData(),
-                    onErrorNotificationData()
-            )
+            getNotification(cursor)
         })
+        viewModel.notification.observe(this, Observer {
+            onSuccessNotificationData(it)
+            if (it.list.isEmpty()) {
+                _adapter.hideFilterItem()
+                isNotificationFilter = false
+            }
+        })
+    }
+
+    private fun getNotification(position: String) {
+        viewModel.getTransactionNotification(position)
     }
 
     private fun onViewError() = Observer<String> { message ->
@@ -97,33 +108,24 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
         return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
-                loadData(page)
+                getNotification(page.toString())
             }
         }
     }
 
-    private fun onErrorNotificationData(): (Throwable) -> Unit {
-        return {
-            if (activity != null) {
-                val errorMessage = ErrorHandler.getErrorMessage(activity, it)
-                SnackbarManager.make(activity, errorMessage, Snackbar.LENGTH_LONG).show()
-            }
+    private fun onSuccessNotificationData(notification: TransactionNotification) {
+        val pagination = notification.paging.hasNext
+        if (pagination && !notification.list.isEmpty()) {
+            cursor = (notification.list.last().notificationId)
         }
-    }
-
-    private fun onSuccessNotificationData(): (TransactionNotification) -> Unit {
-        return {
-            val pagination = it.paging.hasNext
-            if (pagination && !it.list.isEmpty()) {
-                cursor = (it.list.last().notificationId)
-            }
+        if (isNotificationFilter) {
             _adapter.list.forEach { visitable ->
                 if (visitable is TransactionItemNotification) {
                     _adapter.removeElement(visitable)
                 }
             }
-            _adapter.addElement(it.list)
         }
+        _adapter.addElement(notification.list)
     }
 
     override fun itemClicked(notification: TransactionItemNotification, adapterPosition: Int) {
@@ -134,10 +136,9 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
 
     override fun updateFilter(filter: HashMap<String, Int>) {
         viewModel.updateNotificationFilter(filter)
+        isNotificationFilter = true
         cursor = ""
-        viewModel.getTransactionNotification(cursor,
-                onSuccessNotificationData(),
-                onErrorNotificationData())
+        getNotification(cursor)
     }
 
     override fun getAnalytic(): NotificationUpdateAnalytics = NotificationUpdateAnalytics()

@@ -28,6 +28,13 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
     private val txtGoodsSent = view.findViewById<TextView>(R.id.txt_goods_sent)
     private val txtGoodsReceive = view.findViewById<TextView>(R.id.txt_goods_receive)
 
+    //counter badge
+    private val txtCounterWaitingPayment = view.findViewById<TextView>(R.id.txt_counter_waiting_payment)
+    private val txtCounterWaitingConfirm = view.findViewById<TextView>(R.id.txt_counter_waiting_confirm)
+    private val txtCounterOrderProcessed = view.findViewById<TextView>(R.id.txt_counter_order_process)
+    private val txtCounterGoodsSent = view.findViewById<TextView>(R.id.txt_counter_goods_sent)
+    private val txtCounterGoodsReceive = view.findViewById<TextView>(R.id.txt_counter_goods_receive)
+
     private val imgWaitingConfirm = view.findViewById<ImageView>(R.id.img_waiting_confirm)
     private val imgOrderProcessed = view.findViewById<ImageView>(R.id.img_order_process)
     private val imgGoodsSent = view.findViewById<ImageView>(R.id.img_goods_sent)
@@ -41,7 +48,7 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
         }
 
         btnLoadMore.setOnClickListener {
-
+            RouteManager.route(context, "")
         }
     }
 
@@ -60,9 +67,25 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
             when(notif.id) {
                 MENUNGGU_PEMBAYARAN -> {
                     txtWaitingPayment.text = notif.title
+                    if (notif.badge != null) {
+                        txtCounterWaitingPayment.show()
+                    }
+                    txtCounterWaitingPayment.text = if (notif.badge != null) {
+                        notif.badge.toString()
+                    } else {
+                        "0"
+                    }
                 }
                 MENUNGGU_KONFIRMASI -> {
                     txtWaitingConfirm.text = notif.title
+                    if (notif.badge != null) {
+                        txtCounterWaitingConfirm.show()
+                    }
+                    txtCounterWaitingConfirm.text = if (notif.badge != null) {
+                        notif.badge.toString()
+                    } else {
+                        "0"
+                    }
                     imgWaitingConfirm.setImageResource(notif.icon)
                     imgWaitingConfirm.setOnClickListener {
                         RouteManager.route(context, notif.applink)
@@ -70,6 +93,14 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                 }
                 PESANAN_DIPROSES -> {
                     txtOrderProcessed.text = notif.title
+                    if (notif.badge != null) {
+                        txtCounterOrderProcessed.show()
+                    }
+                    txtCounterOrderProcessed.text = if (notif.badge != null) {
+                        notif.badge.toString()
+                    } else {
+                        "0"
+                    }
                     imgOrderProcessed.setImageResource(notif.icon)
                     imgOrderProcessed.setOnClickListener {
                         RouteManager.route(context, notif.applink)
@@ -77,6 +108,14 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                 }
                 SEDANG_DIKIRIM -> {
                     txtGoodsSent.text = notif.title
+                    if (notif.badge != null) {
+                        txtCounterGoodsSent.show()
+                    }
+                    txtCounterGoodsSent.text = if (notif.badge != null) {
+                        notif.badge.toString()
+                    } else {
+                        "0"
+                    }
                     imgGoodsSent.setImageResource(notif.icon)
                     imgGoodsSent.setOnClickListener {
                         RouteManager.route(context, notif.applink)
@@ -84,6 +123,14 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                 }
                 SAMPAI_TUJUAN -> {
                     txtGoodsReceive.text = notif.title
+                    if (notif.badge != null) {
+                        txtCounterGoodsReceive.show()
+                    }
+                    txtCounterGoodsReceive.text = if (notif.badge != null) {
+                        notif.badge.toString()
+                    } else {
+                        "0"
+                    }
                     imgGoodsReceive.setImageResource(notif.icon)
                     imgGoodsReceive.setOnClickListener {
                         RouteManager.route(context, notif.applink)
