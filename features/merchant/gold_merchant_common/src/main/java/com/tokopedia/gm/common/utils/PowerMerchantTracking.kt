@@ -178,4 +178,8 @@ class PowerMerchantTracking @Inject constructor() {
         )
     }
 
+    fun sendScreenName(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
 }
