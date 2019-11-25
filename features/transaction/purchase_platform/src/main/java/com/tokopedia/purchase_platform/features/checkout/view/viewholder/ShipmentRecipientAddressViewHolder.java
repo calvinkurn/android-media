@@ -305,7 +305,11 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvChangeAddressTop.setVisibility(View.GONE);
         tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
         separatorBottom.setVisibility(View.GONE);
-        space.setVisibility(View.GONE);
+        if (shipmentAdapterActionListener.isTradeInByDropOff()) {
+            space.setVisibility(View.VISIBLE);
+        } else {
+            space.setVisibility(View.GONE);
+        }
     }
 
 }

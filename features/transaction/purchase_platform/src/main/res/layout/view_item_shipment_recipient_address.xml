@@ -147,9 +147,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_disabled_multiple_address_info"
-        android:layout_marginBottom="@dimen/dp_16"
         android:background="@color/white"
-        tools:visibility="gone"
+        tools:visibility="visible"
         android:orientation="horizontal">
 
         <com.tokopedia.unifyprinciples.Typography
