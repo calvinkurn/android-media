@@ -25,6 +25,4 @@
         tools:text="ABX123"
         android:textColor="@color/Neutral_N700_96"/>
 
-
-
 </LinearLayout>

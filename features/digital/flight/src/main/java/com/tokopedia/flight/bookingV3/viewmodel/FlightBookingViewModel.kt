@@ -1,7 +1,5 @@
 package com.tokopedia.flight.bookingV3.viewmodel
 
-
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -31,7 +29,6 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.*
 import java.lang.Exception
 import java.util.regex.Pattern
@@ -106,7 +103,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 }
             }
         }) {
-            Log.d("ERRORR", it.message + " " + it.localizedMessage)
             flightCartResult.value = Fail(it)
         }
     }
@@ -167,7 +163,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 }
 
             }) {
-                Log.d("ERRORRV", it.message + " " + it.localizedMessage)
                 flightVerifyResult.value = Fail(it)
             }
         } else {
@@ -314,9 +309,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
             flightVerifyParam.cartItems.add(cartItem)
             flightVerifyParam.promoCode = (flightPromoResult.value as FlightPromoViewEntity).promoData.promoCode
-        } catch (e: Exception) {
-            Log.d("ERRRORRRR", e.localizedMessage)
-        }
+        } catch (e: Exception) { }
 
         return flightVerifyParam
     }
@@ -339,21 +332,21 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         addPassengerAmenitiesPrices()
     }
 
-    fun onTravellerAsPassenger(isEnable: Boolean) {
+    fun onTravellerAsPassenger(isEnable: Boolean, userName: String) {
         val userProfile = if (profileResult.value is Success) (profileResult.value as Success).data else ProfileInfo()
         val passengers = (flightPassengersData.value ?: listOf()).toMutableList()
-        if (passengers.isNotEmpty() && userProfile.fullName.isNotEmpty()) {
+        if (passengers.isNotEmpty() && userName.isNotEmpty()) {
             val passenger = FlightBookingPassengerViewModel()
             passenger.passengerLocalId = 1
             passenger.type = FlightBookingPassenger.ADULT
             passenger.flightBookingLuggageMetaViewModels = arrayListOf()
             passenger.flightBookingMealMetaViewModels = arrayListOf()
             if (isEnable) {
-                passenger.headerTitle = userProfile.fullName
-                passenger.passengerFirstName = userProfile.fullName
+                passenger.headerTitle = userName
+                passenger.passengerFirstName = userName
                 if (getMandatoryDOB()) passenger.passengerBirthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
             } else {
-                passenger.headerTitle = String.format("Penumpang dewasa")
+                if (passengers[0].passengerFirstName.equals(userName, true)) passenger.headerTitle = String.format("Penumpang dewasa")
             }
             passengers[0] = passenger
             flightPassengersData.value = passengers
@@ -588,7 +581,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             getCart(getCartQuery, getCartId())
         })
         {
-            Log.d("ERRORRATC", it.message + " " + it.localizedMessage)
             flightCartResult.value = Fail(it)
         }
     }
@@ -629,7 +621,6 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             flightCheckoutResult.value = Success(checkOutData)
         })
         {
-            Log.d("ERRORRCHECKOUT", it.message + " " + it.localizedMessage)
             flightCartResult.value = Fail(it)
         }
     }

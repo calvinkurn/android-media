@@ -72,7 +72,7 @@
         android:layout_marginTop="@dimen/dp_2"
         android:layout_marginRight="@dimen/dp_8"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/tv_edit_passenger_info"
+        app:layout_constraintRight_toLeftOf="@+id/layout_edit_passenger"
         app:layout_constraintTop_toBottomOf="@+id/tv_passenger_name" />
 
 

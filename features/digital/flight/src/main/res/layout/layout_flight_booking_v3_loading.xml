@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:gravity="center"
-        android:text="Mohon Tunggu"
+        android:text="@string/flight_booking_loading_please_wait"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="heading_4" />
 

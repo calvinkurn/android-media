@@ -12,7 +12,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <com.tokopedia.common.travel.widget.CountdownTimeView
                 android:id="@+id/countdown_timeout"
@@ -40,7 +40,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_20"
-                android:text="Data Pemesan "
+                android:text="@string/flight_booking_contact_information"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_flight_booking_route_summary"
@@ -50,7 +50,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_4"
-                android:text="(untuk e-tiket)"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:text="@string/flight_booking_contact_sublabel"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_traveller_info_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_traveller_info_title"
@@ -84,7 +86,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:text="Data Penumpang"
+                android:text="@string/flight_booking_passenger_data_label"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_1"
@@ -98,7 +100,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:text="Sama dengan pemesan"
+                android:text="@string/flight_booking_passenger_data_same_as_contact"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/switch_traveller_as_passenger"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -161,7 +163,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_14"
-                android:text="Total Pembayaran"
+                android:text="@string/flight_booking_total_payment_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_4"
                 app:typographyType="body_2" />
@@ -190,7 +192,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp_4"
-                    android:text="Lihat detail"
+                    android:text="@string/flight_label_see_detail"
                     android:textColor="@color/Green_G500"
                     app:typographyType="body_3"
                     app:typographyWeight="bold"
@@ -244,7 +246,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_16"
-                android:text="Lanjut Pembayaran"
+                android:text="@string/flight_label_continued_payment"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_5" />
@@ -267,6 +269,5 @@
         android:id="@+id/layout_full_page_error"
         layout="@layout/layout_flight_booking_v3_error"
         android:visibility="gone"/>
-
 
 </RelativeLayout>

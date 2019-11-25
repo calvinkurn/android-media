@@ -31,5 +31,4 @@
         app:typographyType="body_3"
         android:textColor="@color/Neutral_N700_96"/>
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
