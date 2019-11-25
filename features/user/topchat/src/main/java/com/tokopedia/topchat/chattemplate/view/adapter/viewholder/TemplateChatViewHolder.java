@@ -21,38 +21,18 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
 
     ChatTemplateListener viewListener;
     TextView textHolder;
-    ImageView icon;
 
     public TemplateChatViewHolder(View itemView, ChatTemplateListener viewListener) {
         super(itemView);
         textHolder = itemView.findViewById(R.id.text);
-        icon = itemView.findViewById(R.id.setting);
         this.viewListener = viewListener;
     }
 
     @Override
     public void bind(final TemplateChatModel element) {
-        if (element.isIcon()) {
-            icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    viewListener.goToSettingTemplate();
-                }
-            });
-            textHolder.setVisibility(View.GONE);
-            icon.setVisibility(View.VISIBLE);
-        } else {
-            textHolder.setText(element.getMessage());
-
-            textHolder.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    viewListener.addTemplateString(element.getMessage());
-                }
-            });
-
-            textHolder.setVisibility(View.VISIBLE);
-            icon.setVisibility(View.GONE);
-        }
+        textHolder.setText(element.getMessage());
+        textHolder.setOnClickListener(view ->
+                viewListener.addTemplateString(element.getMessage())
+        );
     }
 }

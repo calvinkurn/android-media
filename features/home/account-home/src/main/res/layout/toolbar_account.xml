@@ -24,8 +24,8 @@
             android:layout_toStartOf="@+id/action_inbox"
             android:layout_toLeftOf="@+id/action_inbox"
             android:layout_centerVertical="true"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/account_icon_toolbar"
+            android:layout_height="@dimen/account_icon_toolbar"
             android:background="@null"
             app:srcCompat="@drawable/ic_system_action_setting_normal_24"/>
 
@@ -34,8 +34,8 @@
             android:layout_toStartOf="@+id/action_notification"
             android:layout_toLeftOf="@+id/action_notification"
             android:layout_centerVertical="true"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/account_icon_toolbar"
+            android:layout_height="@dimen/account_icon_toolbar"
             android:scaleType="center"
             android:background="@null"
             app:srcCompat="@drawable/ic_system_action_inbox_grey_24"/>
@@ -45,8 +45,8 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/account_icon_toolbar"
+            android:layout_height="@dimen/account_icon_toolbar"
             android:scaleType="center"
             android:background="@null"
             app:srcCompat="@drawable/ic_system_action_notification_normal_24"

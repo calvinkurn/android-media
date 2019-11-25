@@ -35,6 +35,8 @@
     <string name="profile_after_post">Post sedang diunggah. Cek proses unggah di notifikasi.</string>
 
     <string name="title_profile_following">Following</string>
+    <string name="title_profile_follower">Followers</string>
+
     <string name="fl_toppers_title">Toppers</string>
     <string name="fl_shop_title">Toko</string>
     <string name="profile_wait_soon">Penasaran? Nantikan kabar selanjutnya!</string>
@@ -89,4 +91,7 @@
     <string name="shop_following_delete_description">Apakah Anda ingin menghapus Toko Favorit ini ?</string>
     <string name="shop_following_delete_yes">Ya</string>
     <string name="shop_following_delete_no">Tidak</string>
+
+    <string name="string_follow_empty">Kamu belum \nmengikuti influencer</string>
+    <string name="string_follow_empty_button">Explore Influencer</string>
 </resources>
