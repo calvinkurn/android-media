@@ -36,6 +36,7 @@ import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationT
 import com.tokopedia.navigation.presentation.view.listener.NotificationTransactionItemListener
 import com.tokopedia.navigation.presentation.viewmodel.NotificationTransactionViewModel
 import kotlinx.android.synthetic.main.fragment_notification_transaction.*
+import java.lang.Exception
 import javax.inject.Inject
 
 class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
@@ -119,18 +120,19 @@ class NotificationTransactionFragment: BaseListFragment<Visitable<*>, BaseAdapte
             cursor = (notification.list.last().notificationId)
         }
         if (isNotificationFilter) {
-            _adapter.list.forEach { visitable ->
-                if (visitable is TransactionItemNotification) {
-                    _adapter.removeElement(visitable)
+            try {
+                _adapter.list.forEach { visitable ->
+                    if (visitable is TransactionItemNotification) {
+                        _adapter.removeElement(visitable)
+                    }
                 }
-            }
+            } catch (ignored: Exception) {}
         }
         _adapter.addElement(notification.list)
     }
 
     override fun itemClicked(notification: TransactionItemNotification, adapterPosition: Int) {
         adapter.notifyItemChanged(adapterPosition, NotificationTransactionItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
-        //analytics.trackClickNotifList(viewModel)
         viewModel.markReadNotification(notification.notificationId)
     }
 

@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation.GlobalNavConstant.*
 import com.tokopedia.navigation.R
@@ -68,7 +69,11 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                 MENUNGGU_PEMBAYARAN -> {
                     txtWaitingPayment.text = notif.title
                     if (notif.badge != null) {
-                        txtCounterWaitingPayment.show()
+                        if (notif.badge == 0) {
+                            txtCounterWaitingPayment.hide()
+                        } else {
+                            txtCounterWaitingPayment.show()
+                        }
                     }
                     txtCounterWaitingPayment.text = if (notif.badge != null) {
                         notif.badge.toString()
@@ -79,7 +84,11 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                 MENUNGGU_KONFIRMASI -> {
                     txtWaitingConfirm.text = notif.title
                     if (notif.badge != null) {
-                        txtCounterWaitingConfirm.show()
+                        if (notif.badge == 0) {
+                            txtCounterWaitingConfirm.hide()
+                        } else {
+                            txtCounterWaitingConfirm.show()
+                        }
                     }
                     txtCounterWaitingConfirm.text = if (notif.badge != null) {
                         notif.badge.toString()
@@ -94,7 +103,11 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                 PESANAN_DIPROSES -> {
                     txtOrderProcessed.text = notif.title
                     if (notif.badge != null) {
-                        txtCounterOrderProcessed.show()
+                        if (notif.badge == 0) {
+                            txtCounterOrderProcessed.hide()
+                        } else {
+                            txtCounterOrderProcessed.show()
+                        }
                     }
                     txtCounterOrderProcessed.text = if (notif.badge != null) {
                         notif.badge.toString()
@@ -109,7 +122,11 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                 SEDANG_DIKIRIM -> {
                     txtGoodsSent.text = notif.title
                     if (notif.badge != null) {
-                        txtCounterGoodsSent.show()
+                        if (notif.badge == 0) {
+                            txtCounterGoodsSent.hide()
+                        } else {
+                            txtCounterGoodsSent.show()
+                        }
                     }
                     txtCounterGoodsSent.text = if (notif.badge != null) {
                         notif.badge.toString()
@@ -124,7 +141,11 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
                 SAMPAI_TUJUAN -> {
                     txtGoodsReceive.text = notif.title
                     if (notif.badge != null) {
-                        txtCounterGoodsReceive.show()
+                        if (notif.badge == 0) {
+                            txtCounterGoodsReceive.hide()
+                        } else {
+                            txtCounterGoodsReceive.show()
+                        }
                     }
                     txtCounterGoodsReceive.text = if (notif.badge != null) {
                         notif.badge.toString()
