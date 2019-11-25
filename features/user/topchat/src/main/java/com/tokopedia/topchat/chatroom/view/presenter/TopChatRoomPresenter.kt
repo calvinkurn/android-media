@@ -253,7 +253,6 @@ class TopChatRoomPresenter @Inject constructor(
                                 }
                             }
                         }
-                        templateList.add(TemplateChatModel(false) as Visitable<Any>)
                         view.onSuccessGetTemplate(templateList)
                     }
 

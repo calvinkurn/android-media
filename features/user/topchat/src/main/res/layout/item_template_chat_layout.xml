@@ -33,11 +33,4 @@
         android:textColor="@color/tkpd_main_green"
         tools:text="Maafm" />
 
-    <com.tokopedia.design.image.SquareImageView
-        android:id="@+id/setting"
-        android:layout_width="@dimen/min_height_template"
-        android:layout_height="@dimen/min_height_template"
-        android:background="@drawable/interactive_label_template_chat"
-        app:srcCompat="@drawable/ic_setting_chat" />
-
 </LinearLayout>

@@ -1,7 +1,7 @@
 package com.tokopedia.profile.following_list.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.profile.following_list.view.fragment.UserFollowingListFragment
+import com.tokopedia.profile.following_list.view.fragment.UserFollowListFragment
 import com.tokopedia.profile.following_list.view.fragment.ShopFollowingListFragment
 import com.tokopedia.kolcommon.di.KolCommonModule
 
@@ -18,7 +18,7 @@ import dagger.Component
 )
 interface FollowingListComponent {
 
-    fun inject(userFollowingListFragment: UserFollowingListFragment)
+    fun inject(userFollowListFragment: UserFollowListFragment)
 
     fun inject(kolFollowingListFragment: ShopFollowingListFragment)
 }
