@@ -38,6 +38,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Produ
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.officialstore.official.presentation.listener.BannerListener
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -50,9 +51,9 @@ class OfficialHomeFragment :
         BaseDaggerFragment(),
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
-        DynamicChannelEventHandler
+        DynamicChannelEventHandler,
+        BannerListener
 {
-
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
@@ -65,7 +66,6 @@ class OfficialHomeFragment :
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
-
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -81,12 +81,10 @@ class OfficialHomeFragment :
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
     private var isScrolling = false
-
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
     private lateinit var dynamicChannelPerformanceMonitoring: PerformanceMonitoring
     private lateinit var productRecommendationPerformanceMonitoring: PerformanceMonitoring
-
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -125,7 +123,7 @@ class OfficialHomeFragment :
         layoutManager = StaggeredGridLayoutManager(PRODUCT_RECOMM_GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         recyclerView?.layoutManager = layoutManager
 
-        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this)
+        val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
@@ -550,6 +548,15 @@ class OfficialHomeFragment :
             tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
             sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
+    }
+
+    override fun putEEToTrackingQueue(categoryName: String, bannerId: String, bannerPosition: Int, bannerName: String, imageUrl: String) {
+        tracking?.eventImpressionBanner(
+                categoryName,
+                bannerId,
+                bannerPosition,
+                bannerName,
+                imageUrl)
     }
 
     private fun initFirebasePerformanceMonitoring() {

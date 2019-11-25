@@ -5,14 +5,17 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.BannerView
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
+import com.tokopedia.officialstore.official.presentation.listener.BannerListener
 import com.tokopedia.officialstore.official.presentation.widget.BannerOfficialStore
 
-class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerViewModel>(view),
+class OfficialBannerViewHolder(view: View?, private val listener: BannerListener): AbstractViewHolder<OfficialBannerViewModel>(view),
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener {
@@ -30,7 +33,7 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
     }
 
     override fun bind(element: OfficialBannerViewModel?) {
-            elementBanner = element
+        elementBanner = element
         banner?.setPromoList(element?.getBannerImgUrl())
         banner?.onPromoAllClickListener = this
         banner?.onPromoScrolledListener = this
@@ -38,6 +41,22 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
         banner?.setOnPromoDragListener(this)
         banner?.onPromoClickListener = this
         banner?.buildView()
+
+        elementBanner?.let {
+            itemView.addOnImpressionListener(it, object : ViewHintListener {
+                override fun onViewHint() {
+                    elementBanner?.banner?.forEachIndexed { index, dataBanner ->
+                        listener.putEEToTrackingQueue(
+                                element?.categoryName?: "",
+                                dataBanner.bannerId,
+                                index,
+                                dataBanner.title,
+                                dataBanner.imageUrl
+                        )
+                    }
+                }
+            })
+        }
     }
 
     override fun onPromoClick(position: Int) {
@@ -69,19 +88,10 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
 
     override fun onPromoLoaded() {
         this.banner?.bannerIndicator?.visibility = View.VISIBLE
-
-        val bannerItem = elementBanner?.banner?.get(0)
-        officialStoreTracking?.eventImpressionBanner(
-                elementBanner?.categoryName.toEmptyStringIfNull(),
-                bannerItem?.bannerId.toEmptyStringIfNull(),
-                0,
-                bannerItem?.title.toEmptyStringIfNull(),
-                bannerItem?.imageUrl.toEmptyStringIfNull())
     }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.viewmodel_official_banner
     }
-
 }
