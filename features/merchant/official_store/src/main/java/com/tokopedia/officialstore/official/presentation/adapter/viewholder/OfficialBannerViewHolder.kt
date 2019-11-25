@@ -13,7 +13,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Offic
 import com.tokopedia.officialstore.official.presentation.listener.BannerListener
 import com.tokopedia.officialstore.official.presentation.widget.BannerOfficialStore
 
-class OfficialBannerViewHolder(view: View?, private val listener: BannerListener): AbstractViewHolder<OfficialBannerViewModel>(view),
+class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerViewModel>(view),
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener {

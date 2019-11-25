@@ -13,8 +13,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 
 class OfficialHomeAdapterTypeFactory(
         private val recommendationListener: RecommendationListener,
-        private val dcEventHandler: DynamicChannelEventHandler,
-        private val bannerListener: BannerListener
+        private val dcEventHandler: DynamicChannelEventHandler
 ) : BaseAdapterTypeFactory(), OfficialHomeTypeFactory {
 
     override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
@@ -51,7 +50,7 @@ class OfficialHomeAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent, bannerListener)
+            OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(parent)
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(parent)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(parent)
             DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(parent, dcEventHandler)
