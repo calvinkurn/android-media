@@ -35,8 +35,8 @@ object DeeplinkMapper {
     @JvmStatic
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
         /**
-            If deeplink have query parameters then we need to keep the query and map the url without query
-        */
+        If deeplink have query parameters then we need to keep the query and map the url without query
+         */
         val mappedDeepLink: String = when {
             deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> getRegisteredNavigationFromHttp(context, deeplink)
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
@@ -110,7 +110,7 @@ object DeeplinkMapper {
      * If not found, return current deeplink, means it registered
      */
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
-         when (deeplink) {
+        when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> return ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
