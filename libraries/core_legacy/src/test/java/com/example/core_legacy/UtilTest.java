@@ -4,13 +4,20 @@ package com.example.core_legacy;
 import com.tokopedia.analytic_constant.DataLayer;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.util.PriceUtil;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 
 import org.junit.Test;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class UtilTest {
     @Test
@@ -44,10 +51,19 @@ public class UtilTest {
         String price = "Rp 100.000";
         assertEquals("this has to be good", "100000", PriceUtil.from(price));
 
-        price = "Rp 100.000,589";
+        price = "Rp 100.000,889";
         assertFalse("this has to be good", "100000".equals(PriceUtil.from(price)));
 
+        price = CurrencyFormatHelper.removeCurrencyPrefix(price);
+//        NumberFormat.getCurrencyInstance(new Locale("in", "ID")).format(price);
+//        new DecimalFormat("#").format(Double.valueOf(price));
+        try {
+            long result = new DecimalFormat("#,#", new DecimalFormatSymbols(new Locale("in", "ID"))).parse(price).longValue();
+            assertTrue("this has to be good", 100000 == result);
+        }catch (ParseException pe){
 
+        }
+//        assertTrue("this has to be good", "10000".equals(PriceUtil.from(price)));
 
     }
 

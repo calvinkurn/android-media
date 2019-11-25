@@ -363,6 +363,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 is Fail -> onFailedRegisterGoogle(it.throwable)
             }
         })
+        registerInitialViewModel.loginAfterSQResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessReloginAfterSQ()
+                is Fail -> onFailedReloginAfterSQ(it.throwable)
+            }
+        })
         registerInitialViewModel.getUserInfoResponse.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
@@ -475,7 +481,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         onErrorRegister(errorMessage)
     }
 
-    private fun     onSuccessGetUserInfo(profileInfo: ProfileInfo){
+    private fun onSuccessReloginAfterSQ(){
+        registerInitialViewModel.getUserInfo()
+    }
+
+    private fun onFailedReloginAfterSQ(throwable: Throwable){
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        onErrorRegister(errorMessage)
+    }
+
+    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo){
         val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         if (profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
@@ -551,6 +566,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 }
             }
             EMAIL_TYPE -> {
+                registerAnalytics.trackClickEmailSignUpButton()
                 if(registerCheckData.isExist){
                     if(!registerCheckData.isPending){
                         showRegisteredEmailDialog(registerCheckData.view)
@@ -609,7 +625,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
 
         activity?.let {
-            registerAnalytics.trackClickEmailSignUpButton()
             showProgressBar()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.EMAIL_REGISTER)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
@@ -670,9 +685,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                             .RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
+            } else if (requestCode == REQUEST_SECURITY_QUESTION
+                    && resultCode == Activity.RESULT_OK
+                    && data != null){
+                data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let {validateToken ->
+                    registerInitialViewModel.reloginAfterSQ(validateToken)
+                }
+
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
                             .RESULT_CANCELED) {
                 dismissProgressBar()
@@ -851,7 +870,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun showRegisteredEmailDialog(email: String) {
-        registerAnalytics.trackClickEmailSignUpButton()
         registerAnalytics.trackFailedClickEmailSignUpButton(RegisterAnalytics.LABEL_EMAIL_EXIST)
         activity?.let {
             val dialog = Dialog(activity, Dialog.Type.PROMINANCE)

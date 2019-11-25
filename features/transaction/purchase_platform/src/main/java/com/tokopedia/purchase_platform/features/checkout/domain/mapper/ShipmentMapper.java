@@ -19,7 +19,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_suggestion.TickerDat
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeatures;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Donation;
@@ -76,24 +76,24 @@ public class ShipmentMapper implements IShipmentMapper {
         boolean isDisableDonation = false;
 
         if (shipmentAddressFormDataResponse.isNewBuyer()) {
-            for (CheckoutDisabledFeatures disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
+            for (String disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
                 switch (disabledFeature) {
-                    case dropshipper:
+                    case CheckoutDisabledFeaturesKt.dropshipper:
                         dataResult.setDropshipperDisable(true);
                         break;
-                    case multiAddress:
+                    case CheckoutDisabledFeaturesKt.multiAddress:
                         dataResult.setMultipleDisable(true);
                         break;
-                    case orderPrioritas:
+                    case CheckoutDisabledFeaturesKt.orderPrioritas:
                         dataResult.setOrderPrioritasDisable(true);
                         break;
-                    case egold:
+                    case CheckoutDisabledFeaturesKt.egold:
                         isDisableEgold = true;
                         break;
-                    case ppp:
+                    case CheckoutDisabledFeaturesKt.ppp:
                         isDisablePPP = true;
                         break;
-                    case donation:
+                    case CheckoutDisabledFeaturesKt.donation:
                         isDisableDonation = true;
                         break;
                 }
