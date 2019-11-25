@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatDelegate;
+import android.widget.Toast;
 
 import com.google.android.gms.security.ProviderInstaller;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -40,7 +40,6 @@ import java.util.Map;
 
 import okhttp3.Response;
 import timber.log.Timber;
-
 
 /**
  * Created by hendry on 25/06/18.
