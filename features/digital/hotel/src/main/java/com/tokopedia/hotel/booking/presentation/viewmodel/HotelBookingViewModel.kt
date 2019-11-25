@@ -6,7 +6,6 @@ import com.tokopedia.common.travel.data.entity.TravelContactListModel
 import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 import com.tokopedia.common.travel.domain.GetContactListUseCase
 import com.tokopedia.common.travel.domain.UpsertContactListUseCase
-import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -68,18 +67,6 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CART, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCart.Response>()
-
-            // TODO remove this, for testing only
-//            data.appliedVoucher = HotelCart.AppliedVoucher(
-//                    "DGTOPED",
-//                    "Rp 0",
-//                    0,
-//                    "Rp 5.000",
-//                    5000,
-//                    "Potensi Cashback senilai Rp 5.000 akan ditambahkan setelah pembelian berhasil",
-//                    "Dummy title description",
-//                    0)
-            data.response.property.isDirectPayment = true
             hotelCartResult.value = Success(data)
         }) {
             hotelCartResult.value = Fail(it)

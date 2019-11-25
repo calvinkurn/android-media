@@ -52,7 +52,7 @@ class HotelPropertyData {
 
     @SerializedName("isDirectPayment")
     @Expose
-    var isDirectPayment: Boolean = false
+    val isDirectPayment: Boolean = false
 
     @SerializedName("room")
     @Expose
