@@ -78,13 +78,13 @@
             android:gravity="center">
 
             <RelativeLayout
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30">
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40">
 
                 <ImageView
                     android:id="@+id/img_waiting_confirm"
-                    android:layout_width="@dimen/dp_30"
-                    android:layout_height="@dimen/dp_30"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
                     android:src="@mipmap/ic_launcher" />
 
                 <TextView
@@ -122,13 +122,13 @@
             android:gravity="center">
 
             <RelativeLayout
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30">
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40">
 
                 <ImageView
                     android:id="@+id/img_order_process"
-                    android:layout_width="@dimen/dp_30"
-                    android:layout_height="@dimen/dp_30"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
                     android:src="@mipmap/ic_launcher" />
 
                 <TextView
@@ -166,13 +166,13 @@
             android:gravity="center">
 
             <RelativeLayout
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30">
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40">
 
                 <ImageView
                     android:id="@+id/img_goods_sent"
-                    android:layout_width="@dimen/dp_30"
-                    android:layout_height="@dimen/dp_30"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
                     android:src="@mipmap/ic_launcher" />
 
                 <TextView
@@ -210,13 +210,13 @@
             android:gravity="center">
 
             <RelativeLayout
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30">
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40">
 
                 <ImageView
                     android:id="@+id/img_goods_receive"
-                    android:layout_width="@dimen/dp_30"
-                    android:layout_height="@dimen/dp_30"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
                     android:src="@mipmap/ic_launcher" />
 
                 <TextView

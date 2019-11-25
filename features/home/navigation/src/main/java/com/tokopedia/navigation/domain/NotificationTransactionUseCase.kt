@@ -31,7 +31,7 @@ class NotificationTransactionUseCase @Inject constructor(
         private const val PARAM_LAST_ID     = "lastNotifId"
         private const val PARAM_NOTIF_TYPE  = "typeOfNotif"
 
-        private const val TYPE_NOTIF_UPDATE = 1 //harusnya 2
+        private const val TYPE_NOTIF_UPDATE = 2
 
         fun params(
                 page: Int,
