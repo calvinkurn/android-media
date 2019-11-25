@@ -5,6 +5,7 @@ import android.net.Uri
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
+import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
@@ -52,7 +53,7 @@ object DeeplinkMapper {
                     deeplink.startsWithPattern(ApplinkConst.PROFILE) ->
                         getRegisteredNavigationContent(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
-                        getRegisteredHotlist(context,deeplink)
+                        getRegisteredHotlist(context, deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                         ApplinkConst.SellerApp.SELLER_APP_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW,true) ->
@@ -65,7 +66,9 @@ object DeeplinkMapper {
                         getRegisteredNavigationForFintech(deeplink)
                     else -> {
                         val query = Uri.parse(deeplink).query
-                        if(query?.isNotEmpty() == true){
+                        if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
+                            getRegisteredCategoryNavigation(getSegments(deeplink))
+                        } else if(query?.isNotEmpty() == true){
                             val tempDL = deeplink.substring(0, deeplink.indexOf('?'))
                             var navFromTokopedia = getRegisteredNavigationFromTokopedia(tempDL)
                             if(navFromTokopedia.isNotEmpty()) {
