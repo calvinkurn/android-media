@@ -1120,8 +1120,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .setPostStatisticCommissionModel(statisticCommissionModel)
     }
 
-    override fun onErrorGetPostStatistic(error: Throwable) {
-
+    override fun onErrorGetPostStatistic(error: Throwable, activityId: String, productIds: List<String>) {
+        getPostStatisticBottomSheet()
+                .setError(error, activityId, productIds)
     }
 
     private fun initVar(savedInstanceState: Bundle?) {

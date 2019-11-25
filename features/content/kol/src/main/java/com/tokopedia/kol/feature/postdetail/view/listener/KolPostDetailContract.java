@@ -67,7 +67,7 @@ public interface KolPostDetailContract {
 
         void onSuccessGetPostStatistic(@NotNull PostStatisticCommissionUiModel statisticCommissionModel);
 
-        void onErrorGetPostStatistic(@NotNull Throwable error);
+        void onErrorGetPostStatistic(@NotNull Throwable error, @NotNull String activityId, @NotNull List<String> productIds);
     }
 
     interface Presenter extends CustomerPresenter<View> {

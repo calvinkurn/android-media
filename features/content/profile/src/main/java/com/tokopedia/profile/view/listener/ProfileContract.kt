@@ -44,7 +44,7 @@ interface ProfileContract {
 
         fun onSuccessGetPostStatistic(statisticCommissionModel: PostStatisticCommissionUiModel)
 
-        fun onErrorGetPostStatistic(error: Throwable)
+        fun onErrorGetPostStatistic(error: Throwable, activityId: String, productIds: List<String>)
     }
 
     interface Presenter : CustomerPresenter<View> {

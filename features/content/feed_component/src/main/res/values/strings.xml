@@ -74,4 +74,6 @@
     <string name="feed_post_statistic_see_detail">Lihat</string>
     <string name="feed_post_statistic_commission_placeholder">Rp 0</string>
 
+    <string name="feed_try_again">Coba Lagi</string>
+
 </resources>

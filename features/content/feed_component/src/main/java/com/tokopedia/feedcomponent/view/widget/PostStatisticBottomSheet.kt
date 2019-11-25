@@ -4,13 +4,17 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.RouteManagerKt
@@ -20,10 +24,12 @@ import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommiss
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticPlaceholderUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
+import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.EmptyState
 
 /**
  * Created by jegul on 2019-11-21
@@ -76,6 +82,18 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
         listener.onGetPostStatisticModelList(this, activityId, productIds)
         setTitle(title)
         show(fragmentManager, activityId)
+    }
+
+    fun setError(throwable: Throwable, activityId: String, productIds: List<String>) {
+        if (view is ViewGroup) {
+            ivLoading.hide()
+            groupDetail.invisible()
+
+            (view as ViewGroup).showUnifyError(
+                    throwable,
+                    { listener?.onGetPostStatisticModelList(this, activityId, productIds) }
+            )
+        }
     }
 
     private fun initView(view: View) {

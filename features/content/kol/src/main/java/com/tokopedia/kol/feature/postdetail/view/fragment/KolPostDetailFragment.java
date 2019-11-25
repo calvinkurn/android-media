@@ -792,8 +792,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorGetPostStatistic(@NotNull Throwable error) {
-
+    public void onErrorGetPostStatistic(@NotNull Throwable error, @NotNull String activityId, @NotNull List<String> productIds) {
+        getPostStatisticBottomSheet()
+                .setError(error, activityId, productIds);
     }
 
     private void doShare(String body, String title) {
