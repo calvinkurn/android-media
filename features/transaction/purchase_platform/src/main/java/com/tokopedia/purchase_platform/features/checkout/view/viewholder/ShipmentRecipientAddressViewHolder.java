@@ -101,10 +101,10 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                                String cartIds) {
         renderBaseAddress(recipientAddress, cartIds);
         if (recipientAddress.isTradeIn()) {
-            renderAddressOptionOnBottom(recipientAddress);
+            renderAddressOptionOnBottom();
             renderTradeInAddress(recipientAddress);
         } else {
-            renderAddressOptionOnTop();
+            renderAddressOptionOnTop(recipientAddress);
             renderNormalAddress(recipientAddress);
             llTradeInInfo.setVisibility(View.GONE);
         }
@@ -282,17 +282,22 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvTradeInInfo.setText(formattedTrandeInInfoText);
     }
 
-    private void renderAddressOptionOnTop() {
+    private void renderAddressOptionOnTop(RecipientAddressModel recipientAddressModel) {
         llAddOrChangeAddressContainer.setVisibility(View.GONE);
         tvChangeAddressTop.setVisibility(View.VISIBLE);
-        tvDisabledMultipleAddressInfo.setVisibility(View.VISIBLE);
-        separatorBottom.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(recipientAddressModel.getDisabledMultiAddressMessage())) {
+            tvDisabledMultipleAddressInfo.setText(recipientAddressModel.getDisabledMultiAddressMessage());
+            tvDisabledMultipleAddressInfo.setVisibility(View.VISIBLE);
+            separatorBottom.setVisibility(View.VISIBLE);
+        } else {
+            tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
+            separatorBottom.setVisibility(View.GONE);
+        }
     }
 
-    private void renderAddressOptionOnBottom(RecipientAddressModel recipientAddressModel) {
+    private void renderAddressOptionOnBottom() {
         llAddOrChangeAddressContainer.setVisibility(View.VISIBLE);
         tvChangeAddressTop.setVisibility(View.GONE);
-        tvDisabledMultipleAddressInfo.setText(recipientAddressModel.getDisabledMultiAddressMessage());
         tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
         separatorBottom.setVisibility(View.GONE);
     }

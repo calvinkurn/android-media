@@ -397,6 +397,5 @@
     <string name="label_tab_trade_in_address_deliver">Antar</string>
     <string name="label_tab_trade_in_address_pickup">Titik Ambil</string>
     <string name="label_trade_in_shipping_price">Pilih lokasi untuk menampilkan harga</string>
-    <string name="label_disabled_multiple_address_info">Pengiriman ke banyak alamat hanya tersedia di Desktop</string>
 
 </resources>

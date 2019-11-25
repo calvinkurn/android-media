@@ -127,7 +127,6 @@
         android:paddingRight="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_4"
         android:textColor="@color/n_700_44"
-        android:text="@string/label_disabled_multiple_address_info"
         app:typographyType="small"
         app:typographyWeight="reguler" />
 
