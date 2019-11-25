@@ -45,9 +45,11 @@ class AttachmentMenuRecyclerView : RecyclerView {
         }
     }
 
-    private fun hideMenu() {
-        isVisible = false
-        visibility = View.GONE
+    fun hideMenu() {
+        if (isVisible) {
+            isVisible = false
+            visibility = View.GONE
+        }
     }
 
     private fun showMenu() {
@@ -58,10 +60,6 @@ class AttachmentMenuRecyclerView : RecyclerView {
             isVisible = true
             visibility = View.VISIBLE
         }, delayToShow)
-    }
-
-    fun hide() {
-        visibility = View.GONE
     }
 
     private fun hideKeyboard() {

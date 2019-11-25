@@ -265,4 +265,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onClickImagePicker() {}
 
     override fun trackChatMenuClicked(label: String) {}
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewState.clear()
+    }
 }

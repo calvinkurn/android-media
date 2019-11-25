@@ -27,4 +27,6 @@ interface BaseChatViewState {
 
     fun onReceiveRead()
 
+    fun clear()
+
 }
