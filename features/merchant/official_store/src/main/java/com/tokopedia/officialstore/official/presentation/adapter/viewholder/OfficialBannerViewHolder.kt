@@ -5,8 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.BannerView
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.R
@@ -43,19 +41,7 @@ class OfficialBannerViewHolder(view: View?, private val listener: BannerListener
         banner?.buildView()
 
         elementBanner?.let {
-            itemView.addOnImpressionListener(it, object : ViewHintListener {
-                override fun onViewHint() {
-                    elementBanner?.banner?.forEachIndexed { index, dataBanner ->
-                        listener.putEEToTrackingQueue(
-                                element?.categoryName?: "",
-                                dataBanner.bannerId,
-                                index,
-                                dataBanner.title,
-                                dataBanner.imageUrl
-                        )
-                    }
-                }
-            })
+            banner?.getAdapter()?.setOfficialBannerViewModel(it)
         }
     }
 
