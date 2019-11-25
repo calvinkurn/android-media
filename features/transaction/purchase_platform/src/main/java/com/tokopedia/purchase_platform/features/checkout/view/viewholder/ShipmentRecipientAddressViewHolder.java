@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -63,6 +64,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private Typography tvDisabledMultipleAddressInfo;
     private Typography tvChangeAddressTop;
     private View separatorBottom;
+    private Space space;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -94,6 +96,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvDisabledMultipleAddressInfo = itemView.findViewById(R.id.tv_disabled_multiple_address_info);
         tvChangeAddressTop = itemView.findViewById(R.id.tv_change_address_top);
         separatorBottom = itemView.findViewById(R.id.separator_bottom);
+        space = itemView.findViewById(R.id.space);
     }
 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
@@ -289,9 +292,11 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             tvDisabledMultipleAddressInfo.setText(recipientAddressModel.getDisabledMultiAddressMessage());
             tvDisabledMultipleAddressInfo.setVisibility(View.VISIBLE);
             separatorBottom.setVisibility(View.VISIBLE);
+            space.setVisibility(View.GONE);
         } else {
             tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
             separatorBottom.setVisibility(View.GONE);
+            space.setVisibility(View.VISIBLE);
         }
     }
 
@@ -300,6 +305,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvChangeAddressTop.setVisibility(View.GONE);
         tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
         separatorBottom.setVisibility(View.GONE);
+        space.setVisibility(View.GONE);
     }
 
 }

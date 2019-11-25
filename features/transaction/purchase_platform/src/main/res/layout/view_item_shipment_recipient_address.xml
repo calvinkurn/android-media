@@ -108,7 +108,17 @@
     <View
         android:id="@+id/separator_bottom"
         android:layout_width="match_parent"
+        tools:visibility="invisible"
         android:layout_height="0.5dp"
+        android:layout_below="@id/rl_image_address_container"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/separator_color" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
         android:layout_below="@id/rl_image_address_container"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
@@ -124,9 +134,11 @@
         android:lineSpacingExtra="@dimen/dp_3"
         android:paddingLeft="@dimen/dp_16"
         android:paddingTop="@dimen/dp_4"
+        tools:visibility="gone"
         android:paddingRight="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_4"
         android:textColor="@color/n_700_44"
+        tools:text="Multiple address shipping is disabled"
         app:typographyType="small"
         app:typographyWeight="reguler" />
 
@@ -137,6 +149,7 @@
         android:layout_below="@+id/tv_disabled_multiple_address_info"
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@color/white"
+        tools:visibility="gone"
         android:orientation="horizontal">
 
         <com.tokopedia.unifyprinciples.Typography
