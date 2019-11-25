@@ -7,16 +7,6 @@ import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.PagerAdapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
-<<<<<<< HEAD:features/content/profile/src/main/java/com/tokopedia/profile/view/activity/FollowingListActivity.kt
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
-import com.tokopedia.kol.feature.following_list.view.fragment.BaseFollowListFragment
-import com.tokopedia.kol.feature.following_list.view.fragment.KolFollowingListFragment
-import com.tokopedia.kol.feature.following_list.view.fragment.ShopFollowingListFragment
-import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingListEmptyListener
-import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingResultViewModel
-import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel
-=======
->>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350:features/content/profile/src/main/java/com/tokopedia/profile/following_list/view/activity/FollowingListActivity.kt
 import com.tokopedia.profile.R
 import com.tokopedia.profile.following_list.view.fragment.BaseFollowListFragment
 import com.tokopedia.profile.following_list.view.fragment.ShopFollowingListFragment

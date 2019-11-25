@@ -3,17 +3,6 @@ package com.tokopedia.profile.following_list.view.presenter
 import android.content.Context
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-<<<<<<< HEAD:features/content/kol/src/main/java/com/tokopedia/kol/feature/following_list/view/presenter/ShopFollowingListPresenter.kt
-import com.tokopedia.kol.R
-import com.tokopedia.kol.feature.following_list.data.pojo.usershopfollow.GetShopFollowingData
-import com.tokopedia.kol.feature.following_list.data.pojo.usershopfollow.UserShopFollowDetail
-import com.tokopedia.kol.feature.following_list.domain.interactor.GetShopFollowingListUseCase
-import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList
-import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel
-import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingResultViewModel
-import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingViewModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-=======
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.GetShopFollowingData
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.UserShopFollowDetail
@@ -22,7 +11,6 @@ import com.tokopedia.profile.following_list.view.listener.FollowingList
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel
->>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350:features/content/profile/src/main/java/com/tokopedia/profile/following_list/view/presenter/ShopFollowingListPresenter.kt
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profile.R
 import com.tokopedia.profile.following_list.view.fragment.BaseFollowListFragment
@@ -45,11 +33,7 @@ class ShopFollowingListPresenter @Inject constructor(
         private val getUserShopFollowingListUseCase: GetShopFollowingListUseCase,
         private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
         private val userSession: UserSessionInterface
-<<<<<<< HEAD:features/content/kol/src/main/java/com/tokopedia/kol/feature/following_list/view/presenter/ShopFollowingListPresenter.kt
-) : BaseDaggerPresenter<KolFollowingList.View<ShopFollowingViewModel, ShopFollowingResultViewModel>>(), KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>, CoroutineScope {
-=======
 ) : BaseDaggerPresenter<FollowingList.View<ShopFollowingViewModel, ShopFollowingResultViewModel>>(), FollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>, CoroutineScope {
->>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350:features/content/profile/src/main/java/com/tokopedia/profile/following_list/view/presenter/ShopFollowingListPresenter.kt
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job

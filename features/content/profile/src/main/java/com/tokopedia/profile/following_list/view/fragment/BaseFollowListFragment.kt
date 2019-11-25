@@ -121,13 +121,8 @@ abstract class BaseFollowListFragment<I: FollowingViewModel, T : FollowingResult
 
     override fun onSuccessGetKolFollowingListEmptyState() {
         emptyState.visibility = View.VISIBLE
-<<<<<<< HEAD:features/content/kol/src/main/java/com/tokopedia/kol/feature/following_list/view/fragment/BaseFollowListFragment.kt
-        if (activity is KolFollowingListEmptyListener) {
-            (activity as KolFollowingListEmptyListener).onFollowingEmpty(this::class.java)
-=======
         if (activity is FollowingListEmptyListener) {
             (activity as FollowingListEmptyListener).onFollowingEmpty(this::class.java)
->>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350:features/content/profile/src/main/java/com/tokopedia/profile/following_list/view/fragment/BaseFollowListFragment.kt
         }
     }
 
