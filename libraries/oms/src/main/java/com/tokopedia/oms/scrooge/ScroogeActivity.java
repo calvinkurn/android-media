@@ -193,7 +193,6 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                     startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                     return true;
                 } else {
-                    super.shouldOverrideUrlLoading(view, url);
                     returnVal = false;
                 }
 
