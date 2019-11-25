@@ -1,9 +1,11 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
+import com.tokopedia.usecase.RequestParams;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -16,6 +18,7 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
     private ClearAllDraftProductUseCase clearAllDraftProductUseCase;
     private UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase;
 
+    @Inject
     public ProductDraftListCountPresenterImpl(FetchAllDraftProductCountUseCase fetchAllDraftProductCountUseCase,
                                               ClearAllDraftProductUseCase clearAllDraftProductUseCase,
                                               UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){

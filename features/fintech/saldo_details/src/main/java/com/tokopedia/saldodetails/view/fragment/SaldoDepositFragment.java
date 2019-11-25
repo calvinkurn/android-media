@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -26,6 +23,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -506,10 +507,8 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     }
 
     private void onFirstTimeLaunched() {
-
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         showMclBlockTickerFirebaseFlag = remoteConfig.getBoolean(APP_ENABLE_SALDO_LOCK, false);
-
         saldoDetailsPresenter.getSaldoBalance();
         saldoDetailsPresenter.getTickerWithdrawalMessage();
         saldoDetailsPresenter.getMCLLateCount();
@@ -619,7 +618,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
 
         if (showMclBlockTickerFirebaseFlag) {
             String tickerMsg = getString(com.tokopedia.design.R.string.saldolock_tickerDescription);
-            int startIndex = tickerMsg.indexOf("Bayar Sekarang");
+            int startIndex = tickerMsg.indexOf(getResources().getString(com.tokopedia.saldodetails.R.string.tickerClickableText));
             String late = Integer.toString(mclLateCount);
             tickerMsg = String.format(getResources().getString(com.tokopedia.design.R.string.saldolock_tickerDescription), late);
             SpannableString ss = new SpannableString(tickerMsg);

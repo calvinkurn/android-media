@@ -27,7 +27,9 @@ android {
 
 dependencies {
     // Feature
+    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.features.commonWallet)
+    implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.features.feedComponent)
@@ -41,6 +43,7 @@ dependencies {
     implementation project(rootProject.ext.features.stickyLogin)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.tkpdsession)
+    implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.resourcesCommon)
