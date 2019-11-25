@@ -537,9 +537,9 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         val bannerPagerAdapter = mBannerPager.adapter as BannerPagerAdapter?
 
         if (bannerPagerAdapter != null &&
-                bannerPagerAdapter.bannerEntityList != null &&
-                bannerPagerAdapter.bannerEntityList[position] != null) {
-            val eventLabel = (bannerPagerAdapter.bannerEntityList[position].bannerLink
+                bannerPagerAdapter.bannerEntities != null &&
+                bannerPagerAdapter.bannerEntities[position] != null) {
+            val eventLabel = (bannerPagerAdapter.bannerEntities[position].bannerLink
                     + " - " + position.toString())
 
             instantLoanAnalytics.eventLoanBannerImpression(eventLabel)

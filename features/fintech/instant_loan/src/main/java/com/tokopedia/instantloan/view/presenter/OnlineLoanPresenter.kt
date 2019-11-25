@@ -4,17 +4,13 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.instantloan.data.model.response.GqlFilterDataResponse
 import com.tokopedia.instantloan.domain.interactor.GetFilterDataUseCase
-import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
-import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
 import com.tokopedia.instantloan.view.contractor.OnlineLoanContractor
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 import javax.inject.Inject
 
 class OnlineLoanPresenter @Inject
-constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCase,
-            private val mGetFilterDataUseCase: GetFilterDataUseCase,
-            private val mPostPhoneDataUseCase: PostPhoneDataUseCase) :
+constructor(private val mGetFilterDataUseCase: GetFilterDataUseCase) :
         BaseDaggerPresenter<OnlineLoanContractor.View>(), OnlineLoanContractor.Presenter {
 
     @Inject
@@ -26,9 +22,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
     }
 
     override fun detachView() {
-        mGetLoanProfileStatusUseCase.unsubscribe()
         mGetFilterDataUseCase.unsubscribe()
-        mPostPhoneDataUseCase.unsubscribe()
         super.detachView()
     }
 

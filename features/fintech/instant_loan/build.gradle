@@ -21,9 +21,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.features.tkpdseller)
-    implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.features.productManageItem)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
@@ -34,28 +31,22 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.miscDependencies.rxJavaComputation
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation (rootProject.ext.miscDependencies.imagecropper){
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.miscDependencies.scannerZxing
-    implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.viewDependencies.appIntro
-    implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
+
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.kotlinMockito
 }
 
 project.ext {
