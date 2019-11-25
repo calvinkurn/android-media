@@ -310,7 +310,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
-                addToCart()
             }
 
             dialog.show()
@@ -539,6 +538,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun verifyCart() {
+        val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
         bookingViewModel.verifyCartData(
                 GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_verify_cart),
                 totalPrice = totalCartPrice,
@@ -546,7 +546,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 contactEmail = widget_traveller_info.getContactEmail(),
                 contactPhone = widget_traveller_info.getContactPhoneNum(),
                 contactCountry = widget_traveller_info.getContactPhoneCountry(),
-                checkVoucherQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher))
+                checkVoucherQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher),
+                addToCartQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart),
+                idempotencyKey = requestId)
     }
 
     private fun checkOutCart() {
