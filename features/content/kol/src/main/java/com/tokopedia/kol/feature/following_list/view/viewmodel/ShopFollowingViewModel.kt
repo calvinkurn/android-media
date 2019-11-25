@@ -9,5 +9,6 @@ data class ShopFollowingViewModel(
         override val name: String,
         override val isLoadingItem: Boolean,
         val etalase: String,
-        val product: String
+        val product: String,
+        val isAllowedFollowAction: Boolean
 ) : FollowingViewModel

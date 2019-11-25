@@ -37,11 +37,12 @@ include "features:digital:flight_orderlist"
 include "features:digital:hotel"
 include "features:digital:imagepreviewslider"
 include "features:digital:travel_homepage"
-include ":features:digital:digital_homepage"
+include "features:digital:digital_homepage"
 
 include "features:discovery:category_common"
 include "features:discovery:discovery_common"
 include 'features:discovery:productcard'
+include 'features:discovery:carousel_productcard'
 include 'features:discovery:filter'
 include 'features:discovery:image_search'
 include 'features:discovery:similarsearch'
@@ -65,13 +66,12 @@ include "features:fintech:saldo_details"
 include "features:fintech:common_wallet"
 include "features:fintech:wallet"
 
+include "features:home:dynamicbanner"
 include "features:home:navigation"
 include "features:home:navigation-common"
 include "features:home:searchbar"
 include "features:home:account-home"
 
-include "features:im:challenges"
-//include "features:im:challenges_no_op"
 include "features:im:common_promo"
 include "features:im:referral"
 include "features:kyc"

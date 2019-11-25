@@ -11,9 +11,11 @@ import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingList
 import com.tokopedia.kol.feature.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingResultViewModel
 import com.tokopedia.kol.feature.following_list.view.viewmodel.ShopFollowingViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase.Action
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,7 +30,8 @@ import kotlin.coroutines.CoroutineContext
 class ShopFollowingListPresenter @Inject constructor(
         @ApplicationContext private val context: Context,
         private val getUserShopFollowingListUseCase: GetShopFollowingListUseCase,
-        private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
+        private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
+        private val userSession: UserSessionInterface
 ) : BaseDaggerPresenter<KolFollowingList.View<ShopFollowingViewModel, ShopFollowingResultViewModel>>(), KolFollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -44,7 +47,9 @@ class ShopFollowingListPresenter @Inject constructor(
                 addRequestWithParam(userId, page)
             }.executeOnBackground()
             view.run {
-                onSuccessGetKolFollowingList(userFollow.convertToViewModel(page))
+                val uiModelList = userFollow.convertToUiModel(page, userId == userSession.userId.toIntOrZero())
+                if (uiModelList.followingViewModelList.isEmpty()) onSuccessGetKolFollowingListEmptyState()
+                onSuccessGetKolFollowingList(uiModelList)
                 hideLoading()
             }
         }
@@ -58,7 +63,7 @@ class ShopFollowingListPresenter @Inject constructor(
                 addRequestWithParam(userId, page)
             }.executeOnBackground()
             view.run {
-                onSuccessLoadMoreKolFollowingList(userFollow.convertToViewModel(page))
+                onSuccessLoadMoreKolFollowingList(userFollow.convertToUiModel(page, userId == userSession.userId.toIntOrZero()))
                 hideLoading()
             }
         }
@@ -96,21 +101,22 @@ class ShopFollowingListPresenter @Inject constructor(
         job.cancel()
     }
 
-    private fun GetShopFollowingData.convertToViewModel(currentPage: Int): ShopFollowingResultViewModel = userShopFollow.result.let { result ->
+    private fun GetShopFollowingData.convertToUiModel(currentPage: Int, isAllowedFollowAction: Boolean): ShopFollowingResultViewModel = userShopFollow.result.let { result ->
         ShopFollowingResultViewModel(
                 isCanLoadMore = result.haveNext,
                 totalCount = result.totalCount.toInt(),
-                followingViewModelList = result.userShopFollowDetail.map { it.convertToViewModel() },
+                followingViewModelList = result.userShopFollowDetail.map { it.convertToUiModel(isAllowedFollowAction) },
                 currentPage = currentPage
         )
     }
 
-    private fun UserShopFollowDetail.convertToViewModel(): ShopFollowingViewModel = ShopFollowingViewModel(
+    private fun UserShopFollowDetail.convertToUiModel(isAllowedFollowAction: Boolean): ShopFollowingViewModel = ShopFollowingViewModel(
             id = shopID.toInt(),
             name = shopName,
             avatarUrl = logo,
             isLoadingItem = false,
             etalase = context.getString(R.string.shop_following_etalase_count, stats.totalShowcase),
-            product = context.getString(R.string.shop_following_product_count, stats.productSold)
+            product = context.getString(R.string.shop_following_product_count, stats.productSold),
+            isAllowedFollowAction = isAllowedFollowAction
     )
 }

@@ -13,6 +13,7 @@ import com.tokopedia.autocomplete.repository.AutoCompleteRepository;
 import com.tokopedia.autocomplete.repository.AutoCompleteRepositoryImpl;
 import com.tokopedia.autocomplete.usecase.AutoCompleteUseCase;
 import com.tokopedia.autocomplete.usecase.DeleteRecentSearchUseCase;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -42,11 +43,10 @@ public class AutoCompleteModule {
     @Provides
     AutoCompleteRepository provideAutoCompleteRepository(
         @AutoCompleteQualifier BrowseApi browseApi,
-        SearchMapper autoCompleteMapper,
-        CacheManager cacheManager
+        SearchMapper autoCompleteMapper
     ) {
         return new AutoCompleteRepositoryImpl(
-            new AutoCompleteDataSource(browseApi, autoCompleteMapper, cacheManager)
+            new AutoCompleteDataSource(browseApi, autoCompleteMapper, PersistentCacheManager.instance)
         );
     }
 

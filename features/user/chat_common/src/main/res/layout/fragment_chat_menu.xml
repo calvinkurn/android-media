@@ -5,6 +5,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:background="@drawable/bg_rounded_bottom_sheet"
         android:id="@+id/rvChatMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

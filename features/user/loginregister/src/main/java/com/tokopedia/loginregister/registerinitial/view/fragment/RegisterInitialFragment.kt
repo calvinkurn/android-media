@@ -2,6 +2,9 @@ package com.tokopedia.loginregister.registerinitial.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -19,7 +22,6 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -40,6 +42,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
@@ -50,11 +53,13 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
-import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
+import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
+import com.tokopedia.loginregister.registerinitial.domain.pojo.ActivateUserPojo
+import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
-import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract
-import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter
+import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
@@ -62,7 +67,7 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
-import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
@@ -71,41 +76,16 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
 /**
  * @author by nisie on 10/24/18.
  */
-class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.View,
-        PartialRegisterInputView.PartialRegisterInputViewListener {
-
-    companion object {
-
-        private val ID_ACTION_LOGIN = 112
-
-        private val REQUEST_REGISTER_EMAIL = 101
-        private val REQUEST_CREATE_PASSWORD = 102
-        private val REQUEST_SECURITY_QUESTION = 103
-        private val REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105
-        private val REQUEST_ADD_NAME_REGISTER_PHONE = 107
-        private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
-        private val REQUEST_CHOOSE_ACCOUNT = 109
-        private val REQUEST_CHANGE_NAME = 111
-        private val REQUEST_LOGIN_GOOGLE = 112
-
-        private val FACEBOOK = "facebook"
-        private val GPLUS = "gplus"
-        private val PHONE_NUMBER = "phonenumber"
-
-        fun createInstance(bundle : Bundle): RegisterInitialFragment {
-            val fragment = RegisterInitialFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
+class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener {
 
     lateinit var optionTitle: TextView
     lateinit var separator: View
@@ -121,9 +101,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private var phoneNumber: String? = ""
     private var source : String = ""
-
-    @Inject
-    lateinit var presenter: RegisterInitialPresenter
+    private var email : String = ""
+    private var isSmartLogin: Boolean = false
+    private var isPending: Boolean = false
 
     @field:Named(SESSION_MODULE)
     @Inject
@@ -137,6 +117,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelProvider by lazy {
+        ViewModelProviders.of(this, viewModelFactory)
+    }
+    private val registerInitialViewModel by lazy {
+        viewModelProvider.get(RegisterInitialViewModel::class.java)
+    }
 
     lateinit var callbackManager: CallbackManager
     lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -152,25 +141,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             }
             return drawable
         }
-
-    override val facebookCredentialListener: GetFacebookCredentialSubscriber.GetFacebookCredentialListener
-        get() = object : GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
-
-            override fun onErrorGetFacebookCredential(e: Exception) {
-                if (isAdded && activity != null) {
-                    e.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, e)) }
-                }
-            }
-
-            override fun onSuccessGetFacebookCredential(accessToken: AccessToken, email: String) {
-                try {
-                    presenter.registerFacebook(accessToken, email)
-                } catch (e: Exception) {
-                    e.message?.let { onErrorRegister(it) }
-                }
-            }
-        }
-
 
     override fun onStart() {
         super.onStart()
@@ -207,6 +177,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
         phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
+        isSmartLogin = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, arguments, savedInstanceState, false)
+        isPending = getParamBoolean(ApplinkConstInternalGlobal.PARAM_IS_PENDING, arguments, savedInstanceState, false)
+        email = getParamString(ApplinkConstInternalGlobal.PARAM_EMAIL, arguments, savedInstanceState, "")
     }
 
     private fun clearData() {
@@ -238,13 +211,20 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         prepareView()
         setViewListener()
-        presenter.attachView(this)
+        if(isSmartLogin){
+            if(isPending){
+                goToPendingOtpValidator(email)
+            }else{
+                goToOtpValidator(email)
+            }
+        }
         return view
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initObserver()
         initData()
     }
 
@@ -280,13 +260,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     private fun initData() {
-        presenter.getProvider()
+        showLoadingDiscover()
+        registerInitialViewModel.getProvider()
         partialRegisterInputView.setListener(this)
-        presenter.getTickerInfo()
+        registerInitialViewModel.getTickerInfo()
     }
 
     @SuppressLint("RtlHardcoded")
-    protected fun prepareView() {
+    private fun prepareView() {
         activity?.run {
             val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
             socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
@@ -361,7 +342,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
     }
 
-    protected fun setViewListener() {
+    private fun setViewListener() {
         loginButton.setOnClickListener {
             registerAnalytics.trackClickBottomSignInButton()
             activity?.run {
@@ -372,7 +353,277 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
     }
 
-    override fun goToLoginPage() {
+    private fun initObserver(){
+        registerInitialViewModel.getProviderResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetProvider(it.data)
+                is Fail -> onFailedGetProvider(it.throwable)
+            }
+        })
+        registerInitialViewModel.getFacebookCredentialResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetFacebookCredential(it.data)
+                is Fail -> onFailedGetFacebookCredential(it.throwable)
+            }
+        })
+        registerInitialViewModel.loginTokenFacebookResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessRegisterFacebook()
+                is Fail -> onFailedRegisterFacebook(it.throwable)
+            }
+        })
+        registerInitialViewModel.loginTokenGoogleResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessRegisterGoogle()
+                is Fail -> onFailedRegisterGoogle(it.throwable)
+            }
+        })
+        registerInitialViewModel.loginAfterSQResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessReloginAfterSQ()
+                is Fail -> onFailedReloginAfterSQ(it.throwable)
+            }
+        })
+        registerInitialViewModel.getUserInfoResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetUserInfo(it.data)
+                is Fail -> onFailedGetUserInfo(it.throwable)
+            }
+        })
+        registerInitialViewModel.getTickerInfoResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetTickerInfo(it.data)
+                is Fail -> onErrorGetTickerInfo(it.throwable)
+            }
+        })
+        registerInitialViewModel.registerCheckResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessRegisterCheck(it.data)
+                is Fail -> onFailedRegisterCheck(it.throwable)
+            }
+        })
+        registerInitialViewModel.activateUserResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessActivateUser(it.data)
+                is Fail -> onFailedActivateUser(it.throwable)
+            }
+        })
+        registerInitialViewModel.goToActivationPage.observe(this, Observer {
+            if(it != null) onGoToActivationPage(it)
+        })
+        registerInitialViewModel.goToSecurityQuestion.observe(this, Observer {
+            if(it != null) onGoToSecurityQuestion(it)
+        })
+    }
+
+    private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemViewModel>){
+        dismissLoadingDiscover()
+
+        val layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                resources.getDimensionPixelSize(R.dimen.dp_52))
+        layoutParams.setMargins(0, 10, 0, 10)
+
+        socmedButtonsContainer.removeAllViews()
+
+        for (i in discoverItems.indices) {
+            val item = discoverItems[i]
+            if (item.id != PHONE_NUMBER) {
+                val loginTextView = LoginTextView(activity, MethodChecker.getColor(activity, R.color.white))
+                loginTextView.setText(item.name)
+                loginTextView.setBorderColor(MethodChecker.getColor(activity, R.color
+                        .black_38))
+                loginTextView.setImage(item.image)
+                loginTextView.setRoundCorner(10)
+
+                setDiscoverOnClickListener(item, loginTextView)
+
+                socmedButtonsContainer.addView(loginTextView, socmedButtonsContainer.childCount,
+                        layoutParams)
+            }
+        }
+    }
+
+    private fun onFailedGetProvider(throwable: Throwable){
+        dismissLoadingDiscover()
+
+        ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
+            override fun onForbidden() {
+                onGoToForbiddenPage()
+            }
+
+            override fun onError(errorMessage: String) {
+                NetworkErrorHelper.createSnackbarWithAction(activity,
+                        errorMessage) { registerInitialViewModel.getProvider() }.showRetrySnackbar()
+                loginButton.isEnabled = false
+            }
+        }, throwable, context)
+    }
+
+    private fun onSuccessGetFacebookCredential(facebookCredentialData: FacebookCredentialData){
+        try {
+            registerInitialViewModel.registerFacebook(
+                    facebookCredentialData.accessToken.token,
+                    facebookCredentialData.email
+            )
+        } catch (e: Exception) {
+            e.message?.let { onErrorRegister(it) }
+        }
+    }
+
+    private fun onFailedGetFacebookCredential(throwable: Throwable){
+        if (isAdded && activity != null) {
+            throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
+        }
+    }
+
+    private fun onSuccessRegisterFacebook() {
+        registerInitialViewModel.getUserInfo()
+    }
+
+    private fun onFailedRegisterFacebook(throwable: Throwable){
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        onErrorRegister(errorMessage)
+    }
+
+    private fun onSuccessRegisterGoogle(){
+        registerInitialViewModel.getUserInfo()
+    }
+
+    private fun onFailedRegisterGoogle(throwable: Throwable){
+        logoutGoogleAccountIfExist()
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        onErrorRegister(errorMessage)
+    }
+
+    private fun onSuccessReloginAfterSQ(){
+        registerInitialViewModel.getUserInfo()
+    }
+
+    private fun onFailedReloginAfterSQ(throwable: Throwable){
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        onErrorRegister(errorMessage)
+    }
+
+    private fun onSuccessGetUserInfo(profileInfo: ProfileInfo){
+        val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
+
+        if (profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+            onGoToChangeName()
+        } else {
+            onSuccessRegister()
+        }
+    }
+
+    private fun onFailedGetUserInfo(throwable: Throwable){
+        val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+        onErrorRegister(errorMessage)
+    }
+
+    private fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
+        if (listTickerInfo.isNotEmpty()) {
+            tickerAnnouncement.visibility = View.VISIBLE
+            if (listTickerInfo.size > 1) {
+                val mockData = arrayListOf<TickerData>()
+                listTickerInfo.forEach {
+                    mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
+                }
+                val adapter = TickerPagerAdapter(activity!!, mockData)
+                adapter.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                    }
+
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
+
+                })
+                tickerAnnouncement.addPagerView(adapter, mockData)
+            } else {
+                listTickerInfo.first().let {
+                    tickerAnnouncement.tickerTitle = it.title
+                    tickerAnnouncement.setHtmlDescription(it.message)
+                    tickerAnnouncement.tickerShape = getTickerType(it.color)
+                }
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                    }
+
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
+
+                })
+            }
+            tickerAnnouncement.setOnClickListener {
+                registerAnalytics.trackClickTicker()
+            }
+
+        }
+    }
+
+    private fun onErrorGetTickerInfo(error: Throwable) {
+        error.printStackTrace()
+    }
+
+    private fun onSuccessRegisterCheck(registerCheckData: RegisterCheckData){
+        when(registerCheckData.registerType){
+            PHONE_TYPE -> {
+                setTempPhoneNumber(registerCheckData.view)
+                if(registerCheckData.isExist){
+                    showRegisteredPhoneDialog(registerCheckData.view)
+                }else{
+                    showProceedWithPhoneDialog(registerCheckData.view)
+                }
+            }
+            EMAIL_TYPE -> {
+                registerAnalytics.trackClickEmailSignUpButton()
+                if(registerCheckData.isExist){
+                    if(!registerCheckData.isPending){
+                        showRegisteredEmailDialog(registerCheckData.view)
+                    }else{
+                        goToPendingOtpValidator(registerCheckData.view)
+                    }
+                }else{
+                    goToOtpValidator(registerCheckData.view)
+                }
+            }
+        }
+    }
+
+    private fun onFailedRegisterCheck(throwable: Throwable){
+        val messageError = ErrorHandlerSession.getErrorMessage(context, throwable)
+        registerAnalytics.trackFailedClickSignUpButton(messageError)
+        partialRegisterInputView.onErrorValidate(messageError)
+        phoneNumber = ""
+    }
+
+    private fun onSuccessActivateUser(activateUserPojo: ActivateUserPojo){
+        userSession.clearToken()
+        userSession.setToken(activateUserPojo.accessToken, activateUserPojo.tokenType, activateUserPojo.refreshToken)
+        registerInitialViewModel.getUserInfo()
+    }
+
+    private fun onFailedActivateUser(throwable: Throwable){
+        throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
+    }
+
+    //Wrong flow implementation
+    private fun onGoToActivationPage(errorMessage: MessageErrorException){
+        NetworkErrorHelper.showSnackbar(activity, ErrorHandlerSession.getErrorMessage(context, errorMessage))
+    }
+
+    private fun onGoToSecurityQuestion(email: String){
+        val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, "", email)
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+    }
+
+    private fun goToLoginPage() {
         activity?.let {
             val intent = LoginActivity.DeepLinkIntents.getCallingIntent(it)
             startActivity(intent)
@@ -385,13 +636,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         startActivityForResult(intent, REQUEST_REGISTER_EMAIL)
     }
 
-    override fun goToRegisterEmailPageWithEmail(email: String) {
+    private fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
 
         activity?.let {
-            registerAnalytics.trackClickEmailSignUpButton()
             showProgressBar()
-            val intent = RegisterEmailActivity.getCallingIntentWithEmail(it, email, source)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.EMAIL_REGISTER)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, token)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             startActivityForResult(intent, REQUEST_REGISTER_EMAIL)
         }
     }
@@ -408,6 +661,21 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
     }
 
+    private fun goToOtpValidator(email: String){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OTP_VALIDATOR)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        startActivityForResult(intent, REQUEST_OTP_VALIDATE)
+    }
+
+    private fun goToPendingOtpValidator(email: String){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OTP_VALIDATOR)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ACTIVATE)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         callbackManager.onActivityResult(requestCode, resultCode, data)
@@ -415,11 +683,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         activity?.let {
             if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                if (task != null) {
-                    handleGoogleSignInResult(task)
+                task?.let { taskGoogleSignInAccount ->
+                    handleGoogleSignInResult(taskGoogleSignInAccount)
                 }
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
-                presenter.getUserInfo()
+                registerInitialViewModel.getUserInfo()
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
                             .RESULT_CANCELED) {
                 dismissProgressBar()
@@ -432,12 +700,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                             .RESULT_CANCELED) {
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
+            } else if (requestCode == REQUEST_SECURITY_QUESTION
+                    && resultCode == Activity.RESULT_OK
+                    && data != null){
+                data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")?.let {validateToken ->
+                    registerInitialViewModel.reloginAfterSQ(validateToken)
+                }
+
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity
                             .RESULT_CANCELED) {
-                logoutGoogleAccountIfExist()
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE
@@ -451,7 +722,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                presenter.getUserInfo()
+                registerInitialViewModel.getUserInfo()
             } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -464,12 +735,38 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
             } else if (requestCode == REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
-                presenter.getUserInfo()
+                registerInitialViewModel.getUserInfo()
             } else if (requestCode == REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_CANCELED) {
                 userSession.logoutSession()
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
                 it.finish()
+            } else if (requestCode == REQUEST_OTP_VALIDATE
+                    && resultCode == Activity.RESULT_OK
+                    && data != null){
+                data.extras?.let { bundle ->
+                    val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
+                    val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
+                    val source = bundle.getString(ApplinkConstInternalGlobal.PARAM_SOURCE)
+                    if(!email.isNullOrEmpty() && !token.isNullOrEmpty()){
+                        if(!source.isNullOrEmpty()) goToRegisterEmailPageWithEmail(email, token, source)
+                        else goToRegisterEmailPageWithEmail(email,token, "")
+                    }
+                }
+            } else if (requestCode == REQUEST_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
+                it.setResult(Activity.RESULT_CANCELED)
+            } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE
+                    && resultCode == Activity.RESULT_OK
+                    && data != null){
+                data.extras?.let { bundle ->
+                    val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
+                    val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
+                    val source = bundle.getString(ApplinkConstInternalGlobal.PARAM_SOURCE)
+                    if(!email.isNullOrEmpty() && !token.isNullOrEmpty())
+                        registerInitialViewModel.activateUser(email, token)
+                }
+            } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_CANCELED) {
+                it.setResult(Activity.RESULT_CANCELED)
             } else {
                 super.onActivityResult(requestCode, resultCode, data)
             }
@@ -486,7 +783,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 val account = completedTask.getResult(ApiException::class.java)
                 val accessToken = account?.idToken ?: ""
                 val email = account?.email ?: ""
-                presenter.registerGoogle(accessToken, email)
+                registerInitialViewModel.registerGoogle(accessToken, email)
             } catch (e: NullPointerException) {
                 onErrorRegister(ErrorHandlerSession.getDefaultErrorCodeMessage(
                         ErrorHandlerSession.ErrorCode.GOOGLE_FAILED_ACCESS_TOKEN,
@@ -517,59 +814,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     override fun onActionPartialClick(id: String) {
         registerAnalytics.trackClickSignUpButton()
-        presenter.validateRegister(id)
+        registerInitialViewModel.registerCheck(id)
     }
 
-    override fun showLoadingDiscover() {
+    private fun showLoadingDiscover() {
         val pb = ProgressBar(activity, null, android.R.attr.progressBarStyle)
         val lastPos = socmedButtonsContainer.childCount - 1
         if (socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
             socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
         }
-    }
-
-    override fun onErrorDiscoverRegister(e: Throwable) {
-
-        ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
-            override fun onForbidden() {
-                onGoToForbiddenPage()
-            }
-
-            override fun onError(errorMessage: String) {
-                NetworkErrorHelper.createSnackbarWithAction(activity,
-                        errorMessage) { presenter.getProvider() }.showRetrySnackbar()
-                loginButton.isEnabled = false
-            }
-        }, e, context)
-
-    }
-
-    override fun onSuccessDiscoverRegister(listProvider: ArrayList<DiscoverItemViewModel>) {
-
-        val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                resources.getDimensionPixelSize(R.dimen.dp_52))
-        layoutParams.setMargins(0, 10, 0, 10)
-
-        socmedButtonsContainer.removeAllViews()
-
-        for (i in listProvider.indices) {
-            val item = listProvider[i]
-            if (item.id != PHONE_NUMBER) {
-                val loginTextView = LoginTextView(activity, MethodChecker.getColor(activity, R.color.white))
-                loginTextView.setText(item.name)
-                loginTextView.setBorderColor(MethodChecker.getColor(activity, R.color
-                        .black_38))
-                loginTextView.setImage(item.image)
-                loginTextView.setRoundCorner(10)
-
-                setDiscoverOnClickListener(item, loginTextView)
-
-                socmedButtonsContainer.addView(loginTextView, socmedButtonsContainer.childCount,
-                        layoutParams)
-            }
-        }
-
     }
 
     private fun setDiscoverOnClickListener(discoverItemViewModel: DiscoverItemViewModel,
@@ -586,7 +839,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             bottomSheet.dismiss()
             registerAnalytics.trackClickFacebookButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_FACEBOOK)
-            presenter.getFacebookCredential(this, callbackManager)
+            registerInitialViewModel.getFacebookCredential(this, callbackManager)
         }
 
     }
@@ -602,14 +855,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     }
 
-    override fun dismissLoadingDiscover() {
+    private fun dismissLoadingDiscover() {
         val lastPos = socmedButtonsContainer.childCount - 1
         if (socmedButtonsContainer.getChildAt(lastPos) is ProgressBar) {
             socmedButtonsContainer.removeViewAt(socmedButtonsContainer.childCount - 1)
         }
     }
 
-    override fun showProgressBar() {
+    private fun showProgressBar() {
 
         progressBar.visibility = View.VISIBLE
         container.visibility = View.GONE
@@ -617,7 +870,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     }
 
-    override fun dismissProgressBar() {
+    private fun dismissProgressBar() {
 
         progressBar.visibility = View.GONE
 
@@ -625,13 +878,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         loginButton.visibility = View.VISIBLE
     }
 
-    fun onErrorRegister(errorMessage: String) {
+    private fun onErrorRegister(errorMessage: String) {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
         registerAnalytics.trackErrorRegister(errorMessage, userSession.loginMethod)
     }
 
-    override fun showRegisteredEmailDialog(email: String) {
-        registerAnalytics.trackClickEmailSignUpButton()
+    private fun showRegisteredEmailDialog(email: String) {
         registerAnalytics.trackFailedClickEmailSignUpButton(RegisterAnalytics.LABEL_EMAIL_EXIST)
         activity?.let {
             val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
@@ -655,7 +907,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
     }
 
-    override fun showRegisteredPhoneDialog(phone: String) {
+    private fun showRegisteredPhoneDialog(phone: String) {
         registerAnalytics.trackClickPhoneSignUpButton()
         registerAnalytics.trackFailedClickPhoneSignUpButton(RegisterAnalytics.LABEL_PHONE_EXIST)
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
@@ -704,7 +956,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
 
-    override fun showProceedWithPhoneDialog(phone: String) {
+    private fun showProceedWithPhoneDialog(phone: String) {
         registerAnalytics.trackClickPhoneSignUpButton()
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(phone)
@@ -723,60 +975,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         dialog.show()
     }
 
-    override fun onErrorValidateRegister(message: Throwable) {
-        val messageError = ErrorHandlerSession.getErrorMessage(context, message)
-        registerAnalytics.trackFailedClickSignUpButton(messageError)
-        partialRegisterInputView.onErrorValidate(messageError)
-        phoneNumber = ""
-    }
-
-    override fun setTempPhoneNumber(maskedPhoneNumber: String) {
+    private fun setTempPhoneNumber(maskedPhoneNumber: String) {
         //use masked phone number form backend when needed
         //we need unmasked phone number (without dash) to be provided to backend
         this.phoneNumber = partialRegisterInputView.textValue
-    }
-
-    override fun onErrorLoginFacebook(email: String): (e: Throwable) -> Unit {
-        return {
-            val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
-            onErrorRegister(errorMessage)
-        }
-    }
-
-    override fun onErrorLoginGoogle(email: String): (e: Throwable) -> Unit {
-        logoutGoogleAccountIfExist()
-        return {
-            val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
-            onErrorRegister(errorMessage)
-        }
-    }
-
-    //Wrong flow implementation
-    override fun onGoToActivationPage(email: String): (errorMessage: MessageErrorException) -> Unit {
-        return {
-            NetworkErrorHelper.showSnackbar(activity, ErrorHandlerSession.getErrorMessage(context, it))
-        }
-    }
-
-    override fun onGoToSecurityQuestion(email: String): () -> Unit {
-        return {
-            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                    activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, "", email)
-            startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
-        }
-    }
-
-    override fun onSuccessGetUserInfo(): (pojo: ProfilePojo) -> Unit {
-        return {
-
-            val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-
-            if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
-                onGoToChangeName()
-            } else {
-                onSuccessRegister()
-            }
-        }
     }
 
     private fun onSuccessRegister() {
@@ -799,25 +1001,18 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         return source == "account"
     }
 
-    override fun onGoToChangeName() {
+    private fun onGoToChangeName() {
         activity?.let {
             val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.ADD_NAME_PROFILE)
             startActivityForResult(intent, REQUEST_CHANGE_NAME)
         }
     }
 
-    override fun onGoToForbiddenPage() {
+    private fun onGoToForbiddenPage() {
         ForbiddenActivity.startActivity(activity)
     }
 
-    override fun onErrorGetUserInfo(): (e: Throwable) -> Unit {
-        return {
-            val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
-            onErrorRegister(errorMessage)
-        }
-    }
-
-    override fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit {
+    fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit {
         return { fullName: String, userId: String ->
 
                 activity?.let {
@@ -826,52 +1021,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     intent.putExtra("user_id", userId)
                     startActivityForResult(intent, REQUEST_CREATE_PASSWORD)
                 }
-
-        }
-    }
-
-    override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
-        if (listTickerInfo.isNotEmpty()) {
-            tickerAnnouncement.visibility = View.VISIBLE
-            if (listTickerInfo.size > 1) {
-                val mockData = arrayListOf<TickerData>()
-                listTickerInfo.forEach {
-                    mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
-                }
-                val adapter = TickerPagerAdapter(activity!!, mockData)
-                adapter.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
-
-                    override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
-                    }
-
-                })
-                tickerAnnouncement.addPagerView(adapter, mockData)
-            } else {
-                listTickerInfo.first().let {
-                    tickerAnnouncement.tickerTitle = it.title
-                    tickerAnnouncement.setHtmlDescription(it.message)
-                    tickerAnnouncement.tickerShape = getTickerType(it.color)
-                }
-                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                    }
-
-                    override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
-                    }
-
-                })
-            }
-            tickerAnnouncement.setOnClickListener {
-                registerAnalytics.trackClickTicker()
-            }
 
         }
     }
@@ -890,11 +1039,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
     }
 
-    override fun onErrorGetTickerInfo(error: Throwable) {
-        error.printStackTrace()
-    }
-
-    fun checkPermissionGetPhoneNumber(){
+    private fun checkPermissionGetPhoneNumber(){
         permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE, object: PermissionCheckerHelper.PermissionCheckListener{
             override fun onPermissionDenied(permissionText: String) {
                 context?.let {
@@ -945,7 +1090,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.detachView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -954,7 +1098,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         super.onSaveInstanceState(outState)
     }
 
-    override fun onBackPressed() {
+    fun onBackPressed() {
         registerAnalytics.trackClickOnBackButtonRegister()
     }
 
@@ -968,5 +1112,38 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     private fun logoutGoogleAccountIfExist() {
         val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
+    }
+
+    companion object {
+
+        private val ID_ACTION_LOGIN = 112
+
+        private val REQUEST_REGISTER_EMAIL = 101
+        private val REQUEST_CREATE_PASSWORD = 102
+        private val REQUEST_SECURITY_QUESTION = 103
+        private val REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105
+        private val REQUEST_ADD_NAME_REGISTER_PHONE = 107
+        private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
+        private val REQUEST_CHOOSE_ACCOUNT = 109
+        private val REQUEST_CHANGE_NAME = 111
+        private val REQUEST_LOGIN_GOOGLE = 112
+        private val REQUEST_OTP_VALIDATE = 113
+        private val REQUEST_PENDING_OTP_VALIDATE = 114
+
+        private const val OTP_TYPE_ACTIVATE = "143"
+        private const val OTP_TYPE_REGISTER = "126"
+
+        private val FACEBOOK = "facebook"
+        private val GPLUS = "gplus"
+        private val PHONE_NUMBER = "phonenumber"
+
+        private val PHONE_TYPE = "phone"
+        private val EMAIL_TYPE = "email"
+
+        fun createInstance(bundle : Bundle): RegisterInitialFragment {
+            val fragment = RegisterInitialFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
