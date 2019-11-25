@@ -438,9 +438,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    boolean goToLoginGoogle(@NonNull String url){
-        String query = Uri.parse(url).getQueryParameter("login_type");
-        if (query != null && query.equals("plus")) {
+    private boolean goToLoginGoogle(@NonNull String url){
+        String loginType;
+        try {
+            loginType = Uri.parse(url).getQueryParameter("login_type");
+        } catch (Exception e) {
+            return false;
+        }
+        if ("plus".equals(loginType)) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), ApplinkConst.LOGIN);
             if (intent != null) {
                 intent.putExtra("auto_login", true);
