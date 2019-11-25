@@ -6,17 +6,17 @@ import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
-import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
+import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_umrah_my_umrah.view.*
 
 /**
  * @author by furqan on 10/10/2019
  */
-class MyUmrahWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class UmrahMyUmrahWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    lateinit var myUmrahModel: MyUmrahWidgetModel
+    lateinit var umrahMyUmrahModel: UmrahMyUmrahWidgetModel
 
     init {
         View.inflate(context, R.layout.widget_umrah_my_umrah, this)
@@ -33,16 +33,16 @@ class MyUmrahWidget @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     fun buildView(trackingUmrahUtil: TrackingUmrahUtil) {
-        if (::myUmrahModel.isInitialized) {
+        if (::umrahMyUmrahModel.isInitialized) {
             hideLoadingState()
 
-            tg_umrah_package.text = myUmrahModel.subHeader
-            tg_umrah_departure.text = myUmrahModel.header
-            tg_umrah_next.text = myUmrahModel.nextActionText
-            btn_my_umrah_detail.text = myUmrahModel.mainButtonText
+            tg_umrah_package.text = umrahMyUmrahModel.subHeader
+            tg_umrah_departure.text = umrahMyUmrahModel.header
+            tg_umrah_next.text = umrahMyUmrahModel.nextActionText
+            btn_my_umrah_detail.text = umrahMyUmrahModel.mainButtonText
             btn_my_umrah_detail.setOnClickListener {
-                trackingUmrahUtil.umrahOrderDetailUmrahSaya(myUmrahModel.nextActionText)
-                RouteManager.route(context, myUmrahModel.mainButtonLink)
+                trackingUmrahUtil.umrahOrderDetailUmrahSaya(umrahMyUmrahModel.nextActionText)
+                RouteManager.route(context, umrahMyUmrahModel.mainButtonLink)
             }
         } else {
             showLoadingState()
