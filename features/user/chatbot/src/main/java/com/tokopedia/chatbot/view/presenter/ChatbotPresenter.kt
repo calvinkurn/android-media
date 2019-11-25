@@ -23,6 +23,7 @@ import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
+import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.network.ChatbotUrl
@@ -77,7 +78,8 @@ class ChatbotPresenter @Inject constructor(
         private val sendRatingReasonUseCase: SendRatingReasonUseCase,
         private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
         private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
-        private val leaveQueueUseCase: LeaveQueueUseCase
+        private val leaveQueueUseCase: LeaveQueueUseCase,
+        private val getTickerDataUseCase: GetTickerDataUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
 
 
@@ -454,9 +456,11 @@ class ChatbotPresenter @Inject constructor(
         sendRatingReasonUseCase.unsubscribe()
         submitCsatRatingUseCase.unsubscribe()
         leaveQueueUseCase.unsubscribe()
+        getTickerDataUseCase.unsubscribe()
         super.detachView()
     }
 
-
-
+    override fun showTickerData(onError: (Throwable) -> Unit, onSuccesGetTickerData: (TickerData) -> Unit) {
+        getTickerDataUseCase.execute(TickerDataSubscriber(onError,onSuccesGetTickerData))
+    }
 }
