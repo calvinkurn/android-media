@@ -403,7 +403,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             }
         }
 
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.feed_msg_add_wishlist));
     }
 
     @Override
@@ -428,7 +428,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
             }
         }
 
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.feed_msg_remove_wishlist));
     }
 
     @Override
