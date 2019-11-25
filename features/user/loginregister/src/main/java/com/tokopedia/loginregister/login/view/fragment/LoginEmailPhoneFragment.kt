@@ -92,6 +92,10 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
+import kotlinx.android.synthetic.main.fragment_login_with_phone.container
+import kotlinx.android.synthetic.main.fragment_login_with_phone.emailExtension
+import kotlinx.android.synthetic.main.fragment_login_with_phone.progress_bar
+import kotlinx.android.synthetic.main.fragment_login_with_phone.socmed_btn
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -261,6 +265,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
 
         presenter.getTickerInfo()
+
+        val emailExtensionList = mutableListOf<String>()
+        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
     }
 
     private fun clearData() {

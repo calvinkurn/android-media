@@ -52,7 +52,6 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.ActivateUserPojo
@@ -79,6 +78,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_initial_register.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -264,6 +264,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.getProvider()
         partialRegisterInputView.setListener(this)
         registerInitialViewModel.getTickerInfo()
+
+        val emailExtensionList = mutableListOf<String>()
+        emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
+        partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
     }
 
     @SuppressLint("RtlHardcoded")
@@ -1068,10 +1072,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             if(!phoneNumbers.isEmpty())
                 partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
