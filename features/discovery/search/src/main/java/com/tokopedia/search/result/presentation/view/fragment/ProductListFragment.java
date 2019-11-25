@@ -947,17 +947,6 @@ public class ProductListFragment
     }
 
     @Override
-    public List<Option> getQuickFilterOptions(DataValue dynamicFilterModel) {
-        ArrayList<Option> optionList = new ArrayList<>();
-
-        for (Filter filter : dynamicFilterModel.getFilter()) {
-            optionList.addAll(filter.getOptions());
-        }
-
-        return optionList;
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();

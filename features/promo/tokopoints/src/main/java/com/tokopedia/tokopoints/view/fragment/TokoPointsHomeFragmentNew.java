@@ -153,7 +153,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        initInjector();
         if (getArguments() != null) {
             userLoggedInStatus = getArguments().getBoolean(BUNDLE_ARGS_USER_IS_LOGGED_IN);
         }
@@ -347,6 +346,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     @Override
     public void onResume() {
         super.onResume();
+        mPresenter.getCouponCount();
         AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
