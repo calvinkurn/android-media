@@ -9,13 +9,16 @@ import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
 import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.home.beranda.data.mapper.HomeMapper
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.HomeLiveData
+import com.tokopedia.home.beranda.helper.clone
 import com.tokopedia.home.beranda.presentation.view.HomeContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
@@ -88,9 +91,12 @@ class HomePresenter(private val userSession: UserSessionInterface,
     @Inject
     lateinit var playCardHomeUseCase: PlayCardHomeUseCase
 
+    @Inject
+    lateinit var homeMapper: HomeMapper
+
     private val _homeData = HomeLiveData(Resource.loading<HomeViewModel>(null))
     val homeLiveData: LiveData<Resource<HomeViewModel>> = _homeData
-    private var homeSource: LiveData<Resource<HomeViewModel>> = MutableLiveData()
+    private var homeSource: LiveData<Resource<HomeData>> = MutableLiveData()
 
     private var currentCursor = ""
     private lateinit var headerViewModel: HeaderViewModel
@@ -147,7 +153,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
             _homeData.removeSource(homeSource)
             homeSource = homeRepository.getHomeData()
             _homeData.addSource(homeSource){
-                _homeData.value = it
+                _homeData.value = it.clone(data = homeMapper.call(it.data))
             }
         }
     }
@@ -186,7 +192,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
             _homeData.removeSource(homeSource)
             homeSource = homeRepository.getHomeData()
             _homeData.addSource(homeSource){
-                _homeData.value = it
+                _homeData.value = it.clone(data = homeMapper.call(it.data))
             }
         }
     }

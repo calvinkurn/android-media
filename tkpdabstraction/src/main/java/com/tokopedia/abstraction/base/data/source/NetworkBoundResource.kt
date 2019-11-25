@@ -26,12 +26,12 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.coroutineContext
 
-abstract class NetworkBoundResource<APIType, DbType, ViewType> {
+abstract class NetworkBoundResource<ResponseType, ResultType> {
 
-    private val result = MutableLiveData<Resource<ViewType>>()
+    private val result = MutableLiveData<Resource<ResultType>>()
     private val supervisorJob = SupervisorJob()
 
-    suspend fun build(): NetworkBoundResource<APIType, DbType, ViewType> {
+    suspend fun build(): NetworkBoundResource<ResponseType, ResultType> {
         CoroutineScope(coroutineContext).launch(supervisorJob) {
             try {
                 val dbResult = loadFromDb()
@@ -39,49 +39,46 @@ abstract class NetworkBoundResource<APIType, DbType, ViewType> {
                     fetchFromNetwork(dbResult)
                 } else {
                     Timber.tag(NetworkBoundResource::class.java.name).d("Return data from local database")
-                    setValue(Resource.success(mapper(dbResult)))
+                    setValue(Resource.success(dbResult))
                 }
             }catch (e: Exception){
                 Timber.tag("NetworkBoundResource").e("An error happened: $e")
-                setValue(Resource.error(e, mapper(loadFromDb())))
+                setValue(Resource.error(e, loadFromDb()))
             }
         }
         return this
     }
 
-    fun asLiveData() = result as LiveData<Resource<ViewType>>
+    fun asLiveData() = result as LiveData<Resource<ResultType>>
 
-    private suspend fun fetchFromNetwork(dbResult: DbType?) {
+    private suspend fun fetchFromNetwork(dbResult: ResultType?) {
         Timber.tag(NetworkBoundResource::class.java.name).d("Fetch data from network")
-        setValue(Resource.loading(mapper(dbResult))) // Dispatch latest value quickly (UX purpose)
+        setValue(Resource.loading(dbResult)) // Dispatch latest value quickly (UX purpose)
         val apiResponse = createCallAsync()
         Timber.tag(NetworkBoundResource::class.java.name).d("Data fetched from network")
         val networkData = processResponse(apiResponse)
         saveCallResults(networkData)
-        setValue(Resource.success(mapper(networkData)))
+        setValue(Resource.success(networkData))
     }
 
     @MainThread
-    private fun setValue(newValue: Resource<ViewType>) {
+    private fun setValue(newValue: Resource<ResultType>) {
         Timber.tag(NetworkBoundResource::class.java.name).d("Resource: %s", newValue)
         if (result.value != newValue) result.value = newValue
     }
 
     @WorkerThread
-    protected abstract fun processResponse(response: APIType): DbType
+    protected abstract fun processResponse(response: ResponseType): ResultType
 
     @WorkerThread
-    protected abstract suspend fun saveCallResults(items: DbType)
+    protected abstract suspend fun saveCallResults(items: ResultType)
 
     @MainThread
-    protected abstract fun shouldFetch(data: DbType?): Boolean
+    protected abstract fun shouldFetch(data: ResultType?): Boolean
 
     @MainThread
-    protected abstract suspend fun loadFromDb(): DbType?
-
-    @WorkerThread
-    protected abstract fun mapper(response: DbType?): ViewType?
+    protected abstract suspend fun loadFromDb(): ResultType?
 
     @MainThread
-    protected abstract suspend fun createCallAsync(): APIType
+    protected abstract suspend fun createCallAsync(): ResponseType
 }

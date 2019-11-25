@@ -474,27 +474,20 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void subscribeHome(){
         presenter.getHomeLiveData().observe(this, resource -> {
             if(resource.getStatus() == Resource.Status.LOADING) {
-                showLoading();
+                if(resource.getData() != null){
+                    HomeViewModel data = resource.getData();
+                    setData(new ArrayList(data.getList()), HomePresenter.FLAG_FROM_CACHE);
+                } else {
+                    //Cache doesn't available, need download data first
+                    showLoading();
+                }
             }else if(resource.getStatus() == Resource.Status.SUCCESS){
                 hideLoading();
                 if(resource.getData() != null){
                     HomeViewModel data = resource.getData();
                     if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
-                        int flag = !data.isCache() ? HomePresenter.FLAG_FROM_NETWORK : HomePresenter.FLAG_FROM_CACHE;
                         configureHomeFlag(data.getHomeFlag());
-
-                        if(adapter.getItemCount() != 0){
-                            updateListOnResume(new ArrayList(data.getList()));
-                        }else {
-                            setItems(new ArrayList(data.getList()), flag);
-                        }
-
-                        if(flag == HomePresenter.FLAG_FROM_NETWORK) addImpressionToTrackingQueue(new ArrayList(data.getList()));
-                        if (isDataValid(new ArrayList(data.getList()))) {
-                            removeNetworkError();
-                        } else {
-                            showNetworkError();
-                        }
+                        setData(new ArrayList(data.getList()), data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
                     } else {
                         showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()));
                     }
@@ -508,6 +501,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(resource.getError()));
             }
         });
+    }
+
+    private void setData(List<HomeVisitable> data, int flag){
+        if(!data.isEmpty()) {
+            if (adapter.getItemCount() != 0) {
+                updateListOnResume(data);
+            } else {
+                setItems(data, flag);
+            }
+            if (flag == HomePresenter.FLAG_FROM_NETWORK) addImpressionToTrackingQueue(data);
+            if (isDataValid(data)) {
+                removeNetworkError();
+            } else {
+                showNetworkError();
+            }
+        }
     }
 
     private boolean isDataValid(List<HomeVisitable> visitables) {

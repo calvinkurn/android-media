@@ -42,7 +42,7 @@ class HomeRemoteDataSourceTest {
             val graphqlResponse = homeRemoteDataSource.getHomeData()
             val result = graphqlResponse.getData<HomeData>(HomeData::class.java)
             Assert.assertEquals(null, graphqlResponse.getError(HomeData::class.java))
-            Assert.assertEquals(0, result.id)
+            Assert.assertEquals(1, result.id)
             Assert.assertEquals("16206", result.dynamicHomeChannel.channels?.first()?.id)
         }
     }
