@@ -85,7 +85,7 @@ import javax.inject.Inject
  */
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
-        ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener,ChatbotActivity.OnBackPressed {
+        ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener {
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -670,8 +670,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    override fun onBackPressed() {
-        if(!isBackAllowed){
+    override fun onBackPressed(): Boolean {
+        if (!isBackAllowed) {
             val dialog = Dialog(context as Activity, Dialog.Type.PROMINANCE)
             dialog.setTitle(context?.getString(R.string.cb_bot_leave_the_queue))
             dialog.setDesc(context?.getString(R.string.cb_bot_leave_the_queue_desc_one))
@@ -687,8 +687,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             }
             dialog.setCancelable(true)
             dialog.show()
-        }else{
-            (activity as ChatbotActivity).finish()
+            return true
         }
+        return super.onBackPressed()
     }
 }

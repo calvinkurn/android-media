@@ -29,4 +29,8 @@ interface BaseChatViewState {
 
     fun clear()
 
+    fun isAttachmentMenuVisible(): Boolean
+
+    fun hideAttachmentMenu()
+
 }

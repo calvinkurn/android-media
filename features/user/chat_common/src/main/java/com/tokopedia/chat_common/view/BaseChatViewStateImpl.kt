@@ -283,6 +283,14 @@ open class BaseChatViewStateImpl(
         rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
     }
 
+    override fun isAttachmentMenuVisible(): Boolean {
+        return attachmentMenu.isVisible
+    }
+
+    override fun hideAttachmentMenu() {
+        return attachmentMenu.hideMenu()
+    }
+
     open fun getRecyclerViewId() = R.id.recycler_view
     open fun getProgressId() = R.id.progress
     open fun getNewCommentId() = R.id.new_comment

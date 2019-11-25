@@ -22,12 +22,12 @@ import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
-import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.chat_common.view.fragment.BaseChatActivityListener
 import com.tokopedia.chat_common.view.fragment.BottomChatMenuFragment
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
@@ -44,7 +44,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     , ImageAnnouncementListener, ChatLinkHandlerListener
     , ImageUploadListener, ProductAttachmentListener, TypingListener
     , BaseChatContract.View
-    , BaseChatMenuViewHolder.ChatMenuListener {
+    , BaseChatMenuViewHolder.ChatMenuListener
+    , BaseChatActivityListener {
 
     open lateinit var viewState: BaseChatViewState
 
@@ -269,5 +270,13 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onDestroy() {
         super.onDestroy()
         viewState.clear()
+    }
+
+    override fun onBackPressed(): Boolean {
+        if (viewState.isAttachmentMenuVisible()) {
+            viewState.hideAttachmentMenu()
+            return true
+        }
+        return false
     }
 }

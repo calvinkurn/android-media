@@ -789,12 +789,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    override fun onBackPressedEvent() {
+    override fun onBackPressed(): Boolean {
         if (presenter.isUploading()) {
             showDialogConfirmToAbortUpload()
-        } else {
-            finishActivity()
+            return true
         }
+
+        return super.onBackPressed()
     }
 
     private fun finishActivity() {
