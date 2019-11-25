@@ -96,12 +96,12 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        etalaseLabelView = (LabelView) view.findViewById(com.tokopedia.core2.R.id.etalase);
-        categoryLabelView = (LabelView) view.findViewById(com.tokopedia.core2.R.id.category);
-        conditionLabelView = (LabelView) view.findViewById(com.tokopedia.core2.R.id.condition);
-        catalogLabelView = (LabelView) view.findViewById(com.tokopedia.core2.R.id.catalog);
-        productPictureLabelView = (LabelView) view.findViewById(com.tokopedia.seller.R.id.product_picture);
-        submitButton = (Button) view.findViewById(com.tokopedia.seller.R.id.button_submit);
+        etalaseLabelView = (LabelView) view.findViewById(R.id.etalase);
+        categoryLabelView = (LabelView) view.findViewById(R.id.category);
+        conditionLabelView = (LabelView) view.findViewById(R.id.condition);
+        catalogLabelView = (LabelView) view.findViewById(R.id.catalog);
+        productPictureLabelView = (LabelView) view.findViewById(R.id.product_picture);
+        submitButton = (Button) view.findViewById(R.id.button_submit);
 
         updateFilterView();
 

@@ -157,7 +157,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     lateinit var prefs: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.product.manage.list.R.layout.fragment_product_manage, container, false)
+        return inflater.inflate(R.layout.fragment_product_manage, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -171,22 +171,22 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (GlobalConfig.isCustomerApp()) {
-            inflater.inflate(com.tokopedia.seller.R.menu.menu_product_manage_dark, menu)
+            inflater.inflate(R.menu.menu_product_manage_dark, menu)
         } else {
-            inflater.inflate(com.tokopedia.product.manage.list.R.menu.menu_product_manage, menu)
+            inflater.inflate(R.menu.menu_product_manage, menu)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
-        if (itemId == com.tokopedia.seller.R.id.add_product_menu) {
-            item.subMenu.findItem(com.tokopedia.seller.R.id.label_view_add_image).setOnMenuItemClickListener { item ->
+        if (itemId == R.id.add_product_menu) {
+            item.subMenu.findItem(R.id.label_view_add_image).setOnMenuItemClickListener { item ->
                 startActivity(ProductAddNameCategoryActivity.createInstance(activity))
                 ProductManageTracking.eventProductManageTopNav(item.title.toString())
                 true
             }
-            item.subMenu.findItem(com.tokopedia.seller.R.id.label_view_import_from_instagram).setOnMenuItemClickListener { item ->
+            item.subMenu.findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener { item ->
                 val intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(context)
                 startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE)
                 ProductManageTracking.eventProductManageTopNav(item.title.toString())
@@ -708,17 +708,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun onOptionBottomSheetClicked(productManageViewModel: ProductManageViewModel): BottomSheetItemClickListener {
         return BottomSheetItemClickListener {
             if (productManageViewModel.productStatus == StatusProductOption.UNDER_SUPERVISION) {
-                NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.product.manage.list.R.string.product_manage_desc_product_on_supervision, productManageViewModel.productName))
+                NetworkErrorHelper.showSnackbar(activity, getString(R.string.product_manage_desc_product_on_supervision, productManageViewModel.productName))
                 return@BottomSheetItemClickListener
             }
             val itemId = it.itemId
-            if (itemId == com.tokopedia.product.manage.list.R.id.edit_product_menu) {
+            if (itemId == R.id.edit_product_menu) {
                 goToEditProduct(productManageViewModel.id)
                 ProductManageTracking.eventProductManageOverflowMenu(it.title.toString())
-            } else if (itemId == com.tokopedia.product.manage.list.R.id.duplicat_product_menu) {
+            } else if (itemId == R.id.duplicat_product_menu) {
                 goToDuplicateProduct(productManageViewModel.id)
                 ProductManageTracking.eventProductManageOverflowMenu(it.title.toString())
-            } else if (itemId == com.tokopedia.seller.R.id.delete_product_menu) {
+            } else if (itemId == R.id.delete_product_menu) {
                 val productIdList = ArrayList<String>()
 
                 showDialogActionDeleteProduct(productIdList,
