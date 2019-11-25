@@ -75,7 +75,7 @@ public class ShipmentDataConverter {
 
     public ShipmentDonationModel getShipmentDonationModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         ShipmentDonationModel shipmentDonationModel = new ShipmentDonationModel();
-        shipmentDonationModel.setChecked(false);
+        shipmentDonationModel.setChecked(cartShipmentAddressFormData.getDonation().isChecked());
         shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
 
         return shipmentDonationModel;
