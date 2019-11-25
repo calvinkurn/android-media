@@ -229,8 +229,10 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
                             }
                             break;
                         case DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER:
-                            HomeVisitable playBanner = mappingPlayChannel(channel, new HashMap<>(), homeData.isCache());
-                            if (!list.contains(playBanner)) list.add(playBanner);
+                            if (!homeData.isCache()) {
+                                HomeVisitable playBanner = mappingPlayChannel(channel, new HashMap<>(), homeData.isCache());
+                                if (!list.contains(playBanner)) list.add(playBanner);
+                            }
                             break;
                     }
                 }

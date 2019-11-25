@@ -41,5 +41,6 @@
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
     <string name="path_change_email_register">/change-email-register</string>
     <string name="path_email_register">/email-register</string>
-
+    <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
+    <string name="path_oqr_pin_url_response">/ovoqrthanks/.*\\/</string>
 </resources>

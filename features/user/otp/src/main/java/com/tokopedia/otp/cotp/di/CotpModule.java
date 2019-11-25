@@ -4,6 +4,7 @@ import com.tokopedia.otp.common.di.MethodListQualifier;
 import com.tokopedia.otp.cotp.data.CotpApi;
 import com.tokopedia.otp.cotp.data.CotpMethodListApi;
 import com.tokopedia.otp.cotp.data.CotpUrl;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,5 +47,11 @@ public class CotpModule {
     @Provides
     public CotpMethodListApi provideCotpMethodListApi(@MethodListQualifier Retrofit retrofit) {
         return retrofit.create(CotpMethodListApi.class);
+    }
+
+    @CotpScope
+    @Provides
+    public PermissionCheckerHelper providePermissionCheckerHelper() {
+        return new PermissionCheckerHelper();
     }
 }
