@@ -194,7 +194,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                     return true;
                 } else {
                     super.shouldOverrideUrlLoading(view, url);
-                    returnVal = true;
+                    returnVal = false;
                 }
 
                 return returnVal;
