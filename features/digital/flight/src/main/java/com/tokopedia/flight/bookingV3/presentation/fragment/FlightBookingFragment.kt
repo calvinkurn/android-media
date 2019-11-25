@@ -146,7 +146,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendAddToCartTracking()
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
             hideShimmering()
@@ -192,7 +192,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     sendCheckOutTracking(it.data.parameter.pid)
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
             hideShimmering()
@@ -211,7 +211,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""), FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY)
+                    showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
             hideShimmering()
@@ -731,9 +731,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showErrorDialog(e: FlightError, defaultError: String = FlightErrorConstant.INVALID_JSON) {
+    private fun showErrorDialog(e: FlightError) {
         if (activity != null) {
-            val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt(), defaultError)
+            val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
             if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME) renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
             else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
                 layout_full_page_error.visibility = View.VISIBLE
