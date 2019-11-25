@@ -71,4 +71,7 @@ internal data class Product(
         @SerializedName("wishlist")
         @Expose
         var isWishlisted: Boolean = false
-)
+) {
+
+        var position: Int = 0
+}

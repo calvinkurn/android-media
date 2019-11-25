@@ -48,6 +48,7 @@ private fun State<List<Any>>?.shouldHaveSimilarProductItemModel(fromIndex: Int, 
 
     similarProductItemViewModelList.forEachIndexed { index, it ->
         it shouldBe similarProductItemList[index]
+        (it as Product).position shouldBe index + 1
     }
 }
 
@@ -96,4 +97,15 @@ internal fun List<Any>.shouldHaveSimilarProductWithExpectedWishlistStatus(produc
 
 private fun List<Any>.getSimilarProductItem(productId: String): Product {
     return this.find { it is Product && it.id == productId } as Product
+}
+
+internal fun List<Any>?.shouldBeListOfMapOfProductItemAsObjectDataLayer(similarProductItemList: List<Product>) {
+    this.shouldBeInstanceOf<List<Any>>()
+
+    this?.size ?: 0 shouldBe similarProductItemList.size
+
+    this?.forEachIndexed { index, it ->
+        it.shouldBeInstanceOf<Map<String, Any>>()
+        it shouldBe similarProductItemList[index].asObjectDataLayer()
+    }
 }

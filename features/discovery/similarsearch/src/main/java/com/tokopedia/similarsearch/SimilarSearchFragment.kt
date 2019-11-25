@@ -21,6 +21,7 @@ import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_PRODUCT_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
+import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
@@ -75,18 +76,20 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun initRecyclerView() {
-        activity?.let { activity ->
-            similarSearchAdapter = SimilarSearchAdapter(this)
-            recyclerViewLayoutManager = createRecyclerViewSimilarSearchLayoutManager()
-            endlessRecyclerViewScrollListener = createEndlessRecyclerViewScrollListener()
+        initRecyclerViewAdapter()
+        initRecyclerViewLayoutManager()
+        initRecyclerViewEndlessScrollListener()
+        initRecyclerViewItemDecoration()
+    }
 
-            recyclerViewSimilarSearch?.adapter = similarSearchAdapter
-            recyclerViewSimilarSearch?.layoutManager = recyclerViewLayoutManager
-            recyclerViewSimilarSearch?.addItemDecoration(createSimilarSearchItemDecoration(activity))
-            endlessRecyclerViewScrollListener?.let {
-                recyclerViewSimilarSearch?.addOnScrollListener(it)
-            }
-        }
+    private fun initRecyclerViewAdapter() {
+        similarSearchAdapter = SimilarSearchAdapter(this)
+        recyclerViewSimilarSearch?.adapter = similarSearchAdapter
+    }
+
+    private fun initRecyclerViewLayoutManager() {
+        recyclerViewLayoutManager = createRecyclerViewSimilarSearchLayoutManager()
+        recyclerViewSimilarSearch?.layoutManager = recyclerViewLayoutManager
     }
 
     private fun createRecyclerViewSimilarSearchLayoutManager(): RecyclerView.LayoutManager {
@@ -95,11 +98,24 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
     }
 
+    private fun initRecyclerViewEndlessScrollListener() {
+        endlessRecyclerViewScrollListener = createEndlessRecyclerViewScrollListener()
+        endlessRecyclerViewScrollListener?.let {
+            recyclerViewSimilarSearch?.addOnScrollListener(it)
+        }
+    }
+
     private fun createEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object: EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 similarSearchViewModel?.onViewLoadMore()
             }
+        }
+    }
+
+    private fun initRecyclerViewItemDecoration() {
+        activity?.let { activity ->
+            recyclerViewSimilarSearch?.addItemDecoration(createSimilarSearchItemDecoration(activity))
         }
     }
 
@@ -112,32 +128,21 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun observeViewModelData() {
+        observeOriginalProductLiveData()
+        observeSimilarSearchLiveData()
+        observeRouteToLoginEventLiveData()
+        observeUpdateWishlistOriginalProductEventLiveData()
+        observeWishlistSimilarProductEventLiveData()
+        observeAddWishlistEventLiveData()
+        observeRemoveWishlistEventLiveData()
+        observeTrackingImpressionSimilarProductEventLiveData()
+        observeTrackingEmptyResultEventLiveData()
+        observeTrackingWishlistEventLiveData()
+    }
+
+    private fun observeOriginalProductLiveData() {
         similarSearchViewModel?.getOriginalProductLiveData()?.observe(viewLifecycleOwner, Observer {
             initOriginalProductView(it)
-        })
-
-        similarSearchViewModel?.getSimilarSearchLiveData()?.observe(viewLifecycleOwner, Observer {
-            updateAdapter(it)
-        })
-
-        similarSearchViewModel?.getRouteToLoginPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            handleRouteToLoginPageEvent()
-        })
-
-        similarSearchViewModel?.getUpdateWishlistOriginalProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            updateSelectedProductWishlistStatus(it)
-        })
-
-        similarSearchViewModel?.getUpdateWishlistSimilarProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            updateSimilarProductWishlistStatus(it)
-        })
-
-        similarSearchViewModel?.getAddWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            handleAddWishlistEvent(it)
-        })
-
-        similarSearchViewModel?.getRemoveWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            handleRemoveWishlistEvent(it)
         })
     }
 
@@ -202,7 +207,13 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
     }
 
-    private fun updateAdapter(similarSearchLiveData: State<List<Any>>) {
+    private fun observeSimilarSearchLiveData() {
+        similarSearchViewModel?.getSimilarSearchLiveData()?.observe(viewLifecycleOwner, Observer {
+            updateViewContent(it)
+        })
+    }
+
+    private fun updateViewContent(similarSearchLiveData: State<List<Any>>) {
         when (similarSearchLiveData) {
             is State.Loading -> {
                 swipeToRefreshSimilarSearch?.isRefreshing = true
@@ -229,16 +240,28 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         endlessRecyclerViewScrollListener?.setHasNextPage(similarSearchViewModel?.getHasNextPage() ?: false)
     }
 
-    private fun handleRouteToLoginPageEvent() {
-        RouteManager.route(activity, ApplinkConst.LOGIN)
+    private fun observeRouteToLoginEventLiveData() {
+        similarSearchViewModel?.getRouteToLoginPageEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            RouteManager.route(activity, ApplinkConst.LOGIN)
+        })
     }
 
-    private fun updateSelectedProductWishlistStatus(isWishlisted: Boolean) {
-        similarSearchOriginalProductView?.updateWishlistStatus(isWishlisted)
+    private fun observeUpdateWishlistOriginalProductEventLiveData() {
+        similarSearchViewModel?.getUpdateWishlistOriginalProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            similarSearchOriginalProductView?.updateWishlistStatus(it)
+        })
     }
 
-    private fun updateSimilarProductWishlistStatus(similarProductItem: Product) {
-        similarSearchAdapter?.updateSimilarProductItemWishlistStatus(similarProductItem)
+    private fun observeWishlistSimilarProductEventLiveData() {
+        similarSearchViewModel?.getUpdateWishlistSimilarProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            similarSearchAdapter?.updateSimilarProductItemWishlistStatus(it)
+        })
+    }
+
+    private fun observeAddWishlistEventLiveData() {
+        similarSearchViewModel?.getAddWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleAddWishlistEvent(it)
+        })
     }
 
     private fun handleAddWishlistEvent(isSuccess: Boolean) {
@@ -256,6 +279,12 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
     }
 
+    private fun observeRemoveWishlistEventLiveData() {
+        similarSearchViewModel?.getRemoveWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleRemoveWishlistEvent(it)
+        })
+    }
+
     private fun handleRemoveWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
             showSnackbar(R.string.similar_search_remove_wishlist_success)
@@ -265,8 +294,44 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
     }
 
+    private fun observeTrackingImpressionSimilarProductEventLiveData() {
+        similarSearchViewModel?.getTrackingImpressionSimilarProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            SimilarSearchTracking.trackEventImpressionSimilarProduct(getOriginalProductId(), it)
+        })
+    }
+
+    private fun getOriginalProductId(): String {
+        return similarSearchViewModel?.getOriginalProductId() ?: ""
+    }
+
+    private fun observeTrackingEmptyResultEventLiveData() {
+        similarSearchViewModel?.getTrackingEmptyResultEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleEventTrackEmptyResultSimilarSearch(it)
+        })
+    }
+
+    private fun handleEventTrackEmptyResultSimilarSearch(isTrackEmptySearch: Boolean) {
+        if (isTrackEmptySearch) {
+            SimilarSearchTracking.trackEventEmptyResultSimilarSearch(getOriginalProductId(), screenName)
+        }
+    }
+
+    private fun observeTrackingWishlistEventLiveData() {
+        similarSearchViewModel?.getTrackingWishlistEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            SimilarSearchTracking.trackEventSuccessWishlistSimilarProduct(it)
+        })
+    }
+
     override fun onItemClicked(similarProductItem: Product, adapterPosition: Int) {
+        trackEventClickSimilarProduct(similarProductItem)
         routeToProductDetail(similarProductItem.id)
+    }
+
+    private fun trackEventClickSimilarProduct(similarProductItem: Product) {
+        val screenName = "$screenName ${similarProductItem.id}"
+        val similarProductItemAsObjectDataLayer = similarProductItem.asObjectDataLayer()
+
+        SimilarSearchTracking.trackEventClickSimilarProduct(getOriginalProductId(), screenName, similarProductItemAsObjectDataLayer)
     }
 
     override fun onItemWishlistClicked(productId: String, isWishlisted: Boolean) {

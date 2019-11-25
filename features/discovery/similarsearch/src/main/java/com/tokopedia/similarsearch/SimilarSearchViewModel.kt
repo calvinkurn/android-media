@@ -8,6 +8,7 @@ import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.*
+import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,6 +19,7 @@ import kotlin.math.min
 
 internal class SimilarSearchViewModel(
         dispatcherProvider: DispatcherProvider,
+        private val similarSearchQuery: String,
         private val getSimilarProductsUseCase: UseCase<SimilarProductModel>,
         private val addWishlistUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
@@ -36,6 +38,9 @@ internal class SimilarSearchViewModel(
     private val updateWishlistSimilarProductEventLiveData = MutableLiveData<Event<Product>>()
     private val addWishlistEventLiveData = MutableLiveData<Event<Boolean>>()
     private val removeWishlistEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val trackingImpressionSimilarProductEventLiveData = MutableLiveData<Event<List<Any>>>()
+    private val trackingEmptyResultEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val trackingWishlistEventLiveData = MutableLiveData<Event<WishlistTrackingModel>>()
 
     fun onViewCreated() {
         if (!hasLoadData) {
@@ -66,26 +71,23 @@ internal class SimilarSearchViewModel(
             return
         }
 
-        postOriginalProductLiveData(similarProductModel.getOriginalProduct())
-
         similarProductModelList.addAll(similarProductModel.getSimilarProductList())
+        similarProductModelList.forEachIndexed { index, product -> product.position = index + 1 }
 
         initFirstPageSimilarSearchViewModelList()
 
         if (similarProductModelList.isEmpty()) {
             addEmptyResultView()
+            trackingEmptyResultEventLiveData.postValue(Event(true))
         }
         else {
             addTitleView()
             processSimilarProductListForOnePage()
         }
 
+        postOriginalProductLiveData(similarProductModel.getOriginalProduct())
         postSimilarSearchLiveDataSuccess()
-    }
-
-    private fun postOriginalProductLiveData(originalProduct: Product) {
-        this.originalProduct = originalProduct
-        this.originalProductLiveData.postValue(originalProduct)
+        postTrackingImpressionSimilarProduct(similarProductModel)
     }
 
     private fun initFirstPageSimilarSearchViewModelList() {
@@ -136,14 +138,32 @@ internal class SimilarSearchViewModel(
         return similarProductModelList.size > 0
     }
 
+    private fun postOriginalProductLiveData(originalProduct: Product) {
+        this.originalProduct = originalProduct
+        this.originalProductLiveData.postValue(originalProduct)
+    }
+
     private fun postSimilarSearchLiveDataSuccess() {
         similarSearchLiveData.postValue(Success(similarSearchViewModelList))
+    }
+
+    private fun postTrackingImpressionSimilarProduct(similarProductModel: SimilarProductModel) {
+        if (similarProductModel.getSimilarProductList().isEmpty()) return
+
+        val trackingImpressionSimilarProductList = mutableListOf<Any>()
+
+        similarProductModel.getSimilarProductList().forEach { productItem ->
+            trackingImpressionSimilarProductList.add(productItem.asObjectDataLayer())
+        }
+
+        trackingImpressionSimilarProductEventLiveData.postValue(Event(trackingImpressionSimilarProductList))
     }
 
     private fun catchGetSimilarProductsError(throwable: Throwable?) {
         throwable?.printStackTrace()
 
         similarSearchLiveData.postValue(Error(""))
+        trackingEmptyResultEventLiveData.postValue(Event(true))
     }
 
     fun getOriginalProductLiveData(): LiveData<Product> {
@@ -225,6 +245,8 @@ internal class SimilarSearchViewModel(
 
     fun onViewToggleWishlistSimilarProduct(productId: String, isWishlisted: Boolean) {
         if (!userSession.isLoggedIn) {
+            trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(!isWishlisted, productId)))
+
             routeToLoginPageEventLiveData.postValue(Event(true))
             return
         }
@@ -237,11 +259,23 @@ internal class SimilarSearchViewModel(
         toggleWishlistForProduct(productId, isWishlisted, similarProductWishlistActionListener)
     }
 
+    private fun createWishlistTrackingModel(isAddWishlist: Boolean, productId: String?): WishlistTrackingModel {
+        return WishlistTrackingModel(
+                isAddWishlist = isAddWishlist,
+                productId = productId ?: "",
+                isTopAds = false,
+                keyword = similarSearchQuery,
+                isUserLoggedIn = userSession.isLoggedIn
+        )
+    }
+
     private fun createSimilarProductWishlistActionListener() = object : WishListActionListener {
         override fun onSuccessRemoveWishlist(productId: String?) {
             removeWishlistEventLiveData.postValue(Event(true))
 
             postUpdateWishlistInSimilarSearchLiveData(productId, false)
+
+            trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(false, productId)))
         }
 
         override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
@@ -256,6 +290,8 @@ internal class SimilarSearchViewModel(
             addWishlistEventLiveData.postValue(Event(true))
 
             postUpdateWishlistInSimilarSearchLiveData(productId, true)
+
+            trackingWishlistEventLiveData.postValue(Event(createWishlistTrackingModel(true, productId)))
         }
     }
 
@@ -294,5 +330,21 @@ internal class SimilarSearchViewModel(
         postUpdateWishlistOriginalProductEvent(productId, isWishlisted)
 
         postUpdateWishlistInSimilarSearchLiveData(productId, isWishlisted)
+    }
+
+    fun getOriginalProductId(): String {
+        return originalProduct.id
+    }
+
+    fun getTrackingImpressionSimilarProductEventLiveData(): LiveData<Event<List<Any>>> {
+        return trackingImpressionSimilarProductEventLiveData
+    }
+
+    fun getTrackingEmptyResultEventLiveData(): LiveData<Event<Boolean>> {
+        return trackingEmptyResultEventLiveData
+    }
+
+    fun getTrackingWishlistEventLiveData(): LiveData<Event<WishlistTrackingModel>> {
+        return trackingWishlistEventLiveData
     }
 }

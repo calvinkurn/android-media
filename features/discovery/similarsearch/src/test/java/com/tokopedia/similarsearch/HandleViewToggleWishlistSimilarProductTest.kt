@@ -1,6 +1,8 @@
 package com.tokopedia.similarsearch
 
+import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.similarsearch.testinstance.getSimilarProductModelCommon
+import com.tokopedia.similarsearch.testinstance.getSimilarSearchQuery
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -19,6 +21,7 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
         Scenario("Handle View Toggle Wishlist Similar Product for non-login user") {
             val similarProductModel = getSimilarProductModelCommon()
             val productToWishlist = similarProductModel.getSimilarProductList()[2]
+            val isUserLoggedIn = false
             val userSession by memoized<UserSessionInterface>()
 
             lateinit var similarSearchViewModel: SimilarSearchViewModel
@@ -28,11 +31,24 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
             }
 
             Given("user is not logged in") {
-                every { userSession.isLoggedIn }.returns(false)
+                every { userSession.isLoggedIn }.returns(isUserLoggedIn)
             }
 
             When("handle view toggle wishlist similar product") {
                 similarSearchViewModel.onViewToggleWishlistSimilarProduct(productToWishlist.id, productToWishlist.isWishlisted)
+            }
+
+            Then("assert tracking toggle wishlist event has correct WishlistTrackingModel") {
+                val trackingWishlistEventLiveData = similarSearchViewModel.getTrackingWishlistEventLiveData().value
+                val expectedWishlistTrackingModel = WishlistTrackingModel(
+                        isAddWishlist = true,
+                        productId = productToWishlist.id,
+                        isTopAds = false,
+                        keyword = getSimilarSearchQuery(),
+                        isUserLoggedIn = isUserLoggedIn
+                )
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe expectedWishlistTrackingModel
             }
 
             Then("should post event go to login page") {
@@ -208,6 +224,19 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
                         "Add wishlist event should be true"
                 )
             }
+
+            Then("assert tracking toggle wishlist event has correct WishlistTrackingModel") {
+                val trackingWishlistEventLiveData = similarSearchViewModel.getTrackingWishlistEventLiveData().value
+                val expectedWishlistTrackingModel = WishlistTrackingModel(
+                        isAddWishlist = true,
+                        productId = productToWishlist.id,
+                        isTopAds = false,
+                        keyword = getSimilarSearchQuery(),
+                        isUserLoggedIn = true
+                )
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe expectedWishlistTrackingModel
+            }
         }
 
         Scenario("Add Wishlist Similar Product Failed") {
@@ -269,6 +298,12 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
                         false,
                         "Add wishlist event should be false"
                 )
+            }
+
+            Then("assert tracking toggle wishlist event is null") {
+                val trackingWishlistEventLiveData = similarSearchViewModel.getTrackingWishlistEventLiveData().value
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe null
             }
         }
     }
@@ -336,6 +371,19 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
                         "Remove wishlist event should be true"
                 )
             }
+
+            Then("assert tracking toggle wishlist event has correct WishlistTrackingModel") {
+                val trackingWishlistEventLiveData = similarSearchViewModel.getTrackingWishlistEventLiveData().value
+                val expectedWishlistTrackingModel = WishlistTrackingModel(
+                        isAddWishlist = false,
+                        productId = productToUnWishlist.id,
+                        isTopAds = false,
+                        keyword = getSimilarSearchQuery(),
+                        isUserLoggedIn = true
+                )
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe expectedWishlistTrackingModel
+            }
         }
 
         Scenario("Remove Wishlist Similar Product Failed") {
@@ -397,6 +445,12 @@ internal class HandleViewToggleWishlistSimilarProductTest: Spek({
                         false,
                         "Remove wishlist event should be false"
                 )
+            }
+
+            Then("assert tracking toggle wishlist event is null") {
+                val trackingWishlistEventLiveData = similarSearchViewModel.getTrackingWishlistEventLiveData().value
+
+                trackingWishlistEventLiveData?.getContentIfNotHandled() shouldBe null
             }
         }
     }

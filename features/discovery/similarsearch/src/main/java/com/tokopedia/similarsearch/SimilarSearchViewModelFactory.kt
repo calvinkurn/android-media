@@ -10,6 +10,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 
 internal class SimilarSearchViewModelFactory(
         private val dispatcherProvider: DispatcherProvider,
+        private val similarSearchQuery: String,
         private val getSimilarProductsUseCase: UseCase<SimilarProductModel>,
         private val addWishlistUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
@@ -28,6 +29,7 @@ internal class SimilarSearchViewModelFactory(
     private fun createSimilarSearchViewModel(): SimilarSearchViewModel {
         return SimilarSearchViewModel(
                 dispatcherProvider,
+                similarSearchQuery,
                 getSimilarProductsUseCase,
                 addWishlistUseCase,
                 removeWishListUseCase,

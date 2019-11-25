@@ -106,6 +106,13 @@ internal class HandleViewCreatedTest: Spek({
                 similarSearchViewModel.getHasNextPage().shouldBe(true,
                         "Has next page should be true")
             }
+
+            Then("assert tracking impression similar product event for all products") {
+                val trackingImpressionSimilarProductEvent = similarSearchViewModel.getTrackingImpressionSimilarProductEventLiveData().value
+                val trackingSimilarProductContent = trackingImpressionSimilarProductEvent?.getContentIfNotHandled()
+
+                trackingSimilarProductContent.shouldBeListOfMapOfProductItemAsObjectDataLayer(similarProductModelCommon.getSimilarProductList())
+            }
         }
 
         Scenario("Get Similar Products Failed with exception") {
@@ -150,6 +157,13 @@ internal class HandleViewCreatedTest: Spek({
                 similarSearchViewModel.getHasNextPage().shouldBe(false,
                         "Has next page should be false")
             }
+
+            Then("assert tracking empty result event is true") {
+                val trackingEmptyResultEvent = similarSearchViewModel.getTrackingEmptyResultEventLiveData().value
+                val trackingEmptyResultContent = trackingEmptyResultEvent?.getContentIfNotHandled()
+
+                trackingEmptyResultContent shouldBe true
+            }
         }
 
         Scenario("Get Similar Products Failed because of null SimilarSearchModel") {
@@ -188,6 +202,13 @@ internal class HandleViewCreatedTest: Spek({
             Then("assert has next page is false") {
                 similarSearchViewModel.getHasNextPage().shouldBe(false,
                         "Has next page should be false")
+            }
+
+            Then("assert tracking empty result event is true") {
+                val trackingEmptyResultEvent = similarSearchViewModel.getTrackingEmptyResultEventLiveData().value
+                val trackingEmptyResultContent = trackingEmptyResultEvent?.getContentIfNotHandled()
+
+                trackingEmptyResultContent shouldBe true
             }
         }
 
@@ -229,6 +250,13 @@ internal class HandleViewCreatedTest: Spek({
                 similarSearchViewModel.getHasNextPage().shouldBe(false,
                         "Has next page should be false")
             }
+
+            Then("assert tracking empty result event is true") {
+                val trackingEmptyResultEvent = similarSearchViewModel.getTrackingEmptyResultEventLiveData().value
+                val trackingEmptyResultContent = trackingEmptyResultEvent?.getContentIfNotHandled()
+
+                trackingEmptyResultContent shouldBe true
+            }
         }
 
         Scenario("Get Similar Products only returns one page of data") {
@@ -269,6 +297,13 @@ internal class HandleViewCreatedTest: Spek({
             Then("assert has next page is false") {
                 similarSearchViewModel.getHasNextPage().shouldBe(false,
                         "Has next page should be false")
+            }
+
+            Then("assert tracking impression similar product event for all products") {
+                val trackingImpressionSimilarProductEvent = similarSearchViewModel.getTrackingImpressionSimilarProductEventLiveData().value
+                val trackingSimilarProductContent = trackingImpressionSimilarProductEvent?.getContentIfNotHandled()
+
+                trackingSimilarProductContent.shouldBeListOfMapOfProductItemAsObjectDataLayer(similarProductModelOnePage.getSimilarProductList())
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.similarsearch
 
+import com.tokopedia.similarsearch.testinstance.getSimilarSearchQuery
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -35,6 +36,7 @@ internal fun TestBody.createSimilarSearchViewModel(): SimilarSearchViewModel {
 
     return SimilarSearchViewModel(
             TestDispatcherProvider(),
+            getSimilarSearchQuery(),
             getSimilarProductsUseCase,
             addWishListUseCase,
             removeWishListUseCase,

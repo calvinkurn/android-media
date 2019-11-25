@@ -17,7 +17,9 @@ import javax.inject.Named
     WishlistUseCaseModule::class,
     UserSessionModule::class
 ])
-internal class SimilarSearchViewModelFactoryModule {
+internal class SimilarSearchViewModelFactoryModule(
+        private val similarSearchQuery: String
+) {
 
     @SimilarSearchModuleScope
     @Provides
@@ -31,6 +33,7 @@ internal class SimilarSearchViewModelFactoryModule {
     ): ViewModelProvider.Factory {
         return SimilarSearchViewModelFactory(
                 ProductionDispatcherProvider(),
+                similarSearchQuery,
                 getSimilarProductsUseCase,
                 addWishListUseCase,
                 removeWishListUseCase,

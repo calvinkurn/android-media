@@ -6,8 +6,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.discovery.common.constants.SearchConstant.SimilarSearch
+import com.tokopedia.discovery.common.constants.SearchConstant.SimilarSearch.QUERY
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -29,16 +32,22 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
     }
 
     private fun injectDependencies() {
-        val productId = getProductIdFromApplink()
-
-        val baseAppComponent = (application as BaseMainApplication).baseAppComponent
-        val similarSearchUseCaseModule = SimilarSearchUseCaseModule(productId)
-
         DaggerSimilarSearchComponent.builder()
-                .baseAppComponent(baseAppComponent)
-                .similarSearchUseCaseModule(similarSearchUseCaseModule)
+                .baseAppComponent(getBaseAppComponent())
+                .similarSearchUseCaseModule(createSimilarSearchUseCaseModule())
+                .similarSearchViewModelFactoryModule(createSimilarSearchViewModelFactoryModule())
                 .build()
                 .inject(this)
+    }
+
+    private fun getBaseAppComponent(): BaseAppComponent {
+        return (application as BaseMainApplication).baseAppComponent
+    }
+
+    private fun createSimilarSearchUseCaseModule(): SimilarSearchUseCaseModule {
+        val productId = getProductIdFromApplink()
+
+        return SimilarSearchUseCaseModule(productId)
     }
 
     private fun getProductIdFromApplink(): String {
@@ -51,6 +60,16 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
         }
 
         return ""
+    }
+
+    private fun createSimilarSearchViewModelFactoryModule(): SimilarSearchViewModelFactoryModule {
+        val similarSearchQuery = getSimilarSearchQueryFromIntent()
+
+        return SimilarSearchViewModelFactoryModule(similarSearchQuery)
+    }
+
+    private fun getSimilarSearchQueryFromIntent(): String {
+        return intent.getStringExtra(QUERY)
     }
 
     private fun setupViewModel() {
