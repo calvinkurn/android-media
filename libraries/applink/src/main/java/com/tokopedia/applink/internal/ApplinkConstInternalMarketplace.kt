@@ -72,7 +72,7 @@ object ApplinkConstInternalMarketplace {
 
     // CreateReviewActivity
     @JvmField
-    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/review/create/{reputation_id}/{product_id}/"
+    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
 
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
@@ -145,6 +145,9 @@ object ApplinkConstInternalMarketplace {
     // SettingFieldActivity
     @JvmField
     val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
+
+    @JvmField
+    val CHAT_SETTING_TEMPLATE = "$INTERNAL_MARKETPLACE/chat/settings/templatechat"
 
     //Report Product
     @JvmField

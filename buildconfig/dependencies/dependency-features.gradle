@@ -45,6 +45,8 @@ ext {
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 
+            umrah                           : ":features:salam:umrah",
+
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
             flashsaleManagement             : ":features:discovery:flashsale_management",
