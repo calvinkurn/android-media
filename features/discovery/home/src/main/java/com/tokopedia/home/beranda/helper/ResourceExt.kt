@@ -9,3 +9,6 @@ fun <X, T> Resource<X>.clone(data: T): Resource<T>{
             error = this.error
     )
 }
+
+fun <T> Resource<T>.isSuccess() = this.status.isSuccess()
+fun <T> Resource<T>.isError() = this.status.isError()

@@ -23,5 +23,5 @@ data class HomeData(
     val spotlight: Spotlight = Spotlight(),
     @SerializedName("homeFlag")
     val homeFlag: HomeFlag = HomeFlag(),
-    var isCache: Boolean = false
+    val isCache: Boolean = false
 )

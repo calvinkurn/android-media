@@ -43,6 +43,7 @@ abstract class NetworkBoundResource<ResponseType, ResultType> {
                 }
             }catch (e: Exception){
                 Timber.tag("NetworkBoundResource").e("An error happened: $e")
+                onFetchError()
                 setValue(Resource.error(e, loadFromDb()))
             }
         }
@@ -72,6 +73,9 @@ abstract class NetworkBoundResource<ResponseType, ResultType> {
 
     @WorkerThread
     protected abstract suspend fun saveCallResults(items: ResultType)
+
+    @WorkerThread
+    protected abstract suspend fun onFetchError()
 
     @MainThread
     protected abstract fun shouldFetch(data: ResultType?): Boolean

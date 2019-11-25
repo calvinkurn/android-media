@@ -10,8 +10,10 @@ import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.source.HomeDataSource
 import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.helper.RateLimiter
 import retrofit2.Response
 import rx.Observable
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class HomeRepositoryImpl @Inject constructor(
@@ -19,6 +21,12 @@ class HomeRepositoryImpl @Inject constructor(
         private val homeDao: HomeDao,
         private val homeRemoteDataSource: HomeRemoteDataSource
 ): HomeRepository {
+
+    companion object{
+        private const val HOME = "home"
+    }
+
+    private val repoListRateLimit = RateLimiter<String>(10, TimeUnit.MINUTES)
 
     override suspend fun getHomeData(): LiveData<Resource<HomeData>> {
         return object : NetworkBoundResource<GraphqlResponse, HomeData>(){
@@ -39,11 +47,7 @@ class HomeRepositoryImpl @Inject constructor(
             }
 
             override suspend fun loadFromDb(): HomeData? {
-                val data = homeDao.getHomeData()
-
-                if(data != null) return data.copy(isCache = true)
-
-                return data
+                return homeDao.getHomeData().copy(isCache = true)
             }
 
             override suspend fun createCallAsync(): GraphqlResponse {
@@ -51,10 +55,12 @@ class HomeRepositoryImpl @Inject constructor(
             }
 
             override fun shouldFetch(data: HomeData?): Boolean {
-                return true
+                return data == null || repoListRateLimit.shouldFetch(HOME)
             }
 
-
+            override suspend fun onFetchError() {
+                repoListRateLimit.reset(HOME)
+            }
         }.build().asLiveData()
     }
 

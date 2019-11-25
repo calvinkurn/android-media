@@ -1,12 +1,11 @@
 package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
-import com.google.gson.Gson
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper
+import com.tokopedia.dynamicbanner.di.PlayCardModule
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -22,12 +21,14 @@ import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.data.source.HomeDataSource
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase
+import com.tokopedia.home.beranda.domain.interactor.SendGeolocationInfoUseCase
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.home.common.HomeAceApi
-import com.tokopedia.home.common.HomeDataApi
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -39,7 +40,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.dynamicbanner.di.PlayCardModule
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -112,13 +112,8 @@ class HomeModule {
     }
 
     @Provides
-    fun provideHomeDataSource(homeDataApi: HomeDataApi?,
-                                        homeAceApi: HomeAceApi?,
-                                        homeMapper: HomeMapper?,
-                                        @ApplicationContext context: Context?,
-                                        cacheManager: CacheManager?,
-                                        gson: Gson?): HomeDataSource {
-        return HomeDataSource(homeDataApi, homeAceApi, homeMapper, context, cacheManager, gson)
+    fun provideHomeDataSource(homeAceApi: HomeAceApi?): HomeDataSource {
+        return HomeDataSource(homeAceApi)
     }
 
     @Provides

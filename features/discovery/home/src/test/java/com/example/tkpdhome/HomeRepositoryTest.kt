@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.example.tkpdhome.rules.CoroutinesMainDispatcherRule
 import com.tokopedia.abstraction.base.data.source.Resource
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
@@ -49,11 +50,11 @@ class HomeRepositoryTest {
         runBlocking {
             coEvery { service.getHomeData() } throws exception
             coEvery { dao.getHomeData() } returns mockHomeData
+            coEvery{ mockHomeData.copy(any(), any(), any(),any(),any(),any(),any(),any()) } returns mockHomeData
             repository.getHomeData().observeForever(observerHome)
         }
 
         verifyOrder {
-            observerHome.onChanged(Resource.loading(null)) // Init loading with no value
             observerHome.onChanged(Resource.loading(mockHomeData)) // Then trying to load from db (fast temp loading) before load from remote source
             observerHome.onChanged(Resource.error(exception, mockHomeData)) // Retrofit 403 error
         }
@@ -66,10 +67,12 @@ class HomeRepositoryTest {
         val graphqlResponse = GraphqlResponse(mapOf(
                 HomeData::class.java to fakeHomeData
         ), mapOf(), false)
+        val networkData = graphqlResponse.getSuccessData<HomeData>()
         val mockHomeData = mockk<HomeData>()
         runBlocking {
             coEvery { service.getHomeData() } returns graphqlResponse
-            coEvery { dao.getHomeData() } returns mockHomeData andThen fakeHomeData
+            coEvery { dao.getHomeData() } returns mockHomeData
+            coEvery{ mockHomeData.copy(any(), any(), any(),any(),any(),any(),any(),any()) } returns mockHomeData
         }
 
         runBlocking {
@@ -77,9 +80,8 @@ class HomeRepositoryTest {
         }
 
         verifyOrder {
-            observerHome.onChanged(Resource.loading(null)) // Loading from remote source
-            observerHome.onChanged(Resource.success(mockHomeData)) // Then trying to load from db (fast temp loading) before load from remote source
-            observerHome.onChanged(Resource.success(mockHomeData)) // Success
+            observerHome.onChanged(Resource.loading(mockHomeData)) // trying to load from db (fast temp loading) before load from remote source
+            observerHome.onChanged(Resource.success(networkData)) // Success
         }
 
         coVerify(exactly = 1) {
@@ -98,16 +100,16 @@ class HomeRepositoryTest {
                 HomeData::class.java to fakeHomeData
         ), mapOf(), false)
         coEvery { service.getHomeData() } returns graphqlResponse
-        coEvery { dao.getHomeData() } returns fakeHomeData
+        coEvery { dao.getHomeData() } returns mockHomeViewModel
+        coEvery{ mockHomeViewModel.copy(any(), any(), any(),any(),any(),any(),any(),any()) } returns mockHomeViewModel
 
         runBlocking {
             repository.getHomeData().observeForever(observerHome)
         }
 
         verifyOrder {
-            observerHome.onChanged(Resource.loading(null)) // Loading from remote source
-            observerHome.onChanged(Resource.success(mockHomeViewModel)) // Loading from remote source
-            observerHome.onChanged(Resource.success(mockHomeViewModel)) // Success
+            observerHome.onChanged(Resource.loading(mockHomeViewModel)) // Loading from remote source
+            observerHome.onChanged(Resource.success(fakeHomeData)) // Success
         }
 
         confirmVerified(observerHome)
