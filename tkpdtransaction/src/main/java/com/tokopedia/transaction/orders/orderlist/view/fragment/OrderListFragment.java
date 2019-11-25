@@ -340,6 +340,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         surveyBtn = view.findViewById(R.id.survey_bom);
         surveyBtn.setOnClickListener(this);
         mainContent = view.findViewById(R.id.mainContent);
+        //default 90 days filter
+        Date date = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.add(Calendar.DAY_OF_MONTH, -90);
+        Date today90 = cal.getTime();
+        endDate = selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : format.format(date);
+        startDate = selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : format.format(today90);
         changeDateBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         if (orderLabelList != null && orderLabelList.getFilterStatusList() != null && orderLabelList.getFilterStatusList().size() > 0) {
             presenter.buildAndRenderFilterList(orderLabelList.getFilterStatusList());
@@ -705,8 +712,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
             radioGroup = categoryView.findViewById(R.id.radio_grp);
             terapkan.setOnClickListener(this);
             try {
-                sampaiButton.setText(format2.format(format.parse(customEndDate)));
-                mulaiButton.setText(format2.format(format.parse(customStartDate)));
+                sampaiButton.setText(format2.format(format.parse(selectedDateMap.get(SAMPAI) != null ? selectedDateMap.get(SAMPAI) : customEndDate)));
+                mulaiButton.setText(format2.format(format.parse(selectedDateMap.get(MULAI_DARI) != null ? selectedDateMap.get(MULAI_DARI) : customStartDate)));
 
             } catch (ParseException e) {
                 e.printStackTrace();
