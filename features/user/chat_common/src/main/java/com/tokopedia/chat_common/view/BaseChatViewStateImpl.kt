@@ -1,19 +1,15 @@
 package com.tokopedia.chat_common.view
 
-import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
-import android.os.Build
-import android.util.DisplayMetrics
-import androidx.annotation.NonNull
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.view.WindowManager
 import android.widget.*
+import androidx.annotation.NonNull
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
@@ -92,7 +88,7 @@ open class BaseChatViewStateImpl(
             }
         }, onError)
 
-        val onChatDeBounceSubscriber = Action1<Boolean>{
+        val onChatDeBounceSubscriber = Action1<Boolean> {
             typingListener.onStopTyping()
             isTyping = false
         }
@@ -125,8 +121,7 @@ open class BaseChatViewStateImpl(
         if (chatroomViewModel.headerModel.isOnline) {
             onlineStatus.setImageResource(R.drawable.status_indicator_online)
             onlineDesc.text = view.context.getString(R.string.online)
-        }
-        else
+        } else
             onlineStatus.setImageResource(R.drawable.status_indicator_offline)
 
         title.setOnClickListener { onToolbarClicked() }
@@ -209,7 +204,7 @@ open class BaseChatViewStateImpl(
         val onError = Action1<Throwable> { it.printStackTrace() }
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe (onNext, onError)
+                .subscribe(onNext, onError)
     }
 
     open fun checkLastCompletelyVisibleItemIsFirst(): Boolean {
