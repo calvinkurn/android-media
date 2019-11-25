@@ -12,8 +12,6 @@
 /features/discovery/wishlist_common/                @tokopedia/minion-dave
 /features/discovery/productcard/                    @tokopedia/minion-dave
 /features/discovery/search/                         @tokopedia/minion-dave
-/features/discovery/productcard/                    @tokopedia/minion-dave
-/features/discovery/search/                         @tokopedia/minion-dave
 /features/discovery/filter/                         @tokopedia/minion-dave
 /features/discovery/image_search/                   @tokopedia/minion-dave
 /features/discovery/similarsearch/                  @tokopedia/minion-dave
