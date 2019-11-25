@@ -16,7 +16,7 @@ class AttachmentMenuRecyclerView : RecyclerView {
     private val adapter = AttachmentMenuAdapter()
     private val marginBottom = 16.toPx()
 
-    private val delayToShow = 100L
+    private val delayToShow = 150L
     var isVisible = false
     var isShowing = false
 
