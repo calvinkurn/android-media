@@ -33,14 +33,14 @@
     <string name="info_terbaru">Info Terbaru</string>
 
     <string name="menunggu_pembayaran">Menunggu Pembayaran</string>
-    <string name="menunggu_konfirmasi">Menunggu Konfirmasi</string>
-    <string name="pesanan_diproses">Pesanan Diproses</string>
+    <string name="menunggu_konfirmasi">Menunggu\nKonfirmasi</string>
+    <string name="pesanan_diproses">Pesanan\nDiproses</string>
 
-    <string name="pesanan_baru">Pesanan Baru</string>
-    <string name="siap_dikirim">Siap Dikirim</string>
+    <string name="pesanan_baru">Pesanan\nBaru</string>
+    <string name="siap_dikirim">Siap\nDikirim</string>
 
-    <string name="sedang_dikirim">Sedang Dikirim</string>
-    <string name="sampai_tujuan">Sampai Tujuan</string>
+    <string name="sedang_dikirim">Sedang\nDikirim</string>
+    <string name="sampai_tujuan">Sampai\nTujuan</string>
 
     <string name="sebagai_pembeli">Sebagai Pembeli</string>
     <string name="sebagai_penjual">Sebagai Penjual</string>
