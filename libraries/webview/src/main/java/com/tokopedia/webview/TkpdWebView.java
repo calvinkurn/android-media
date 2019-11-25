@@ -176,7 +176,7 @@ public class TkpdWebView extends WebView {
     @Override
     public void loadUrl(@NonNull String url, @NonNull Map<String, String> additionalHttpHeaders) {
         if(WebViewHelper.isUrlValid(url)){
-            super.loadUrl(url, additionalHttpHeaders);
+            super.loadUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, getContext()), additionalHttpHeaders);
         }else {
             if(!GlobalConfig.DEBUG)
                 Crashlytics.log(

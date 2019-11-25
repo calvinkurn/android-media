@@ -1,6 +1,12 @@
 package com.tokopedia.abstraction.base.view.webview
 
+import android.content.Context
 import android.net.Uri
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.track.TrackApp
+import java.net.URLDecoder
+import java.net.URLEncoder
 
 /**
  * Created by Ade Fulki on 2019-06-21.
@@ -14,6 +20,8 @@ object WebViewHelper {
     private const val DOMAIN_PATTERN: String = "tokopedia.com"
     private const val JS_DOMAIN_PATTERN: String = "js.tokopedia.com"
     private const val KEY_PARAM_URL: String = "url"
+    private const val PARAM_APPCLIENT_ID = "appClientId"
+    private const val HOST_TOKOPEDIA = "tokopedia.com"
 
     @JvmStatic
     fun isUrlValid(url: String): Boolean {
@@ -38,5 +46,47 @@ object WebViewHelper {
     private fun getUrlSeamless(url: String): String?{
         val uri = Uri.parse(url)
         return uri.getQueryParameter(KEY_PARAM_URL)
+    }
+
+    /**
+     * This function appends GA client ID as a query param for url contains tokopedia as domain
+     * @param url
+     * @param context
+     * @return
+     */
+    @JvmStatic
+    fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
+        var newUrl = url ?:  return ""
+
+        if (isPassingGAClientIdEnable(context)) {
+            try {
+                val decodedUrl = URLDecoder.decode(newUrl, "UTF-8")
+
+                //parse url
+                val uri = Uri.parse(decodedUrl)
+
+                //logic to append GA clientID in web URL to track app to web sessions
+                if (uri != null) {
+                    val clientID = TrackApp.getInstance().gtm.clientIDString
+
+                    if (clientID != null && newUrl.contains(HOST_TOKOPEDIA)) {
+                        newUrl = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString()
+                        newUrl = URLEncoder.encode(newUrl, "UTF-8")
+                    }
+                }
+            } catch (ex: Exception) {
+                //do nothing
+            }
+
+        }
+
+        return newUrl
+    }
+
+    private fun isPassingGAClientIdEnable(context: Context?): Boolean {
+        if (context == null) return false
+
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PASS_GA_CLIENT_ID_WEB, true)
     }
 }
