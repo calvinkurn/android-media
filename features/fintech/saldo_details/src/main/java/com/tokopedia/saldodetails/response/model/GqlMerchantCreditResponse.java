@@ -165,4 +165,5 @@ public class GqlMerchantCreditResponse implements Parcelable {
     public void setBoxInfo(GqlBoxInfoResponse boxInfo) {
         this.boxInfo = boxInfo;
     }
+
 }
