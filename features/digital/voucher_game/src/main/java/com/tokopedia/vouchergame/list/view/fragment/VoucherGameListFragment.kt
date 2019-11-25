@@ -1,17 +1,17 @@
 package com.tokopedia.vouchergame.list.view.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
@@ -240,7 +240,11 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         if (tickers.isNotEmpty()) {
             val messages = ArrayList<TickerData>()
             for (item in tickers) {
-                messages.add(TickerData(item.name, item.content,
+                var description: String = item.content
+                if (item.actionText.isNotEmpty() && item.actionLink.isNotEmpty()) {
+                    description += " [${item.actionText}]{${item.actionLink}}"
+                }
+                messages.add(TickerData(item.name, description,
                         when (item.type) {
                             TopupBillsTicker.TYPE_WARNING -> Ticker.TYPE_WARNING
                             TopupBillsTicker.TYPE_INFO -> Ticker.TYPE_INFORMATION
@@ -374,7 +378,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     companion object {
 
-        val BANNER_SEE_ALL_TEXT_SIZE = com.tokopedia.design.R.dimen.sp_16
+        val BANNER_SEE_ALL_TEXT_SIZE = com.tokopedia.design.R.dimen.sp_14
         val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
 
         const val FULL_SCREEN_SPAN_SIZE = 1
