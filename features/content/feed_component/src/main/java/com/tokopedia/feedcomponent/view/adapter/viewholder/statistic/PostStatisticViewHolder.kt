@@ -7,13 +7,14 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.helper.BaseViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailUiModel
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 
 /**
  * Created by jegul on 2019-11-25
  */
-class PostStatisticViewHolder(itemView: View) : BaseViewHolder(itemView) {
+class PostStatisticViewHolder(itemView: View, private val onSeeMoreDetail: (PostStatisticDetailType) -> Unit) : BaseViewHolder(itemView) {
 
     private val ivIcon by lazy { itemView.findViewById<ImageView>(R.id.iv_icon) }
     private val tvCount by lazy { itemView.findViewById<TextView>(R.id.tv_count) }
@@ -32,8 +33,8 @@ class PostStatisticViewHolder(itemView: View) : BaseViewHolder(itemView) {
         tvCount.text = item.amountString
         tvSubtitle.text = getString(item.subtitleRes)
 
-        tvAction.shouldShowWithAction(item.actionTitle != null) {
-            tvAction.text = item.actionTitle
+        tvAction.shouldShowWithAction(item.shouldShowDetail) {
+            tvAction.setOnClickListener { onSeeMoreDetail(item.type) }
         }
     }
 }

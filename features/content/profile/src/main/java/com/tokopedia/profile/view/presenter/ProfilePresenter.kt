@@ -13,8 +13,10 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.model.statistic.FeedGetStatsPosts
 import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticCommissionUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
+import com.tokopedia.feedcomponent.view.mapper.PostStatisticMapper
 import com.tokopedia.feedcomponent.view.subscriber.TrackPostClickSubscriber
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailUiModel
 import com.tokopedia.kotlin.extensions.view.toCompactAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -212,7 +214,7 @@ class ProfilePresenter @Inject constructor(
                         view.onSuccessGetPostStatistic(
                                 PostStatisticCommissionUiModel(
                                         KMNumbers.formatRupiahString(it.second.totalProductCommission.toLongOrZero()),
-                                        it.first.convertToUiModel(likeCount, commentCount)
+                                        PostStatisticMapper(likeCount, commentCount).call(it.first)
                                 )
 
                         )
@@ -230,30 +232,5 @@ class ProfilePresenter @Inject constructor(
             userId = view.getUserSession().userId
         }
         return userId
-    }
-
-    private fun FeedGetStatsPosts.convertToUiModel(likeCount: Int, commentCount: Int): List<PostStatisticDetailUiModel> = stats.firstOrNull().let {
-        listOf(
-                PostStatisticDetailUiModel(
-                        R.drawable.ic_feed_see_darker_grey,
-                        it?.view?.fmt.takeUnless(String?::isNullOrEmpty) ?: "0",
-                        R.string.feed_post_statistic_seen_count
-                ),
-                PostStatisticDetailUiModel(
-                        R.drawable.ic_feed_click_darker_grey,
-                        it?.click?.fmt.takeUnless(String?::isNullOrEmpty) ?: "0",
-                        R.string.feed_post_statistic_click_count
-                ),
-                PostStatisticDetailUiModel(
-                        R.drawable.ic_thumb,
-                        likeCount.toCompactAmountString(),
-                        R.string.feed_post_statistic_like_count
-                ),
-                PostStatisticDetailUiModel(
-                        R.drawable.ic_feed_comment,
-                        commentCount.toCompactAmountString(),
-                        R.string.feed_post_statistic_comment_count
-                )
-        )
     }
 }

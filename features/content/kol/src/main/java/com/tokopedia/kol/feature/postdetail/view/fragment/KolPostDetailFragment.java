@@ -52,10 +52,13 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel;
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedcomponent.view.widget.CreatePostFabView;
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
+import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
@@ -131,6 +134,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private CreatePostFabView createPostFab;
     private View footer;
     private PerformanceMonitoring performanceMonitoring;
+
+    private PostStatisticBottomSheet postStatisticBottomSheet;
 
     private DynamicPostViewModel dynamicPostViewModel;
     private boolean isTraceStopped;
@@ -777,7 +782,18 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onStatsClick(@NotNull String title, @NotNull String activityId, @NotNull List<String> productIds, int likeCount, int commentCount) {
-        showPostStatistic(title, productIds, likeCount, commentCount);
+        showPostStatistic(title, activityId, productIds, likeCount, commentCount);
+    }
+
+    @Override
+    public void onSuccessGetPostStatistic(@NotNull PostStatisticCommissionUiModel statisticCommissionModel) {
+        getPostStatisticBottomSheet()
+                .setPostStatisticCommissionModel(statisticCommissionModel);
+    }
+
+    @Override
+    public void onErrorGetPostStatistic(@NotNull Throwable error) {
+
     }
 
     private void doShare(String body, String title) {
@@ -999,8 +1015,39 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
     }
 
-    private void showPostStatistic(String title, List<String> productIds, int likeCount, int commentCount) {
-        throw new NotImplementedError();
+    private PostStatisticBottomSheet getPostStatisticBottomSheet() {
+        if (postStatisticBottomSheet == null) {
+            postStatisticBottomSheet = PostStatisticBottomSheet.newInstance(requireContext());
+        }
+        return postStatisticBottomSheet;
+    }
+
+    private void showPostStatistic(String title, String activityId, List<String> productIds, int likeCount, int commentCount) {
+        getPostStatisticBottomSheet()
+                .show(
+                        requireFragmentManager(),
+                        activityId,
+                        title,
+                        productIds,
+                        new PostStatisticBottomSheet.Listener() {
+                            @Override
+                            public void onGetPostStatisticModelList(@NotNull PostStatisticBottomSheet bottomSheet, @NotNull String activityId, @NotNull List<String> productIds) {
+                                presenter.getPostStatistic(activityId, productIds, likeCount, commentCount);
+                            }
+
+                            @Override
+                            public void onSeeMoreDetailClicked(@NotNull PostStatisticBottomSheet bottomSheet, @NotNull PostStatisticDetailType type) {
+                                if (type == PostStatisticDetailType.Comment) {
+                                    RouteManager.route(
+                                            requireContext(),
+                                            ApplinkConst.KOL_COMMENT,
+                                            activityId
+                                    );
+                                    bottomSheet.dismiss();
+                                }
+                            }
+                        }
+                );
     }
 
 }

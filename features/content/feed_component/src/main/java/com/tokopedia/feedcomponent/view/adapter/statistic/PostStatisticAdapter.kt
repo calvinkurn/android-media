@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.view.adapter.statistic
 import com.tokopedia.feedcomponent.helper.BaseDiffUtilAdapter
 import com.tokopedia.feedcomponent.view.adapter.statistic.delegate.PostStatisticDetailAdapterDelegate
 import com.tokopedia.feedcomponent.view.adapter.statistic.delegate.PostStatisticPlaceholderAdapterDelegate
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticPlaceholderUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
@@ -10,11 +11,11 @@ import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
 /**
  * Created by jegul on 2019-11-22
  */
-class PostStatisticAdapter : BaseDiffUtilAdapter<PostStatisticUiModel>() {
+class PostStatisticAdapter(listener: Listener) : BaseDiffUtilAdapter<PostStatisticUiModel>() {
 
     init {
         delegatesManager
-                .addDelegate(PostStatisticDetailAdapterDelegate())
+                .addDelegate(PostStatisticDetailAdapterDelegate(listener::onSeeMoreDetailClicked))
                 .addDelegate(PostStatisticPlaceholderAdapterDelegate())
     }
 
@@ -25,5 +26,10 @@ class PostStatisticAdapter : BaseDiffUtilAdapter<PostStatisticUiModel>() {
 
     override fun areContentsTheSame(oldItem: PostStatisticUiModel, newItem: PostStatisticUiModel): Boolean {
         return oldItem == newItem
+    }
+
+    interface Listener {
+
+        fun onSeeMoreDetailClicked(type: PostStatisticDetailType)
     }
 }

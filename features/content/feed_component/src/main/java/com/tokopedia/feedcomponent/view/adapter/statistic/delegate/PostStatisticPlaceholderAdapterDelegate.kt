@@ -17,6 +17,6 @@ class PostStatisticPlaceholderAdapterDelegate : TypedAdapterDelegate<PostStatist
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): PostStatisticViewHolder {
-        return PostStatisticViewHolder(basicView)
+        return PostStatisticViewHolder(basicView) {}
     }
 }

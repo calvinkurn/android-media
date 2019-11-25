@@ -86,6 +86,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAd
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
 import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
@@ -1855,8 +1856,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         title = title,
                         productIds = productIds,
                         listener = object : PostStatisticBottomSheet.Listener {
-                            override fun onGetPostStatisticModelList(activityId: String, productIds: List<String>) {
+                            override fun onGetPostStatisticModelList(bottomSheet: PostStatisticBottomSheet, activityId: String, productIds: List<String>) {
                                 presenter.getPostStatistic(activityId, productIds, likeCount, commentCount)
+                            }
+
+                            override fun onSeeMoreDetailClicked(bottomSheet: PostStatisticBottomSheet, type: PostStatisticDetailType) {
+                                if (type == PostStatisticDetailType.Comment) {
+                                    RouteManager.route(
+                                            requireContext(),
+                                            ApplinkConst.KOL_COMMENT,
+                                            activityId
+                                    )
+                                    bottomSheet.dismiss()
+                                }
                             }
                         }
                 )

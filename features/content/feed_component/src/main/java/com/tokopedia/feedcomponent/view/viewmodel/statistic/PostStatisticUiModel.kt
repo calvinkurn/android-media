@@ -9,10 +9,11 @@ import androidx.annotation.StringRes
 sealed class PostStatisticUiModel
 
 data class PostStatisticDetailUiModel(
+        val type: PostStatisticDetailType,
         @DrawableRes val iconRes: Int,
         val amountString: String,
         @StringRes val subtitleRes: Int,
-        val actionTitle: String? = null
+        val shouldShowDetail: Boolean = false
 ) : PostStatisticUiModel()
 
 object PostStatisticPlaceholderUiModel : PostStatisticUiModel()
