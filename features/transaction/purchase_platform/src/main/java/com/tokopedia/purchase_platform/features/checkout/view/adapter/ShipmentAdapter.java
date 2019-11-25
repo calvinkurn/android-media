@@ -932,6 +932,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return 0;
     }
 
+    public int getFirstShopPosition() {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
     public void updateItemAndTotalCost(int position) {
         notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);

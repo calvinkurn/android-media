@@ -357,9 +357,11 @@ public class ShippingImpl extends Shipping {
 
     @Override
     public void onOpenDetail(int pos, Context context) {
-        Intent intent = ((TransactionRouter)MainApplication
-                .getAppContext()).goToOrderDetail(context, modelList.get(pos).OrderId);
-        context.startActivity(intent);
+        if (pos >= 0) {
+            Intent intent = ((TransactionRouter) MainApplication
+                    .getAppContext()).goToOrderDetail(context, modelList.get(pos).OrderId);
+            context.startActivity(intent);
+        }
     }
 
     private void finishTimeout() {

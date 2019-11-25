@@ -80,7 +80,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.0.0'
-    unifyComponentsVersion = '1.1.0'
+    unifyComponentsVersion = '1.1.1'
     unifyCoachMarkVersion = '1.2.0'
     unifyCalendarVersion = '1.0.0'
     unifyBannerVersion = '1.0.0'
@@ -223,6 +223,7 @@ ext {
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             guava                 : "com.google.guava:guava:$guavaVersion",
             viewModel             : "androidx.lifecycle:lifecycle-viewmodel:$lifeCycleVersion",
+            viewModelKtx          : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycleVersion",
             exoPlayerCore         : "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion",
             exoPlayerUi           : "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVersion",
             exoPlayerRtmp         : "com.google.android.exoplayer:extension-rtmp:$exoPlayerVersion",
