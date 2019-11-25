@@ -8,13 +8,20 @@
         <activity
             android:name=".view.activity.TokoPointsHomeNewActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/TokoPointTransparentStatus" />
-        <activity
-            android:name=".view.activity.CouponListingStackedActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/TokoPointTransparentStatus" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:path="@string/path_tokopoint_home"
+                    android:host="@string/host_tokopoints"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
         </activity>
+
         <activity
             android:name=".view.activity.CatalogListingActivity"
             android:screenOrientation="portrait"
@@ -33,23 +40,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.TokoPointsHomeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:path="@string/path_tokopoint_home"
-                    android:host="@string/host_tokopoints"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".view.activity.MyCouponListingActivity"
+            android:name=".view.activity.CouponListingStackedActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/Theme.White" >

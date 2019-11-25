@@ -15,11 +15,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
@@ -59,14 +61,17 @@ class OfficialHomeFragment :
         private const val REQUEST_FROM_PDP = 898
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+        private const val SLUG_CONST = "{slug}"
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
+    private val sentDynamicChannelTrackers = mutableSetOf<String>()
+
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-    private var tracking: OfficialStoreTracking? = null
 
+    private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
     private var layoutManager: StaggeredGridLayoutManager? = null
@@ -75,15 +80,26 @@ class OfficialHomeFragment :
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
+<<<<<<< HEAD
     private var isLoadedOnce: Boolean = false
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
+=======
+>>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350
     private var isScrolling = false
+
+    private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
+    private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
+    private lateinit var dynamicChannelPerformanceMonitoring: PerformanceMonitoring
+    private lateinit var productRecommendationPerformanceMonitoring: PerformanceMonitoring
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
+                    val CATEGORY_CONST: String = category?.title?:""
+                    val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
                     counterTitleShouldBeRendered += 1
+                    productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
                     viewModel.loadMore(category, page)
 
                     if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
@@ -144,6 +160,7 @@ class OfficialHomeFragment :
         endlessScrollListener?.resetState()
     }
 
+<<<<<<< HEAD
     private fun loadData(isRefresh: Boolean = false) {
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
             if (!isLoadedOnce || isRefresh) {
@@ -155,6 +172,11 @@ class OfficialHomeFragment :
                 }
             }
         }
+=======
+    private fun refreshData() {
+        initFirebasePerformanceMonitoring()
+        viewModel.loadFirstData(category)
+>>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350
     }
 
     private fun observeBannerData() {
@@ -170,6 +192,7 @@ class OfficialHomeFragment :
                     showErrorNetwork(it.throwable)
                 }
             }
+            bannerPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -204,6 +227,7 @@ class OfficialHomeFragment :
                 }
 
             }
+            shopPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -222,6 +246,7 @@ class OfficialHomeFragment :
                     showErrorNetwork(result.throwable)
                 }
             }
+            dynamicChannelPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -243,6 +268,7 @@ class OfficialHomeFragment :
                     showErrorNetwork(it.throwable)
                 }
             }
+            productRecommendationPerformanceMonitoring.stopTrace()
         })
     }
 
@@ -545,5 +571,18 @@ class OfficialHomeFragment :
             tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
             sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
+    }
+
+    private fun initFirebasePerformanceMonitoring() {
+        val CATEGORY_CONST: String = category?.title?:""
+
+        val bannerConstant = (FirebasePerformanceMonitoringConstant.BANNER).replace(SLUG_CONST, CATEGORY_CONST)
+        bannerPerformanceMonitoring = PerformanceMonitoring.start(bannerConstant)
+
+        val brandConstant = (FirebasePerformanceMonitoringConstant.BRAND).replace(SLUG_CONST, CATEGORY_CONST)
+        shopPerformanceMonitoring = PerformanceMonitoring.start(brandConstant)
+
+        val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
+        dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
     }
 }

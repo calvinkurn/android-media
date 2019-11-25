@@ -46,7 +46,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_30"
                 android:layout_gravity="bottom"
+<<<<<<< HEAD
                 android:background="@drawable/layer_background_banner_image_mask"
+=======
+                android:background="@drawable/travel_background_banner_image_mask"
+>>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </FrameLayout>
