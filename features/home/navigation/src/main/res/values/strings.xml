@@ -82,4 +82,5 @@
     <string name="coachicon_description_tabs">Dapatkan informasi transaksi dan promo terbaru untuk pembeli dan penjual di sini</string>
     <string name="coachicon_title_notification_setting">Tampilan baru pengaturan notifikasi</string>
     <string name="coachicon_description_notification_setting">Kini, kamu bisa atur notifikasi dari Tokopedia sesuai kebutuhan</string>
+    <string name="notif_transaction_for_you">Untuk Kami</string>
 </resources>

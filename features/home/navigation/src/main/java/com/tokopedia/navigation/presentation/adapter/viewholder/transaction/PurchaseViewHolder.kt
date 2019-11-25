@@ -6,6 +6,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -49,7 +50,7 @@ class PurchaseViewHolder(val view: View): AbstractViewHolder<PurchaseNotificatio
         }
 
         btnLoadMore.setOnClickListener {
-            RouteManager.route(context, "")
+            RouteManager.route(context, ApplinkConst.PURCHASE_ORDER)
         }
     }
 

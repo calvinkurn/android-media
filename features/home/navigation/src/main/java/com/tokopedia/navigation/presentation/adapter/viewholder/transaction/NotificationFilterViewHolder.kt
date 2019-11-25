@@ -24,7 +24,7 @@ class NotificationFilterViewHolder(
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
 
     override fun bind(element: NotificationFilterSectionWrapper) {
-        if (element.visibility) {
+        if (!element.visibility) {
             lstFilter.hide()
             return
         }
