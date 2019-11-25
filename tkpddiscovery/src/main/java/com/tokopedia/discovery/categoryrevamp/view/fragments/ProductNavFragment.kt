@@ -73,23 +73,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     var isSubCategoryAvailable = false
 
-
-    override fun onListItemImpressionEvent(element: Visitable<Any>, position: Int) {
-
-        val item = element as ProductsItem
-
-        if (item.isTopAds) {
-            ImpresionTask().execute(item.productImpTrackingUrl)
-        }
-        catAnalyticsInstance.eventProductListImpression(getDepartMentId(),
-                item.name,
-                item.id.toString(),
-                CurrencyFormatHelper.convertRupiahToInt(item.price),
-                position,
-                getProductItemPath(item.categoryBreadcrumb ?: "", getDepartMentId()),
-                item.categoryBreadcrumb ?: "")
-    }
-
     override fun getDepartMentId(): String {
         return mDepartmentId
     }
@@ -147,9 +130,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     private lateinit var productTypeFactory: ProductTypeFactory
 
-    private lateinit var subCategoryAdapter: SubCategoryAdapter
+    private var subCategoryAdapter: SubCategoryAdapter? = null
 
-    private lateinit var quickFilterAdapter: QuickFilterAdapter
+    private var quickFilterAdapter: QuickFilterAdapter? = null
 
     private lateinit var categoryNavComponent: CategoryNavComponent
 
@@ -553,7 +536,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
         }
-        if (!item.isTopAds) {
+        if (item.isTopAds) {
             ImpresionTask().execute(item.productClickTrackingUrl)
         }
         catAnalyticsInstance.eventClickProductList(item.id.toString(),
@@ -684,5 +667,38 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onShareButtonClicked() {
+    }
+
+    override fun onListItemImpressionEvent(viewedProductList: List<Visitable<Any>>, viewedTopAdsList: List<Visitable<Any>>) {
+        catAnalyticsInstance.eventProductListImpression(getDepartMentId(),
+                getDepartMentId(),
+                viewedProductList,
+                viewedTopAdsList)
+    }
+
+    override fun topAdsTrackerUrlTrigger(url: String) {
+        ImpresionTask().execute(url)
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        productNavListAdapter?.onPause()
+    }
+
+    override fun onDestroyView() {
+        product_recyclerview.adapter = null
+        product_recyclerview.layoutManager = null
+
+        subcategory_recyclerview.adapter = null
+        subcategory_recyclerview.layoutManager = null
+
+        quickfilter_recyclerview.adapter = null
+        quickfilter_recyclerview.layoutManager = null
+
+        productNavListAdapter = null
+        subCategoryAdapter = null
+        quickFilterAdapter = null
+        super.onDestroyView()
     }
 }

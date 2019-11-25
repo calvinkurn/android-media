@@ -32,6 +32,14 @@ object DynamicChannelIdentifiers {
     val CTA_TYPE_TEXT = "text_only"
 }
 
+object FirebasePerformanceMonitoringConstant {
+    val CATEGORY = "mp_os_home_category"
+    val BANNER = "mp_os_home_{slug}_banner"
+    val BRAND = "mp_os_home_{slug}_featuredbrand"
+    val DYNAMIC_CHANNEL = "mp_os_home_{slug}_fsdcdm"
+    val PRODUCT_RECOM = "mp_os_home_{slug}_productrecom"
+}
+
 object ApplinkConstant {
 
     const val OFFICIAL_SEARCHBAR = "${ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE}?official=true&navsource=os"

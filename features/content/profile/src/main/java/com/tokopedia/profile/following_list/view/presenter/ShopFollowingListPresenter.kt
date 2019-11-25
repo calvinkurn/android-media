@@ -3,6 +3,7 @@ package com.tokopedia.profile.following_list.view.presenter
 import android.content.Context
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.GetShopFollowingData
 import com.tokopedia.profile.following_list.data.pojo.usershopfollow.UserShopFollowDetail
 import com.tokopedia.profile.following_list.domain.interactor.GetShopFollowingListUseCase
@@ -12,8 +13,10 @@ import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultVi
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profile.R
+import com.tokopedia.profile.following_list.view.fragment.BaseFollowListFragment
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase.Action
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,7 +31,8 @@ import kotlin.coroutines.CoroutineContext
 class ShopFollowingListPresenter @Inject constructor(
         @ApplicationContext private val context: Context,
         private val getUserShopFollowingListUseCase: GetShopFollowingListUseCase,
-        private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
+        private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
+        private val userSession: UserSessionInterface
 ) : BaseDaggerPresenter<FollowingList.View<ShopFollowingViewModel, ShopFollowingResultViewModel>>(), FollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel>, CoroutineScope {
 
     override val coroutineContext: CoroutineContext
@@ -36,7 +40,7 @@ class ShopFollowingListPresenter @Inject constructor(
 
     private val job = SupervisorJob()
 
-    override fun getFollowingList(userId: Int) {
+    override fun getFollowList(userId: Int, type: BaseFollowListFragment.FollowListType) {
         val page = 1
         launch {
             val userFollow = getUserShopFollowingListUseCase.apply {
@@ -44,13 +48,15 @@ class ShopFollowingListPresenter @Inject constructor(
                 addRequestWithParam(userId, page)
             }.executeOnBackground()
             view.run {
-                onSuccessGetKolFollowingList(userFollow.convertToUiModel(page))
+                val uiModelList = userFollow.convertToUiModel(page, userId == userSession.userId.toIntOrZero())
+                if (uiModelList.followingViewModelList.isEmpty()) onSuccessGetKolFollowingListEmptyState()
+                onSuccessGetKolFollowingList(uiModelList)
                 hideLoading()
             }
         }
     }
 
-    override fun getFollowingListLoadMore(userId: Int, cursor: String?) {
+    override fun getFollowListLoadMore(userId: Int, cursor: String?, type: BaseFollowListFragment.FollowListType) {
         val page = try { cursor?.toInt()?.plus(1) } catch (e: Exception) { null } ?: return
         launch {
             val userFollow = getUserShopFollowingListUseCase.apply {
@@ -58,18 +64,10 @@ class ShopFollowingListPresenter @Inject constructor(
                 addRequestWithParam(userId, page)
             }.executeOnBackground()
             view.run {
-                onSuccessLoadMoreKolFollowingList(userFollow.convertToUiModel(page))
+                onSuccessLoadMoreKolFollowingList(userFollow.convertToUiModel(page, userId == userSession.userId.toIntOrZero()))
                 hideLoading()
             }
         }
-    }
-
-    override fun getFollowersList(userId: Int) {
-
-    }
-
-    override fun getFollowersLoadMore(userId: Int, cursor: String?) {
-
     }
 
     override fun unfollowShop(model: FollowingViewModel) {
@@ -96,21 +94,22 @@ class ShopFollowingListPresenter @Inject constructor(
         job.cancel()
     }
 
-    private fun GetShopFollowingData.convertToUiModel(currentPage: Int): ShopFollowingResultViewModel = userShopFollow.result.let { result ->
+    private fun GetShopFollowingData.convertToUiModel(currentPage: Int, isAllowedFollowAction: Boolean): ShopFollowingResultViewModel = userShopFollow.result.let { result ->
         ShopFollowingResultViewModel(
                 isCanLoadMore = result.haveNext,
                 totalCount = result.totalCount.toInt(),
-                followingViewModelList = result.userShopFollowDetail.map { it.convertToUiModel() },
+                followingViewModelList = result.userShopFollowDetail.map { it.convertToUiModel(isAllowedFollowAction) },
                 currentPage = currentPage
         )
     }
 
-    private fun UserShopFollowDetail.convertToUiModel(): ShopFollowingViewModel = ShopFollowingViewModel(
+    private fun UserShopFollowDetail.convertToUiModel(isAllowedFollowAction: Boolean): ShopFollowingViewModel = ShopFollowingViewModel(
             id = shopID.toInt(),
             name = shopName,
             avatarUrl = logo,
             isLoadingItem = false,
             etalase = context.getString(R.string.shop_following_etalase_count, stats.totalShowcase),
-            product = context.getString(R.string.shop_following_product_count, stats.productSold)
+            product = context.getString(R.string.shop_following_product_count, stats.productSold),
+            isAllowedFollowAction = isAllowedFollowAction
     )
 }

@@ -1,12 +1,16 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.CountDownTimer;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,19 +18,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.RouteManager;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment;
+import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
@@ -40,10 +42,13 @@ import java.util.Map;
 
 import rx.Subscriber;
 
+import static com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment.REQUEST_CODE_STACKED_IN_ADAPTER;
+
 public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
     private Context mContext;
     private String mStackId;
+
 
     public class ViewHolder extends BaseVH {
         TextView label, value, tvMinTxnValue, tvMinTxnLabel;
@@ -52,8 +57,7 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
         /*This section is exclusively for handling timer*/
         public CountDownTimer timer;
         public ProgressBar progressTimer;
-        public View viewCouponNew;
-        public CardView cvShadow1, cvShadow2, cvData;
+        public CardView cvShadow1, cvShadow2, cvData, cv1, cv2;
 
         public ViewHolder(View view) {
             super(view);
@@ -65,10 +69,11 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
             tvMinTxnValue = view.findViewById(R.id.tv_min_txn_value);
             tvMinTxnLabel = view.findViewById(R.id.tv_min_txn_label);
             progressTimer = view.findViewById(R.id.progress_timer);
-            viewCouponNew = view.findViewById(R.id.view_coupon_new);
             cvShadow1 = view.findViewById(R.id.cv_shadow_1);
             cvShadow2 = view.findViewById(R.id.cv_shadow_2);
             cvData = view.findViewById(R.id.cv_data);
+            cv1 = view.findViewById(R.id.cv_1);
+            cv2 = view.findViewById(R.id.cv_2);
         }
 
         @Override
@@ -196,9 +201,13 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
 
         if (item.isNewCoupon()) {
-            holder.viewCouponNew.setVisibility(View.VISIBLE);
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),R.color.tp_new_coupon_background_color));
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),R.color.tp_new_coupon_background_color));
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),R.color.tp_new_coupon_background_color));
         } else {
-            holder.viewCouponNew.setVisibility(View.GONE);
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),com.tokopedia.design.R.color.white));
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),com.tokopedia.design.R.color.white));
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(),com.tokopedia.design.R.color.white));
         }
 
         if (item.getUsage() != null) {
@@ -303,9 +312,16 @@ public class CouponInStackBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
         if (holder.itemView != null) {
             holder.itemView.setOnClickListener(v -> {
-                RouteManager.route(holder.imgBanner.getContext(), item.getRedirectAppLink());
+                Bundle bundle = new Bundle();
+                bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
+                ((FragmentActivity) holder.imgBanner.getContext()).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), REQUEST_CODE_STACKED_IN_ADAPTER);
+
                 sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
             });
         }
+    }
+
+    public String getStackId() {
+        return mStackId;
     }
 }

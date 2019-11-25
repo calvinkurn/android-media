@@ -1,11 +1,11 @@
 package com.tokopedia.product.manage.list.view.adapter
 
-import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -14,7 +14,7 @@ import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.ProductManagePreOrderDef
 import com.tokopedia.product.manage.list.constant.ProductManageStockDef
 import com.tokopedia.product.manage.list.constant.ProductManageWholesaleDef
-import com.tokopedia.product.manage.list.constant.StatusProductOption
+import com.tokopedia.product.manage.list.constant.option.StatusProductOption
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
 import com.tokopedia.seller.product.common.utils.CurrencyUtils
 
