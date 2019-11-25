@@ -26,6 +26,7 @@ ext {
             profile                         : ":features:content:profile",
             createpost                      : ":features:content:createpost",
 
+            digitalEmoney                  : ":features:digital:digital_emoney",
             digitalBrowse                   : ":features:digital:digital_browse",
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",

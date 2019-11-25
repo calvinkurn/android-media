@@ -1,4 +1,4 @@
-package com.tokopedia.digital.product.view.model;
+package com.tokopedia.common_digital.common.presentation.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -26,6 +26,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
     private String categoryName;
     private String additionalETollBalance;
     private String additionalETollLastUpdatedDate;
+    private String additionalETollOperatorName;
 
     private DigitalCategoryDetailPassData(Builder builder) {
         setCategoryId(builder.categoryId);
@@ -40,6 +41,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         setCategoryName(builder.categoryName);
         setAdditionalETollBalance(builder.additionalETollLastBalance);
         setAdditionalETollLastUpdatedDate(builder.additionalETollLastUpdatedDate);
+        setAdditionalETollOperatorName(builder.additionalETollOperatorName);
     }
 
     public String getMenuId() {
@@ -138,6 +140,14 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         this.additionalETollLastUpdatedDate = additionalETollLastUpdatedDate;
     }
 
+    public String getAdditionalETollOperatorName() {
+        return additionalETollOperatorName;
+    }
+
+    public void setAdditionalETollOperatorName(String additionalETollOperatorName) {
+        this.additionalETollOperatorName = additionalETollOperatorName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -157,6 +167,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         dest.writeString(this.categoryName);
         dest.writeString(this.additionalETollBalance);
         dest.writeString(this.additionalETollLastUpdatedDate);
+        dest.writeString(this.additionalETollOperatorName);
     }
 
     protected DigitalCategoryDetailPassData(Parcel in) {
@@ -172,6 +183,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         this.categoryName = in.readString();
         this.additionalETollBalance = in.readString();
         this.additionalETollLastUpdatedDate = in.readString();
+        this.additionalETollOperatorName = in.readString();
     }
 
     public static final Creator<DigitalCategoryDetailPassData> CREATOR =
@@ -201,6 +213,7 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         private String categoryName;
         private String additionalETollLastBalance;
         private String additionalETollLastUpdatedDate;
+        private String additionalETollOperatorName;
 
         public Builder() {
         }
@@ -262,6 +275,11 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
         public Builder additionalETollLastUpdatedDate(String val) {
             additionalETollLastUpdatedDate = val;
+            return this;
+        }
+
+        public Builder additionalETollOperatorName(String val) {
+            additionalETollOperatorName = val;
             return this;
         }
 

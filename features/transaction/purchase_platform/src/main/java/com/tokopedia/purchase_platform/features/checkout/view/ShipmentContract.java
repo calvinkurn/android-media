@@ -29,6 +29,7 @@ import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCh
 import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
+import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -65,11 +66,9 @@ public interface ShipmentContract {
 
         void renderErrorPage(String message);
 
-        void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp);
+        void renderCheckoutPage(boolean isInitialRender, boolean isReloadAfterPriceChangeHigher, boolean isFromPdp);
 
         void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse);
-
-        void renderCheckShipmentPrepareCheckoutSuccess();
 
         void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
                 CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
@@ -88,6 +87,8 @@ public interface ShipmentContract {
         void renderCheckoutCartError(String message);
 
         void renderCheckoutCartErrorReporter(CheckoutData checkoutData);
+
+        void renderCheckoutPriceUpdated(PriceValidationData priceValidationData);
 
         void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult);
 
@@ -263,6 +264,7 @@ public interface ShipmentContract {
 
         void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                             boolean isTradeIn, boolean skipUpdateOnboardingState,
+                                            boolean isReloadAfterPriceChangeHinger,
                                             String cornerId, String deviceId, String leasingId);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoStackingData promoStackingData,

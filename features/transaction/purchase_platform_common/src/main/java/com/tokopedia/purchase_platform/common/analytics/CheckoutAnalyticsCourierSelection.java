@@ -946,4 +946,11 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 tickerId
         );
     }
+
+    public void eventViewPopupPriceIncrease(String eventLabel) {
+        sendEventCategoryActionLabel(EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_PRICE_INCREASE,
+                eventLabel);
+    }
 }

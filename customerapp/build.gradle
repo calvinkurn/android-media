@@ -214,7 +214,7 @@ android {
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         resConfigs "en", "id"
         ndk {
-            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+            abiFilters "armeabi-v7a", "arm64-v8a"
         }
     }
 
@@ -305,6 +305,7 @@ dependencies {
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.digitalTopupBills)
+    implementation project(rootProject.ext.features.digitalEmoney)
     implementation project(rootProject.ext.features.voucherGame)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
