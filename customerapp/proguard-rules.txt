@@ -405,3 +405,5 @@
 -keepclassmembers public class com.google.android.material.bottomsheet.BottomSheetDialog {
     private <fields>;
 }
+
+-keepclassmembers enum com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.** { *; }
