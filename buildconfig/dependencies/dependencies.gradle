@@ -223,6 +223,7 @@ ext {
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             guava                 : "com.google.guava:guava:$guavaVersion",
             viewModel             : "androidx.lifecycle:lifecycle-viewmodel:$lifeCycleVersion",
+            viewModelKtx          : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycleVersion",
             exoPlayerCore         : "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion",
             exoPlayerUi           : "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVersion",
             exoPlayerRtmp         : "com.google.android.exoplayer:extension-rtmp:$exoPlayerVersion",
