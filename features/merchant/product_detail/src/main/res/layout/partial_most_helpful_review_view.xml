@@ -44,7 +44,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_thumb_like"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/bg_rounded_grey_250"
@@ -55,6 +55,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/most_helpful_title"
+        app:layout_constraintEnd_toStartOf="@+id/txt_like_static"
         app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="53 orang"

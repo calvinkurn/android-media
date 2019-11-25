@@ -49,7 +49,7 @@ class PartialImageReviewView private constructor(private val view: View,
                 onReviewClicked?.invoke()
             }
             review_count.text = context.getString(R.string.review_counter, rating.totalRating)
-            review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold))
+            review_rating.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable(context, R.drawable.ic_rating_gold), null)
             review_rating.text = context.getString(R.string.counter_pattern_string, rating.ratingScore, 5)
 
             setBackgroundAndKeepPadding(this, reviews)
