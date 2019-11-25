@@ -101,7 +101,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                                String cartIds) {
         renderBaseAddress(recipientAddress, cartIds);
         if (recipientAddress.isTradeIn()) {
-            renderAddressOptionOnBottom();
+            renderAddressOptionOnBottom(recipientAddress);
             renderTradeInAddress(recipientAddress);
         } else {
             renderAddressOptionOnTop();
@@ -289,9 +289,10 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         separatorBottom.setVisibility(View.VISIBLE);
     }
 
-    private void renderAddressOptionOnBottom() {
+    private void renderAddressOptionOnBottom(RecipientAddressModel recipientAddressModel) {
         llAddOrChangeAddressContainer.setVisibility(View.VISIBLE);
         tvChangeAddressTop.setVisibility(View.GONE);
+        tvDisabledMultipleAddressInfo.setText(recipientAddressModel.getDisabledMultiAddressMessage());
         tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
         separatorBottom.setVisibility(View.GONE);
     }

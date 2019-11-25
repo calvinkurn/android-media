@@ -85,6 +85,11 @@ public class ShipmentDataConverter {
                 }
             }
             RecipientAddressModel recipientAddressModel = createRecipientAddressModel(defaultAddress, tradeInAddress, isTradeIn, isTradeInDropOffEnable);
+            String disableMultipleAddressMessage = "";
+            if (cartShipmentAddressFormData.getDisabledFeaturesDetailData() != null) {
+                disableMultipleAddressMessage = cartShipmentAddressFormData.getDisabledFeaturesDetailData().getDisabledMultiAddressMessage();
+            }
+            recipientAddressModel.setDisabledMultiAddressMessage(disableMultipleAddressMessage);
             recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
             if (cartShipmentAddressFormData.getAddressesData() != null) {
                 if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.DEFAULT_ADDRESS)) {

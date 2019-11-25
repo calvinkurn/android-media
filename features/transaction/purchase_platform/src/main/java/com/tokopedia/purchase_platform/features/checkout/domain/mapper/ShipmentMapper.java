@@ -25,6 +25,7 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.shi
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DataAddressData;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DisabledFeaturesDetailData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.Donation;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupShop;
@@ -77,6 +78,14 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setErrorMessage(UtilsKt.convertToString(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
         dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
+
+        if (shipmentAddressFormDataResponse.getDisabledFeaturesDetail() != null) {
+            DisabledFeaturesDetailData disabledFeaturesDetailData = new DisabledFeaturesDetailData();
+            disabledFeaturesDetailData.setDisabledMultiAddressMessage(
+                    shipmentAddressFormDataResponse.getDisabledFeaturesDetail().getDisabledMultiAddressMessage()
+            );
+            dataResult.setDisabledFeaturesDetailData(disabledFeaturesDetailData);
+        }
 
         boolean isDisableEgold = false;
         boolean isDisablePPP = false;

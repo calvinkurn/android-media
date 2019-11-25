@@ -93,6 +93,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("addresses")
     @Expose
     private Addresses addresses;
+    @SerializedName("disabled_features_detail")
+    @Expose
+    private DisabledFeaturesDetail disabledFeaturesDetail;
 
     @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
@@ -191,5 +194,9 @@ public class ShipmentAddressFormDataResponse {
 
     public Addresses getAddresses() {
         return addresses;
+    }
+
+    public DisabledFeaturesDetail getDisabledFeaturesDetail() {
+        return disabledFeaturesDetail;
     }
 }
