@@ -1,10 +1,12 @@
 package com.tokopedia.chat_common.view
 
+import android.content.Context
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -18,6 +20,7 @@ import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
@@ -42,6 +45,7 @@ open class BaseChatViewStateImpl(
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
+    protected lateinit var attachmentMenu: AttachmentMenuRecyclerView
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -56,6 +60,7 @@ open class BaseChatViewStateImpl(
         sendButton = view.findViewById(getSendButtonId())
         notifier = view.findViewById(getNotifierId())
         chatMenuButton = view.findViewById(getChatMenuId())
+        attachmentMenu = view.findViewById(getAttachmentMenuId())
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
@@ -86,9 +91,11 @@ open class BaseChatViewStateImpl(
                 .subscribe(onChatDeBounceSubscriber, onError)
 
         chatMenuButton.setOnClickListener {
-            chatMenuListener.showChatMenu()
+            attachmentMenu.toggle()
+//            chatMenuListener.showChatMenu()
         }
     }
+
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
         val title = toolbar.findViewById<TextView>(R.id.title)
@@ -245,5 +252,6 @@ open class BaseChatViewStateImpl(
     open fun getSendButtonId() = R.id.send_but
     open fun getNotifierId() = R.id.notifier
     open fun getChatMenuId() = R.id.iv_chat_menu
+    open fun getAttachmentMenuId() = R.id.rv_attachment_menu
 
 }
