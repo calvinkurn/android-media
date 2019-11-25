@@ -26,7 +26,7 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '2.7.0'
     cardioVersion = '5.5.1'
-    reactNativeVersion = '0.59.5'
+    reactNativeVersion = '0.60.4'
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
     roomVersion = '2.0.0-rc01'
@@ -80,7 +80,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.0.0'
-    unifyComponentsVersion = '1.1.0'
+    unifyComponentsVersion = '1.1.1'
     unifyCoachMarkVersion = '1.2.0'
     unifyCalendarVersion = '1.0.0'
     unifyBannerVersion = '1.0.0'
@@ -178,12 +178,8 @@ ext {
     analyticsDependencies = [
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
-            moengage   : "com.moengage:moe-android-sdk:9.3.02",
-            moengageFirebase   : "com.moengage:moe-push-firebase:3.1.00",
-            moengageMSG: "com.moengage:addon-messaging:3.2.01",
-            moengageSdk         : "com.moengage:moengagesdk:3.3.02",
-            moengagePushbase    : "com.moengage:pushbase:3.2.00",
-            moengageInapp   : "com.moengage:inapp:3.2.02",
+            moengage   : "com.moengage:moe-android-sdk:9.7.02",
+            moengageAmp: "com.moengage:push-amp-plus:0.3.00",
             branch     : "io.branch.sdk.android:library:4.1.1",
             rapid7     : "com.rapid7:r7insight_java:1.1.39"
     ]

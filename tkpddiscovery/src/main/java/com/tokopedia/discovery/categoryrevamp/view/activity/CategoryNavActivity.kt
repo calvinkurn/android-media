@@ -217,6 +217,12 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             when (it) {
                 is Success -> {
                     progressBar.hide()
+                    if (it.data.appRedirectionURL != null && !it.data.appRedirectionURL?.equals("")!!) {
+                        RouteManager.route(this, it.data.appRedirectionURL)
+                        finish()
+                    } else if (it.data.isBanned == IS_BANNED) {
+                            setEmptyView(it.data)
+                    progressBar.hide()
                     if (it.data.isBanned == IS_BANNED) {
                         hideBottomNavigation()
                     } else {

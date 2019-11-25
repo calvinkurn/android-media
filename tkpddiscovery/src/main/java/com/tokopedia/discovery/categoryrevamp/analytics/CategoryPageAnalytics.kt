@@ -1,6 +1,9 @@
 package com.tokopedia.discovery.categoryrevamp.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
@@ -235,13 +238,31 @@ class CategoryPageAnalytics {
     // 12
 
     fun eventProductListImpression(category_id: String,
-                                   product_name: String,
-                                   product_id: String,
-                                   price: Int,
-                                   position: Int,
-                                   pathList: String,
-                                   categoryPath: String) {
+                                   departmentId: String,
+                                   viewedProductList: List<Visitable<Any>>,
+                                   viewedTopAdsList: List<Visitable<Any>>) {
+
         val tracker = getTracker()
+        val list = ArrayList<Map<String, Any>>()
+        val itemList = ArrayList<Visitable<Any>>()
+
+        itemList.addAll(viewedProductList)
+        itemList.addAll(viewedTopAdsList)
+
+        for (element in itemList) {
+            val item = element as ProductsItem
+            val map = HashMap<String, Any>()
+            map[KEY_NAME] = item.name
+            map[KEY_ID] = item.id.toString()
+            map[KEY_PRICE] = CurrencyFormatHelper.convertRupiahToInt(item.price)
+            map[KEY_BRAND] = ""
+            map[KEY_CATEGORY] = item.categoryBreadcrumb ?: ""
+            map[KEY_VARIANT] = ""
+            map[KEY_LIST] = getProductItemPath(item.categoryBreadcrumb ?: "", departmentId)
+            map[KEY_POSITION] = item.adapter_position
+            list.add(map)
+        }
+
         val map = DataLayer.mapOf(
                 KEY_EVENT, "productView",
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_VALUE,
@@ -250,19 +271,10 @@ class CategoryPageAnalytics {
                 KEY_CATEGORY_ID, category_id,
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CURRENCY_CODE, "IDR",
-                KEY_IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
-                KEY_NAME, product_name,
-                KEY_ID, product_id,
-                KEY_PRICE, price,
-                KEY_BRAND, "",
-                KEY_CATEGORY, categoryPath,
-                KEY_VARIANT, "",
-                KEY_LIST, pathList,
-                KEY_POSITION, position))
+                KEY_IMPRESSIONS, DataLayer.listOf(list)
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
-
 
     // 13
 
@@ -373,6 +385,14 @@ class CategoryPageAnalytics {
                 KEY_CATEGORY_ID, category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
+    }
+
+
+    private fun getProductItemPath(path: String, id: String): String {
+        if (path.isNotEmpty()) {
+            return "category/$path - $id"
+        }
+        return ""
     }
 
     fun eventBukaClick(destinationUrl: String, categoryId: String) {

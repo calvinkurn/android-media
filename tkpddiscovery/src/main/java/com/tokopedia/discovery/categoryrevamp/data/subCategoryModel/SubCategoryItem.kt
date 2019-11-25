@@ -17,6 +17,12 @@ data class SubCategoryItem(
         @field:SerializedName("id")
         val id: Int? = null,
 
+        @field:SerializedName("redirectionURL")
+        val redirectionURL: String? = null,
+
+        @field:SerializedName("appRedirectionURL")
+        val appRedirectionURL: String? = null,
+
         @field:SerializedName("thumbnailImage")
         val thumbnailImage: String? = null,
 

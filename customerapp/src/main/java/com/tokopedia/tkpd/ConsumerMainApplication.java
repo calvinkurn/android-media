@@ -129,9 +129,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().initializeAllApis();
 
         PersistentCacheManager.init(this);
+        initReact();
 
         super.onCreate();
-        initReact();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);

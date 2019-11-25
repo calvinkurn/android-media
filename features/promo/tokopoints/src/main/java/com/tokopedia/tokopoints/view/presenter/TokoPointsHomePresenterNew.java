@@ -30,13 +30,15 @@ public class TokoPointsHomePresenterNew extends BaseDaggerPresenter<TokoPointsHo
         implements TokoPointsHomeContract.Presenter, CatalogPurchaseRedemptionPresenter {
     private GraphqlUseCase mGetTokoPointDetailUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
+    private GraphqlUseCase mGetCouponCountUseCase;
     private int selectedItem = 0;
 
     @Inject
-    public TokoPointsHomePresenterNew(GraphqlUseCase getTokoPointDetailUseCase, GraphqlUseCase redeemCouponUseCase) {
+    public TokoPointsHomePresenterNew(GraphqlUseCase getTokoPointDetailUseCase, GraphqlUseCase redeemCouponUseCase, GraphqlUseCase getCouponCountUseCase) {
 
         this.mGetTokoPointDetailUseCase = getTokoPointDetailUseCase;
         this.mRedeemCouponUseCase = redeemCouponUseCase;
+        this.mGetCouponCountUseCase = redeemCouponUseCase;
     }
 
 
@@ -48,6 +50,10 @@ public class TokoPointsHomePresenterNew extends BaseDaggerPresenter<TokoPointsHo
 
         if (mRedeemCouponUseCase != null) {
             mRedeemCouponUseCase.unsubscribe();
+        }
+
+        if (mGetCouponCountUseCase != null){
+            mGetCouponCountUseCase.unsubscribe();
         }
     }
 
@@ -70,10 +76,6 @@ public class TokoPointsHomePresenterNew extends BaseDaggerPresenter<TokoPointsHo
         GraphqlRequest request4 = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_homepage_section),
                 TokopointsSectionOuter.class, false);
         mGetTokoPointDetailUseCase.addRequest(request4);
-
-        GraphqlRequest request5 = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_sum_coupon),
-                TokoPointSumCouponOuter.class, false);
-        mGetTokoPointDetailUseCase.addRequest(request5);
 
         mGetTokoPointDetailUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -110,12 +112,6 @@ public class TokoPointsHomePresenterNew extends BaseDaggerPresenter<TokoPointsHo
                         && tokenDetail.getTokenDetail() != null
                         && tokenDetail.getTokenDetail().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
                     getView().onSuccessTokenDetail(tokenDetail.getTokenDetail());
-                }
-
-                //Handling sum token
-                TokoPointSumCouponOuter couponOuter = graphqlResponse.getData(TokoPointSumCouponOuter.class);
-                if (couponOuter != null && couponOuter.getTokopointsSumCoupon() != null) {
-                    getView().showTokoPointCoupon(couponOuter.getTokopointsSumCoupon());
                 }
 
                 if (getView() != null) getView().onFinishRendering();
@@ -256,5 +252,33 @@ public class TokoPointsHomePresenterNew extends BaseDaggerPresenter<TokoPointsHo
 
     public void setPagerSelectedItem(int selectedItem) {
         this.selectedItem = selectedItem;
+    }
+
+    public void getCouponCount() {
+        mGetCouponCountUseCase.clearCache();
+        GraphqlRequest request5 = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_sum_coupon),
+                TokoPointSumCouponOuter.class, false);
+        mGetCouponCountUseCase.addRequest(request5);
+
+        mGetCouponCountUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                //Handling sum token
+                TokoPointSumCouponOuter couponOuter = graphqlResponse.getData(TokoPointSumCouponOuter.class);
+                if (couponOuter != null && couponOuter.getTokopointsSumCoupon() != null) {
+                    getView().showTokoPointCoupon(couponOuter.getTokopointsSumCoupon());
+                }
+            }
+        });
     }
 }
