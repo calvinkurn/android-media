@@ -100,9 +100,9 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
             }
             setOnClickListener {
                 if (data.isWishlisted) {
-                    actionListener.onRemoveFromWishlist(data.productId)
+                    actionListener.onRemoveDisabledItemFromWishlist(data.productId)
                 } else {
-                    actionListener.onAddToWishlist(data.productId)
+                    actionListener.onAddDisabledItemToWishlist(data.productId)
                 }
             }
         }

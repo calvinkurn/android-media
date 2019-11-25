@@ -183,7 +183,10 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     public boolean isHeaderBanner(int position) {
         if (checkDataSize(position))
-            return getItemList().get(position) instanceof HeaderViewModel;
+            return getItemList().get(position) instanceof CpmViewModel
+                    || getItemList().get(position) instanceof TickerViewModel
+                    || getItemList().get(position) instanceof QuickFilterViewModel
+                    || getItemList().get(position) instanceof SuggestionViewModel;
         return false;
     }
 
@@ -233,10 +236,6 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         super.clearData();
         setStartFrom(0);
         setTotalData(0);
-    }
-
-    public boolean hasHeader() {
-        return checkDataSize(0) && getItemList().get(0) instanceof HeaderViewModel;
     }
 
     public boolean isTopAds(int position) {

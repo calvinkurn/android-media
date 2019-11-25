@@ -617,7 +617,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_CLICK,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_RECOMMENDATION,
-                Key.EVENT_LABEL, position,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -799,6 +799,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.EVENT, EventName.PRODUCT_VIEW,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.IMPRESSION_ON_PRODUCT_RECOMMENDATION,
+                Key.EVENT_LABEL, "",
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -839,21 +840,35 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAddWishlistOnPrimaryProduct() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_RECOMMENDATION,
-                EventCategory.RECOMMENDATION_PAGE,
-                EventAction.CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE_CART
+    public void eventClickAddWishlistOnProductRecommendation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION
         );
     }
 
-    public void eventClickRemoveWishlistOnPrimaryProduct() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_RECOMMENDATION,
-                EventCategory.RECOMMENDATION_PAGE,
-                EventAction.CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE_CART
+    public void eventClickAddWishlistOnProductRecommendationEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
+        );
+    }
+
+    public void eventClickRemoveWishlistOnProductRecommendation() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION
+        );
+    }
+
+    public void eventClickRemoveWishlistOnProductRecommendationEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
         );
     }
 
@@ -869,6 +884,78 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.E_COMMERCE, atcMap
         );
         sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void eventAddWishlistAvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_AVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistAvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_AVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventAddWishlistUnavailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_UNAVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistUnvailableSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_UNAVAILABLE_SECTION,
+                productId
+        );
+    }
+
+    public void eventAddWishlistLastSeenSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_LAST_SEEN,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistLastSeenSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_LAST_SEEN,
+                productId
+        );
+    }
+
+    public void eventAddWishlistWishlistsSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.ADD_WISHLIST_WISHLIST,
+                productId
+        );
+    }
+
+    public void eventRemoveWishlistWishlistsSection(boolean isEmptyCart, String productId) {
+        sendEventCategoryActionLabel(
+                EventName.CART,
+                isEmptyCart ? EventCategory.EMPTY_CART : EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_WISHLIST,
+                productId
+        );
     }
 
     public void eventClickBrowseButtonOnTickerProductContainTobacco() {
