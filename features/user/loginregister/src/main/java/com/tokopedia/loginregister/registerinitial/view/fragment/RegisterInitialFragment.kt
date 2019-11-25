@@ -43,6 +43,7 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.graphql.util.getParamBoolean
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
@@ -808,6 +809,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         if (socmedButtonsContainer.getChildAt(lastPos) !is ProgressBar) {
             socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
         }
+        emailExtension?.hide()
     }
 
     private fun setDiscoverOnClickListener(discoverItemViewModel: DiscoverItemViewModel,

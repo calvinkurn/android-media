@@ -134,7 +134,7 @@
   <com.tokopedia.loginregister.common.view.EmailExtension
     android:id="@+id/emailExtension"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_52"
+    android:layout_height="wrap_content"
     android:visibility="gone"
     android:layout_alignParentBottom="true"/>
 </RelativeLayout>
