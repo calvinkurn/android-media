@@ -164,6 +164,21 @@
                         style="@style/TextView.Medium.FontMedium.BlackPrimary"
                         app:layout_constraintLeft_toLeftOf="parent" />
 
+                    <com.tokopedia.unifycomponents.ticker.Ticker
+                        android:id="@+id/ticker_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        app:descriptionText="@string/ticker_desc"
+                        app:layout_constraintLeft_toLeftOf="@+id/tv1"
+                        app:layout_constraintTop_toBottomOf="@+id/tv1"
+                        app:closeButtonVisibility="gone"
+                        app:tickerShapeType="loose"
+                        app:tickerType="announcement" />
+
 
                     <TextView
                         android:id="@+id/tv2"
@@ -175,7 +190,7 @@
                         android:textColor="@color/grey_700"
                         style="@style/TextView.Micro"
                         app:layout_constraintLeft_toLeftOf="@+id/tv1"
-                        app:layout_constraintTop_toBottomOf="@+id/tv1" />
+                        app:layout_constraintTop_toBottomOf="@+id/ticker_info" />
 
                     <EditText
                         android:id="@+id/tv_email"
@@ -213,6 +228,7 @@
 
                     <TextView
                         android:id="@+id/tv3"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv1"
@@ -225,6 +241,7 @@
 
                     <EditText
                         android:id="@+id/tv_phone"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/dp_16"

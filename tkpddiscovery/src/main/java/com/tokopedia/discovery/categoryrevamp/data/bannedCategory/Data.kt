@@ -18,7 +18,13 @@ class Data {
     @SerializedName("bannedMsgHeader")
     var bannedMsgHeader: String? = null
 
-    @SerializedName("app_redirection")
+    @SerializedName("redirectionURL")
+    var redirectionURL: String? = null
+
+    @SerializedName("appRedirectionURL")
+    var appRedirectionURL: String? = null
+
+    @SerializedName("appRedirection")
     var appRedirection: String? = null
 
     @SerializedName("isBanned")
@@ -34,6 +40,8 @@ class Data {
         return "Data{" +
                 "banned_message = '" + bannedMessage + '\''.toString() +
                 ",app_redirection = '" + appRedirection + '\''.toString() +
+                ",redirectionURL = '" + redirectionURL + '\''.toString() +
+                ",appRedirectionURL = '" + appRedirectionURL + '\''.toString() +
                 ",isBanned = '" + isBanned + '\''.toString() +
                 ",isAdult = '" + isAdult + '\''.toString() +
                 "}"

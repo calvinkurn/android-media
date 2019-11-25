@@ -14,4 +14,10 @@ object ApplinkConstInternalPayment {
     @JvmField
     val PAYMENT_CHECKOUT = "$INTERNAL_PAYMENT/checkout"
 
+    @JvmField
+    val PAYMENT_SETTING = "$INTERNAL_PAYMENT/setting"
+
+    @JvmField
+    val PAYMENT_ADD_CREDIT_CARD = "$INTERNAL_PAYMENT/add-credit-card"
+
 }
