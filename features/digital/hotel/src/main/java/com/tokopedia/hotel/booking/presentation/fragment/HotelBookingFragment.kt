@@ -122,7 +122,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                         val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
                         taskStackBuilder.addNextIntent(intentHome)
 
-                        val intentHotelHome = RouteManager.getIntent(this, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
+                        val intentHotelHome = RouteManager.getIntent(this, ApplinkConst.TRAVEL_SUBHOMEPAGE)
                         taskStackBuilder.addNextIntent(intentHotelHome)
 
                         val checkoutData = PaymentPassData()
