@@ -18,15 +18,14 @@ import android.widget.Button;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant;
-import com.tokopedia.product.manage.list.R;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.category.view.activity.CategoryDynamicPickerActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity;
-import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
@@ -90,7 +89,7 @@ public class ProductManageFilterFragment extends TkpdBaseV4Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(com.tokopedia.seller.R.layout.fragment_product_manage_filter, container, false);
+        return inflater.inflate(R.layout.fragment_product_manage_filter, container, false);
     }
 
     @Override
