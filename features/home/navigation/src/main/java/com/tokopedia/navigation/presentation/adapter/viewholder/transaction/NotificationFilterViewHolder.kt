@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.transaction
 
 import android.view.View
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -20,12 +21,13 @@ class NotificationFilterViewHolder(
 ): AbstractViewHolder<NotificationFilterSectionWrapper>(view), NotificationUpdateFilterAdapter.FilterAdapterListener {
 
     private val context = view.context
+    private val container = view.findViewById<LinearLayout>(R.id.container_filter_transaction)
     private val lstFilter = view.findViewById<RecyclerView>(R.id.filter_list)
     private var filterAdapter: NotificationUpdateFilterAdapter?= null
 
     override fun bind(element: NotificationFilterSectionWrapper) {
         if (!element.visibility) {
-            lstFilter.hide()
+            container.hide()
             return
         }
         if (filterAdapter == null) {
