@@ -70,7 +70,6 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-
     private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -80,11 +79,7 @@ class OfficialHomeFragment :
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
-<<<<<<< HEAD
     private var isLoadedOnce: Boolean = false
-    private val sentDynamicChannelTrackers = mutableSetOf<String>()
-=======
->>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350
     private var isScrolling = false
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
@@ -160,8 +155,9 @@ class OfficialHomeFragment :
         endlessScrollListener?.resetState()
     }
 
-<<<<<<< HEAD
     private fun loadData(isRefresh: Boolean = false) {
+        initFirebasePerformanceMonitoring()
+
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
             if (!isLoadedOnce || isRefresh) {
                 viewModel.loadFirstData(category)
@@ -172,11 +168,6 @@ class OfficialHomeFragment :
                 }
             }
         }
-=======
-    private fun refreshData() {
-        initFirebasePerformanceMonitoring()
-        viewModel.loadFirstData(category)
->>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350
     }
 
     private fun observeBannerData() {

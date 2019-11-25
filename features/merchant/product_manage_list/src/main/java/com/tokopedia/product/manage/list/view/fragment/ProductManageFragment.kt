@@ -221,11 +221,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
         bulkCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (!isListEmpty) {
-<<<<<<< HEAD
                 adapter.data.forEachIndexed { index, productManageViewModel ->
-=======
-                adapter.data.forEachIndexed { index, _ ->
->>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350
                     if (!isChecked || !productManageListAdapter.isChecked(index)) {
                         productManageListAdapter.updateListByCheck(isChecked, index)
                     }
@@ -348,17 +344,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
          * Keep checklist after user search or filter
          */
 
-<<<<<<< HEAD
         if (list.isEmpty()) {
             containerChechBoxBulk.visibility = View.GONE
         } else {
             containerChechBoxBulk.visibility = View.VISIBLE
         }
         renderCheckedView()
-=======
-        productManageListAdapter.setCheckedPositionList(listPositionChecked)
-        productManageListAdapter.notifyDataSetChanged()
->>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350
     }
 
     override fun onSearchSubmitted(text: String) {
@@ -603,17 +594,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         loadInitialData()
     }
 
-<<<<<<< HEAD
-=======
-    override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
-        bulkCheckBox.isChecked = false
-        productManageListAdapter.resetCheckedItemSet()
-        itemsChecked.clear()
-        renderCheckedView()
-    }
-
->>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350
     override fun onErrorBulkUpdateProduct(e: Throwable) {
         activity?.let {
             showToasterError(ViewUtils.getErrorMessage(it, e), getString(R.string.close)) {

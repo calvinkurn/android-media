@@ -48,30 +48,15 @@ class ProductManagePresenterImpl @Inject constructor(
     override fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
 
     override fun getGoldMerchantStatus() {
-<<<<<<< HEAD
-        getShopInfoUseCase.execute(RequestParams.EMPTY, object : Subscriber<ShopModel>() {
-            override fun onNext(shopModel: ShopModel) {
-                if (isViewAttached) {
-                    view.onSuccessGetShopInfo(shopModel.info.isGoldMerchant, shopModel.info.isOfficialStore, shopModel.getInfo().shopDomain)
-                }
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-            }
-
-        })
-=======
         val getProductListJob: Job = SupervisorJob()
         CoroutineScope(Dispatchers.Main + getProductListJob).launch {
             val shopId: List<Int> = listOf(userSessionInterface.shopId.toInt())
             gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
             val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
-            view.onSuccessGetShopInfo(shopInfo.goldOS.isGold == 1, shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.domain)
+            if (isViewAttached) {
+                view.onSuccessGetShopInfo(shopInfo.goldOS.isGold == 1, shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.domain)
+            }
         }
->>>>>>> 72a4aba47735ce1fbf5f8d190e890531e5df0350
     }
 
     override fun bulkUpdateProduct(listUpdateResponse: MutableList<ConfirmationProductData>) {
