@@ -3,18 +3,17 @@ package com.example.tkpdhome
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.example.tkpdhome.rules.CoroutinesMainDispatcherRule
+import com.tokopedia.abstraction.base.data.source.Resource
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
-import com.tokopedia.home.beranda.data.mapper.HomeMapper
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.data.source.HomeDataSource
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.abstraction.base.data.source.Resource
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
 import io.mockk.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,8 +27,7 @@ class HomeRepositoryTest {
     private val dao = mockk<HomeDao>(relaxed = true)
     private val service = mockk<HomeRemoteDataSource>()
     private val homeDataSource = mockk<HomeDataSource>()
-    private val homeMapper = mockk<HomeMapper>()
-    private lateinit var observerHome: Observer<Resource<HomeViewModel>>
+    private lateinit var observerHome: Observer<Resource<HomeData>>
 
         @Rule
         @JvmField
@@ -41,14 +39,13 @@ class HomeRepositoryTest {
     @Before
     fun init(){
         observerHome = mockk(relaxed = true)
-        repository = HomeRepositoryImpl(homeDataSource, dao, service, homeMapper)
+        repository = HomeRepositoryImpl(homeDataSource, dao, service)
     }
 
     @Test
     fun `Get home data from server when no internet is available`(){
         val exception = Exception("Internet")
         val mockHomeData = mockk<HomeData>()
-        val mockHomeViewModel = mockk<HomeViewModel>()
         runBlocking {
             coEvery { service.getHomeData() } throws exception
             coEvery { dao.getHomeData() } returns mockHomeData
@@ -57,8 +54,8 @@ class HomeRepositoryTest {
 
         verifyOrder {
             observerHome.onChanged(Resource.loading(null)) // Init loading with no value
-            observerHome.onChanged(Resource.loading(mockHomeViewModel)) // Then trying to load from db (fast temp loading) before load from remote source
-            observerHome.onChanged(Resource.error(exception, mockHomeViewModel)) // Retrofit 403 error
+            observerHome.onChanged(Resource.loading(mockHomeData)) // Then trying to load from db (fast temp loading) before load from remote source
+            observerHome.onChanged(Resource.error(exception, mockHomeData)) // Retrofit 403 error
         }
         confirmVerified(observerHome)
     }
@@ -70,7 +67,6 @@ class HomeRepositoryTest {
                 HomeData::class.java to fakeHomeData
         ), mapOf(), false)
         val mockHomeData = mockk<HomeData>()
-        val mockHomeViewModel = mockk<HomeViewModel>()
         runBlocking {
             coEvery { service.getHomeData() } returns graphqlResponse
             coEvery { dao.getHomeData() } returns mockHomeData andThen fakeHomeData
@@ -82,8 +78,8 @@ class HomeRepositoryTest {
 
         verifyOrder {
             observerHome.onChanged(Resource.loading(null)) // Loading from remote source
-            observerHome.onChanged(Resource.success(mockHomeViewModel)) // Then trying to load from db (fast temp loading) before load from remote source
-            observerHome.onChanged(Resource.success(mockHomeViewModel)) // Success
+            observerHome.onChanged(Resource.success(mockHomeData)) // Then trying to load from db (fast temp loading) before load from remote source
+            observerHome.onChanged(Resource.success(mockHomeData)) // Success
         }
 
         coVerify(exactly = 1) {
@@ -97,7 +93,7 @@ class HomeRepositoryTest {
     @Test
     fun `Get home data from db`() {
         val fakeHomeData = HomeData()
-        val mockHomeViewModel = mockk<HomeViewModel>()
+        val mockHomeViewModel = mockk<HomeData>()
         val graphqlResponse = GraphqlResponse(mapOf(
                 HomeData::class.java to fakeHomeData
         ), mapOf(), false)

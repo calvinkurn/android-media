@@ -107,8 +107,8 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun homeRepository(homeDataSource: HomeDataSource, homeDao: HomeDao, homeRemoteDataSource: HomeRemoteDataSource, homeMapper: HomeMapper): HomeRepository {
-        return HomeRepositoryImpl(homeDataSource, homeDao, homeRemoteDataSource, homeMapper)
+    fun homeRepository(homeDataSource: HomeDataSource, homeDao: HomeDao, homeRemoteDataSource: HomeRemoteDataSource): HomeRepository {
+        return HomeRepositoryImpl(homeDataSource, homeDao, homeRemoteDataSource)
     }
 
     @Provides
