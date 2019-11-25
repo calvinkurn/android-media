@@ -44,9 +44,11 @@ import com.tokopedia.flight.bookingV3.presentation.adapter.FlightInsuranceAdapte
 import com.tokopedia.flight.bookingV3.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.bookingV3.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
+import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
+import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
@@ -240,17 +242,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         flightAnalytics.eventBranchCheckoutFlight(
                 "${bookingViewModel.getDepartureJourney()?.departureAirportCity}-${bookingViewModel.getDepartureJourney()?.arrivalAirportCity}",
-                getTrackingJourneyId(),
+                "",
                 bookingViewModel.getInvoiceId(), pid,
                 bookingViewModel.getUserId(),
                 totalCartPrice.toString()
         )
-    }
-
-    fun getTrackingJourneyId(): String {
-        if (!bookingViewModel.getFlightPriceModel().comboKey.isNullOrEmpty()) return "${bookingViewModel.getFlightPriceModel().comboKey} ${bookingViewModel.getFlightPriceModel().comboKey}"
-        else if (bookingViewModel.getReturnId().isNotEmpty()) return "${bookingViewModel.getDepartureId()} ${bookingViewModel.getReturnId()}"
-        else return bookingViewModel.getDepartureId()
     }
 
     private fun renderErrorToast(resId: Int) {
@@ -437,8 +433,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
             if (needToFillFirstPassengerDetail) {
                 val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
                 navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), requestId)
+            } else if (!passengers.first().passengerFirstName.equals(widget_traveller_info.getContactName(), true)) {
+                switch_traveller_as_passenger.isChecked = false
             }
-            //else if user change name -> uncheck toggle
         }
     }
 
@@ -513,7 +510,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
         intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
         startActivity(intent)
-        activity?.finish()
+        finishActivityToHomepage()
     }
 
 
@@ -684,10 +681,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 }
             }
 
-            REQUEST_CODE_PASSENGER -> if (resultCode == Activity.RESULT_OK) {
-                data?.let {
-                    val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
-                    bookingViewModel.onPassengerResultReceived(passengerViewModel)
+            REQUEST_CODE_PASSENGER -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        data?.let {
+                            val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
+                            bookingViewModel.onPassengerResultReceived(passengerViewModel)
+                        }
+                    }
                 }
             }
 
@@ -718,6 +719,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                 }
             }
+
         }
 
         if (needRefreshCart) {
@@ -840,8 +842,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun navigateBackToSearch() {
         Log.d("HEHE", "navigateBackToSearch()")
-        RouteManager.route(context, "tokopedia://pesawat")
-        activity?.finish()
+        finishActivityToHomepage()
     }
 
     private fun proceedCheckoutWithoutLuggage() {
@@ -862,7 +863,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun navigateToFlightOrderList() {
         Log.d("HEHE", "navigateBackToFlightOL()")
         RouteManager.route(context, "tokopedia://pesawat/order")
-        activity?.finish()
+        finishActivityToHomepage()
     }
 
     private fun showLoadingDialog() {
@@ -886,6 +887,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         }
 
+    }
+
+    private fun finishActivityToHomepage() {
+        activity?.let {
+            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.EXPIRED_JOURNEY)
+        }
     }
 
     companion object {
