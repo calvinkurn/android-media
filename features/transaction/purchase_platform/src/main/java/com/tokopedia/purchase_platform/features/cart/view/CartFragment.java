@@ -170,9 +170,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private RelativeLayout layoutUsedPromoEmptyCart;
     private RelativeLayout rlContent;
     private CheckBox cbSelectAll;
+    private LinearLayout llHeader;
     private Typography btnRemove;
     private CardView cardHeader;
-    private CardView cardFooter;
+    private LinearLayout bottomLayout;
+    private View bottomLayoutShadow;
     private LinearLayout llNetworkErrorView;
     private LinearLayout llCartContainer;
 
@@ -387,8 +389,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         rlContent = view.findViewById(R.id.rl_content);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
         cardHeader = view.findViewById(R.id.card_header);
-        cardFooter = view.findViewById(R.id.card_footer);
+        bottomLayout = view.findViewById(R.id.bottom_layout);
+        bottomLayoutShadow = view.findViewById(R.id.bottom_layout_shadow);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
+        llHeader = view.findViewById(R.id.ll_header);
         btnRemove = view.findViewById(R.id.btn_delete_all_cart);
         llCartContainer = view.findViewById(R.id.ll_cart_container);
 
@@ -545,6 +549,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     protected void setViewListener() {
         btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(""));
         cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
+        llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
         btnRemove.setOnClickListener(v -> {
             if (btnRemove.getVisibility() == View.VISIBLE) {
                 onToolbarRemoveAllCart();
@@ -1626,27 +1631,31 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void showMainContainerLoadingInitData() {
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
-        cardFooter.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        bottomLayoutShadow.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
     }
 
     public void showMainContainer() {
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
-        cardFooter.setVisibility(View.VISIBLE);
+        bottomLayout.setVisibility(View.VISIBLE);
+        bottomLayoutShadow.setVisibility(View.VISIBLE);
         cardHeader.setVisibility(View.VISIBLE);
     }
 
     public void showErrorContainer() {
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
-        cardFooter.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        bottomLayoutShadow.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
     }
 
     public void showEmptyCartContainer() {
         llNetworkErrorView.setVisibility(View.GONE);
-        cardFooter.setVisibility(View.GONE);
+        bottomLayout.setVisibility(View.GONE);
+        bottomLayoutShadow.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
         onContentAvailabilityChanged(false);
     }
