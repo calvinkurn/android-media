@@ -734,7 +734,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
 
     public void eventCancelPromoStackingLogistic() {
         sendEventCategoryAction(
-            "",
+                "",
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_X_ON_PROMO_STACKING_LOGISTIC
         );
@@ -923,5 +923,12 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT,
                 tickerId
         );
+    }
+
+    public void eventViewPopupPriceIncrease(String eventLabel) {
+        sendEventCategoryActionLabel(EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_PRICE_INCREASE,
+                eventLabel);
     }
 }
