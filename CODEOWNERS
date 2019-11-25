@@ -4,14 +4,14 @@
 /tkpdcore/          @tokopedia/core-team
 /tkpdinbox/         @tokopedia/minion-kevin
 /tkpdtransaction/   @tokopedia/minion-darth
-/feature/discovery/category_common/                 @tokopedia/minion-stuart
+/features/discovery/category_common/                @tokopedia/minion-stuart
 /features/discovery/topadssdk/                      @tokopedia/minion-dave
 /features/discovery/home/                           @tokopedia/minion-dave
 /features/discovery/home_recom/                     @tokopedia/minion-dave
 /features/discovery/recentview/                     @tokopedia/minion-dave
 /features/discovery/wishlist_common/                @tokopedia/minion-dave
 /features/discovery/productcard/                    @tokopedia/minion-dave
-/feature/discovery/search/                          @tokopedia/minion-dave
+/features/discovery/search/                         @tokopedia/minion-dave
 /features/discovery/productcard/                    @tokopedia/minion-dave
 /features/discovery/search/                         @tokopedia/minion-dave
 /features/discovery/filter/                         @tokopedia/minion-dave

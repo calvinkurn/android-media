@@ -255,8 +255,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private boolean setToolbarNotificationCount(int notificationCount) {
         if (menuNotification == null && getActivity() == null)
             return true;
-        if (badgeViewNotification == null)
-            badgeViewNotification = new BadgeView(getActivity());
+        if (badgeViewNotification == null) badgeViewNotification = new BadgeView(getActivity());
 
         badgeViewNotification.bindTarget(menuNotification);
         badgeViewNotification.setBadgeGravity(Gravity.END | Gravity.TOP);
@@ -268,8 +267,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     private void setToolbarInboxCount(int badgeNumber) {
         if (menuInbox != null) {
-            if (badgeViewInbox == null)
-                badgeViewInbox = new BadgeView(getContext());
+            if (badgeViewInbox == null) badgeViewInbox = new BadgeView(getContext());
 
             badgeViewInbox.bindTarget(menuInbox);
             badgeViewInbox.setBadgeGravity(Gravity.END | Gravity.TOP);
