@@ -280,8 +280,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         oldPriceTextView.text = cart.oldPrice
         newPriceTextView.text = FlightCurrencyFormatUtil.convertToIdrPrice(cart.configuration.price)
-        tickerBookingPromo.tickerType = if (cart.promoEligibility.success) Ticker.TYPE_ANNOUNCEMENT else Ticker.TYPE_WARNING
-        tickerBookingPromo.setTextDescription(cart.promoEligibility.message)
+
+        if (cart.promoEligibility.message.isNotEmpty()) {
+            tickerBookingPromo.tickerType = if (cart.promoEligibility.success) Ticker.TYPE_ANNOUNCEMENT else Ticker.TYPE_WARNING
+            tickerBookingPromo.setTextDescription(cart.promoEligibility.message)
+        } else tickerBookingPromo.visibility = View.GONE
 
         continueToPayButton.setOnClickListener {
             showCheckBookingDetailPopUp()
@@ -312,10 +315,20 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
+                addToCart()
             }
 
             dialog.show()
         }
+    }
+
+    private fun addToCart() {
+        showLoadingDialog()
+        val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
+        bookingViewModel.addToCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart),
+                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
+                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_get_cart),
+                requestId)
     }
 
     private fun setUpTimer(timeStamp: Date) {
@@ -414,16 +427,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
             rv_passengers_info.adapter = flightPassengerAdapter
             flightPassengerAdapter.listener = object : FlightBookingPassengerAdapter.PassengerViewHolderListener {
                 override fun onClickEditPassengerListener(passenger: FlightBookingPassengerViewModel) {
-                    // if paramvm is oneoway, depaturedate = depaturedate else returndate
                     val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
                     navigateToPassengerInfoDetail(passenger, bookingViewModel.getDepartureDate(), requestId)
                 }
             }
         }
         flightPassengerAdapter.updateList(passengers)
-        if (passengers.isNotEmpty() && passengers.first().passengerLastName.isNullOrEmpty() && switch_traveller_as_passenger.isChecked && needToFillFirstPassengerDetail) {
-            val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
-            navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), requestId)
+        if (passengers.isNotEmpty() && passengers.first().passengerLastName.isNullOrEmpty() && switch_traveller_as_passenger.isChecked) {
+            if (needToFillFirstPassengerDetail) {
+                val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
+                navigateToPassengerInfoDetail(passengers.first(), bookingViewModel.getDepartureDate(), requestId)
+            }
+            //else if user change name -> uncheck toggle
         }
     }
 
@@ -481,11 +496,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
         launchLoadingPageJob.start()
         setUpView()
-        val requestId = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
-        bookingViewModel.addToCart(GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart),
-                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart),
-                GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.dummy_get_cart),
-                requestId)
+        addToCart()
         bookingViewModel.getProfile(GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile))
     }
 
@@ -799,6 +810,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         dialog.setPrimaryCTAClickListener {
                             dialog.dismiss()
                             refreshCart()
+                        }
+                    }
+                    FlightErrorConstant.FLIGHT_INVALID_USER -> {
+                        dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
+                        dialog.setImageDrawable(R.drawable.ic_flight_booking_error_invalid_passenger)
+                        dialog.setPrimaryCTAText("Ubah Nama")
+                        dialog.setPrimaryCTAClickListener {
+                            dialog.dismiss()
                         }
                     }
                     else -> {

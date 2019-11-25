@@ -278,7 +278,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightVerifyPassenger.passportNumber = passenger.passportNumber ?: ""
                     flightVerifyPassenger.passportCountry = passenger.passportIssuerCountry?.countryId
                             ?: ""
-                    flightVerifyPassenger.passportExpire = passenger.passportExpiredDate ?: ""
+                    flightVerifyPassenger.passportExpire = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, passenger.passportExpiredDate)) ?: ""
                 }
 
                 for (mealMeta in passenger.flightBookingMealMetaViewModels) {
@@ -475,12 +475,12 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun onCancelAppliedVoucher(rawQuery: String) {
-        launch {
+        launchCatchError(block = {
             withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCancelVoucher>()
-        }
+        }) { }
     }
 
     fun getLuggageViewModels(): List<FlightBookingAmenityMetaViewModel> {
