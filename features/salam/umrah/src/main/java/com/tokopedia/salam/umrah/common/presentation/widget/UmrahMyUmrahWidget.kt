@@ -6,17 +6,17 @@ import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.TrackingUmrahUtil
-import com.tokopedia.salam.umrah.common.presentation.model.MyUmrahWidgetModel
+import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_umrah_my_umrah.view.*
 
 /**
  * @author by furqan on 10/10/2019
  */
-class MyUmrahWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class UmrahMyUmrahWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    lateinit var myUmrahModel: MyUmrahWidgetModel
+    lateinit var myUmrahModel: UmrahMyUmrahWidgetModel
 
     init {
         View.inflate(context, R.layout.widget_umrah_my_umrah, this)
