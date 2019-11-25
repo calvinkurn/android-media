@@ -28,13 +28,6 @@
                 app:tickerType="warning"
                 tools:descriptionText="@string/clash_bottomsheet_info_warning_new" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_20"
-                android:text="@string/clash_bottomsheet_subtitle_new"
-                android:visibility="gone" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_clashing_option"
                 android:layout_width="match_parent"
