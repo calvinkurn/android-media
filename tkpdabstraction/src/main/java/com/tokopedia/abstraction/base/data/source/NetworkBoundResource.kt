@@ -42,9 +42,9 @@ abstract class NetworkBoundResource<ResponseType, ResultType> {
                     setValue(Resource.success(dbResult))
                 }
             }catch (e: Exception){
-                Timber.tag("NetworkBoundResource").e("An error happened: $e")
-                onFetchError()
+                Timber.tag(NetworkBoundResource::class.java.name).e("An error happened: $e")
                 setValue(Resource.error(e, loadFromDb()))
+                onFetchError()
             }
         }
         return this

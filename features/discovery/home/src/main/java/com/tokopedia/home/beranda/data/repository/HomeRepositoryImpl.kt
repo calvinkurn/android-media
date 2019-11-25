@@ -47,7 +47,9 @@ class HomeRepositoryImpl @Inject constructor(
             }
 
             override suspend fun loadFromDb(): HomeData? {
-                return homeDao.getHomeData().copy(isCache = true)
+                val data: HomeData? = homeDao.getHomeData()
+                if(data != null) return data.copy(isCache = true)
+                return data
             }
 
             override suspend fun createCallAsync(): GraphqlResponse {

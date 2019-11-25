@@ -59,6 +59,7 @@ public class HomeMapper implements Func1<HomeData, HomeViewModel> {
 
     @Override
     public HomeViewModel call(HomeData homeData) {
+        if(homeData == null) return null;
         List list = new ArrayList<>();
 
 

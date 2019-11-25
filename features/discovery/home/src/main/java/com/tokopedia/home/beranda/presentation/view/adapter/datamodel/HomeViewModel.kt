@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 
 data class HomeViewModel(
         val homeFlag: HomeFlag = HomeFlag(),
-        val list: List<HomeVisitable<Any>> = listOf(),
+        val list: List<Visitable<Any>> = listOf(),
         val isCache: Boolean = false
 ) : Visitable<HomeViewType> {
 

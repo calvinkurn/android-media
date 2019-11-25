@@ -455,18 +455,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initRefreshLayout() {
-        refreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                if (presenter != null) {
-                    presenter.searchHint();
-                    presenter.getHomeData();
-                }
-                /**
-                 * set notification gimmick
-                 */
-                homeMainToolbar.setNotificationNumber(0);
+        refreshLayout.post(() -> {
+            if (presenter != null) {
+                presenter.searchHint();
+                presenter.getHomeData();
             }
+            /**
+             * set notification gimmick
+             */
+            homeMainToolbar.setNotificationNumber(0);
         });
         refreshLayout.setOnRefreshListener(this);
     }
@@ -503,7 +500,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
     }
 
-    private void setData(List<HomeVisitable> data, int flag){
+    private void setData(List<Visitable> data, int flag){
         if(!data.isEmpty()) {
             if (adapter.getItemCount() != 0) {
                 updateListOnResume(data);
@@ -519,7 +516,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
-    private boolean isDataValid(List<HomeVisitable> visitables) {
+    private boolean isDataValid(List<Visitable> visitables) {
         return containsInstance(visitables, BannerViewModel.class);
     }
 
@@ -872,7 +869,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setItems(List<HomeVisitable> items, int repositoryFlag) {
+    public void setItems(List<Visitable> items, int repositoryFlag) {
         List<Visitable> list = new ArrayList<>(items);
         if (repositoryFlag == HomePresenter.FLAG_FROM_NETWORK) {
             adapter.setItems( needToShowGeolocationComponent() ? removeReviewComponent(list) : removeGeolocationComponent(items));
@@ -929,7 +926,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return local;
     }
 
-    private List<Visitable> removeGeolocationComponent(List<HomeVisitable> items){
+    private List<Visitable> removeGeolocationComponent(List<Visitable> items){
         List<Visitable> local = new ArrayList<>(items);
         for (Visitable visitable : local){
             if(visitable instanceof GeolocationPromptViewModel){
@@ -1039,9 +1036,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void updateListOnResume(List<HomeVisitable> visitables) {
+    public void updateListOnResume(List<Visitable> visitables) {
         if (feedTabVisitable != null) {
-            visitables.add((HomeVisitable) feedTabVisitable);
+            visitables.add(feedTabVisitable);
         }
         presenter.getHeaderData(false);
 
@@ -1067,13 +1064,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void addImpressionToTrackingQueue(List<HomeVisitable> visitables) {
+    public void addImpressionToTrackingQueue(List<Visitable> visitables) {
         List<Object> combinedTracking = new ArrayList<>();
-        for (HomeVisitable visitable : visitables) {
-            if (visitable.isTrackingCombined() && visitable.getTrackingDataForCombination() != null) {
-                combinedTracking.addAll(visitable.getTrackingDataForCombination());
-            } else if (!visitable.isTrackingCombined() && visitable.getTrackingData() != null) {
-                HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, visitable.getTrackingData());
+        for (Visitable visitable : visitables) {
+            if(visitable instanceof HomeVisitable) {
+                HomeVisitable homeVisitable = (HomeVisitable) visitable;
+                if (homeVisitable.isTrackingCombined() && homeVisitable.getTrackingDataForCombination() != null) {
+                    combinedTracking.addAll(homeVisitable.getTrackingDataForCombination());
+                } else if (!homeVisitable.isTrackingCombined() && homeVisitable.getTrackingData() != null) {
+                    HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, homeVisitable.getTrackingData());
+                }
             }
         }
         if (!combinedTracking.isEmpty()) {

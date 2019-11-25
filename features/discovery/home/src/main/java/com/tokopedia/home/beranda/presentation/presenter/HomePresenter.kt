@@ -27,6 +27,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.subscriber.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
@@ -45,6 +46,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import rx.subscriptions.Subscriptions
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -147,17 +149,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
                 })
     }
 
-    override fun updateHomeData() {
-        lastRequestTimeHomeData = System.currentTimeMillis()
-        launch(coroutineContext){
-            _homeData.removeSource(homeSource)
-            homeSource = homeRepository.getHomeData()
-            _homeData.addSource(homeSource){
-                _homeData.value = it.clone(data = homeMapper.call(it.data))
-            }
-        }
-    }
-
     override fun dismissReview() {
         view?.onSuccessDismissReview()
 
@@ -188,12 +179,29 @@ class HomePresenter(private val userSession: UserSessionInterface,
     override fun getHomeData() {
         initHeaderViewModelData()
         lastRequestTimeSendGeolocation = System.currentTimeMillis()
-        launch(coroutineContext){
+        launchCatchError(coroutineContext, block = {
             _homeData.removeSource(homeSource)
             homeSource = homeRepository.getHomeData()
             _homeData.addSource(homeSource){
                 _homeData.value = it.clone(data = homeMapper.call(it.data))
             }
+        }){
+            Timber.tag(HomePresenter::class.java.name).e(it)
+            _homeData.value = Resource.error(Throwable(), null)
+        }
+    }
+
+    override fun updateHomeData() {
+        lastRequestTimeHomeData = System.currentTimeMillis()
+        launchCatchError(coroutineContext, block = {
+            _homeData.removeSource(homeSource)
+            homeSource = homeRepository.getHomeData()
+            _homeData.addSource(homeSource){
+                _homeData.value = it.clone(data = homeMapper.call(it.data))
+            }
+        }){
+            Timber.tag(HomePresenter::class.java.name).e(it)
+            _homeData.value = Resource.error(Throwable(), null)
         }
     }
 
