@@ -5,5 +5,5 @@ package com.tokopedia.feedcomponent.view.viewmodel.statistic
  */
 data class PostStatisticCommissionUiModel(
         val totalCommission: String,
-        val postStatisticList: List<PostStatisticUiModel>
+        val postStatisticList: List<PostStatisticDetailUiModel>
 )

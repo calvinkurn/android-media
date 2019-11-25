@@ -4,19 +4,22 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.statistic.PostStatisticAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticPlaceholderUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
-import com.tokopedia.kotlin.extensions.view.warn
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 2019-11-21
@@ -24,6 +27,8 @@ import kotlin.coroutines.CoroutineContext
 class PostStatisticBottomSheet : BottomSheetUnify() {
 
     companion object {
+
+        private const val DETAIL_COUNT = 4
 
         fun newInstance(context: Context): PostStatisticBottomSheet {
             return PostStatisticBottomSheet().apply {
@@ -34,14 +39,21 @@ class PostStatisticBottomSheet : BottomSheetUnify() {
             }
         }
     }
+    private val statisticAdapter = PostStatisticAdapter().apply {
+        setItems(List(DETAIL_COUNT) { PostStatisticPlaceholderUiModel })
+    }
 
     private lateinit var tvProductsCommission: TextView
     private lateinit var rvStatistic: RecyclerView
-    private val statisticAdapter = PostStatisticAdapter()
+    private lateinit var ivLoading: AppCompatImageView
+    private lateinit var groupDetail: Group
 
     fun setPostStatisticCommissionModel(model: PostStatisticCommissionUiModel) {
         tvProductsCommission.text = model.totalCommission
         statisticAdapter.setItemsAndAnimateChanges(model.postStatisticList)
+
+        ivLoading.hide()
+        groupDetail.show()
     }
 
     fun show(fragmentManager: FragmentManager,
@@ -49,7 +61,7 @@ class PostStatisticBottomSheet : BottomSheetUnify() {
              title: String,
              productIds: List<String>,
              listener: Listener) {
-        if (tag != activityId) resetData()
+        resetData()
         listener.onGetPostStatisticModelList(activityId, productIds)
         setTitle(title)
         show(fragmentManager, activityId)
@@ -58,19 +70,30 @@ class PostStatisticBottomSheet : BottomSheetUnify() {
     private fun initView(view: View) {
         tvProductsCommission = view.findViewById(R.id.tv_products_commission)
         rvStatistic = view.findViewById(R.id.rv_statistic)
+        ivLoading = view.findViewById(R.id.iv_loading)
+        groupDetail = view.findViewById(R.id.group_detail)
 
-        setupList()
+        setupList(view)
+        initLoading(view)
     }
 
-    private fun setupList() {
+    private fun setupList(view: View) {
         rvStatistic.apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
             adapter = statisticAdapter
         }
     }
 
-    private fun resetData() {
+    private fun initLoading(view: View) {
+        Glide.with(view)
+                .asGif()
+                .load(R.drawable.ic_feed_loading_indeterminate)
+                .into(ivLoading)
+    }
 
+    private fun resetData() {
+        ivLoading.show()
+        groupDetail.invisible()
     }
 
     interface Listener {

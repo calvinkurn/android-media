@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 

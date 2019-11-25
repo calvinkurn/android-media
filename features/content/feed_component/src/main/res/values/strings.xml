@@ -72,5 +72,6 @@
     <string name="feed_post_statistic_like_count">like(s)</string>
     <string name="feed_post_statistic_comment_count">comment(s)</string>
     <string name="feed_post_statistic_see_detail">Lihat</string>
+    <string name="feed_post_statistic_commission_placeholder">Rp 0</string>
 
 </resources>

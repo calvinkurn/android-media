@@ -6,6 +6,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_loading"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:srcCompat="@drawable/ic_feed_loading_indeterminate"
+        />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="ll_commision_detail,tv_commission_for_post,tv_check_dashboard,rv_statistic,tv_info"
+        />
+
     <LinearLayout
         android:id="@+id/ll_commision_detail"
         android:layout_width="0dp"
@@ -32,6 +51,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:textColor="@color/Neutral_N700_96"
+            android:text="@string/feed_post_statistic_commission_placeholder"
             app:typographyType="heading_1"
             tools:text="Rp165.000"
             />
@@ -75,6 +95,7 @@
         tools:listitem="@layout/item_post_statistic" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"

@@ -10,16 +10,13 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.domain.model.commission.AffiliatedProductByProductIDs
 import com.tokopedia.feedcomponent.domain.model.statistic.FeedGetStatsPosts
 import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticCommissionUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.feedcomponent.view.subscriber.TrackPostClickSubscriber
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailUiModel
 import com.tokopedia.kotlin.extensions.view.toCompactAmountString
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.profile.R
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileFirstUseCase
@@ -235,24 +232,24 @@ class ProfilePresenter @Inject constructor(
         return userId
     }
 
-    private fun FeedGetStatsPosts.convertToUiModel(likeCount: Int, commentCount: Int): List<PostStatisticUiModel> = stats.firstOrNull().let {
+    private fun FeedGetStatsPosts.convertToUiModel(likeCount: Int, commentCount: Int): List<PostStatisticDetailUiModel> = stats.firstOrNull().let {
         listOf(
-                PostStatisticUiModel(
+                PostStatisticDetailUiModel(
                         R.drawable.ic_feed_see_darker_grey,
                         it?.view?.fmt.takeUnless(String?::isNullOrEmpty) ?: "0",
                         R.string.feed_post_statistic_seen_count
                 ),
-                PostStatisticUiModel(
+                PostStatisticDetailUiModel(
                         R.drawable.ic_feed_click_darker_grey,
                         it?.click?.fmt.takeUnless(String?::isNullOrEmpty) ?: "0",
                         R.string.feed_post_statistic_click_count
                 ),
-                PostStatisticUiModel(
+                PostStatisticDetailUiModel(
                         R.drawable.ic_thumb,
                         likeCount.toCompactAmountString(),
                         R.string.feed_post_statistic_like_count
                 ),
-                PostStatisticUiModel(
+                PostStatisticDetailUiModel(
                         R.drawable.ic_feed_comment,
                         commentCount.toCompactAmountString(),
                         R.string.feed_post_statistic_comment_count
