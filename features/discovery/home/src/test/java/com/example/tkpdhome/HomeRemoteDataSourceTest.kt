@@ -9,6 +9,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -22,14 +23,11 @@ import java.io.File
 @ExperimentalCoroutinesApi
 class HomeRemoteDataSourceTest {
     val graphqlRepository = mockk<GraphqlRepository>()
-    val userSessionInterface = mockk<UserSessionInterface>()
     private lateinit var homeRemoteDataSource: HomeRemoteDataSource
 
     @Before
     fun init(){
-        homeRemoteDataSource = HomeRemoteDataSource(graphqlRepository)
-        every { userSessionInterface.isLoggedIn } returns true
-        every { userSessionInterface.userId } returns "-1"
+        homeRemoteDataSource = HomeRemoteDataSource(graphqlRepository, Dispatchers.Unconfined)
     }
 
     @Test
@@ -38,7 +36,7 @@ class HomeRemoteDataSourceTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
                 HomeData::class.java to homeData
         ), mapOf(), false)
-        runBlocking {
+        runBlocking(Dispatchers.Unconfined){
             val graphqlResponse = homeRemoteDataSource.getHomeData()
             val result = graphqlResponse.getData<HomeData>(HomeData::class.java)
             Assert.assertEquals(null, graphqlResponse.getError(HomeData::class.java))

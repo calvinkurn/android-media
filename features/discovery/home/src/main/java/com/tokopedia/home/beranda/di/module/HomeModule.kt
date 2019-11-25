@@ -56,6 +56,11 @@ class HomeModule {
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @HomeScope
+    @Named("dispatchersIO")
+    @Provides
+    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @HomeScope
     @Provides
     fun providehomeMapper(@ApplicationContext context: Context?,
                                     homeVisitableFactory: HomeVisitableFactory?): HomeMapper {
@@ -103,7 +108,7 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository) = HomeRemoteDataSource(graphqlRepository)
+    fun provideHomeRemoteDataSource(graphqlRepository: GraphqlRepository, @Named("dispatchersIO") dispatcher: CoroutineDispatcher) = HomeRemoteDataSource(graphqlRepository, dispatcher)
 
     @HomeScope
     @Provides

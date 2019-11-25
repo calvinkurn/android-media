@@ -20,6 +20,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.promotionstarget.presentation.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -32,20 +33,19 @@ abstract class NetworkBoundResource<ResponseType, ResultType> {
     private val supervisorJob = SupervisorJob()
 
     suspend fun build(): NetworkBoundResource<ResponseType, ResultType> {
-        CoroutineScope(coroutineContext).launch(supervisorJob) {
-            try {
-                val dbResult = loadFromDb()
-                if (shouldFetch(dbResult)) {
-                    fetchFromNetwork(dbResult)
-                } else {
-                    Timber.tag(NetworkBoundResource::class.java.name).d("Return data from local database")
-                    setValue(Resource.success(dbResult))
-                }
-            }catch (e: Exception){
-                Timber.tag(NetworkBoundResource::class.java.name).e("An error happened: $e")
-                setValue(Resource.error(e, loadFromDb()))
-                onFetchError()
+        CoroutineScope(coroutineContext).launchCatchError(supervisorJob, block = {
+            val dbResult = loadFromDb()
+            if (shouldFetch(dbResult)) {
+                fetchFromNetwork(dbResult)
+            } else {
+                Timber.tag(NetworkBoundResource::class.java.name).d("Return data from local database")
+                setValue(Resource.success(dbResult))
             }
+
+        }){
+            Timber.tag(NetworkBoundResource::class.java.name).e("An error happened: $it")
+            setValue(Resource.error(it, loadFromDb()))
+            onFetchError()
         }
         return this
     }

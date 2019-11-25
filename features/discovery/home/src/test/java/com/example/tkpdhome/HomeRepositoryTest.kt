@@ -47,10 +47,11 @@ class HomeRepositoryTest {
     fun `Get home data from server when no internet is available`(){
         val exception = Exception("Internet")
         val mockHomeData = mockk<HomeData>()
+        coEvery { service.getHomeData() } throws exception
+        coEvery { dao.getHomeData() } returns mockHomeData
+        coEvery{ mockHomeData.copy(any(), any(), any(),any(),any(),any(),any(),any()) } returns mockHomeData
+
         runBlocking {
-            coEvery { service.getHomeData() } throws exception
-            coEvery { dao.getHomeData() } returns mockHomeData
-            coEvery{ mockHomeData.copy(any(), any(), any(),any(),any(),any(),any(),any()) } returns mockHomeData
             repository.getHomeData().observeForever(observerHome)
         }
 
