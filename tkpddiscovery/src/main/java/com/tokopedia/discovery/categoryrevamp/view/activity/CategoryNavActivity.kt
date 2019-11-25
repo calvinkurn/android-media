@@ -220,22 +220,21 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                     if (it.data.appRedirectionURL != null && !it.data.appRedirectionURL?.equals("")!!) {
                         RouteManager.route(this, it.data.appRedirectionURL)
                         finish()
-                    } else if (it.data.isBanned == IS_BANNED) {
-                            setEmptyView(it.data)
-                    progressBar.hide()
-                    if (it.data.isBanned == IS_BANNED) {
-                        hideBottomNavigation()
                     } else {
-                        showBottomNavigation()
+                        if (it.data.isBanned == IS_BANNED) {
+                            hideBottomNavigation()
+                        } else {
+                            showBottomNavigation()
+                        }
+                        layout_banned_screen.hide()
+                        if (it.data.isAdult == IS_ADULT) {
+                            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
+                        }
+                        initViewPager()
+                        loadSection(it.data)
+                        initSwitchButton()
+                        initBottomSheetListener()
                     }
-                    layout_banned_screen.hide()
-                    if (it.data.isAdult == IS_ADULT) {
-                        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, departmentId)
-                    }
-                    initViewPager()
-                    loadSection(it.data)
-                    initSwitchButton()
-                    initBottomSheetListener()
                 }
                 is Fail -> {
                     progressBar.hide()
