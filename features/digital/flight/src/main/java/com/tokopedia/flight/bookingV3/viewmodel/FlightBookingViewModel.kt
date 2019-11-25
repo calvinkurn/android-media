@@ -76,7 +76,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun getSearchParam(): FlightSearchPassDataViewModel = flightBookingParam.searchParam
     fun getFlightPriceModel(): FlightPriceViewModel = flightBookingParam.flightPriceViewModel
 
-    fun getCart(rawQuery: String, cartId: String, dummy: String = "") {
+    fun getCart(rawQuery: String, cartId: String) {
         val params = mapOf(PARAM_CART_ID to cartId)
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
@@ -116,7 +116,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun verifyCartData(query: String, totalPrice: Int, contactName: String,
                        contactEmail: String, contactPhone: String, contactCountry: String,
-                       dummy: String, checkVoucherQuery: String, dummyCheckVoucher: String) {
+                       checkVoucherQuery: String) {
 
         if (validateFields(contactName, contactEmail, contactPhone)) {
             val promoCode = (flightPromoResult.value as FlightPromoViewEntity).promoData.promoCode
@@ -132,7 +132,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 }
 
                 if (promoCode.isNotEmpty()) {
-                    val checkPromoData = async { checkVoucher(checkVoucherQuery, getCartId(), dummyCheckVoucher) }
+                    val checkPromoData = async { checkVoucher(checkVoucherQuery, getCartId()) }
                     val flightVerifyData = data.await()
                     flightVerifyData.data.cartItems[0].promoEligibility = checkPromoData.await()
 
@@ -143,7 +143,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         if (flightVerifyData.meta.needRefresh && flightVerifyData.meta.maxRetry >= verifyRetryCount) {
                             verifyRetryCount++
                             delay(flightVerifyData.meta.refreshTime * 1000.toLong())
-                            verifyCartData(query, totalPrice, contactName, contactEmail, contactPhone, contactCountry, dummy, checkVoucherQuery, dummyCheckVoucher)
+                            verifyCartData(query, totalPrice, contactName, contactEmail, contactPhone, contactCountry, checkVoucherQuery)
                         } else {
                             verifyRetryCount = 0
                             flightVerifyResult.value = Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY))
@@ -158,7 +158,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         if (flightVerifyData.meta.needRefresh && flightVerifyData.meta.maxRetry >= verifyRetryCount) {
                             verifyRetryCount++
                             delay(flightVerifyData.meta.refreshTime * 1000.toLong())
-                            verifyCartData(query, totalPrice, contactName, contactEmail, contactPhone, contactCountry, dummy, checkVoucherQuery, dummyCheckVoucher)
+                            verifyCartData(query, totalPrice, contactName, contactEmail, contactPhone, contactCountry, checkVoucherQuery)
                         } else {
                             verifyRetryCount = 0
                             flightVerifyResult.value = Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY))
@@ -523,7 +523,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         flightOtherPriceData.value = otherPrices
     }
 
-    private suspend fun checkVoucher(query: String, cartId: String, dummy: String): FlightVerify.PromoEligibility {
+    private suspend fun checkVoucher(query: String, cartId: String): FlightVerify.PromoEligibility {
         val promoEligibility = FlightVerify.PromoEligibility()
         val promoCode = (flightPromoResult.value as FlightPromoViewEntity).promoData.promoCode
         val params = mapOf(PARAM_CART_ID to cartId, PARAM_VOUCHER_CODE to promoCode)
@@ -573,7 +573,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         flightBookingParam.flightPriceViewModel = flightPriceViewModel
     }
 
-    fun addToCart(query: String, getCartQuery: String, dummy: String, idempotencyKey: String) {
+    fun addToCart(query: String, getCartQuery: String, idempotencyKey: String) {
 
         val addToCartParam = createAddToCartParam(idempotencyKey)
         val param = mapOf(PARAM_ATC to addToCartParam)
@@ -585,7 +585,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<FlightAddToCartData.Response>()
 
             flightBookingParam.cartId = addToCartData.addToCartData.id
-            getCart(getCartQuery, getCartId(), dummy)
+            getCart(getCartQuery, getCartId())
         })
         {
             Log.d("ERRORRATC", it.message + " " + it.localizedMessage)
@@ -615,7 +615,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     fun getReturnId(): String = flightBookingParam.returnId
     fun getDepartureDate(): String = flightBookingParam.departureDate
 
-    fun checkOutCart(query: String, price: Int, dummy: String) {
+    fun checkOutCart(query: String, price: Int) {
 
         val checkoutParam = createCheckoutParam(getCartId(), price)
         val params = mapOf(PARAM_VERIFY_CART to checkoutParam)
@@ -658,7 +658,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             passenger.flightBookingLuggageMetaViewModels = listOf()
         }
         flightPassengersData.value = passengerViewModels
-        checkOutCart(query, price, "")
+        checkOutCart(query, price)
     }
 
     companion object {

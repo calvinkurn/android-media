@@ -8,7 +8,7 @@ import com.tokopedia.flight.common.constant.FlightErrorConstant
 
 class FlightBookingErrorCodeMapper {
     companion object {
-        fun mapToFlightErrorCode(errorCode: Int): String {
+        fun mapToFlightErrorCode(errorCode: Int, defaultError: String = FlightErrorConstant.INVALID_JSON): String {
             return when (errorCode) {
                 56, 73, 83, 731, 732, 733, 734, 735 -> FlightErrorConstant.FLIGHT_SOLD_OUT
                 1, 2, 3, 4, 8, 9, 13, 14, 15,
@@ -20,7 +20,7 @@ class FlightBookingErrorCodeMapper {
                 44 -> FlightErrorConstant.FLIGHT_STILL_IN_PROCESS
                 62 -> FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME
                 22, 23, 98 -> FlightErrorConstant.FLIGHT_INVALID_USER
-                else -> FlightErrorConstant.INVALID_JSON
+                else -> defaultError
             }
         }
 
@@ -47,7 +47,7 @@ class FlightBookingErrorCodeMapper {
                 FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING -> "Untuk pesan tiket dengan rute perjalanan yang sama, kamu bisa tunggu x menit. "
                 FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> "Untuk pesan tiket dengan rute perjalanan yang sama, kamu bisa tunggu x menit"
                 FlightErrorConstant.FLIGHT_INVALID_USER -> "Nama penumpang yang kamu tulis tidak diperkenankan oleh Tokopedia. Pastikan nama sudah benar, ya."
-                else -> "Oops, ada sedikit gangguan"
+                else -> "Tenang, kami sedang memperbaiki gangguan ini."
             }
         }
     }

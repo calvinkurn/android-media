@@ -42,4 +42,5 @@ public @interface FlightErrorConstant {
     String FLIGHT_DUPLICATE_USER_NAME = "62";
     String FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY = "1335";
     String FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY = "1337";
+    String FLIGHT_ERROR_ON_CHECKOUT_GENERAL = "1339";
 }
