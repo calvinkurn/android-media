@@ -2,9 +2,7 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.common_digital.common.util.AnalyticUtils
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageFavoritesModel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
@@ -26,12 +24,9 @@ class DigitalHomePageFavoriteViewHolder(itemView: View?, val onItemBindListener:
                     itemView.digital_homepage_favorites_shimmering.hide()
                     itemView.digital_homepage_favorites_container.show()
                     itemView.digital_homepage_favorites_title.text = title
-
-                    with(itemView.rv_digital_homepage_favorites) {
-                        adapter = DigitalItemFavoriteAdapter(items, onItemBindListener)
-                        onItemBindListener.onSectionItemImpression(BEHAVIORAL_CATEGORY_IMPRESSION)
-                    }
+                    itemView.rv_digital_homepage_favorites.adapter = DigitalItemFavoriteAdapter(items, onItemBindListener)
                 }
+                onItemBindListener.onSectionItemImpression(BEHAVIORAL_CATEGORY_IMPRESSION)
             } else {
                 itemView.digital_homepage_favorites_shimmering.hide()
                 itemView.digital_homepage_favorites_container.hide()

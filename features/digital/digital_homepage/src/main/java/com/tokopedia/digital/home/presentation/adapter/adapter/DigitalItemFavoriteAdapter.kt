@@ -29,7 +29,6 @@ class DigitalItemFavoriteAdapter(val items: List<DigitalHomePageSectionModel.Ite
 
     class DigitalItemFavoriteViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: DigitalHomePageSectionModel.Item, onItemBindListener: OnItemBindListener) {
-//            onItemBindListener.onCategoryImpression(element, adapterPosition + 1)
             itemView.category_frame_image.loadImage(element.mediaUrl)
             itemView.category_frame_name.text = element.title
             itemView.setOnClickListener {

@@ -1,9 +1,9 @@
 package com.tokopedia.digital.home.presentation.adapter.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
@@ -28,7 +28,6 @@ class DigitalItemSubMenuCategoryAdapter(val submenu: List<DigitalHomePageCategor
 
     class DigitalItemSubmenuCategoryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: DigitalHomePageCategoryModel.Submenu?, onItemBindListener: OnItemBindListener) {
-            onItemBindListener.onCategoryImpression(element, adapterPosition + 1)
             itemView.category_image.loadImage(element?.icon?:"")
             itemView.category_name.text = element?.label
             itemView.setOnClickListener {

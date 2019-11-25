@@ -185,27 +185,23 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             it?.let { isAllError ->
                 if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView, object : NetworkErrorHelper.RetryClickedListener {
                     override fun onRetryClicked() {
-                        loadDataFromCloud()
+                        loadInitialData()
                     }
                 })
             }
         })
     }
 
-    fun loadDataFromCloud() {
-        isLoadingInitialData = true
-        adapter.clearAllElements()
-        showLoading()
-        viewModel.getInitialList(true)
-    }
-
     override fun loadData(page: Int) {
-        trackingUtil.resetInitialImpressionTracking()
-        viewModel.getInitialList(swipeToRefresh?.isRefreshing ?: false)
+
     }
 
     override fun loadInitialData() {
-        loadDataFromCloud()
+        isLoadingInitialData = true
+        adapter.clearAllElements()
+        showLoading()
+        trackingUtil.resetInitialImpressionTracking()
+        viewModel.getInitialList(swipeToRefresh?.isRefreshing ?: false)
     }
 
     override fun onBannerItemDigitalBind(loadFromCloud: Boolean?) {
@@ -276,6 +272,11 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         RouteManager.route(activity, element.applink)
     }
 
+    override fun onRecommendationClicked(element: RecommendationItemEntity, position: Int) {
+        trackingUtil.eventRecommendationClick(element, position)
+        RouteManager.route(activity, element.applink)
+    }
+
     override fun onSectionItemImpression(sectionType: String) {
         val sectionOrder = when(sectionType) {
             BEHAVIORAL_CATEGORY_IMPRESSION -> FAVORITES_ORDER
@@ -302,8 +303,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         // do nothing
     }
 
-    override fun onRecommendationImpression(element: RecommendationItemEntity, position: Int) {
-        // do nothing
+    override fun onRecommendationImpression(elements: List<RecommendationItemEntity>) {
+        trackingUtil.eventRecommendationImpression(elements)
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {

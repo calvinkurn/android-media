@@ -20,9 +20,10 @@ interface OnItemBindListener {
     fun onBannerItemClicked(element: DigitalHomePageBannerModel.Banner?, position: Int)
     fun onBannerAllItemClicked()
     fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, i: Int, sectionType: String)
-    fun onSectionItemImpression(sectionType: String)
+    fun onRecommendationClicked(element: RecommendationItemEntity, position: Int)
 
     fun onBannerImpressionTrack(banner: DigitalHomePageBannerModel.Banner?, i: Int)
     fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int)
-    fun onRecommendationImpression(element: RecommendationItemEntity, position: Int)
+    fun onSectionItemImpression(sectionType: String)
+    fun onRecommendationImpression(elements: List<RecommendationItemEntity>)
 }

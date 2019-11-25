@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.adapter.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
 import com.tokopedia.digital.home.model.DigitalQuickBuyItem
 import com.tokopedia.digital.home.presentation.customview.DigitalQuickBuyWidget
@@ -14,7 +15,7 @@ class DigitalItemRecommendationAdapter(val items: List<RecommendationItemEntity>
         val element = items[position]
         (viewHolder.itemView as DigitalQuickBuyWidget).data = mapRecommendationData(element)
         viewHolder.itemView.setOnClickListener {
-            onItemBindListener.onRecommendationImpression(element, position)
+            onItemBindListener.onRecommendationClicked(element, position)
         }
     }
 

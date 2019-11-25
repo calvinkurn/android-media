@@ -22,7 +22,7 @@ class DigitalHomePageTrustMarkViewHolder(itemView: View?, val onItemBindListener
                 element.data?.section?.run {
                     itemView.digital_homepage_trust_mark_shimmering.hide()
                     itemView.digital_homepage_trust_mark_container.show()
-                    itemView.rv_digital_homepage_trust_mark.adapter = DigitalItemTrustMarkAdapter(items, onItemBindListener)
+                    itemView.rv_digital_homepage_trust_mark.adapter = DigitalItemTrustMarkAdapter(items)
                 }
             } else {
                 itemView.digital_homepage_trust_mark_shimmering.hide()

@@ -29,7 +29,6 @@ class DigitalItemSpotlightAdapter(val items: List<DigitalHomePageSectionModel.It
 
     class DigitalItemSpotlightViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: DigitalHomePageSectionModel.Item, onItemBindListener: OnItemBindListener) {
-//            onItemBindListener.onCategoryImpression(element, adapterPosition + 1)
             itemView.spotlight_image.loadImage(element.mediaUrl)
             itemView.spotlight_name.text = element.title
             itemView.setOnClickListener {

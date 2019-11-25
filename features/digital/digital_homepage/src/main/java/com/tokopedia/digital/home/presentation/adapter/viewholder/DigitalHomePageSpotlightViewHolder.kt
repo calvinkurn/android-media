@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.graphics.Rect
 import android.view.View
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -24,7 +23,6 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
         if (element.isLoaded) {
             if (element.isSuccess) {
                 element.data?.section?.run {
-                    onItemBindListener.onSectionItemImpression(SPOTLIGHT_IMPRESSION)
                     itemView.digital_homepage_spotlight_shimmering.hide()
                     itemView.digital_homepage_spotlight_container.show()
                     itemView.digital_homepage_spotlight_title.text = title
@@ -42,6 +40,7 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
                             }
                         })
                     }
+                    onItemBindListener.onSectionItemImpression(SPOTLIGHT_IMPRESSION)
                 }
             } else {
                 itemView.digital_homepage_spotlight_shimmering.hide()

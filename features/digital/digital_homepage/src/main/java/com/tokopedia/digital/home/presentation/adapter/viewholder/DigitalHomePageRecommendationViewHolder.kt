@@ -23,7 +23,6 @@ class DigitalHomePageRecommendationViewHolder(itemView: View?, val onItemBindLis
             if (element.isSuccess) {
                 element.data.run {
                     val items = recommendationItemEntityList
-//                    onItemBindListener.onSectionItemImpression(SPOTLIGHT_IMPRESSION)
                     itemView.digital_homepage_recommendation_shimmering.hide()
                     itemView.digital_homepage_recommendation_container.show()
                     itemView.digital_homepage_recommendation_title.text = title
@@ -41,6 +40,7 @@ class DigitalHomePageRecommendationViewHolder(itemView: View?, val onItemBindLis
                             }
                         })
                     }
+                    onItemBindListener.onRecommendationImpression(items)
                 }
             } else {
                 itemView.digital_homepage_recommendation_shimmering.hide()

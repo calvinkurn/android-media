@@ -35,17 +35,6 @@ class DigitalQuickBuyWidget @JvmOverloads constructor(context: Context, attrs: A
         renderTitle(element)
         renderSubtitle(element)
         renderFooter(element)
-//        addImpressionListener(element)
-    }
-
-    open fun addImpressionListener(element: DigitalQuickBuyItem) {
-//        icon.addOnImpressionListener(element,
-//                object: ViewHintListener {
-//                    override fun onViewHint() {
-//                        listener.onImpressed(element, adapterPosition)
-//                    }
-//                }
-//        )
     }
 
     open fun renderImage(element: DigitalQuickBuyItem) {

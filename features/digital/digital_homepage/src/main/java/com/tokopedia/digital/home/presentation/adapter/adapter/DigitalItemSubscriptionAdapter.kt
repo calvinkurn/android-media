@@ -28,8 +28,6 @@ class DigitalItemSubscriptionAdapter(val items: List<DigitalHomePageSectionModel
 
     class DigitalItemSubscriptionViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: DigitalHomePageSectionModel.Item, onItemBindListener: OnItemBindListener) {
-//            onItemBindListener.onCategoryImpression(element, adapterPosition + 1)
-//            itemView.subscription_image.loadImage(element.mediaUrl)
             itemView.subscription_name.text = element.title
             itemView.setOnClickListener {
                 onItemBindListener.onSectionItemClicked(element, adapterPosition, SUBSCRIPTION_GUIDE_CLICK)
