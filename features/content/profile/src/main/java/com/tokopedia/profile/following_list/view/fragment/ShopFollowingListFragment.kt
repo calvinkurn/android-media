@@ -1,11 +1,11 @@
 package com.tokopedia.profile.following_list.view.fragment
 
 import android.os.Bundle
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.profile.following_list.di.DaggerFollowingListComponent
-import com.tokopedia.profile.following_list.view.activity.FollowingListActivity
 import com.tokopedia.profile.following_list.view.listener.FollowingList
 import com.tokopedia.profile.following_list.view.viewmodel.FollowingViewModel
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel
@@ -29,15 +29,6 @@ class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel,
                 arguments = bundle
             }
         }
-
-        @JvmStatic
-        fun createInstance(userId: String): ShopFollowingListFragment {
-            return ShopFollowingListFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(FollowingListActivity.ARGS_USER_ID, userId.toInt())
-                }
-            }
-        }
     }
 
     private val dialogDelete by lazy {
@@ -58,6 +49,9 @@ class ShopFollowingListFragment : BaseFollowListFragment<ShopFollowingViewModel,
 
     override fun initInjector() {
         DaggerFollowingListComponent.builder()
+                .baseAppComponent(
+                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+                )
                 .build()
                 .inject(this)
     }

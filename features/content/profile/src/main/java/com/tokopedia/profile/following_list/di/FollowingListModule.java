@@ -13,13 +13,15 @@ import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListLo
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetShopFollowingListUseCase;
 import com.tokopedia.profile.following_list.view.listener.FollowingList;
-import com.tokopedia.profile.following_list.view.presenter.UserFollowingListPresenter;
+import com.tokopedia.profile.following_list.view.presenter.UserFollowListPresenter;
 import com.tokopedia.profile.following_list.view.presenter.ShopFollowingListPresenter;
 import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,7 +40,7 @@ public class FollowingListModule {
             GetFollowingListLoadMoreUseCase getFollowingListLoadMoreUseCase,
             GetFollowerListUseCase getFollowerListUseCase
     ) {
-        return new UserFollowingListPresenter(
+        return new UserFollowListPresenter(
                 getFollowingListUseCase,
                 getFollowingListLoadMoreUseCase,
                 getFollowerListUseCase
@@ -50,12 +52,14 @@ public class FollowingListModule {
     public FollowingList.Presenter<ShopFollowingViewModel, ShopFollowingResultViewModel> provideShopFollowingListPresenter(
             @ApplicationContext Context context,
             GetShopFollowingListUseCase getShopFollowingListUseCase,
-            ToggleFavouriteShopUseCase toggleFavouriteShopUseCase
+            ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
+            UserSessionInterface userSession
     ) {
         return new ShopFollowingListPresenter(
                 context,
                 getShopFollowingListUseCase,
-                toggleFavouriteShopUseCase
+                toggleFavouriteShopUseCase,
+                userSession
         );
     }
 
@@ -76,4 +80,8 @@ public class FollowingListModule {
     public FollowerMapper providesKolFollowerMapper() {
         return new FollowerMapper();
     }
+
+    @FollowingListScope
+    @Provides
+    public UserSessionInterface provideUserSession(@ApplicationContext Context context) { return new UserSession(context); }
 }
