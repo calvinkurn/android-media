@@ -222,6 +222,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.btn_submit_kyc.setOnClickListener {
                 val intent = RouteManager.getIntent(activity, ApplinkConst.KYC)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, 1)
                 startActivity(intent)
                 activity?.finish()
             }
