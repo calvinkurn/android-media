@@ -303,7 +303,7 @@ class DigitalHomePageViewModel  @Inject constructor(
         const val TRUST_MARK_PARAM = "TRUSTMARK"
         const val NEW_USER_ZONE_PARAM = "NEW_USER_ZONE"
         const val SPOTLIGHT_PARAM = "SPOTLIGHT"
-        const val SUBSCRIPTION_PARAM = "SUBSCRIPTION_SUGGESTION"
+        const val SUBSCRIPTION_PARAM = "LANGGANAN_SUGGESTION"
         const val DEVICE_ID_PARAM = "device_id"
         const val DEFAULT_DEVICE_ID = 5
     }
