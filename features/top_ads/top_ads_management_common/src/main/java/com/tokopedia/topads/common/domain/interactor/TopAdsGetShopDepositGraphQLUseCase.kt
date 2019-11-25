@@ -10,7 +10,7 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
-class TopAdsGetShopDepositGraphQLUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase): UseCase<DataDeposit>() {
+class TopAdsGetShopDepositGraphQLUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase) : UseCase<DataDeposit>() {
     override fun createObservable(requestParams: RequestParams): Observable<DataDeposit> {
         val query = requestParams.getString(PARAM_QUERY, "")
         requestParams.clearValue(PARAM_QUERY)
@@ -20,7 +20,7 @@ class TopAdsGetShopDepositGraphQLUseCase @Inject constructor(private val graphql
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(null).flatMap { graphqlResponse ->
             val response = graphqlResponse.getData<DataDeposit.Response>(DataDeposit.Response::class.java).dataResponse
-            if (response.errors.isNotEmpty()){
+            if (response.errors.isNotEmpty()) {
                 Observable.error(TopAdsResponseError().apply { errors = response.errors }.createException())
             } else {
                 Observable.just(response.dataDeposit)
@@ -32,10 +32,10 @@ class TopAdsGetShopDepositGraphQLUseCase @Inject constructor(private val graphql
         private val PARAM_QUERY = "query"
 
         @JvmStatic
-        fun createRequestParams(query: String, shopId: String)= RequestParams.create().apply {
-                putInt(TopAdsCommonConstant.PARAM_SHOP_ID, shopId.toIntOrNull() ?: 0)
-                putString(PARAM_QUERY, query)
-            }
+        fun createRequestParams(query: String, shopId: String) = RequestParams.create().apply {
+            putInt(TopAdsCommonConstant.PARAM_SHOP_ID, shopId.toIntOrNull() ?: 0)
+            putString(PARAM_QUERY, query)
+        }
 
         @JvmStatic
         fun createGraphqlRequest(query: String, requestParams: RequestParams): GraphqlRequest {

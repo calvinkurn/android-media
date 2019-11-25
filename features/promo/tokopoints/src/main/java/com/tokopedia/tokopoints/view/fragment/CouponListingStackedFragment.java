@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +19,6 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
@@ -27,17 +27,14 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CouponInStackBaseAdapter;
-import com.tokopedia.tokopoints.view.adapter.CouponListBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.CouponListStackedBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CouponListingStackedContract;
-import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponListingStackedPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -47,6 +44,8 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
     private static final int CONTAINER_EMPTY = 3;
+    public static final int REQUEST_CODE_STACKED_IN_ADAPTER = 4;
+    public static final int REQUEST_CODE_STACKED_ADAPTER = 5;
     private ViewFlipper mContainerMain;
     private RecyclerView mRecyclerView;
     private CouponListStackedBaseAdapter mAdapter;
@@ -55,6 +54,7 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
     @Inject
     public CouponListingStackedPresenter mPresenter;
     private SwipeToRefresh mSwipeToRefresh;
+    private CouponInStackBaseAdapter mStackedInadapter;
 
     public static CouponListingStackedFragment newInstance() {
         return new CouponListingStackedFragment();
@@ -100,12 +100,6 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
     }
 
     @Override
-    public void showError(String errorMeassage) {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
-        mSwipeToRefresh.setRefreshing(false);
-    }
-
-    @Override
     public void hideLoader() {
         mContainerMain.setDisplayedChild(CONTAINER_DATA);
         mSwipeToRefresh.setRefreshing(false);
@@ -144,8 +138,8 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
         mSwipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         mItemDecoration = new SpacesItemDecoration(0,
-                getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10),
-                getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_10));
+                getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_0),
+                getActivityContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_0));
     }
 
     private void initListener() {
@@ -186,11 +180,6 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
         mRecyclerView.addItemDecoration(mItemDecoration);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.startDataLoading();
-    }
-
-    @Override
-    public void onErrorCoupons(String errorMessage) {
-
     }
 
     @Override
@@ -305,7 +294,7 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
             recyclerView.addItemDecoration(mItemDecoration);
         }
 
-        CouponInStackBaseAdapter adapter = new CouponInStackBaseAdapter(new AdapterCallback() {
+          mStackedInadapter = new CouponInStackBaseAdapter(new AdapterCallback() {
             @Override
             public void onRetryPageLoad(int pageNumber) {
 
@@ -342,8 +331,29 @@ public class CouponListingStackedFragment extends BaseDaggerFragment implements 
             }
         }, getContext(), stackId);
 
-        recyclerView.setAdapter(adapter);
-        adapter.startDataLoading();
+        recyclerView.setAdapter(mStackedInadapter);
+        mStackedInadapter.startDataLoading();
         closeableBottomSheetDialog.setContentView(view);
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mAdapter != null) {
+            mAdapter.onDestroyView();
+        }
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        String code = data.getStringExtra(CommonConstant.EXTRA_COUPON_CODE);
+        if (requestCode == REQUEST_CODE_STACKED_ADAPTER){
+           mAdapter.couponCodeVisible(code,false);
+        } else if (requestCode == REQUEST_CODE_STACKED_IN_ADAPTER){
+            if (mStackedInadapter != null) {
+                mAdapter.couponCodeVisible(mStackedInadapter.getStackId(), true);
+            }
+        }
     }
 }

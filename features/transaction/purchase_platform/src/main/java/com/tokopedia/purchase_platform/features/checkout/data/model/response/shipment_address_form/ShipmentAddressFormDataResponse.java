@@ -90,6 +90,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("tickers")
     @Expose
     private List<Ticker> tickers = new ArrayList<>();
+    @SerializedName("donation_checkbox_status")
+    @Expose
+    private boolean donationCheckboxStatus;
 
     @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
@@ -184,5 +187,9 @@ public class ShipmentAddressFormDataResponse {
 
     public List<Ticker> getTickers() {
         return tickers;
+    }
+
+    public boolean isDonationCheckboxStatus() {
+        return donationCheckboxStatus;
     }
 }
