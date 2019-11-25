@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.home.beranda.helper
+package com.tokopedia.abstraction.base.data.source
 
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
@@ -34,7 +34,6 @@ abstract class NetworkBoundResource<APIType, DbType, ViewType> {
     suspend fun build(): NetworkBoundResource<APIType, DbType, ViewType> {
         CoroutineScope(coroutineContext).launch(supervisorJob) {
             try {
-                setValue(Resource.loading(null))
                 val dbResult = loadFromDb()
                 if (shouldFetch(dbResult)) {
                     fetchFromNetwork(dbResult)
@@ -54,7 +53,7 @@ abstract class NetworkBoundResource<APIType, DbType, ViewType> {
 
     private suspend fun fetchFromNetwork(dbResult: DbType?) {
         Timber.tag(NetworkBoundResource::class.java.name).d("Fetch data from network")
-        setValue(Resource.success(mapper(dbResult))) // Dispatch latest value quickly (UX purpose)
+        setValue(Resource.loading(mapper(dbResult))) // Dispatch latest value quickly (UX purpose)
         val apiResponse = createCallAsync()
         Timber.tag(NetworkBoundResource::class.java.name).d("Data fetched from network")
         val networkData = processResponse(apiResponse)

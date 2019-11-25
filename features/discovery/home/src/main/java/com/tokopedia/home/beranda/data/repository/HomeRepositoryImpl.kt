@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.repository
 
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
+import com.tokopedia.abstraction.base.data.source.NetworkBoundResource
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
@@ -9,8 +10,7 @@ import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeMapper
 import com.tokopedia.home.beranda.data.source.HomeDataSource
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.helper.NetworkBoundResource
-import com.tokopedia.home.beranda.helper.Resource
+import com.tokopedia.abstraction.base.data.source.Resource
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
 import retrofit2.Response
 import rx.Observable

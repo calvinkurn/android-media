@@ -61,7 +61,7 @@ import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
-import com.tokopedia.home.beranda.helper.Resource;
+import com.tokopedia.abstraction.base.data.source.Resource;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -126,15 +126,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import rx.Observable;
@@ -468,7 +459,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void run() {
                 if (presenter != null) {
-                    presenter.getSearchHint();
+                    presenter.searchHint();
                     presenter.getHomeData();
                 }
                 /**
@@ -829,7 +820,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         resetFeedState();
         removeNetworkError();
         if (presenter != null) {
-            presenter.getSearchHint();
+            presenter.searchHint();
             presenter.getHomeData();
             presenter.getStickyContent();
         }

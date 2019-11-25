@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.home.beranda.helper
+package com.tokopedia.abstraction.base.data.source
 
 data class Resource<out T>(val status: Status, val data: T?, val error: Throwable?) {
     companion object {
@@ -48,4 +48,10 @@ data class Resource<out T>(val status: Status, val data: T?, val error: Throwabl
         ERROR,
         LOADING
     }
+
+    fun Status.isLoading() = this == Status.LOADING
+
+    fun Status.isError() = this == Status.ERROR
+
+    fun Status.isSuccess() = this == Status.SUCCESS
 }

@@ -1,26 +1,24 @@
 package com.tokopedia.home.beranda.presentation.presenter
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import com.tokopedia.abstraction.base.data.source.Resource
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
+import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.HomeLiveData
-import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.home.beranda.presentation.view.HomeContract
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel
 import com.tokopedia.home.beranda.presentation.view.subscriber.*
@@ -31,10 +29,6 @@ import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.topads.sdk.listener.ImpressionListener
-import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
-import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase
-import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,7 +42,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import rx.subscriptions.Subscriptions
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -128,9 +121,9 @@ class HomePresenter(private val userSession: UserSessionInterface,
         if (needSendGeolocationRequest && view?.hasGeolocationPermission() == true) {
             view?.detectAndSendLocation()
         }
-        tokocashBalance
-        tokopoint
-        searchHint
+        getTokocashBalance()
+        getTokopoint()
+        searchHint()
         getStickyContent()
     }
 
@@ -239,7 +232,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         getHeaderViewModel().tokoPointDrawerData = null
         getHeaderViewModel().tokopointsDrawerHomeData = null
         view?.updateHeaderItem(getHeaderViewModel())
-        tokopoint
+        getTokopoint()
     }
 
     override fun onRefreshTokoCash() {
@@ -247,7 +240,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
         getHeaderViewModel().setWalletDataSuccess()
         getHeaderViewModel().homeHeaderWalletActionData = null
         view?.updateHeaderItem(getHeaderViewModel())
-        tokocashBalance
+        getTokocashBalance()
     }
 
     override fun getShopInfo(url: String, shopDomain: String) {
@@ -291,11 +284,11 @@ class HomePresenter(private val userSession: UserSessionInterface,
     override fun getHeaderData(initialStart: Boolean) {
         if (!userSession.isLoggedIn) return
         if (initialStart && headerViewModel != null) {
-            if (headerViewModel.homeHeaderWalletActionData == null) tokocashBalance
-            if (headerViewModel.tokopointsDrawerHomeData == null) tokopoint
+            if (headerViewModel.homeHeaderWalletActionData == null) getTokocashBalance()
+            if (headerViewModel.tokopointsDrawerHomeData == null) getTokopoint()
         } else {
-            tokocashBalance
-            tokopoint
+            getTokocashBalance()
+            getTokopoint()
         }
     }
 
@@ -310,19 +303,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
         headerViewModel.isUserLogin = userSession.isLoggedIn
         return headerViewModel
     }
-
-//    private fun isDataValid(visitables: List<HomeVisitable<*>>): Boolean {
-//        return containsInstance(visitables, BannerViewModel::class.java)
-//    }
-
-//    fun <E> containsInstance(list: List<E>, clazz: Class<out E>): Boolean {
-//        for (e in list) {
-//            if (clazz.isInstance(e)) {
-//                return true
-//            }
-//        }
-//        return false
-//    }
 
     override fun onDestroy() {
         unsubscribeAllUseCase()
@@ -346,8 +326,7 @@ class HomePresenter(private val userSession: UserSessionInterface,
     /**
      * Tokocash & Tokopoint
      */
-    private val tokocashBalance: Unit
-        private get() {
+    private fun getTokocashBalance() {
             compositeSubscription.add(getWalletBalanceUseCase?.createObservable(RequestParams.EMPTY)
                     .subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
@@ -355,28 +334,25 @@ class HomePresenter(private val userSession: UserSessionInterface,
                     .subscribe(TokocashHomeSubscriber(this)))
         }
 
-    val tokocashPendingBalance: Unit
-        get() {
-            compositeSubscription.add(getPendingCasbackUseCase?.createObservable(RequestParams.EMPTY)
-                    .subscribeOn(Schedulers.newThread())
+    fun getTokocashPendingBalance(){
+        compositeSubscription.add(getPendingCasbackUseCase?.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(PendingCashbackHomeSubscriber(this)))
+    }
+
+    fun getTokopoint(){
+        val graphqlResponseObservable = tokopointsObservable
+        if (graphqlResponseObservable != null) {
+            compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(PendingCashbackHomeSubscriber(this)))
+                    .subscribe(TokopointHomeSubscriber(this)))
         }
+    }
 
-    val tokopoint: Unit
-        get() {
-            val graphqlResponseObservable = tokopointsObservable
-            if (graphqlResponseObservable != null) {
-                compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(TokopointHomeSubscriber(this)))
-            }
-        }
-
-    val searchHint: Unit
-        get() {
+    fun searchHint(){
             val graphqlResponseObservable = keywordSearchObservable
             if (graphqlResponseObservable != null) {
                 compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())

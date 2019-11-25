@@ -11,7 +11,7 @@ import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
 import com.tokopedia.home.beranda.data.source.HomeDataSource
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.helper.Resource
+import com.tokopedia.abstraction.base.data.source.Resource
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
 import io.mockk.*
 import kotlinx.coroutines.*
