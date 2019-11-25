@@ -68,6 +68,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         private val ACTION_CLOSE_TICKER_LOGIN = "click on button close ticker"
         private val ACTION_CLICK_ON_BUTTON_SOCMED = "click on button socmed"
         private val ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED = "click on button close socmed"
+        private val ACTION_CLICK_ON_BUTTON_POPUP_SMART_LOGIN = "click on button popup smart login"
 
         private val LABEL_REGISTER = "Register"
         private val LABEL_PASSWORD = "Kata Sandi"
@@ -77,6 +78,8 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         private val LABEL_SAVE_PASSWORD = "Save Password"
         private val LABEL_NEVER_SAVE_PASSWORD = "Never"
         val LABEL_GMAIL = "Gmail"
+        private val LABEL_YES = "yes - "
+        private val LABEL_NO = "no - "
 
         val GOOGLE = "google"
         val FACEBOOK = "facebook"
@@ -766,6 +769,24 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_BUTTON_CLOSE_SOCMED,
                 ""
+        ))
+    }
+
+    fun eventClickYesSmartLoginDialogButton(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_CLICK_ON_BUTTON_POPUP_SMART_LOGIN,
+                LABEL_YES + "email"
+        ))
+    }
+
+    fun eventClickNoSmartLoginDialogButton(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_CLICK_ON_BUTTON_POPUP_SMART_LOGIN,
+                LABEL_NO + "email"
         ))
     }
 

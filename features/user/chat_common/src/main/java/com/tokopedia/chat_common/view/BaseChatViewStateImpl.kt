@@ -237,7 +237,7 @@ open class BaseChatViewStateImpl(
         getAdapter().changeReadStatus()
     }
 
-    open fun getRecyclerViewId() = R.id.recyclerView
+    open fun getRecyclerViewId() = R.id.recycler_view
     open fun getProgressId() = R.id.progress
     open fun getNewCommentId() = R.id.new_comment
     open fun getReplyBoxId() = R.id.reply_box
