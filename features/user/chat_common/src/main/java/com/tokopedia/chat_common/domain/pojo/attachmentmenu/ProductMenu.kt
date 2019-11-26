@@ -6,6 +6,6 @@ class ProductMenu : AttachmentMenu(
         R.drawable.ic_product_blue_chat_common, "Produk", "produk"
 ) {
     override fun onClick(listener: AttachmentMenuListener) {
-        listener.onClickAttachProduct()
+        listener.onClickAttachProduct(this)
     }
 }

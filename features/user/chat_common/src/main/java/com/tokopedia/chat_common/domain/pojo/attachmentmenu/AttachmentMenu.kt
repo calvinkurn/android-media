@@ -10,8 +10,8 @@ abstract class AttachmentMenu (
 ) {
 
     interface AttachmentMenuListener {
-        fun onClickAttachProduct()
-        fun onClickAttachImage()
+        fun onClickAttachProduct(menu: AttachmentMenu)
+        fun onClickAttachImage(menu: AttachmentMenu)
         fun createAttachmentMenus(): List<AttachmentMenu>
     }
 

@@ -23,13 +23,11 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
-import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chat_common.view.fragment.BaseChatActivityListener
-import com.tokopedia.chat_common.view.fragment.BottomChatMenuFragment
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
@@ -45,7 +43,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     , ImageAnnouncementListener, ChatLinkHandlerListener
     , ImageUploadListener, ProductAttachmentListener, TypingListener
     , BaseChatContract.View
-    , BaseChatMenuViewHolder.ChatMenuListener
     , BaseChatActivityListener
     , AttachmentMenu.AttachmentMenuListener {
 
@@ -60,8 +57,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var toShopId = "0"
     protected var toUserId = "0"
     protected var source = ""
-
-    private val bottomChatMenu = BottomChatMenuFragment()
 
     override fun onItemClicked(t: Visitable<*>?) {
         return
@@ -258,19 +253,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 
-    override fun closeChatMenu() {
-        bottomChatMenu.dismiss()
-    }
-
-    override fun showChatMenu() {
-        if(!bottomChatMenu.isVisible) {
-            bottomChatMenu.show(childFragmentManager, BottomChatMenuFragment.TAG)
-        }
-    }
-
-
-    override fun trackChatMenuClicked(label: String) {}
-
     override fun onDestroy() {
         super.onDestroy()
         viewState.clear()
@@ -288,13 +270,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return emptyList()
     }
 
-    override fun onClickAttachProduct() {
+    override fun onClickAttachProduct(menu: AttachmentMenu) {
 
     }
 
-    override fun onClickAttachImage() {
+    override fun onClickAttachImage(menu: AttachmentMenu) {
 
     }
-
-    override fun onClickImagePicker() {}
 }

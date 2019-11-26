@@ -33,7 +33,6 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ProductMenu
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
-import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
@@ -58,7 +57,6 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatChatMenuFactory
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
@@ -827,10 +825,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    override fun createChatMenuFactory(): ChatMenuFactory {
-        return TopChatChatMenuFactory()
-    }
-
     override fun onClickInvoiceThumbnail(url: String, id: String) {
         onGoToWebView(url, id)
     }
@@ -867,10 +861,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return opponentName
     }
 
-    override fun trackChatMenuClicked(label: String) {
-        analytics.trackChatMenuClicked(label)
-    }
-
     override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {
         if (attachment is InvoicePreviewViewModel) {
             analytics.invoiceAttachmentSent(attachment)
@@ -884,18 +874,16 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         )
     }
 
-    override fun onClickAttachProduct() {
+    override fun onClickAttachProduct(menu: AttachmentMenu) {
         analytics.eventAttachProduct()
+        analytics.trackChatMenuClicked(menu.label)
         onAttachProductClicked()
     }
 
-    override fun onClickAttachImage() {
+    override fun onClickAttachImage(menu: AttachmentMenu) {
         analytics.eventPickImage()
+        analytics.trackChatMenuClicked(menu.label)
         pickImageToUpload()
     }
 
-    override fun onClickImagePicker() {
-        analytics.eventPickImage()
-        pickImageToUpload()
-    }
 }
