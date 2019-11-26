@@ -2,31 +2,26 @@ package com.tokopedia.home.beranda.presentation.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.data.source.Resource
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase
 import com.tokopedia.common_wallet.pendingcashback.domain.GetPendingCasbackUseCase
 import com.tokopedia.dynamicbanner.domain.PlayCardHomeUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.home.beranda.data.mapper.HomeMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
-import com.tokopedia.home.beranda.helper.HomeLiveData
-import com.tokopedia.home.beranda.helper.clone
+import com.tokopedia.home.beranda.helper.Resource
+import com.tokopedia.home.beranda.helper.map
 import com.tokopedia.home.beranda.presentation.view.HomeContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel
 import com.tokopedia.home.beranda.presentation.view.subscriber.*
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
@@ -37,7 +32,10 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
@@ -53,7 +51,9 @@ import kotlin.coroutines.CoroutineContext
 
 class HomePresenter(private val userSession: UserSessionInterface,
                     private val getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
-                    private val coroutineDispatcher: CoroutineDispatcher) :
+                    private val coroutineDispatcher: CoroutineDispatcher,
+                    private val homeRepository: HomeRepository,
+                    private val homeDataMapper: HomeDataMapper) :
         BaseDaggerPresenter<HomeContract.View?>(), HomeContract.Presenter, CoroutineScope {
 
     protected var compositeSubscription: CompositeSubscription
@@ -73,9 +73,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
     lateinit var getPendingCasbackUseCase: GetPendingCasbackUseCase
 
     @Inject
-    lateinit var homeRepository: HomeRepository
-
-    @Inject
     lateinit var getHomeTokopointsDataUseCaseLazy: Lazy<GetHomeTokopointsDataUseCase>
 
     @Inject
@@ -93,17 +90,20 @@ class HomePresenter(private val userSession: UserSessionInterface,
     @Inject
     lateinit var playCardHomeUseCase: PlayCardHomeUseCase
 
-    @Inject
-    lateinit var homeMapper: HomeMapper
 
-    private val _homeData = HomeLiveData(Resource.loading<HomeViewModel>(null))
-    val homeLiveData: LiveData<Resource<HomeViewModel>> = _homeData
-    private var homeSource: LiveData<Resource<HomeData>> = MutableLiveData()
+    private var isCache = true
+
+    val homeLiveData: LiveData<HomeViewModel> = homeRepository.getHomeData().map {
+        homeDataMapper.mapToHomeViewModel(it, isCache)
+    }
+
+    private val _updateNetworkLiveData = MutableLiveData<Resource<Any>>()
+    val updateNetworkLiveData: LiveData<Resource<Any>> get() = _updateNetworkLiveData
 
     private var currentCursor = ""
     private lateinit var headerViewModel: HeaderViewModel
     private var fetchFirstData = false
-    private val REQUEST_DELAY_HOME_DATA: Long = 180000 // 3 minutes
+    private val REQUEST_DELAY_HOME_DATA: Long = TimeUnit.MINUTES.toMillis(10) // 10 minutes
     private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
 
     override val coroutineContext: CoroutineContext
@@ -178,30 +178,27 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     override fun getHomeData() {
         initHeaderViewModelData()
+        _updateNetworkLiveData.value = Resource.loading(null)
         lastRequestTimeSendGeolocation = System.currentTimeMillis()
         launchCatchError(coroutineContext, block = {
-            _homeData.removeSource(homeSource)
-            homeSource = homeRepository.getHomeData()
-            _homeData.addSource(homeSource){
-                _homeData.value = it.clone(data = homeMapper.call(it.data))
-            }
+            val resource = homeRepository.updateHomeData()
+            isCache = false
+            _updateNetworkLiveData.value = resource
         }){
             Timber.tag(HomePresenter::class.java.name).e(it)
-            _homeData.value = Resource.error(Throwable(), null)
+            _updateNetworkLiveData.value = Resource.error(Throwable(), null)
         }
     }
 
     override fun updateHomeData() {
         lastRequestTimeHomeData = System.currentTimeMillis()
         launchCatchError(coroutineContext, block = {
-            _homeData.removeSource(homeSource)
-            homeSource = homeRepository.getHomeData()
-            _homeData.addSource(homeSource){
-                _homeData.value = it.clone(data = homeMapper.call(it.data))
-            }
+            val resource = homeRepository.updateHomeData()
+            isCache = false
+            _updateNetworkLiveData.value = resource
         }){
             Timber.tag(HomePresenter::class.java.name).e(it)
-            _homeData.value = Resource.error(Throwable(), null)
+            _updateNetworkLiveData.value = Resource.error(Throwable(), null)
         }
     }
 
@@ -209,6 +206,10 @@ class HomePresenter(private val userSession: UserSessionInterface,
         if (userSession.isLoggedIn) {
             getHeaderViewModel().isPendingTokocashChecked = false
         }
+    }
+
+    fun setCache(isCache: Boolean){
+        this.isCache = isCache
     }
 
     override fun updateHeaderTokoCashData(homeHeaderWalletAction: HomeHeaderWalletAction) {
@@ -436,12 +437,6 @@ class HomePresenter(private val userSession: UserSessionInterface,
 
     override fun getFeedTabData() {
         getFeedTabUseCase?.execute(GetFeedTabsSubscriber(view))
-    }
-
-    private fun mappingHomeFeedModel(feedTabModelList: List<FeedTabModel>): Visitable<*> {
-        val feedViewModel = HomeRecommendationFeedViewModel()
-        feedViewModel.feedTabModel = feedTabModelList
-        return feedViewModel
     }
 
     override fun getStickyContent() {

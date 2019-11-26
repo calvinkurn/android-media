@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper
 import com.tokopedia.home.beranda.data.mapper.HomeMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
@@ -69,31 +70,6 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun homePresenter(userSession: UserSessionInterface,
-                                getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
-                      @Named("Main") coroutineDispatcher: CoroutineDispatcher): HomePresenter {
-        return realHomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher)
-    }
-
-    @Provides
-    fun homeFeedPresenter(
-            getHomeFeedUseCase: GetHomeFeedUseCase?,
-            addWishListUseCase: AddWishListUseCase?,
-            removeWishListUseCase: RemoveWishListUseCase?,
-            topAdsWishlishedUseCase: TopAdsWishlishedUseCase?,
-            userSessionInterface: UserSessionInterface?
-    ): HomeFeedPresenter {
-        return HomeFeedPresenter(userSessionInterface!!, getHomeFeedUseCase!!, addWishListUseCase!!, removeWishListUseCase!!, topAdsWishlishedUseCase!!)
-    }
-
-    private fun realHomePresenter(userSession: UserSessionInterface,
-                                    getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
-                                    coroutineDispatcher: CoroutineDispatcher): HomePresenter {
-        return HomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher)
-    }
-
-    @HomeScope
-    @Provides
     fun pagingHandler(): PagingHandler {
         return PagingHandler()
     }
@@ -112,14 +88,22 @@ class HomeModule {
 
     @HomeScope
     @Provides
+    fun provideHomeDataSource(homeAceApi: HomeAceApi?): HomeDataSource {
+        return HomeDataSource(homeAceApi)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideHomeDataMapper(@ApplicationContext context: Context, homeVisitableFactory: HomeVisitableFactory): HomeDataMapper{
+        return HomeDataMapper(context, homeVisitableFactory)
+    }
+
+    @HomeScope
+    @Provides
     fun homeRepository(homeDataSource: HomeDataSource, homeDao: HomeDao, homeRemoteDataSource: HomeRemoteDataSource): HomeRepository {
         return HomeRepositoryImpl(homeDataSource, homeDao, homeRemoteDataSource)
     }
 
-    @Provides
-    fun provideHomeDataSource(homeAceApi: HomeAceApi?): HomeDataSource {
-        return HomeDataSource(homeAceApi)
-    }
 
     @Provides
     fun provideSendGeolocationInfoUseCase(homeRepository: HomeRepository?): SendGeolocationInfoUseCase {
@@ -221,5 +205,26 @@ class HomeModule {
     @Provides
     fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
+    }
+
+    @HomeScope
+    @Provides
+    fun homePresenter(userSession: UserSessionInterface,
+                      getShopInfoByDomainUseCase: GetShopInfoByDomainUseCase,
+                      @Named("Main") coroutineDispatcher: CoroutineDispatcher,
+                      homeRepository: HomeRepository,
+                      homeDataMapper: HomeDataMapper): HomePresenter {
+        return HomePresenter(userSession, getShopInfoByDomainUseCase, coroutineDispatcher, homeRepository, homeDataMapper)
+    }
+
+    @Provides
+    fun homeFeedPresenter(
+            getHomeFeedUseCase: GetHomeFeedUseCase?,
+            addWishListUseCase: AddWishListUseCase?,
+            removeWishListUseCase: RemoveWishListUseCase?,
+            topAdsWishlishedUseCase: TopAdsWishlishedUseCase?,
+            userSessionInterface: UserSessionInterface?
+    ): HomeFeedPresenter {
+        return HomeFeedPresenter(userSessionInterface!!, getHomeFeedUseCase!!, addWishListUseCase!!, removeWishListUseCase!!, topAdsWishlishedUseCase!!)
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.abstraction.base.data.source
+package com.tokopedia.home.beranda.helper
 
 data class Resource<out T>(val status: Status, val data: T?, val error: Throwable?) {
     companion object {
@@ -26,7 +26,7 @@ data class Resource<out T>(val status: Status, val data: T?, val error: Throwabl
             )
         }
 
-        fun <T> error(error: Throwable, data: T?): Resource<T> {
+        fun <T> error(error: Throwable, data: T? = null): Resource<T> {
             return Resource(
                     Status.ERROR,
                     data,

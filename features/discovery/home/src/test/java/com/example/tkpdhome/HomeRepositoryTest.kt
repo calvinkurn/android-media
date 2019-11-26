@@ -3,7 +3,7 @@ package com.example.tkpdhome
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.example.tkpdhome.rules.CoroutinesMainDispatcherRule
-import com.tokopedia.abstraction.base.data.source.Resource
+import com.tokopedia.home.beranda.helper.Resource
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao

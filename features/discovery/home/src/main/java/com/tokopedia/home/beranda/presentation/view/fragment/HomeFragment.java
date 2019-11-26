@@ -60,7 +60,7 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview;
-import com.tokopedia.abstraction.base.data.source.Resource;
+import com.tokopedia.home.beranda.helper.Resource;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -75,7 +75,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
@@ -469,33 +468,27 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void subscribeHome(){
-        presenter.getHomeLiveData().observe(this, resource -> {
-            if(resource.getStatus() == Resource.Status.LOADING) {
-                if(resource.getData() != null){
-                    HomeViewModel data = resource.getData();
-                    setData(new ArrayList(data.getList()), HomePresenter.FLAG_FROM_CACHE);
+        presenter.getHomeLiveData().observe(this, data -> {
+            if(data != null){
+                if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
+                    configureHomeFlag(data.getHomeFlag());
+                    setData(new ArrayList(data.getList()), data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
+                    presenter.setCache(true);
                 } else {
-                    //Cache doesn't available, need download data first
-                    showLoading();
+                    showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()));
                 }
-            }else if(resource.getStatus() == Resource.Status.SUCCESS){
+            }
+        });
+
+        presenter.getUpdateNetworkLiveData().observe(this, resource -> {
+            if(resource.getStatus() == Resource.Status.SUCCESS){
                 hideLoading();
-                if(resource.getData() != null){
-                    HomeViewModel data = resource.getData();
-                    if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
-                        configureHomeFlag(data.getHomeFlag());
-                        setData(new ArrayList(data.getList()), data.isCache() ? HomePresenter.FLAG_FROM_CACHE : HomePresenter.FLAG_FROM_NETWORK);
-                    } else {
-                        showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(new Throwable()));
-                    }
-                }
-            }else {
-                if(resource.getData() != null){
-                    configureHomeFlag(resource.getData().getHomeFlag());
-                    setItems(new ArrayList(resource.getData().getList()), HomePresenter.FLAG_FROM_CACHE);
-                }
+                addImpressionToTrackingQueue(new ArrayList(presenter.getHomeLiveData().getValue().getList()));
+            } else if(resource.getStatus() == Resource.Status.ERROR){
                 hideLoading();
                 showNetworkError(com.tokopedia.network.ErrorHandler.getErrorMessage(resource.getError()));
+            } else {
+                showLoading();
             }
         });
     }
@@ -507,7 +500,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             } else {
                 setItems(data, flag);
             }
-            if (flag == HomePresenter.FLAG_FROM_NETWORK) addImpressionToTrackingQueue(data);
             if (isDataValid(data)) {
                 removeNetworkError();
             } else {

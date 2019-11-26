@@ -9,8 +9,9 @@ import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase.Companion.h
 import com.tokopedia.home.beranda.data.datasource.local.converter.Converters
 import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.HomeRoomData
 
-@Database(entities = [HomeData::class], version = homeVersion, exportSchema = false)
+@Database(entities = [HomeRoomData::class], version = homeVersion, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class HomeDatabase: RoomDatabase() {
     abstract fun homeDao(): HomeDao

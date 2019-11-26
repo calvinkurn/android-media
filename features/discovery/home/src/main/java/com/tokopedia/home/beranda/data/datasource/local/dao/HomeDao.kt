@@ -1,18 +1,15 @@
 package com.tokopedia.home.beranda.data.datasource.local.dao
 
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.RoomWarnings
-import com.tokopedia.home.beranda.domain.model.HomeData
+import androidx.lifecycle.LiveData
+import androidx.room.*
+import com.tokopedia.home.beranda.domain.model.HomeRoomData
 
 @Dao
-abstract class HomeDao : BaseDao<HomeData>(){
-
+abstract class HomeDao{
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT * FROM HomeData LIMIT 1")
-    abstract suspend fun getHomeData(): HomeData
+    @Query("SELECT * FROM HomeRoomData LIMIT 1")
+    abstract fun getHomeData(): LiveData<HomeRoomData?>
 
-    suspend fun save(homeData: HomeData) {
-        insert(homeData)
-    }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun save(item: HomeRoomData)
 }
