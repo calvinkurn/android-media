@@ -19,11 +19,10 @@ import com.tokopedia.promocheckout.list.model.listpromocatalog.ResponseExchangeC
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
-class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
+class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper, val getCatalogHighlightUseCase: GraphqlUseCase) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
 
     private val paramGlobal = "global"
     private val statusOK = "OK"
-    private lateinit var getListCouponUseCase: GraphqlUseCase
 
     override fun checkPromoStackingCode(promoCode: String, oneClickShipment: Boolean, promo: Promo?) {
         if (promo == null) return
@@ -98,10 +97,9 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
         view.showProgressBar()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_exchange_coupon), ResponseExchangeCoupon::class.java, null, false)
-        getListCouponUseCase = GraphqlUseCase()
-        getListCouponUseCase.clearRequest()
-        getListCouponUseCase.addRequest(graphqlRequest)
-        getListCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+        getCatalogHighlightUseCase.clearRequest()
+        getCatalogHighlightUseCase.addRequest(graphqlRequest)
+        getCatalogHighlightUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
                 view.hideProgressBar()
             }
@@ -116,7 +114,7 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
                 val dataExchangeCoupon = objects.getData<ResponseExchangeCoupon>(ResponseExchangeCoupon::class.java)
                 dataExchangeCoupon?.let { responseExchangeCoupon ->
                     responseExchangeCoupon.tokopointsCatalogHighlight?.let { view.renderListExchangeCoupon(it) }
-                } ?: onError(Throwable("Null Response"))
+                }
             }
         })
     }
@@ -124,7 +122,7 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
 
     override fun detachView() {
         checkPromoStackingCodeUseCase.unsubscribe()
-        getListCouponUseCase.unsubscribe()
+        getCatalogHighlightUseCase.unsubscribe()
         super.detachView()
     }
 }
