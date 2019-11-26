@@ -548,7 +548,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 contactCountry = widget_traveller_info.getContactPhoneCountry(),
                 checkVoucherQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_check_voucher),
                 addToCartQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_add_to_cart),
-                idempotencyKey = requestId)
+                idempotencyKey = requestId,
+                getCartQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.flight.R.raw.flight_gql_query_get_cart))
     }
 
     private fun checkOutCart() {
