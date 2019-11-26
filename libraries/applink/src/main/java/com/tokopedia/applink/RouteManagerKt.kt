@@ -63,10 +63,6 @@ object RouteManagerKt{
                 //TODO still use className
                 return DeepLinkChecker.openCatalog(url, activity)
             }
-            DeepLinkChecker.PRODUCT -> {
-                RouteManager.route(activity, url)
-                return true
-            }
             DeepLinkChecker.TOKOPOINT -> {
                 // it still point to webview. no need to override
                 return false
