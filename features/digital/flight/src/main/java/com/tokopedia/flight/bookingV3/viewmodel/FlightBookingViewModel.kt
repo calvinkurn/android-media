@@ -64,6 +64,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     var retryCount = 0
     var verifyRetryCount = 0
     var pastVerifyParam = ""
+    var isStillLoading = false
 
     init {
         flightPriceData.value = listOf()
@@ -93,9 +94,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         data.cartData.flight.child, data.cartData.flight.infant)
                 flightPriceData.value = data.cartData.flight.priceDetail
                 flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included)
+                if (autoVerify) isStillLoading = true
                 flightCartResult.value = Success(FlightBookingMapper.mapToFlightCartView(data))
-                if (autoVerify && bookingVerifyParam != null && verifyQuery.isNotEmpty() && checkVoucherQuery.isNotEmpty())
-                    verifyCartData(verifyQuery, bookingVerifyParam, checkVoucherQuery)
+                if (autoVerify && bookingVerifyParam != null && verifyQuery.isNotEmpty() && checkVoucherQuery.isNotEmpty()) verifyCartData(verifyQuery, bookingVerifyParam, checkVoucherQuery)
                 retryCount = 0
             } else {
                 if (data.meta.needRefresh && data.meta.maxRetry >= retryCount) {
@@ -136,6 +137,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
                     if (!flightVerifyData.meta.needRefresh && flightVerifyData.data.cartItems.isNotEmpty()) {
                         verifyRetryCount = 0
+                        isStillLoading = false
                         flightVerifyResult.value = Success(flightVerifyData)
                         pastVerifyParam = generateVerifyParam(bookingVerifyParam)
                     } else {
@@ -152,6 +154,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     val flightVerifyData = data.await()
                     if (!flightVerifyData.meta.needRefresh && flightVerifyData.data.cartItems.isNotEmpty()) {
                         verifyRetryCount = 0
+                        isStillLoading = false
                         flightVerifyResult.value = Success(flightVerifyData)
                         pastVerifyParam = generateVerifyParam(bookingVerifyParam)
                     } else {

@@ -149,7 +149,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
-            hideShimmering()
+            if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
         })
 
         bookingViewModel.flightPromoResult.observe(this, Observer {
@@ -195,7 +195,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
-            hideShimmering()
+            if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
         })
 
         bookingViewModel.flightVerifyResult.observe(this, Observer {
@@ -214,7 +214,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     showErrorDialog(mapThrowableToFlightError(it.throwable.message ?: ""))
                 }
             }
-            hideShimmering()
+            if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
         })
 
     }
