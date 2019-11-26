@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white_four">#e0e0e0</color>
+    <color name="divider_notif_light">#e5e7e9</color>
+    <color name="divider_notif_big">#f3f4f5</color>
 </resources>
