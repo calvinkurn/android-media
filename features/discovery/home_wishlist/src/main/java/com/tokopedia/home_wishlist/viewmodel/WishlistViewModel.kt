@@ -176,14 +176,13 @@ open class WishlistViewModel @Inject constructor(
      * Calls this function to get next page data of existing product request params
      */
     fun getNextPageWishlistData(){
-        var newPageVisitableData = wishlistData.value.copy().toMutableList()
-        wishlistData.value = combineVisitable(newPageVisitableData.copy(), listOf(LoadMoreDataModel()))
+        wishlistData.value = combineVisitable(wishlistData.value.copy(), listOf(LoadMoreDataModel()))
         currentPage++
 
         launchCatchError(block = {
             val data = getWishlistUseCase.getData(GetWishlistParameter(keywordSearch, currentPage))
             if (!data.isSuccess) {
-                wishlistData.value = newPageVisitableData
+                wishlistData.value = wishlistData.value.copy()
                 currentPage--
                 loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
                         isSuccess = false,
@@ -192,10 +191,9 @@ open class WishlistViewModel @Inject constructor(
                 return@launchCatchError
             }
             if (data.items.isEmpty()) {
-                wishlistData.value = newPageVisitableData
-            }
-            if(data.items.isNotEmpty()){
-                newPageVisitableData = combineVisitable(newPageVisitableData, mappingWishlistToVisitable(data.items))
+                wishlistData.value = removeLoadMore()
+            } else {
+                val newPageVisitableData = combineVisitable(removeLoadMore(), mappingWishlistToVisitable(data.items))
                 wishlistData.value = newPageVisitableData
                 if (data.items.size >= recommendationPositionInPage ) {
                     val recommendationData = getRecommendationUseCase.getData(
@@ -220,7 +218,7 @@ open class WishlistViewModel @Inject constructor(
                         message = data.errorMessage))
             }
         }){
-            wishlistData.value = newPageVisitableData
+            wishlistData.value = removeLoadMore()
             loadMoreWishlistAction.value = Event(LoadMoreWishlistActionData(
                     isSuccess = false,
                     hasNextPage = false,
@@ -896,5 +894,13 @@ open class WishlistViewModel @Inject constructor(
                     tempSelectedPositionInPdp!!,
                     wishlistState)
         }
+    }
+
+    private fun removeLoadMore(): List<WishlistDataModel>{
+        val list = wishlistData.value.copy()
+        if(list.size > 0 && list.last() is LoadMoreDataModel){
+            list.remove(list.last())
+        }
+        return list
     }
 }

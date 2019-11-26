@@ -3,12 +3,15 @@ package com.tokopedia.home_wishlist.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
 import com.tokopedia.home_wishlist.common.WishlistProductionDispatcherProvider
+import com.tokopedia.home_wishlist.data.repository.WishlistRepository
+import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.smart_recycler_helper.SmartExecutors
@@ -25,13 +28,20 @@ import javax.inject.Named
 /**
  * A class module for dagger recommendation page
  */
+@WishlistScope
 @Module(includes = [TopAdsWishlistModule::class])
 class WishlistModule {
+    @WishlistScope
     @Provides
-    fun provideExecutors() = SmartExecutors()
+    fun provideExecutors(): SmartExecutors = SmartExecutors()
 
+    @WishlistScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @WishlistScope
+    @Provides
+    fun providesGraphqlUsecase(): GraphqlUseCase = GraphqlUseCase()
 
     @WishlistScope
     @Provides
@@ -43,6 +53,18 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
+    fun provideGetWishlistDataUseCase(repository: WishlistRepository): GetWishlistDataUseCase = GetWishlistDataUseCase(repository)
+
+    @Provides
+    @WishlistScope
+    fun provideWishlistRepository(graphqlRepository: GraphqlRepository): WishlistRepository = WishlistRepository(graphqlRepository)
+
+    @Provides
+    @WishlistScope
+    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddWishListUseCase = AddWishListUseCase(context)
+
+    @Provides
+    @WishlistScope
     fun provideGetSingleRecommendationUseCase(graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(graphqlRepository)
 
     @Provides
@@ -51,15 +73,11 @@ class WishlistModule {
 
     @Provides
     @WishlistScope
-    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddWishListUseCase = AddWishListUseCase(context)
-
-    @Provides
-    @WishlistScope
     fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
 
     @Provides
     @WishlistScope
-    fun provideBulkRemoveWishlistUseCase(graphqlUseCase: GraphqlUseCase) = BulkRemoveWishlistUseCase(graphqlUseCase)
+    fun provideBulkRemoveWishlistUseCase(graphqlUseCase: GraphqlUseCase): BulkRemoveWishlistUseCase = BulkRemoveWishlistUseCase(graphqlUseCase)
 
     @Provides
     @WishlistScope
@@ -75,12 +93,6 @@ class WishlistModule {
             GraphqlHelper.loadRawString(context.resources,
                     R.raw.query_single_recommendation_widget)
 
-    @Provides
-    @WishlistScope
-    @Named("wishlistQuery")
-    fun provideWishlistQuery(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources,
-                    R.raw.query_wishlist)
 
     @Provides
     @Named("atcMutation")

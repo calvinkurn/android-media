@@ -6,18 +6,16 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.home_wishlist.data.query.WishlistQuery
 import com.tokopedia.home_wishlist.model.entity.Wishlist
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
 import com.tokopedia.home_wishlist.model.entity.WishlistResponse
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class WishlistRepository @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        @Named("wishlistQuery") private val query: String
+        private val graphqlRepository: GraphqlRepository
 ) {
     companion object{
         private const val PARAM_COUNT = "count"
@@ -38,7 +36,7 @@ class WishlistRepository @Inject constructor(
             )
 
             val gqlRecommendationRequest = GraphqlRequest(
-                    query,
+                    WishlistQuery.getQuery(),
                     WishlistResponse::class.java,
                     params
             )
