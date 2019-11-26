@@ -250,9 +250,13 @@ public class PartialRegisterInputView extends BaseCustomView {
         this.emailExtension = emailExtension;
         this.emailExtension.setExtensions(emailExtensionList, (extension, position) -> {
             String[] charEmail = etInputEmailPhone.getText().toString().split("@");
-
-            etInputEmailPhone.setText(String.format("%s@%s", charEmail[0], extension));
+            if (charEmail.length > 0) {
+                etInputEmailPhone.setText(String.format("%s@%s", charEmail[0], extension));
+            } else {
+                etInputEmailPhone.setText(String.format("%s@%s", etInputEmailPhone.getText().toString().replace("@", ""), extension));
+            }
             etInputEmailPhone.setSelection(etInputEmailPhone.getText().toString().trim().length());
+            this.emailExtension.setVisibility(View.GONE);
         });
     }
 

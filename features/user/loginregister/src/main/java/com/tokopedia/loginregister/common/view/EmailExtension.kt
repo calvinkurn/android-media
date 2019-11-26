@@ -41,6 +41,8 @@ class EmailExtension @JvmOverloads constructor(
 
         if (emailExtensionList.isEmpty()) {
             recyclerViewEmailExtension?.visibility = View.GONE
+        } else {
+            recyclerViewEmailExtension?.visibility = View.VISIBLE
         }
 
         this.emailExtensionList = emailExtensionList
@@ -55,6 +57,8 @@ class EmailExtension @JvmOverloads constructor(
 
         if (emailExtensionListFiltered.isEmpty()) {
             recyclerViewEmailExtension?.visibility = View.GONE
+        } else {
+            recyclerViewEmailExtension?.visibility = View.VISIBLE
         }
 
         emailExtensionListFiltered.let {
