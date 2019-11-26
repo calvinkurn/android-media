@@ -2,34 +2,33 @@ package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.RouteManagerKt
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.statistic.PostStatisticAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticPlaceholderUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticUiModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.EmptyState
+import androidx.constraintlayout.widget.ConstraintSet
+
 
 /**
  * Created by jegul on 2019-11-21
@@ -62,6 +61,8 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
     private lateinit var groupDetail: Group
     private lateinit var tvCheckDashboard: TextView
 
+    private var globalError: View? = null
+
     override fun onSeeMoreDetailClicked(type: PostStatisticDetailType) { listener?.onSeeMoreDetailClicked(this, type) }
 
     fun setPostStatisticCommissionModel(model: PostStatisticCommissionUiModel) {
@@ -69,6 +70,7 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
         statisticAdapter.setItemsAndAnimateChanges(model.postStatisticList)
 
         ivLoading.hide()
+        globalError?.hide()
         groupDetail.show()
     }
 
@@ -86,13 +88,35 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
 
     fun setError(throwable: Throwable, activityId: String, productIds: List<String>) {
         if (view is ViewGroup) {
+            val currentViewGroup = (view as ViewGroup)
+
+            val clLayout = currentViewGroup.findViewById<ConstraintLayout>(R.id.cl_post_statistic)
+
             ivLoading.hide()
             groupDetail.invisible()
 
-            (view as ViewGroup).showUnifyError(
-                    throwable,
-                    { listener?.onGetPostStatisticModelList(this, activityId, productIds) }
-            )
+            if (clLayout != null) {
+
+                clLayout.showUnifyError(
+                        throwable,
+                        { listener?.onGetPostStatisticModelList(this, activityId, productIds) }
+                )
+
+                if (globalError == null) {
+                    val constraintSet = ConstraintSet()
+                    constraintSet.clone(clLayout)
+                    constraintSet.connect(com.tokopedia.globalerror.R.id.globalerror_parent, ConstraintSet.TOP, clLayout.id, ConstraintSet.TOP)
+                    constraintSet.connect(com.tokopedia.globalerror.R.id.globalerror_parent, ConstraintSet.BOTTOM, clLayout.id, ConstraintSet.BOTTOM, 24)
+                    constraintSet.centerHorizontally(com.tokopedia.globalerror.R.id.globalerror_parent, clLayout.id)
+                    constraintSet.applyTo(clLayout)
+
+                    clLayout.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)?.apply {
+                        gravity = Gravity.CENTER
+                    }
+
+                    globalError = clLayout.findViewById(com.tokopedia.globalerror.R.id.globalerror_parent)
+                }
+            }
         }
     }
 
@@ -135,6 +159,7 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
 
     private fun resetData() {
         ivLoading.show()
+        globalError?.hide()
         groupDetail.invisible()
     }
 

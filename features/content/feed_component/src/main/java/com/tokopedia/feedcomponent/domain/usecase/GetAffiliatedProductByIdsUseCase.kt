@@ -1,9 +1,8 @@
 package com.tokopedia.feedcomponent.domain.usecase
 
+import com.tokopedia.feedcomponent.domain.SUSPEND_GRAPHQL_REPOSITORY
 import com.tokopedia.feedcomponent.domain.model.commission.AffiliatedProductByProductIDs
 import com.tokopedia.feedcomponent.domain.model.commission.GetAffiliatedProductByProductIDsResponse
-import com.tokopedia.feedcomponent.domain.model.statistic.FeedGetStatsPosts
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -11,12 +10,13 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by jegul on 2019-11-22
  */
 class GetAffiliatedProductByIdsUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
+        @param:Named(SUSPEND_GRAPHQL_REPOSITORY) private val graphqlRepository: GraphqlRepository
 ) : UseCase<AffiliatedProductByProductIDs>() {
 
     companion object {

@@ -1,12 +1,10 @@
 package com.tokopedia.feedcomponent.domain.usecase
 
-import android.util.Log
 import com.tokopedia.feedcomponent.domain.model.commission.AffiliatedProductByProductIDs
 import com.tokopedia.feedcomponent.domain.model.statistic.FeedGetStatsPosts
 import com.tokopedia.feedcomponent.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
