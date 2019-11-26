@@ -15,4 +15,7 @@ data class SomDetailShipping (
         val driverPhoto: String = "",
         val driverName: String = "",
         val driverPhone: String = "",
-        val driverLicense: String = "")
+        val driverLicense: String = "",
+        val onlineBookingCode: String = "",
+        val onlineBookingState: Int = -1,
+        val onlineBookingMsg: String = "")

@@ -72,6 +72,11 @@ query GetSOMDetail($orderID: String!, $lang: String!){
         store_name
         pickup_code
       }
+      online_booking{
+        booking_code
+        state
+        message
+      }
     }
     receiver{
       name

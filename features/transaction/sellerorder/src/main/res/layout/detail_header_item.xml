@@ -114,7 +114,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="@string/deadline"
-            android:text="@string/deadline"
             android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header_date_label"

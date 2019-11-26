@@ -17,6 +17,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickupParam
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -100,7 +101,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
                     renderConfirmReqPickup()
                 }
                 is Fail -> {
-                    // quick_filter?.visibility = View.GONE
+                    Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
             }
         })
@@ -118,7 +119,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
 
                 }
                 is Fail -> {
-                    showToasterError(it.throwable.localizedMessage)
+                    Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
             }
         })
@@ -159,13 +160,6 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment() {
         btn_req_pickup?.setOnClickListener {
             processReqPickup()
             observingProcessReqPickup()
-        }
-    }
-
-    private fun showToasterError(message: String) {
-        val toasterError = Toaster
-        view?.let { v ->
-            toasterError.make(v, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, SomConsts.ACTION_OK)
         }
     }
 }

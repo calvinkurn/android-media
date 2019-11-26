@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
+import android.graphics.Typeface
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.sellerorder.R
@@ -34,13 +35,11 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 itemView.label_harus_sesuai.visibility = View.VISIBLE
                 itemView.ic_harus_sesuai.visibility = View.VISIBLE
                 itemView.label_harus_sesuai.setOnClickListener {
-                    println("++ HARUSNYA MUNCUL BOTTOMSHEET")
                     actionListener.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
                             R.string.desc_bottomsheet_immutable_courier)
                     }
                 itemView.ic_harus_sesuai.setOnClickListener {
-                    println("++ HARUSNYA MUNCUL BOTTOMSHEET")
                     actionListener.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
                             R.string.desc_bottomsheet_immutable_courier) }
@@ -76,6 +75,40 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     itemView.tv_driver_license.text = item.dataObject.driverLicense
                 } else {
                     itemView.tv_driver_license.visibility = View.GONE
+                }
+            }
+
+            // booking online - booking code
+            if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()) {
+                itemView.rl_booking_code.visibility = View.GONE
+            } else {
+                itemView.rl_booking_code.visibility = View.VISIBLE
+
+                itemView.rl_wajib_dicantumkan.setOnClickListener {
+                    actionListener.onShowBottomSheetInfo(
+                            itemView.context.getString(R.string.wajib_tulis_kode_booking_title),
+                            R.string.wajib_tulis_kode_booking_desc)
+                }
+
+                if (item.dataObject.onlineBookingCode.isEmpty()) {
+                    itemView.booking_code_see_btn.visibility = View.GONE
+                    itemView.booking_code_value.apply {
+                        text = itemView.context.getString(R.string.placeholder_kode_booking)
+                        setTypeface(this.typeface, Typeface.ITALIC)
+                    }
+                } else {
+                    itemView.booking_code_value.apply {
+                        text = item.dataObject.onlineBookingCode
+                        setTypeface(this.typeface, Typeface.BOLD)
+                    }
+                    itemView.booking_code_see_btn.apply {
+                        visibility = View.VISIBLE
+                        setOnClickListener {
+                            // intent ke BookingCodeActivity?
+                            // startActivity(BookingCodeActivity.createInstance(this, codeData))
+                        }
+                    }
+
                 }
             }
         }

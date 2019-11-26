@@ -84,15 +84,23 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import android.net.Uri
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_URL_UPLOAD
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_SHIPMENT_PRODUCT_NAME
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN
+import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_UBAH_RESI
+import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailShippingViewHolder
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
@@ -101,7 +109,8 @@ import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.*
 /**x
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener, SomBottomSheetCourierProblemsAdapter.ActionListener  {
+class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
+        SomBottomSheetCourierProblemsAdapter.ActionListener  {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -268,6 +277,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private fun renderDetail() {
         // header
         val dataHeader = SomDetailHeader(
+                detailResponse.statusId,
                 detailResponse.statusText,
                 detailResponse.invoice,
                 detailResponse.invoiceUrl,
@@ -278,7 +288,12 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.listLabelInfo,
                 detailResponse.orderId.toString(),
                 detailResponse.shipment.awb,
-                detailResponse.shipment.awbUploadProofText)
+                detailResponse.shipment.awbTextColor,
+                detailResponse.shipment.awbUploadUrl,
+                detailResponse.shipment.awbUploadProofText,
+                detailResponse.bookingInfo.onlineBooking.bookingCode,
+                detailResponse.bookingInfo.onlineBooking.state,
+                detailResponse.bookingInfo.onlineBooking.message)
 
         // products
         val dataProducts = SomDetailProducts(detailResponse.listProduct)
@@ -307,7 +322,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 detailResponse.bookingInfo.driver.photo,
                 detailResponse.bookingInfo.driver.name,
                 detailResponse.bookingInfo.driver.phone,
-                detailResponse.bookingInfo.driver.licenseNumber)
+                detailResponse.bookingInfo.driver.licenseNumber,
+                detailResponse.bookingInfo.onlineBooking.bookingCode,
+                detailResponse.bookingInfo.onlineBooking.state,
+                detailResponse.bookingInfo.onlineBooking.message)
 
         val dataPayments = SomDetailPayments(
                 detailResponse.paymentSummary.productsPriceText,
@@ -423,6 +441,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         btn_primary?.setOnClickListener {
             Intent(activity, SomConfirmShippingActivity::class.java).apply {
                 putExtra(PARAM_ORDER_ID, orderId)
+                putExtra(PARAM_CURR_SHIPMENT_ID, detailResponse.shipment.id)
                 putExtra(PARAM_CURR_SHIPMENT_NAME, detailResponse.shipment.name)
                 putExtra(PARAM_CURR_SHIPMENT_PRODUCT_NAME, detailResponse.shipment.productName)
                 startActivityForResult(this, FLAG_CONFIRM_SHIPPING)
@@ -454,7 +473,11 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         } else if (key.equals(KEY_BATALKAN_PESANAN, true)) {
             setActionCancelOrder()
 
-        } /*else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
+        } else if (key.equals(KEY_UBAH_NO_RESI, true)) {
+            setActionUbahNoResi()
+        }
+
+        /*else if (key.equals(KEY_REASON_EMPTY_STOCK, true)) {
             // besok lanjut bikin adapter untuk beberapa layout khusus untuk reject order
 
         } else if (key.equals(KEY_REASON_COURIER_PROBLEM, true)) {
@@ -506,6 +529,41 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     reason = viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString()
             )
             doRejectOrder(orderRejectRequest)
+        }
+    }
+
+    private fun setActionUbahNoResi() {
+        bottomSheetUnify.dismiss()
+        bottomSheetUnify = BottomSheetUnify().apply {
+            if (isAdded) this.dismiss()
+
+        }
+        if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_cancel_order, null)
+
+        viewBottomSheet.tf_cancel_notes?.setLabelStatic(true)
+        viewBottomSheet.tf_cancel_notes?.setMessage(getString(R.string.change_no_resi_notes))
+        viewBottomSheet.tf_cancel_notes?.textFiedlLabelText?.text = getString(R.string.change_no_resi_notes)
+        viewBottomSheet.tf_cancel_notes?.textFieldInput?.hint = getString(R.string.change_no_resi_hint)
+
+        bottomSheetUnify.setFullPage(false)
+        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+        bottomSheetUnify.setChild(viewBottomSheet)
+        bottomSheetUnify.show(fragmentManager, getString(R.string.show_bottomsheet))
+        bottomSheetUnify.setTitle(TITLE_UBAH_RESI)
+
+        viewBottomSheet?.btn_cancel_order_canceled?.setOnClickListener { bottomSheetUnify.dismiss() }
+        viewBottomSheet?.btn_cancel_order_confirmed?.apply {
+            text = getString(R.string.change_no_resi_btn_ubah)
+            setOnClickListener {
+                bottomSheetUnify.dismiss()
+                val orderRejectRequest = SomRejectRequest(
+                        orderId = detailResponse.orderId.toString(),
+                        rCode = "0",
+                        reason = viewBottomSheet.tf_cancel_notes?.textFieldInput?.text.toString()
+                )
+                doRejectOrder(orderRejectRequest)
+            }
         }
     }
 
@@ -561,12 +619,10 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         showCommonToaster(str)
     }
 
-    override fun onInvalidResiUpload() {
-        // TODO: need backend provide shop_id to make url for upload_proof_awb
-        /*val awlUploadProofUrl = BASE_URL_UPLOAD_PROOF_AWB + detailResponse.orderId + "/" + QUERY_INVOICE_URL_UPLOAD_AWB + detailResponse.invoice
+    override fun onInvalidResiUpload(awbUploadUrl: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.UPLOAD_AWB)
-        intent.putExtra(EXTRA_URL_UPLOAD, data.getAwbUploadProofUrl())
-        startActivity(intent)*/
+        intent.putExtra(EXTRA_URL_UPLOAD, awbUploadUrl)
+        startActivity(intent)
     }
 
     private fun setProductEmpty(rCode: String) {
@@ -854,6 +910,16 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                     val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
                     activity?.setResult(Activity.RESULT_OK, Intent().apply {
                         putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
+                    })
+                    activity?.finish()
+                }
+            }
+        } else if (requestCode == FLAG_CONFIRM_SHIPPING && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                if (data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
+                    val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
+                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                        putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
                     })
                     activity?.finish()
                 }

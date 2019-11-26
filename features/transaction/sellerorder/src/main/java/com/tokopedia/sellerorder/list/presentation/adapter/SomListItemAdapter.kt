@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment
 import com.tokopedia.unifyprinciples.Typography
@@ -42,15 +43,28 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
     @SuppressLint("Range", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.label_status_order.text = somItemList[position].status
-        holder.itemView.label_status_order.setBackgroundColor(Color.parseColor(somItemList[position].statusColor))
+
+        if (somItemList[position].statusColor.isNotEmpty() && !somItemList[position].statusColor.equals(LABEL_EMPTY, true)) {
+            holder.itemView.label_status_order.setBackgroundColor(Color.parseColor(somItemList[position].statusColor))
+        }
         holder.itemView.label_invoice.text = somItemList[position].orderResi
         holder.itemView.ic_product.loadImage(somItemList[position].listOrderProduct[0].pictureUrl, com.tokopedia.design.R.drawable.ic_loading_image)
         holder.itemView.label_date_order.text = somItemList[position].orderDate
         holder.itemView.label_buyer_name.text = somItemList[position].buyerName
-        holder.itemView.label_due_response_day_count.text = somItemList[position].deadlineText
-        holder.itemView.ic_time.loadImageDrawable(R.drawable.ic_label_due_time)
-        holder.itemView.ic_time.setColorFilter(Color.WHITE)
-        holder.itemView.ic_label_due_card.setCardBackgroundColor(Color.parseColor(somItemList[position].deadlineColor))
+
+        if (somItemList[position].deadlineText.isEmpty() || somItemList[position].deadlineText.equals(LABEL_EMPTY, true)) {
+            holder.itemView.label_due_response.visibility = View.GONE
+            holder.itemView.ic_label_due_card.visibility = View.GONE
+        } else {
+            holder.itemView.label_due_response.visibility = View.VISIBLE
+            holder.itemView.ic_label_due_card.visibility = View.VISIBLE
+            holder.itemView.label_due_response_day_count.text = somItemList[position].deadlineText
+            holder.itemView.ic_time.loadImageDrawable(R.drawable.ic_label_due_time)
+            holder.itemView.ic_time.setColorFilter(Color.WHITE)
+            if (somItemList[position].deadlineColor.isNotEmpty() && !somItemList[position].deadlineColor.equals(LABEL_EMPTY, true)) {
+                holder.itemView.ic_label_due_card.setCardBackgroundColor(Color.parseColor(somItemList[position].deadlineColor))
+            }
+        }
 
         val totalProducts = somItemList[position].listOrderProduct.size
         if (totalProducts > 1) {
@@ -82,7 +96,9 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             cardView.layoutParams = layoutParams
             cardView.radius = 3F
             cardView.cardElevation = 0F
-            cardView.setCardBackgroundColor(Color.parseColor(it.flagBackground))
+            if (it.flagBackground.isNotEmpty() && !it.flagBackground.equals(LABEL_EMPTY, true)) {
+                cardView.setCardBackgroundColor(Color.parseColor(it.flagBackground))
+            }
 
             val displayMetrics = holder.itemView.context.resources.displayMetrics
             val marginRightLeft = 4.dpToPx(displayMetrics)
@@ -92,7 +108,9 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             text.setType(Typography.SMALL)
             text.setWeight(Typography.BOLD)
             text.text = it.flagName
-            text.setTextColor(Color.parseColor(it.flagColor))
+            if (it.flagColor.isNotEmpty() && !it.flagColor.equals(LABEL_EMPTY, true)) {
+                text.setTextColor(Color.parseColor(it.flagColor))
+            }
             text.setMargin(marginRightLeft, marginTopBottom, marginRightLeft, marginTopBottom)
             cardView.addView(text)
 

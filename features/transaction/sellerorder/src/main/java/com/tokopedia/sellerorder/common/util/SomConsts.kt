@@ -10,6 +10,7 @@ object SomConsts {
     const val PARAM_LIST_ORDER = "param_list_order"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
+    const val PARAM_CURR_SHIPMENT_ID = "shipment_id"
     const val PARAM_CURR_SHIPMENT_NAME = "shipment_name"
     const val PARAM_CURR_SHIPMENT_PRODUCT_NAME = "shipment_product_name"
     const val PARAM_SHOP_ID = "shop_id"
@@ -46,6 +47,8 @@ object SomConsts {
     const val RESULT_REJECT_ORDER = "result_reject_order"
     const val RESULT_CONFIRM_REQ_PICKUP = "result_confirm_req_pickup"
     const val RESULT_PROCESS_REQ_PICKUP = "result_process_req_pickup"
+    const val RESULT_CONFIRM_SHIPPING = "result_confirm_shipping"
+    const val RESULT_CHANGE_COURIER = "result_change_courier"
 
     const val KEY_ACCEPT_ORDER = "accept_order"
     const val KEY_REJECT_ORDER = "reject_order"
@@ -59,6 +62,7 @@ object SomConsts {
     const val KEY_REASON_BUYER_NO_RESPONSE = "buyer_no_resp"
     const val KEY_REASON_OTHER = "other_reason"
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
+    const val KEY_UBAH_NO_RESI = "change_awb"
 
     const val VALUE_REASON_EMPTY_STOCK = "Stok Produk Kosong"
     const val VALUE_REASON_SHOP_CLOSED = "Toko Sedang Tutup"
@@ -81,6 +85,9 @@ object SomConsts {
     const val TITLE_COURIER_PROBLEM = "Kendala Kurir"
     const val TITLE_ATUR_TOKO_TUTUP = "Atur tanggal toko tutup"
     const val TITLE_BATALKAN_PESANAN = "Tuliskan Keterangan Anda"
+    const val TITLE_UBAH_RESI = "Ubah Nomor Resi"
+    const val TITLE_KURIR_PENGIRIMAN = "Kurir Pengiriman"
+    const val TITLE_JENIS_LAYANAN = "Jenis Layanan"
 
     const val BOTTOMSHEET_TEXT_ONLY_TYPE = "text_only"
     const val BOTTOMSHEET_TEXT_RADIO_TYPE = "text_radio"
@@ -97,4 +104,6 @@ object SomConsts {
     const val INPUT_ORDER_ID = "#orderId"
 
     const val RESULT_SCAN_BARCODE = "result_scan_barcode"
+    const val LABEL_EMPTY = "-"
+    const val EXTRA_URL_UPLOAD = "EXTRA_URL_UPLOAD"
 }

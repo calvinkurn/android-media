@@ -1,0 +1,5 @@
+mutation ChangeCourier($input: MPLogisticChangeCourierInputs!) {
+  mpLogisticChangeCourier (input: $input) {
+    message
+  }
+}

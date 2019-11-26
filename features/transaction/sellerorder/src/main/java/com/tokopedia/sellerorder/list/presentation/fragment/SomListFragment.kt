@@ -26,10 +26,12 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
+import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
 import com.tokopedia.sellerorder.detail.data.model.SomAcceptOrder
 import com.tokopedia.sellerorder.detail.data.model.SomRejectOrder
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
@@ -74,6 +76,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var tabActive = ""
     private val FLAG_DETAIL = 3333
     private val FLAG_CONFIRM_REQ_PICKUP = 3553
+    private val FLAG_CONFIRM_SHIPPING = 3555
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -196,7 +199,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 tickerList.forEach {
                     if (it.isActive) {
                         // listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true, indexTicker))
-                        listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true))
+                        listTickerData.add(TickerData("", it.shortDesc, Ticker.TYPE_ANNOUNCEMENT, true))
                         indexTicker++
                     }
                 }
@@ -401,6 +404,13 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
                     val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
                     refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
+                }
+            }
+        } else if (requestCode == FLAG_CONFIRM_SHIPPING  && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                if (data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
+                    val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
+                    refreshThenShowToasterOk(resultConfirmShippingMsg)
                 }
             }
         }

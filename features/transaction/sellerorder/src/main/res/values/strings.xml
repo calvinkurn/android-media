@@ -44,11 +44,15 @@
     <string name="purchasing_date">Tanggal Pembelian</string>
     <string name="nomor_resi">Nomor Resi</string>
     <string name="deadline">Batas Respons</string>
+    <string name="deadline_done">Selesai Otomatis</string>
     <string name="lihat_caps">LIHAT</string>
+    <string name="lihat">Lihat</string>
+    <string name="placeholder_kode_booking">Terima pesanan terlebih dahulu</string>
     <string name="salin_caps">SALIN</string>
     <string name="awb_label">awb</string>
     <string name="resi_tersalin">Nomor resi sudah tersalin</string>
     <string name="detail_pengiriman">Detail Pengiriman</string>
+    <string name="kode_booking">Kode Booking</string>
     <string name="kurir_pengiriman">Kurir Pengiriman</string>
     <string name="alamat_pengiriman">Alamat Pengiriman</string>
     <string name="catatan">Catatan</string>
@@ -67,7 +71,9 @@
 
     <string name="chat">Chat</string>
     <string name="harus_sesuai">Harus Sesuai</string>
+    <string name="wajib_dicantumkan">Wajib Dicantumkan</string>
     <string name="icon_harus_sesuai">Icon Harus Sesuai</string>
+    <string name="icon_wajib_dicantumkan">Icon Wajib Dicantumkan</string>
     <string name="label_mengerti">Mengerti</string>
     <string name="title_bottomsheet_immutable_courier">Kurir tidak dapat diubah</string>
     <string name="desc_bottomsheet_immutable_courier">Kurir dan layanan pengiriman harus sesuai dengan pesanan.</string>
@@ -133,5 +139,14 @@
 
     <string name="scan_barcode_msg">Arahkan kamera ponsel Anda pada nomor resi barang.
         Pastikan barcode berada di dalam frame. Nomor resi akan otomatis terpindai.</string>
+
+    <string name="succeed_change_courier">Anda berhasil mengganti kurir.</string>
+
+    <string name="wajib_tulis_kode_booking_title">Wajib tulis kode booking</string>
+    <string name="wajib_tulis_kode_booking_desc">Cetak label pengiriman atau tulis kode booking di kemasan paketmu. Kurir akan memastikan kode booking sudah sesuai.</string>
+
+    <string name="change_no_resi_hint">Nomor Resi</string>
+    <string name="change_no_resi_notes">Min. 8 karakter dan Maks. 17 karakter</string>
+    <string name="change_no_resi_btn_ubah">Ubah</string>
 
 </resources>

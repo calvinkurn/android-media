@@ -188,6 +188,14 @@ data class SomDetailOrder (
                     @Expose
                     val awb: String = "",
 
+                    @SerializedName("awb_text_color")
+                    @Expose
+                    val awbTextColor: String = "",
+
+                    @SerializedName("awb_upload_url")
+                    @Expose
+                    val awbUploadUrl: String = "",
+
                     @SerializedName("awb_upload_proof_text")
                     @Expose
                     val awbUploadProofText: String = "")
@@ -195,7 +203,11 @@ data class SomDetailOrder (
             data class BookingInfo(
                     @SerializedName("driver")
                     @Expose
-                    val driver: Driver = Driver()) {
+                    val driver: Driver = Driver(),
+
+                    @SerializedName("online_booking")
+                    @Expose
+                    val onlineBooking: OnlineBooking = OnlineBooking()) {
 
                 data class Driver(
                         @SerializedName("name")
@@ -217,6 +229,20 @@ data class SomDetailOrder (
                         @SerializedName("tracking_url")
                         @Expose
                         val trackingUrl: String = ""
+                )
+
+                data class OnlineBooking(
+                        @SerializedName("booking_code")
+                        @Expose
+                        val bookingCode: String = "",
+
+                        @SerializedName("state")
+                        @Expose
+                        val state: Int = -1,
+
+                        @SerializedName("message")
+                        @Expose
+                        val message: String = ""
                 )
             }
 

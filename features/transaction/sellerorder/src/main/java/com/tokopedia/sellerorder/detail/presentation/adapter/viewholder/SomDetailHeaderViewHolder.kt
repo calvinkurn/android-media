@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
+import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
@@ -41,11 +41,18 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             itemView.header_date_value?.text = item.dataObject.paymentDate
 
             if (item.dataObject.deadlineText.isNotEmpty()) {
+                itemView.header_deadline_label?.visibility = View.VISIBLE
+                if (item.dataObject.statusId == 600 || item.dataObject.statusId == 699) {
+                    itemView.header_deadline_label?.text = itemView.context.getString(R.string.deadline_done)
+                } else {
+                    itemView.header_deadline_label?.text = itemView.context.getString(R.string.deadline)
+                }
+
                 itemView.label_due_response_day_count?.text = item.dataObject.deadlineText
                 itemView.ic_time?.loadImageDrawable(R.drawable.ic_label_due_time)
                 itemView.ic_time?.setColorFilter(Color.WHITE)
 
-                if (item.dataObject.deadlineColor.isNotEmpty()) {
+                if (item.dataObject.deadlineColor.isNotEmpty() && !item.dataObject.deadlineColor.equals(LABEL_EMPTY, true)) {
                     itemView.due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
                 }
             } else {
@@ -73,6 +80,9 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             if (item.dataObject.awb.isNotEmpty()) {
                 itemView.layout_resi?.visibility = View.VISIBLE
                 itemView.header_resi_value?.text = item.dataObject.awb
+                if (item.dataObject.awbTextColor.isNotEmpty()) {
+                    itemView.header_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
+                }
                 itemView.header_copy_resi?.setOnClickListener {
                     actionListener.onTextCopied(itemView.context.getString(R.string.awb_label), itemView.context.getString(R.string.resi_tersalin))
                 }
@@ -89,7 +99,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     tickerShape = Ticker.SHAPE_FULL
                     tickerType = Ticker.TYPE_ERROR
                     closeButtonVisibility = View.GONE
-                    setOnClickListener { actionListener.onInvalidResiUpload() }
+                    setOnClickListener { actionListener.onInvalidResiUpload(item.dataObject.awbUploadUrl) }
                 }
             } else {
                 itemView.ticker_invalid_resi?.visibility = View.GONE
