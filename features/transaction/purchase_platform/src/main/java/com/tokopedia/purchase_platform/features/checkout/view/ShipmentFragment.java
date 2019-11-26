@@ -3012,6 +3012,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void sendEventChangeInsuranceState(boolean isChecked) {
+
+    }
+
+    @Override
+    public void sendEventDeleteInsurance() {
+
+    }
+
+    @Override
     public void updateInsuranceProductData(@NotNull InsuranceCartShops insuranceCartShops, @NotNull ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
 
     }

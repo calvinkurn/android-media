@@ -76,6 +76,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                 itemView.insurance_tv_info.text = insuranceCartDigitalProductViewModel.productInfo.linkName
                 itemView.insurance_tv_info.setOnClickListener {
 
+                    listener.sendEventInsuranceInfoClicked()
                     openBottomSheetWebView(itemView.context,
                             insuranceCartDigitalProductViewModel.productInfo.appLinkUrl,
                             insuranceCartDigitalProductViewModel.productInfo.detailInfoTitle)
@@ -222,6 +223,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
                         applicationDetailsView.hide()
                         itemView.tv_info_text.hide()
                     }
+                    listener.sendEventInsuranceSelectedStateChanged(isChecked)
                     listener.onInsuranceSelectedStateChanged(originalData, isChecked)
                 }
 

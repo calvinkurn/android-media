@@ -257,11 +257,11 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                 tvChangeInsuranceApplicationDetails.show()
                 cbSelectInsurance.show()
                 cbSelectInsurance.setOnCheckedChangeListener { buttonView, isChecked ->
+                    insuranceItemActionlistener.sendEventChangeInsuranceState(isChecked)
                     if (!onBind) {
                         insuranceCartShops.shopItemsList[0].digitalProductList[0].optIn = isChecked
                         insuranceItemActionlistener.onInsuranceSelectStateChanges()
                     }
-
                 }
 
                 onBind = true
@@ -272,6 +272,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                 ivDeleteInsurance.setOnClickListener {
                     val insuranceCartDigitalProductArrayList = ArrayList<InsuranceCartDigitalProduct>()
                     insuranceCartDigitalProductArrayList.add(insuranceCartDigitalProduct)
+                    insuranceItemActionlistener.sendEventDeleteInsurance()
                     insuranceItemActionlistener.deleteMacroInsurance(insuranceCartDigitalProductArrayList, true)
                 }
             } else {

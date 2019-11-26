@@ -2543,6 +2543,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
+    public void sendEventDeleteInsurance() {
+        cartPageAnalytics.sendEventDeleteInsurance();
+    }
+
+    @Override
+    public void sendEventChangeInsuranceState(boolean isChecked) {
+
+    }
+
+    @Override
     public void deleteMacroInsurance(@NotNull ArrayList<InsuranceCartDigitalProduct> insuranceCartDigitalProductArrayList, boolean showConfirmationDialog) {
         if (showConfirmationDialog) {
             View view = getLayoutInflater().inflate(R.layout.remove_insurance_product, null, false);

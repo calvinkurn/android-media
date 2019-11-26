@@ -620,7 +620,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun goToApplyLeasing() {
-        val selectedProductId =  if (selectedVariantId.toIntOrZero() > 0) {
+        val selectedProductId = if (selectedVariantId.toIntOrZero() > 0) {
             selectedVariantId
         } else {
             productId
@@ -1266,6 +1266,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         outState.putString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
         outState.putInt(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
         outState.putString(ApplinkConst.Transaction.EXTRA_NOTES, notes)
+    }
+
+    override fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean) {
+        normalCheckoutTracking.eventClickInsuranceState(productId, isChecked)
+    }
+
+    override fun sendEventInsuranceInfoClicked() {
+        normalCheckoutTracking.eventClickInsuranceInfo(productId)
     }
 
     override fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean) {

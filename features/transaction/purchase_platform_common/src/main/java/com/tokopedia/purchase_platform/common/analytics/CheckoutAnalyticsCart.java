@@ -958,4 +958,13 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    public void sendEventDeleteInsurance() {
+        sendEventCategoryActionLabel(
+                "",
+                "fin - cart page",
+                "ins - click delete from cart",
+                "cart page - macro insurance"
+        );
+    }
+
 }
