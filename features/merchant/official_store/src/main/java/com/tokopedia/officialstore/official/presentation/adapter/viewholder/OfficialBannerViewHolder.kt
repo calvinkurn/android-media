@@ -38,10 +38,6 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
         banner?.setOnPromoDragListener(this)
         banner?.onPromoClickListener = this
         banner?.buildView()
-
-//        elementBanner?.let {
-//            banner?.getAdapter()?.setOfficialBannerViewModel(it)
-//        }
     }
 
     override fun onPromoClick(position: Int) {

@@ -52,6 +52,7 @@ class OfficialHomeFragment :
         RecommendationListener,
         DynamicChannelEventHandler
 {
+
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
@@ -64,6 +65,7 @@ class OfficialHomeFragment :
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
+
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -79,10 +81,12 @@ class OfficialHomeFragment :
     private var lastParentPosition: Int? = null
     private var counterTitleShouldBeRendered = 0
     private var isScrolling = false
+
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
     private lateinit var dynamicChannelPerformanceMonitoring: PerformanceMonitoring
     private lateinit var productRecommendationPerformanceMonitoring: PerformanceMonitoring
+
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -548,15 +552,6 @@ class OfficialHomeFragment :
         }
     }
 
-//    override fun putEEToTrackingQueue(categoryName: String, bannerId: String, bannerPosition: Int, bannerName: String, imageUrl: String) {
-//        tracking?.eventImpressionBanner(
-//                categoryName,
-//                bannerId,
-//                bannerPosition,
-//                bannerName,
-//                imageUrl)
-//    }
-    
     private fun initFirebasePerformanceMonitoring() {
         val CATEGORY_CONST: String = category?.title?:""
 

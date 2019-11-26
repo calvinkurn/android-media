@@ -12,9 +12,6 @@ class BannerOfficialStoreAdapter(
         bannerImageUrls: List<String>,
         onPromoClickListener: BannerView.OnPromoClickListener) : BannerViewPagerAdapter(bannerImageUrls, onPromoClickListener) {
 
-//    private var bannerListener: BannerListener? = null
-//    private var officialBannerViewModel: OfficialBannerViewModel? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
         return BannerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.widget_official_banner_item, parent, false))
     }
@@ -32,29 +29,6 @@ class BannerOfficialStoreAdapter(
             e.printStackTrace()
         }
 
-//        officialBannerViewModel?.let {
-//            holder.bannerImage.addOnImpressionListener(it, object : ViewHintListener {
-//                override fun onViewHint() {
-//                    bannerListener?.putEEToTrackingQueue(
-//                            officialBannerViewModel?.categoryName?: "",
-//                            officialBannerViewModel?.banner?.get(position)?.bannerId?: "",
-//                            position,
-//                            officialBannerViewModel?.banner?.get(position)?.title?: "",
-//                            officialBannerViewModel?.banner?.get(position)?.imageUrl?: ""
-//                    )
-//                }
-//            })
-//        }
-
         holder.bannerImage.setOnClickListener(this.getBannerImageOnClickListener(position))
     }
-
-//    fun setOfficialBannerViewModel(officialViewModel: OfficialBannerViewModel) {
-//        this.officialBannerViewModel = officialViewModel
-//    }
-
-//    fun getOfficialBannerViewModel(): OfficialBannerViewModel? {
-//        return officialBannerViewModel
-//    }
-
 }

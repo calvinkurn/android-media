@@ -30,8 +30,4 @@ class BannerOfficialStore(@NonNull context: Context, @Nullable attrs: AttributeS
     override fun getBannerAdapter(): BannerViewPagerAdapter {
         return BannerOfficialStoreAdapter(promoImageUrls, onPromoClickListener)
     }
-
-//    fun getAdapter(): BannerOfficialStoreAdapter {
-//        return bannerAdapter as BannerOfficialStoreAdapter
-//    }
 }
