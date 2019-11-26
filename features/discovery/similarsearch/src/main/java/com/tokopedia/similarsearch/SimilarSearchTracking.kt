@@ -32,7 +32,7 @@ internal object SimilarSearchTracking {
                         ECOMMERCE, DataLayer.mapOf(
                             ECommerce.CLICK, DataLayer.mapOf(
                                 ECommerce.ACTION_FIELD, DataLayer.mapOf(
-                                    "list", "'/similarproduct'"
+                                    "list", "/similarproduct"
                                 ),
                                 ECommerce.PRODUCTS, DataLayer.listOf(productItem)
                             )
