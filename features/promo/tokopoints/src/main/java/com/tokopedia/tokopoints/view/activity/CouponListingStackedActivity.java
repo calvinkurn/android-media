@@ -63,6 +63,10 @@ public class CouponListingStackedActivity extends BaseSimpleActivity implements 
         mPresenter.attachView(this);
         mContainerMain = findViewById(R.id.container);
         serverErrorView = findViewById(R.id.server_error_view);
+        serverErrorView.setErrorButtonClickListener((view) -> {
+            mPresenter.getFilter(getIntent().getStringExtra(CommonConstant.EXTRA_SLUG));
+            showLoading();
+        });
         initViews();
         UserSessionInterface userSession = new UserSession(this);
         if (userSession.isLoggedIn()) {
