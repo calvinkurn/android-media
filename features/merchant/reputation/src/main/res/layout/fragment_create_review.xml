@@ -8,7 +8,8 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:background="@color/white">
 
     <ScrollView
         android:id="@+id/create_review_container"
@@ -22,8 +23,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/img_review"
