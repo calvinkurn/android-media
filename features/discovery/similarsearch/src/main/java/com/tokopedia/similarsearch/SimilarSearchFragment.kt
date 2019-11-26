@@ -24,6 +24,14 @@ import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
+import com.tokopedia.similarsearch.getsimilarproducts.model.Product
+import com.tokopedia.similarsearch.originalproduct.SimilarSearchOriginalProductView
+import com.tokopedia.similarsearch.originalproduct.SimilarSearchOriginalProductViewListener
+import com.tokopedia.similarsearch.productitem.SimilarProductItemListener
+import com.tokopedia.similarsearch.recyclerview.SimilarSearchAdapter
+import com.tokopedia.similarsearch.recyclerview.SimilarSearchItemDecoration
+import com.tokopedia.similarsearch.tracking.SimilarSearchTracking
+import com.tokopedia.similarsearch.utils.asObjectDataLayer
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*

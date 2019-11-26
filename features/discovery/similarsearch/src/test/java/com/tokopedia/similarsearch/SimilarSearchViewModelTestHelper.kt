@@ -1,5 +1,6 @@
 package com.tokopedia.similarsearch
 
+import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 import com.tokopedia.similarsearch.testinstance.getSimilarSearchQuery
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface

@@ -2,6 +2,12 @@ package com.tokopedia.similarsearch
 
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
+import com.tokopedia.similarsearch.di.SimilarSearchModuleScope
+import com.tokopedia.similarsearch.di.UserSessionModule
+import com.tokopedia.similarsearch.di.WishlistUseCaseModule
+import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
+import com.tokopedia.similarsearch.getsimilarproducts.GET_SIMILAR_PRODUCT_USE_CASE
+import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCaseModule
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -12,7 +18,7 @@ import javax.inject.Named
 
 @SimilarSearchModuleScope
 @Module(includes = [
-    SimilarSearchUseCaseModule::class,
+    GetSimilarProductsUseCaseModule::class,
     WishlistUseCaseModule::class,
     UserSessionModule::class
 ])

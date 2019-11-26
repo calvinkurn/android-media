@@ -2,6 +2,7 @@ package com.tokopedia.similarsearch
 
 import com.tokopedia.similarsearch.testinstance.getSimilarProductModelCommon
 import com.tokopedia.similarsearch.testinstance.getSimilarProductModelOriginalProductWishlisted
+import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCase
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 

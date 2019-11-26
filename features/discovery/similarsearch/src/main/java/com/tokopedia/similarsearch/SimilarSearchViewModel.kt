@@ -10,6 +10,12 @@ import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.*
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.similarsearch.divider.DividerViewModel
+import com.tokopedia.similarsearch.emptyresult.EmptyResultViewModel
+import com.tokopedia.similarsearch.getsimilarproducts.model.Product
+import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
+import com.tokopedia.similarsearch.title.TitleViewModel
+import com.tokopedia.similarsearch.utils.asObjectDataLayer
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener

@@ -3,6 +3,7 @@ package com.tokopedia.similarsearch
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.similarsearch.testinstance.getSimilarProductModelCommon
 import com.tokopedia.similarsearch.testinstance.getSimilarSearchQuery
+import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase

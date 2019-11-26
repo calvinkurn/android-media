@@ -1,7 +1,7 @@
 package com.tokopedia.similarsearch.testinstance
 
 import com.google.gson.Gson
-import com.tokopedia.similarsearch.SimilarProductModel
+import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 
 private val similarProductModelTwoPageJSONString = """
 {

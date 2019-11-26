@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.common.constants.SearchConstant.SimilarSearch.QUERY
+import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCaseModule
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -43,10 +44,10 @@ internal class SimilarSearchActivity: BaseSimpleActivity() {
         return (application as BaseMainApplication).baseAppComponent
     }
 
-    private fun createSimilarSearchUseCaseModule(): SimilarSearchUseCaseModule {
+    private fun createSimilarSearchUseCaseModule(): GetSimilarProductsUseCaseModule {
         val productId = getProductIdFromApplink()
 
-        return SimilarSearchUseCaseModule(productId)
+        return GetSimilarProductsUseCaseModule(productId)
     }
 
     private fun getProductIdFromApplink(): String {
