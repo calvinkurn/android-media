@@ -200,9 +200,20 @@
                     android:layout_gravity="center"
                     android:visibility="gone"
                     tools:visibility="visible" />
-
-
             </RelativeLayout>
+
+            <com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
+                android:id="@+id/rv_attachment_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:paddingStart="@dimen/dp_32"
+                android:paddingTop="@dimen/dp_24"
+                android:paddingEnd="@dimen/dp_32"
+                android:paddingBottom="@dimen/dp_24"
+                android:visibility="gone"
+                tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                tools:spanCount="2" />
 
         </LinearLayout>
 

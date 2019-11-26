@@ -1,12 +1,11 @@
 package com.tokopedia.chat_common.domain.pojo.attachmentmenu
 
-import android.content.Context
 import com.tokopedia.chat_common.R
 
 class ProductMenu : AttachmentMenu(
-        R.drawable.ic_search_icon, "Produk", "produk"
+        R.drawable.ic_product_blue_chat_common, "Produk", "produk"
 ) {
-    override fun onClick(context: Context) {
-
+    override fun onClick(listener: AttachmentMenuListener) {
+        listener.onClickAttachProduct()
     }
 }

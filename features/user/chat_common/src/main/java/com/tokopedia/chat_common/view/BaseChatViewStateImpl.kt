@@ -19,7 +19,7 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
-import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
@@ -36,7 +36,7 @@ open class BaseChatViewStateImpl(
         @NonNull open val view: View,
         open val toolbar: Toolbar,
         private val typingListener: TypingListener,
-        private val chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener
+        private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener
 ) : BaseChatViewState, ViewTreeObserver.OnGlobalLayoutListener {
 
     protected lateinit var rootView: ViewGroup
@@ -95,6 +95,8 @@ open class BaseChatViewStateImpl(
         replyIsTyping.debounce(2, TimeUnit.SECONDS)
                 .skip(1)
                 .subscribe(onChatDeBounceSubscriber, onError)
+
+        attachmentMenu.setAttachmentMenuListener(attachmentMenuListener)
 
         rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
 

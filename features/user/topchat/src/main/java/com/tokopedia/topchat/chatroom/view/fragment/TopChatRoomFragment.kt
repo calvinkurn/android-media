@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -29,6 +29,9 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ProductMenu
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
@@ -63,7 +66,6 @@ import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
-import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -244,6 +246,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun goToProfile(opponentId: String) {
         RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", opponentId))
     }
+
     override fun showErrorWebSocket(b: Boolean) {
         getViewState().showErrorWebSocket(b)
     }
@@ -312,10 +315,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         super.onProductClicked(element)
 
         analytics.eventClickProductThumbnailEE(element.blastId,
-                    element.productId.toString(),
-                    element.productName,
-                    element.priceInt,
-                    element.category, element.variant)
+                element.productId.toString(),
+                element.productName,
+                element.priceInt,
+                element.category, element.variant)
 
         analytics.trackProductAttachmentClicked()
     }
@@ -507,10 +510,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 if (resultCode != Activity.RESULT_OK || data == null) {
                     return
                 }
-                processImagePathToUpload(data)?.let {
-                    model ->
+                processImagePathToUpload(data)?.let { model ->
                     remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
-                        if(it == null || it == false) {
+                        if (it == null || it == false) {
                             presenter.startUploadImages(model)
                         } else {
                             presenter.startCompressImages(model)
@@ -532,7 +534,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
         if (resultCode != RESULT_OK) return
         if (data == null) return
-        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE) ?: return
+        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
+                ?: return
         view?.let {
             Toaster.showNormalWithAction(
                     it,
@@ -651,7 +654,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             val router = (it.application as TopChatRouter)
             (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
             var shopId = this.shopId
-            if(shopId == 0) {
+            if (shopId == 0) {
                 shopId = element.shopId
             }
             presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(), shopId)
@@ -698,9 +701,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
         }
     }
+
     private fun onSuccessFollowUnfollowShop(): (Boolean) -> Unit {
         return {
-            if(it) {
+            if (it) {
                 getViewState().isShopFollowed = !getViewState().isShopFollowed
             }
         }
@@ -765,7 +769,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onVoucherCopyClicked(voucherCode: String, messageId: String, replyId: String, blastId: String, attachmentId: String, replyTime: String?, fromUid: String?) {
         analytics.eventVoucherCopyClicked(voucherCode)
         presenter.copyVoucherCode(fromUid, replyId, blastId, attachmentId, replyTime)
-        activity?.run{
+        activity?.run {
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(com.tokopedia.merchantvoucher.R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
             snackbar.setAction(activity!!.getString(com.tokopedia.merchantvoucher.R.string.close), { snackbar.dismiss() })
@@ -823,16 +827,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    override fun onClickAttachProduct() {
-        analytics.eventAttachProduct()
-        onAttachProductClicked()
-    }
-
-    override fun onClickImagePicker() {
-        analytics.eventPickImage()
-        pickImageToUpload()
-    }
-
     override fun createChatMenuFactory(): ChatMenuFactory {
         return TopChatChatMenuFactory()
     }
@@ -881,5 +875,27 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (attachment is InvoicePreviewViewModel) {
             analytics.invoiceAttachmentSent(attachment)
         }
+    }
+
+    override fun createAttachmentMenus(): List<AttachmentMenu> {
+        return listOf(
+                ProductMenu(),
+                ImageMenu()
+        )
+    }
+
+    override fun onClickAttachProduct() {
+        analytics.eventAttachProduct()
+        onAttachProductClicked()
+    }
+
+    override fun onClickAttachImage() {
+        analytics.eventPickImage()
+        pickImageToUpload()
+    }
+
+    override fun onClickImagePicker() {
+        analytics.eventPickImage()
+        pickImageToUpload()
     }
 }

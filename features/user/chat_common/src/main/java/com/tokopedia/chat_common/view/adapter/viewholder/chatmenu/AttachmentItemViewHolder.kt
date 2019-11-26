@@ -15,9 +15,13 @@ class AttachmentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
     private var icon: ImageView? = itemView.findViewById(R.id.ivIcon)
     private var title: TextView? = itemView.findViewById(R.id.tvTitle)
 
-    fun bind(attachmentMenu: AttachmentMenu) {
+    fun bind(attachmentMenu: AttachmentMenu, listener: AttachmentMenu.AttachmentMenuListener?) {
         icon?.setImage(attachmentMenu.icon, 0f)
         title?.text = attachmentMenu.title
+        if (listener == null) return
+        itemView.setOnClickListener {
+            attachmentMenu.onClick(listener)
+        }
     }
 
     companion object {

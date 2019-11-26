@@ -28,6 +28,8 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
@@ -637,6 +639,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun createAttachmentMenus(): List<AttachmentMenu> {
+        return listOf(
+                ImageMenu()
+        )
+    }
+
+    override fun onClickAttachImage() {
+        onAttachImageClicked()
     }
 
     override fun onClickImagePicker() {

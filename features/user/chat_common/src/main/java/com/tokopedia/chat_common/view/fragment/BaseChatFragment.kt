@@ -21,6 +21,7 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
@@ -45,7 +46,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     , ImageUploadListener, ProductAttachmentListener, TypingListener
     , BaseChatContract.View
     , BaseChatMenuViewHolder.ChatMenuListener
-    , BaseChatActivityListener {
+    , BaseChatActivityListener
+    , AttachmentMenu.AttachmentMenuListener {
 
     open lateinit var viewState: BaseChatViewState
 
@@ -71,7 +73,12 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewState = BaseChatViewStateImpl(view, (activity as BaseChatToolbarActivity).getToolbar(), this, this)
+        viewState = BaseChatViewStateImpl(
+                view,
+                (activity as BaseChatToolbarActivity).getToolbar(),
+                this,
+                this
+        )
 
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
@@ -261,9 +268,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
     }
 
-    override fun onClickAttachProduct() {}
-
-    override fun onClickImagePicker() {}
 
     override fun trackChatMenuClicked(label: String) {}
 
@@ -279,4 +283,18 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
         return false
     }
+
+    override fun createAttachmentMenus(): List<AttachmentMenu> {
+        return emptyList()
+    }
+
+    override fun onClickAttachProduct() {
+
+    }
+
+    override fun onClickAttachImage() {
+
+    }
+
+    override fun onClickImagePicker() {}
 }

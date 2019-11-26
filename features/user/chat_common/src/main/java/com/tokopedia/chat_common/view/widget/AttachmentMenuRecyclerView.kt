@@ -7,6 +7,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.adapter.AttachmentMenuAdapter
 import com.tokopedia.unifycomponents.toPx
 
@@ -14,7 +15,6 @@ class AttachmentMenuRecyclerView : RecyclerView {
 
     private val manager = GridLayoutManager(context, 4)
     private val adapter = AttachmentMenuAdapter()
-    private val marginBottom = 16.toPx()
 
     var isVisible = false
     var isShowing = false
@@ -48,14 +48,12 @@ class AttachmentMenuRecyclerView : RecyclerView {
 
     fun hideMenu() {
         if (isVisible && !isShowing) {
-            Log.d("MENU_STATE", "hide menu")
             isVisible = false
             visibility = View.GONE
         }
     }
 
     private fun showMenu() {
-        Log.d("MENU_STATE", "show menu")
         isShowing = true
         if (!isKeyboardOpened) {
             show()
@@ -74,6 +72,10 @@ class AttachmentMenuRecyclerView : RecyclerView {
         showDelayed = false
         isVisible = true
         visibility = View.VISIBLE
+    }
+
+    fun setAttachmentMenuListener(listener: AttachmentMenu.AttachmentMenuListener) {
+        adapter.attachmentMenuListener = listener
     }
 
     private fun hideKeyboard() {
