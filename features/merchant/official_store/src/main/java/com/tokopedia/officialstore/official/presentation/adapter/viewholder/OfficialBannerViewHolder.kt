@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.BannerView
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.R
@@ -66,7 +67,7 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
     override fun onPromoDragStart() {}
 
     override fun onPromoScrolled(position: Int) {
-        if (position < elementBanner?.banner?.size!!) {
+        if (position < elementBanner?.banner?.size.orZero()) {
             val bannerItem = elementBanner?.banner?.get(position)
             bannerItem?.let {
                 officialStoreTracking?.eventImpressionBanner(
