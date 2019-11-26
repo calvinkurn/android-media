@@ -103,7 +103,7 @@ open class WishlistFragment: BaseDaggerFragment(), WishlistListener {
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private val coachMark by lazy { CoachMarkBuilder().allowPreviousButton(false).build() }
     private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) }
-    private val itemDecorationBottom by lazy { SpaceBottomItemDecoration(staggeredGridLayoutManager) }
+    private val itemDecorationBottom by lazy { SpaceBottomItemDecoration() }
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
     internal var menu: Menu? = null

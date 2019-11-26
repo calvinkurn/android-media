@@ -1,13 +1,11 @@
 package com.tokopedia.wishlist.common.usecase
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.wishlist.common.data.datamodel.WishlistActionData
 import com.tokopedia.wishlist.common.response.BulkRemoveWishListResponse
-import com.tokopedia.wishlist.common.response.RemoveWishListResponse
 import rx.Observable
 import javax.inject.Inject
 
@@ -50,10 +48,6 @@ open class BulkRemoveWishlistUseCase @Inject constructor(val graphqlUseCase: Gra
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map<WishlistActionData> { graphqlResponse ->
                     val bulkRemoveResponse = graphqlResponse.getData<BulkRemoveWishListResponse>(BulkRemoveWishListResponse::class.java)
-
-//                    bulkRemoveResponse.wishlistRemove.map {
-//                        WishlistActionData(it.success, it.id)
-//                    }
                     WishlistActionData(
                             bulkRemoveResponse.wishlistRemove.success,
                             bulkRemoveResponse.wishlistRemove.id

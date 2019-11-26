@@ -39,8 +39,6 @@ class RepoRepositoryTest {
     fun loadRepoFromNetwork() = runBlocking{
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(), null, false)
         val observer = mockk<Observer<List<Visitable<*>>>>()
-//        val data = repository.get("foo", 0)
-//        data.observeForever(observer)
 
         coVerify { graphqlRepository wasNot Called }
         com.nhaarman.mockitokotlin2.verify(observer).onChanged(listOf(any()))

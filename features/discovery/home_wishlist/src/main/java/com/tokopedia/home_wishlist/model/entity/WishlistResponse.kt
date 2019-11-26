@@ -20,8 +20,12 @@ data class Badge (
 
     override fun hashCode(): Int {
         var result = title.hashCode()
-        result = 31 * result + imageUrl.hashCode()
+        result = HASH_CODE * result + imageUrl.hashCode()
         return result
+    }
+
+    companion object{
+        private const val HASH_CODE = 31
     }
 }
 
@@ -113,22 +117,26 @@ data class WishlistItem(
 
     override fun hashCode(): Int {
         var result = id.hashCode()
-        result = 31 * result + name.hashCode()
-        result = 31 * result + url.hashCode()
-        result = 31 * result + imageUrl.hashCode()
-        result = 31 * result + rawPrice
-        result = 31 * result + condition.hashCode()
-        result = 31 * result + available.hashCode()
-        result = 31 * result + status.hashCode()
-        result = 31 * result + price.hashCode()
-        result = 31 * result + minimumOrder
-        result = 31 * result + wholesalePrice.hashCode()
-        result = 31 * result + shop.hashCode()
-        result = 31 * result + preorder.hashCode()
-        result = 31 * result + badges.hashCode()
-        result = 31 * result + labels.hashCode()
-        result = 31 * result + freeOngkir.hashCode()
+        result = HASH_CODE * result + name.hashCode()
+        result = HASH_CODE * result + url.hashCode()
+        result = HASH_CODE * result + imageUrl.hashCode()
+        result = HASH_CODE * result + rawPrice
+        result = HASH_CODE * result + condition.hashCode()
+        result = HASH_CODE * result + available.hashCode()
+        result = HASH_CODE * result + status.hashCode()
+        result = HASH_CODE * result + price.hashCode()
+        result = HASH_CODE * result + minimumOrder
+        result = HASH_CODE * result + wholesalePrice.hashCode()
+        result = HASH_CODE * result + shop.hashCode()
+        result = HASH_CODE * result + preorder.hashCode()
+        result = HASH_CODE * result + badges.hashCode()
+        result = HASH_CODE * result + labels.hashCode()
+        result = HASH_CODE * result + freeOngkir.hashCode()
         return result
+    }
+
+    companion object{
+        private const val HASH_CODE = 31
     }
 }
 

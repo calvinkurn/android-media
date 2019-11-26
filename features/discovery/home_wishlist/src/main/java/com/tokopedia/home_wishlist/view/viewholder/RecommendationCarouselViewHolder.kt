@@ -19,12 +19,10 @@ import com.tokopedia.smart_recycler_helper.SmartListener
 
 
 class RecommendationCarouselViewHolder(view: View, private val appExecutors: SmartExecutors) : SmartAbstractViewHolder<RecommendationCarouselDataModel>(view) {
-    private val viewPool = RecyclerView.RecycledViewPool()
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recyclerView: RecyclerView by lazy { view.findViewById<RecyclerView>(R.id.list) }
     private val disabledView: View by lazy { view.findViewById<View>(R.id.disabled_view) }
-    private var clickedItem: Int = -1
 
     override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener) {
         title.text = element.title
@@ -40,16 +38,9 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 itemAnimator = DefaultItemAnimator()
                 GravitySnapHelper(Gravity.START).attachToRecyclerView(this)
-//                setRecycledViewPool(viewPool)
-//                isNestedScrollingEnabled = false
-//                setHasFixedSize(true)
                 adapter = RecommendationCarouselAdapter(listener as WishlistListener, appExecutors)
             }
             (recyclerView.adapter as RecommendationCarouselAdapter).updateList(dataModel.list)
-//            if(clickedItem != -1) {
-//                recyclerView.layoutManager?.scrollToPosition(clickedItem - 1)
-//                clickedItem = -1
-//            }
         }
 
     }

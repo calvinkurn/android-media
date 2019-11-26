@@ -98,46 +98,50 @@ data class RecommendationItem(val productId: Int = 0,
 
     override fun hashCode(): Int {
         var result = productId
-        result = 31 * result + name.hashCode()
-        result = 31 * result + categoryBreadcrumbs.hashCode()
-        result = 31 * result + url.hashCode()
-        result = 31 * result + appUrl.hashCode()
-        result = 31 * result + clickUrl.hashCode()
-        result = 31 * result + wishlistUrl.hashCode()
-        result = 31 * result + trackerImageUrl.hashCode()
-        result = 31 * result + imageUrl.hashCode()
-        result = 31 * result + price.hashCode()
-        result = 31 * result + priceInt
-        result = 31 * result + departmentId
-        result = 31 * result + rating
-        result = 31 * result + countReview
-        result = 31 * result + stock
-        result = 31 * result + recommendationType.hashCode()
-        result = 31 * result + isTopAds.hashCode()
-        result = 31 * result + isWishlist.hashCode()
-        result = 31 * result + slashedPrice.hashCode()
-        result = 31 * result + slashedPriceInt
-        result = 31 * result + discountPercentageInt
-        result = 31 * result + discountPercentage.hashCode()
-        result = 31 * result + position
-        result = 31 * result + shopId
-        result = 31 * result + shopType.hashCode()
-        result = 31 * result + shopName.hashCode()
-        result = 31 * result + cartId
-        result = 31 * result + quantity
-        result = 31 * result + header.hashCode()
-        result = 31 * result + pageName.hashCode()
-        result = 31 * result + minOrder
-        result = 31 * result + location.hashCode()
-        result = 31 * result + badgesUrl.hashCode()
-        result = 31 * result + type.hashCode()
-        result = 31 * result + isFreeOngkirActive.hashCode()
-        result = 31 * result + freeOngkirImageUrl.hashCode()
-        result = 31 * result + labelPromo.hashCode()
-        result = 31 * result + labelOffers.hashCode()
-        result = 31 * result + labelCredibility.hashCode()
-        result = 31 * result + isGold.hashCode()
+        result = HASH_CODE * result + name.hashCode()
+        result = HASH_CODE * result + categoryBreadcrumbs.hashCode()
+        result = HASH_CODE * result + url.hashCode()
+        result = HASH_CODE * result + appUrl.hashCode()
+        result = HASH_CODE * result + clickUrl.hashCode()
+        result = HASH_CODE * result + wishlistUrl.hashCode()
+        result = HASH_CODE * result + trackerImageUrl.hashCode()
+        result = HASH_CODE * result + imageUrl.hashCode()
+        result = HASH_CODE * result + price.hashCode()
+        result = HASH_CODE * result + priceInt
+        result = HASH_CODE * result + departmentId
+        result = HASH_CODE * result + rating
+        result = HASH_CODE * result + countReview
+        result = HASH_CODE * result + stock
+        result = HASH_CODE * result + recommendationType.hashCode()
+        result = HASH_CODE * result + isTopAds.hashCode()
+        result = HASH_CODE * result + isWishlist.hashCode()
+        result = HASH_CODE * result + slashedPrice.hashCode()
+        result = HASH_CODE * result + slashedPriceInt
+        result = HASH_CODE * result + discountPercentageInt
+        result = HASH_CODE * result + discountPercentage.hashCode()
+        result = HASH_CODE * result + position
+        result = HASH_CODE * result + shopId
+        result = HASH_CODE * result + shopType.hashCode()
+        result = HASH_CODE * result + shopName.hashCode()
+        result = HASH_CODE * result + cartId
+        result = HASH_CODE * result + quantity
+        result = HASH_CODE * result + header.hashCode()
+        result = HASH_CODE * result + pageName.hashCode()
+        result = HASH_CODE * result + minOrder
+        result = HASH_CODE * result + location.hashCode()
+        result = HASH_CODE * result + badgesUrl.hashCode()
+        result = HASH_CODE * result + type.hashCode()
+        result = HASH_CODE * result + isFreeOngkirActive.hashCode()
+        result = HASH_CODE * result + freeOngkirImageUrl.hashCode()
+        result = HASH_CODE * result + labelPromo.hashCode()
+        result = HASH_CODE * result + labelOffers.hashCode()
+        result = HASH_CODE * result + labelCredibility.hashCode()
+        result = HASH_CODE * result + isGold.hashCode()
         return result
+    }
+
+    companion object{
+        private const val HASH_CODE = 31
     }
 
 }
