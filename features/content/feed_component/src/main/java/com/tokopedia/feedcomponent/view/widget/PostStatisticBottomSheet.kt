@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import androidx.constraintlayout.widget.ConstraintSet
+import com.tokopedia.feedcomponent.view.decor.PostStatisticItemDecoration
 
 
 /**
@@ -147,6 +148,7 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
         rvStatistic.apply {
             layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
             adapter = statisticAdapter
+            addItemDecoration(PostStatisticItemDecoration(view.context))
         }
     }
 
