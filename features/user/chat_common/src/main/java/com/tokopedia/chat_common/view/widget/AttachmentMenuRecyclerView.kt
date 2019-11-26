@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.adapter.AttachmentMenuAdapter
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 
-class AttachmentMenuRecyclerView : RecyclerView {
+class AttachmentMenuRecyclerView : RecyclerView, AttachmentItemViewHolder.AttachmentViewHolderListener {
 
     private val manager = GridLayoutManager(context, 4)
-    private val adapter = AttachmentMenuAdapter()
+    private val adapter = AttachmentMenuAdapter(this)
 
     var isVisible = false
     var isShowing = false
@@ -35,6 +35,10 @@ class AttachmentMenuRecyclerView : RecyclerView {
         setHasFixedSize(true)
         layoutManager = manager
         setAdapter(adapter)
+    }
+
+    override fun closeMenu() {
+        hideMenu()
     }
 
     fun toggle() {

@@ -5,7 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 
-class AttachmentMenuAdapter : RecyclerView.Adapter<AttachmentItemViewHolder>() {
+class AttachmentMenuAdapter(private val viewHolderListener: AttachmentItemViewHolder.AttachmentViewHolderListener)
+    : RecyclerView.Adapter<AttachmentItemViewHolder>() {
 
     private val menus = arrayListOf<AttachmentMenu>()
     var attachmentMenuListener: AttachmentMenu.AttachmentMenuListener? = null
@@ -30,7 +31,7 @@ class AttachmentMenuAdapter : RecyclerView.Adapter<AttachmentItemViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: AttachmentItemViewHolder, position: Int) {
-        holder.bind(menus[position], attachmentMenuListener)
+        holder.bind(menus[position], attachmentMenuListener, viewHolderListener)
     }
 
 }

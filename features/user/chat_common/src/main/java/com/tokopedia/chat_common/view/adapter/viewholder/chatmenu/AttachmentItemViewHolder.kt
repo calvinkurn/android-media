@@ -12,15 +12,24 @@ import com.tokopedia.unifycomponents.setImage
 
 class AttachmentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    interface AttachmentViewHolderListener {
+        fun closeMenu()
+    }
+
     private var icon: ImageView? = itemView.findViewById(R.id.ivIcon)
     private var title: TextView? = itemView.findViewById(R.id.tvTitle)
 
-    fun bind(attachmentMenu: AttachmentMenu, listener: AttachmentMenu.AttachmentMenuListener?) {
+    fun bind(
+            attachmentMenu: AttachmentMenu,
+            listener: AttachmentMenu.AttachmentMenuListener?,
+            viewHolderListener: AttachmentViewHolderListener
+    ) {
         icon?.setImage(attachmentMenu.icon, 0f)
         title?.text = attachmentMenu.title
         if (listener == null) return
         itemView.setOnClickListener {
             attachmentMenu.onClick(listener)
+            viewHolderListener.closeMenu()
         }
     }
 
