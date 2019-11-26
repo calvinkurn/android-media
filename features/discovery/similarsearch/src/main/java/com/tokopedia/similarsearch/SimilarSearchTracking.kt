@@ -16,7 +16,7 @@ internal object SimilarSearchTracking {
                         TrackAppUtils.EVENT_LABEL, String.format(Label.PRODUCT_ID, productId),
                         ECOMMERCE, DataLayer.mapOf(
                             ECommerce.CURRENCY_CODE, ECommerce.IDR,
-                            ECommerce.IMPRESSIONS, DataLayer.listOf(productsItem)
+                            ECommerce.IMPRESSIONS, productsItem
                         )
                 )
         )
