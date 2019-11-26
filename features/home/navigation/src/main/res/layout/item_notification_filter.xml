@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container_filter_transaction"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -14,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:text="@string/notif_transaction_for_you"
-        android:textColor="#31353b"
+        android:textColor="@color/chorcoal_black"
         android:paddingTop="@dimen/dp_16"
         android:paddingStart="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_16"
