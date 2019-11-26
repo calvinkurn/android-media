@@ -3,10 +3,11 @@ package com.tokopedia.tokopoints.view.model;
 import com.google.gson.annotations.SerializedName;
 
 public class TokoPointSumCoupon {
-    @SerializedName("sumCoupon")
+
+    @SerializedName("sumNewCoupon")
     private int sumCoupon;
 
-    @SerializedName("sumCouponStr")
+    @SerializedName("sumNewCouponStr")
     private String sumCouponStr;
 
     public int getSumCoupon() {

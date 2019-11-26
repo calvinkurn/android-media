@@ -12,6 +12,7 @@
     <string name="title_my_product">Produk Saya</string>
     <string name="title_inbox_message">Pesan</string>
     <string name="title_inbox_chat">Chat</string>
+    <string name="title_chat_setting">Pengaturan</string>
     <string name="title_inbox_chat_all">Chat</string>
     <string name="title_inbox_message_all">Inbox</string>
     <string name="title_inbox_sent">Terkirim</string>
