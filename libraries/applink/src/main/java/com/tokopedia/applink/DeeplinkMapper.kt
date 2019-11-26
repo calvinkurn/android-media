@@ -5,16 +5,19 @@ import android.net.Uri
 import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
+import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
+import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -40,7 +43,7 @@ object DeeplinkMapper {
                 val query = Uri.parse(deeplink).query
                 var tempDeeplink = when {
                     deeplink.startsWith(ApplinkConst.HOTEL, true) -> deeplink
-                    deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) ->
+                    deeplink.startsWith(ApplinkConst.DIGITAL, true) ->
                         getRegisteredNavigationDigital(context, deeplink)
                     deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH, true) ->
                         getRegisteredNavigationSearch(deeplink)
@@ -57,11 +60,16 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) ->
                         getCreateReviewInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
-                    deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(context, deeplink)
-                    deeplink.startsWith(ApplinkConst.CHAT_BOT, true) ->
+                    deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
+                    deeplink.startsWith(ApplinkConst.CHAT_BOT,true) ->
                         getChatbotDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) ->
+                        getRegisteredNavigationForFintech(deeplink)
                     else -> {
-                        if (query?.isNotEmpty() == true) {
+                        val query = Uri.parse(deeplink).query
+                        if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
+                            getRegisteredCategoryNavigation(getSegments(deeplink))
+                        } else if (query?.isNotEmpty() == true) {
                             val tempDL = if (deeplink.contains('?')) {
                                 deeplink.substring(0, deeplink.indexOf('?'))
                             } else {
@@ -114,14 +122,15 @@ object DeeplinkMapper {
      * If not found, return current deeplink, means it registered
      */
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
-         when (deeplink) {
+        when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
+            ApplinkConst.ADD_CREDIT_CARD -> return ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             ApplinkConst.GROUPCHAT_LIST -> return ApplinkConstInternalPlay.GROUPCHAT_LIST
             ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
-            ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
-            ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
+            ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_BASE
+            ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM_BASE
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.ADD_PIN_ONBOARD -> return ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING
             ApplinkConst.FLIGHT -> return ApplinkConstInternalTravel.DASHBOARD_FLIGHT
@@ -132,6 +141,7 @@ object DeeplinkMapper {
             ApplinkConst.INSTANT_LOAN_TAB -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_INSTANT_LOAN_TAB
             ApplinkConst.PINJAMAN_ONLINE_TAB -> return ApplinkConstInternalGlobal.GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB
             ApplinkConst.CREATE_SHOP -> return ApplinkConstInternalMarketplace.OPEN_SHOP
+            ApplinkConst.CHAT_TEMPLATE -> return ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
             else -> ""
         }
         when {
@@ -169,6 +179,7 @@ object DeeplinkMapper {
         return when (deeplink) {
             ApplinkConst.SellerApp.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
+            ApplinkConst.ADD_CREDIT_CARD -> return ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.CREATE_SHOP -> return ApplinkConstInternalMarketplace.OPEN_SHOP
             else -> ""

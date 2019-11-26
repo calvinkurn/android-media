@@ -63,7 +63,7 @@ import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
-import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
+import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -475,15 +475,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun addTemplateString(message: String?) {
         message?.let {
             getViewState().addTemplateString(message)
-        }
-    }
-
-    override fun goToSettingTemplate() {
-        var isSeller = getUserSession().shopId == shopId.toString()
-        val intent = TemplateChatActivity.createInstance(context, isSeller)
-        activity?.let {
-            startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
-            it.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
         }
     }
 

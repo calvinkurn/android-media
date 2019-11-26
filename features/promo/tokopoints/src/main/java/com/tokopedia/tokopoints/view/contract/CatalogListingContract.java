@@ -41,7 +41,6 @@ public interface CatalogListingContract {
 
         void refreshTab();
 
-        boolean isAddedView();
 
         void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails);
 

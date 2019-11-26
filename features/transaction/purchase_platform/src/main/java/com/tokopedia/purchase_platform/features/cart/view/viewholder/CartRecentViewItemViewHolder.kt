@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
@@ -60,9 +60,9 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
 
         itemView.img_wishlist.setOnClickListener {
             if (element.isWishlist) {
-                actionListener.onRemoveFromWishlist(element.id)
+                actionListener.onRemoveLastSeenFromWishlist(element.id)
             } else {
-                actionListener.onAddToWishlist(element.id)
+                actionListener.onAddLastSeenToWishlist(element.id)
             }
         }
 
