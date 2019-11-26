@@ -157,7 +157,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         CookieManager.getInstance().setAcceptCookie(true)
 
         webview = view.findViewById(R.id.webview)
-        progressBar = view.findViewById(R.id.progress_bar)
+        progressBar = view.findViewById(R.id.progressBar)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)
         webview.settings.cacheMode = WebSettings.LOAD_NO_CACHE
