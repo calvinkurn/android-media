@@ -18,7 +18,7 @@ class BigBannerImageDownloader(baseNotificationModel: BaseNotificationModel) : N
 
     override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
         baseNotificationModel.media?.let { media ->
-            val filePath = downloadAndStore(context, media.displayUrl, ImageSizeAndTimeout.BIG_IMAGE)
+            val filePath = downloadAndStore(context, media.mediumQuality, ImageSizeAndTimeout.BIG_IMAGE)
             filePath?.let {
                 media.displayUrl = filePath
                 media.mediumQuality = filePath

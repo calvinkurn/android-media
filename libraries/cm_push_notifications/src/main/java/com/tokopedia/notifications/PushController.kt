@@ -117,6 +117,9 @@ class PushController(val context: Context) : CoroutineScope {
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
             }
         } catch (e: Exception) {
+            Log.d(
+                    "PushController", e.message
+            )
         }
     }
 

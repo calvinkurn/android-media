@@ -10,17 +10,14 @@ class ActionButtonImageDownloader(baseNotificationModel: BaseNotificationModel)
 
     override suspend fun verifyAndUpdate() {
         baseNotificationModel.media?.run {
-            (mediumQuality.startsWith("http") || mediumQuality.startsWith("www")).let {
-                if(it) {
-                    baseNotificationModel.media = null
-                }
-            }
+            if (mediumQuality.startsWith("http") || mediumQuality.startsWith("www"))
+                baseNotificationModel.media = null
         }
     }
 
     override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
         baseNotificationModel.media?.run {
-            val filePath = downloadAndStore(context, displayUrl, ImageSizeAndTimeout.BIG_IMAGE)
+            val filePath = downloadAndStore(context, mediumQuality, ImageSizeAndTimeout.BIG_IMAGE)
             filePath?.let {
                 displayUrl = filePath
                 mediumQuality = filePath
@@ -30,7 +27,7 @@ class ActionButtonImageDownloader(baseNotificationModel: BaseNotificationModel)
             }
         }
         baseNotificationModel.actionButton.forEach { actionButton ->
-            actionButton.actionButtonIcon?.let { iconUrl->
+            actionButton.actionButtonIcon?.let { iconUrl ->
                 val filePath = downloadAndStore(context, iconUrl, ImageSizeAndTimeout.ACTION_BUTTON_ICON)
                 actionButton.actionButtonIcon = filePath
             }
