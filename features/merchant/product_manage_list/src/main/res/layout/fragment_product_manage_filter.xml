@@ -14,43 +14,48 @@
         android:showDividers="middle">
 
         <com.tokopedia.design.label.LabelView
-            android:id="@+id/etalase"
+            android:id="@+id/label_etalase"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/dp_20"
             app:content_color="@color/tkpd_main_green"
-            app:title="@string/title_etalase" />
+            app:lv_title="@string/title_etalase"/>
 
         <com.tokopedia.design.label.LabelView
-            android:id="@+id/category"
+            android:id="@+id/label_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/dp_20"
             app:content_color="@color/tkpd_main_green"
-            app:title="@string/title_category" />
+            app:lv_title="@string/title_category" />
 
         <com.tokopedia.design.label.LabelView
-            android:id="@+id/condition"
+            android:id="@+id/label_condition"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/dp_20"
             app:content_color="@color/tkpd_main_green"
-            app:title="@string/title_condition" />
+            app:lv_title="@string/title_condition" />
 
         <com.tokopedia.design.label.LabelView
-            android:id="@+id/catalog"
+            android:id="@+id/label_catalog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/dp_20"
             app:content_color="@color/tkpd_main_green"
-            app:title="@string/title_catalog" />
+            app:lv_title="@string/title_catalog" />
 
         <com.tokopedia.design.label.LabelView
-            android:id="@+id/product_picture"
+            android:id="@+id/label_product_picture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/dp_20"
             app:content_color="@color/tkpd_main_green"
-            app:title="@string/title_picture_product" />
+            app:lv_title="@string/title_picture_product" />
     </LinearLayout>
 
     <Button
-        android:id="@+id/button_submit"
+        android:id="@+id/btn_submit_manage"
         style="@style/Button.Submit.Green.Full"
         android:text="@string/title_save" />
 

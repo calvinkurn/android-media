@@ -35,8 +35,8 @@ object DeeplinkMapper {
     @JvmStatic
     fun getRegisteredNavigation(context: Context, deeplink: String): String {
         /**
-            If deeplink have query parameters then we need to keep the query and map the url without query
-        */
+        If deeplink have query parameters then we need to keep the query and map the url without query
+         */
         val mappedDeepLink: String = when {
             deeplink.startsWith(DeeplinkConstant.SCHEME_HTTP, true) -> getRegisteredNavigationFromHttp(context, deeplink)
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
@@ -59,7 +59,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW,true) ->
                         getCreateReviewInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.TOKOPOINTS) -> getRegisteredNavigationTokopoints(context, deeplink)
-                    deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(context, deeplink)
+                    deeplink.startsWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) -> getRegisteredNavigationRecommendation(deeplink)
                     deeplink.startsWith(ApplinkConst.CHAT_BOT,true) ->
                         getChatbotDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) ->
@@ -69,11 +69,14 @@ object DeeplinkMapper {
                         if(specialNavigationMapper(deeplink,ApplinkConst.HOST_CATEGORY_P)){
                             getRegisteredCategoryNavigation(getSegments(deeplink))
                         } else if(query?.isNotEmpty() == true){
-                            val tempDL = deeplink.substring(0, deeplink.indexOf('?'))
+                            var tempDL = deeplink
+                            if(deeplink.contains('?')) {
+                                tempDL = deeplink.substring(0, deeplink.indexOf('?'))
+                            }
                             var navFromTokopedia = getRegisteredNavigationFromTokopedia(tempDL)
                             if(navFromTokopedia.isNotEmpty()) {
-                                navFromTokopedia = navFromTokopedia.substring(0, navFromTokopedia.indexOf('?'))
-                                navFromTokopedia += "?$query"
+                                val questionMarkIndex = navFromTokopedia.indexOf("?")
+                                navFromTokopedia += if (questionMarkIndex == -1) { "?$query" } else { "&$query" }
                             }
                             navFromTokopedia
                         } else getRegisteredNavigationFromTokopedia(deeplink)
@@ -107,15 +110,15 @@ object DeeplinkMapper {
      * If not found, return current deeplink, means it registered
      */
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
-         when (deeplink) {
+        when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> return ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             ApplinkConst.GROUPCHAT_LIST -> return ApplinkConstInternalPlay.GROUPCHAT_LIST
             ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
-            ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
-            ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
+            ApplinkConst.KYC_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_BASE
+            ApplinkConst.KYC_FORM_NO_PARAM -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM_BASE
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.ADD_PIN_ONBOARD -> return ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING
             ApplinkConst.FLIGHT -> return ApplinkConstInternalTravel.DASHBOARD_FLIGHT

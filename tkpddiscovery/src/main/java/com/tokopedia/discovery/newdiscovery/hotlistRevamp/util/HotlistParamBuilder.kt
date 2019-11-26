@@ -132,30 +132,29 @@ class HotlistParamBuilder {
     }
 
     private fun prepareProductListParams(strFilterAttribute: String, start: Int, rows: Int, unique_id: String, sortParam: String, filterParam: String): String {
-        var param = "$strFilterAttribute&device=$DEVICE_TYPE&$START=$start&$ROWS=$rows&$UNIQUE_ID=$unique_id"
+        var param: String
+        param = "$KEY_SAFE_SEARCH=false"
         if (filterParam.isNotEmpty()) {
             param = "$param&$filterParam"
         }
         if (sortParam.isNotEmpty()) {
             param = "$param&$sortParam"
         }
-        if (param.isNotEmpty()) {
-            param = "$param&$KEY_SAFE_SEARCH=false"
-        }
+        param = "$param&$strFilterAttribute&device=$DEVICE_TYPE&$START=$start&$ROWS=$rows&$UNIQUE_ID=$unique_id"
+
         return param
     }
 
     private fun preparetopAdsParams(strFilterAttribute: String, page: Int, sortParam: String, filterParam: String): String {
-        var param = "$strFilterAttribute&device=$DEVICE_TYPE&page=$page&item=$TOP_ADS_PER_PAGE&ep=${EpType.PRODUCT.value}&$KEY_F_SHOP=1&src=${SourceType.DIRECTORY.value}"
+        var param: String
+        param = "$KEY_SAFE_SEARCH=false"
         if (filterParam.isNotEmpty()) {
             param = "$param&$filterParam"
         }
         if (sortParam.isNotEmpty()) {
             param = "$param&$sortParam"
         }
-        if (param.isNotEmpty()) {
-            param = "$param&$KEY_SAFE_SEARCH=false"
-        }
+        param = "$param&$strFilterAttribute&device=$DEVICE_TYPE&page=$page&item=$TOP_ADS_PER_PAGE&ep=${EpType.PRODUCT.value}&$KEY_F_SHOP=1&src=${SourceType.DIRECTORY.value}"
         return param
     }
 
