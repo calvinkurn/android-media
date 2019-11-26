@@ -29,7 +29,7 @@ class Data : Serializable {
     var appRedirection: String? = null
 
     @SerializedName("displayButton")
-    var displayButton: Boolean = true
+    var displayButton: Boolean = false
 
     @SerializedName("isBanned")
     var isBanned: Int = 0
