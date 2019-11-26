@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
-import com.tokopedia.officialstore.official.presentation.listener.BannerListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 class OfficialHomeAdapterTypeFactory(

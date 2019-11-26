@@ -10,7 +10,6 @@ import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
-import com.tokopedia.officialstore.official.presentation.listener.BannerListener
 import com.tokopedia.officialstore.official.presentation.widget.BannerOfficialStore
 
 class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerViewModel>(view),
@@ -40,9 +39,9 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
         banner?.onPromoClickListener = this
         banner?.buildView()
 
-        elementBanner?.let {
-            banner?.getAdapter()?.setOfficialBannerViewModel(it)
-        }
+//        elementBanner?.let {
+//            banner?.getAdapter()?.setOfficialBannerViewModel(it)
+//        }
     }
 
     override fun onPromoClick(position: Int) {
@@ -70,7 +69,15 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
 
     override fun onPromoDragStart() {}
 
-    override fun onPromoScrolled(position: Int) {}
+    override fun onPromoScrolled(position: Int) {
+        val bannerItem = elementBanner?.banner?.get(position)
+        officialStoreTracking?.eventImpressionBanner(
+                elementBanner?.categoryName.toEmptyStringIfNull(),
+                bannerItem?.bannerId.toEmptyStringIfNull(),
+                position,
+                bannerItem?.title.toEmptyStringIfNull(),
+                bannerItem?.imageUrl.toEmptyStringIfNull())
+    }
 
     override fun onPromoLoaded() {
         this.banner?.bannerIndicator?.visibility = View.VISIBLE

@@ -38,7 +38,6 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.Produ
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
-import com.tokopedia.officialstore.official.presentation.listener.BannerListener
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -51,8 +50,7 @@ class OfficialHomeFragment :
         BaseDaggerFragment(),
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
-        DynamicChannelEventHandler,
-        BannerListener
+        DynamicChannelEventHandler
 {
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
@@ -550,15 +548,15 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun putEEToTrackingQueue(categoryName: String, bannerId: String, bannerPosition: Int, bannerName: String, imageUrl: String) {
-        tracking?.eventImpressionBanner(
-                categoryName,
-                bannerId,
-                bannerPosition,
-                bannerName,
-                imageUrl)
-    }
-
+//    override fun putEEToTrackingQueue(categoryName: String, bannerId: String, bannerPosition: Int, bannerName: String, imageUrl: String) {
+//        tracking?.eventImpressionBanner(
+//                categoryName,
+//                bannerId,
+//                bannerPosition,
+//                bannerName,
+//                imageUrl)
+//    }
+    
     private fun initFirebasePerformanceMonitoring() {
         val CATEGORY_CONST: String = category?.title?:""
 

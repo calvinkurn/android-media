@@ -31,7 +31,7 @@ class BannerOfficialStore(@NonNull context: Context, @Nullable attrs: AttributeS
         return BannerOfficialStoreAdapter(promoImageUrls, onPromoClickListener)
     }
 
-    fun getAdapter(): BannerOfficialStoreAdapter {
-        return bannerAdapter as BannerOfficialStoreAdapter
-    }
+//    fun getAdapter(): BannerOfficialStoreAdapter {
+//        return bannerAdapter as BannerOfficialStoreAdapter
+//    }
 }

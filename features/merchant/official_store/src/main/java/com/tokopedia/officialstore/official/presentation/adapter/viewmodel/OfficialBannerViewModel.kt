@@ -5,7 +5,7 @@ import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
-class OfficialBannerViewModel(val banner: MutableList<Banner>, val categoryName: String) : Visitable<OfficialHomeAdapterTypeFactory>, ImpressHolder() {
+class OfficialBannerViewModel(val banner: MutableList<Banner>, val categoryName: String) : Visitable<OfficialHomeAdapterTypeFactory> {
 
     override fun type(adapterTypeFactory: OfficialHomeAdapterTypeFactory): Int {
         return adapterTypeFactory.type(this)
