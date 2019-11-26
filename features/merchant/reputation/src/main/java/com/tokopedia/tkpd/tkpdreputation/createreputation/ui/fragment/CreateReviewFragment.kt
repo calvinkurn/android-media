@@ -150,7 +150,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         createReviewViewModel.getSubmitReviewResponse.observe(this, Observer {
             when (it) {
-                is LoadingView -> progressBarReview.show()
+                is LoadingView -> showLoading()
                 is Fail -> {
                     stopLoading()
                     showLayout()
