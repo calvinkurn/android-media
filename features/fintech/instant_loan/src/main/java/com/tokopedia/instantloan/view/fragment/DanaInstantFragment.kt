@@ -69,7 +69,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     }
 
     private fun initView() {
-        button_search_pinjaman.setOnClickListener { view1 -> searchLoanOnline() }
+        button_search_pinjaman.setOnClickListener { searchLoanOnline() }
         il_learn_more.setOnClickListener {
             openWebView(InstantLoanUrl.COMMON_URL.INSTANT_LOAN_LEARN_MORE)
         }
@@ -197,7 +197,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
             }
         })
 
-        btnNext.setOnClickListener { v ->
+        btnNext.setOnClickListener {
             if (pager.currentItem != layouts.size) {
 
                 val position = pager.currentItem
@@ -306,7 +306,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE) {
-            if (userSession != null && userSession.isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 presenter.getLoanProfileStatus()
             } else {
                 NetworkErrorHelper.showSnackbar(activity,

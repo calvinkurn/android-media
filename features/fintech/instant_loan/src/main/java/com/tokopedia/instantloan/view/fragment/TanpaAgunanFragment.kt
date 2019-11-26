@@ -139,7 +139,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
             }
         }
 
-        view.findViewById<View>(com.tokopedia.instantloan.R.id.button_search_pinjaman).setOnClickListener { view1 ->
+        view.findViewById<View>(com.tokopedia.instantloan.R.id.button_search_pinjaman).setOnClickListener {
 
             if (!presenter.isUserLoggedIn()) {
                 navigateToLoginPage()
@@ -163,7 +163,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_REQUEST_CODE) {
-            if (userSession != null && userSession.isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 searchLoanOnline()
             } else {
                 showToastMessage(resources.getString(com.tokopedia.instantloan.R.string.login_to_proceed), Toast.LENGTH_SHORT)

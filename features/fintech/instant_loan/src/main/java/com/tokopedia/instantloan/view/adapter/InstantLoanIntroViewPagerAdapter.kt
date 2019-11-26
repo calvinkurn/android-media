@@ -85,7 +85,7 @@ class InstantLoanIntroViewPagerAdapter(private val mLayouts: IntArray,
 
             textTnC.text = spannableString
             textTnC.movementMethod = LinkMovementMethod.getInstance()
-            view.findViewById<View>(com.tokopedia.instantloan.R.id.button_connect_device).setOnClickListener { v ->
+            view.findViewById<View>(com.tokopedia.instantloan.R.id.button_connect_device).setOnClickListener {
                 sendLoanPopupClickEvent(InstantLoanEventConstants.EventLabel.PL_POPUP_CONNECT_DEVICE)
                 mPresenter.startDataCollection()
             }

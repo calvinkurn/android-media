@@ -51,7 +51,7 @@ constructor(private val mGetFilterDataUseCase: GetFilterDataUseCase) :
     }
 
     override fun isUserLoggedIn(): Boolean {
-        return userSession != null && userSession.isLoggedIn
+        return userSession.isLoggedIn
     }
 
 }

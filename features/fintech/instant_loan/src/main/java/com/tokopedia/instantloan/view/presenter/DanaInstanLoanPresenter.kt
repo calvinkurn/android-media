@@ -3,7 +3,6 @@ package com.tokopedia.instantloan.view.presenter
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.instantloan.constant.DeviceDataKeys
 import com.tokopedia.instantloan.data.model.response.ResponsePhoneData
@@ -17,6 +16,7 @@ import com.tokopedia.instantloan.ddcollector.bdd.BasicDeviceData
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase
 import com.tokopedia.instantloan.view.contractor.DanaInstanLoanContractor
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 import java.lang.reflect.Type
@@ -88,7 +88,7 @@ constructor(private val mGetLoanProfileStatusUseCase: GetLoanProfileStatusUseCas
     }
 
     override fun isUserLoggedIn(): Boolean {
-        return userSession != null && userSession.isLoggedIn
+        return userSession.isLoggedIn
     }
 
     override fun startDataCollection() {

@@ -1,7 +1,5 @@
 package com.tokopedia.instantloan.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
@@ -54,7 +52,6 @@ import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.TimeInterval
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -150,7 +147,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     override fun IsUserLoggedIn(): Boolean {
-        return userSession != null && userSession.isLoggedIn
+        return userSession.isLoggedIn
     }
 
     fun renderBannerList(banners: ArrayList<GqlLendingBannerData>) {
@@ -178,50 +175,40 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     override fun renderLendingData(gqlLendingDataResponse: GqlLendingDataResponse) {
 
-        if (gqlLendingDataResponse != null) {
-
-            if (gqlLendingDataResponse.leBanner != null &&
-                    gqlLendingDataResponse.leBanner.bannerData != null &&
-                    gqlLendingDataResponse.leBanner.bannerData.isNotEmpty()) {
-                showBannerLayout()
-                renderBannerList(gqlLendingDataResponse.leBanner.bannerData)
-            } else {
-                hideBannerLayout()
-            }
-
-            if (gqlLendingDataResponse != null && gqlLendingDataResponse.leCategory != null && gqlLendingDataResponse.leCategory.categoryData.isNotEmpty()) {
-                showCategoryLayout()
-                lendingCategoryAdpater = LendingCategoryAdapter(gqlLendingDataResponse.leCategory.categoryData)
-                setupCategoryLayout()
-                tanpaAgunanFragmentInstance?.setCategoryData(gqlLendingDataResponse.leCategory.categoryData)
-
-            } else {
-                hideCategoryLayout()
-            }
-
-            if (gqlLendingDataResponse != null && gqlLendingDataResponse.lePartner != null && gqlLendingDataResponse.lePartner.partnerData.isNotEmpty()) {
-                showPartnerLayout()
-                parterDataList = gqlLendingDataResponse.lePartner.partnerData
-                setupPartnerLayout()
-            } else {
-                hidePartnerLayout()
-            }
-
-            if (gqlLendingDataResponse.leSeo != null && gqlLendingDataResponse.leSeo?.seoData != null &&
-                    gqlLendingDataResponse.leSeo?.seoData?.isNotEmpty()!!) {
-                showSeoLayout()
-                lendingSeoAdapter = LendingSeoAdapter(gqlLendingDataResponse.leSeo!!.seoData!!)
-                setupSeoLayout()
-            } else {
-                hideSeoLayout()
-            }
-
+        if (gqlLendingDataResponse.leBanner.bannerData.isNotEmpty()) {
+            showBannerLayout()
+            renderBannerList(gqlLendingDataResponse.leBanner.bannerData)
         } else {
             hideBannerLayout()
+        }
+
+        if (gqlLendingDataResponse.leCategory.categoryData.isNotEmpty()) {
+            showCategoryLayout()
+            lendingCategoryAdpater = LendingCategoryAdapter(gqlLendingDataResponse.leCategory.categoryData)
+            setupCategoryLayout()
+            tanpaAgunanFragmentInstance?.setCategoryData(gqlLendingDataResponse.leCategory.categoryData)
+
+        } else {
             hideCategoryLayout()
+        }
+
+        if (gqlLendingDataResponse.lePartner.partnerData.isNotEmpty()) {
+            showPartnerLayout()
+            parterDataList = gqlLendingDataResponse.lePartner.partnerData
+            setupPartnerLayout()
+        } else {
             hidePartnerLayout()
+        }
+
+        if (gqlLendingDataResponse.leSeo != null && gqlLendingDataResponse.leSeo?.seoData != null &&
+                gqlLendingDataResponse.leSeo?.seoData?.isNotEmpty()!!) {
+            showSeoLayout()
+            lendingSeoAdapter = LendingSeoAdapter(gqlLendingDataResponse.leSeo!!.seoData!!)
+            setupSeoLayout()
+        } else {
             hideSeoLayout()
         }
+
     }
 
     private fun hideSeoLayout() {
@@ -536,9 +523,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private fun sendBannerImpressionEvent(position: Int) {
         val bannerPagerAdapter = mBannerPager.adapter as BannerPagerAdapter?
 
-        if (bannerPagerAdapter != null &&
-                bannerPagerAdapter.bannerEntities != null &&
-                bannerPagerAdapter.bannerEntities[position] != null) {
+        if (!(bannerPagerAdapter?.bannerEntities == null)) {
             val eventLabel = (bannerPagerAdapter.bannerEntities[position].bannerLink
                     + " - " + position.toString())
 
@@ -590,21 +575,6 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         val DANA_INSTAN_TAB_POSITION = 1
         private val TAB_INSTAN = "instan"
         private val TAB_TANPA_AGUNAN = "pinjamanonline"
-
-        fun createIntent(context: Context): Intent {
-            return Intent(context, InstantLoanActivity::class.java)
-        }
     }
-
-
-    /*object DeepLinkIntents {
-        //        @DeepLink(ApplinkConst.INSTANT_LOAN, ApplinkConst.INSTANT_LOAN_TAB)
-        @JvmStatic
-        fun getInstantLoanCallingIntent(context: Context, bundle: Bundle): Intent {
-            val intent = Intent(context, InstantLoanActivity::class.java)
-            intent.putExtras(bundle)
-            return intent
-        }
-    }*/
 }
 

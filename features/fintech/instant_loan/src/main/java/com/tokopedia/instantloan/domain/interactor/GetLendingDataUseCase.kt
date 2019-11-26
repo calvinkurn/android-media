@@ -19,9 +19,7 @@ class GetLendingDataUseCase @Inject constructor(@ApplicationContext context: Con
     val mContext = context
 
     fun unsubscribe() {
-        if (graphqlUseCase != null) {
-            graphqlUseCase.unsubscribe()
-        }
+        graphqlUseCase.unsubscribe()
     }
 
     private val cacheDuration: Long = TimeUnit.HOURS.toSeconds(1)

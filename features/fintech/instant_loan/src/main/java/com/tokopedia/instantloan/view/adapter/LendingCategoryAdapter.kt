@@ -31,7 +31,7 @@ class LendingCategoryAdapter(private val categoryList: ArrayList<GqlLendingCateg
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as LeCategoryViewHolder).bindData(categoryList.get(position), position)
+        (holder as LeCategoryViewHolder).bindData(categoryList[position])
     }
 
     class LeCategoryViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
@@ -45,7 +45,7 @@ class LendingCategoryAdapter(private val categoryList: ArrayList<GqlLendingCateg
             heading = view.findViewById(com.tokopedia.instantloan.R.id.category_heading)
         }
 
-        fun bindData(categoryItem: GqlLendingCategoryData, position: Int) {
+        fun bindData(categoryItem: GqlLendingCategoryData) {
             heading.text = categoryItem.categoryName
             ImageHandler.LoadImage(imageView, categoryItem.categoryIconUrl)
             itemView.tag = categoryItem.categoryNameSlug

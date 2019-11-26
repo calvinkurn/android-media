@@ -25,7 +25,7 @@ class LendingSeoAdapter(private val seoList: ArrayList<GqlLendingSeoData>):
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as LeSeoViewHolder).bindData(seoList.get(position), position)
+        (holder as LeSeoViewHolder).bindData(seoList[position])
     }
 
     class LeSeoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -39,7 +39,7 @@ class LendingSeoAdapter(private val seoList: ArrayList<GqlLendingSeoData>):
             subHeading = view.findViewById(com.tokopedia.instantloan.R.id.il_seo_subheading)
         }
 
-        fun bindData(seoItem: GqlLendingSeoData, position: Int) {
+        fun bindData(seoItem: GqlLendingSeoData) {
             heading.text = seoItem.seoHead
             subHeading.text = seoItem.seoBody
         }

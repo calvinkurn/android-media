@@ -12,7 +12,7 @@ class InfoCollectServiceImpl : InfoCollectService {
             val phoneInfoMap = HashMap<String, Any?>()
 
             infoCollectorList.filter { true }
-                    .forEach { it.buildPhoneInfo()?.let { it1 -> phoneInfoMap.putAll(it1) } }
+                    .forEach { it.buildPhoneInfo().let { it1 -> phoneInfoMap.putAll(it1) } }
 
             return phoneInfoMap
         }
@@ -22,7 +22,7 @@ class InfoCollectServiceImpl : InfoCollectService {
         return this.phoneInfo
     }
 
-    override fun add(infoCollector: InfoCollector) {
-        this.infoCollectorList.add(infoCollector)
+    override fun add(data: InfoCollector) {
+        this.infoCollectorList.add(data)
     }
 }

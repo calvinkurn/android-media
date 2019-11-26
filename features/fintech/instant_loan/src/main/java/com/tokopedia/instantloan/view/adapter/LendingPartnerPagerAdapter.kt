@@ -37,7 +37,7 @@ class LendingPartnerPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm)
         }
         val fragment = any as Fragment
         val pager = container as HeightWrappingViewPager?
-        if (fragment != null && fragment.view != null) {
+        if (fragment.view != null) {
             pager!!.onPageChanged(fragment.view!!)
         }
     }

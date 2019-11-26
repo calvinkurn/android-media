@@ -46,10 +46,8 @@ class DanaInstanTestimonialsPagerAdapter(
         if (position != mCurrentPosition) {
             val view = any as CardView
             val pager = container as HeightWrappingViewPager?
-            if (view != null) {
-                mCurrentPosition = position
-                pager!!.onPageChanged(view)
-            }
+            mCurrentPosition = position
+            pager!!.onPageChanged(view)
         }
     }
 

@@ -46,14 +46,12 @@ class InstantLoanPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         }
 
         if (position != mCurrentPosition) {
-            val fragment = any  as Fragment
+            val fragment = any as Fragment
             val pager = container as HeightWrappingViewPager?
-            if (fragment != null && fragment.view != null) {
+            if (fragment.view != null) {
                 mCurrentPosition = position
                 pager!!.onPageChanged(fragment.view!!)
             }
         }
     }
-
-
 }
