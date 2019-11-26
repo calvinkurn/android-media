@@ -8,13 +8,15 @@ import com.tokopedia.navigation.domain.model.NotificationFilterSectionWrapper
 import com.tokopedia.navigation.domain.model.PurchaseNotification
 import com.tokopedia.navigation.domain.model.SaleNotification
 import com.tokopedia.navigation.domain.model.TransactionItemNotification
+import com.tokopedia.navigation.listener.TransactionMenuListener
 import com.tokopedia.navigation.presentation.adapter.viewholder.transaction.*
 import com.tokopedia.navigation.presentation.view.listener.NotificationTransactionItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 
 class NotificationTransactionFactoryImpl(
         private var notificationUpdateListener: NotificationTransactionItemListener,
-        private val notificationFilterListener: NotificationFilterViewHolder.NotifFilterListener
+        private val notificationFilterListener: NotificationFilterViewHolder.NotifFilterListener,
+        private val transactionMenuListener: TransactionMenuListener
 ): BaseAdapterTypeFactory(), NotificationTransactionFactory {
 
     override fun type(purchaseNotification: PurchaseNotification): Int = PurchaseViewHolder.LAYOUT
@@ -44,8 +46,8 @@ class NotificationTransactionFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            PurchaseViewHolder.LAYOUT -> PurchaseViewHolder(parent)
-            SaleViewHolder.LAYOUT -> SaleViewHolder(parent)
+            PurchaseViewHolder.LAYOUT -> PurchaseViewHolder(parent, transactionMenuListener)
+            SaleViewHolder.LAYOUT -> SaleViewHolder(parent, transactionMenuListener)
             TextNotificationViewHolder.LAYOUT -> TextNotificationViewHolder(parent, notificationUpdateListener)
             SmallBannerNotificationViewHolder.LAYOUT -> SmallBannerNotificationViewHolder(parent, notificationUpdateListener)
             BigBannerNotificationViewHolder.LAYOUT -> BigBannerNotificationViewHolder(parent, notificationUpdateListener)
