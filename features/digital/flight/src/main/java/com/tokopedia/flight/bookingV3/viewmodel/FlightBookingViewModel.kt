@@ -101,7 +101,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 if (data.meta.needRefresh && data.meta.maxRetry >= retryCount) {
                     retryCount++
                     delay(data.meta.refreshTime * 1000.toLong())
-                    getCart(rawQuery, cartId)
+                    getCart(rawQuery, cartId, autoVerify, bookingVerifyParam, verifyQuery, checkVoucherQuery)
                 } else {
                     retryCount = 0
                     flightCartResult.value = Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY))
@@ -250,6 +250,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<FlightAddToCartData.Response>()
 
             flightBookingParam.cartId = addToCartData.addToCartData.id
+            pastVerifyParam = generateVerifyParam(bookingVerifyParam)
             bookingVerifyParam.cartItems[0].metaData.cartId = addToCartData.addToCartData.id
             getCart(getCartQuery, getCartId(), true, bookingVerifyParam, verifyQuery, checkVoucherQuery)
         })
@@ -441,11 +442,12 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 passenger.headerTitle = userName
                 passenger.passengerFirstName = userName
                 if (getMandatoryDOB()) passenger.passengerBirthdate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
-            } else {
-                if (passengers[0].passengerFirstName.equals(userName, true)) passenger.headerTitle = String.format("Penumpang dewasa")
-                else passenger.passengerFirstName = passengers[0].passengerFirstName
+                passengers[0] = passenger
+            } else if (passengers[0].passengerFirstName.equals(userName, true)) {
+                passenger.headerTitle = String.format("Penumpang dewasa")
+                passengers[0] = passenger
             }
-            passengers[0] = passenger
+
             flightPassengersData.value = passengers
         }
     }
