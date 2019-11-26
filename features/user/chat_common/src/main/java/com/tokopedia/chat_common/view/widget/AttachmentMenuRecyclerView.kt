@@ -1,8 +1,8 @@
 package com.tokopedia.chat_common.view.widget
 
 import android.content.Context
-import android.os.Handler
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,9 +16,10 @@ class AttachmentMenuRecyclerView : RecyclerView {
     private val adapter = AttachmentMenuAdapter()
     private val marginBottom = 16.toPx()
 
-    private val delayToShow = 125L
     var isVisible = false
     var isShowing = false
+    var showDelayed = false
+    var isKeyboardOpened = false
 
     constructor(context: Context) : super(context)
 
@@ -46,20 +47,33 @@ class AttachmentMenuRecyclerView : RecyclerView {
     }
 
     fun hideMenu() {
-        if (isVisible) {
+        if (isVisible && !isShowing) {
+            Log.d("MENU_STATE", "hide menu")
             isVisible = false
             visibility = View.GONE
         }
     }
 
     private fun showMenu() {
+        Log.d("MENU_STATE", "show menu")
         isShowing = true
-        hideKeyboard()
-        postDelayed({
-            isShowing = false
-            isVisible = true
-            visibility = View.VISIBLE
-        }, delayToShow)
+        if (!isKeyboardOpened) {
+            show()
+        } else {
+            showDelayed = true
+            hideKeyboard()
+        }
+    }
+
+    fun showDelayed() {
+        show()
+    }
+
+    fun show() {
+        isShowing = false
+        showDelayed = false
+        isVisible = true
+        visibility = View.VISIBLE
     }
 
     private fun hideKeyboard() {

@@ -262,8 +262,15 @@ open class BaseChatViewStateImpl(
         val heightDifference = screenHeight - windowHeight - statusBarHeight
 
         if (heightDifference > keyboardOffset) {
+            attachmentMenu.isKeyboardOpened = true
             attachmentMenu.hideMenu()
+        } else {
+            attachmentMenu.isKeyboardOpened = false
+            if (attachmentMenu.showDelayed) {
+                attachmentMenu.showDelayed()
+            }
         }
+
     }
 
     private fun getScreenHeight(): Int {
