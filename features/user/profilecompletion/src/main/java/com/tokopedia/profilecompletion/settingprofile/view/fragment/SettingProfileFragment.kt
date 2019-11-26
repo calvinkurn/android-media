@@ -32,6 +32,7 @@ import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
 import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -53,8 +54,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val profileInfoViewModel by lazy { viewModelProvider.get(ProfileInfoViewModel::class.java) }
     private val profileRoleViewModel by lazy { viewModelProvider.get(ProfileRoleViewModel::class.java) }
@@ -441,7 +447,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onSuccessGetProfileRole(profileRoleData: ProfileRoleData) {
         dismissLoading()
         bod.isEnabled = profileRoleData.isAllowedChangeDob
-        name?.isEnabled = profileRoleData.isAllowedChangeName
+        name?.isEnabled = profileRoleData.isAllowedChangeName && remoteConfig.getBoolean(REMOTE_KEY_CHANGE_NAME, false)
     }
 
     private fun onErrorGetProfileRole(throwable: Throwable) {
@@ -528,6 +534,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_ADD_EMAIL = 302
         const val REQUEST_CODE_ADD_PHONE = 303
         const val REQUEST_CODE_ADD_GENDER = 304
+
+        const val REMOTE_KEY_CHANGE_NAME = "android_customer_change_public_name"
 
         const val HEADER_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/bg_setting_profile_header.png"
 

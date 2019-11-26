@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -62,6 +63,7 @@ import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
+import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -94,6 +96,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String OVERRIDE_URL = "override_url";
     private static final String PARAM_TITLEBAR = "titlebar";
     private static final String PARAM_NEED_LOGIN = "need_login";
+    private static final String PARAM_EXTRA_REVIEW = "REVIEW_CLICK_AT";
 
     private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
@@ -284,12 +287,34 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openSmcReferralPage(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_WEBVIEW;
                     break;
+                case DeepLinkChecker.PRODUCT_REVIEW:
+                    openReview(uriData.toString(), defaultBundle);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
             }
             sendCampaignGTM(activity, uriData.toString(), screenName);
+        }
+    }
+
+    private void openReview(String uriData, Bundle defaultBundle) {
+        List<String> segments = Uri.parse(uriData).getPathSegments();
+
+        if (segments.size() >= 4) {
+            String reputationId = segments.get(segments.size() - 2);
+            String productId = segments.get(segments.size() - 1);
+
+
+            String uriReview = UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId);
+            Intent intent = RouteManager.getIntent(
+                    context,
+                    uriReview);
+            intent.putExtras(defaultBundle);
+            intent.putExtra(PARAM_EXTRA_REVIEW, 5);
+            viewListener.goToPage(intent);
         }
     }
 
@@ -484,10 +509,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
     }
 
-    private void openWebView(Uri encodedUri, boolean allowingOverriding, boolean showTitlebar,
+    private void openWebView(Uri uri, boolean allowingOverriding, boolean showTitlebar,
                              boolean needLogin) {
+        String encodedUri = UrlEncoderExtKt.encodeOnce(uri.toString());
         Intent intent = RouteManager.getIntentNoFallback(context, ApplinkConstInternalGlobal.WEBVIEW,
-                encodedUri.toString());
+                encodedUri);
         if (intent!=null) {
             intent.putExtra(KEY_ALLOW_OVERRIDE, allowingOverriding);
             intent.putExtra(KEY_NEED_LOGIN, needLogin);

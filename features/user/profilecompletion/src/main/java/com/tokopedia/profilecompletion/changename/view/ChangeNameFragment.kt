@@ -57,12 +57,16 @@ class ChangeNameFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initListener()
-        initObserver()
 
         if (oldName.isNotEmpty()) {
             changeNameTextName?.setText(oldName)
+            changeNameTextName?.text?.length?.let {
+                changeNameTextName?.setSelection(it)
+            }
         }
+
+        initObserver()
+        initListener()
     }
 
     private fun initListener() {
@@ -74,16 +78,21 @@ class ChangeNameFragment : BaseDaggerFragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s != null) {
                     when {
-                        s.isEmpty() || s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
-                            if (s.length < MINIMUM_LENGTH) {
-                                onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
-                            } else if (s.length > MAXIMUM_LENGTH) {
-                                onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_long_35)))
+                        s.isEmpty() || s == "" -> activity?.let {
+                            changeNameTextMessage?.run {
+                                text = getString(R.string.change_name_visible_on_another_user)
+                                setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+                                changeNameButtonSave?.isEnabled = false
+                            }
+                        }
+                        s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
+                            when {
+                                s.length < MINIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_min_3)))
+                                s.length > MAXIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_max_35)))
                             }
                             changeNameButtonSave?.isEnabled = false
                         }
                         s.toString() == oldName -> {
-                            onErrorChangeName(Throwable(resources.getString(R.string.error_name_same_with_previous)))
                             changeNameButtonSave?.isEnabled = false
                         }
                         else -> {

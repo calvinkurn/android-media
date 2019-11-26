@@ -2,13 +2,13 @@ package com.tokopedia.feedplus.view.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
 import com.tokopedia.feedplus.view.fragment.FeedOnboardingFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
-import com.tokopedia.kol.common.di.KolComponent;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
@@ -20,7 +20,7 @@ import retrofit2.Retrofit;
  */
 
 @FeedPlusScope
-@Component(modules = {FeedPlusModule.class, FeedComponentModule.class, GqlRawQueryModule.class, ViewModelModule.class}, dependencies = KolComponent.class)
+@Component(modules = {FeedPlusModule.class, FeedComponentModule.class, GqlRawQueryModule.class, ViewModelModule.class}, dependencies = BaseAppComponent.class)
 public interface FeedPlusComponent {
 
     @ApplicationContext

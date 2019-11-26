@@ -23,7 +23,6 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
-    implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.libraries.cameraview)
 
     implementation rootProject.ext.unifyDependencies.components
