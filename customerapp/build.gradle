@@ -293,6 +293,7 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.features.tkpddiscovery)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.payment)

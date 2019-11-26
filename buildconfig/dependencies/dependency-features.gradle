@@ -100,6 +100,7 @@ ext {
             productDraftDatabase            : ":features:merchant:product_draft_database",
             productDetailCommon             : ":features:merchant:product_detail_common",
             productDetail                   : ":features:merchant:product_detail",
+            atc_variant                     : ":features:merchant:atc_variant",
             kyc                             : ":features:kyc",
             scanner                         : ":features:scanner",
             ovop2p                          : ":features:ovop2p",
