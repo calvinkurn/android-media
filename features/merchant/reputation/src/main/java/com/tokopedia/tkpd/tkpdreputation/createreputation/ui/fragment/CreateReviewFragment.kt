@@ -143,10 +143,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
 
         createReviewViewModel.getReputationDataForm.observe(this, Observer {
             when (it) {
-                is CoroutineSuccess -> {
-                    productRevGetForm = it.data
-                    onSuccessGetReviewForm(it.data)
-                }
+                is CoroutineSuccess -> onSuccessGetReviewForm(it.data)
                 is CoroutineFail -> onErrorGetReviewForm(it.throwable)
             }
         })
@@ -245,7 +242,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun getReviewData() {
-        showLoading()
+        showShimmering()
         createReviewViewModel.getProductReputation(productId, reviewId)
     }
 
@@ -266,9 +263,10 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
-        stopLoading()
+        hideShimmering()
         showLayout()
 
+        productRevGetForm = data
         data.productrevGetForm.also { response ->
             reviewTracker.reviewOnViewTracker(response.orderID, productId.toString(10))
             ImageHandler.loadImage(context, img_review, response.productData.productImageURL, R.drawable.ic_loading_image)
@@ -446,6 +444,14 @@ class CreateReviewFragment : BaseDaggerFragment() {
         }, 800)
     }
 
+    private fun showShimmering() {
+        shimmering_create_review.show()
+    }
+
+    private fun hideShimmering() {
+        shimmering_create_review.hide()
+    }
+
     private fun showLoading() {
         hideLayout()
         progressBarReview.show()
@@ -478,7 +484,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorGetReviewForm(throwable: Throwable) {
-        stopLoading()
+        hideShimmering()
         if (throwable is MessageErrorException) {
             showToasterError(throwable.message ?: "")
         } else {
