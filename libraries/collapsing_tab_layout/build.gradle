@@ -26,7 +26,7 @@ dependencies {
 project.ext {
     artifactId = 'colapsing-tab-layout'
     groupId = 'com.tokopedia.library'
-    versionName = "1.0.0"
+    versionName = "0.0.1"
     artifactName = "collapsing_tab_layout-release"
 }
 

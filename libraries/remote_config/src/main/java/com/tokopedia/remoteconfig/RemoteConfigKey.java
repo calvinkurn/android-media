@@ -21,7 +21,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
 
     public static final String REFERRAL_SUBHEADER = "referral_subheader";
-    public static final String APP_ENABLE_INDI_CHALLENGES = "app_enable_indi_challenges";
     public static final String APP_REFERRAL_TITLE = "app_referral_title";
     public static final String APP_REFERRAL_SUBTITLE = "app_referral_subtitle";
     public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
@@ -85,8 +84,6 @@ public class RemoteConfigKey {
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
 
-    public static final String APP_ENTRY_CHALLENGE_BARU = "app_entry_challenges_baru";
-
     public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
 
     public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
@@ -137,6 +134,7 @@ public class RemoteConfigKey {
     public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
     public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
+    public static final String MAINAPP_SMARTCARD_BRIZZI = "android_smartcard_brizzi";
     public static final String MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP = "android_customer_enable_voucher_game_pdp";
 
     public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";

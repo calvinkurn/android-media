@@ -140,7 +140,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
 
         fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel)
     }

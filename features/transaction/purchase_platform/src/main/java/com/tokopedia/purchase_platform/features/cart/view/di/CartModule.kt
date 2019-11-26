@@ -13,7 +13,6 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
-import com.tokopedia.purchase_platform.common.base.IMapperUtil
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
@@ -68,8 +67,8 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideICartMapper(mapperUtil: IMapperUtil): ICartMapper {
-        return CartMapper(mapperUtil)
+    fun provideICartMapper(): ICartMapper {
+        return CartMapper()
     }
 
     @Provides
@@ -80,8 +79,8 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideIVoucherCouponMapper(mapperUtil: IMapperUtil): IVoucherCouponMapper {
-        return VoucherCouponMapper(mapperUtil)
+    fun provideIVoucherCouponMapper(): IVoucherCouponMapper {
+        return VoucherCouponMapper()
     }
 
     @Provides

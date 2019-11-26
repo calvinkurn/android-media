@@ -7,14 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +14,13 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,6 +36,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -44,14 +45,16 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.data.IMapsRepository;
-import com.tokopedia.logisticaddaddress.di.GeolocationModule;
-import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
 import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
+import com.tokopedia.logisticaddaddress.di.GeolocationModule;
+import com.tokopedia.logisticaddaddress.utils.LocationUtilsKt;
+import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 
 
@@ -78,6 +81,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     private BottomSheetDialog dialog;
     private ActionBar actionBar;
     private boolean hasLocation;
+    private CompositeSubscription composite = new CompositeSubscription();
 
     MapView mapView;
     Toolbar toolbar;
@@ -85,8 +89,10 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     TextView textPointer;
     View submitPointer;
     FloatingActionButton fab;
-    @Inject GeolocationContract.GeolocationPresenter presenter;
-    @Inject UserSession mUser;
+    @Inject
+    GeolocationContract.GeolocationPresenter presenter;
+    @Inject
+    UserSession mUser;
 
     public GoogleMapFragment() {
         // Required empty public constructor
@@ -197,6 +203,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
             mapView.onDestroy();
         }
+        composite.unsubscribe();
         super.onDestroyView();
     }
 
@@ -249,13 +256,26 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
     @Override
     public void initMapListener() {
-        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                dimissKeyBoard();
-                presenter.onCameraChange(getActivity(), cameraPosition);
-            }
-        });
+        composite.add(LocationUtilsKt.rxPinPoint(googleMap)
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        dimissKeyBoard();
+                        LatLng temp = googleMap.getCameraPosition().target;
+                        presenter.getReverseGeoCoding(
+                                String.valueOf(temp.latitude), String.valueOf(temp.longitude));
+                    }
+                }));
 
         autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -375,6 +395,13 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         TextView destination = (TextView) dialog.findViewById(R.id.text_address_destination);
         if (destination != null) {
             destination.setText(MethodChecker.fromHtml(s).toString());
+        }
+    }
+
+    @Override
+    public void setLoading(boolean active) {
+        if (active) {
+            textPointer.setText(getString(R.string.wait_generate_address));
         }
     }
 
