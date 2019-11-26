@@ -86,7 +86,7 @@ public class ShipmentAddressFormDataResponse {
     private boolean isNewBuyer;
     @SerializedName("disabled_features")
     @Expose
-    private List<CheckoutDisabledFeatures> disabledFeatures = new ArrayList<>();
+    private List<String> disabledFeatures = new ArrayList<>();
     @SerializedName("tickers")
     @Expose
     private List<Ticker> tickers = new ArrayList<>();
@@ -181,7 +181,7 @@ public class ShipmentAddressFormDataResponse {
         return isNewBuyer;
     }
 
-    public List<CheckoutDisabledFeatures> getDisabledFeatures() {
+    public List<String> getDisabledFeatures() {
         return disabledFeatures;
     }
 

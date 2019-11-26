@@ -221,7 +221,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
         bulkCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (!isListEmpty) {
-                adapter.data.forEachIndexed { index, _ ->
+                adapter.data.forEachIndexed { index, productManageViewModel ->
                     if (!isChecked || !productManageListAdapter.isChecked(index)) {
                         productManageListAdapter.updateListByCheck(isChecked, index)
                     }
@@ -343,14 +343,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         /**
          * Keep checklist after user search or filter
          */
-        val listPositionChecked = list.withIndex().filter {
-            itemsChecked.map { it.id }.contains(it.value.id)
-        }.map {
-            it.index
-        }.toHashSet()
 
-        productManageListAdapter.setCheckedPositionList(listPositionChecked)
-        productManageListAdapter.notifyDataSetChanged()
+        if (list.isEmpty()) {
+            containerChechBoxBulk.visibility = View.GONE
+        } else {
+            containerChechBoxBulk.visibility = View.VISIBLE
+        }
+        renderCheckedView()
     }
 
     override fun onSearchSubmitted(text: String) {
@@ -375,6 +374,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         this.goldMerchant = goldMerchant
         isOfficialStore = officialStore
         this.shopDomain = shopDomain ?: ""
+    }
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        bulkCheckBox.isChecked = false
+        productManageListAdapter.resetCheckedItemSet()
+        itemsChecked.clear()
+        renderCheckedView()
     }
 
     override fun onErrorEditPrice(t: Throwable?, productId: String?, price: String?, currencyId: String?, currencyText: String?) {
@@ -585,14 +592,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         itemsChecked.clear()
         renderCheckedView()
         loadInitialData()
-    }
-
-    override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
-        bulkCheckBox.isChecked = false
-        productManageListAdapter.resetCheckedItemSet()
-        itemsChecked.clear()
-        renderCheckedView()
     }
 
     override fun onErrorBulkUpdateProduct(e: Throwable) {
