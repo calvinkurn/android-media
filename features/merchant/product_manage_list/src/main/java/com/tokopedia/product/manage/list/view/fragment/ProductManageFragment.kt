@@ -848,7 +848,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     private fun showDialogVariantPriceLocked() {
         activity?.let {
-            val alertDialogBuilder = AlertDialog.Builder(it, R.style.AppCompatAlertDialogStyle)
+            val alertDialogBuilder = AlertDialog.Builder(it, com.tokopedia.design.R.style.AppCompatAlertDialogStyle)
                     .setTitle(getString(com.tokopedia.product.manage.item.R.string.product_price_locked))
                     .setMessage(getString(com.tokopedia.product.manage.item.R.string.product_price_locked_manage_desc))
                     .setPositiveButton(getString(com.tokopedia.design.R.string.close)) { dialogInterface, i ->
