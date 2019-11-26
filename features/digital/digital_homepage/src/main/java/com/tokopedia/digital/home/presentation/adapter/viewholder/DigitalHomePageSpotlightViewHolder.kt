@@ -5,6 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common_digital.common.util.AnalyticUtils
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageSpotlightModel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
@@ -29,6 +30,7 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
 
                     itemView.rv_digital_homepage_spotlight.apply {
                         adapter = DigitalItemSpotlightAdapter(items, onItemBindListener)
+
                         while (itemDecorationCount > 0) removeItemDecorationAt(0)
                         addItemDecoration(object : RecyclerView.ItemDecoration() {
                             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -39,8 +41,21 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
                                 }
                             }
                         })
+
+                        clearOnScrollListeners()
+                        addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                                super.onScrollStateChanged(recyclerView, newState)
+                                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                                    val indexes = AnalyticUtils.getVisibleItemIndexes(this@apply)
+                                    if (AnalyticUtils.hasVisibleItems(indexes)) {
+                                        onItemBindListener.onSectionItemImpression(items.subList(indexes.first, indexes.second + 1), SPOTLIGHT_IMPRESSION)
+                                    }
+                                }
+                            }
+                        })
                     }
-                    onItemBindListener.onSectionItemImpression(SPOTLIGHT_IMPRESSION)
+                    onItemBindListener.onSectionItemImpression(items, SPOTLIGHT_IMPRESSION, true)
                 }
             } else {
                 itemView.digital_homepage_spotlight_shimmering.hide()

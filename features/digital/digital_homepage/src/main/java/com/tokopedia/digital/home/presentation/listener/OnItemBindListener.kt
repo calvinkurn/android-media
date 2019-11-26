@@ -24,6 +24,6 @@ interface OnItemBindListener {
 
     fun onBannerImpressionTrack(banner: DigitalHomePageBannerModel.Banner?, i: Int)
     fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int)
-    fun onSectionItemImpression(sectionType: String)
-    fun onRecommendationImpression(elements: List<RecommendationItemEntity>)
+    fun onSectionItemImpression(elements: List<DigitalHomePageSectionModel.Item>, sectionType: String, initial: Boolean = false)
+    fun onRecommendationImpression(elements: List<RecommendationItemEntity>, initial: Boolean = false)
 }

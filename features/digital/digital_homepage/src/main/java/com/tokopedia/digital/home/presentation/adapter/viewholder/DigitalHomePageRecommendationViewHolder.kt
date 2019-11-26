@@ -5,6 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common_digital.common.util.AnalyticUtils
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageRecommendationModel
 import com.tokopedia.digital.home.presentation.adapter.adapter.DigitalItemRecommendationAdapter
@@ -29,6 +30,7 @@ class DigitalHomePageRecommendationViewHolder(itemView: View?, val onItemBindLis
 
                     itemView.rv_digital_homepage_recommendation.apply {
                         adapter = DigitalItemRecommendationAdapter(items, onItemBindListener)
+
                         while (itemDecorationCount > 0) removeItemDecorationAt(0)
                         addItemDecoration(object : RecyclerView.ItemDecoration() {
                             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -39,8 +41,21 @@ class DigitalHomePageRecommendationViewHolder(itemView: View?, val onItemBindLis
                                 }
                             }
                         })
+
+                        clearOnScrollListeners()
+                        addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                                super.onScrollStateChanged(recyclerView, newState)
+                                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                                    val indexes = AnalyticUtils.getVisibleItemIndexes(this@apply)
+                                    if (AnalyticUtils.hasVisibleItems(indexes)) {
+                                        onItemBindListener.onRecommendationImpression(items.subList(indexes.first, indexes.second + 1))
+                                    }
+                                }
+                            }
+                        })
                     }
-                    onItemBindListener.onRecommendationImpression(items)
+                    onItemBindListener.onRecommendationImpression(items, true)
                 }
             } else {
                 itemView.digital_homepage_recommendation_shimmering.hide()

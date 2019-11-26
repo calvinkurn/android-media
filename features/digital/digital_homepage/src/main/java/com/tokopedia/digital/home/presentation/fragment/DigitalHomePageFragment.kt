@@ -31,9 +31,12 @@ import com.tokopedia.digital.home.model.DigitalHomePageItemModel
 import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomePageCategoryDataMapper
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.BEHAVIORAL_CATEGORY_IMPRESSION
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.NEW_USER_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
+import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_IMPRESSION
 import com.tokopedia.digital.home.presentation.Util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
 import com.tokopedia.digital.home.presentation.activity.DigitalHomePageSearchActivity
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
@@ -58,6 +61,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     @Inject
     lateinit var viewModel: DigitalHomePageViewModel
     private var searchBarTransitionRange = 0
+
+    private var initialImpressionTracking: MutableMap<String, Boolean> = initialImpressionTrackingConst.toMutableMap()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.layout_digital_home, container, false)
@@ -94,7 +99,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             onClickOrderList()
         }
 
-        trackingUtil.resetInitialImpressionTracking()
+        resetInitialImpressionTracking()
     }
 
     private fun hideStatusBar() {
@@ -200,7 +205,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         isLoadingInitialData = true
         adapter.clearAllElements()
         showLoading()
-        trackingUtil.resetInitialImpressionTracking()
+        resetInitialImpressionTracking()
         viewModel.getInitialList(swipeToRefresh?.isRefreshing ?: false)
     }
 
@@ -277,21 +282,14 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         RouteManager.route(activity, element.applink)
     }
 
-    override fun onSectionItemImpression(sectionType: String) {
-        val sectionOrder = when(sectionType) {
-            BEHAVIORAL_CATEGORY_IMPRESSION -> FAVORITES_ORDER
-            NEW_USER_IMPRESSION -> NEW_USER_ZONE_ORDER
-            SPOTLIGHT_IMPRESSION -> SPOTLIGHT_ORDER
-            else -> -1
-        }
-        if (sectionOrder >= 0) {
-            viewModel.digitalHomePageList.value?.get(sectionOrder)?.let { item ->
-                if (item is DigitalHomePageSectionModel && item.isLoaded && item.isSuccess) {
-                    item.data?.section?.items?.let { data ->
-                        trackingUtil.eventSectionImpression(data, sectionType)
-                    }
-                }
+    override fun onSectionItemImpression(elements: List<DigitalHomePageSectionModel.Item>, sectionType: String, initial: Boolean) {
+        if (initial) {
+            if (initialImpressionTracking[sectionType] == true) {
+                initialImpressionTracking[sectionType] = false
+                trackingUtil.eventSectionImpression(elements, sectionType)
             }
+        } else {
+            trackingUtil.eventSectionImpression(elements, sectionType)
         }
     }
 
@@ -303,8 +301,15 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         // do nothing
     }
 
-    override fun onRecommendationImpression(elements: List<RecommendationItemEntity>) {
-        trackingUtil.eventRecommendationImpression(elements)
+    override fun onRecommendationImpression(elements: List<RecommendationItemEntity>, initial: Boolean) {
+        if (initial) {
+            if (initialImpressionTracking[SUBHOME_WIDGET_IMPRESSION] == true) {
+                initialImpressionTracking[SUBHOME_WIDGET_IMPRESSION] = false
+                trackingUtil.eventRecommendationImpression(elements)
+            }
+        } else {
+            trackingUtil.eventRecommendationImpression(elements)
+        }
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
@@ -347,8 +352,21 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         trackingUtil.eventClickBackButton()
     }
 
+    private fun resetInitialImpressionTracking() {
+        initialImpressionTracking = initialImpressionTrackingConst.toMutableMap()
+    }
+
     companion object {
         val TOOLBAR_TRANSITION_RANGE = com.tokopedia.design.R.dimen.dp_8
+
+        val initialImpressionTrackingConst = mapOf(
+                DYNAMIC_ICON_IMPRESSION to true,
+                BANNER_IMPRESSION to true,
+                BEHAVIORAL_CATEGORY_IMPRESSION to true,
+                NEW_USER_IMPRESSION to true,
+                SPOTLIGHT_IMPRESSION to true,
+                SUBHOME_WIDGET_IMPRESSION to true
+        )
 
         fun getInstance() = DigitalHomePageFragment()
     }

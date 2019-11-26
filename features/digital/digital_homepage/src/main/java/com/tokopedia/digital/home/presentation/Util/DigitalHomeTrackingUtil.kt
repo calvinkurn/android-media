@@ -43,8 +43,6 @@ import com.tokopedia.track.TrackAppUtils
 
 class DigitalHomeTrackingUtil {
 
-    private var initialImpressionTracking: MutableMap<String, Boolean> = initialImpressionTrackingConst.toMutableMap()
-
     fun eventBannerImpression(item: DigitalHomePageBannerModel.Banner?, position: Int) {
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
@@ -55,23 +53,15 @@ class DigitalHomeTrackingUtil {
                 CREATIVE_URL, item?.filename
         ))
 
-        val eventAction = BANNER_IMPRESSION
-        initialImpressionTracking.apply {
-            if (containsKey(eventAction)) {
-                if (this[eventAction] == false) {
-                    // Disable initial load after first time
-                    this[eventAction] = true
-                    TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                            DataLayer.mapOf(
-                                    TrackAppUtils.EVENT, PROMO_VIEW,
-                                    TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
-                                    TrackAppUtils.EVENT_ACTION, BANNER_IMPRESSION,
-                                    TrackAppUtils.EVENT_LABEL, "$position - ${item?.title}",
-                                    ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, products))
-                            ))
-                }
-            }
-        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, PROMO_VIEW,
+                        TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
+                        TrackAppUtils.EVENT_ACTION, BANNER_IMPRESSION,
+                        TrackAppUtils.EVENT_LABEL, "$position - ${item?.title}",
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, products))
+                ))
+
     }
 
     fun eventBannerClick(item: DigitalHomePageBannerModel.Banner?, position: Int) {
@@ -107,23 +97,15 @@ class DigitalHomeTrackingUtil {
             ))
         }
 
-        val eventAction = DYNAMIC_ICON_IMPRESSION
-        initialImpressionTracking.apply {
-            if (containsKey(eventAction)) {
-                if (this[eventAction] == false) {
-                    // Disable initial load after first time
-                    this[eventAction] = true
-                    TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                            DataLayer.mapOf(
-                                    TrackAppUtils.EVENT, PROMO_VIEW,
-                                    TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
-                                    TrackAppUtils.EVENT_ACTION, DYNAMIC_ICON_IMPRESSION,
-                                    TrackAppUtils.EVENT_LABEL, "",
-                                    ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, products))
-                            ))
-                }
-            }
-        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, PROMO_VIEW,
+                        TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
+                        TrackAppUtils.EVENT_ACTION, DYNAMIC_ICON_IMPRESSION,
+                        TrackAppUtils.EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, products))
+                ))
+
     }
 
     fun eventCategoryClick(item: DigitalHomePageCategoryModel.Submenu?, position: Int) {
@@ -188,22 +170,14 @@ class DigitalHomeTrackingUtil {
     }
 
     fun eventSectionImpression(data: List<DigitalHomePageSectionModel.Item>, eventAction: String) {
-        initialImpressionTracking.apply {
-            if (containsKey(eventAction)) {
-                if (this[eventAction] == false) {
-                    // Disable initial load after first time
-                    this[eventAction] = true
-                    TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                            DataLayer.mapOf(
-                                    TrackAppUtils.EVENT, PROMO_VIEW,
-                                    TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
-                                    TrackAppUtils.EVENT_ACTION, eventAction,
-                                    TrackAppUtils.EVENT_LABEL, "",
-                                    ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(data).toArray()))
-                            ))
-                }
-            }
-        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, PROMO_VIEW,
+                        TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
+                        TrackAppUtils.EVENT_ACTION, eventAction,
+                        TrackAppUtils.EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(data).toArray()))
+                ))
     }
 
     fun eventSectionClick(data: DigitalHomePageSectionModel.Item, position: Int, eventAction: String) {
@@ -244,25 +218,14 @@ class DigitalHomeTrackingUtil {
             ))
         }
 
-
-        val eventAction = SUBHOME_WIDGET_IMPRESSION
-        initialImpressionTracking.apply {
-            if (containsKey(eventAction)) {
-                if (this[eventAction] == false) {
-                    // Disable initial load after first time
-                    this[eventAction] = true
-                    TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                            DataLayer.mapOf(
-                                    TrackAppUtils.EVENT, PROMO_VIEW,
-                                    TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
-                                    TrackAppUtils.EVENT_ACTION, SUBHOME_WIDGET_IMPRESSION,
-                                    TrackAppUtils.EVENT_LABEL, "",
-                                    ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, categories))
-                            ))
-                }
-            }
-        }
-
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        TrackAppUtils.EVENT, PROMO_VIEW,
+                        TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
+                        TrackAppUtils.EVENT_ACTION, SUBHOME_WIDGET_IMPRESSION,
+                        TrackAppUtils.EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, categories))
+                ))
     }
 
     fun eventRecommendationClick(item: RecommendationItemEntity, position: Int) {
@@ -328,21 +291,6 @@ class DigitalHomeTrackingUtil {
                         ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, categories))
                 ))
 
-    }
-
-    fun resetInitialImpressionTracking() {
-        initialImpressionTracking = initialImpressionTrackingConst.toMutableMap()
-    }
-
-    companion object {
-        val initialImpressionTrackingConst = mapOf(
-                DIGITAL_HOMEPAGE_CATEGORY to false,
-                BANNER_IMPRESSION to false,
-                BEHAVIORAL_CATEGORY_IMPRESSION to false,
-                NEW_USER_IMPRESSION to false,
-                SPOTLIGHT_IMPRESSION to false,
-                SUBHOME_WIDGET_IMPRESSION to false
-        )
     }
 
 }
